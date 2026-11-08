@@ -45,7 +45,25 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const {opportunity}=await(await f.request(`opportunities/${customer.id}`)).json() as any;assert.equal(opportunity.queueReason,'Customer reply');assert.equal(opportunity.band,'high');assert.deepEqual(opportunity.evaluation.contributions.map((c:any)=>c.signalType).sort(),['email.replied','form.submitted','meeting.booked']);assert.ok(opportunity.evaluation.contributions.every((c:any)=>c.signalId!==first.id&&c.signalId!==second.id));
  const draft=await(await f.request(`workbench/opportunities/${customer.id}/drafts`,'POST',{contactId:contact.id,subject:'Your inquiry',body:'Hi Maya, would Thursday suit a walkthrough?'})).json() as any;
  const preview=await(await f.request(`workbench/drafts/${draft.id}/approval-preview`)).json() as any;
- const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',{revision:1,quietHoursConfirmation:preview.localTime});assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
+ const approval={revision:1,quietHoursConfirmation:preview.localTime};
+ const saved=(await(await f.request(`drafts/${draft.id}`)).json() as any).draft;
+ assert.deepEqual([saved.id,saved.recipientEmail,saved.subject,saved.body,saved.revision,saved.isStale],[draft.id,contact.email,'Your inquiry','Hi Maya, would Thursday suit a walkthrough?',1,false]);
+ assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[],'The saved draft has not been approved or sent');
+ const effectTables=['drafts','outbound_messages','record_mail_drafts','record_mail_outbound_messages','outbound_delivery_budget','outbound_message_opt_out','opportunities','signals','signal_links','evaluations','evaluation_contributions','recommendations','recommendation_evidence','timeline_entries','timeline_entry_records','audit_entries','notifications'];
+ const inventory=async()=>Object.fromEntries((await f.db.batch(effectTables.map(table=>f.db.prepare(`SELECT * FROM ${table}`)))).map((result,index)=>[effectTables[index],result.results.map(row=>JSON.stringify(row)).sort()]));
+ const beforeSourceApproval=await inventory(),submissionsBeforeSourceApproval=f.sends();
+ const approvalBody=JSON.stringify(approval),approvalTimestamp=String(Math.floor(Date.now()/1000));
+ const sourceApproval=await f.app.request(`https://orbit.test/api/v1/workbench/drafts/${draft.id}/approve`,{
+  method:'POST',
+  headers:{Origin:'https://orbit.test','Content-Type':'application/json','X-Orbit-Timestamp':approvalTimestamp,'X-Orbit-Signature':createHmac('sha256',rotation.secret).update(approvalTimestamp+'.'+approvalBody).digest('hex')},
+  body:approvalBody,
+ });
+ assert.equal(sourceApproval.status,401,await sourceApproval.clone().text());
+ assert.equal(f.sends(),submissionsBeforeSourceApproval,'A configured source cannot submit customer mail without an operator session');
+ assert.deepEqual(await inventory(),beforeSourceApproval,'Source-signed approval changes no draft, outbound message or downstream effect');
+ assert.deepEqual((await(await f.request(`drafts/${draft.id}`)).json() as any).draft,saved,'The exact saved revision remains available for a person to review');
+ assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[]);
+ const sent=await f.request(`workbench/drafts/${draft.id}/approve`,'POST',approval);assert.equal(sent.status,200,await sent.clone().text());assert.equal((await sent.json() as any).state,'accepted');assert.equal(f.sends(),2);assert.equal(bodies[1]!.to,contact.email);assert.equal(bodies[1]!.subject,'Your inquiry');assert.equal(bodies[1]!.text,'Hi Maya, would Thursday suit a walkthrough?');assert.equal((await f.db.prepare('SELECT message_id FROM outbound_messages WHERE draft_id=?').bind(draft.id).first<any>()).message_id,'<relay-2@example.test>');
  assert.equal((await progress()).sent,1);assert.equal((await f.db.prepare('SELECT queue_state FROM opportunities WHERE id=?').bind(customer.id).first<any>()).queue_state,'next');
  for(const outcome of ['rejected','uncertain'] as const){
   relayOutcome=outcome;

@@ -1,8 +1,115 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
-import {agentDoorProof} from '../support/agent-door-proof';
+import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
+import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
+
+async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,period,adopt,businessCall}: RejectedReportProofContext) {
+  const origin=bindings.AUTH_ORIGIN!,db=bindings.DB;
+  const inventory=async()=>{
+    const queries={
+      definitions:'SELECT * FROM analytics_definitions',
+      snapshots:'SELECT * FROM analytics_snapshots',
+      sources:'SELECT * FROM analytics_snapshot_sources',
+      records:'SELECT * FROM graph_records',
+      opportunities:'SELECT * FROM opportunities',
+      contacts:'SELECT * FROM contacts',
+      companies:'SELECT * FROM companies',
+      computedEvents:"SELECT * FROM domain_events WHERE kind='analytics.snapshot'",
+      computedAudit:"SELECT * FROM domain_audit WHERE operation='analytics.snapshot'",
+      computedEffects:"SELECT * FROM agent_door_events WHERE json_extract(event,'$.type')='report.computed'",
+    };
+    return Object.fromEntries(await Promise.all(Object.entries(queries).map(async([name,sql])=>
+      [name,(await db.prepare(sql).all()).results.map(row=>JSON.stringify(row)).sort()])));
+  };
+  const preview=await businessCall('orbit.reports.preview',period,{},'tools/call',50);
+  assert.equal(preview.status,200);assert.equal(preview.body.result.isError,false);
+  const measurement=preview.body.result.structuredContent;
+  assert.equal(measurement.values.value,1);
+  assert.deepEqual(measurement.inputs.map((input:{id:string})=>input.id),[sourceId]);
+  assert.ok(JSON.stringify(measurement.values.groups).includes('private_amount'));
+  const args={...period,review_hash:measurement.reviewHash,idempotency_key:'synthetic-orbit-rejected-report'};
+  const held=heldPolicy();
+  held.rules.find((rule:{do:string})=>rule.do==='approval')!.approver=['person:business-owner'];
+  await adopt(held);
+  const before=await inventory();
+  assert.ok(before.snapshots!.length>0&&before.sources!.length>0&&before.computedEffects!.length>0,'the no-effect witness starts with populated native reports');
+  const pending=await businessCall('orbit.reports.compute',args,{},'tools/call',51);
+  assert.equal(pending.status,200);assert.equal(pending.body.id,51);
+  assert.equal(pending.body.error,undefined);
+  assert.equal(pending.body.result.resultType,'input_required');
+  assert.ok(pending.body.result.requestState,'the write retains a pending handle');
+  const decision=pending.body.result._meta['com.runeditrun/decision'];
+  assert.equal(decision.disposition,'approval');
+  assert.deepEqual(decision.classes.map((item:{class:string})=>item.class).sort(),['sensitive','standard']);
+  assert.equal(pending.body.result.structuredContent,undefined);
+  assert.equal(pending.body.result.content,undefined);
+  assert.equal(pending.body.result._meta['com.runeditrun/receipt'],undefined);
+  assert.deepEqual(await inventory(),before,'pending native computation has no report or source effects');
+  const handle=pending.body.result._meta['com.runeditrun/approval'];
+  assert.ok(handle.id);assert.equal(handle.url,origin+'/agents/approvals/'+handle.id);
+  assert.ok(Date.parse(handle.expires_at)>Date.now());
+  const approvalRequest=(action?:string,body?:object)=>new Request(origin+'/agents/api/approvals/'+handle.id+(action?'/'+action:''),{
+    method:action?'POST':'GET',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},
+    ...(body?{body:JSON.stringify(body)}:{}),
+  });
+  assert.equal((await operatorFromRequest(approvalRequest(),bindings))?.operatorId,ownerId);
+  const review=await door.handle(approvalRequest());assert.equal(review!.status,200);
+  const approval=(await review!.json() as any).approval;
+  assert.equal(approval.state,'pending');assert.equal(approval.tool,'orbit.reports.compute');
+  assert.deepEqual(approval.approvers,['person:business-owner']);
+  assert.equal(approval.prepared_by.for.id,ownerId);
+  assert.equal(approval.revision,decision.revision);assert.equal(approval.expires_at,handle.expires_at);
+  assert.equal(approval.summary.target.id,period.id);
+  for(const item of [`Version: ${period.version}`,`From: ${period.from}`,`Through: ${period.through}`,`Native review: ${args.review_hash}`])assert.ok(approval.summary.items.includes(item));
+  assert.match(approval.summary_sha256,/^[a-f0-9]{64}$/);
+  const rejected=await door.handle(approvalRequest('reject',{revision:approval.revision,summary_sha256:approval.summary_sha256}));
+  assert.equal(rejected!.status,200);
+  assert.equal((await rejected!.json() as any).approval.state,'rejected');
+  assert.deepEqual(await inventory(),before,'the named owner rejection leaves the native report unchanged');
+  const retry=await businessCall('orbit.reports.compute',args,{},'tools/call',52);
+  assert.equal(retry.status,200);assert.equal(retry.body.id,52);
+  assert.equal(retry.body.error,undefined);
+  assert.equal(retry.body.result.resultType,'complete');assert.equal(retry.body.result.isError,true);
+  assert.equal(retry.body.result._meta['com.runeditrun/error'].code,'approval_rejected');
+  assert.deepEqual(retry.body.result.content,[{type:'text',text:JSON.stringify({code:'approval_rejected'})}]);
+  assert.equal(retry.body.result.structuredContent,undefined,'a rejected retry returns no successful native snapshot');
+  assert.equal(retry.body.result.requestState,undefined,'a rejection is terminal, without a new pending handle');
+  assert.equal(retry.body.result._meta['com.runeditrun/approval'],undefined);
+  assert.equal(retry.body.result._meta['com.runeditrun/receipt'],undefined,'a rejected retry returns no completion receipt');
+  assert.deepEqual(await inventory(),before,'the same arguments and key with a new RPC ID cannot compute after rejection');
+  const retained=await db.prepare('SELECT state,saved,result FROM agent_door_approvals WHERE id=?').bind(handle.id).first<{state:string;saved:string;result:string|null}>();
+  assert.equal(retained?.state,'rejected');assert.equal(retained.result,null);
+  const saved=JSON.parse(retained.saved);
+  assert.equal(saved.key,args.idempotency_key);assert.equal(saved.summary_sha256,approval.summary_sha256);
+  assert.equal(saved.revision,approval.revision);assert.equal(saved.result.receipt,undefined);
+  assert.equal(await db.prepare('SELECT count(*) n FROM agent_door_approvals').first('n'),1,'retry does not open a replacement approval');
+  const rejectionEvents=(await db.prepare("SELECT event FROM agent_door_events WHERE uri=? AND json_extract(event,'$.type')='approval.decided'").bind(handle.url).all<{event:string}>()).results;
+  assert.equal(rejectionEvents.length,1);
+  const rejectionEvent=JSON.parse(rejectionEvents[0]!.event);
+  assert.equal(rejectionEvent.state,'rejected');assert.equal(rejectionEvent.actor.kind,'person');
+  assert.equal(rejectionEvent.actor.person.id,ownerId,'the decision is attributed to the signed-in named owner');
+
+  await adopt(autonomousPolicy());
+  const control=await businessCall('orbit.reports.compute',{...args,idempotency_key:'synthetic-orbit-autonomous-report'},{},'tools/call',53);
+  assert.equal(control.status,200);assert.equal(control.body.result.isError,false);
+  assert.equal(control.body.result._meta['com.runeditrun/decision'].disposition,'autonomous');
+  const snapshot=control.body.result.structuredContent;
+  assert.equal(snapshot.definitionId,period.id);assert.equal(snapshot.values.value,1);
+  const readback=await businessCall('orbit.reports.read',{id:snapshot.id},{},'tools/call',54);
+  assert.equal(readback.body.result.isError,false);assert.equal(readback.body.result.structuredContent.id,snapshot.id);
+  assert.deepEqual(readback.body.result.structuredContent.inputs.map((input:{id:string})=>input.id),[sourceId]);
+  const after=await inventory();
+  for(const name of ['snapshots','sources','computedEvents','computedAudit','computedEffects'])assert.equal(after[name]!.length,before[name]!.length+1,'the independent autonomous control produces one '+name);
+  for(const name of ['definitions','records','opportunities','contacts','companies'])assert.deepEqual(after[name],before[name],'the autonomous snapshot preserves '+name);
+  console.log(JSON.stringify({proof:'BASE-AGENT-007.5.rejected-native-write',
+    pendingRpc:pending.body.id,retryRpc:retry.body.id,classes:decision.classes.map((item:{class:string})=>item.class),
+    approval:handle.id,revision:approval.revision,summary_sha256:approval.summary_sha256,
+    state:retained.state,code:retry.body.result._meta['com.runeditrun/error'].code,
+    successContent:false,completionReceipt:false,unchangedNativeState:true,
+    autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
+}
 
 test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
   const fixture = await isolatedDatabase();
@@ -47,5 +154,5 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context);
+  await agentDoorProof(context,rejectedNativeReportProof);
 });
