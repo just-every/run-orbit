@@ -25,6 +25,114 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
+/** Follow the links actually returned over authenticated MCP, including after
+ * another version is saved or the reader's current authority changes. */
+export async function reportDefinitionLinksProof({bindings,ownerId,adopt,businessCall}: RejectedReportProofContext) {
+  const db=bindings.DB;
+  const definition={name:'Opportunity count',description:'Count native opportunities for the seller',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30};
+  const nextDefinition={...definition,name:'Contact count',description:'Count native contacts for the seller',unit:'contacts',sourceTypes:['contact']};
+  const teammate=await db.prepare("SELECT o.id,o.email FROM operators o JOIN bs_team t ON t.operator_id=o.id WHERE t.business_id='business-jamie' AND t.state='active'").first<{id:string;email:string}>();
+  assert.ok(teammate,'the access refusal starts with a mapped active full operator');
+  const teammateClaims={sub:'business-jamie',email:teammate.email,act:{sub:'jamie-assistant',name:'Jules'}};
+  const read=(uri:string,claims:Record<string,unknown>={})=>businessCall('',{uri},claims,'resources/read');
+  const inventory=async(id:string)=>Object.fromEntries(await Promise.all([
+    ['definitions','SELECT * FROM analytics_definitions WHERE id=?'],
+    ['events',"SELECT * FROM agent_door_events WHERE json_extract(event,'$.type')='report.updated' AND uri IN('orbit://reports/'||?1||'/definition/1','orbit://reports/'||?1||'/definition/2')"],
+    ['nativeAudit',"SELECT * FROM domain_audit WHERE operation='analytics.define' AND json_extract(resource_json,'$.id')=?"],
+  ].map(async([name,sql])=>[name,(await db.prepare(sql!).bind(id).all()).results.map(row=>JSON.stringify(row)).sort()])));
+  async function decisionAudit(result:any,mode:'autonomous'|'held',resource?:string) {
+    const decision=result._meta['com.runeditrun/decision'];
+    assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
+    assert.deepEqual(decision.classes.map((item:any)=>({class:item.class,facts:item.facts,do:item.do})),[{class:'standard',facts:{measure:1},do:mode==='held'?'review':'autonomous'}]);
+    assert.equal(result._meta['com.runeditrun/receipt'],undefined,'standard review is not a person approval');
+    const stored=await db.prepare('SELECT row FROM agent_door_audit WHERE id=?').bind(decision.id).first<string>('row');
+    assert.ok(stored);
+    const audit=JSON.parse(stored);
+    assert.equal(audit.outcome,'done');assert.equal(audit.decision,decision.disposition);assert.equal(audit.revision,decision.revision);
+    assert.deepEqual(audit.sponsor,{id:ownerId,name:'Morgan Lee'});
+    assert.equal(audit.agent.id,'business-ari');assert.equal(audit.label,'Ari for Morgan Lee');
+    if(resource)assert.equal(audit.resource,resource);
+    const review=result._meta['com.runeditrun/review'];
+    if(mode==='held') {
+      assert.ok(review?.id,'the held standard call has a completed-call review');
+      assert.equal(audit.review.id,review.id);
+      assert.equal(await db.prepare('SELECT state FROM agent_door_reviews WHERE id=?').bind(review.id).first('state'),'open');
+    } else assert.equal(review,undefined);
+    return audit;
+  }
+  async function exactRead(uri:string,expected:object,mode:'autonomous'|'held') {
+    const answer=await read(uri);
+    assert.equal(answer.status,200);assert.equal(answer.body.error,undefined);
+    assert.equal(answer.body.result.contents.length,1);
+    const content=answer.body.result.contents[0];
+    assert.equal(content.uri,uri);assert.equal(content.mimeType,'application/json');
+    assert.equal(content._meta['com.runeditrun/untrusted'],true);
+    assert.deepEqual(JSON.parse(content.text),expected,'each returned URI reads its exact immutable definition');
+    await decisionAudit(answer.body.result,mode,uri);
+    return content.text;
+  }
+  for(const mode of ['autonomous','held'] as const) {
+    await adopt(mode==='held'?heldPolicy():autonomousPolicy());
+    const id='synthetic-orbit-definition-'+mode;
+    const args={id,version:1,definition,idempotency_key:id+'-first'};
+    const links:string[]=[];
+    for(const [index,body] of [definition,nextDefinition].entries()) {
+      const version=index+1;
+      const answer=await businessCall('orbit.reports.update',{...args,version,definition:body,idempotency_key:id+'-'+version});
+      assert.equal(answer.status,200);assert.equal(answer.body.result.isError,false);
+      assert.deepEqual(answer.body.result.structuredContent,{id,version,definition:body});
+      const returned=answer.body.result.content.filter((item:any)=>item.type==='resource_link');
+      assert.equal(returned.length,1,'a definition write must return its fixture link');
+      assert.equal(returned[0].uri,`orbit://reports/${id}/definition/${version}`);
+      links.push(returned[0].uri);
+      const audit=await decisionAudit(answer.body.result,mode);
+      assert.deepEqual(audit.resources,[returned[0].uri]);
+      const event=await db.prepare("SELECT event FROM agent_door_events WHERE uri=? AND json_extract(event,'$.type')='report.updated'").bind(returned[0].uri).first<string>('event');
+      assert.ok(event);assert.deepEqual(JSON.parse(event).actor,{kind:'agent',agent:{id:'business-ari',name:'Ari'},for:{id:ownerId,name:'Morgan Lee'},label:'Ari for Morgan Lee'});
+      await exactRead(returned[0].uri,body,mode);
+    }
+    assert.notEqual(links[0],links[1]);
+    const before=await inventory(id);
+    assert.equal(before.definitions!.length,2);assert.equal(before.events!.length,2);assert.equal(before.nativeAudit!.length,2);
+    const original=await exactRead(links[0]!,definition,mode);
+    const retry=await businessCall('orbit.reports.update',{...args,idempotency_key:id+'-1'},{},'tools/call',80);
+    assert.equal(retry.body.result.isError,false);
+    assert.deepEqual(retry.body.result.structuredContent,{id,version:1,definition});
+    assert.equal(retry.body.result.content.find((item:any)=>item.type==='resource_link')?.uri,links[0]);
+    assert.equal(await exactRead(links[0]!,definition,mode),original,'saving and replaying another version never changes earlier content');
+    await exactRead(links[1]!,nextDefinition,mode);
+    assert.equal((await read(links[0]!,teammateClaims)).body.error,undefined,'the mapped teammate can read the workspace report before access changes');
+    // Change the native sharing fixture; the same authenticated public read
+    // must apply current visibility rather than treating the URI as authority.
+    await db.prepare("UPDATE analytics_report_shares SET audience='private',revision=revision+1 WHERE definition_id=?").bind(id).run();
+    for(const uri of links) {
+      const refused=await read(uri,teammateClaims);
+      assert.equal(refused.status,200);assert.equal(refused.body.error.data.code,'resource_unavailable');
+      assert.equal(refused.body.result,undefined,'loss of sharing exposes no saved definition');
+      const wrongScope=await read(uri,{scope:'reports:write'});
+      assert.equal(wrongScope.status,403);assert.equal(wrongScope.body.result,undefined);
+    }
+    await db.prepare("UPDATE access_memberships SET status='removed' WHERE operator_id=?").bind(ownerId).run();
+    try {
+      for(const uri of links) {
+        const revoked=await read(uri);
+        assert.equal(revoked.status,401);assert.equal(revoked.body.result,undefined,'the saved link cannot bypass current sponsor removal');
+      }
+    } finally {await db.prepare("UPDATE access_memberships SET status='active' WHERE operator_id=?").bind(ownerId).run();}
+    const blocked=autonomousPolicy();blocked.rules=[{id:'all',class:'*',do:'blocked'}];
+    await adopt(blocked);
+    for(const uri of links) {
+      const refused=await read(uri);
+      assert.equal(refused.body.error.data.code,'policy_blocked');assert.equal(refused.body.result,undefined);
+    }
+    assert.deepEqual(await inventory(id),before,'reads, replay and current-access refusals leave the two versions and their write effects unchanged');
+    await adopt(mode==='held'?heldPolicy():autonomousPolicy());
+    await exactRead(links[0]!,definition,mode);await exactRead(links[1]!,nextDefinition,mode);
+    console.log(JSON.stringify({proof:'SURFACE-010.1.report-definition-links',policy:mode,versions:[1,2],links,earlierContentUnchanged:true,currentAccessRefusals:['sharing','scope','sponsor','policy'],attribution:'agent for native sponsor',decision:mode==='held'?'review':'autonomous'}));
+  }
+  await adopt(autonomousPolicy());
+}
+
 export async function agentDoorProof(rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
   const fixture = await isolatedDatabase();
   try {

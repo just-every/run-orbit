@@ -986,6 +986,63 @@
           "standard"
         ],
         "policy": "autonomous"
+      },
+      "resource": {
+        "uriTemplate": "orbit://reports/{id}/definition/{version}",
+        "state": {
+          "$from": "definition",
+          "pointer": "/definition"
+        }
+      }
+    },
+    {
+      "id": "definition_v2",
+      "tool": "orbit.reports.update",
+      "args": {
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        },
+        "version": 2,
+        "definition": {
+          "name": "Seller contacts",
+          "description": "Count native contacts in a separate definition version.",
+          "aggregation": "count",
+          "unit": "contacts",
+          "sourceTypes": [
+            "contact"
+          ],
+          "sourceOperation": "graph.read",
+          "sourceFields": [],
+          "currency": null,
+          "missingPolicy": "incomplete",
+          "lateArrival": "recompute",
+          "attributionModel": "none",
+          "attributionWindowDays": 30
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "resource": {
+        "uriTemplate": "orbit://reports/{id}/definition/{version}",
+        "state": {
+          "$from": "definition_v2",
+          "pointer": "/definition"
+        }
       }
     },
     {

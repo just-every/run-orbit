@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
-import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
+import {agentDoorProof, reportDefinitionLinksProof, type RejectedReportProofContext} from '../support/agent-door-proof';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
@@ -154,5 +154,8 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(rejectedNativeReportProof);
+  await agentDoorProof(async context => {
+    await reportDefinitionLinksProof(context);
+    await rejectedNativeReportProof(context);
+  });
 });
