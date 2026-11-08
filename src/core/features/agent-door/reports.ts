@@ -1,4 +1,4 @@
-import {defineTool,ToolRefusal,type ToolContext,type ResourceContext,type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
+import {defineTool,ToolRefusal,type ToolContext,type ResourceContext,type ResourceDefinition,type ClassAndFacts} from '../../../base/modules/agent-door/index.ts';
 import {AnalyticsMetrics,metricDefinition} from '../analytics/metrics';
 import {NativeAnalyticsSources} from '../analytics/native-sources';
 import {OperationsStore} from '../operations/store';
@@ -65,6 +65,22 @@ export function reportTools(bindings:PlatformBindings) {
       inputSchema:objectSchema({id:string,version:{type:'integer',minimum:1},from:{type:'string',format:'date-time'},through:{type:'string',format:'date-time'},review_hash:{type:'string',pattern:'^[a-f0-9]{64}$'}}),outputSchema,classes:['standard','sensitive'],clauses:['REPORT-001'],untrusted:true,
       classify:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return reportRisk(bindings,await metrics.preview(actor,String(args.id),Number(args.version),String(args.from),String(args.through)),actor.workspaceId);},summary:args=>({target:{id:String(args.id)},items:[`Version: ${args.version}`,`From: ${args.from}`,`Through: ${args.through}`,`Native review: ${args.review_hash}`]}),
       run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);const result=await metrics.compute(actor,String(args.id),Number(args.version),String(args.from),String(args.through),undefined,String(args.review_hash));const id=result.id;ctx.emit('report.computed',`orbit://reports/${id}`);return {result,resources:[{uri:`orbit://reports/${id}`,name:'Native report snapshot'}]};}}),
+    defineTool({name:'orbit.reports.deletion_preview',title:'Review saved report deletion',description:'Read the exact definition versions and snapshot identities that native report deletion would remove. Only a current report manager may inspect this scope.',scope:'reports:write',readOnly:true,
+      inputSchema:objectSchema({id:{type:'string',pattern:'^[a-z0-9_-]{1,100}$'}}),outputSchema,classes:['standard'],clauses:['SURFACE-007'],
+      classify:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);await metrics.sales.removalPreview(actor,String(args.id));return standard();},
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return {result:await metrics.sales.removalPreview(actor,String(args.id))};}}),
+    defineTool({name:'orbit.reports.delete',title:'Delete an exact saved report',description:'Irreversibly delete one native report, all saved definition versions and its snapshots at the reviewed scope. The company policy decides whether a person must approve.',scope:'reports:write',readOnly:false,
+      inputSchema:objectSchema({id:{type:'string',pattern:'^[a-z0-9_-]{1,100}$'},review_hash:{type:'string',pattern:'^[a-f0-9]{64}$'}}),outputSchema,classes:['destructive'],clauses:['SURFACE-007'],
+      target:args=>({kind:'report',id:String(args.id)}),revisionType:'string',revision:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);return (await metrics.sales.removalPreview(actor,String(args.id))).revision;},
+      classify:async(args,ctx,completed)=>{
+        const {actor,metrics}=await nativeReports(bindings,ctx);
+        if(completed){await metrics.sales.removalReplay(actor,String(args.id),String(args.review_hash));return completed.map(item=>({...item,facts:{...item.facts}}));}
+        const scope=await metrics.sales.removalPreview(actor,String(args.id));
+        if(scope.revision!==args.review_hash)throw new ToolRefusal('revision_conflict');
+        return [{class:'destructive',facts:{measure:scope.affectedItemCount}}] satisfies ClassAndFacts[];
+      },
+      summary:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx),scope=await metrics.sales.removalPreview(actor,String(args.id));return {target:{id:scope.id},items:[`Reports: ${scope.reportCount}`,`Snapshots: ${scope.snapshotCount}`,`Affected items: ${scope.affectedItemCount}`,`Definition versions: ${scope.definitionVersions.join(', ')}`,`Snapshot identities: ${scope.snapshotIds.join(', ')}`,`Native review: ${scope.revision}`]};},
+      run:async(args,ctx)=>{const {actor,metrics}=await nativeReports(bindings,ctx);const result=await metrics.sales.remove(actor,String(args.id),String(args.review_hash));ctx.emit('report.deleted',`orbit://reports/${args.id}`);return {result};}}),
     defineTool({name:'orbit.forecasts.read',title:'Read current forecast facts',description:'Read native CRM estimates, observed reviews and independent snapshot history. Estimates do not move money or bind a contract.',scope:'forecasts:read',readOnly:true,
       inputSchema:objectSchema({id:string,opportunity_id:string},[]),outputSchema,classes:['standard','sensitive'],clauses:['FORECAST-001'],untrusted:true,classify:async(args,ctx)=>{const {actor}=await nativeRecords(bindings,ctx);return forecastRisk(bindings,await readForecast(bindings,args,ctx),actor.workspaceId);},
       run:async(args,ctx)=>({result:await readForecast(bindings,args,ctx)})}),

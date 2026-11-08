@@ -25,6 +25,22 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await settings.getByRole('button',{name:'Activate reviewed version',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-preview-${width}.png`),fullPage:false});
  await settings.getByRole('button',{name:'Activate reviewed version',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Workflow activated'})).toBeVisible();
+ const activeWorkflow=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.name==='Prepare account review');
+ const beforeDraft=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');
+ await settings.getByLabel('Value',{exact:true}).fill('Draft must not run');
+ await expect.poll(async()=>{
+  const saved=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);
+  return saved.definition.actions[0].value;
+ }).toBe('Draft must not run');
+ await expect(settings.getByRole('status').filter({hasText:'Saved'})).toBeVisible();
+ await page.goto(origin+'/app/settings/pipeline');await settings.getByLabel(/^Choose workflow/).selectOption(activeWorkflow.id);
+ await expect(settings.getByLabel('Value',{exact:true})).toHaveValue('Draft must not run');
+ await expect(settings.getByText(`Version ${activeWorkflow.activeVersion} is active`,{exact:true})).toBeVisible();
+ const savedDraft=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);
+ assert.equal(savedDraft.status,'draft');assert.ok(savedDraft.version>activeWorkflow.version);
+ assert.equal(savedDraft.activeVersion,activeWorkflow.activeVersion);
+ assert.deepEqual((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record,beforeDraft.record);
+ await settings.getByRole('heading',{name:'Workflows',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-saved-draft-${width}.png`)});
  const current=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');
  await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,{...current.record,title:'Account review candidate',custom_fields:JSON.parse(current.record.custom_fields_json)},'PUT');
  await settings.getByRole('button',{name:'Execution history',exact:true}).click();

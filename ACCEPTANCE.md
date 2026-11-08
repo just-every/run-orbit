@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -529,8 +529,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Advance close/stale/awaiting clocks and deliver a form, reply, booking and send failure; inspect NOW/NEXT reasons and one timeline transition per event.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: close clock; stale clock; awaiting-response clock; form NOW reason; reply NOW reason; booking NOW reason; one transition per triggering event. Asserted: failed-send NOW reason.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`; `tests/core/request-scheduling.test.ts` — a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW (a distinct Records-created open deal with an explicit null owner is read outside NOW before its expected close deadline; crossing that deadline through ordinary requests racing and repeating hosted timers yields one explained NOW entry and one timer-sourced feature transition with no human actor, preserving score, band, owner, stage and lifecycle)
+**Gap.** Unasserted in the carried evidence: stale clock; genuine five-working-day awaiting-response deadline construction in the workspace timezone; complete form, reply, booking and failure reason and transition reconciliation; all NEXT and removal paths; the complete event matrix and one transition per triggering event beyond the close-deadline case. Asserted: close clock and its single explained transition; failed-send NOW reason.
 
 #### OPP-008 — Manual completion
 
@@ -1880,17 +1880,17 @@ Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 
 #### AUTO-006 — Undo workflow effects
 
-Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **done** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
-**Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
+**Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Orbit archives a created deal by closing it as lost with a reason naming the undone version, which removes it from the queue and keeps its history and associations; edits, added contacts, activities, tasks, drafts, messages, signals and captured changes all count as touching it. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
 
 **Acceptance.**
 1. Undo the closed-won run after a user edited one contact; verify the other values are restored, that contact is listed as skipped and the stage history records the undo.
 2. Undo a run or version over a time range; archive a created record only while it has no later edit/association, list skipped records with who/time, and retain attributed stage reversal.
 3. Undo sends nothing and never reopens or deletes tasks or messages.
 
-**Evidence.** `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`; `tests/support/workflow-record-journey.ts`; `tests/support/workflow-journey.ts`
-**Gap.** Implemented: undo of one run or of one version over a time range (at most 1,000 runs), restoring a field only where it still holds the written value, reversing stage moves into movement history and listing skipped items. Remaining: archival undo of created records and complete owner-rule selection; that undo sends nothing and never reopens or deletes tasks or messages is not asserted.
+**Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”, which runs `tests/support/workflow-record-journey.ts` and `tests/support/workflow-undo-journey.ts` — workflowUndoJourney. Acceptance 1: workflowRecordJourney undoes the closed-won run after a person edited one contact (the other contact is restored, the edited contact is listed as skipped with who changed it) and workflowUndoJourney reverses a stage move into stage history, attributed in the audit trail. Acceptance 2: workflowUndoJourney undoes a version over a time range with three created deals (the untouched deal is archived, the deal a person edited and the deal a person logged a note on are skipped, each naming who and when), refuses an operator without workflow authority, leaves runs outside the range untouched and reverses the stage move. Acceptance 3: workflowUndoJourney counts messages, Slack notices, notifications, tasks and notes before and after undo and replay (unchanged), shows a scheduled message stays scheduled across a stage reversal, and `tests/support/workflow-journey.ts` keeps the task created by a run after its undo. Code: `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/workflows/record-archive.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`
+**Gap.** None.
 
 #### CALL-001 — Provider-backed click-to-call
 

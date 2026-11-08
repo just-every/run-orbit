@@ -5,12 +5,13 @@ import { RecordsRepository } from '../../src/core/features/records/repository';
 import { WorkbenchRepository } from '../../src/core/features/workbench/repository';
 import { createApp } from './app';
 export async function launchFixture(){
- const platform=await isolatedDatabase(),db=platform.db,deps=createDependencies(db),actor=createId(),stage=createId();
+ const platform=await isolatedDatabase(),actor=createId(),stage=createId();
+ let db=platform.db;const deps=createDependencies(db);
  await deps.auth.ensureOperator({id:actor,email:`${actor}@operator.test`,displayName:'Launch operator'});
  await deps.workspace.ensureWorkspace({name:'Launch checks',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
  await deps.workspace.ensurePipelineStage({id:stage,name:'Qualified',position:0});
  const session=await deps.auth.createSession(actor),cookie=`__Host-orbit_session=${session.token}`;
- const records=new RecordsRepository(db),workbench=new WorkbenchRepository(db),app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
+ let records=new RecordsRepository(db),workbench=new WorkbenchRepository(db),app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});
  const request=(path:string,method='GET',body?:unknown,headers:Record<string,string>={})=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json',...headers},...(body===undefined?{}:{body:JSON.stringify(body)})});
  async function customer(email=`${createId()}@customer.test`){const contact=await records.save('contact',{name:'Customer',email},actor),opportunity=await records.save('opportunity',{title:'Launch opportunity',stage_id:stage,value_cents:0,contact_ids:[contact.id],primary_contact_id:contact.id},actor);return {contactId:contact.id,opportunityId:opportunity.id,email};}
  async function message(contactId:string,opportunityId:string,state='scheduled'){
@@ -18,5 +19,6 @@ export async function launchFixture(){
   await db.prepare("INSERT INTO outbound_messages(id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,approved_at) VALUES(?,1,?,?,?,?,?,?,?,?,?,?,?,?)").bind(id,opportunityId,actor,contactId,contact!.email,'Reviewed subject','Reviewed body',state,at,at,id,`<${id}@orbit.test>`,at).run();
   return {id,messageId:`<${id}@orbit.test>`};
  }
- return {db,actor,stage,records,workbench,request,customer,message,dispose:()=>platform.dispose()};
+ async function restart(){await platform.close();await platform.reopen();db=platform.db;records=new RecordsRepository(db);workbench=new WorkbenchRepository(db);app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}});}
+ return {get db(){return db;},actor,stage,get records(){return records;},get workbench(){return workbench;},request,customer,message,restart,dispose:()=>platform.dispose()};
 }

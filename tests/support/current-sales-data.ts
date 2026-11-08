@@ -9,6 +9,7 @@ import {OutreachRepository} from '../../src/core/features/workbench/outreach-rep
 import {ApprovalRepository} from '../../src/core/features/outreach/approval-repository';
 import {seedWorkflowCustody} from './workflow-archive-proof';
 import {createApp,TEST_SESSION_SECRET} from './app';
+import {seedOptOutArchive} from './opt-out-archive';
 
 /** Populate the current product through the same authenticated doors as the UI. */
 export async function currentSalesData(f:CaptureFixture){
@@ -69,6 +70,6 @@ export async function currentSalesData(f:CaptureFixture){
  const reader=await emailLinkSignIn(f.db,'archive-reader@example.test');
  const accepted=await f.app.request('https://orbit.test/api/v2/access/invitations/accept',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({token:invitation.token})});assert.equal(accepted.status,200);
  const denied=await f.app.request('https://orbit.test/api/v1/records/archive/exports',{method:'POST',headers:{Cookie:reader.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:'{}'});assert.equal(denied.status,403,'report access never grants complete export');
- const workflow=await seedWorkflowCustody(f,call);
- return {reader,call,report,forms:forms+'/'+saved.id,operation:compiled.operationId,token,workflow,privateValues:['ana@acme.example','Private reviewed form enquiry','Private rollout task','Private account planning']};
+ const workflow=await seedWorkflowCustody(f,call),optOut=await seedOptOutArchive(f);
+ return {reader,call,report,forms:forms+'/'+saved.id,operation:compiled.operationId,token,workflow,optOut,privateValues:['ana@acme.example','Private reviewed form enquiry','Private rollout task','Private account planning']};
 }
