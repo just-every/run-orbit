@@ -1,0 +1,340 @@
+{
+  "tag": "sd-orbit-main-saved-sales-1",
+  "repository": "just-every/run-orbit",
+  "starting_main": "7381a4b3fc7cd35dfc04ad0ececa428cc00e3ed0",
+  "clone_shallow": false,
+  "checks": [
+    {
+      "name": "initial-file-alone",
+      "result": "passed",
+      "tests": 2,
+      "failed": 0,
+      "duration_ms": 614370.252002,
+      "log": "repro.log",
+      "note": "The reported save/history assertion ran on the original artifact before any edit; a later local rebuild overlapped the archive tail."
+    },
+    {
+      "name": "navigation-order-before",
+      "result": "failed-as-expected",
+      "history_http": 200,
+      "history_items": 1,
+      "rendered_items_after_address": 0,
+      "log": "navigation-order-before.log"
+    },
+    {
+      "name": "month-boundary-and-revoked-export-before",
+      "result": "passed",
+      "clock": "2026-12-01T00:00:00-05:00",
+      "owner_export": 200,
+      "collaborator_export": 403,
+      "log": "month-revoked-export-before.log"
+    },
+    {
+      "name": "navigation-order-after",
+      "result": "passed",
+      "history_http": 200,
+      "history_items": 1,
+      "drawer_stayed_open": true,
+      "log": "navigation-order-after.log"
+    },
+    {
+      "name": "typecheck",
+      "result": "passed",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "fixed-file-alone",
+      "result": "passed",
+      "exit": 0,
+      "summary": {
+        "kind": "summary",
+        "runner": "node:test",
+        "success": true,
+        "counts": {
+          "tests": 2,
+          "failed": 0,
+          "passed": 2,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "topLevel": 2,
+          "suites": 0
+        }
+      },
+      "log": "fixed-file.log",
+      "events": "fixed-file-results.jsonl"
+    },
+    {
+      "name": "complete-batch-8 fold-domain-0",
+      "result": "passed",
+      "exit": 0,
+      "tests": 3,
+      "stages": [
+        {
+          "args": [
+            "run",
+            "build:app"
+          ],
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "--test",
+            "--no-test-only",
+            "--test-concurrency=1",
+            "--test-reporter=spec",
+            "--test-reporter-destination=stdout",
+            "--test-reporter=./scripts/core-results.mjs",
+            "--test-reporter-destination=verification/fold-domain-0-results.jsonl",
+            "newtests/t096/collaborator-links.test.ts",
+            "newtests/t096/report-disclosure.test.ts"
+          ],
+          "status": "passed",
+          "exitCode": 0
+        }
+      ],
+      "log": "batch-8.log",
+      "receipt": "batch-8-receipt.json",
+      "events": "batch-8-results.jsonl"
+    },
+    {
+      "name": "merged-month-boundary-revoked-export-delayed-navigation",
+      "result": "passed",
+      "clock": "2026-12-01T00:00:00-05:00",
+      "workspace_timezone": "America/New_York",
+      "owner_export": 200,
+      "collaborator_export": 403,
+      "history_items": 1,
+      "drawer_stayed_open": true,
+      "screenshots": [
+        "saved-history-1440.png",
+        "saved-history-390.png"
+      ],
+      "log": "month-revoked-navigation-after.log"
+    },
+    {
+      "name": "final-merged-batch-8",
+      "result": "passed",
+      "tests": 3,
+      "receipt": "batch-8-receipt.json",
+      "log": "batch-8.log"
+    }
+  ],
+  "counts_before": {
+    "Core": {
+      "done": 38,
+      "partial": 116,
+      "missing": 24,
+      "total": 178
+    },
+    "Agent surface": {
+      "done": 0,
+      "partial": 18,
+      "missing": 8,
+      "total": 26
+    },
+    "Later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    },
+    "Full target": {
+      "done": 38,
+      "partial": 134,
+      "missing": 32,
+      "total": 204
+    },
+    "Claims": {
+      "done": 2,
+      "partial": 10,
+      "missing": 0,
+      "total": 12
+    }
+  },
+  "counts_after": {
+    "Core": {
+      "done": 38,
+      "partial": 116,
+      "missing": 24,
+      "total": 178
+    },
+    "Agent surface": {
+      "done": 0,
+      "partial": 18,
+      "missing": 8,
+      "total": 26
+    },
+    "Later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    },
+    "Full target": {
+      "done": 38,
+      "partial": 134,
+      "missing": 32,
+      "total": 204
+    },
+    "Claims": {
+      "done": 2,
+      "partial": 10,
+      "missing": 0,
+      "total": 12
+    }
+  },
+  "clause_status_changes": [],
+  "mechanical": [
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "local_startup_failures": [
+    {
+      "name": "batch-8 initial concurrent attempt",
+      "cause": "existing fixture migration subprocess ETIMEDOUT at 60000 ms",
+      "receipt": "batch-8-startup-failed-receipt.json",
+      "log": "batch-8-startup-failed.log"
+    },
+    {
+      "name": "combined screenshot probe concurrent attempt",
+      "cause": "existing fixture migration subprocess ETIMEDOUT at 60000 ms",
+      "log": "month-revoked-navigation-after-startup-failed.log"
+    }
+  ],
+  "inventory_before": {
+    "files": 100,
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "inventory_after": {
+    "files": 100,
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "product_patch_sha256": "0bd28343f86151ba6dc3d181bc108983b521bd5ac036752290d7dd731fd4b1f1",
+  "lease_files": [
+    "newtests/t096/browser-sales-report.ts",
+    "sources.lock.json",
+    "src/core/features/reports/sales-report.tsx"
+  ],
+  "product_head": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+  "product_branch": "cloud/sd-orbit-main-saved-sales-1",
+  "product_push": "success",
+  "product_push_log": "product-push.log",
+  "identity_check": {
+    "candidate_commits_including_side_parents": 2,
+    "commits": [
+      "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+      "5b08deaa2b998951f875ea2a906c36ef83848384"
+    ],
+    "result": "passed",
+    "trailers": []
+  },
+  "ci": {
+    "repository": "just-every/run-orbit",
+    "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+    "observations": [
+      {
+        "at": 1794161906.5300763,
+        "status": "pending",
+        "conclusion": null,
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876"
+      },
+      {
+        "at": 1794162207.948907,
+        "conclusion": null,
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876",
+        "status": "in_progress"
+      },
+      {
+        "at": 1794162509.6107159,
+        "conclusion": null,
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876",
+        "status": "in_progress"
+      },
+      {
+        "at": 1794162810.9998772,
+        "conclusion": null,
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876",
+        "status": "in_progress"
+      },
+      {
+        "at": 1794163112.7141793,
+        "conclusion": null,
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876",
+        "status": "in_progress"
+      },
+      {
+        "at": 1794163414.1738112,
+        "conclusion": "success",
+        "head_sha": "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42509314876",
+        "status": "completed"
+      }
+    ],
+    "status": "success",
+    "run_id": 42509314876
+  },
+  "updated_main": "da808d8668d700da20bd4ef782c8baea85029a47",
+  "merge_mechanical": [
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "product_push_count": 2,
+  "product_commits": [
+    "5b08deaa2b998951f875ea2a906c36ef83848384",
+    "d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb"
+  ],
+  "terminal_product_status": "READY",
+  "merge_main": "da808d8668d700da20bd4ef782c8baea85029a47",
+  "final_merge_typecheck": "passed",
+  "final_merge_build": "passed"
+}

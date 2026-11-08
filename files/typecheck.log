@@ -1,0 +1,6 @@
+
+> orbit@0.4.3 typecheck /home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit
+> tsc --noEmit
+
+
+TYPECHECK_EXIT=0

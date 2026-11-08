@@ -1,0 +1,90 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+node:internal/child_process:1120
+    result.error = new ErrnoException(result.error, 'spawnSync ' + options.file);
+                   ^
+
+<ref *1> Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+    at Object.spawnSync (node:internal/child_process:1120:20)
+    at spawnSync (node:child_process:902:24)
+    at execFileSync (node:child_process:945:15)
+    at isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/tests/support/isolated-database.ts:11:3)
+    at async fixture (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/fixture.ts:23:46)
+    at async <anonymous> (/tmp/orbit-saved-probe.mts:7:9) {
+  errno: -110,
+  code: 'ETIMEDOUT',
+  syscall: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+  path: '/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+  spawnargs: [
+    'node_modules/wrangler/bin/wrangler.js',
+    'd1',
+    'migrations',
+    'apply',
+    'DB',
+    '--local',
+    '--config',
+    'wrangler.jsonc',
+    '--persist-to',
+    '/tmp/orbit-restore-test-hAB0nI'
+  ],
+  error: [Circular *1],
+  status: 143,
+  signal: null,
+  output: [
+    null,
+    Buffer(954561) [Uint8Array] [
+       10,  32, 226, 155, 133, 239, 184, 143,  32, 119, 114,  97,
+      110, 103, 108, 101, 114,  32,  52,  46,  49,  50,  57,  46,
+       49,  32,  40, 117, 112, 100,  97, 116, 101,  32,  97, 118,
+       97, 105, 108,  97,  98, 108, 101,  32,  52,  46,  49,  53,
+       56,  46,  48,  41,  10, 226, 148, 128, 226, 148, 128, 226,
+      148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+      148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+      148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+      148, 128, 226, 148,
+      ... 954461 more items
+    ],
+    Buffer(136) [Uint8Array] [
+       27,  91,  51,  51, 109, 226, 150, 178,  32,  27,  91,  52,
+       51,  59,  51,  51, 109,  91,  27,  91,  52,  51,  59,  51,
+       48, 109,  87,  65,  82,  78,  73,  78,  71,  27,  91,  52,
+       51,  59,  51,  51, 109,  93,  27,  91,  48, 109,  32,  27,
+       91,  49, 109,  80, 114, 111, 120, 121,  32, 101, 110, 118,
+      105, 114, 111, 110, 109, 101, 110, 116,  32, 118,  97, 114,
+      105,  97,  98, 108, 101, 115,  32, 100, 101, 116, 101,  99,
+      116, 101, 100,  46,  32,  87, 101,  39, 108, 108,  32, 117,
+      115, 101,  32, 121,
+      ... 36 more items
+    ]
+  ],
+  pid: 12378,
+  stdout: Buffer(954561) [Uint8Array] [
+     10,  32, 226, 155, 133, 239, 184, 143,  32, 119, 114,  97,
+    110, 103, 108, 101, 114,  32,  52,  46,  49,  50,  57,  46,
+     49,  32,  40, 117, 112, 100,  97, 116, 101,  32,  97, 118,
+     97, 105, 108,  97,  98, 108, 101,  32,  52,  46,  49,  53,
+     56,  46,  48,  41,  10, 226, 148, 128, 226, 148, 128, 226,
+    148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+    148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+    148, 128, 226, 148, 128, 226, 148, 128, 226, 148, 128, 226,
+    148, 128, 226, 148,
+    ... 954461 more items
+  ],
+  stderr: Buffer(136) [Uint8Array] [
+     27,  91,  51,  51, 109, 226, 150, 178,  32,  27,  91,  52,
+     51,  59,  51,  51, 109,  91,  27,  91,  52,  51,  59,  51,
+     48, 109,  87,  65,  82,  78,  73,  78,  71,  27,  91,  52,
+     51,  59,  51,  51, 109,  93,  27,  91,  48, 109,  32,  27,
+     91,  49, 109,  80, 114, 111, 120, 121,  32, 101, 110, 118,
+    105, 114, 111, 110, 109, 101, 110, 116,  32, 118,  97, 114,
+    105,  97,  98, 108, 101, 115,  32, 100, 101, 116, 101,  99,
+    116, 101, 100,  46,  32,  87, 101,  39, 108, 108,  32, 117,
+    115, 101,  32, 121,
+    ... 36 more items
+  ]
+}
+
+Node.js v22.20.0
+
+PROBE_EXIT=1

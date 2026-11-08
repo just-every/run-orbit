@@ -1,0 +1,78 @@
+{
+  "budget": 10,
+  "used": 8,
+  "calls": [
+    {
+      "at": 1794159227.189849,
+      "args": [
+        "run",
+        "view",
+        "42503239635",
+        "--repo",
+        "just-every/run-orbit",
+        "--job",
+        "128800841670",
+        "--log-failed"
+      ]
+    },
+    {
+      "at": 1794160828.3838851,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs?head_sha=5b08deaa2b998951f875ea2a906c36ef83848384&per_page=100"
+      ]
+    },
+    {
+      "at": 1794161905.7404513,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs?head_sha=d73cee9b7dc9f87cbf4e7dce8848ed090339bbeb&per_page=100"
+      ]
+    },
+    {
+      "at": 1794162206.565785,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42509314876",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "at": 1794162507.9856896,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42509314876",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "at": 1794162809.6504023,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42509314876",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "at": 1794163111.0350637,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42509314876",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "at": 1794163412.7534184,
+      "args": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42509314876",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    }
+  ]
+}

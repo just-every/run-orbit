@@ -1,0 +1,128 @@
+
+Verification (fold-domain-0): pnpm run build:app
+
+> orbit@0.4.3 build:app /home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit
+> rer queue build:app -- vite build --logLevel warn
+
+build:app
+Heavy job admitted: Orbit build:app:command [fd51c5fb6216]
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "../base/run-site" without a file extension (src/site/run.ts:1:30). Add the file extension
+  - import "./icon-head" without a file extension (src/base/run-site.ts:1:26). Add the file extension
+  - import "../base/run-pricing" without a file extension (src/site/run.ts:2:28). Add the file extension
+  - import "./run-chooser-style" without a file extension (src/base/run-site.ts:2:29). Add the file extension
+  - import "./identity" without a file extension (src/base/run-site.ts:11:53). Add the file extension
+  - import "./theme-frame" without a file extension (src/base/run-site.ts:12:21). Add the file extension
+  - import "./hosting-page" without a file extension (src/base/run-site.ts:13:34). Add the file extension
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "../base/run-site" without a file extension (src/site/run.ts:1:30). Add the file extension
+  - import "./icon-head" without a file extension (src/base/run-site.ts:1:26). Add the file extension
+  - import "../base/run-pricing" without a file extension (src/site/run.ts:2:28). Add the file extension
+  - import "./run-chooser-style" without a file extension (src/base/run-site.ts:2:29). Add the file extension
+  - import "./identity" without a file extension (src/base/run-site.ts:11:53). Add the file extension
+  - import "./theme-frame" without a file extension (src/base/run-site.ts:12:21). Add the file extension
+  - import "./hosting-page" without a file extension (src/base/run-site.ts:13:34). Add the file extension
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "../base/run-site" without a file extension (src/site/run.ts:1:30). Add the file extension
+  - import "./icon-head" without a file extension (src/base/run-site.ts:1:26). Add the file extension
+  - import "../base/run-pricing" without a file extension (src/site/run.ts:2:28). Add the file extension
+  - import "./run-chooser-style" without a file extension (src/base/run-site.ts:2:29). Add the file extension
+  - import "./identity" without a file extension (src/base/run-site.ts:11:53). Add the file extension
+  - import "./theme-frame" without a file extension (src/base/run-site.ts:12:21). Add the file extension
+  - import "./hosting-page" without a file extension (src/base/run-site.ts:13:34). Add the file extension
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+Using secrets defined in .dev.vars
+[INEFFECTIVE_DYNAMIC_IMPORT] node_modules/.pnpm/@runeditrun+rer@0.2.96/node_modules/@runeditrun/rer/modules/demo/index.mjs is dynamically imported by src/core/features/assistance/provider.ts but also statically imported by src/core/app/worker.ts, dynamic import will not move module into another chunk.
+
+
+Verification (fold-domain-0): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-0-results.jsonl newtests/t096/collaborator-links.test.ts newtests/t096/report-disclosure.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ collaborator relationship edits require current access to the actual native related rows (67543.821262ms)
+(node:12851) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (60097.539206ms)
+✖ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (12.310922ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137129.252123
+
+✖ failing tests:
+
+test at newtests/t096/report-disclosure.test.ts:1:3138
+✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (60097.539206ms)
+  Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+      at async TestHook.run (node:internal/test_runner/test:1054:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+    path: '/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-fold-domain-0-Onut5b/ob-vcIxAv/orbit-restore-test-G2P6vK' ],
+    error: Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+        at async TestHook.run (node:internal/test_runner/test:1054:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 927999 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 12961,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 927999 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }
+
+test at newtests/t096/report-disclosure.test.ts:1:9419
+✖ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (12.310922ms)
+  Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+      at async TestHook.run (node:internal/test_runner/test:1054:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+    path: '/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-fold-domain-0-Onut5b/ob-vcIxAv/orbit-restore-test-G2P6vK' ],
+    error: Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+        at async TestHook.run (node:internal/test_runner/test:1054:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 927999 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 12961,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 927999 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }
+
+BATCH8_EXIT=1

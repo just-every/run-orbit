@@ -1,0 +1,60 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+NAV_PROBE {"search":"","saved":true,"drawer":false}
+NAV_PROBE {"search":"","saved":true,"drawer":true}
+NAV_PROBE {"search":"?result=65a934d7-e663-4003-b787-6f35c88f1f98","saved":true,"drawer":true}
+HISTORY_PROBE {"pathname":"/api/v2/workspaces/workspace/operations/metrics/sales-monthly/versions/1/snapshots","status":200,"items":1}
+NAV_PROBE {"search":"?result=65a934d7-e663-4003-b787-6f35c88f1f98","saved":true,"drawer":false}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toHaveCount(expected) failed
+
+Locator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+Expected: 1
+Received: 0
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms
+  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+    14 × locator resolved to 0 elements
+       - unexpected value "0"
+
+    at captureRawStack (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toHaveCount (/home/agent/rer-consolidation/work/sd-orbit-main-saved-sales-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at <anonymous> (/tmp/orbit-saved-probe.mts:29:43) {
+  matcherResult: {
+    actual: 0,
+    expected: 1,
+    message: 'expect(locator).toHaveCount(expected) failed\n' +
+      '\n' +
+      "Locator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\n" +
+      'Expected: 1\n' +
+      'Received: 0\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms\n` +
+      "  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\n" +
+      '    14 × locator resolved to 0 elements\n' +
+      '       - unexpected value "0"\n',
+    name: 'toHaveCount',
+    pass: false,
+    log: [
+      `  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms`,
+      "  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')",
+      '    14 × locator resolved to 0 elements',
+      '       - unexpected value "0"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: undefined
+  }
+}
+
+Node.js v22.20.0
+
+PROBE_EXIT=1

@@ -1,0 +1,10 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+NAV_PROBE {"search":"?result=2d857bc5-c622-41f2-a593-a0e6eff0ca90","saved":true,"drawer":false}
+NAV_PROBE {"search":"?result=2d857bc5-c622-41f2-a593-a0e6eff0ca90","saved":true,"drawer":true}
+HISTORY_PROBE {"pathname":"/api/v2/workspaces/workspace/operations/metrics/sales-monthly/versions/1/snapshots","status":200,"items":1}
+EXPORT_PROBE owner=200 collaborator=403 no-source-leak=true
+PROBE_SAVED_HISTORY passed {"clock":"2026-12-01T00:00:00-05:00","delayed":false,"url":"?result=2d857bc5-c622-41f2-a593-a0e6eff0ca90"}
+
+PROBE_EXIT=0
