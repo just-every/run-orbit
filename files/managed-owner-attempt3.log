@@ -1,0 +1,38 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"2edd2466-ac7c-46f8-829d-36cce9ed460d","revision":5,"summary_sha256":"601d75428f3c8ba632d943f8be9b09d3281961fa76ce6bfa9e9ed6699a026bae","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"39b4c25e-dfe9-41ba-8bd1-01c6db6cdbf6","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"b99769c1-f1cd-4bb5-a0c1-d41d5b587796"},"approval":{"id":"584ab7a7-d1d0-4a56-b90f-ee3b265068ca","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (241103.166292ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 248004.68017
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:8594
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (241103.166292ms)
+  AssertionError [ERR_ASSERTION]: orbit.forecasts.read: {"outcome":"refused","decision":{"id":"0b196bdc-6315-4da3-ac58-fc133c7bbcc0","disposition":"unset","revision":16,"classes":[{"class":"standard","facts":{"measure":1},"rule":null,"do":"unset"},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1},"rule":null,"do":"unset"}]},"code":"policy_unset","fields":{"unanswered":["sensitive"],"setup_url":"https://business.example.test/business/door-company/settings/policy"}}
+  
+  'refused' !== 'done'
+  
+      at call (/workspace/run-orbit-sd-orbit-c-f134/tests/support/agent-door-proof.ts:170:66)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorProof (/workspace/run-orbit-sd-orbit-c-f134/tests/support/agent-door-proof.ts:212:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit-sd-orbit-c-f134/tests/core/managed-owner.test.ts:158:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'refused',
+    expected: 'done',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,39 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"0a8514ed-d275-4fd1-84a5-e940df8e39d2","revision":5,"summary_sha256":"4cc962b45ba141c9d4129508f7e159204494c82db39786e593ceacd29abe248f","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"4c9672f3-1e1e-4d53-8337-19b76e359f07","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (203641.075763ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 209484.431085
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:8594
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (203641.075763ms)
+  AssertionError [ERR_ASSERTION]: {"jsonrpc":"2.0","id":null,"error":{"code":-32001,"message":"Unauthorized"}}
+  
+  401 !== 200
+  
+      at call (/workspace/run-orbit-sd-orbit-c-f134/tests/support/agent-report-deletion-proof.ts:12:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async savedReportDeletionProof (/workspace/run-orbit-sd-orbit-c-f134/tests/support/agent-report-deletion-proof.ts:113:21)
+      at async <anonymous> (/workspace/run-orbit-sd-orbit-c-f134/tests/core/managed-owner.test.ts:158:81)
+      at async agentDoorProof (/workspace/run-orbit-sd-orbit-c-f134/tests/support/agent-door-proof.ts:210:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit-sd-orbit-c-f134/tests/core/managed-owner.test.ts:158:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

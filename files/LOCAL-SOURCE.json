@@ -1,0 +1,20 @@
+{
+  "base": "a301c3152b7c1c564610f20b1e5100e98dd46ba6",
+  "branch": "cloud/sd-orbit-c-f134",
+  "files": {
+    "agent-surface.json": "2613e104fb74295128f5b41863827e14399ea86b6db8f679b3e1f8df6a6c241c",
+    "docs/AGENT-DOOR.md": "f9fb80873a5d1c3a20f9411ba44157ecaa70b2e187c8405e41554e9d9ecf56f9",
+    "scripts/agent-surface.ts": "c209442cd49f249b991388eacecf47e2cd4de55a238b971b9afe6e4c56b4f45f",
+    "sources.lock.json": "077be2ef9a49cda9d9ced2163c6c9d2d3f23096fa13cce6c64f67bb811a5dc76",
+    "src/core/features/agent-door/reports.ts": "17e9208b68022a18205c6b26ae9a0bf1e898108fb231dc4ff376c7aa1f54745c",
+    "src/core/features/analytics/report-routes.ts": "6726c88e5c86d5940bf68221cf95b912ed025a735b6102d4a946da0a730f645a",
+    "src/core/features/analytics/sales-report.ts": "1df09914b966e942b413ba08c2f1b44258c095a8ecb70eada8a82839d77981e2",
+    "tests/core/managed-owner.test.ts": "0077c515d4272572721ac95457579715d6b3b9439531470a5480ea07f9d0f9f6",
+    "tests/support/agent-door-proof.ts": "eeeee526ab7fe063a0b31cc7aff8783fc9fee05bfbbd7f4e9fddec3a19674826",
+    "tests/support/agent-report-deletion-proof.ts": "312a4807c60238927128a7329dbb8a8c55e53b35faac9b65b68decfd08f1c047"
+  },
+  "merged_upstream": "Contract judgments and generated views only; source lock regenerated.",
+  "product_head": "b6ce4b8137d4b939f7b3827e73feffeb11859235",
+  "repository": "just-every/run-orbit",
+  "schema": 1
+}

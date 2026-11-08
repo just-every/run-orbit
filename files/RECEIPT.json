@@ -1,0 +1,151 @@
+{
+  "after_counts": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "base": "a301c3152b7c1c564610f20b1e5100e98dd46ba6",
+  "before_counts": {
+    "done": 36,
+    "missing": 32,
+    "partial": 136,
+    "total": 204
+  },
+  "branch": "cloud/sd-orbit-c-f134",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check; restore generated views from origin/main",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "ci": {
+    "runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "b6ce4b8137d4b939f7b3827e73feffeb11859235",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42475746884",
+        "id": 42475746884,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "claims": {
+    "SURFACE-007": {
+      "complete_acceptance_points": [],
+      "selected_native_slice": "acceptance 1 saved-report deletion",
+      "status": "PARTIAL",
+      "status_cells_unchanged": true
+    }
+  },
+  "conformance": {
+    "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+    "exit": 0,
+    "passed": 3991,
+    "total": 3991
+  },
+  "head": "b6ce4b8137d4b939f7b3827e73feffeb11859235",
+  "initial_checkout_counts": {
+    "done": 37,
+    "missing": 32,
+    "partial": 135,
+    "total": 204
+  },
+  "landing": {
+    "candidate_run_site": "not applicable before landing",
+    "main_equal_to_candidate": false,
+    "status": "pending maintained fleet"
+  },
+  "ledger": {
+    "reason": "No migration added or edited",
+    "status": "not_applicable"
+  },
+  "local_source": {
+    "file": "LOCAL-SOURCE.json",
+    "files_match": true,
+    "relation": "All relevant bytes match final head; local checks precede final commit; subsequent main merge changes no relevant runtime or test bytes."
+  },
+  "plan_rows_changed": [],
+  "pr": null,
+  "publication_scan": {
+    "commit": "b6ce4b8137d4b939f7b3827e73feffeb11859235",
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "status": "NOT RUN in cloud; maintained fleet owns this gate"
+  },
+  "recorded_at": "2026-11-08T11:27:09.243721+00:00",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source_lock": {
+    "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+    "ok": true
+  },
+  "tag": "sd-orbit-c-f134",
+  "tests": {
+    "cases": 198,
+    "exit": 0,
+    "file": "tests/core/managed-owner.test.ts",
+    "helper": "tests/support/agent-report-deletion-proof.ts",
+    "observed_proof": {
+      "approval": {
+        "affected": 3,
+        "id": "27e1bcc6-6031-4649-91b3-726ec2488881",
+        "oneEffect": true
+      },
+      "autonomous": {
+        "affected": 3,
+        "decision": "3a210088-cf70-4ffb-b553-ffb2257db75c",
+        "id": "synthetic-orbit-autonomous-delete"
+      },
+      "currentAccessRefused": true,
+      "nativeHttpParity": true,
+      "proof": "SURFACE-007.saved-report-deletion",
+      "replayWithoutEffect": true,
+      "retainedFactsAndAttribution": true,
+      "staleScopeRefused": true,
+      "unansweredClassUnchanged": true
+    },
+    "qualifications": 2,
+    "registration": "Managed owner claim verifies RER authority and creates the native owner/session exactly once",
+    "total": 200
+  },
+  "ui": {
+    "reason": "No screen or control changed",
+    "status": "not_applicable"
+  }
+}
