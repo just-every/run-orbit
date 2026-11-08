@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "13901af13bb8bcff9ec794f3081a7cc2486c09e50998e0a423f1863ab490ddf9",
+      "sha256": "839feec2a20ee91611690466a8e09a76617942cf3597a99e1e8a836bb9760230",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "c296a08e181eb2c2978b3a84f8f25229aafea81cc9af187cef45f2923d8076d8",
+      "sha256": "21be9161d74ea4827a7b6df09a4706021e425c1db0618aa0d5b36b275be976ab",
       "executable": false
     },
     "DEMO.md": {
@@ -2279,7 +2279,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
-      "sha256": "eec1b6f7719b70026440450a2b0fb840d674cd7b7e77985738aaf2e42366bd7d",
+      "sha256": "aa86156fb1390adff8ee2de9c798bb17019d089686040ee2dd23834523a2d4e0",
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
@@ -2299,7 +2299,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "38aebb5b6084e780ed638743e0f9a6ae57a4f5f85443ac239044d0cd3e0e501e",
+      "sha256": "aa80c7e822009aee1a1d0b27161e4c6f0db57da85b2d1e2a57c1a8fec8dc242b",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -2351,7 +2351,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-backend-proof.ts": {
-      "sha256": "c18be487a50e5ca4a340eb7da146b80ce17df7e495dab32c5f5df61905a645bd",
+      "sha256": "2f24b258f237b4da080509a9a1e87aa787dfb6da3aa39215bc5eb80064ab5658",
       "executable": false
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
@@ -2371,7 +2371,7 @@
       "executable": false
     },
     "newtests/t096/emitted-fixture.ts": {
-      "sha256": "18e1c1b2171f671404e95a1ea426639c9834eac47693ab6415503dfe370e0ee3",
+      "sha256": "f8e52dc97949d5da65fcc5fba2d7171df73e5fd0509bd9b4ea1702dae8ee082a",
       "executable": false
     },
     "newtests/t096/emitted-request.ts": {
@@ -7663,7 +7663,7 @@
       "executable": false
     },
     "src/core/features/publication/fixed-compiler.ts": {
-      "sha256": "175b3e56279749eea9b8c7d1d00f618161614231324867660db7957148404f5c",
+      "sha256": "7480cb9cd64bf04344b35fa9f12a8a25db6ad620f78da65f312be4d0406aa19e",
       "executable": false
     },
     "src/core/features/publication/read-only-preview.ts": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b6370cb0934102bf49ed3054f128c15ccf778baa6fc04b0fe675f18a7872a566",
+      "sha256": "abc395c6b8820b3f6b58ebe04a90e923430867a36eb93decc5337654395dc4a6",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10183,7 +10183,7 @@
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
-      "sha256": "884996a19e62810cc642683cee9eaa3f4437bea253a1daad53f209b93e11c871",
+      "sha256": "820d9efbbe64e17523eeb75a24b30ee9d43be2f7581e67552a2c4217f0257504",
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
@@ -10794,8 +10794,16 @@
       "sha256": "e794804bd4716f5e112e1d2192fef0472e0a6cbc73db2354f7d89cd58f0e37e2",
       "executable": false
     },
+    "tests/support/agent-door-audit-proof.ts": {
+      "sha256": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+      "executable": false
+    },
     "tests/support/agent-door-body-limit.ts": {
       "sha256": "66dbde6d5a8bc1aa11d88d07083f4fb5bb39234ef98d7c02a8f281815310a31e",
+      "executable": false
+    },
+    "tests/support/agent-door-capacity-proof.ts": {
+      "sha256": "49f385a1050565b24b8c8143c66d82f9266d241cd4396e98cc17458d025e91c9",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {
@@ -10803,7 +10811,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "47a2dd509e0fd2bdeed3228cb8f3c76b599ac69bff0cfb50ec2463ae8a45b21e",
+      "sha256": "7f60b7ea7c538a0b6aa9811503fcf15990f43d4335ce470b213809bad3c91cd6",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

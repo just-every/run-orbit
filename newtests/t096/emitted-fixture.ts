@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {get} from 'node:https';
+import {get,createServer} from 'node:https';
 import {connect} from 'node:net';
 import {createHash,X509Certificate} from 'node:crypto';
 import {availablePort} from '../../tests/support/available-port';
-import {customCertificate} from '../../tests/support/http-listener-fixture';
+import {customCertificate,serverOrigin,closeServer} from '../../tests/support/http-listener-fixture';
 import {workerDiagnostics} from './emitted-diagnostics';
 import {TEST_SESSION_SECRET} from '../../tests/support/worker-identity.mjs';
 /** Actual emitted Worker, TLS and a single owner of the fixture's persisted D1.
@@ -21,3 +21,19 @@ export async function emittedWorker(target:{directory:string;close():Promise<voi
  * certificate-error override is decided after the handshake, so connections started
  * before a new context's first override fail and are retried until Chromium gives up. */
 export function certificateTrust(cert:string){return[`--ignore-certificate-errors-spki-list=${createHash('sha256').update(new X509Certificate(cert).publicKey.export({type:'spki',format:'der'})).digest('base64')}`];}
+
+/** A buyer-owned HTTPS document on a separate origin. Only the buyer page is
+ * served here; all challenge, preflight and capture requests reach the Worker. */
+export async function httpsBuyerSite(certificate:Awaited<ReturnType<typeof customCertificate>>){
+ const documents=new Map<string,string>(),requests:{method:string;path:string}[]=[];
+ const server=createServer(certificate,(request,response)=>{
+  const path=new URL(request.url!,'https://northstar-buyer.localhost').pathname;requests.push({method:request.method!,path});
+  const document=documents.get(path);request.resume();
+  response.writeHead(document?200:404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}).end(document??'Not found');
+ });
+ const local=await serverOrigin(server,'127.0.0.1',true),origin=`https://northstar-buyer.localhost:${local.port}`;
+ return {origin,browserArgs:['--host-resolver-rules=MAP northstar-buyer.localhost 127.0.0.1','--proxy-bypass-list=northstar-buyer.localhost;127.0.0.1;localhost'],requests,
+  serve(path:string,document:string){documents.set(path,document.replace('<head>','<head><link rel="icon" href="data:,">'));},
+  dispose:()=>closeServer(server)};
+}
+export type BuyerSite=Awaited<ReturnType<typeof httpsBuyerSite>>;
