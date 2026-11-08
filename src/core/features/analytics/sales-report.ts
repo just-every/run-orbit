@@ -135,9 +135,50 @@ export class SalesReports{
   await this.metrics.checkSources(c,proofs);
   return {items,unavailable:0};
  }
- async remove(c:ActorContext,id:string){
-  c=await this.metrics.permit(c,'analytics.define',id);const share=await this.shares.read(c,id);if(!await this.shares.canManage(c,share))throw new AccessError('permission','Only the report owner or installation owner deletes a report.');
-  await this.metrics.store.commit(c,'analytics.deleted',id,share.revision,[...this.shares.fence(c,id),{sql:'DELETE FROM analytics_snapshot_sources WHERE snapshot_id IN(SELECT id FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?)',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_definitions WHERE workspace_id=? AND id=?',bindings:[c.workspaceId,id]},{sql:'DELETE FROM analytics_report_shares WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]}]);return {deleted:true};
+ /** One logical report and each of its saved snapshots are affected items; versions and lineage are part of their exact scope. */
+ private async removal(c:ActorContext,id:string){
+  c=await this.metrics.permit(c,'analytics.define',id);
+  const share=await this.shares.read(c,id);
+  if(!await this.shares.canManage(c,share))throw new AccessError('permission','Only the report owner or installation owner deletes a report.');
+  const bindings=[c.workspaceId,id];
+  const inventorySql=`WITH scope AS (SELECT ? AS workspace, ? AS report) SELECT json_array(
+   (SELECT json_group_array(json_array(version,body_json,created_at)) FROM (SELECT version,body_json,created_at FROM analytics_definitions WHERE workspace_id=(SELECT workspace FROM scope) AND id=(SELECT report FROM scope) ORDER BY version)),
+   (SELECT json_group_array(json_array(id,definition_version,body_json,created_at)) FROM (SELECT id,definition_version,body_json,created_at FROM analytics_snapshots WHERE workspace_id=(SELECT workspace FROM scope) AND definition_id=(SELECT report FROM scope) ORDER BY id)),
+   (SELECT json_group_array(json_array(snapshot_id,ordinal,tenant_id,workspace_id,kind,record_id,revision,data_epoch)) FROM (SELECT l.* FROM analytics_snapshot_sources l JOIN analytics_snapshots s ON s.id=l.snapshot_id WHERE s.workspace_id=(SELECT workspace FROM scope) AND s.definition_id=(SELECT report FROM scope) ORDER BY l.snapshot_id,l.ordinal)),
+   (SELECT json_group_array(json_array(owner_id,audience,operators_json,revision,updated_by,updated_at)) FROM analytics_report_shares WHERE workspace_id=(SELECT workspace FROM scope) AND definition_id=(SELECT report FROM scope))
+  ) AS inventory`;
+  const inventory=(await this.db.prepare(inventorySql).bind(...bindings).first<string>('inventory'))!;
+  const [definitions,snapshots]=JSON.parse(inventory) as [Array<[number,string,string]>,Array<[string,number,string,string]>];
+  if(!definitions.length)throw new AccessError('permission','This report is unavailable.');
+  const operator=c.principal.kind==='operator'?c.principal.operatorId:'';
+  const proofs=[...this.metrics.store.guard(`(${inventorySql})=?`,[...bindings,inventory]),
+   ...this.metrics.store.guard("?=? OR EXISTS(SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active')",[operator,share.ownerId,operator])];
+  const revision=await sha256(JSON.stringify({tenantId:c.tenantId,workspaceId:c.workspaceId,id,inventory}));
+  const view={id,reportCount:1,snapshotCount:snapshots.length,affectedItemCount:1+snapshots.length,definitionVersions:definitions.map(row=>row[0]),snapshotIds:snapshots.map(row=>row[0]),revision};
+  return {c,share,proofs,view};
+ }
+ async removalPreview(c:ActorContext,id:string){
+  const scope=await this.removal(c,id);await this.metrics.checkSources(scope.c,scope.proofs);return scope.view;
+ }
+ /** Completed replay checks current management authority against retained native deletion evidence, without requiring deleted rows. */
+ async removalReplay(c:ActorContext,id:string,reviewHash:string){
+  c=await this.metrics.permit(c,'analytics.define',id);
+  const evidence=await this.db.prepare("SELECT details_ref FROM domain_audit WHERE tenant_id=? AND workspace_id=? AND operation='analytics.deleted' AND json_extract(resource_json,'$.id')=? AND json_extract(details_ref,'$.reviewHash')=? ORDER BY occurred_at DESC LIMIT 1").bind(c.tenantId,c.workspaceId,id,reviewHash).first<{details_ref:string}>();
+  if(!evidence)throw new AccessError('permission','This report is unavailable.');
+  const current=await this.shares.read(c,id),saved=JSON.parse(evidence.details_ref) as {ownerId:string|null};
+  if(!await this.shares.canManage(c,{...current,ownerId:saved.ownerId})||current.stored&&!await this.shares.canManage(c,current))throw new AccessError('permission','Report management authority is required.');
+  await this.metrics.checkSources(c,[]);
+ }
+ async remove(c:ActorContext,id:string,expected?:string){
+  const scope=await this.removal(c,id);c=scope.c;
+  if(expected!==undefined&&expected!==scope.view.revision)throw new AccessError('conflict','Saved report scope changed. Review the current deletion preview.');
+  await this.metrics.store.commit(c,'analytics.deleted',id,scope.share.revision,[...scope.proofs,
+   {sql:'DELETE FROM analytics_snapshot_sources WHERE snapshot_id IN(SELECT id FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?)',bindings:[c.workspaceId,id]},
+   {sql:'DELETE FROM analytics_snapshots WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]},
+   {sql:'DELETE FROM analytics_definitions WHERE workspace_id=? AND id=?',bindings:[c.workspaceId,id]},
+   {sql:'DELETE FROM analytics_report_shares WHERE workspace_id=? AND definition_id=?',bindings:[c.workspaceId,id]}],
+   {ownerId:scope.share.ownerId,reviewHash:scope.view.revision,reportCount:scope.view.reportCount,snapshotCount:scope.view.snapshotCount,affectedItemCount:scope.view.affectedItemCount});
+  return {deleted:true};
  }
  async suite(c:ActorContext){
   c=await this.metrics.permit(c,'analytics.read');const settings=await this.settings(),full=c.principal.kind==='operator'&&await isFullOperator(this.db,c.principal.operatorId);

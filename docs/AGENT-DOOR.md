@@ -6,9 +6,9 @@ under the company's signed policy. A token's email address never selects a
 person or grants a sales role.
 
 This adoption currently supports CRM reads and edits, cited internal handoffs,
-private drafts, native report measurements and reasoned forecasts. Customer
+private drafts, native report measurements, exact saved-report deletion and reasoned forecasts. Customer
 sending, scheduling, calling, marketing handoff, provider sync, public-form
-activation, access administration and erasure are not exposed by this registry.
+activation, access administration and broader erasure are not exposed by this registry.
 Use their existing native screens and admission requirements. This is a limited
 surface, not completion of Orbit's full agent adoption.
 
@@ -54,6 +54,35 @@ saved action summary and revision; an agent confirmation is not a person's act.
 Spend caps are not enforced by this Base revision. Native quotas and recipient
 permission remain separate requirements.
 
+## Delete a saved report
+
+Call `orbit.reports.deletion_preview` with the report definition ID. A current
+full seller must also be the report owner or installation owner. The preview
+returns one report, its saved definition versions, all snapshot identities,
+`affectedItemCount` and the exact `revision`. Each report and each saved snapshot
+counts as an affected item; definition versions and source lineage belong to
+that report's saved scope and are not counted again.
+
+Call `orbit.reports.delete` with the same `id`, the preview's revision as
+`review_hash`, and a new `idempotency_key`. `expected_revision` may also carry
+that revision. The server computes destructive facts from saved rows and binds
+the action to their exact inventory, including sharing and source lineage.
+Caller class, count and confirmation fields do not authorize deletion. The
+company's policy decides autonomous execution or a named person's approval;
+an unanswered destructive class retains the setup-required refusal. A pending
+approval changes no native report. Changed scope or current management access
+refuses execution. Successful replay returns its retained result and facts
+under current authority without deleting again.
+
+This uses the same native deletion action and audit as the HTTP report door.
+Native clients can read `GET /api/v2/workspaces/:workspace/operations/reports/:id/deletion-preview`
+and supply `reviewHash` to the existing DELETE route. Existing native clients
+retain their current management checks. Saved scope is fenced in the deletion
+transaction, and both doors retain counts and the reviewed hash in the native
+audit. MCP also retains the policy decision, prepared-by agent and person
+approvers. No contact, provider copy, independent snapshot or other erasure
+operation is added by these tools; broader SURFACE-007 remains unqualified.
+
 ## Current tool inventory
 
 | Tool | Scope | Possible classes |
@@ -74,6 +103,8 @@ permission remain separate requirements.
 | `orbit.records.read` | `records:read` | standard, sensitive |
 | `orbit.records.update` | `records:write` | standard |
 | `orbit.reports.compute` | `reports:write` | standard, sensitive |
+| `orbit.reports.delete` | `reports:write` | destructive |
+| `orbit.reports.deletion_preview` | `reports:write` | standard |
 | `orbit.reports.preview` | `reports:read` | standard, sensitive |
 | `orbit.reports.read` | `reports:read` | standard, sensitive |
 | `orbit.reports.update` | `reports:write` | standard |

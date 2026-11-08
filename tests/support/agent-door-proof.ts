@@ -18,6 +18,7 @@ export interface RejectedReportProofContext {
   bindings: PlatformBindings;
   door: ReturnType<typeof orbitAgentDoor>;
   cookie: string;
+  reviewerCookie: string;
   ownerId: string;
   sourceId: string;
   period: {id: string; version: number; from: string; through: string};
@@ -206,7 +207,7 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
     assert.equal(privateMcpPreview.status,200);assert.equal(privateMcpPreview.body.result._meta['com.runeditrun/untrusted'],true,'native protected report groups remain data, never instructions');
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
-    await rejectedReportProof({bindings,door,cookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,adopt,businessCall});
+    await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
     const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);

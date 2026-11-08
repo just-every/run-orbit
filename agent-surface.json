@@ -196,6 +196,28 @@
       ]
     },
     {
+      "name": "orbit.reports.delete",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "SURFACE-007"
+      ]
+    },
+    {
+      "name": "orbit.reports.deletion_preview",
+      "scope": "reports:write",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SURFACE-007"
+      ]
+    },
+    {
       "name": "orbit.reports.preview",
       "scope": "reports:read",
       "readOnly": true,
@@ -1064,6 +1086,66 @@
           "class": "standard",
           "facts": {
             "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "report_deletion_preview",
+      "tool": "orbit.reports.deletion_preview",
+      "args": {
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "report_delete",
+      "tool": "orbit.reports.delete",
+      "args": {
+        "id": {
+          "$from": "definition",
+          "pointer": "/id"
+        },
+        "review_hash": {
+          "$from": "report_deletion_preview",
+          "pointer": "/revision"
+        },
+        "expected_revision": {
+          "$from": "report_deletion_preview",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 2
           }
         }
       ],
