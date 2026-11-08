@@ -2327,7 +2327,7 @@
       "executable": false
     },
     "newtests/t096/browser-sales-report.ts": {
-      "sha256": "22d49ab35bbc11066c129e88a3a2585e9ed90f2317352cf9adddfbb09bdbe19a",
+      "sha256": "5307543be2cf76c673b08ec6d800ff0be09c8192566ffb5816277b216f540da2",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
@@ -7999,7 +7999,7 @@
       "executable": false
     },
     "src/core/features/reports/sales-report.tsx": {
-      "sha256": "518dc30b3a3441492f344f7b6b7cf62476265bf9c9f9d70c0558d759506aa105",
+      "sha256": "ee0352106a3a28d40a25c626b6a0bce0f118b578fe41421e5affdd839d20f168",
       "executable": false
     },
     "src/core/features/reports/sales-result-view.tsx": {
