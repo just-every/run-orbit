@@ -3,6 +3,7 @@ import {expect} from '@playwright/test';
 import {request,requestStatus} from './operator-fixture.mjs';
 import {observeOperator} from './operator-observations.mjs';
 import {exerciseDuplicateMerge} from './operator-merge.mjs';
+import {exerciseManualMeeting} from './operator-manual-meeting.mjs';
 
 export async function operatorActionsJourney({page,fixture,origin,directory,observations}){
  const widths=[1440,390,320];
@@ -14,6 +15,7 @@ for(const width of [390,320]){
  await expect(page.getByRole('heading',{name:'Collaborators',exact:true})).toBeVisible();await page.getByRole('link',{name:'Open shared records',exact:true}).click();await expect(page.getByRole('heading',{name:'Shared records',exact:true})).toBeVisible();
 }
 const nativeDialogs=[];page.on('dialog',dialog=>{nativeDialogs.push(dialog.type());void dialog.dismiss();});
+await exerciseManualMeeting({page,fixture,origin,directory,observations});
 for(const width of widths){
  await page.setViewportSize({width,height:900});await page.goto(origin+'/app/opportunities/new');await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();await page.getByRole('button',{name:'Save opportunity'}).click();await expect(page.getByLabel('Company name',{exact:true})).toBeFocused();
  // OR3: closing asks once in place, under the foot: the reason takes the caret, Escape keeps the deal open and returns focus.
