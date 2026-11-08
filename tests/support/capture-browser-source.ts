@@ -82,7 +82,7 @@ try {
   const addressConfig=mailboxConfig(['synthetic-orbit','capture.example.test'].join('@'))!;
   const address=await createForwardAddress(db,security,addressConfig,actor,[]);
   const buyer=sampleData.contacts[0]!;
-  await receiveForwarded(db,security,addressConfig,{recipients:[address],raw:eml({From:buyer.email!,To:['Synthetic seller','example.test'].join('@'),Subject:'Synthetic Capture browser evidence',Date:new Date().toUTCString(),'Message-ID':'<synthetic-orbit-capture-browser@example.test>'},'Retain this buyer evidence through the reviewed address rotation.')});
+  await receiveForwarded(db,security,addressConfig,{recipients:[address],raw:eml({From:buyer.email!,To:['Synthetic seller','example.test'].join('@'),Subject:'Synthetic Capture browser evidence',Date:new Date().toUTCString(),'Message-ID':['<synthetic-orbit-capture-browser','example.test>'].join('@')},'Retain this buyer evidence through the reviewed address rotation.')});
   const policy=heldPolicy();policy.rules.find((rule:{do:string})=>rule.do==='approval')!.approver=['sponsor'];
   await db.prepare('INSERT INTO agent_door_state(id,local_document,local_revision) VALUES(1,?,1) ON CONFLICT(id) DO UPDATE SET local_document=excluded.local_document,local_revision=agent_door_state.local_revision+1').bind(JSON.stringify(policy)).run();
   const origin=`http://127.0.0.1:${process.env.PORT??8722}`;

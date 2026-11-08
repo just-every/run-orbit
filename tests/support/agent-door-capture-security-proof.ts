@@ -59,10 +59,10 @@ export async function agentDoorCaptureSecurityProof({bindings,door,cookie,review
  await native('/api/v1/capture/forward','POST',{});
  const old=await address(),oldTag=old.split('+')[1]!.split('@')[0]!;
  const contact=await native('/api/v1/records/contact','POST',{name:'Synthetic Capture buyer',email:['synthetic-orbit-buyer','example.test'].join('@')});
- const message=(id:string)=>eml({From:['Synthetic Capture buyer <synthetic-orbit-buyer','example.test>'].join('@'),To:['Synthetic seller <seller','example.test>'].join('@'),Subject:'Synthetic buyer reply',Date:new Date(Date.now()-60000).toUTCString(),'Message-ID':`<${id}@example.test>`},'Synthetic buyer evidence must survive rotation.');
+ const message=(id:string)=>eml({From:['Synthetic Capture buyer <synthetic-orbit-buyer','example.test>'].join('@'),To:['Synthetic seller <seller','example.test>'].join('@'),Subject:'Synthetic buyer reply',Date:new Date(Date.now()-60000).toUTCString(),'Message-ID':[`<${id}`,'example.test>'].join('@')},'Synthetic buyer evidence must survive rotation.');
  assert.deepEqual(await parse(old,message('synthetic-orbit-before')),{status:200,body:{accepted:true}});
  const confirmation='735192468',confirmationLink='https://mail-settings.google.com/mail/vf-synthetic-orbit-private';
- const confirmationMail=eml({From:['Gmail Team <forwarding-noreply','google.com>'].join('@'),To:old,Subject:`(#${confirmation}) Gmail Forwarding Confirmation - Receive Mail from synthetic-orbit-mailbox@example.test`,Date:new Date().toUTCString(),'Message-ID':'<synthetic-orbit-confirmation@example.test>'},`Confirmation code: ${confirmation}\n${confirmationLink}`);
+ const confirmationMail=eml({From:['Gmail Team <forwarding-noreply','google.com>'].join('@'),To:old,Subject:`(#${confirmation}) Gmail Forwarding Confirmation - Receive Mail from ${['synthetic-orbit-mailbox','example.test'].join('@')}`,Date:new Date().toUTCString(),'Message-ID':['<synthetic-orbit-confirmation','example.test>'].join('@')},`Confirmation code: ${confirmation}\n${confirmationLink}`);
  assert.deepEqual(await parse(old,confirmationMail),{status:200,body:{accepted:true}});
  assert.equal((await native('/api/v1/capture/forward')).confirmations[0].code,confirmation);
  const preserved=await evidence();assert.ok(preserved.signals!.length>0&&preserved.capture_items!.length>0&&preserved.capture_proposals!.length>0);
@@ -83,9 +83,10 @@ export async function agentDoorCaptureSecurityProof({bindings,door,cookie,review
  assert.equal((await evidence()).signals!.length,count);
  assert.equal((await parse(newAddress,message('synthetic-orbit-new-tag'),false)).status,401);
  assert.equal((await evidence()).signals!.length,count,'the new tag cannot bypass signature validation');
- assert.deepEqual(await parse(newAddress,message('synthetic-orbit-new-tag')),{status:200,body:{accepted:true}});
+ const newMail=message('synthetic-orbit-new-tag');
+ assert.deepEqual(await parse(newAddress,newMail),{status:200,body:{accepted:true}});
  assert.equal((await evidence()).signals!.length,count+1);
- assert.deepEqual(await parse(newAddress,message('synthetic-orbit-new-tag')),{status:200,body:{accepted:true}});
+ assert.deepEqual(await parse(newAddress,newMail),{status:200,body:{accepted:true}});
  assert.equal((await evidence()).signals!.length,count+1,'signed intake replay retains one new signal');
  refused(await mcp('address_rotate',{...base,idempotency_key:'synthetic-orbit-stale'}),'revision_conflict');
  const block=autonomousPolicy();block.rules.push({id:'synthetic-orbit-security-block',class:'security',do:'blocked'});await adopt(block);

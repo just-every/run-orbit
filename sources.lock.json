@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "99315b5cec15d7e89d94eede33e5c3d1ad92e27fadfb54aa86a9344698a0f02c",
+      "sha256": "6e11e3804241f36f89107eb16c20e559eb425bc508fdeeb3a7e10e65d93e6d49",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -5208,6 +5208,10 @@
     },
     "src/core/features/access/workspace-reads.ts": {
       "sha256": "0b3b00405292b78de98c42b015ae590c808336c86d037290deb07c651c2d2c0c",
+      "executable": false
+    },
+    "src/core/features/agent-door/capture-security.ts": {
+      "sha256": "a88114444081ef81c951a06ba0bbc49dc1c96e1a26fe36c26c2fef992ed4e8b8",
       "executable": false
     },
     "src/core/features/agent-door/drafts.ts": {
@@ -9870,6 +9874,18 @@
       "sha256": "2b54f956d5cad9ccce77307108e185a2a110923c96015e61fec18e3aed626fa0",
       "executable": false
     },
+    "tests/agent-door/capture-browser-journey.mjs": {
+      "sha256": "7fa9962c4693ec896373100bb936470e7b739722aae3638c411d418a2e98b154",
+      "executable": false
+    },
+    "tests/agent-door/capture-encryption.mjs": {
+      "sha256": "fbdf6692638eb829bec4a048db096c6624e943b847ec3d0f71f09aa6228ab8cb",
+      "executable": false
+    },
+    "tests/agent-door/capture-mailbox.mjs": {
+      "sha256": "2b9cb2f03913f702008d9948672db4562c8c328b43ec577b4eb2d2596488d660",
+      "executable": false
+    },
     "tests/agent-door/initialize-owner.mjs": {
       "sha256": "0b542c7a733b23587ab8477786a17d7419b194c4a582f770877b2ff0bbf83a28",
       "executable": false
@@ -10810,6 +10826,10 @@
       "sha256": "49f385a1050565b24b8c8143c66d82f9266d241cd4396e98cc17458d025e91c9",
       "executable": false
     },
+    "tests/support/agent-door-capture-security-proof.ts": {
+      "sha256": "05c5842d00dec29d53bfc22a6855b2cff809fc34ea36c37fe858fa881e9305ff",
+      "executable": false
+    },
     "tests/support/agent-door-classification-proof.ts": {
       "sha256": "f897b15d0f0ce28c3f8b84a074747d930a1792a9d828d670d6ca21b75cd8548f",
       "executable": false
@@ -10863,7 +10883,7 @@
       "executable": false
     },
     "tests/support/capture-browser-source.ts": {
-      "sha256": "9375059e8ecc9c5636549c041feaebac9d8d0afe01953072eb43181bffc16ce0",
+      "sha256": "ebb14eaf696bede99f255eafb10fc843691f6407b3a7f0a5e7b29f0e29a1b3c8",
       "executable": false
     },
     "tests/support/capture-data-archive.ts": {

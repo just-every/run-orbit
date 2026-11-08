@@ -9,7 +9,8 @@ under the company's signed policy. A token's email address never selects a
 person or grants a sales role.
 
 This adoption currently supports CRM reads and edits, cited internal handoffs,
-private drafts, native report measurements and reasoned forecasts. Customer
+private drafts, native report measurements, reasoned forecasts and private Capture
+address rotation. Customer
 sending, scheduling, calling, marketing handoff, provider sync, public-form
 activation, access administration and erasure are not exposed by this registry.
 Use their existing native screens and admission requirements. This is a limited
