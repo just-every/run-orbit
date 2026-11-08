@@ -15,9 +15,10 @@ async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,
   const metadata=await door.handle(new Request(origin+'/.well-known/oauth-protected-resource/mcp'));
   assert.equal(metadata!.status,200);
   const scopes=(await metadata!.json() as {scopes_supported:string[]}).scopes_supported;
-  for(const policy of [autonomousPolicy(),heldPolicy()]) {
+  for(const [name,policy] of [['autonomous',autonomousPolicy()],['held',heldPolicy()]] as const) {
     await adopt(policy);
-    await agentDocsInventory({html:page.html,mcp:(method:string)=>businessCall('',{},{scope:scopes.join(' ')},method)});
+    const inventory=await agentDocsInventory({html:page.html,mcp:(method:string)=>businessCall('',{},{scope:scopes.join(' ')},method)});
+    console.log(JSON.stringify({proof:'BASE-AGENT-013.current-registry',policy:name,...inventory,nativeMatch:true}));
   }
   await adopt(autonomousPolicy());
   const inventory=async()=>{

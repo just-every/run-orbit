@@ -9879,7 +9879,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "9ca1aed6222c6fa5b3512f91f047f2665dddfae8ce10e5593ac770b107efb65e",
+      "sha256": "4325b212b35157a5fbe98ed140a5f5c533abd55ffe036f893d9e4f351dd32f84",
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "971dba19f45ccc32542b7cd8180863880c554f5645bda4711e3915241cc4a322",
+      "sha256": "361d24d1f6cec295b274a7ec3c531515f04936f8facaddbcfd14c0b2b58a1e32",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
