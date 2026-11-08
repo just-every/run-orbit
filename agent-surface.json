@@ -16,6 +16,46 @@
       ]
     },
     {
+      "name": "orbit.capture.address_read",
+      "scope": "capture:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SURFACE-006"
+      ]
+    },
+    {
+      "name": "orbit.capture.address_rotate",
+      "scope": "capture:write",
+      "readOnly": false,
+      "classes": [
+        "security"
+      ],
+      "clauses": [
+        "SURFACE-006"
+      ],
+      "authority": "none",
+      "effect": {
+        "kind": "record",
+        "justification": "Replaces only the sealed tag on the configured native Capture source; changes no person, grant or destination."
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_revision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "source_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "orbit.drafts.create",
       "scope": "drafts:write",
       "readOnly": false,
@@ -272,6 +312,17 @@
       ],
       "clauses": [
         "SIGNAL-001"
+      ]
+    },
+    {
+      "name": "orbit.workflows.save_draft",
+      "scope": "workflows:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SURFACE-008"
       ]
     }
   ],
@@ -780,6 +831,51 @@
           "standard"
         ],
         "policy": "autonomous"
+      }
+    },
+    {
+      "id": "capture_address",
+      "tool": "orbit.capture.address_read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "rotate_address",
+      "tool": "orbit.capture.address_rotate",
+      "args": {
+        "source_revision": {
+          "$from": "capture_address",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "private_capture_address",
+            "provider": "orbit"
+          }
+        }
+      ],
+      "target": {
+        "kind": "capture_source",
+        "id": "capture-forward"
       }
     },
     {
@@ -1359,6 +1455,64 @@
       }
     },
     {
+      "id": "save_workflow_draft",
+      "tool": "orbit.workflows.save_draft",
+      "args": {
+        "id": {
+          "$fixture": "workflow",
+          "pointer": "/id"
+        },
+        "source_version": {
+          "$fixture": "workflow",
+          "pointer": "/version"
+        },
+        "name": "synthetic-orbit-conformance-draft",
+        "definition": {
+          "trigger": {
+            "kind": "record_changed",
+            "recordType": "opportunity"
+          },
+          "conditions": [
+            {
+              "field": "title",
+              "operator": "equals",
+              "value": "synthetic-orbit-no-trigger"
+            }
+          ],
+          "actions": [
+            {
+              "kind": "set",
+              "field": "title",
+              "value": "synthetic-orbit-draft-only"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "target": {
+        "kind": "workflow",
+        "id": {
+          "$fixture": "workflow",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
       "id": "witness",
       "tool": "orbit.operations.read",
       "args": {},
@@ -1404,11 +1558,20 @@
     }
   ],
   "verification": {
+    "fixtures": {
+      "module": "tests/agent-door/workflow-fixture.mjs"
+    },
     "owner": {
       "bindings": {
         "RER_MANAGEMENT_ORIGIN": "issuer",
         "RER_INSTALLATION_ID": "installationId",
-        "MAIL_FROM": "email"
+        "MAIL_FROM": "email",
+        "ORBIT_ENCRYPTION_KEY": {
+          "module": "tests/agent-door/capture-encryption.mjs"
+        },
+        "CAPTURE_MAIL_ADDRESS": {
+          "module": "tests/agent-door/capture-mailbox.mjs"
+        }
       },
       "initializer": "tests/agent-door/initialize-owner.mjs"
     },

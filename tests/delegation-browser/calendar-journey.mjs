@@ -38,6 +38,30 @@ export async function calendarJourney(page,data){
    expect(authorization.searchParams.get('scope').split(/\s+/).sort()).toEqual([...scopes,...(google?[]:['offline_access'])].sort());
   }
  }
+ await page.setViewportSize({width:1440,height:900});
+ for(const source of data.scopeSources){
+  await page.goto('/app/settings/capture');
+  const card=page.locator(`#capture-source-${source.id}`),scope=card.locator('.capture-source-scope');
+  await expect(scope.getByLabel('Start date',{exact:true})).toHaveValue(data.savedWindow.start.slice(0,10));
+  await expect(scope.getByLabel('End date',{exact:true})).toHaveValue(data.savedWindow.end.slice(0,10));
+  await scope.getByLabel('Start date',{exact:true}).fill('2025-01-01');
+  await scope.getByLabel('End date',{exact:true}).fill('2028-01-01');
+  await expect(card.getByRole('button',{name:'Save scope before syncing',exact:true})).toBeDisabled();
+  const saved=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/capture/sources/${source.id}/scope`&&response.request().method()==='POST');
+  await scope.getByRole('button',{name:'Save selected scope',exact:true}).click();expect((await saved).status()).toBe(200);
+  await page.reload();
+  await expect(scope.getByLabel('Start date',{exact:true})).toHaveValue('2025-01-01');
+  await expect(scope.getByLabel('End date',{exact:true})).toHaveValue('2028-01-01');
+  const response=await page.request.get('/api/v1/capture/sources');expect(response.status()).toBe(200);
+  expect((await response.json()).sources.find(item=>item.id===source.id).scope).toEqual({mail:{folders:['INBOX']},calendars:['calendar'],calendarWindow:{start:'2025-01-01T00:00:00.000Z',end:'2028-01-01T00:00:00.000Z'}});
+  expect(await scope.locator('input[name="folders"]:checked').evaluateAll(inputs=>inputs.map(input=>input.value))).toEqual(['INBOX']);
+  expect(await scope.locator('input[name="calendars"]:checked').evaluateAll(inputs=>inputs.map(input=>input.value))).toEqual(['calendar']);
+  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof(`${source.provider}-extended-read-window`,width,scope,`#capture-source-${source.id} .capture-source-scope`);}
+  await page.setViewportSize({width:1440,height:900});
+  data.redirectSource(source.provider,true);
+  try{expect((await page.request.get(`/api/v1/capture/sources/${source.id}/options`)).status()).toBe(503);expect(data.unexpectedRequests).toEqual([]);}finally{data.redirectSource(source.provider,false);}
+  expect((await page.request.get(`/api/v1/capture/sources/${source.id}/options`)).status()).toBe(200);
+ }
  const writebackLoaded=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/capture/writeback/records/contact/${data.contact}`);
  // OR3: the contact's Activity opens Plan a meeting in place; the planner shows while a consented calendar exists.
  await page.goto(`/app/contacts/${data.contact}`);await page.getByRole('button',{name:'Plan a meeting',exact:true}).click();expect((await writebackLoaded).status()).toBe(200);const panel=page.getByRole('region',{name:'Plan a meeting',exact:true});await expect(panel).toContainText('Provider edited the meeting.');

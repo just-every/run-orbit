@@ -4,6 +4,7 @@ import {proveDashboardSlack} from './dashboard-slack-proof';
 import assert from 'node:assert/strict';
 import {createHmac} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
+import {snapshot} from '../../src/core/features/delegation/evidence';
 import type {createApp} from './app';
 import {proveSlackActions} from './slack-actions-proof';
 import {proveSlackArchive} from './slack-archive-proof';
@@ -75,7 +76,42 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
    await process();assert.equal(posts.length,beforePosts+1);assert.equal(edge.attempts,beforeAttempts+1,'Processing again never submits the manual notice again');
    assert.deepEqual((await notices()).filter(n=>n.source_id===entry),matching,'Processing again retains the same sent notice and provider receipt');
   }
-  await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:'Private win reason'});assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));
+  // BOUNDARY-001: challenge the won notice and a person's actual handoff, not a call's generic handoff notice.
+  const privateProduct='synthetic-orbit-private-product-74',privateCommitment='synthetic-orbit-private-commitment-74',privateHandoff='synthetic-orbit-private-handoff-74',privateDescription='synthetic-orbit-private-description-74',privateWin='Private win reason synthetic-orbit-private-win-74',amountCents=987654321;
+  const privateAmount='$9,876,543.21',recordPath=`records/opportunity/${deal}`,beforeRecord=await(await f.request(recordPath)).json() as any;
+  const amountSaved=await f.request(recordPath,'PATCH',{changes:{value_cents:amountCents},base:{value_cents:beforeRecord.record.value_cents}});assert.equal(amountSaved.status,200,await amountSaved.clone().text());
+  const context=await(await f.request(`relationships/opportunity/${deal}`)).json() as any;
+  const contextSaved=await f.request(`relationships/opportunity/${deal}`,'PUT',{revision:context.revision,companyId:context.company?.id??null,primaryContactId:context.stakeholders.find((s:any)=>s.isPrimary)?.contactId??null,stakeholders:context.stakeholders.map((s:any)=>({contactId:s.contactId,roles:s.roles,verified:s.verified})),products:[privateProduct],nextStep:'Review privately',mutualCommitments:`${privateCommitment}: ${privateAmount}`});assert.equal(contextSaved.status,200,await contextSaved.clone().text());
+  const target=`opportunities/${deal}/handoffs/${createId()}`,review=await snapshot(f.db,target,true),handoffInput={operationKey:createId(),operation:'orbit.handoff.upsert',target,expectedRevision:review.revision,expectedAudienceRevision:review.audience.audienceRevision,content:{title:privateHandoff,description:`${privateDescription}: ${privateProduct}; ${privateCommitment}; ${privateAmount}`,assigneeId:f.actor,dueAt:null,status:'open'}};
+  const native=(path:string,body?:unknown)=>f.app.request('https://orbit.test/delegation/'+path,{method:body===undefined?'GET':'POST',headers:{Cookie:`__Host-orbit_session=${f.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+  const handoffResponse=await native('handoffs',handoffInput);assert.equal(handoffResponse.status,200,await handoffResponse.clone().text());const handoff=await handoffResponse.json() as any;assert.equal(handoff.state,'confirmed');
+  const savedHandoff=(await(await native('handoffs/'+deal)).json() as any).tasks.find((t:any)=>t.target===target).task;
+  assert.deepEqual([savedHandoff.title,savedHandoff.description,savedHandoff.actor_id,savedHandoff.source_client_id],[privateHandoff,handoffInput.content.description,f.actor,null],'The notice source is a saved person-authored handoff with real private content');
+  await process();
+  const callResult=await f.request(`records/opportunity/${deal}/entries`,'POST',{kind:'call',text:'Private customer call contents',occurredAt:new Date().toISOString(),durationMinutes:5});assert.equal(callResult.status,200);
+  const won=await f.request(`records/opportunity/${deal}/lifecycle`,'POST',{state:'won',reason:privateWin});assert.equal(won.status,200,await won.clone().text());assert.ok((await notices()).some(n=>n.event_kind==='won'&&n.state==='sent'));assert.ok((await notices()).some(n=>n.event_kind==='handoff'&&n.state==='sent'));
+  const detail=await(await f.request(recordPath)).json() as any,savedContext=await(await f.request(`relationships/opportunity/${deal}`)).json() as any;
+  assert.equal(detail.record.value_cents,amountCents);assert.deepEqual(savedContext.products,[privateProduct]);assert.equal(savedContext.mutualCommitments,`${privateCommitment}: ${privateAmount}`);
+  const wonSource=detail.timeline.filter((e:any)=>e.kind==='lifecycle.changed'&&JSON.parse(e.payload_json).reason===privateWin);assert.equal(wonSource.length,1);assert.equal(wonSource[0].actor_id,f.actor);assert.equal(JSON.parse(wonSource[0].payload_json).state,'won');
+  const handoffSource=detail.timeline.find((e:any)=>e.id===handoff.receipt.id);assert.ok(handoffSource);assert.equal(handoffSource.kind,'handoff.updated');assert.equal(handoffSource.actor_id,f.actor);assert.equal(JSON.parse(handoffSource.payload_json).handoffId,target.split('/')[3]);assert.equal(JSON.parse(handoffSource.payload_json).sourceClientId,null);
+  const sourceIds=[wonSource[0].id,handoffSource.id],proofNotices=[];
+  for(const [kind,sourceId] of [['won',sourceIds[0]],['handoff',sourceIds[1]]]){
+   const matches=(await notices()).filter(n=>n.event_kind===kind&&n.source_id===sourceId&&n.record_id===deal&&n.channel_id==='CINTERNAL');assert.equal(matches.length,1,`${kind} has exactly one notice for its exact native source`);const notice=matches[0];proofNotices.push(notice);
+   assert.equal(notice.event_key,sourceId);assert.equal(notice.state,'sent');
+   const content=JSON.parse(notice.content_json),link=`https://orbit.test/app/opportunities/${deal}`;
+   assert.deepEqual(content,{eventKind:kind,link,recordDisplayName:beforeRecord.record.title,stageFrom:null,stageTo:null,ownerDisplayName:'Owner',dueDate:null},`${kind} stores only permitted fields and values`);
+   const submitted=posts.filter(p=>p.client_msg_id===notice.id);assert.equal(submitted.length,1);const payload=submitted[0];assert.equal(payload.ts,notice.message_ts);assert.equal(payload.channel,notice.channel_id);
+   assert.equal(payload.unfurl_links,false);assert.equal(payload.unfurl_media,false);assert.equal(payload.parse,'none');
+   assert.equal(payload.text,`Orbit · ${kind}\nFirst customer\nOwner: Owner\n${link}`);assert.deepEqual(payload.blocks[0],{type:'section',text:{type:'plain_text',text:`Orbit · ${kind}\nFirst customer\nOwner: Owner`,emoji:false}});assert.equal(payload.blocks[1].elements.find((b:any)=>b.action_id==='orbit_open').url,link);
+   for(const marker of [privateProduct,privateCommitment,privateHandoff,privateDescription,privateWin,privateAmount,String(amountCents),'9876543.21','9,876,543','Private customer call contents']){
+    assert.ok(!notice.content_json.includes(marker),`${kind} stores no ${marker}`);assert.ok(!JSON.stringify(payload).includes(marker),`${kind} submits no ${marker}, including blocks and metadata`);
+   }
+   const url=new URL(content.link);assert.equal(url.search,'');assert.equal(url.hash,'');assert.equal(url.username,'');assert.equal(url.password,'');
+  }
+  assert.equal((await f.request(recordPath,'GET',undefined,{Cookie:''})).status,401,'The linked deal data needs a native session');
+  const sentBeforeReplay=posts.length;assert.equal((await native('handoffs',handoffInput)).status,409,'Replaying the old native review cannot create a second handoff');await process();await process();assert.equal(posts.length,sentBeforeReplay);
+  assert.deepEqual((await notices()).filter(n=>sourceIds.includes(n.source_id)).sort((a,b)=>a.id.localeCompare(b.id)),proofNotices.sort((a,b)=>a.id.localeCompare(b.id)),'Timer replay retains the exact notice identities and stored content');
+  const amountRestored=await f.request(recordPath,'PATCH',{changes:{value_cents:beforeRecord.record.value_cents},base:{value_cents:amountCents}});assert.equal(amountRestored.status,200,await amountRestored.clone().text());
   const booking=await(await f.request('sources/bookings','PUT',{name:'Internal booking notices',enabled:true})).json() as any,raw=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'maya@harbour.test'}]}}),bookingCount=posts.length;
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
