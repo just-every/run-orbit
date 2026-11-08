@@ -7,6 +7,8 @@ export async function agentDocsInventory({html,mcp}) {
  assert.equal(resources.status,200,'authenticated resource discovery succeeds');
  assert.ok(Array.isArray(tools.body.result?.tools));
  assert.ok(Array.isArray(resources.body.result?.resourceTemplates));
+ assert.ok(tools.body.result.tools.length>0,'the comparison exercises populated tool discovery');
+ assert.ok(resources.body.result.resourceTemplates.length>0,'the comparison exercises populated resource discovery');
  const tableAfter=id=>{
   const start=html.indexOf(`id="${id}"`);
   assert.ok(start>=0,'the generated inventory heading is rendered');
@@ -22,6 +24,7 @@ export async function agentDocsInventory({html,mcp}) {
  assert.deepEqual(resourceRows.map(([uriTemplate,name])=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
   resources.body.result.resourceTemplates.map(({uriTemplate,name})=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
   'rendered resource templates and names exactly match native discovery');
+ return {tools:toolRows.length,resourceTemplates:resourceRows.length};
 }
 
 export default async function sellerDay({tool,request,origin,cookie}) {
