@@ -1,0 +1,20 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"4f0f45d0-f9e1-4d6f-b113-a7c88de7aabc","revision":5,"summary_sha256":"5d986d64704328bdc3abd1d05067b9693a0befc8419222d28bf13b7e8b515849","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"f5a679ef-2b91-4cd5-b009-96b09da2412b","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-011.internal-task-overview","now":"2026-11-08T12:32:10.823Z","since":"2026-11-02T00:00:00.000Z","calls":[{"id":"2ed58a53-1632-4b11-bdfc-b23adef9b096","key":"synthetic-orbit-overview-autonomous","target":"opportunities/01M6XJ8KX0V6717H8N1X5FK6W0/handoffs/synthetic-orbit-overview-autonomous","title":"Prepare internal task autonomous","decision":"autonomous","at":"2026-11-08T12:32:10.823Z"},{"id":"7382e2ad-1174-4fd4-9b4f-a6a78c6bdb37","key":"synthetic-orbit-overview-held","target":"opportunities/01M6XJ8KX0V6717H8N1X5FK6W0/handoffs/synthetic-orbit-overview-held","title":"Prepare internal task held","decision":"review","review":"3167a7df-8990-45d3-a6bd-4ac80468a75a","at":"2026-11-08T12:32:10.823Z"}],"auditRows":201,"pages":3,"groups":[["[\"sensitive\",\"approval\"]",2],["[\"sensitive\",\"autonomous\"]",7],["[\"sensitive\",\"blocked\"]",4],["[\"standard\",\"approval\"]",2],["[\"standard\",\"autonomous\"]",173],["[\"standard\",\"blocked\"]",5],["[\"standard\",\"paused\"]",1],["[\"standard\",\"review\"]",6],["[\"standard\",\"unset\"]",1]]}
+PROBE SURFACE-011 1: source-bound MCP handoff upserts under autonomous and held policies -> native tasks saved; complete paginated audit reconciles every emitted class and decision group
+PROBE SURFACE-011 2: authenticated overview and review inventory -> held task links its original audit identity to an open review with the saved task summary and native actions
+PROBE BASE-AGENT-011 1: raw authenticated MCP under autonomous; discovered capacity=600; admitted native create; overrun=429 Retry-After=50; early retry=429; clock recovery=200 with one native create
+PROBE BASE-AGENT-011 1: raw authenticated MCP under held; discovered capacity=600; admitted native create; overrun=429 Retry-After=60; early retry=429; clock recovery=200 with one native create
+✔ Managed owner claim verifies RER authority and creates the native owner/session exactly once (143770.431564ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 146333.154446

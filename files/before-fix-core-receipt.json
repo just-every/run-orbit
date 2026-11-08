@@ -1,0 +1,19 @@
+{
+  "label": "core",
+  "head": "a7912d9f0654c25023df2e746784d813b94bafe1",
+  "command": [
+    "timeout",
+    "900",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "exit": 1,
+  "started_at": "2026-11-08T12:26:54.065519+00:00",
+  "finished_at": "2026-11-08T12:28:48.441003+00:00",
+  "log": "core.log",
+  "log_sha256": "61b02244ed5106b4266c9baca880a308ef3deb581f03f4548a75ef2baa45da3e"
+}

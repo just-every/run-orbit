@@ -1,0 +1,17 @@
+{
+  "label": "build",
+  "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "command": [
+    "timeout",
+    "1200",
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "exit": 0,
+  "started_at": "2026-11-08T12:29:53.744307+00:00",
+  "finished_at": "2026-11-08T12:30:02.980632+00:00",
+  "log": "build.log",
+  "log_sha256": "12bfb0b0021de06fe5a4b2ae5a78884a894ef2b8601f13b197df46df66ada9e6"
+}

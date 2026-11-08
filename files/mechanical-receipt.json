@@ -1,0 +1,74 @@
+{
+  "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "contract_diff_empty": true,
+  "generated_views_committed": false,
+  "workflow_changed": false,
+  "test_budget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "added_text_email_check": [
+    {
+      "file": "src/core/features/agent-door/handoffs.ts",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/agent-door/native-journey.mjs",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/agent-door/overview-browser.mjs",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/agent-door/overview-proof.mjs",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/core/managed-owner.test.ts",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/delegation-browser/native.test.ts",
+      "added_email_shaped_strings": 0
+    },
+    {
+      "file": "tests/support/agent-door-proof.ts",
+      "added_email_shaped_strings": 0
+    }
+  ],
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0
+  },
+  "first_party": {
+    "command": "npx -y @runeditrun/rer check --profile first-party",
+    "exit": 0
+  },
+  "views": {
+    "write": "node src/base/contract-docs.mjs write",
+    "write_exit": 0,
+    "check": "node src/base/contract-docs.mjs check",
+    "check_exit": 0,
+    "restored_from": "origin/main"
+  },
+  "lock": {
+    "write": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "write_exit": 0,
+    "check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "check_exit": 0,
+    "result_ok": true
+  },
+  "migration_ledger": {
+    "required": false,
+    "reason": "No migration changed."
+  },
+  "publication_scan": {
+    "status": "NOT RUN: cloud handoff; fleet lander owns the scan",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "base": "6d869cb48cbd6bcebb1566be460b49223e892bb6"
+}

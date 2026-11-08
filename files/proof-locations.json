@@ -1,0 +1,57 @@
+{
+  "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "locations": {
+    "src/core/features/agent-door/handoffs.ts": [
+      {
+        "line": 33,
+        "text": "const input:Effect={operation:'orbit.handoff.upsert',operationKey:ctx.idempotencyKey!,target:String(args.target),expectedRevision:String(args.source_revision),expectedAudienceRevision:String(args.audience_revision),content:contentSchema.parse(args.content)};"
+      }
+    ],
+    "tests/core/managed-owner.test.ts": [
+      {
+        "line": 116,
+        "text": "async function internalTaskOverviewProof(context: Parameters<typeof agentDoorProof>[0],{bindings,cookie,opportunityId,adopt,businessCall}: OverviewProofContext) {"
+      },
+      {
+        "line": 168,
+        "text": "test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {"
+      }
+    ],
+    "tests/agent-door/native-journey.mjs": [
+      {
+        "line": 14,
+        "text": "export async function afterStep({phase,step,args,request,origin,cookie}) {"
+      },
+      {
+        "line": 26,
+        "text": "export default async function sellerDay({tool,request,origin,cookie}) {"
+      }
+    ],
+    "tests/agent-door/overview-proof.mjs": [
+      {
+        "line": 3,
+        "text": "export async function auditInventory({request,origin,cookie}) {"
+      },
+      {
+        "line": 22,
+        "text": "export async function agentOverviewProof({request,origin,cookie,calls,now=Date.now()}) {"
+      }
+    ],
+    "tests/agent-door/overview-browser.mjs": [
+      {
+        "line": 7,
+        "text": "export async function agentOverviewBrowser(input) {"
+      }
+    ],
+    "tests/delegation-browser/native.test.ts": [
+      {
+        "line": 16,
+        "text": "test('native browser consent, delegated handoff and same-row UI editing preserve current authority and immutable receipts',async()=>{"
+      },
+      {
+        "line": 31,
+        "text": "await withOverviewBrowser(()=>checkAgentDoor(process.cwd(),{declaration:'deploy.json'}));"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "label": "browser",
+  "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "command": [
+    "timeout",
+    "1200",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/delegation-browser/native.test.ts"
+  ],
+  "exit": 0,
+  "started_at": "2026-11-08T12:30:19.875696+00:00",
+  "finished_at": "2026-11-08T12:31:27.579788+00:00",
+  "log": "browser.log",
+  "log_sha256": "84e3571feecd00ade953e14ef1acb3478c228b9a613463281c7481eff818911e"
+}

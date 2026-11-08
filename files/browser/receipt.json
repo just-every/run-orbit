@@ -1,0 +1,77 @@
+{
+  "proof": "SURFACE-011.internal-task-overview",
+  "calls": [
+    {
+      "id": "59a2f9f6-9071-445d-ba15-33bebbf8fdcd",
+      "at": "2026-11-08T12:31:07.324Z",
+      "key": "6f718309-ea45-45cf-bb03-d510234999c4",
+      "target": "opportunities/01M6XJ856JFJWYTY5NVTTCT1HV/handoffs/01M6XJ856JFJWYTY5NVTTCT1HV",
+      "title": "Prepare buyer follow-up",
+      "decision": "autonomous"
+    },
+    {
+      "id": "2190575c-0f44-4b98-9e46-f6b5ba238597",
+      "at": "2026-11-08T12:31:13.169Z",
+      "key": "88d6719d-14f8-4005-b169-ec0b93f7fee8",
+      "target": "opportunities/01M6XJ8AHB9A1S2X1HNW42HAXR/handoffs/01M6XJ8AHB9A1S2X1HNW42HAXR",
+      "title": "Prepare buyer follow-up",
+      "decision": "review",
+      "review": "eb7a8579-8449-4e4d-b77b-0e217c723d1c"
+    }
+  ],
+  "auditRows": 392,
+  "pages": 3,
+  "since": "2026-11-02T00:00:00.000Z",
+  "groups": [
+    [
+      "[\"sensitive\",\"approval\"]",
+      22
+    ],
+    [
+      "[\"sensitive\",\"autonomous\"]",
+      23
+    ],
+    [
+      "[\"sensitive\",\"blocked\"]",
+      6
+    ],
+    [
+      "[\"standard\",\"approval\"]",
+      22
+    ],
+    [
+      "[\"standard\",\"autonomous\"]",
+      202
+    ],
+    [
+      "[\"standard\",\"blocked\"]",
+      6
+    ],
+    [
+      "[\"standard\",\"paused\"]",
+      15
+    ],
+    [
+      "[\"standard\",\"review\"]",
+      64
+    ],
+    [
+      "[\"standard\",\"unset\"]",
+      46
+    ]
+  ],
+  "capture": [
+    {
+      "width": 1440,
+      "documentWidth": 1440,
+      "minTextSize": 13,
+      "unnamedControls": 0
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "minTextSize": 13,
+      "unnamedControls": 0
+    }
+  ]
+}
