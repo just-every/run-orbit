@@ -1,3 +1,4 @@
+import {formsBasisJourney} from './forms-basis-journey';
 import {publicationAvailabilityJourney} from './forms-publication-availability';
 import {formsMappedJourney} from './forms-mapped-journey';
 import assert from 'node:assert/strict';
@@ -27,7 +28,7 @@ test('FORM-001 mapped cross-origin capture with picklist and declared hidden fie
  const other=await collaborator(f),actor=await f.access.resolveOperatorContext(other.operator,'workspace','denied-publication');await assert.rejects(p.forms.save(actor,{form:{},landing:{}}));await assert.rejects(p.forms.approve(actor,p.compiled.operationId,{artifactHash:p.compiled.hash,formRevision:p.saved.revision}));
  await p.forms.withdraw(await f.nativeContext(),p.compiled.operationId);await assert.rejects(p.forms.publicDocument(p.slug));await assert.rejects(submitForm(p.forms,p.slug,{...intake,idempotencyKey:crypto.randomUUID()}));
  await publicationAvailabilityJourney(f);
- }finally{await f.close();}await formsMappedJourney();});
+ }finally{await f.close();}await formsMappedJourney();await formsBasisJourney();});
 
 test('public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay',async()=>{const f=await fixture();try{
  const p=await publication(f),input={revision:p.saved.revision,operationId:p.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Race person',email:'race@example.com'},consent:true};let injected=false;
