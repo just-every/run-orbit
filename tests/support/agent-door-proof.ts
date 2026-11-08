@@ -15,6 +15,7 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
+import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
   bindings: PlatformBindings;
@@ -27,7 +28,7 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -230,6 +231,17 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
+    await collaboratorProof({bindings,door,cookie,setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()),
+      async bearerFor(email,operatorId) {
+        const subject='synthetic-orbit-collaborator';
+        const mapped={...roster,jti:crypto.randomUUID(),rev:3,team:[...roster.team,{id:subject,email,name:'Synthetic collaborator',role:'member',invite:0}]};
+        const applied=await settings.handle(post('/api/rer/business-settings',{settings:await sign('rer-business-settings+jwt',mapped)}));
+        assert.equal(applied!.status,200,await applied!.clone().text());
+        const sponsor=await people.sponsor({sub:subject});
+        assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
+        const issued=Math.floor(Date.now()/1000);
+        return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
+      }});
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
