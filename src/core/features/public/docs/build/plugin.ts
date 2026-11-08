@@ -33,7 +33,7 @@ function readDocs(root: string): Docs {
 }
 
 function indexCode({ site, problem }: Docs) {
-  const pages = (site?.pages ?? []).map(page => `  ${JSON.stringify(page.slug)}: () => import(${JSON.stringify(pageModule(page.slug))}),`);
+  const pages = (site?.pages ?? []).flatMap(page => [page.slug, ...page.aliases].map(slug => `  ${JSON.stringify(slug)}: () => import(${JSON.stringify(pageModule(page.slug))}),`));
   return [
     `export const repository = ${JSON.stringify(site?.repository ?? null)};`,
     `export const sections = ${JSON.stringify(site?.sections ?? [])};`,
