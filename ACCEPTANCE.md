@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -95,15 +95,15 @@ Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT
 
 #### RECORD-003 — Identity keys
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** A contact's key is its email address lowercased with surrounding whitespace removed; a company's key is its primary domain lowercased with a leading `www.` removed. A domain on the configured free-mail list is never a company key. Creating or changing a record to a key another record already holds returns 409 with that record's ID and writes nothing. A record with no key is created and edited normally, and signals never link to it automatically. Orbit never merges records by name similarity, fuzzy match, or score. The default is the rules in this clause.
 
 **Acceptance.**
 1. Create case/whitespace email and domain collisions through Records; require a 409 naming the existing identity and no extra row; exercise free-mail and keyless records.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** Unasserted in the carried evidence: case and whitespace contact collision; domain collision; conflict names existing identity; no extra row after either conflict; free-mail keys excluded; keyless record create/edit. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/core/records-search.test.ts` — RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page; `tests/support/company-identity.ts` — exerciseCompanyIdentity: uppercase leading-www company domain readback, normalized company create and PATCH collisions return 409 with the original recordId, and fresh complete Records reads preserve companies, contacts, deals, associations and timeline entries; `tests/support/record-identity.ts` — exerciseRecordIdentity in the same Records search registration: normalized contact-email create and PATCH collisions identify the original contact and preserve complete populated Records inventories; configured free-mail companies retain no identity key through create and edit; keyless contacts and companies create and edit independently; signed exact-key controls link once while free-mail, keyless and name-only events remain held through replay, and revoked sources cannot deliver or replay into Records
+**Gap.** None.
 
 #### RECORD-004 — Duplicate merge
 
@@ -457,8 +457,8 @@ Core · published · **partial** · Cites BASE-INPUT-001
 **Acceptance.**
 1. Close a deal as won and lost with reasons, ingest later evidence, and explicitly reopen; inspect history and queue membership at every step.
 
-**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts`
-**Gap.** Unasserted in the carried evidence: won close retains reason; lost close retains reason; later evidence never silently reopens; explicit reopen restores correct queue; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/opportunities/repository.ts`; `src/core/features/workbench/repository.ts`; `tests/core/signals-outreach.test.ts` — "OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not" (fresh authenticated won-close reason readback)
+**Gap.** Unasserted in the carried evidence: lost close retains reason; closing operator and time; later evidence never silently reopens; explicit reopen restores correct queue; stage and owner remain unchanged on reopening; history records every lifecycle transition. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
 
 #### OPP-002 — Independent state
 
@@ -799,8 +799,8 @@ Core · published · **partial** · Cites BASE-DATA-004, BASE-SECRET-001
 **Acceptance.**
 1. Leave AI unconfigured and fail a configured request; finish manual CRM, ingestion, scoring and handwritten outreach flows while generation reports failure.
 
-**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts`
-**Gap.** Unasserted in the carried evidence: failed generation visible; manual CRM still works; ingestion still works; scoring still works; handwritten sending still works. Asserted: unconfigured generation unavailable.
+**Evidence.** `src/core/features/assistance/provider.ts`; `tests/core/assistance.test.ts` — AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (after the unconfigured generation 503, the same installation creates a handwritten draft, reads its exact rendered content, opt-out state and recipient time, approves through native Workbench, compares the real mail adapter request with the saved approval snapshot, reads one accepted provider receipt and refuses repeated approval without another submission; no AI call, generated draft or explanation).
+**Gap.** Unasserted in the carried evidence: configured-outage continuity; manual CRM updates; ingestion and linking continuity; scoring and queue placement continuity; search continuity; recommendation action and evidence readback; rendered generation-failure qualification. Connected mailboxes and live model or provider qualification remain unclaimed. Asserted: unconfigured generation unavailable; handwritten drafting, exact approval and one accepted customer-mail submission continue with AI unconfigured.
 
 #### AI-004 — Cost
 
@@ -1766,8 +1766,8 @@ Core · target · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001 · Rules D-1
 **Acceptance.**
 1. Race an approved due step with each reply/booking/stage/stop event, including a reply on the step's thread from a colleague the buyer CC'd, restart and replay; verify no prohibited send, one exit reason and separate reply/meeting/deal-outcome measures.
 
-**Evidence.** `tests/core/signals-outreach.test.ts`; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
-**Gap.** Unasserted in the carried evidence: external colleague reply exit; manual stop; unsubscribe/permanent-bounce stop; restart preserves exit. Asserted: reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
+**Evidence.** `tests/core/signals-outreach.test.ts` — OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not; `src/core/features/pipelines/movement.ts`; `src/core/features/records/repository.ts`; `src/core/features/outreach/follow-up-outcomes.ts`; `src/core/features/operator/ui/follow-up-outcomes.tsx`; `tests/evidence/contract/SEQUENCE-002/`
+**Gap.** Unasserted in the carried evidence: external colleague reply exit; unsubscribe/permanent-bounce stop; complete due-step races for every exit event; persisted-store and process restart preserves exit. Asserted: native human cancellation of one exact reviewed single scheduled message, fresh cancelled-state and first-reason readback, one attributed message.cancelled timeline entry, repeated cancellation refused with unchanged effects, and zero submission from a fresh late dispatcher (not restart proof); reply exit; booking exit; stage exit atomic with stage change; one first exit reason; replay/reopen/late dispatch revive nothing; separate customer outcome counts.
 
 #### SEQUENCE-003 — Bulk enrollment and rendered batch review
 

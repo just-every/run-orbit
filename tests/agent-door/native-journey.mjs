@@ -20,7 +20,12 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  const stale=await tool('orbit.handoffs.upsert',{...args,idempotency_key:crypto.randomUUID()});
  assert.equal(stale.result?._meta?.['com.runeditrun/error']?.code,'revision_conflict');
  const writeKey=crypto.randomUUID();
- const edited=await call('records.update',{kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey});
+ const writeArgs={kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey};
+ const accepted=await tool('orbit.records.update',writeArgs);
+ assert.equal(accepted.status,200);
+ assert.equal(accepted.result?.isError,false,'the original native record write succeeds');
+ const edited=accepted.result?.structuredContent;
+ assert.ok(edited,'records.update must return native structured content');
  assert.equal(edited.id,id);
  const readback=await call('records.read',{kind:'opportunity',id});
  assert.equal(readback.fields.value_cents,Number(record.fields.value_cents)+1000,'CRM value is an estimate, not a payment');
@@ -28,6 +33,17 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.equal(native.status,200);
  const detail=await native.json();
  assert.ok(detail.timeline.some(row=>row.actor_type==='agent'&&row.actor_name&&JSON.parse(row.payload_json).preparedBy?.agent?.id),'native timeline must name agent for sponsor');
+ const beforeConflict=await call('operations.read');
+ const conflict=await tool('orbit.records.update',{...writeArgs,fields:{value_cents:writeArgs.fields.value_cents+1000}});
+ assert.notEqual(conflict.body.id,accepted.body.id,'changed arguments use a new JSON-RPC request identity');
+ assert.equal(conflict.status,200,'an idempotency conflict is a tool refusal');
+ assert.equal(conflict.result?.isError,true);
+ assert.equal(conflict.result?._meta?.['com.runeditrun/error']?.code,'idempotency_conflict');
+ assert.equal(conflict.result?.structuredContent,undefined,'a conflict returns no successful native result');
+ assert.deepEqual(await call('operations.read'),beforeConflict,'changed arguments with the accepted key have no second native effect');
+ const afterConflict=await request(new URL(`/api/v1/records/opportunity/${id}`,origin).href,{headers:{Cookie:cookie}});
+ assert.equal(afterConflict.status,200);
+ assert.deepEqual(await afterConflict.json(),detail,'the accepted record and its native history remain unchanged');
  const rows=[];
  let cursor='0';
  for(;;) {
