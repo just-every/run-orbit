@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -155,15 +155,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-008 — Import
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003 · Rules D-1
 
 **Requirement.** Full native operators move contacts, companies, deals and notes through explicit CSV mappings and a mandatory saved dry run. New contacts are held by default unless mapped explicit subscribed permission or an explicit per-import operator contactability attestation permits contact. Existing do-not-contact stops always win. All suppression and remaining absent-consent holds publish before customer creation or sending; malformed suppression rows block application. Source IDs and explicit associations are retained with inert provenance. Existing native identities are associated without replacing their fields. Every rejected row names its file, row and reason and creates no customer record. Unchanged re-imports reuse native records, associations and notes. Base import-kit records originals, current-session authority, atomic progress and conflict-preserving undo; undo removes or restores only owned, unchanged effects and keeps native edits, independent suppression and their dependency closure. No import approves outreach or grants operator access. Contact-owner and company-owner columns are mapped under RECORD-016.
 
 **Acceptance.**
 1. Move mapped HubSpot/Pipedrive CSV contacts, companies, deals, notes and suppression through saved preview and Apply; replay, change a source row, interrupt and undo while preserving native edits and stops.
 
-**Evidence.** `src/core/features/imports/contracts.ts`; `tests/core/crm-import.test.ts`; `tests/core/crm-import-erasure.test.ts`; `tests/e2e/imports.spec.mjs`
-**Gap.** Unasserted in the carried evidence: changed source row conflict; interrupted apply resumes without losing progress. Asserted: HubSpot and Pipedrive saved dry run has no writes; contacts and associations applied; deal values retained; notes preserved once; reimport has no duplicate records; undo preserves native edit; independent stop survives undo.
+**Evidence.** `tests/core/crm-import.test.ts` — RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes (acceptance 1: saved previews without writes, native contacts and associations, deal values, inert notes, unchanged replay, changed source identity refused with the native graph unchanged, persisted database restart retaining the same review, job, checkpoint, batches and effect identities, completion without duplicates, and independent stops through undo); RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed (suppression before customer creation and sending, malformed suppression refusal, native edits and current session authority); RECORD-008 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans; RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held. `tests/core/crm-import-erasure.test.ts` — RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits (erased source review cannot replay). `tests/e2e/imports.spec.mjs` — RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard (mapped native wizard, visible row results and undo at 1440 and 390).
+**Gap.** None.
 
 #### RECORD-009 — Duplicate candidates
 
