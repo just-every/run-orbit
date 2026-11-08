@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
-import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
+import {agentDoorProof, type RejectedReportProofContext, type OverviewProofContext} from '../support/agent-door-proof';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
+import {orbitAgentDoor} from '../../src/core/features/agent-door';
+import {agentOverviewProof} from '../agent-door/overview-proof.mjs';
 import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 
 async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,period,adopt,businessCall}: RejectedReportProofContext) {
@@ -111,6 +113,52 @@ async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,
     autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
 }
 
+async function internalTaskOverviewProof(context: Parameters<typeof agentDoorProof>[0],{bindings,cookie,opportunityId,adopt,businessCall}: OverviewProofContext) {
+  const now=Date.now(),origin=bindings.AUTH_ORIGIN!;
+  context.mock.timers.enable({apis:['Date'],now});
+  const clockDoor=orbitAgentDoor(bindings);
+  try {
+    const request=async(url:string,init?:RequestInit)=>{
+      const response=await clockDoor.handle(new Request(url,init));assert.ok(response);return response;
+    };
+    const calls:Array<{id:string;at?:string;key:string;target:string;title:string;decision:string;review?:string}>=[];
+    for(const mode of ['autonomous','held'] as const) {
+      await adopt(mode==='held'?heldPolicy():autonomousPolicy());
+      const target=`opportunities/${opportunityId}/handoffs/synthetic-orbit-overview-${mode}`;
+      const read=await businessCall('orbit.handoffs.read',{target});
+      assert.equal(read.status,200);assert.equal(read.body.result.isError,false);
+      const source=read.body.result.structuredContent;
+      const content={title:'Prepare internal task '+mode,description:'Use the current source-bound sales context',assigneeId:null,dueAt:null,status:'open'};
+      const key='synthetic-orbit-overview-'+mode;
+      const written=await businessCall('orbit.handoffs.upsert',{target,source_revision:source.revision,audience_revision:source.audienceRevision,content,idempotency_key:key});
+      assert.equal(written.status,200);assert.equal(written.body.result.isError,false);
+      const meta=written.body.result._meta,decision=meta['com.runeditrun/decision'];
+      assert.ok(decision.id);assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
+      assert.deepEqual(decision.classes.map((item:{class:string})=>item.class),['standard']);
+      const review=meta['com.runeditrun/review']?.id;
+      if(mode==='held')assert.ok(review);else assert.equal(review,undefined);
+      const saved=await businessCall('orbit.handoffs.read',{target});
+      assert.equal(saved.body.result.isError,false);
+      assert.equal(saved.body.result.structuredContent.value.handoff.title,content.title,'the ordinary source-bound read returns the actual saved task');
+      calls.push({id:decision.id,key,target,title:content.title,decision:decision.disposition,review});
+    }
+    const first=await agentOverviewProof({request,origin,cookie,calls,now});
+    for(const call of calls)call.at=first.rows.find((row:{id:string})=>row.id===call.id)!.at;
+    await adopt(autonomousPolicy());
+    // Read real records across an audit page boundary; never fabricate overview rows.
+    for(let count=first.rows.length;count<=200;count++) {
+      const read=await businessCall('orbit.events.list',{limit:1});
+      assert.equal(read.status,200);assert.equal(read.body.result.isError,false);
+      assert.ok(read.body.result.structuredContent.events.length>0);
+    }
+    const reconciled=await agentOverviewProof({request,origin,cookie,calls,now});
+    assert.ok(reconciled.pages>2,'reconciliation includes a nonempty page beyond the first audit page and its terminal page');
+    console.log(JSON.stringify({proof:'SURFACE-011.internal-task-overview',now:new Date(now).toISOString(),since:new Date(reconciled.since).toISOString(),calls,auditRows:reconciled.rows.length,pages:reconciled.pages,groups:reconciled.groups}));
+    console.log('PROBE SURFACE-011 1: source-bound MCP handoff upserts under autonomous and held policies -> native tasks saved; complete paginated audit reconciles every emitted class and decision group');
+    console.log('PROBE SURFACE-011 2: authenticated overview and review inventory -> held task links its original audit identity to an open review with the saved task summary and native actions');
+  } finally {context.mock.timers.reset();}
+}
+
 test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
   const fixture = await isolatedDatabase();
   try {
@@ -154,5 +202,5 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context,rejectedNativeReportProof);
+  await agentDoorProof(context,rejectedNativeReportProof,input=>internalTaskOverviewProof(context,input));
 });

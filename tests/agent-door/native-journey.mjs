@@ -1,4 +1,27 @@
 import assert from 'node:assert/strict';
+import {auditInventory,agentOverviewProof} from './overview-proof.mjs';
+import {agentOverviewBrowser} from './overview-browser.mjs';
+
+const overviewCalls=new Map();
+let inspectOverview=agentOverviewProof;
+
+// The existing browser registration supplies Chromium; the source gate needs no browser.
+export async function withOverviewBrowser(run) {
+ const previous=inspectOverview;inspectOverview=agentOverviewBrowser;
+ try {await run();}finally {inspectOverview=previous;}
+}
+
+export async function afterStep({phase,step,args,request,origin,cookie}) {
+ if(step.tool!=='orbit.handoffs.upsert'||!['autonomous','held'].includes(phase))return;
+ const {rows}=await auditInventory({request,origin,cookie});
+ const row=rows.find(row=>row.idempotency_key===args.idempotency_key&&row.outcome==='done');
+ assert.ok(row,'the actual source-bound handoff call has a public audit identity');
+ assert.equal(row.decision,phase==='held'?'review':'autonomous');
+ const calls=phase==='autonomous'?[]:overviewCalls.get(origin);assert.ok(calls);
+ calls.push({id:row.id,at:row.at,key:args.idempotency_key,target:args.target,title:args.content.title,decision:row.decision,...(row.review?{review:row.review.id}:{})});
+ overviewCalls.set(origin,calls);
+ await agentOverviewProof({request,origin,cookie,calls});
+}
 
 export default async function sellerDay({tool,request,origin,cookie}) {
  async function call(name,args={}) {
@@ -57,6 +80,9 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  }
  const write=rows.find(row=>row.tool==='orbit.records.update'&&row.outcome==='done'&&row.idempotency_key===writeKey);
  assert.deepEqual(write?.resource,{kind:'opportunity',id},'native write audit identifies its actual opportunity');
+ const calls=overviewCalls.get(origin);assert.equal(calls?.length,2,'both policy phases retain their actual source-bound handoff calls');
+ await inspectOverview({request,origin,cookie,calls});
+ overviewCalls.delete(origin);
 }
 
 // The installed 0.2.93 runner exercises the native target, resource refusal,
