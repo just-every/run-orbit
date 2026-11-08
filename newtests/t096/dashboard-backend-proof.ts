@@ -59,6 +59,18 @@ export async function dashboardBackendProof(){
    assert.equal(csv.status,200);assert.match(await csv.text(),/MissingField filter not applied/);
   }
   const forecastCsv=await request(base+'/tiles/forecast/csv');assert.equal(forecastCsv.status,200);assert.match(await forecastCsv.text(),/Timezone: America\/New_York/);
+  // Refusing unsupported PDF text must leave the saved dashboard and its CSV usable.
+  const normalPdf=await request(base+'/pdf');assert.equal(normalPdf.status,200);assert.equal(normalPdf.headers.get('Content-Type'),'application/pdf');assert.ok((await normalPdf.text()).startsWith('%PDF-'));
+  const originalDefinition=await call(base+'/definition');
+  const unicodeDefinition={...originalDefinition.definition,name:'Native dashboard 東京'};
+  await call(base,'PUT',{version:originalDefinition.version,definition:unicodeDefinition});
+  const unicodeSaved=await call(base+'/definition');assert.deepEqual(unicodeSaved,{version:originalDefinition.version+1,definition:unicodeDefinition});
+  const csvBeforeRefusal=await request(base+'/tiles/pipeline/csv');assert.equal(csvBeforeRefusal.status,200);const csvText=await csvBeforeRefusal.text();assert.match(csvText,/\$1,000\.00/);
+  const refusedPdf=await request(base+'/pdf');assert.equal(refusedPdf.status,400);assert.match(refusedPdf.headers.get('Content-Type')??'',/^application\/json/);assert.equal(refusedPdf.headers.get('Content-Disposition'),null);
+  const refusal=await refusedPdf.text();assert.doesNotMatch(refusal,/%PDF-/);assert.deepEqual(JSON.parse(refusal),{error:'PDF export cannot render one of this dashboard’s characters. Export the tile CSV instead.'});
+  assert.deepEqual(await call(base+'/definition'),unicodeSaved,'a refused export preserves the saved name, filters, tiles and version');
+  const csvAfterRefusal=await request(base+'/tiles/pipeline/csv');assert.equal(csvAfterRefusal.status,200);assert.match(csvAfterRefusal.headers.get('Content-Type')??'',/^text\/csv/);const csvAfterText=await csvAfterRefusal.text();assert.match(csvAfterText,/Open deals: 4/);assert.match(csvAfterText,/Open value: \$1,000\.00/);assert.match(csvAfterText,/Timezone: America\/New_York/);
+  await call(base,'PUT',{version:unicodeSaved.version,definition:originalDefinition.definition});
   // Saved forecast values remain original, even under a dashboard date and field filter.
   const edit=await call(base+'/definition');edit.definition.tiles[3].version=1;
   await call(base,'PUT',edit);
