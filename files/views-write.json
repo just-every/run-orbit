@@ -1,0 +1,12 @@
+{
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "name": "views-write",
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "write"
+  ],
+  "exit": 0,
+  "startedAt": "2026-11-08T00:04:46.193718+00:00",
+  "seconds": 0.293
+}

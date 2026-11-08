@@ -1,0 +1,44 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (97276.217237ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105407.962461
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:380
+✖ Managed owner claim verifies RER authority and creates the native owner/session exactly once (97276.217237ms)
+  AssertionError [ERR_ASSERTION]: autonomous: standard measure counts returned native identities
+  + actual - expected
+  
+    [
+      {
+        class: 'standard',
+        facts: {
+  +       measure: 1
+  -       measure: 0
+        }
+      }
+    ]
+  
+      at read (/home/agent/rer-consolidation/work/sd-orbit-c-f130/run-orbit/tests/support/agent-door-proof.ts:35:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async recordListMeasureProof (/home/agent/rer-consolidation/work/sd-orbit-c-f130/run-orbit/tests/support/agent-door-proof.ts:51:17)
+      at async agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f130/run-orbit/tests/support/agent-door-proof.ts:202:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f130/run-orbit/tests/core/managed-owner.test.ts:50:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { class: 'standard', facts: [Object] } ],
+    expected: [ { class: 'standard', facts: [Object] } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

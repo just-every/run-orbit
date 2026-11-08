@@ -1,0 +1,10 @@
+{
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+  "variant": "previous constant-measure list classifier restored temporarily; candidate proof unchanged",
+  "exit": 1,
+  "seconds": 106.436,
+  "failure": "autonomous: standard measure counts returned native identities; empty page actual standard facts.measure 1, expected 0",
+  "assertion": "tests/support/agent-door-proof.ts:35",
+  "restored": true
+}

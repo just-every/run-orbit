@@ -1,0 +1,17 @@
+{
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "name": "first-party",
+  "command": [
+    "python3",
+    "/tmp/rer-reap.py",
+    "pnpm",
+    "exec",
+    "rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "exit": 0,
+  "startedAt": "2026-11-08T00:05:13.404965+00:00",
+  "seconds": 2.167
+}

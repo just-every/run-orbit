@@ -1,0 +1,23 @@
+{
+  "launcher": "/workspace/rer-cloud-launcher/refresh.sh",
+  "launcher_revision": "8ca2ea2",
+  "fleet_git_setup": "installed from task instructions",
+  "commit_hook": "installed; repository hooks preserved; repeated after install and setup",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f130",
+  "start": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "install": {
+    "command": "cloud_run npx -y @runeditrun/rer install",
+    "exit": 0
+  },
+  "setup": {
+    "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet mailbox --non-interactive",
+    "exit": 0
+  },
+  "rebase": {
+    "command": "git fetch origin main && git rebase origin/main",
+    "exit": 0,
+    "result": "already up to date"
+  },
+  "no_credentials_in_packet": true
+}

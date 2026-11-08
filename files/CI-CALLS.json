@@ -1,0 +1,17 @@
+{
+  "budget": 10,
+  "calls": [
+    {
+      "number": 1,
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=a32703b5f60ec948ec3d669d62edc947bdd4e07f&per_page=100",
+      "result": "Verify 42426022916 completed success, push, same exact head on cloud/sd-orbit-c-f127",
+      "observedAt": "2026-11-08T00:05Z"
+    },
+    {
+      "number": 2,
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=a32703b5f60ec948ec3d669d62edc947bdd4e07f&branch=cloud%2Fsd-orbit-c-f130&per_page=100",
+      "result": "Verify 42428351414 queued on exact head, push event",
+      "observedAt": "2026-11-08T00:08Z"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "name": "final-source-lock",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "lock"
+  ],
+  "exit": 0,
+  "startedAt": "2026-11-08T00:07:49.660617+00:00",
+  "seconds": 1.576
+}

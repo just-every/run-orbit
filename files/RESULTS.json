@@ -1,0 +1,245 @@
+{
+  "reproduction": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "variant": "previous constant-measure list classifier restored temporarily; candidate proof unchanged",
+    "exit": 1,
+    "seconds": 106.436,
+    "failure": "autonomous: standard measure counts returned native identities; empty page actual standard facts.measure 1, expected 0",
+    "assertion": "tests/support/agent-door-proof.ts:35",
+    "restored": true
+  },
+  "managed-owner": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "managed-owner",
+    "command": [
+      "python3",
+      "/tmp/rer-reap.py",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-concurrency=1",
+      "tests/core/managed-owner.test.ts"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:30.719715+00:00",
+    "seconds": 175.785
+  },
+  "typecheck": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "typecheck",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:32.167459+00:00",
+    "seconds": 41.163
+  },
+  "first-party": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "first-party",
+    "command": [
+      "python3",
+      "/tmp/rer-reap.py",
+      "pnpm",
+      "exec",
+      "rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:05:13.404965+00:00",
+    "seconds": 2.167
+  },
+  "first-party-pinned": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "first-party-pinned",
+    "command": [
+      "python3",
+      "/tmp/rer-reap.py",
+      "/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node",
+      "node_modules/@runeditrun/rer/bin/rer.mjs",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:05:38.702421+00:00",
+    "seconds": 1.534
+  },
+  "inventory": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "inventory",
+    "command": [
+      "node",
+      "scripts/verification-inventory.mjs"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:05:15.639555+00:00",
+    "seconds": 0.753
+  },
+  "views-write": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:46.193718+00:00",
+    "seconds": 0.293
+  },
+  "views-check": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:46.569453+00:00",
+    "seconds": 0.335
+  },
+  "source-lock": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "source-lock",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:47.125286+00:00",
+    "seconds": 1.485
+  },
+  "source-check": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "source-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:04:48.681834+00:00",
+    "seconds": 0.923
+  },
+  "final-views-write": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "final-views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:07:48.811883+00:00",
+    "seconds": 0.412
+  },
+  "final-views-check": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "final-views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:07:49.274822+00:00",
+    "seconds": 0.326
+  },
+  "final-source-lock": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "final-source-lock",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:07:49.660617+00:00",
+    "seconds": 1.576
+  },
+  "final-source-check": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "name": "final-source-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "startedAt": "2026-11-08T00:07:51.276733+00:00",
+    "seconds": 1.479
+  },
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f130",
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "claim": {
+    "clause": "SURFACE-002",
+    "status": "PARTIAL",
+    "point": 1,
+    "scope": "ordinary records list item-count limb only"
+  },
+  "countsBefore": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "testBudget": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "newProductCommits": 0,
+  "productPush": {
+    "exit": 0,
+    "attempts": 1
+  },
+  "verify": [
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f127",
+      "head_sha": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42426022916",
+      "id": 42426022916,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f130",
+      "head_sha": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42428351414",
+      "id": 42428351414,
+      "name": "Verify",
+      "status": "queued"
+    }
+  ],
+  "publicationScan": {
+    "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "reason": "guarded Mac lander owns scan"
+  },
+  "mainLanding": false,
+  "runSite": null,
+  "blockers": []
+}

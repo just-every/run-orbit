@@ -1,0 +1,17 @@
+{
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "allCandidateCommitsInspected": true,
+  "sideParentsIncluded": true,
+  "identity": "fleet",
+  "trailers": "absent",
+  "openAICodexCoauthors": 0,
+  "contractStatusDiff": "empty",
+  "workingTree": "clean",
+  "diffCheck": 0,
+  "addedEmailShapedStrings": 0,
+  "slashTokensInspected": [
+    "com.runeditrun/decision: existing MCP metadata namespace",
+    "com.runeditrun/review: existing MCP metadata namespace"
+  ],
+  "noPublicationScanClaim": true
+}

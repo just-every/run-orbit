@@ -1,0 +1,21 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f130",
+  "head": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "originMain": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "requestedStartingHead": "a32703b5f60ec948ec3d669d62edc947bdd4e07f",
+  "newProductCommitsCreated": 0,
+  "candidateCommitInherited": true,
+  "reason": "The requested starting commit already implements the complete selected ordinary-list count point with its retained proof. Do not make an empty or redundant commit.",
+  "finalFetchRebase": "already up to date",
+  "contractDiffFromMain": "empty",
+  "generatedViewsCommitted": false,
+  "productDiffFiles": [
+    "src/core/features/agent-door/records.ts",
+    "tests/support/agent-door-proof.ts",
+    "sources.lock.json"
+  ],
+  "sourceWorkingTree": "clean",
+  "history": "full",
+  "PR": "none; Verify has push entry point"
+}
