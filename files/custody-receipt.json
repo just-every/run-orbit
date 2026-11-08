@@ -1,0 +1,13 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f140",
+  "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "remote_head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+  "remote_verified": true,
+  "worktree_clean": true,
+  "ci_run_id": 42480801852,
+  "ci_status": "in_progress",
+  "ci_conclusion": null,
+  "product_custody": "PUSHED; no READY or landing claim",
+  "pull_request": null
+}

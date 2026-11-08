@@ -74,3 +74,25 @@ PROBE SURFACE-011 2: authenticated overview and review inventory -> held task li
 All of core, browser, conformance, build, typecheck and first-party checks exited 0 on the full candidate SHA above. Each command, start and finish time, exact HEAD, actual exit and complete non-secret log hash is in its corresponding receipt. The core registration passed with actual source-bound tasks under both policies, a complete paginated 201-row audit inventory and three audit pages. The emitted browser and source conformance each passed all 3,520 points. Browser screenshots and the actual 392-row inventory receipt record both original phase call identities and times. The actual counts are observations, never fixed expected groups.
 
 The developer environment followed the supplied toolchain shell: Node 24.19.0 and pnpm 10.12.4. The repository pins Node 22.20.0; the supplied shell retains a newer installed Node. GitHub Verify uses the repository's pin. Chromium for local proof is /usr/bin/chromium with --no-sandbox. Every browser was closed and every test-owned server was stopped by its own PID. No full local Verify, publication scan, provider journey or live account action was run.
+
+## Exact source locations
+
+- src/core/features/agent-door/handoffs.ts:33: const input:Effect={operation:'orbit.handoff.upsert',operationKey:ctx.idempotencyKey!,target:String(args.target),expectedRevision:String(args.source_revision),expectedAudienceRevision:String(args.audience_revision),content:contentSchema.parse(args.content)};
+- tests/core/managed-owner.test.ts:116: async function internalTaskOverviewProof(context: Parameters<typeof agentDoorProof>[0],{bindings,cookie,opportunityId,adopt,businessCall}: OverviewProofContext) {
+- tests/core/managed-owner.test.ts:168: test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
+- tests/agent-door/native-journey.mjs:14: export async function afterStep({phase,step,args,request,origin,cookie}) {
+- tests/agent-door/native-journey.mjs:26: export default async function sellerDay({tool,request,origin,cookie}) {
+- tests/agent-door/overview-proof.mjs:3: export async function auditInventory({request,origin,cookie}) {
+- tests/agent-door/overview-proof.mjs:22: export async function agentOverviewProof({request,origin,cookie,calls,now=Date.now()}) {
+- tests/agent-door/overview-browser.mjs:7: export async function agentOverviewBrowser(input) {
+- tests/delegation-browser/native.test.ts:16: test('native browser consent, delegated handoff and same-row UI editing preserve current authority and immutable receipts',async()=>{
+- tests/delegation-browser/native.test.ts:31: await withOverviewBrowser(()=>checkAgentDoor(process.cwd(),{declaration:'deploy.json'}));
+
+
+## Terminal product custody
+
+PUSHED branch=cloud/sd-orbit-c-f140 head=dd00e08b10a0c37b5bd92030d5d7221a3de5bfde
+
+The declared remote product branch was checked with ls-remote and equals this exact candidate. Its worktree is clean. Push Verify 42480801852 on that exact SHA remains in progress with no conclusion after two REST calls spaced at least 300 seconds apart. The one watcher was stopped at cloud handoff; no green result is claimed. No PR was created because push is the existing workflow entry point. No workflow was dispatched or rerun. This is PUSHED custody, without a READY, DONE, main-equality, publication-scan or Run-site claim. The fleet owns the remaining exact-SHA and landing gates. No implementation blocker remains for the selected internal-task slice.
+
+Product commits: bcb8ad5ebd9d5b95d70a34f568dd2bd18c95466c (coherent save, skip CI) and dd00e08b10a0c37b5bd92030d5d7221a3de5bfde (minimal adapter fix and final receipt proof). Every candidate author and committer uses the fleet identity and every candidate trailer was inspected. The published save was never rewritten, no force push occurred, and main was never pushed. All complete non-secret local receipts, screenshots, before-fix failure and terminal product provenance are explicitly selected for the separate evidence branch.

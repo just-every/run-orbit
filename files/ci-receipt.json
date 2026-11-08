@@ -1,7 +1,7 @@
 {
   "repository": "just-every/run-orbit",
   "head": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
-  "gh_calls": 1,
+  "gh_calls": 2,
   "calls": [
     {
       "at": "2026-11-08T12:33:49.684072+00:00",
@@ -21,6 +21,22 @@
           "html_url": "https://github.com/just-every/run-orbit/actions/runs/42480801852"
         }
       ]
+    },
+    {
+      "at": "2026-11-08T12:38:49.564741+00:00",
+      "command": [
+        "api",
+        "repos/just-every/run-orbit/actions/runs/42480801852",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42480801852",
+        "status": "in_progress"
+      }
     }
   ],
   "run": {
@@ -31,5 +47,6 @@
     "head_sha": "dd00e08b10a0c37b5bd92030d5d7221a3de5bfde",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/42480801852"
   },
-  "state": "watching"
+  "state": "handed off while exact-SHA Verify remains in progress",
+  "handoff_at": "2026-11-08T12:40:26.627282+00:00"
 }
