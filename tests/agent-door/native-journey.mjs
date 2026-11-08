@@ -23,6 +23,33 @@ export async function afterStep({phase,step,args,request,origin,cookie}) {
  await agentOverviewProof({request,origin,cookie,calls});
 }
 
+/** Compare rendered public inventories with authenticated native MCP discovery. */
+export async function agentDocsInventory({html,mcp}) {
+ const tools=await mcp('tools/list'),resources=await mcp('resources/templates/list');
+ assert.equal(tools.status,200,'authenticated tool discovery succeeds');
+ assert.equal(resources.status,200,'authenticated resource discovery succeeds');
+ assert.ok(Array.isArray(tools.body.result?.tools));
+ assert.ok(Array.isArray(resources.body.result?.resourceTemplates));
+ assert.ok(tools.body.result.tools.length>0,'the comparison exercises populated tool discovery');
+ assert.ok(resources.body.result.resourceTemplates.length>0,'the comparison exercises populated resource discovery');
+ const tableAfter=id=>{
+  const start=html.indexOf(`id="${id}"`);
+  assert.ok(start>=0,'the generated inventory heading is rendered');
+  const section=html.slice(start).split(/<h[23]\b/)[0];
+  const table=section.match(/<tbody>([\s\S]*?)<\/tbody>/);
+  assert.ok(table,'the inventory has rendered rows');
+  return [...table[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(row=>
+   [...row[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map(cell=>cell[1].replace(/<[^>]+>/g,'')));
+ };
+ const toolRows=tableAfter('current-tool-inventory');
+ assert.deepEqual(toolRows.map(row=>row[0]).sort(),tools.body.result.tools.map(tool=>tool.name).sort(),'rendered tools exactly match native discovery');
+ const resourceRows=tableAfter('current-resource-template-inventory');
+ assert.deepEqual(resourceRows.map(([uriTemplate,name])=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
+  resources.body.result.resourceTemplates.map(({uriTemplate,name})=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
+  'rendered resource templates and names exactly match native discovery');
+ return {tools:toolRows.length,resourceTemplates:resourceRows.length};
+}
+
 export default async function sellerDay({tool,request,origin,cookie}) {
  async function call(name,args={}) {
   const answer=await tool('orbit.'+name,args);
