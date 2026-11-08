@@ -111,7 +111,7 @@ async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,
     autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
 }
 
-test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async () => {
+test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
   const fixture = await isolatedDatabase();
   try {
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';
@@ -154,8 +154,8 @@ test('Managed owner claim verifies RER authority and creates the native owner/se
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(async context => {
-    await reportDefinitionLinksProof(context);
-    await rejectedNativeReportProof(context);
+  await agentDoorProof(context,async proofContext => {
+    await reportDefinitionLinksProof(proofContext);
+    await rejectedNativeReportProof(proofContext);
   });
 });

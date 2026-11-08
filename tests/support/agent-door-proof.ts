@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
+import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
+import {agentCapacityProof} from './agent-door-capacity-proof';
 import {agentDoorBodyLimitProof} from './agent-door-body-limit';
 import {agentAuditRetentionProof} from './agent-door-audit-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
@@ -133,7 +135,7 @@ export async function reportDefinitionLinksProof({bindings,ownerId,adopt,busines
   await adopt(autonomousPolicy());
 }
 
-export async function agentDoorProof(rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -344,6 +346,7 @@ export async function agentDoorProof(rejectedReportProof: (context: RejectedRepo
     assert.ok(witness.record_mail_drafts.rows>0);
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
     assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
+    await agentCapacityProof(context,bindings,{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation},sign);
     await fixture.db.prepare('UPDATE operators SET email=? WHERE id=?').bind('renamed@example.test',owner.operatorId).run();
     assert.equal((await people.sponsor({sub:'business-owner'}))?.id,owner.operatorId);
     await fixture.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.operatorId).run();
