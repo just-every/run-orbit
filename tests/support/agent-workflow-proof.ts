@@ -60,6 +60,11 @@ export async function agentWorkflowProof({bindings,door,cookie,ownerId,sourceId,
   assert.equal(replay.body.id,rpc);assert.notEqual(replay.body.id,response.body.id);
   assert.deepEqual(replay.body.result.structuredContent,result.structuredContent);
   assert.equal(await versions(),count!+1,'new RPC identity with the same key saves no extra version');
+  const changedKey=await call({...args,name:'synthetic-orbit-different-request'});
+  assert.equal(changedKey.body.result._meta['com.runeditrun/error'].code,'idempotency_conflict');
+  assert.equal(changedKey.body.result.structuredContent,undefined);
+  assert.equal(await versions(),count!+1,'changed arguments cannot reuse an admitted key');
+  assert.deepEqual(await effects(),beforeEffects);
   const audit=await db.prepare('SELECT row FROM agent_door_audit WHERE id=?').bind(decision.id).first<{row:string}>();assert.ok(audit);
   const recorded=JSON.parse(audit.row);assert.deepEqual(recorded.resource,{kind:'workflow',id});assert.equal(recorded.outcome,'done');
   if(mode==='held'){
@@ -78,17 +83,18 @@ export async function agentWorkflowProof({bindings,door,cookie,ownerId,sourceId,
   accepted=result;acceptedArgs=args;
  }
  const refusalState=await effects(),count=await versions();
+ const latest=(await native('/api/workflows')).workflows.find((workflow:any)=>workflow.id===id).version;
  const blocked=autonomousPolicy();blocked.rules=[{id:'explicit-company-block',class:'standard',do:'blocked'}];await adopt(blocked);
- for(const args of [acceptedArgs,{...acceptedArgs,source_version:3,expected_revision:3,idempotency_key:'synthetic-orbit-workflow-blocked'}]){
+ for(const args of [acceptedArgs,{...acceptedArgs,source_version:latest,expected_revision:latest,idempotency_key:'synthetic-orbit-workflow-blocked'}]){
   const refused=await call(args);assert.equal(refused.body.result._meta['com.runeditrun/error'].code,'policy_blocked');assert.equal(refused.body.result.structuredContent,undefined);
  }
  await adopt(autonomousPolicy());
- const nonOwner=await call({...acceptedArgs,source_version:3,expected_revision:3,idempotency_key:'synthetic-orbit-workflow-non-owner'},
+ const nonOwner=await call({...acceptedArgs,source_version:latest,expected_revision:latest,idempotency_key:'synthetic-orbit-workflow-non-owner'},
   {sub:'business-jamie',email:reviewerEmail,act:{sub:'synthetic-orbit-non-owner',name:'Other helper'}});
  assert.equal(nonOwner.body.result._meta['com.runeditrun/error'].code,'resource_unavailable');
  const insufficient=await call({...acceptedArgs,idempotency_key:'synthetic-orbit-workflow-no-scope'},{scope:'records:read'});assert.equal(insufficient.status,403);
  const revoked=await door.handle(new Request(origin+'/agents/api/agents/'+agent.sub+'/revoke',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'{}'}));assert.equal(revoked!.status,200);
- for(const args of [acceptedArgs,{...acceptedArgs,source_version:3,expected_revision:3,idempotency_key:'synthetic-orbit-workflow-revoked'}]){
+ for(const args of [acceptedArgs,{...acceptedArgs,source_version:latest,expected_revision:latest,idempotency_key:'synthetic-orbit-workflow-revoked'}]){
   const refused=await call(args);assert.equal(refused.status,401);assert.equal(refused.body.result?.structuredContent,undefined);
  }
  assert.equal(await versions(),count);assert.deepEqual(await effects(),refusalState);assert.deepEqual(await active(),activeBefore);assert.deepEqual(await authority(),authorityBefore);assert.deepEqual(providerCalls,[]);

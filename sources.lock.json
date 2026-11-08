@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "55bb18347a662c8c160ebf1ada9a9cbf19f69fda85801985d3e6e16706304dd6",
+      "sha256": "e38514f8f64663d2d8290a83d3e752ef453df3484b03b222c19e9691bbca212e",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -5223,7 +5223,7 @@
       "executable": false
     },
     "src/core/features/agent-door/evidence.ts": {
-      "sha256": "4d67e176d854d9acd74023118f4f2ebda7ea9ee1655c9ebcb0f5c140452934dd",
+      "sha256": "a9e5b99c26d582a15f6fca2fb27c92c5e81513e0257d3022388419eafeb6dccd",
       "executable": false
     },
     "src/core/features/agent-door/handoffs.ts": {
@@ -5256,6 +5256,10 @@
     },
     "src/core/features/agent-door/reports.ts": {
       "sha256": "6d59f2b63a96d0582c602b16499648dc3d58b7bbabf155c4d5bc2078d6dbfbde",
+      "executable": false
+    },
+    "src/core/features/agent-door/workflows.ts": {
+      "sha256": "d7db7fd09958c7a01c723b888b8f53222a9c6baa778f01cd40dfe724310f9e3e",
       "executable": false
     },
     "src/core/features/analytics/archive-compatibility.ts": {
@@ -8318,6 +8322,10 @@
       "sha256": "16b651b9329bac8af33eab732ffcf4e5520c5b008a73264685695772374fa9da",
       "executable": false
     },
+    "src/core/features/workflows/authoring.ts": {
+      "sha256": "521ae71ce1f06a28aa7d5704a5ae62e8e7531e74cbaf3746493aaaa0180291d7",
+      "executable": false
+    },
     "src/core/features/workflows/contracts.ts": {
       "sha256": "98bb362509bc8ebd4b917c8abf5a1319ce652fa8f8a34c66c5af7d612dfcebcf",
       "executable": false
@@ -9882,6 +9890,10 @@
       "sha256": "7d2435bde784918a56ab42b59738cdaba00fe061225e66fa4fd19f45f39708f4",
       "executable": false
     },
+    "tests/agent-door/workflow-fixture.mjs": {
+      "sha256": "901437ba74fc9dade06451ac9e61731d96e4fc619fc70e5fa6b7b2911bfc5958",
+      "executable": false
+    },
     "tests/archive/browser.spec.mjs": {
       "sha256": "0b077d89720b36cd7a297fc2c2a112d92bdae25fcf75692516d30de933963457",
       "executable": false
@@ -10787,7 +10799,7 @@
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
-      "sha256": "87f9f738ad65fec8557f6b25c11e31fd6a2badf0c04f9d7bdd7f51a426968610",
+      "sha256": "291ed21a169af9544a9870d3ed2cd23acf1647b083201e43456314a235cad41d",
       "executable": false
     },
     "tests/rer/workflow-values-journey.mjs": {
@@ -10816,6 +10828,10 @@
     },
     "tests/support/agent-door-proof.ts": {
       "sha256": "c06ff8dd3d15e89f135b5e92bc1157521209a4e5b8f4bd0b199b3c63786cbd49",
+      "executable": false
+    },
+    "tests/support/agent-workflow-proof.ts": {
+      "sha256": "d1052ad2d70d0cfbacdb33c599e3977cb5558593795755ea2a6a54d51550cd97",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

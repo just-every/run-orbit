@@ -28,8 +28,12 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  const activeWorkflow=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.name==='Prepare account review');
  const beforeDraft=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');
  await settings.getByLabel('Value',{exact:true}).fill('Draft must not run');
+ await expect.poll(async()=>{
+  const saved=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);
+  return saved.definition.actions[0].value;
+ }).toBe('Draft must not run');
  await expect(settings.getByRole('status').filter({hasText:'Saved'})).toBeVisible();
- await page.goto(origin+'/app/settings/pipeline');await settings.getByLabel('Choose workflow',{exact:true}).selectOption(activeWorkflow.id);
+ await page.goto(origin+'/app/settings/pipeline');await settings.getByLabel(/^Choose workflow/).selectOption(activeWorkflow.id);
  await expect(settings.getByLabel('Value',{exact:true})).toHaveValue('Draft must not run');
  await expect(settings.getByText(`Version ${activeWorkflow.activeVersion} is active`,{exact:true})).toBeVisible();
  const savedDraft=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);

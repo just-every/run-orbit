@@ -57,6 +57,29 @@ saved action summary and revision; an agent confirmation is not a person's act.
 Spend caps are not enforced by this Base revision. Native quotas and recipient
 permission remain separate requirements.
 
+## Existing workflow drafts
+
+The installation owner can call `orbit.workflows.save_draft` with an existing
+workflow `id`, its current `source_version` from `GET /api/workflows`,
+`name`, `definition` and an idempotency key. Optional `expected_revision`
+also checks that native version. The native definition validator and owner
+authority apply; a stale source version refuses atomically.
+
+One saved draft computes `standard` with `measure: 1` item. Defining a future
+webhook or record action does not execute it. The save creates a draft version
+and native audit only: the active definition and its activation authority remain
+unchanged. Activation, pause, execution and provider routing are outside this
+tool. Under held policy the draft saves immediately with its linked review.
+A current company block, revoked agent or non-owner sponsor cannot save or
+replay a successful result. Retrying an admitted key adds no version.
+
+The existing managed-owner journey invokes the workflow proof in
+`tests/support/agent-workflow-proof.ts`: authenticated MCP save, native readback,
+both company policies, the linked review, refusal and replay witnesses, and a
+separate native trigger that still executes the old active version. The existing
+agent conformance registration also saves and reads back a fresh workflow
+through `tests/agent-door/native-journey.mjs`.
+
 ## Current tool inventory
 
 | Tool | Scope | Possible classes |
