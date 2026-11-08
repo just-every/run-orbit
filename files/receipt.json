@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "tag": "sd-orbit-c-f133",
+  "branch": "cloud/sd-orbit-c-f133",
+  "head": "37614c3bb58648da47b79089c9418665eb21a26a",
+  "base": "a301c3152b7c1c564610f20b1e5100e98dd46ba6",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email <fleet mailbox> --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "registeredTests": 1,
+      "durationMs": 136836.870209,
+      "policies": [
+        "autonomous",
+        "held"
+      ],
+      "compared": "Rendered tool names and resource template identities and names equal authenticated native MCP discovery"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/worker-smoke.spec.mjs --grep 'installed docs navigation reaches every page' --reporter=list",
+      "exit": 0,
+      "registeredTests": 1,
+      "browser": "/usr/bin/chromium",
+      "assertionWidth": 1440,
+      "proofWidths": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "exit": 0,
+      "passed": 3520,
+      "total": 3520
+    },
+    {
+      "command": "npx -y @runeditrun/rer build --site",
+      "exit": 0,
+      "pages": 20,
+      "aliases": [
+        "/docs/agents",
+        "/docs/agent-door"
+      ]
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "changedDocuments": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "mechanical": {
+    "generatedViewsCommitted": false,
+    "contractDiffFromMain": "empty",
+    "sourceLockFresh": true,
+    "migrationLedger": "not applicable; no migrations",
+    "testBudget": {
+      "before": 200,
+      "after": 200,
+      "registrations": 198,
+      "qualifications": 2
+    }
+  },
+  "testedBytesPreservedAcrossRebase": true,
+  "changedFiles": {
+    "docs/AGENT-DOOR.md": "44e857f92cd93e305cec1d65214eb2b50182db0e892770b93fddd18cd58be863",
+    "docs/site.json": "be772d32f947c713665551153c457465e1207030245af1e2cd625727cbf12cb8",
+    "scripts/agent-surface.ts": "0b07d3b4a035bfc523b520a261191ad81642483df99f6a2f77dfc3e9410d60ad",
+    "sources.lock.json": "616143c2f0a96b83c76d1e9946da08a7afab150314730079af720f29be5e3d4e",
+    "src/core/features/public/docs/build/manifest.ts": "5f19332e1e53abb3163c119773aa2f65f2467ec6e273f1dae56dc6c57795d9db",
+    "src/core/features/public/docs/build/plugin.ts": "9cf9b585be74a437b8b05dd67558150f2644927a8d293479a712c42434d54417",
+    "src/routes/docs.$slug.tsx": "4af45fafa83e2f769b50a1fc1b30b1dfbe53d8c1863b442c19b4b007b42df21d",
+    "tests/agent-door/native-journey.mjs": "9ca1aed6222c6fa5b3512f91f047f2665dddfae8ce10e5593ac770b107efb65e",
+    "tests/core/managed-owner.test.ts": "3d0569b07053d105c2a87009dc42fca89e603f31f95c11b7bb9627bd07adba46",
+    "tests/e2e/worker-smoke.spec.mjs": "d969ae2d71b1b1a093198562351d8a847a019ea0c49cc5c55d04b39f706c9600"
+  },
+  "productPush": {
+    "status": "success",
+    "attempt": 1,
+    "ref": "refs/heads/cloud/sd-orbit-c-f133"
+  },
+  "publicationScan": {
+    "status": "not run in cloud",
+    "commit": "37614c3bb58648da47b79089c9418665eb21a26a",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet guarded lander"
+  },
+  "landing": {
+    "status": "not landed",
+    "mainEqualsCandidate": false
+  },
+  "ci": {
+    "conclusion": null,
+    "head_sha": "37614c3bb58648da47b79089c9418665eb21a26a",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42474856032",
+    "id": 42474856032,
+    "status": "in_progress"
+  },
+  "staticGuideAliases": {
+    "identicalRenderedDocuments": true,
+    "sha256": "94bc903cae9220ecdc03b0e9e214d8edf9da06428aa8451338737dac13e07ec6"
+  },
+  "remoteBranchHead": "37614c3bb58648da47b79089c9418665eb21a26a",
+  "githubCallsUsed": 5
+}
