@@ -2279,7 +2279,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-identity.ts": {
-      "sha256": "4a8e6e7b6c9ac9bf58d162d646c54e14c93b45cc3d64bd82d744aee2f905f6bc",
+      "sha256": "2d8983f17c8d0bac7b523769a2c61d6b63d502c998a46005d0c82ad639965a48",
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
