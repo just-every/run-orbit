@@ -4,6 +4,7 @@ import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {authenticateOperator} from './operator-session.mjs';
 import {fixtureMailbox} from '../support/capture-mail.ts';
+import {captureRotationApprovalScreens} from '../agent-door/capture-browser-journey.mjs';
 import {requestOfflineFixture} from '../../scripts/browser-runtime.mjs';
 
 const serious=async page=>(await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze()).violations.filter(violation=>['serious','critical'].includes(violation.impact));
@@ -164,4 +165,5 @@ test('CAPTURE provider status keeps revoked access clear, reconnects through the
  }
  expect(await overflow(page)).toEqual([]);
  expect(await serious(page)).toEqual([]);
+ await captureRotationApprovalScreens({page,screenshots});
 });

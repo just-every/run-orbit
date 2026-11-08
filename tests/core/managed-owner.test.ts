@@ -6,6 +6,7 @@ import {agentDocsInventory} from '../agent-door/native-journey.mjs';
 import {isolatedDatabase} from '../support/isolated-database';
 import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
 import {savedReportDeletionProof} from '../support/agent-report-deletion-proof';
+import {agentDoorCaptureSecurityProof} from '../support/agent-door-capture-security-proof';
 import {agentDoorCollaboratorProof} from '../support/agent-door-collaborator-proof';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
@@ -172,5 +173,5 @@ test('Managed owner claim verifies RER authority and creates the native owner an
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof);
+  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof);
 });
