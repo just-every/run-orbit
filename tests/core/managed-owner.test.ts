@@ -125,7 +125,7 @@ async function rejectedNativeReportProof({bindings,door,cookie,ownerId,sourceId,
     autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
 }
 
-test('Managed owner claim verifies RER authority and creates the native owner/session exactly once', async context => {
+test('Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification', async context => {
   const fixture = await isolatedDatabase();
   try {
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';
