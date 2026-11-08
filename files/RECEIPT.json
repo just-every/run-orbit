@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f148",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f148",
+  "head": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+  "base": "2d7b2de603d6925c690816bb68a647fe8c602075",
+  "recordedAt": "2026-11-08T17:06:46.617368+00:00",
+  "newProductCommits": 0,
+  "retainedContinuationCommit": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+  "workingTreeClean": true,
+  "statusBefore": {
+    "done": 38,
+    "partial": 134,
+    "missing": 32,
+    "total": 204
+  },
+  "statusAfter": {
+    "done": 38,
+    "partial": 134,
+    "missing": 32,
+    "total": 204
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "commands": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "privateOutputExcluded": true
+    },
+    {
+      "command": "node --import tsx --test tests/core/capture-upgrade.test.ts",
+      "exit": 0,
+      "node": "22.20.0",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "log": "capture-upgrade.log"
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "timeout 1200 node --import /workspace/run-orbit/node_modules/tsx/dist/loader.mjs /tmp/orbit-opt-out-browser.mts",
+      "exit": 0,
+      "node": "22.20.0",
+      "browser": "/usr/bin/chromium",
+      "args": [
+        "--no-sandbox"
+      ],
+      "viewports": [
+        1440,
+        390
+      ],
+      "log": "browser.log",
+      "ownedWorkerAndBrowserClosed": true
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "afterFinalRebase": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "git diff origin/main...HEAD --exit-code -- CONTRACT.md",
+      "exit": 0
+    },
+    {
+      "command": "git diff --cached --exit-code -- CONTRACT.md",
+      "exit": 0
+    },
+    {
+      "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f148",
+      "exit": 0,
+      "attempts": 1
+    }
+  ],
+  "ci": {
+    "priorExactSha": [
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f146",
+        "head_sha": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42500712371",
+        "id": 42500712371,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ],
+    "namedBranch": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f148",
+        "head_sha": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42503134951",
+        "id": 42503134951,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "githubCalls": 2
+  },
+  "publicationScan": {
+    "commit": "67493ada01c6300a7bd4bf17b109232ac9a0c3dd",
+    "executed": false,
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet lander"
+  },
+  "landing": {
+    "mainEqualsCandidate": false,
+    "main": "2d7b2de603d6925c690816bb68a647fe8c602075",
+    "runSite": null,
+    "custodian": "fleet lander"
+  },
+  "claim": {
+    "clause": "OUT-020",
+    "status": "PARTIAL",
+    "points": [
+      2
+    ],
+    "scope": "historical pre-setting approval continuity only; already present at pinned continuation; no additional credit or hold release"
+  },
+  "blockers": []
+}
