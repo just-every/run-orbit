@@ -67,7 +67,11 @@ export function createAnalyticsReportRoutes(metrics: AnalyticsMetrics, graph: Pi
     return c.json(await metrics.sales.save(c.get('actor'), c.req.param('id'), input.version, input.from, input.through, input.reviewHash));
   });
 
-  app.delete('/reports/:id',async c=>c.json(await metrics.sales.remove(c.get('actor'),z.string().regex(/^[a-z0-9_-]{1,100}$/).parse(c.req.param('id')))));
+  app.get('/reports/:id/deletion-preview',async c=>{
+    c.header('Cache-Control','no-store');
+    return c.json(await metrics.sales.removalPreview(c.get('actor'),z.string().regex(/^[a-z0-9_-]{1,100}$/).parse(c.req.param('id'))));
+  });
+  app.delete('/reports/:id',async c=>c.json(await metrics.sales.remove(c.get('actor'),z.string().regex(/^[a-z0-9_-]{1,100}$/).parse(c.req.param('id')),z.string().regex(/^[a-f0-9]{64}$/).optional().parse(c.req.query('reviewHash')))));
 
   app.get('/reports/:id/sharing', async c => {
     c.header('Cache-Control', 'no-store');

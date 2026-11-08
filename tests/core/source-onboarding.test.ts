@@ -1,3 +1,4 @@
+import {issueNativeCredential} from '../support/api-credentials-proof';
 import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
 import assert from 'node:assert/strict';
@@ -49,6 +50,10 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const saved=(await(await f.request(`drafts/${draft.id}`)).json() as any).draft;
  assert.deepEqual([saved.id,saved.recipientEmail,saved.subject,saved.body,saved.revision,saved.isStale],[draft.id,contact.email,'Your inquiry','Hi Maya, would Thursday suit a walkthrough?',1,false]);
  assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[],'The saved draft has not been approved or sent');
+ await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
+ const apiSecrets=[(await issueNativeCredential(f.db,f.actor,customer.id)).secret];
+ const revokedCredential=await issueNativeCredential(f.db,f.actor,customer.id,f.actor,'synthetic-orbit-2');apiSecrets.push(revokedCredential.secret);
+ assert.equal((await f.request(`settings/api-credentials/${revokedCredential.credential.id}/revoke`,'POST',{revision:revokedCredential.credential.revision})).status,200);
  const effectTables=['drafts','outbound_messages','record_mail_drafts','record_mail_outbound_messages','outbound_delivery_budget','outbound_message_opt_out','opportunities','signals','signal_links','evaluations','evaluation_contributions','recommendations','recommendation_evidence','timeline_entries','timeline_entry_records','audit_entries','notifications'];
  const inventory=async()=>Object.fromEntries((await f.db.batch(effectTables.map(table=>f.db.prepare(`SELECT * FROM ${table}`)))).map((result,index)=>[effectTables[index],result.results.map(row=>JSON.stringify(row)).sort()]));
  const beforeSourceApproval=await inventory(),submissionsBeforeSourceApproval=f.sends();
@@ -59,6 +64,10 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
   body:approvalBody,
  });
  assert.equal(sourceApproval.status,401,await sourceApproval.clone().text());
+ for(const apiSecret of apiSecrets){
+  const credentialApproval=await f.app.request(`https://orbit.test/api/v1/workbench/drafts/${draft.id}/approve`,{method:'POST',headers:{Origin:'https://orbit.test','Content-Type':'application/json',Authorization:'Bearer '+apiSecret},body:approvalBody});
+  assert.equal(credentialApproval.status,401,'An active or revoked API credential cannot supply a person\'s exact-message approval');
+ }
  assert.equal(f.sends(),submissionsBeforeSourceApproval,'A configured source cannot submit customer mail without an operator session');
  assert.deepEqual(await inventory(),beforeSourceApproval,'Source-signed approval changes no draft, outbound message or downstream effect');
  assert.deepEqual((await(await f.request(`drafts/${draft.id}`)).json() as any).draft,saved,'The exact saved revision remains available for a person to review');

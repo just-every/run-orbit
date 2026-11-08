@@ -4,6 +4,14 @@ import { connectSource } from '../../src/core/features/capture/sources';
 import { createSourceSecurity, payloadHash } from '../../src/core/platform/source-security';
 import { createId } from '../../src/core/shared/ids';
 import { sampleData } from '../fixtures/sample-data';
+import {orbitAgentDoor} from '../../src/core/features/agent-door';
+import {createForwardAddress,forwardAddressRevision} from '../../src/core/features/capture/forward/source';
+import {receiveForwarded} from '../../src/core/features/capture/forward/receive';
+import {mailboxConfig} from '../../src/core/features/capture/forward/address';
+import {heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
+import {identityVars} from './worker-identity.mjs';
+import type {PlatformBindings} from '../../src/core/platform/assets';
+import {eml} from './capture-fixture';
 import { testState } from './test-state';
 
 if (await requestOfflineFixture('tests/support/capture-browser-source.ts', process.argv.slice(2))) process.exit(0);
@@ -70,7 +78,19 @@ try {
   const security = createSourceSecurity({ ORBIT_ENCRYPTION_KEY: BROWSER_TEST_ORBIT_ENCRYPTION_KEY });
   if (!security) throw new Error('Browser fixture encryption is unavailable.');
   for (const source of sourceSpecs) await seedRevokedSource(platform.env.DB, security, source);
-  process.stdout.write(JSON.stringify({ sources: sourceSpecs.map(({ id }) => id) }));
+  const db=platform.env.DB,actor=sampleData.operators[0]!.id;
+  const addressConfig=mailboxConfig(['synthetic-orbit','capture.example.test'].join('@'))!;
+  const address=await createForwardAddress(db,security,addressConfig,actor,[]);
+  const buyer=sampleData.contacts[0]!;
+  await receiveForwarded(db,security,addressConfig,{recipients:[address],raw:eml({From:buyer.email!,To:['Synthetic seller','example.test'].join('@'),Subject:'Synthetic Capture browser evidence',Date:new Date().toUTCString(),'Message-ID':['<synthetic-orbit-capture-browser','example.test>'].join('@')},'Retain this buyer evidence through the reviewed address rotation.')});
+  const policy=heldPolicy();policy.rules.find((rule:{do:string})=>rule.do==='approval')!.approver=['sponsor'];
+  await db.prepare('INSERT INTO agent_door_state(id,local_document,local_revision) VALUES(1,?,1) ON CONFLICT(id) DO UPDATE SET local_document=excluded.local_document,local_revision=agent_door_state.local_revision+1').bind(JSON.stringify(policy)).run();
+  const origin=`http://127.0.0.1:${process.env.PORT??8722}`;
+  const bindings={DB:db,ASSETS:{fetch:async()=>new Response('')},...identityVars(origin),ORBIT_ENCRYPTION_KEY:BROWSER_TEST_ORBIT_ENCRYPTION_KEY,CAPTURE_MAIL_ADDRESS:['synthetic-orbit','capture.example.test'].join('@')} as PlatformBindings;
+  const pending=await orbitAgentDoor(bindings).invoke('orbit.capture.address_rotate',{source_revision:await forwardAddressRevision(db,addressConfig),idempotency_key:'synthetic-orbit-browser-rotation-'+crypto.randomUUID()},
+   {person:{id:actor},agent:{id:'synthetic-orbit-browser-assistant',name:'Synthetic assistant'},scopes:['capture:write']});
+  if(pending.outcome!=='pending')throw new Error('Capture browser approval preparation failed.');
+  process.stdout.write(JSON.stringify({sources:sourceSpecs.map(({id})=>id),approval:pending.approval?.id}));
 } finally {
   await platform.dispose();
 }

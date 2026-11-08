@@ -8,11 +8,12 @@ import {proveLocalSalesArchive} from './current-sales-local';
 import {proveWorkflowCustody} from './workflow-archive-proof';
 import {testAuth} from './test-auth';
 import {createApp} from './app';
+import {proveOptOutArchive} from './opt-out-archive';
 
-export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]}){
+export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<ReturnType<typeof launchFixture>>,data:Awaited<ReturnType<typeof currentSalesData>>,archive:{manifest:any;parts:ArchivePart[]},setTime:(at:number)=>void){
  for(const part of archive.parts)assert.equal(await archiveHash(part.records),part.sha256,'all exported part digests validate');
  const rows=(document:typeof archive,table:string)=>document.parts.flatMap(part=>part.records.filter(row=>row.table===table).map(row=>row.row));
- const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries',...workflowArchiveTables];
+ const categories=['workspace_settings','pipeline_stages','signal_sources','signal_links','timeline_entry_records','evaluations','evaluation_contributions','recommendations','recommendation_evidence','notifications','outbound_opt_out_capabilities','outbound_messages','drafts','schema_types','ai_calls','ai_previews','contacts','companies','opportunities','record_aliases','pipelines','pipeline_stage_rules','sales_tasks','sales_task_series','sales_task_timeline','opportunity_stakeholder_roles','opportunity_buying_context','contact_company_relationships','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','content_entities','content_revisions','publication_operations','form_spam','marketing_form_submissions','consent_events','capture_sources','capture_items','capture_proposals','handoff_tasks','timeline_entries','signals','audit_entries',...workflowArchiveTables];
  const emptyWorkflowTables=['workflow_field_policies','workflow_rotation'];
  for(const table of categories.filter(name=>name!=='record_aliases'&&!emptyWorkflowTables.includes(name)))assert.ok(rows(archive,table).length>0,`${table} has populated current data`);
  const text=JSON.stringify(archive);assert.ok(!text.includes('anonymous-before-export@example.test'));
@@ -59,7 +60,8 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
  assert.equal(await target.db.prepare("SELECT status FROM access_memberships WHERE operator_id=?").bind(data.reader.operator.operatorId).first('status'),'removed','restored collaborator requires renewed authority');
  assert.ok((await request('/api/public/forms/portability-enquiry',{},'POST')).status>=400,'publication is withdrawn until fresh review');
  assert.equal(Number(await target.db.prepare("SELECT count(*) n FROM outbound_messages WHERE state='scheduled'").first('n')),0,'restore never transfers approved scheduled dispatch authority');
- const before=Date.now();await call(`/api/v1/records/contact/${source.ana}`,{confirmed:true},'DELETE');assert.ok(Date.now()-before<300000);
+ await proveOptOutArchive(source.db,target.db,data.optOut,setTime,'plain');
+ const before=performance.now();await call(`/api/v1/records/contact/${source.ana}`,{confirmed:true},'DELETE');assert.ok(performance.now()-before<300000);
  const absent=(value:unknown)=>{const serialized=JSON.stringify(value);for(const privateValue of data.privateValues)assert.ok(!serialized.includes(privateValue),`erased ${privateValue} absent`);};
  for(const kind of ['contact','company','opportunity'])absent(await call(`/api/v1/records/${kind}?q=${encodeURIComponent('ana@acme.example')}`));
  assert.equal((await request(`/api/v1/records/contact/${source.ana}`)).status,404);
@@ -74,6 +76,6 @@ export async function proveCurrentArchive(source:CaptureFixture,target:Awaited<R
  let erased=await call('/api/v1/records/archive/exports',{});while(erased.state==='preparing')erased=await call(`/api/v1/records/archive/exports/${erased.id}/advance`,{});
  absent(await call(`/api/v1/records/archive/exports/${erased.id}/download`));
  assert.equal((await request(`/api/v1/records/archive/exports/${job.id}/download`)).status,404,'pre-erasure materialized export is withdrawn');
- await proveLocalSalesArchive(source);
+ await proveLocalSalesArchive(source,data.optOut,setTime);
  const audit=(await target.db.prepare("SELECT entity_id,details_json FROM audit_entries WHERE action='record.deleted' AND entity_type='contact'").all()).results;assert.ok(audit.length);assert.ok(audit.every(row=>row.entity_id==='erased'));absent(audit);
 }

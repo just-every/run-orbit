@@ -25,7 +25,7 @@ export interface WorkflowContext {
 export interface WorkflowRecordPlan {
  id:string;recordId:string;recordType:RecordKind;field:string;before:unknown;
  after:unknown;needsApproval:boolean;reason?:string;error?:string;failed?:true;action:WorkflowRecordAction;
- readAt:string;createdValues?:Record<string,unknown>;
+ readAt:string;closeReason?:string;createdValues?:Record<string,unknown>;
  relatedRecords?:WorkflowRecordReference[];
  sources?:Record<string,WorkflowRecordReference[]>;
 }
