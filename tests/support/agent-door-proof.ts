@@ -7,6 +7,7 @@ import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
 import {agentCapacityProof} from './agent-door-capacity-proof';
 import {agentDoorBodyLimitProof} from './agent-door-body-limit';
+import {agentDoorClassificationProof} from './agent-door-classification-proof';
 import {agentAuditRetentionProof} from './agent-door-audit-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
 import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
@@ -15,6 +16,7 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
+import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
   bindings: PlatformBindings;
@@ -27,7 +29,7 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -100,9 +102,9 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     const envelope=await policyEnvelope({origin,business:'door-company',seq:0,revision:0,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},autonomousPolicy());
     const adopted=await door.handle(post('/api/rer/agent-policy',{policy:envelope.policy}));
     assert.equal(adopted!.status,200,await adopted!.clone().text());
-    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call',rpcId=2) {
+    async function businessCall(name:string,args:Record<string,unknown>,overrides:Record<string,unknown>={},method='tools/call',rpcId=2,requestState?:string) {
       const bearer=await sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'business-owner',email:bindings.OWNER_EMAIL,act:{sub:'business-ari',name:'Ari'},client_id:'business-client',business:'door-company',scope:principal.scopes.join(' '),consent:'door-test-consent',jti:crypto.randomUUID(),iat:now,exp:now+300,...overrides});
-      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:rpcId,method,params:{...(method==='tools/call'?{name,arguments:args}:args),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+      const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+bearer,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':method,'MCP-Name':method==='resources/read'?String(args.uri):name},body:JSON.stringify({jsonrpc:'2.0',id:rpcId,method,params:{...(method==='tools/call'?{name,arguments:args}:args),...(requestState?{requestState}:{}),_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
       return {status:response!.status,body:await response!.json() as any};
     }
     const unavailableResource=await businessCall('',{uri:'unregistered://missing'},{},'resources/read');
@@ -209,6 +211,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
     await rejectedReportProof({bindings,door,cookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,adopt,businessCall});
+    await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
     const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);
@@ -230,6 +233,17 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.ok(feed.decisions.length>0,'Business MCP audits enter the relay');
     assert.equal(new Set(feed.decisions.map(row=>row.id)).size,feed.decisions.length);
     assert.equal((await door.handle(post('/api/rer/agent-decisions',{pull:'foreign.invalid.signature'})))!.status,401,'BASE-AGENT-009.relay.foreign');
+    await collaboratorProof({bindings,door,cookie,setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()),
+      async bearerFor(email,operatorId) {
+        const subject='synthetic-orbit-collaborator';
+        const mapped={...roster,jti:crypto.randomUUID(),rev:3,team:[...roster.team,{id:subject,email,name:'Synthetic collaborator',role:'member',invite:0}]};
+        const applied=await settings.handle(post('/api/rer/business-settings',{settings:await sign('rer-business-settings+jwt',mapped)}));
+        assert.equal(applied!.status,200,await applied!.clone().text());
+        const sponsor=await people.sponsor({sub:subject});
+        assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
+        const issued=Math.floor(Date.now()/1000);
+        return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
+      }});
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});

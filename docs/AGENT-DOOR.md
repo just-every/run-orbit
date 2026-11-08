@@ -1,5 +1,8 @@
 # Agents in Orbit
 
+This guide is available at `/docs/agents` and `/docs/agent-door`.
+Its tool and resource template inventories are generated from the current registry.
+
 Orbit exposes its current agent tools through `/mcp`. Discovery supports MCP
 `2026-07-28` and `2025-11-25`. A Business agent acts for a current native person
 under the company's signed policy. A token's email address never selects a
@@ -81,6 +84,21 @@ permission remain separate requirements.
 | `orbit.signals.list` | `signals:read` | standard |
 | `orbit.signals.read` | `signals:read` | standard |
 | `orbit.sources.read` | `sources:read` | standard |
+
+## Current resource template inventory
+
+| Resource template | Name | Scope |
+| --- | --- | --- |
+| `orbit://drafts/{id}` | Saved customer draft | `drafts:read` |
+| `orbit://forecasts/{id}` | Immutable forecast snapshot | `forecasts:read` |
+| `orbit://meetings/{id}/plan` | Meeting plan | `meetings:read` |
+| `orbit://operations/{id}` | Source-bound handoff | `handoffs:read` |
+| `orbit://opportunities/{id}/risks` | Opportunity risks | `risks:read` |
+| `orbit://outreach/{id}` | Native delivery receipt | `drafts:read` |
+| `orbit://records/{kind}/{id}` | CRM record | `records:read` |
+| `orbit://reports/{id}` | Native report snapshot | `reports:read` |
+| `orbit://reports/{id}/definition/{version}` | Native report definition | `reports:read` |
+| `orbit://signals/{id}` | Immutable signal | `signals:read` |
 
 ## Records and retained outcomes
 

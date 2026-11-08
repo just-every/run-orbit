@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {assertProviderRetryTiming} from '../support/outreach-retry-timing';
+import {proveRetryAccounting} from '../support/outreach-retry-accounting';
 import {createApp} from '../support/app';
 import {isolatedDatabase} from '../support/isolated-database';
 import {createDependencies} from '../support/dependencies';
@@ -44,6 +45,7 @@ test('OUT-010 OUT-018 one user\'s volume never consumes another\'s budget and ev
   context.mock.timers.setTime(Date.parse('2030-01-09T10:00:00Z'));await service.dispatchDue();assert.equal(calls,10,'A held message is never retried without operator action');
   assert.equal((await api(owner,'settings/sending/shared','PUT',{perMinute:null})).status,200);
   const retried=await api<{state:string}>(lowered,`workbench/messages/${loweredHeld.body.id}/retry`,'POST',{});assert.equal(retried.body.state,'accepted');assert.equal(calls,11);
+  await proveRetryAccounting({db,context,sender:{id:other,token:sessions.get(other)!},other:{id:lowered,token:sessions.get(lowered)!},owner:{id:owner,token:sessions.get(owner)!},opportunityId:f.opportunityId,contactId:f.contactId});
  }finally{context.mock.timers.reset();await p.dispose();}
 });
 test('OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once',async()=>{

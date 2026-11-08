@@ -79,7 +79,8 @@
           "label": "Delegation protocol"
         },
         {
-          "slug": "agent-door",
+          "slug": "agents",
+          "aliases": ["agent-door"],
           "label": "Agents in Orbit",
           "source": "docs/AGENT-DOOR.md"
         }
