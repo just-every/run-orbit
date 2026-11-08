@@ -1,0 +1,184 @@
+{
+  "tag": "sd-orbit-c-f136",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f136",
+  "head": "f1803c8ea30831c32433a69d085200c64102ab72",
+  "base_main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "observed_at": "2026-11-08T12:26:01.170946+00:00",
+  "product_pushed": true,
+  "product_push_attempts": 1,
+  "product_push_output": "product-push.log",
+  "remote_custody": "remote-custody.txt",
+  "status": {
+    "clause": "BASE-AGENT-006",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "points": [
+      3
+    ],
+    "scope": "Stored company text half only; broader acceptance not claimed",
+    "default": null,
+    "holds_released": 0
+  },
+  "counts_before": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "changed_files": [
+    "sources.lock.json",
+    "tests/core/managed-owner.test.ts",
+    "tests/support/agent-door-classification-proof.ts",
+    "tests/support/agent-door-proof.ts"
+  ],
+  "checks": [
+    {
+      "name": "touched-native-test",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "output": "managed-owner.log",
+      "duration_ms": 118935.803618
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "output": "typecheck.log"
+    },
+    {
+      "name": "first-party",
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "output": "first-party.log"
+    },
+    {
+      "name": "test-budget",
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "registrations": 198,
+      "qualifications": 2,
+      "total": 200,
+      "output": "test-inventory.json"
+    },
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-08T12:19:36.469500+00:00",
+      "output": "views-write.log"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-08T12:19:36.624768+00:00",
+      "output": "views-check.log"
+    },
+    {
+      "name": "restore-views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-08T12:19:36.773938+00:00",
+      "output": "restore-views.log"
+    },
+    {
+      "name": "lock-write",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-08T12:19:36.777879+00:00",
+      "output": "lock-write.log"
+    },
+    {
+      "name": "lock-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-08T12:19:37.245575+00:00",
+      "output": "lock-check.log"
+    }
+  ],
+  "local_proof_binding": {
+    "method": "Exact committed relevant file bytes equal final locally tested bytes; final commit adds only the refreshed source lock",
+    "sha256": {
+      "tests/core/managed-owner.test.ts": "d294fcaddd2cb62088bbddc80572e9e4e222ac950c05d97bf671e772fff191d4",
+      "tests/support/agent-door-proof.ts": "55246d431122a18dc535ae4f8309ee5abad7e3203072b242d8a4208ec363f383",
+      "tests/support/agent-door-classification-proof.ts": "f897b15d0f0ce28c3f8b84a074747d930a1792a9d828d670d6ca21b75cd8548f",
+      "src/core/features/agent-door/records.ts": "ae5a8b499d495737fa18e7cda3e26c4c4cc702cff99bca14ed0a010243fea9bc"
+    }
+  },
+  "probe": "PROBE BASE-AGENT-006 3: authenticated native Records saves ordinary and schema-protected companies, then public MCP orbit.records.read before and after hostile text under both policies -> eight equal expected class and fact results; autonomous returns both; held reviews ordinary and withholds protected until named owner approval; wrong person gets 403; native records unchanged.",
+  "mechanical": "MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0, restored origin/main views; ledger=none exit=0",
+  "ci": {
+    "observed_at": "2026-11-08T12:25:18.836429+00:00",
+    "runs": [
+      {
+        "id": 42479712701,
+        "name": "Verify",
+        "event": "push",
+        "conclusion": null,
+        "head_sha": "f1803c8ea30831c32433a69d085200c64102ab72",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/42479712701",
+        "status": "in_progress"
+      }
+    ],
+    "watcher_calls": 1
+  },
+  "github_calls_used": 4,
+  "github_calls_budget": 10,
+  "publication_scan": {
+    "commit": "f1803c8ea30831c32433a69d085200c64102ab72",
+    "status": "NOT RUN in cloud by instruction",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "full_git_history": true
+  },
+  "landing": {
+    "status": "not performed",
+    "main_equals_candidate": false,
+    "exact_main_run_site": "not yet applicable; lander owned"
+  },
+  "pre_ready": {
+    "selected_behavior_proven": true,
+    "existing_assertions_removed_or_weakened": false,
+    "new_policy_default": false,
+    "screens_touched": false,
+    "migration_touched": false,
+    "source_lock_fresh": true,
+    "contract_status_diff_empty": true,
+    "new_fixtures_contain_addresses": false
+  },
+  "blocker": null,
+  "pr": null
+}

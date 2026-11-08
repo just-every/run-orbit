@@ -1,0 +1,6 @@
+{
+  "tests/core/managed-owner.test.ts": "d294fcaddd2cb62088bbddc80572e9e4e222ac950c05d97bf671e772fff191d4",
+  "tests/support/agent-door-proof.ts": "55246d431122a18dc535ae4f8309ee5abad7e3203072b242d8a4208ec363f383",
+  "tests/support/agent-door-classification-proof.ts": "f897b15d0f0ce28c3f8b84a074747d930a1792a9d828d670d6ca21b75cd8548f",
+  "src/core/features/agent-door/records.ts": "ae5a8b499d495737fa18e7cda3e26c4c4cc702cff99bca14ed0a010243fea9bc"
+}

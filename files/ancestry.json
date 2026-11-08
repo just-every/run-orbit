@@ -1,0 +1,10 @@
+{
+  "head": "f1803c8ea30831c32433a69d085200c64102ab72",
+  "integrated_main": "6d869cb48cbd6bcebb1566be460b49223e892bb6",
+  "candidate_parents": [
+    "f1803c8ea30831c32433a69d085200c64102ab72 6d869cb48cbd6bcebb1566be460b49223e892bb6"
+  ],
+  "full_history": true,
+  "views_equal_integrated_main": true,
+  "contract_equal_integrated_main": true
+}

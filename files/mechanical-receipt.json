@@ -1,0 +1,60 @@
+[
+  {
+    "name": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "started_at": "2026-11-08T12:19:36.469500+00:00",
+    "output": "views-write.log"
+  },
+  {
+    "name": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started_at": "2026-11-08T12:19:36.624768+00:00",
+    "output": "views-check.log"
+  },
+  {
+    "name": "restore-views",
+    "command": [
+      "git",
+      "checkout",
+      "origin/main",
+      "--",
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "exit": 0,
+    "started_at": "2026-11-08T12:19:36.773938+00:00",
+    "output": "restore-views.log"
+  },
+  {
+    "name": "lock-write",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "started_at": "2026-11-08T12:19:36.777879+00:00",
+    "output": "lock-write.log"
+  },
+  {
+    "name": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started_at": "2026-11-08T12:19:37.245575+00:00",
+    "output": "lock-check.log"
+  }
+]

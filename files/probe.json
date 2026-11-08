@@ -1,0 +1,146 @@
+{
+  "commit": "f1803c8ea30831c32433a69d085200c64102ab72",
+  "proof": "BASE-AGENT-006.3.stored-company-text",
+  "cases": [
+    {
+      "mode": "autonomous",
+      "protectedData": false,
+      "injected": false,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "autonomous"
+    },
+    {
+      "mode": "autonomous",
+      "protectedData": false,
+      "injected": true,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "autonomous"
+    },
+    {
+      "mode": "autonomous",
+      "protectedData": true,
+      "injected": false,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "autonomous"
+    },
+    {
+      "mode": "autonomous",
+      "protectedData": true,
+      "injected": true,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "autonomous"
+    },
+    {
+      "mode": "held",
+      "protectedData": false,
+      "injected": false,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "review"
+    },
+    {
+      "mode": "held",
+      "protectedData": false,
+      "injected": true,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "review"
+    },
+    {
+      "mode": "held",
+      "protectedData": true,
+      "injected": false,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "approval"
+    },
+    {
+      "mode": "held",
+      "protectedData": true,
+      "injected": true,
+      "classes": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "protected_crm_fields",
+            "measure": 1
+          }
+        }
+      ],
+      "disposition": "approval"
+    }
+  ]
+}
