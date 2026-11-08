@@ -46,6 +46,12 @@ export default async function sellerDay({tool,request,origin,cookie}) {
  assert.deepEqual(replay,saved,'native handoff replay has the retained outcome');
  const stale=await tool('orbit.handoffs.upsert',{...args,idempotency_key:crypto.randomUUID()});
  assert.equal(stale.result?._meta?.['com.runeditrun/error']?.code,'revision_conflict');
+ const address=await call('capture.address_read');
+ const rotationArgs={source_revision:address.revision,idempotency_key:crypto.randomUUID()};
+ const rotation=await call('capture.address_rotate',rotationArgs),rotationWitness=await call('operations.read');
+ assert.equal(rotation.rotated,true);assert.notEqual(rotation.revision,address.revision);
+ assert.deepEqual(await call('capture.address_rotate',rotationArgs),rotation);
+ assert.deepEqual(await call('operations.read'),rotationWitness,'rotation replay retains the current native connection and evidence');
  const writeKey=crypto.randomUUID();
  const writeArgs={kind:'opportunity',id,fields:{value_cents:Number(record.fields.value_cents)+1000},expected_revision:record.ref.revision,idempotency_key:writeKey};
  const accepted=await tool('orbit.records.update',writeArgs);
@@ -88,7 +94,7 @@ export default async function sellerDay({tool,request,origin,cookie}) {
 
 // The installed 0.2.93 runner exercises the native target, resource refusal,
 // replay admission, signed owner binding and independent reviewer lifecycle.
-// Access/security tools remain undeclared, so no self-widening probe applies.
+// Private address rotation declares no subject; Base retains its no-subject security probes.
 // The runner refreshes native revisions for injection variants. The stale
 // public_update, save_handoff and draft_update requests still refuse, while
 // fresh injection variants assert the original classes and native effects.
@@ -97,3 +103,16 @@ export default async function sellerDay({tool,request,origin,cookie}) {
 // an edition migration at Base edition-authoring/edition-migrations.mjs:33-34.
 // archive-source.mjs:34 correctly refuses unavailable Git ancestry. Preserve
 // the other pins; never invent ancestry or skip their migration obligations.
+
+/** Read back the conformance save through the unchanged native owner door. */
+export async function afterStep({step,args,result,request,origin,cookie}){
+ if(step.tool!=='orbit.workflows.save_draft')return;
+ const response=await request(new URL('/api/workflows',origin).href,{headers:{Cookie:cookie}});
+ assert.equal(response.status,200);
+ const inventory=await response.json(),saved=inventory.workflows.find(workflow=>workflow.id===args.id);
+ assert.equal(saved.version,args.source_version+1);assert.equal(saved.status,'draft');
+ assert.equal(saved.activeVersion,null);
+ assert.deepEqual(saved.definition,result.workflow.definition);
+ assert.equal(saved.name,args.name);
+ assert.ok(inventory.runs.every(run=>run.workflowId!==args.id),'saving a draft creates no run');
+}

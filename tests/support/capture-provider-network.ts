@@ -3,11 +3,30 @@ import {eml} from './capture-mail';
 import {scopes,type Provider,type ProviderFetch} from '../../src/core/features/capture/providers/config';
 /** Only the external HTTP edge is replaced. Orbit auth, D1, normalizers and intake run unchanged. */
 export function captureProviderNetwork(provider:Provider){
- const state={writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
+ const state={fixedWindow:false,writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
+ const calendarWindows=new Map<string,{start:string;end:string}>();
+ const windowEvents=[{id:'synthetic-orbit-401',start:'2025-12-15',end:'2025-12-16'},{id:'synthetic-orbit-402',start:'2027-03-15',end:'2027-03-16'}];
  const mail=(id:string)=>eml({From:id==='unknown'?'other@unknown.test':'Ana <ana@acme.example>',To:'seller@orbit.test',Subject:`Provider ${id}`,Date:'Mon, 05 Oct 2026 10:00:00 +0000','Message-ID':`<${provider}-${id}@acme.example>`,...state.mailHeaders[id]},`Evidence ${id}`);
  const calendar=(cancelled=false)=>provider==='google'?{id:'event',iCalUID:'meeting@acme.example',summary:'Acme meeting',sequence:cancelled?1:0,created:'2026-10-01T10:00:00Z',updated:cancelled?'2026-10-06T10:00:00Z':'2026-10-01T10:00:00Z',status:cancelled?'cancelled':'confirmed',start:{date:'2026-10-20'},end:{date:'2026-10-21'},organizer:{email:'ana@acme.example'},attendees:[{email:'seller@orbit.test'}]}:{id:'event',iCalUId:'meeting@acme.example',subject:'Acme meeting',createdDateTime:'2026-10-01T10:00:00Z',lastModifiedDateTime:cancelled?'2026-10-06T10:00:00Z':'2026-10-01T10:00:00Z',isCancelled:cancelled,isAllDay:true,start:{dateTime:'2026-10-20T00:00:00',timeZone:'UTC'},end:{dateTime:'2026-10-21T00:00:00',timeZone:'UTC'},organizer:{emailAddress:{address:'ana@acme.example'}},attendees:[{emailAddress:{address:'seller@orbit.test'}}]};
  const occurrences=()=>[1,2].map(n=>provider==='google'?{...calendar(),id:`occurrence-${n}`,iCalUID:'series@acme.example',start:{dateTime:`2026-11-0${n===1?1:8}T01:30:00${n===1?'-04:00':'-05:00'}`,timeZone:'America/New_York'},end:{dateTime:`2026-11-0${n===1?1:8}T02:30:00${n===1?'-05:00':'-05:00'}`,timeZone:'America/New_York'},originalStartTime:{dateTime:`2026-11-0${n===1?1:8}T01:30:00${n===1?'-04:00':'-05:00'}`}}:{...calendar(),id:`occurrence-${n}`,iCalUId:`series-${n}@acme.example`,isAllDay:false,start:{dateTime:`2026-11-0${n===1?1:8}T0${n===1?5:6}:30:00`,timeZone:'UTC'},end:{dateTime:`2026-11-0${n===1?1:8}T07:30:00`,timeZone:'UTC'},originalStart:`2026-11-0${n===1?1:8}T0${n===1?5:6}:30:00Z`});
  const writtenFeed=()=>state.writeEventsInFeed?[...state.writeEvents.values()].map(event=>({...calendar(),...event,...(provider==='google'?{iCalUID:event.id}:{iCalUId:event.id,isAllDay:false})})):[];
+ // Opaque cursors retain their original dates; only a fresh bounded read can
+ // expose the known participant's meetings outside the saved window.
+ function windowPage(url:URL){
+  const google=provider==='google',params=url.searchParams;
+  const token=params.get(google?'pageToken':'$skiptoken')??params.get(google?'syncToken':'$deltatoken');
+  const window=token?calendarWindows.get(token):{start:params.get(google?'timeMin':'startDateTime')!,end:params.get(google?'timeMax':'endDateTime')!};
+  assert.ok(window?.start&&window.end,'calendar read needs dates or a cursor bound to saved dates');
+  const next=`synthetic-orbit-window-${calendarWindows.size}`;calendarWindows.set(next,window);
+  const paged=params.has(google?'pageToken':'$skiptoken');
+  const items=paged?[]:[calendar(state.incremental),...writtenFeed(),...(state.recurring?google?[{...calendar(),id:'series',recurrence:['RRULE:FREQ=WEEKLY']}]:occurrences():[]),...(state.tombstones?[google?{id:'deleted',status:'cancelled'}:{id:'deleted','@removed':{reason:'deleted'}}]:[]),...windowEvents.map(event=>({...calendar(),id:event.id,...(google?{iCalUID:event.id,summary:event.id,start:{date:event.start},end:{date:event.end}}:{iCalUId:event.id,subject:event.id,start:{dateTime:event.start+'T00:00:00',timeZone:'UTC'},end:{dateTime:event.end+'T00:00:00',timeZone:'UTC'}})}))].filter(event=>{
+   if(!event.start||!event.end)return true;
+   const start='date' in event.start?event.start.date:event.start.dateTime,end='date' in event.end?event.end.date:event.end.dateTime;
+   return Date.parse(start)<Date.parse(window.end)&&Date.parse(end)>Date.parse(window.start);
+  });
+  if(google)return paged?{items,nextSyncToken:next}:{items,nextPageToken:next};
+  return {value:items,[paged?'@odata.deltaLink':'@odata.nextLink']:`${url.origin}${url.pathname}?${paged?'$deltatoken':'$skiptoken'}=${next}`};
+ }
  const json=(value:unknown,status=200)=>Response.json(value,{status});
  const fetcher:ProviderFetch=async(raw,init={})=>{
   const url=new URL(raw);assert.equal(init.redirect,'error','provider redirects never receive a bearer token');
@@ -41,7 +60,7 @@ export function captureProviderNetwork(provider:Provider){
    if(url.pathname.endsWith('/history')){if(state.expireHistory){state.expireHistory=false;return json({},404);}return json({historyId:'900719925474099312346',history:state.incremental?[{messagesAdded:state.incrementalIds.map(id=>({message:{id}}))}]:[]});}
    if(url.pathname.includes('/messages/'))return json({raw:Buffer.from(mail(url.pathname.split('/').at(-1)!)).toString('base64url'),labelIds:['INBOX','SENT']});
    if(url.pathname.endsWith('/instances'))return json(url.searchParams.has('pageToken')?{items:[occurrences()[1]]}:{items:[occurrences()[0]],nextPageToken:'instance-next'});
-   if(url.pathname.endsWith('/events')){state.calendarRound++;return json(url.searchParams.has('pageToken')?{items:[],nextSyncToken:`sync-${state.calendarRound}`}:{items:[calendar(state.incremental),...writtenFeed(),...(state.recurring?[{...calendar(),id:'series',recurrence:['RRULE:FREQ=WEEKLY']}]:[]),...(state.tombstones?[{id:'deleted',status:'cancelled'}]:[])],nextPageToken:'calendar-next'});}
+   if(url.pathname.endsWith('/events')){if(state.fixedWindow)return json(windowPage(url));state.calendarRound++;return json(url.searchParams.has('pageToken')?{items:[],nextSyncToken:`sync-${state.calendarRound}`}:{items:[calendar(state.incremental),...writtenFeed(),...(state.recurring?[{...calendar(),id:'series',recurrence:['RRULE:FREQ=WEEKLY']}]:[]),...(state.tombstones?[{id:'deleted',status:'cancelled'}]:[])],nextPageToken:'calendar-next'});}
   }else{
    if(url.pathname==='/v1.0/me/mailFolders')return json(url.searchParams.has('$skiptoken')?{value:[{id:'SENT',displayName:'Sent',childFolderCount:0}]}:{value:[{id:'INBOX',displayName:'Inbox',childFolderCount:0}],'@odata.nextLink':`${url.origin}${url.pathname}?$skiptoken=folders`});
    if(url.pathname==='/v1.0/me/calendars')return json({value:[{id:'calendar',name:'Calendar'}]});
@@ -52,7 +71,7 @@ export function captureProviderNetwork(provider:Provider){
     return json({value:slice.map(id=>({id,parentFolderId:'INBOX'})),...(next?{'@odata.nextLink':state.unsafeLink||next}:{'@odata.deltaLink':state.unsafeLink||`${url.origin}${url.pathname}?$deltatoken=next`})});
    }
    if(url.pathname.endsWith('/$value'))return new Response(mail(url.pathname.split('/').at(-2)!));
-   if(/\/calendarView\/delta(?:\(\))?$/.test(url.pathname))return json(url.searchParams.has('$skiptoken')?{value:[],'@odata.deltaLink':`${url.origin}${url.pathname}?$deltatoken=calendar`}:{value:[calendar(state.incremental),...writtenFeed(),...(state.recurring?occurrences():[]),...(state.tombstones?[{id:'deleted','@removed':{reason:'deleted'}}]:[])],'@odata.nextLink':`${url.origin}${url.pathname}?$skiptoken=calendar`});
+   if(/\/calendarView\/delta(?:\(\))?$/.test(url.pathname)){if(state.fixedWindow)return json(windowPage(url));return json(url.searchParams.has('$skiptoken')?{value:[],'@odata.deltaLink':`${url.origin}${url.pathname}?$deltatoken=calendar`}:{value:[calendar(state.incremental),...writtenFeed(),...(state.recurring?occurrences():[]),...(state.tombstones?[{id:'deleted','@removed':{reason:'deleted'}}]:[])],'@odata.nextLink':`${url.origin}${url.pathname}?$skiptoken=calendar`});}
   }
   throw new Error(`Unexpected provider endpoint: ${url.origin}${url.pathname}`);
  };

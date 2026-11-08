@@ -14,6 +14,7 @@ export default async function initialize({request,origin,email,displayName,claim
  const contact=await native('/api/v1/records/contact',{name:'Maya Chen',email:'maya@example.test',company_id:company.id});
  const opportunity=await native('/api/v1/records/opportunity',{title:'Door specialist fixture opportunity',stage_id:inventory.stages[0].id,value_cents:750000,company_id:company.id,contact_ids:[contact.id],primary_contact_id:contact.id});
  await native(`/api/v1/workbench/opportunities/${opportunity.id}/events`,{type:'meeting.booked',subject:'Maya booked the buyer discussion',occurredAt:new Date().toISOString(),eventId:'door-fixture-meeting',contactId:contact.id});
+ await native('/api/v1/capture/forward',{});
  await reviewers.initialize('sales-review',{cookie});
  return bootstrap;
 }
