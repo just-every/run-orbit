@@ -10031,7 +10031,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "c9464df972dd5098be6176b46fabb6dc00ad5c1a8b2b35ac2dba5dfb2299942e",
+      "sha256": "6fbf134e4c736a1db8da876b6c5b66eaccfac39951d4d207d2e9ba9048e1e735",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -11028,6 +11028,10 @@
     },
     "tests/support/opportunity-creation.ts": {
       "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
+      "executable": false
+    },
+    "tests/support/outreach-retry-accounting.ts": {
+      "sha256": "ca433a442217d180865e8dcd4cb0e2ea130597ed55663f66ba4ca3c7a7a767c4",
       "executable": false
     },
     "tests/support/outreach-retry-timing.ts": {
