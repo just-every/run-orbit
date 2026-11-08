@@ -126,8 +126,8 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 **Acceptance.**
 1. Open a record containing mail, meetings, notes, changes and a merge; inspect occurred/recorded times, source and actor, including out-of-order events.
 
-**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`
-**Gap.** Unasserted in the carried evidence: mail entry; meeting entry; note entry; stage/owner change entry; merge entry; occurred and recorded times; source and actor; out-of-order history. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
+**Evidence.** `src/core/features/records/routes.ts`; `src/core/features/records/repository.ts`; `tests/core/crm-import.test.ts`; `tests/e2e/operator.spec.mjs` — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties
+**Gap.** Unasserted in the carried evidence: combined mail, meeting, note, stage and owner change, and merge coverage; exact per-entry occurred and recorded times, source and actor. The browser journey asserts native Records and opportunity reads before and after reload and visible note order at 1440 and 390 for late older arrivals and equal-time ID ties; it does not qualify the complete combined journey.
 
 #### RECORD-006 — Search and views
 

@@ -655,7 +655,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "ab51133883c879aea5eebac35a6d9fa806e0295a2819c305dd465ae4c57df555",
+      "sha256": "839feec2a20ee91611690466a8e09a76617942cf3597a99e1e8a836bb9760230",
       "executable": false
     },
     "agent-surface.json": {
@@ -707,7 +707,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1bc0167b4f4afb72ded5be91fd18d5fa328d810a939479282f5b2e9db8ad06c",
+      "sha256": "21be9161d74ea4827a7b6df09a4706021e425c1db0618aa0d5b36b275be976ab",
       "executable": false
     },
     "DEMO.md": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b6370cb0934102bf49ed3054f128c15ccf778baa6fc04b0fe675f18a7872a566",
+      "sha256": "10cf43919349882787f4cb63fd997dc5b15913828e325a7562074095e681531e",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10794,6 +10794,10 @@
       "sha256": "e794804bd4716f5e112e1d2192fef0472e0a6cbc73db2354f7d89cd58f0e37e2",
       "executable": false
     },
+    "tests/support/agent-door-audit-proof.ts": {
+      "sha256": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+      "executable": false
+    },
     "tests/support/agent-door-body-limit.ts": {
       "sha256": "66dbde6d5a8bc1aa11d88d07083f4fb5bb39234ef98d7c02a8f281815310a31e",
       "executable": false
@@ -10803,7 +10807,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "bfb7ee0707c477ccc3727016263c54b45038e7e10d637af873cd374a2cf88fc8",
+      "sha256": "4d67d219aeca52447ac2214d432e3084f5b987fb7879073ce81f8c6ed9a38590",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
