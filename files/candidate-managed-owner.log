@@ -1,0 +1,23 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":277,"control":200,"created":1}
+# {"proof":"BASE-AGENT-008.2","bearer":"Business","policy":"autonomous","refusals":[{"withCookie":false,"approval":403,"review":403},{"withCookie":true,"approval":403,"review":403}],"unchangedTables":21,"cookieApproval":"refused","cookieReview":"reviewed","freshCookieApproval":"executed"}
+# {"proof":"BASE-AGENT-008.2","bearer":"Business","policy":"held","refusals":[{"withCookie":false,"approval":403,"review":403},{"withCookie":true,"approval":403,"review":403}],"unchangedTables":21,"cookieApproval":"executed","cookieReview":"reviewed","freshCookieApproval":"executed"}
+# {"proof":"BASE-AGENT-008.2","bearer":"retained local agent","policy":"autonomous","refusals":[{"withCookie":false,"approval":403,"review":403},{"withCookie":true,"approval":403,"review":403}],"unchangedTables":21,"cookieApproval":"refused","cookieReview":"reviewed","freshCookieApproval":"executed"}
+# {"proof":"BASE-AGENT-008.2","bearer":"retained local agent","policy":"held","refusals":[{"withCookie":false,"approval":403,"review":403},{"withCookie":true,"approval":403,"review":403}],"unchangedTables":21,"cookieApproval":"executed","cookieReview":"reviewed","freshCookieApproval":"executed"}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner/session exactly once
+ok 1 - Managed owner claim verifies RER authority and creates the native owner/session exactly once
+  ---
+  duration_ms: 115258.672214
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118734.743251

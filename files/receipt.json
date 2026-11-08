@@ -1,0 +1,189 @@
+{
+  "tag": "sd-orbit-c-f131",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f131",
+  "head": "05bb51e6260eaf0331797559bc9d811216ad9daf",
+  "base": "43497d9593cdf019042332a4bf8bae27f4004ede",
+  "prescribed_parent": "3b681261bf198e5540bd4050eb9feab1c03520c1",
+  "product_push": "succeeded first attempt",
+  "product_push_log": "product-push.log",
+  "identity_audit": "identity-audit.log",
+  "contract_status": "PARTIAL",
+  "before_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "after_counts": {
+    "done": 36,
+    "partial": 136,
+    "missing": 32,
+    "total": 204
+  },
+  "test_budget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "selected_acceptance": {
+    "point": 2,
+    "limbs": [
+      "approving",
+      "marking reviewed"
+    ],
+    "tokens": [
+      "Business",
+      "retained local agent"
+    ],
+    "ambient_owner_cookie": [
+      false,
+      true
+    ],
+    "current_policy": [
+      "autonomous",
+      "held"
+    ],
+    "refusals": 16,
+    "expected_http": 403,
+    "expected_code": "person_session_required",
+    "unchanged_tables": 21,
+    "fresh_cookie_control": "executed"
+  },
+  "omitted": [
+    "policy-question matrix",
+    "device-token matrix",
+    "broader person-confirmation and class variants",
+    "form-mode elicitation",
+    "complete preparer and approver attribution",
+    "full record, activity, export and certificate proof",
+    "responsive qualification",
+    "outside mail sender attribution",
+    "provider human-step and signature journeys"
+  ],
+  "default": null,
+  "contract_changed": false,
+  "generated_views_committed": false,
+  "screens_changed": false,
+  "runtime_source_changed": false,
+  "assertions_removed_or_weakened": false,
+  "publication_scan": {
+    "status": "fleet pending",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": {
+    "status": "fleet pending",
+    "main_equals_candidate": false,
+    "run_site": null
+  },
+  "pr": null,
+  "github_api_calls": 3,
+  "checks": "checks.json",
+  "committed_runtime_replay": "passed",
+  "ci_observed_at": "2026-11-08T00:24:20.797544+00:00",
+  "candidate_ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "05bb51e6260eaf0331797559bc9d811216ad9daf",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42429522151",
+      "id": 42429522151,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "runtime_replay_node": "22.20.0",
+  "runtime_replay_duration_ms": 118734.743251,
+  "runtime_matrix": [
+    {
+      "proof": "BASE-AGENT-008.2",
+      "bearer": "Business",
+      "policy": "autonomous",
+      "refusals": [
+        {
+          "withCookie": false,
+          "approval": 403,
+          "review": 403
+        },
+        {
+          "withCookie": true,
+          "approval": 403,
+          "review": 403
+        }
+      ],
+      "unchangedTables": 21,
+      "cookieApproval": "refused",
+      "cookieReview": "reviewed",
+      "freshCookieApproval": "executed"
+    },
+    {
+      "proof": "BASE-AGENT-008.2",
+      "bearer": "Business",
+      "policy": "held",
+      "refusals": [
+        {
+          "withCookie": false,
+          "approval": 403,
+          "review": 403
+        },
+        {
+          "withCookie": true,
+          "approval": 403,
+          "review": 403
+        }
+      ],
+      "unchangedTables": 21,
+      "cookieApproval": "executed",
+      "cookieReview": "reviewed",
+      "freshCookieApproval": "executed"
+    },
+    {
+      "proof": "BASE-AGENT-008.2",
+      "bearer": "retained local agent",
+      "policy": "autonomous",
+      "refusals": [
+        {
+          "withCookie": false,
+          "approval": 403,
+          "review": 403
+        },
+        {
+          "withCookie": true,
+          "approval": 403,
+          "review": 403
+        }
+      ],
+      "unchangedTables": 21,
+      "cookieApproval": "refused",
+      "cookieReview": "reviewed",
+      "freshCookieApproval": "executed"
+    },
+    {
+      "proof": "BASE-AGENT-008.2",
+      "bearer": "retained local agent",
+      "policy": "held",
+      "refusals": [
+        {
+          "withCookie": false,
+          "approval": 403,
+          "review": 403
+        },
+        {
+          "withCookie": true,
+          "approval": 403,
+          "review": 403
+        }
+      ],
+      "unchangedTables": 21,
+      "cookieApproval": "executed",
+      "cookieReview": "reviewed",
+      "freshCookieApproval": "executed"
+    }
+  ],
+  "checks_complete": true,
+  "contract_unchanged_in_every_candidate_commit": true,
+  "product_ref_verified": true,
+  "product_checkout_clean": true
+}
