@@ -1,0 +1,39 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f144",
+  "head": "bd954674926f8c852fc3dcb10fab0fb57756a74e",
+  "base": "e14862416147c15b854df69f6decc0a315f67385",
+  "startingHead": "f1803c8ea30831c32433a69d085200c64102ab72",
+  "ancestry": "Unpublished continuation rebased once onto current main; no published branch rewritten.",
+  "productPush": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f144",
+    "status": "success",
+    "attempts": 1
+  },
+  "identityCheck": "All origin/main..HEAD parents inspected; fleet author and committer; no trailers.",
+  "statusCounts": {
+    "before": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    },
+    "after": {
+      "done": 36,
+      "partial": 136,
+      "missing": 32
+    }
+  },
+  "claim": "PARTIAL",
+  "scope": "Acceptance 3 stored company text only",
+  "publicationScan": {
+    "commit": "bd954674926f8c852fc3dcb10fab0fb57756a74e",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "Not run in cloud; fleet lander owns full-history publication scan."
+  },
+  "mainEquality": false,
+  "mainPushed": false,
+  "pr": null,
+  "planRowsChanged": []
+}

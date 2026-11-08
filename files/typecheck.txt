@@ -1,0 +1,7 @@
+
+> orbit@0.4.3 typecheck /home/agent/rer-consolidation/work/sd-orbit-c-f144/run-orbit
+> tsc --noEmit
+
+
+exit=0
+head=bd954674926f8c852fc3dcb10fab0fb57756a74e

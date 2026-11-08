@@ -1,0 +1,47 @@
+{
+  "head": "bd954674926f8c852fc3dcb10fab0fb57756a74e",
+  "contractViews": {
+    "write": {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "output": "Wrote 0 contract documents.\n"
+    },
+    "check": {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "output": "Contract documents are current.\n"
+    },
+    "restoredFrom": "origin/main",
+    "committed": false
+  },
+  "lock": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exit": 0
+  },
+  "sourceCheck": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0,
+    "ok": true
+  },
+  "firstParty": {
+    "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+    "exit": 0
+  },
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0
+  },
+  "migrationLedger": {
+    "command": null,
+    "reason": "no migration changes"
+  },
+  "testBudget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200,
+    "cap": 200
+  },
+  "contractChanges": false,
+  "productionSourceChanges": false,
+  "sourceLockChangesAfterRebase": false
+}
