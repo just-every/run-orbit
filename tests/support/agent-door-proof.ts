@@ -327,8 +327,36 @@ async function personOnlyDecisionMarksProof({db,door,origin,cookie,ownerId,oppor
       const reviewed=await request('/agents/api/reviews/'+control.review.id+'/reviewed',{});
       assert.equal(reviewed.status,200);assert.equal(reviewed.body.review.state,'reviewed');assert.equal(reviewed.body.review.marked_by,ownerId);assert.ok(reviewed.body.review.marked_at);
       assert.deepEqual(await request('/agents/api/state'),state,'person marks do not change policy or Pause');
+      // A stale-policy refusal is retained above, but cannot stand in for a
+      // successful person-only control. Prepare equivalent fresh evidence at
+      // the held revision so the owner can actually complete both acts.
+      let freshCookieApproval=approved.body.approval.state;
+      if(mode==='autonomous') {
+        await setPolicy('held');
+        const fresh=await prepare(),freshState=await request('/agents/api/state');
+        const snapshots=await db.prepare('SELECT count(*) n FROM analytics_snapshots').first<number>('n');
+        const freshApproved=await request('/agents/api/approvals/'+fresh.approval.id+'/approve',
+          {revision:fresh.approval.revision,summary_sha256:fresh.approval.summary_sha256});
+        assert.equal(freshApproved.status,200);assert.equal(freshApproved.body.approval.state,'executed');
+        assert.deepEqual(freshApproved.body.approval.approvals.map((mark:{person:string})=>mark.person),[ownerId]);
+        const freshResult=JSON.parse((await db.prepare('SELECT result FROM agent_door_approvals WHERE id=?').bind(fresh.approval.id).first<string>('result'))!);
+        assert.equal(freshResult.outcome,'done');assert.equal(freshResult.receipt.approval_id,fresh.approval.id);
+        assert.deepEqual(freshResult.receipt.approved_by,[ownerId]);
+        assert.equal(freshResult.receipt.prepared_by.agent.id,fresh.approval.prepared_by.agent.id);
+        assert.equal(await db.prepare('SELECT count(*) n FROM analytics_snapshots').first<number>('n'),snapshots!+1);
+        assert.ok(await db.prepare('SELECT id FROM analytics_snapshots WHERE id=?').bind(freshResult.result.id).first(),'fresh cookie-only evidence saves its native report');
+        const freshReviewed=await request('/agents/api/reviews/'+fresh.review.id+'/reviewed',{});
+        assert.equal(freshReviewed.status,200);assert.equal(freshReviewed.body.review.state,'reviewed');
+        assert.equal(freshReviewed.body.review.marked_by,ownerId);assert.ok(freshReviewed.body.review.marked_at);
+        assert.deepEqual(freshReviewed.body.review.prepared_by,fresh.review.prepared_by);
+        assert.deepEqual(await request('/agents/api/state'),freshState,'fresh controls preserve policy and Pause');
+        assert.deepEqual(await request('/agents/api/approvals/'+target.approval.id),{status:200,body:{approval:target.approval}});
+        const retained=await request('/agents/api/reviews');
+        assert.deepEqual(retained.body.reviews.find((item:{id:string})=>item.id===target.review.id),target.review,'fresh controls leave the refused target open');
+        freshCookieApproval=freshApproved.body.approval.state;
+      }
       console.log(JSON.stringify({proof:'BASE-AGENT-008.2',bearer:bearer.name,policy:mode,refusals,unchangedTables:tables.length,
-        cookieApproval:approved.body.approval.state,cookieReview:reviewed.body.review.state}));
+        cookieApproval:approved.body.approval.state,cookieReview:reviewed.body.review.state,freshCookieApproval}));
     }
   }
 }

@@ -10803,7 +10803,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "ba3cc3e86a3c3a2397fa30d09f239652e35804a94a22eb88ea30771a9c2814f5",
+      "sha256": "6a3b7d3eb5b214e6b2bf1de1ef010a6e284d006869a2eeb2a541c5141b61b115",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {
