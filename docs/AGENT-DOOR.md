@@ -84,6 +84,7 @@ permission remain separate requirements.
 | `orbit.signals.list` | `signals:read` | standard |
 | `orbit.signals.read` | `signals:read` | standard |
 | `orbit.sources.read` | `sources:read` | standard |
+| `orbit.workflows.save_draft` | `workflows:write` | standard |
 
 ## Current resource template inventory
 

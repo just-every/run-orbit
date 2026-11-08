@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "e5202b3a324d3fbc01c903aa83be183461db18045d2a3afcde16b31c08e659ac",
+      "sha256": "fe9a1b4c0944654ffd0904593dd37cb49c4f2ede10462fefda9142e0ea1d450f",
       "executable": false
     },
     "AGENTS.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "44e857f92cd93e305cec1d65214eb2b50182db0e892770b93fddd18cd58be863",
+      "sha256": "55bb18347a662c8c160ebf1ada9a9cbf19f69fda85801985d3e6e16706304dd6",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -3875,7 +3875,7 @@
       "executable": false
     },
     "scripts/agent-surface.ts": {
-      "sha256": "0b07d3b4a035bfc523b520a261191ad81642483df99f6a2f77dfc3e9410d60ad",
+      "sha256": "05545db20295205729e7aeeb45c6fa14308d0c59ba95bcc46595ac452c5260b9",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -5223,7 +5223,7 @@
       "executable": false
     },
     "src/core/features/agent-door/evidence.ts": {
-      "sha256": "a9e5b99c26d582a15f6fca2fb27c92c5e81513e0257d3022388419eafeb6dccd",
+      "sha256": "4d67e176d854d9acd74023118f4f2ebda7ea9ee1655c9ebcb0f5c140452934dd",
       "executable": false
     },
     "src/core/features/agent-door/handoffs.ts": {
@@ -5231,7 +5231,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "659fd190e728bd640b87b35c21b8d31ed7f75eec0bef66117ebf8aae6e9c2bb4",
+      "sha256": "c227372a8b02562f43d110f70846c55c1ead6009200b80d1b35d7f9f5a64e32a",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -8375,11 +8375,11 @@
       "executable": false
     },
     "src/core/features/workflows/repository.ts": {
-      "sha256": "34a3de793f62aacfe5cacc8ce289bebbcbf91687deffab1d22b5b44be3e8c095",
+      "sha256": "2d5c8155ff98f5ce9e5945dd25ad7600162cdb94f775d9d84e218b620553b999",
       "executable": false
     },
     "src/core/features/workflows/routes.ts": {
-      "sha256": "0edc390e169be98a5bcf5034737b800b5457daa5b3aeba8c8b6a02600b739776",
+      "sha256": "81538be035bc385736d7d85a62b9ea7afa9a30d5000d41e242118f49b50da69a",
       "executable": false
     },
     "src/core/features/workspace/index.ts": {
@@ -9879,7 +9879,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "4325b212b35157a5fbe98ed140a5f5c533abd55ffe036f893d9e4f351dd32f84",
+      "sha256": "7d2435bde784918a56ab42b59738cdaba00fe061225e66fa4fd19f45f39708f4",
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
@@ -10011,7 +10011,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "fce49adcf3b64ddfda1f7160550efba687a3a9c0e29753133a0b45da790c9c14",
+      "sha256": "3d36fb51286e5aa70928b7c34623ae3d0f12059432d2d2c51c3dfc51ffe5f2c7",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10787,7 +10787,7 @@
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
-      "sha256": "10ee625efe2b2f962cfe2deec5fe77283b07565731b5238a8e51bee946d089da",
+      "sha256": "87f9f738ad65fec8557f6b25c11e31fd6a2badf0c04f9d7bdd7f51a426968610",
       "executable": false
     },
     "tests/rer/workflow-values-journey.mjs": {
@@ -10815,7 +10815,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "55246d431122a18dc535ae4f8309ee5abad7e3203072b242d8a4208ec363f383",
+      "sha256": "c06ff8dd3d15e89f135b5e92bc1157521209a4e5b8f4bd0b199b3c63786cbd49",
       "executable": false
     },
     "tests/support/api-credentials-proof.ts": {

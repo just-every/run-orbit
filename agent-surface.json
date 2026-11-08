@@ -273,6 +273,17 @@
       "clauses": [
         "SIGNAL-001"
       ]
+    },
+    {
+      "name": "orbit.workflows.save_draft",
+      "scope": "workflows:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SURFACE-008"
+      ]
     }
   ],
   "resources": [
@@ -1359,6 +1370,64 @@
       }
     },
     {
+      "id": "save_workflow_draft",
+      "tool": "orbit.workflows.save_draft",
+      "args": {
+        "id": {
+          "$fixture": "workflow",
+          "pointer": "/id"
+        },
+        "source_version": {
+          "$fixture": "workflow",
+          "pointer": "/version"
+        },
+        "name": "synthetic-orbit-conformance-draft",
+        "definition": {
+          "trigger": {
+            "kind": "record_changed",
+            "recordType": "opportunity"
+          },
+          "conditions": [
+            {
+              "field": "title",
+              "operator": "equals",
+              "value": "synthetic-orbit-no-trigger"
+            }
+          ],
+          "actions": [
+            {
+              "kind": "set",
+              "field": "title",
+              "value": "synthetic-orbit-draft-only"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "target": {
+        "kind": "workflow",
+        "id": {
+          "$fixture": "workflow",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
       "id": "witness",
       "tool": "orbit.operations.read",
       "args": {},
@@ -1404,6 +1473,9 @@
     }
   ],
   "verification": {
+    "fixtures": {
+      "module": "tests/agent-door/workflow-fixture.mjs"
+    },
     "owner": {
       "bindings": {
         "RER_MANAGEMENT_ORIGIN": "issuer",
