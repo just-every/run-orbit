@@ -3,6 +3,7 @@ import {fixture,collaborator} from './fixture';
 import {publication} from './publication-fixture';
 import {submitForm} from './form-submit';
 import {createApp,TEST_SESSION_SECRET} from '../../tests/support/app';
+import {undisclosedInquiry} from './undisclosed-inquiry-fixture';
 
 /** Operator readback, anonymous replay and erasure use the real HTTP services. */
 export async function formsBasisJourney(){
@@ -27,6 +28,13 @@ export async function formsBasisJourney(){
   const inquiryInput={revision:inquiry.saved.revision,operationId:inquiry.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Jordan Reyes',email:['synthetic-orbit-inquiry','manufacturer.test'].join('@'),message:'Please discuss our production rollout.'}},requested=await submitForm(inquiry.forms,inquiry.slug,inquiryInput),request=(await call(`${base}/${inquiry.saved.id}/submissions`)).find((row:any)=>row.id===requested.submissionId);
   assert.deepEqual({...request.contact_basis,occurredAt:undefined},{kind:'inquiry',wording:disclosure,accepted:true,formRevision:inquiry.saved.revision,artifactHash:inquiry.compiled.hash,occurredAt:undefined});assert.ok(Number.isFinite(Date.parse(request.contact_basis.occurredAt)));assert.equal((await call(`/api/v1/records/contact/${request.contact_id}`)).record.contactability,'contactable');
   await submitForm(inquiry.forms,inquiry.slug,{...inquiryInput,idempotencyKey:crypto.randomUUID(),values});assert.equal((await call(`/api/v1/records/contact/${submission.contact_id}`)).record.contactability,'do_not_contact');
+  const legacy=await undisclosedInquiry(f),legacyPage=await app.request(`https://orbit.test/p/${legacy.slug}`);assert.equal(legacyPage.status,200);assert.equal(await legacyPage.text(),legacy.compiled.html);
+  const legacyInput={revision:legacy.saved.revision,operationId:legacy.compiled.operationId,idempotencyKey:crypto.randomUUID(),values:{name:'Avery Patel',email:['synthetic-orbit-existing-inquiry','manufacturer.test'].join('@')}},legacyReceipt=await submitForm(legacy.forms,legacy.slug,legacyInput);
+  const legacyRows=await call(`${base}/${legacy.saved.id}/submissions`),legacySubmission=legacyRows.find((row:any)=>row.id===legacyReceipt.submissionId);
+  assert.equal(legacySubmission.contact_basis,null,'an existing artifact without disclosure cannot acquire accepted wording on upgrade');
+  assert.equal((await call(`/api/v1/records/contact/${legacySubmission.contact_id}`)).record.contactability,'do_not_contact');
+  await submitForm(legacy.forms,legacy.slug,legacyInput);assert.deepEqual(await call(`${base}/${legacy.saved.id}/submissions`),legacyRows,'replay preserves the absence of disclosure evidence');
+  assert.equal(await legacy.forms.publicDocument(legacy.slug),legacy.compiled.html,'capture does not rewrite the approved artifact');
   const guest=await collaborator(f),denied=await app.request(`https://orbit.test${base}/${marketing.saved.id}/submissions`,{headers:{Cookie:guest.cookie}});assert.equal(denied.status,403);
   const anonymous=await app.request(`https://orbit.test${base}/${marketing.saved.id}/submissions`);assert.equal(anonymous.status,401);
   await call(`/api/v1/records/contact/${submission.contact_id}`,'DELETE',{confirmed:true});
