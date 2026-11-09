@@ -1,6 +1,6 @@
 import {AccessService} from '../access/service';
 import {deny} from '../access/errors';
-import {fullOperatorFence} from '../access/identity-class';
+import {fullOperatorFence,isFullOperator} from '../access/identity-class';
 import type {ActorContext, SqlStatement} from '../../shared/expansion-contracts';
 import type {ResourceContext, ToolContext} from '../../../base/modules/agent-door/index.ts';
 import {orbitPeople,nativePersonAdmission} from './people';
@@ -30,6 +30,14 @@ export class AgentAccess extends AccessService {
       this.grantsAtAdmission.set(c,grant);
     }
     return c;
+  }
+  /** Installation security settings require the native full-operator class at admission and commit. */
+  async fullOperator():Promise<ActorContext> {
+    if(this.who.clientId?.startsWith('orbit-delegation:'))deny('Selected record authority cannot change installation security.');
+    const actor=await this.context();
+    if(actor.principal.kind!=='operator'||!await isFullOperator(this.db,actor.principal.operatorId))deny();
+    this.addDependencyFences(actor,fullOperatorFence(actor),'native-class');
+    return actor;
   }
   override async refreshContext(c: ActorContext) {
     if (!this.contexts.has(c)) deny('Native agent context required.');

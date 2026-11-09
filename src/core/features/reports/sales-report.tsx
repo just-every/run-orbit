@@ -26,8 +26,9 @@ export function SalesReportPage({workspace,catalog,id,search,builtIn}:{workspace
  // Defaults stay out of the address; a period, a version and a reopened result replace it, so Back returns to the index.
  const address=(next:ReportSearch):ReportSearch=>({...next.version?{version:next.version}:{},...next.result?{result:next.result}:{},...next.from&&next.through&&(next.from!==defaults.from||next.through!==defaults.through)?{from:next.from,through:next.through}:{}});
  const go=(next:ReportSearch)=>void navigate({to:'/app/reports/$id',params:{id},search:address(next),replace:true,resetScroll:false});
- // A version, a reopened result or a recompute chosen in Report options shows on the page, so the drawer closes.
- useEffect(()=>setOptions(false),[search.version,search.result]);
+ // Version links close the drawer; reopen and recompute close it in their own handlers below.
+ // Saving publishes the result before its address settles: that later URL update must not dismiss options opened since.
+ useEffect(()=>setOptions(false),[search.version]);
  // The open version: the address's, else the built-in's exact saved version, else the newest the viewer can see.
  useEffect(()=>{
   if(search.result)return;

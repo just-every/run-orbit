@@ -2,6 +2,7 @@ import {workflowCopyErasureJourney} from './workflow-copy-erasure-journey';
 import {workflowFormJourney} from './workflow-form-journey';
 import {workflowSafetyJourney} from './workflow-safety-journey';
 import {workflowRecordJourney} from './workflow-record-journey';
+import {workflowUndoJourney} from './workflow-undo-journey';
 import assert from 'node:assert/strict';
 import {createApp} from './app';
 import type {CaptureFixture} from './capture-fixture';
@@ -64,5 +65,6 @@ export async function workflowJourney(f:CaptureFixture){
 
  await workflowCopyErasureJourney({db,operator:f.operator,request:(path:string,body?:unknown,method?:string)=>app.request(`https://orbit.test${path}`,{method:method??(body===undefined?'GET':'POST'),headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})})});
  await workflowFormJourney({db,operator:f.operator,cookie:f.cookie});
+ await workflowUndoJourney({db,operator:f.operator,process,otherCookie:`__Host-orbit_session=${otherSession.token}`,request:(path:string,body?:unknown,method?:string,cookie?:string)=>app.request(`https://orbit.test${path}`,{method:method??(body===undefined?'GET':'POST'),headers:{cookie:cookie??f.cookie,origin:'https://orbit.test','content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})})});
 
 }

@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import type {CaptureFixture} from './capture-fixture';
 import {isolatedDatabase} from './isolated-database';
 import {localArchiveRoundTrip} from './capture-privacy-archive';
+import {proveOptOutArchive,type OptOutArchive} from './opt-out-archive';
 
 /** The local CLI's real transfer engine must strip approval just like Records HTTP. */
-export async function proveLocalSalesArchive(source:CaptureFixture){
+export async function proveLocalSalesArchive(source:CaptureFixture,optOut:OptOutArchive,setTime:(at:number)=>void){
  const target=await isolatedDatabase();
  try{
   const messages=async(db:D1Database)=>(await db.prepare('SELECT * FROM outbound_messages ORDER BY id').all<Record<string,unknown>>()).results;
@@ -17,6 +18,7 @@ export async function proveLocalSalesArchive(source:CaptureFixture){
   });
   const workflowBefore=await workflows(source.db);
   await localArchiveRoundTrip(source.db,target.db);
+  await proveOptOutArchive(source.db,target.db,optOut,setTime,'one-click');
   const after=await messages(target.db);assert.equal(after.length,before.length);
   for(const row of before){const restored=after.find(candidate=>candidate.id===row.id);assert.ok(restored);if(row.state==='scheduled'){assert.equal(restored.state,'cancelled');assert.ok(String(restored.failure).includes('review'));assert.deepEqual(restored,{...row,state:'cancelled',failure:restored.failure});}else assert.deepEqual(restored,row);}
   assert.deepEqual(await messages(source.db),before,'export leaves the source installation approval unchanged');
