@@ -39,7 +39,7 @@ function changedText(before:Record<string,any>,after:Record<string,any>,definiti
 }
 export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
- async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[]}={}){
+ async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[];undoOf?:string}={}){
   const before=id?await requireRecord(this.db,kind,id):null;
   const links=kind==='opportunity'&&before?(await this.db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results:[];
   let source=input;
@@ -115,8 +115,8 @@ export class RecordsRepository extends RecordSeedRepository {
    statements.push(this.db.prepare('DELETE FROM opportunity_contacts WHERE opportunity_id=? AND contact_id NOT IN(SELECT value FROM json_each(?))').bind(id,JSON.stringify(contacts)),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE opportunity_id=?').bind(id));
    for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,contact,contact===primary?1:0,now));
    statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
-   for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?stageMovement:{previous:before[field],current:data[field]}));
-   if(before&&before.stage_id!==data.stage_id)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
+   for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?{...stageMovement,...(options.undoOf?{undoOf:options.undoOf}:{})}:{previous:before[field],current:data[field]}));
+   if(before&&before.stage_id!==data.stage_id&&!options.undoOf)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
   }
   if(kind==='contact'&&before&&Object.hasOwn(data,'company_id'))statements.push(...contactPrimaryCompanyActivity(this.db,actor,id,before.company_id??null,data.company_id??null,now));
   if(kind==='contact')statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Contact set do-not-contact',updated_at=? WHERE contact_id=? AND state='scheduled' AND EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')").bind(now,id,id));

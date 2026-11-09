@@ -47,6 +47,22 @@ function reconcileExport(view:any){
 const totals=(view:any,measure:string)=>Object.fromEntries(view.sections.find((part:any)=>part.measure===measure).totals.map((cell:any)=>[cell.key,cell.value]));
 async function download(page:Page,scope:Locator,path:string){const downloading=page.waitForEvent('download');await scope.getByRole('link',{name:'Export sales result',exact:true}).first().click();await (await downloading).saveAs(path);return JSON.parse(await readFile(path,'utf8'));}
 
+/** Hold only the save's address transition, after the genuine snapshot response. This makes the ordering deterministic:
+ * the operator can open saved history before the router finishes publishing the saved-result search parameter. */
+type SavedNavigationWindow=Window&{__TSR_ROUTER__:{navigate:(options:{search?:{result?:string}})=>Promise<void>};savedSalesNavigation?:{release:()=>void;done?:Promise<void>}};
+async function deferSavedNavigation(page:Page){
+ await page.evaluate(()=>{
+  const w=window as SavedNavigationWindow,router=w.__TSR_ROUTER__,navigate=router.navigate;
+  let release!:()=>void;const held=new Promise<void>(resolve=>{release=resolve;}),state:{release:()=>void;done?:Promise<void>}={release};
+  w.savedSalesNavigation=state;
+  router.navigate=options=>{
+   if(!options.search?.result)return navigate(options);
+   router.navigate=navigate;state.done=held.then(()=>navigate(options));return state.done;
+  };
+ });
+ return ()=>page.evaluate(async()=>{const w=window as SavedNavigationWindow,state=w.savedSalesNavigation;if(!state?.done)throw new Error('Saving must navigate to its saved result.');state.release();await state.done;await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));delete w.savedSalesNavigation;});
+}
+
 export async function salesReportJourney({browser,worker,ownerCookie,seller,seed,disclosed,directory}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string;email:string;displayName?:string};seed:Seed;disclosed:Record<number,string>;directory:string}){
  const call=async(cookie:string,path:string,method='GET',body?:unknown)=>{const response=await emittedRequest(worker,cookie,path,method,body),text=await response.text();assert.ok(response.ok,`${method} ${path}: ${response.status} ${text}`);return text?JSON.parse(text):null;};
  const context=async(width:number,cookie:string)=>{const created=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}});return {created,errors:watchBrowser(created),page:await created.newPage()};};
@@ -97,8 +113,13 @@ export async function salesReportJourney({browser,worker,ownerCookie,seller,seed
   // Every total and every reason opens the exact records behind it, and they reconcile to the figure shown.
   for(const part of await result.locator('.sales-section').all())await reconcile(part,part.locator('.sales-totals button'));
   await reconcile(reasons,reasons.getByRole('region',{name:'Won and lost reasons by outcome · reason'}).getByRole('button'));
+  const finishSavedNavigation=await deferSavedNavigation(page);
   await page.getByRole('button',{name:'Save result',exact:true}).click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();
-  await page.getByRole('button',{name:'Report options',exact:true}).click();const history=page.getByRole('region',{name:'Saved sales results'});await expect(history.locator('ol > li')).toHaveCount(1);
+  await page.getByRole('button',{name:'Report options',exact:true}).click();const history=page.getByRole('region',{name:'Saved sales results'});
+  await expect(history.locator('ol > li')).toHaveCount(1);
+  await finishSavedNavigation();await expect(page).toHaveURL(/[?&]result=[a-z0-9-]+/);
+  // The completed address transition must keep the already-open drawer and its saved result.
+  await expect(page.getByRole('dialog',{name:'Report options',exact:true})).toBeVisible();await expect(history.locator('ol > li')).toHaveCount(1);
   for(const text of ['America/New_York','USD','Monthly buckets on local calendar months','Saved result measured'])await expect(history).toContainText(text);
   const saved=await download(page,history,join(directory,'sales-report-1440.json'));reconcileExport(saved);await page.keyboard.press('Escape');
   assert.deepEqual([saved.saved,saved.currency,saved.timezone,saved.period.fromMonth,saved.period.throughMonth,saved.definition.pipelineIds],[true,'USD','America/New_York',months.first,months.current,[seed.pipelines.newBusiness,seed.pipelines.renewals]]);
