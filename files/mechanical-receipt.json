@@ -1,0 +1,13 @@
+{
+  "views_write": 0,
+  "views_check": 0,
+  "lock_write": 0,
+  "lock_check": 0,
+  "commands": {
+    "views_write": "node src/base/contract-docs.mjs write",
+    "views_check": "node src/base/contract-docs.mjs check",
+    "lock_write": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "lock_check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+  },
+  "generated_views_equal_main": true
+}

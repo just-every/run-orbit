@@ -1,0 +1,52 @@
+{
+  "repository": "just-every/run-orbit",
+  "head_sha": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+  "requests": [
+    {
+      "call": 1,
+      "at": "2026-11-09T16:27:51.793676+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=79a9391381de6a2a99cb4d4e42298e468d52a12d&per_page=100",
+      "exit": 0
+    },
+    {
+      "call": 2,
+      "at": "2026-11-09T16:32:51.903610+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42654945029 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0
+    },
+    {
+      "call": 3,
+      "at": "2026-11-09T16:42:51.438864+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42654945029 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0
+    },
+    {
+      "call": 4,
+      "at": "2026-11-09T16:52:51.573282+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42654945029 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0
+    }
+  ],
+  "status": "success",
+  "run": {
+    "id": 42654945029,
+    "name": "Verify",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42654945029"
+  },
+  "calls_used": 4,
+  "discovered_runs": [
+    {
+      "id": 42654945029,
+      "name": "Verify",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42654945029"
+    }
+  ]
+}

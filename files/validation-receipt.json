@@ -1,0 +1,88 @@
+{
+  "build": {
+    "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "typecheck": {
+    "command": "cloud_run timeout 180 pnpm run typecheck",
+    "exit": 0
+  },
+  "first_party": {
+    "command": "cloud_run timeout 180 npx -y @runeditrun/rer check --profile first-party",
+    "exit": 0
+  },
+  "legacy_native_before": {
+    "head": "7cc5fda81b7815ce004bba30b14c16dfa488be67",
+    "exit": 1,
+    "reason": "false accepted inquiry basis despite artifactContainsDisclosure=false"
+  },
+  "legacy_browser_before": {
+    "head": "7cc5fda81b7815ce004bba30b14c16dfa488be67",
+    "exit": 1,
+    "reason": "unshown wording rendered rather than no-basis state"
+  },
+  "legacy_native_after": {
+    "exit": 0,
+    "basis": null,
+    "get": 200,
+    "post": 200,
+    "new_contactability": "do_not_contact"
+  },
+  "browser": {
+    "command": "cloud_run timeout 600 node --import tsx /tmp/orbit-forms-browser.mjs ../packet/browser identity",
+    "exit": 0,
+    "journeys": [
+      "formLegacyBasisBrowserJourney",
+      "formIdentityBrowserJourney"
+    ],
+    "screenshots": 24,
+    "axe_receipts": 24,
+    "serious_critical": 0,
+    "page_errors": 0,
+    "unexpected_console_errors": 0,
+    "proof_widths": [
+      1440,
+      390
+    ]
+  },
+  "forms_native_suite": {
+    "status": "passed",
+    "cases": 4,
+    "pass": 4,
+    "fail": 0,
+    "skipped": 0,
+    "exit": 0,
+    "duration_ms": 1248102.573881,
+    "command": "cloud_run timeout 3600 node --import tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+    "node": "22.20.0",
+    "node_options": [
+      "--max-old-space-size=4096",
+      "--max-semi-space-size=64"
+    ],
+    "archive_deadline_ms": 30000,
+    "previous_default_memory_log": "native-default-memory.log"
+  },
+  "suite_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "forms_basis": {
+    "command": "cloud_run timeout 240 node --import tsx /tmp/orbit-forms-basis.mjs",
+    "exit": 0,
+    "journey": "formsBasisJourney"
+  },
+  "mapped_sol_memory_comparison": {
+    "head": "7cc5fda81b7815ce004bba30b14c16dfa488be67",
+    "command": "cloud_run timeout 1800 node --import tsx /tmp/orbit-mapped-journey.mjs",
+    "node": "22.20.0",
+    "node_options": [
+      "--max-old-space-size=4096",
+      "--max-semi-space-size=64"
+    ],
+    "exit": 0,
+    "archive_deadline_ms": 30000,
+    "assertions_unchanged": true
+  },
+  "tested_tree": "08b4be232bf716454a9adfcd2765d7c44ed2cc3f"
+}

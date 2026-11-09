@@ -1,0 +1,37 @@
+PROBE FORM-003 legacy observed: {"pageStatus":200,"submitStatus":200,"artifactContainsDisclosure":false,"basis":{"kind":"inquiry","wording":"By submitting this enquiry, you ask us to follow up one-to-one about your request. This does not subscribe you to marketing.","accepted":true,"formRevision":1,"artifactHash":"0477e0ba2f5f956dadda971b1454aa80b4fcbbd29b8735e3a1f56d04c82eb282","occurredAt":"2026-11-09T15:22:34.632Z"},"contactability":"contactable"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: a retained page without a disclosure records no accepted inquiry basis
++ actual - expected
+
++ {
++   accepted: true,
++   artifactHash: '0477e0ba2f5f956dadda971b1454aa80b4fcbbd29b8735e3a1f56d04c82eb282',
++   formRevision: 1,
++   kind: 'inquiry',
++   occurredAt: '2026-11-09T15:22:34.632Z',
++   wording: 'By submitting this enquiry, you ask us to follow up one-to-one about your request. This does not subscribe you to marketing.'
++ }
+- null
+
+    at formsLegacyBasisJourney (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/sol-probe/newtests/t096/forms-legacy-basis-journey.ts:18:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (/tmp/orbit-legacy-native.mjs:4:1) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    kind: 'inquiry',
+    wording: 'By submitting this enquiry, you ask us to follow up one-to-one about your request. This does not subscribe you to marketing.',
+    accepted: true,
+    formRevision: 1,
+    artifactHash: '0477e0ba2f5f956dadda971b1454aa80b4fcbbd29b8735e3a1f56d04c82eb282',
+    occurredAt: '2026-11-09T15:22:34.632Z'
+  },
+  expected: null,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0

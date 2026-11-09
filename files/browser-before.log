@@ -1,0 +1,224 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByText('No contact basis recorded.', { exact: true })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByText('No contact basis recorded.', { exact: true }) with timeout 5000ms
+  - waiting for getByText('No contact basis recorded.', { exact: true })
+
+    at captureRawStack (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeVisible (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at formLegacyBasisBrowserJourney (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/sol-probe/newtests/t096/browser-form-legacy-basis.ts:37:98)
+    at async <anonymous> (/tmp/orbit-forms-browser.mjs:4:1) {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByText('No contact basis recorded.', { exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByText('No contact basis recorded.', { exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByText('No contact basis recorded.', { exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByText('No contact basis recorded.', { exact: true }) with timeout 5000ms`,
+      "  - waiting for getByText('No contact basis recorded.', { exact: true })"
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- link "Skip to content":\n' +
+      '  - /url: "#operator-main"\n' +
+      '- banner:\n' +
+      '  - link "Orbit home":\n' +
+      '    - /url: /app\n' +
+      '    - text: Orbit\n' +
+      '  - navigation "Settings menu":\n' +
+      '    - link "NOW":\n' +
+      '      - /url: /app\n' +
+      '    - link "Workspace":\n' +
+      '      - /url: /app/settings/workspace\n' +
+      '    - link "Team":\n' +
+      '      - /url: /app/settings/team\n' +
+      '    - link "Pipeline":\n' +
+      '      - /url: /app/settings/pipeline\n' +
+      '    - link "Capture":\n' +
+      '      - /url: /app/settings/capture\n' +
+      '    - link "Mail":\n' +
+      '      - /url: /app/settings/mail\n' +
+      '    - link "Forms":\n' +
+      '      - /url: /app/settings/forms\n' +
+      '    - link "Integrations":\n' +
+      '      - /url: /app/settings/integrations\n' +
+      '    - link "Data":\n' +
+      '      - /url: /app/settings/data\n' +
+      '  - button "Sign out"\n' +
+      '- main:\n' +
+      '  - paragraph: Settings\n' +
+      '  - heading "Forms" [level=1]\n' +
+      '  - region "Forms":\n' +
+      '    - heading "Fixed contact form and landing page" [level=2]\n' +
+      '    - paragraph: Write the text, compile the exact page, then approve and publish that version. Submissions create a contact and a timeline signal, and a new enquirer also gets an opportunity in NOW unless you turn that off below. They send no messages.\n' +
+      '    - text: Page title\n' +
+      '    - textbox "Page title"\n' +
+      '    - text: Page heading\n' +
+      '    - textbox "Page heading"\n' +
+      '    - text: Form title\n' +
+      '    - textbox "Form title"\n' +
+      '    - text: Page text\n' +
+      '    - textbox "Page text"\n' +
+      '    - text: Optional consent wording\n' +
+      '    - textbox "Optional consent wording"\n' +
+      '    - paragraph: Leave this blank to make new enquiries contactable. If you add wording, new contacts are contactable only when the visitor checks it. Existing Do not contact and unsubscribe holds are kept.\n' +
+      '    - group "Visitor fields and saved properties":\n' +
+      '      - text: Visitor fields and saved properties\n' +
+      '      - paragraph: Empty saved properties are filled. Different populated contact and company properties become proposals in Capture. Existing email identities, company domains and deal properties stay unchanged.\n' +
+      '      - group "Field 1":\n' +
+      '        - text: Field 1 Field label\n' +
+      '        - textbox "Field label": Name\n' +
+      '        - text: Field identifier\n' +
+      '        - textbox "Field identifier": name\n' +
+      '        - text: Field type\n' +
+      '        - combobox "Field type":\n' +
+      '          - option "Text" [selected]\n' +
+      '          - option "Picklist"\n' +
+      '          - option "Hidden fixed value"\n' +
+      '          - option "Hidden page parameter"\n' +
+      '        - text: Save to\n' +
+      '        - combobox "Save to":\n' +
+      '          - option "Submission evidence"\n' +
+      '          - option "Contact" [selected]\n' +
+      '          - option "Company"\n' +
+      '          - option "New deal"\n' +
+      '        - text: Property\n' +
+      '        - combobox "Property":\n' +
+      '          - option "Name" [selected]\n' +
+      '          - option "Phone"\n' +
+      '          - option "Job title"\n' +
+      '          - option "Time zone"\n' +
+      '          - option "Custom property"\n' +
+      '        - checkbox "Required" [checked]\n' +
+      '        - text: Required\n' +
+      '        - button "Remove field"\n' +
+      '      - group "Field 2":\n' +
+      '        - text: Field 2 Field label\n' +
+      '        - textbox "Field label": Email\n' +
+      '        - text: Field identifier\n' +
+      '        - textbox "Field identifier" [disabled]: email\n' +
+      '        - text: Field type\n' +
+      '        - combobox "Field type" [disabled]:\n' +
+      '          - option "Text" [selected]\n' +
+      '          - option "Picklist"\n' +
+      '          - option "Hidden fixed value"\n' +
+      '          - option "Hidden page parameter"\n' +
+      '        - text: Save to\n' +
+      '        - combobox "Save to" [disabled]:\n' +
+      '          - option "Submission evidence"\n' +
+      '          - option "Contact" [selected]\n' +
+      '          - option "Company"\n' +
+      '          - option "New deal"\n' +
+      '        - text: Property\n' +
+      '        - combobox "Property" [disabled]:\n' +
+      '          - option "Name"\n' +
+      '          - option "Email" [selected]\n' +
+      '          - option "Phone"\n' +
+      '          - option "Job title"\n' +
+      '          - option "Time zone"\n' +
+      '          - option "Custom property"\n' +
+      '        - checkbox "Required" [checked] [disabled]\n' +
+      '        - text: Required\n' +
+      '        - button "Remove field" [disabled]\n' +
+      '      - group "Field 3":\n' +
+      '        - text: Field 3 Field label\n' +
+      '        - textbox "Field label": Message\n' +
+      '        - text: Field identifier\n' +
+      '        - textbox "Field identifier": message\n' +
+      '        - text: Field type\n' +
+      '        - combobox "Field type":\n' +
+      '          - option "Text" [selected]\n' +
+      '          - option "Picklist"\n' +
+      '          - option "Hidden fixed value"\n' +
+      '          - option "Hidden page parameter"\n' +
+      '        - text: Save to\n' +
+      '        - combobox "Save to":\n' +
+      '          - option "Submission evidence" [selected]\n' +
+      '          - option "Contact"\n' +
+      '          - option "Company"\n' +
+      '          - option "New deal"\n' +
+      '        - checkbox "Required"\n' +
+      '        - text: Required\n' +
+      '        - button "Remove field"\n' +
+      '      - button "Add visitor field"\n' +
+      '    - checkbox "Match or create a company by exact business email domain"\n' +
+      '    - text: Match or create a company by exact business email domain\n' +
+      "    - paragraph: Shared freemail domains are excluded. Company fields can provide a website domain instead. An existing contact's company is kept.\n" +
+      '    - text: New deal pipeline and stage\n' +
+      '    - combobox "New deal pipeline and stage":\n' +
+      '      - option "Sales pipeline · New" [selected]\n' +
+      '    - group "Contact owner":\n' +
+      '      - text: Contact owner Assignment\n' +
+      '      - combobox "Assignment":\n' +
+      '        - option "Unassigned queue" [selected]\n' +
+      '        - option "One fixed operator"\n' +
+      '        - option "Round robin among selected operators"\n' +
+      '      - text: Selected operators\n' +
+      '      - listbox "Selected operators":\n' +
+      '        - option "Owner"\n' +
+      '      - paragraph: An existing contact owner is always kept. Fixed assignment needs one selected active full operator. Round robin follows the selected operators in the displayed order, skipping anyone inactive; no available member leaves the enquiry unassigned.\n' +
+      '    - checkbox "Create an opportunity in NOW for each new enquirer" [checked]\n' +
+      '    - text: Create an opportunity in NOW for each new enquirer Optional Turnstile site key\n' +
+      '    - textbox "Optional Turnstile site key"\n' +
+      '    - paragraph: Leave blank to keep third-party verification off. A site key enables Cloudflare Turnstile after the visitor first interacts; configure the matching secret on this installation before publishing.\n' +
+      '    - button "Save form text"\n' +
+      '    - status: Submissions loaded.\n' +
+      '    - heading "Saved forms and submissions" [level=2]\n' +
+      '    - heading "Contact us" [level=3]\n' +
+      '    - paragraph: Revision 1\n' +
+      '    - button "Edit saved form"\n' +
+      '    - button "Reopen latest publication"\n' +
+      '    - button "Read submissions"\n' +
+      '    - button "Read spam and refusals"\n' +
+      '    - heading "Retained production enquiries" [level=3]\n' +
+      '    - paragraph: Revision 1\n' +
+      '    - button "Edit saved form"\n' +
+      '    - button "Reopen latest publication"\n' +
+      '    - button "Read submissions"\n' +
+      '    - button "Read spam and refusals"\n' +
+      '    - article:\n' +
+      '      - paragraph: Submitted 9 Nov 2026, 3:22 pm\n' +
+      '      - paragraph:\n' +
+      '        - link "Open contact":\n' +
+      '          - /url: /app/contacts/01M70EF98EX9J1TBEV45EHFV03\n' +
+      '      - region "Contact basis":\n' +
+      '        - heading "Inquiry follow-up" [level=4]\n' +
+      '        - paragraph: By submitting this enquiry, you ask us to follow up one-to-one about your request. This does not subscribe you to marketing.\n' +
+      '        - paragraph: One-to-one follow-up requested · Form revision 1\n' +
+      '        - paragraph: Recorded 9 Nov 2026, 3:22 pm\n' +
+      '        - paragraph: Existing sending stops always apply.\n' +
+      '      - term: Name\n' +
+      '      - definition: legacy inquiry person\n' +
+      '      - term: Email\n' +
+      '      - definition: legacy-browser@manufacturer.test\n' +
+      '      - term: Message\n' +
+      '      - definition: Please discuss our production rollout.\n' +
+      '  - region "Websites that may embed your forms":\n' +
+      '    - heading "Websites that may embed your forms" [level=2]\n' +
+      '    - paragraph: No website may embed your forms yet.\n' +
+      '    - text: Add a website\n' +
+      '    - textbox "Add a website":\n' +
+      '      - /placeholder: https://www.your-company.com'
+  }
+}
+
+Node.js v22.20.0

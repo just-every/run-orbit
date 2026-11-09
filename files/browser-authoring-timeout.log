@@ -1,0 +1,54 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 }) with timeout 5000ms
+  - waiting for getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 })
+
+    at captureRawStack (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeVisible (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at formLegacyBasisBrowserJourney (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/browser-form-legacy-basis.ts:40:156)
+    at async <anonymous> (/tmp/orbit-forms-browser.mjs:4:1) {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 }) with timeout 5000ms`,
+      "  - waiting for getByRole('heading', { name: 'legacy inquiry person', exact: true, level: 1 })"
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- link "Skip to content":\n' +
+      '  - /url: "#operator-main"\n' +
+      '- banner:\n' +
+      '  - link "Orbit home":\n' +
+      '    - /url: /app\n' +
+      '    - text: Orbit\n' +
+      '  - button "Menu"\n' +
+      '- main:\n' +
+      '  - heading "Contact" [level=1]\n' +
+      '  - status: Loading contact…'
+  }
+}
+
+Node.js v22.20.0

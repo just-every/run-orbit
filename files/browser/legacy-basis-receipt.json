@@ -1,0 +1,34 @@
+{
+  "prior": "e14862416147c15b854df69f6decc0a315f67385",
+  "assertionWidth": 1440,
+  "screenshots": [
+    1440,
+    390
+  ],
+  "results": [
+    {
+      "kind": "legacy",
+      "pageStatus": 200,
+      "submitStatus": 200,
+      "artifactContainsDisclosure": false,
+      "basis": null,
+      "contactability": "do_not_contact"
+    },
+    {
+      "kind": "current",
+      "pageStatus": 200,
+      "submitStatus": 200,
+      "artifactContainsDisclosure": true,
+      "basis": {
+        "kind": "inquiry",
+        "wording": "By submitting this enquiry, you ask us to follow up one-to-one about your request. This does not subscribe you to marketing.",
+        "accepted": true,
+        "formRevision": 1,
+        "artifactHash": "8ccd537010509f464a5ea075542013929d2e74718ffd81695741b310c7529c3d",
+        "occurredAt": "2026-11-09T15:31:36.786Z"
+      },
+      "contactability": "contactable"
+    }
+  ],
+  "artifactUnchanged": true
+}

@@ -1,0 +1,24 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-form003-fix-1",
+  "head": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+  "tree": "08b4be232bf716454a9adfcd2765d7c44ed2cc3f",
+  "parents": [
+    "7cc5fda81b7815ce004bba30b14c16dfa488be67",
+    "e583ad5a590c72eae67ebf736441a564db97e15d"
+  ],
+  "push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-form003-fix-1",
+  "push_exit": 0,
+  "push_attempts": 1,
+  "remote_head_verified": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+  "working_tree_clean": true,
+  "tested_tree_matches_commit": true,
+  "checked_at": "2026-11-09T16:27:53.287625+00:00",
+  "pr": null,
+  "landing_claim": false,
+  "ready": true,
+  "verify_run_id": 42654945029,
+  "verify_conclusion": "success",
+  "verify_head": "79a9391381de6a2a99cb4d4e42298e468d52a12d",
+  "blockers": []
+}

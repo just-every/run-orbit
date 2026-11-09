@@ -1,0 +1,56 @@
+TAP version 13
+# (node:8881) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":420,"parts":50,"observations":[{"operation":"POST /exports","milliseconds":5162.897240999999,"status":201},{"operation":"GET /exports/01M70FHMNQV1B12RRBRRBM05XY","milliseconds":80.06764200000907,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":11808.380776000005,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3340.1638680000033,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3489.4777219999814,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3763.7194049999816,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3673.2158310000086,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3600.4466439999815,"status":200},{"operation":"POST /exports/01M70FHMNQV1B12RRBRRBM05XY/advance","milliseconds":3339.0671340000117,"status":200},{"operation":"GET /exports/01M70FHMNQV1B12RRBRRBM05XY/download","milliseconds":196.76374100000248,"status":200}]}
+# Subtest: FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+not ok 1 - FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+  ---
+  duration_ms: 219854.775722
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/forms-native.test.ts:1:888'
+  failureType: 'testCodeFailure'
+  error: 'Native archive request exceeds its unchanged 30-second ceiling: POST /imports'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    request (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/archive-http-proof.ts:7:608)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async httpRestore (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/archive-http-proof.ts:11:147)
+    async formsMappedCustody (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/forms-mapped-custody.ts:11:139)
+    async formsMappedJourney (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/forms-mapped-journey.ts:92:3)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-form003-fix-1/run-orbit/newtests/t096/forms-native.test.ts:32:28)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay
+ok 2 - public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay
+  ---
+  duration_ms: 24902.118703
+  type: 'test'
+  ...
+# PROBE FORM-002 consent and authority: native held release preserves true, false and omitted consent; stopped source and revoked authorization refuse without writes; fresh exact review permits release
+# PROBE FORM-002 abuse boundaries: signed fill age and key binding, network and form windows, trusted metadata and Turnstile action, hostname and outage refusals preserve domain inventories; valid verified intake and replay succeed once
+# Subtest: FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once
+ok 3 - FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once
+  ---
+  duration_ms: 238603.575251
+  type: 'test'
+  ...
+# Subtest: existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority
+ok 4 - existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority
+  ---
+  duration_ms: 27061.623078
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 520339.527802
