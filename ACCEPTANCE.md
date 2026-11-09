@@ -8,12 +8,12 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 37 | 117 | 24 | 178 |
+| Core | 38 | 116 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 37 | 135 | 32 | 204 |
+| Full target | 38 | 134 | 32 | 204 |
 
-Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
+Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. RECORD-009 was proved through the native duplicates and merge routes, with keyless candidates, from code and tests at commit `86defb0d0186a64a54091ae8b00725d0515577f1` (8 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
 ## Core
 
@@ -167,15 +167,15 @@ Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-IN
 
 #### RECORD-009 — Duplicate candidates
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
+Core · published · **done** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003, BASE-DATA-003, BASE-INPUT-003
 
 **Requirement.** Orbit lists contacts sharing a name across companies, including contacts with no company, and companies sharing a name, as duplicate candidates; names are compared lowercased with runs of whitespace collapsed. A candidate is a review item only: nothing is merged, altered, or hidden until an operator completes RECORD-004.
 
 **Acceptance.**
 1. Create same-name contacts across companies and keyless records; review candidates without a mutation, then complete a chosen merge explicitly.
 
-**Evidence.** `src/core/features/records/import-merge.ts`; `tests/core/records-merge-review.test.ts`
-**Gap.** Unasserted in the carried evidence: keyless candidate listed. Asserted: same-name contacts across companies listed; same-name companies listed; review changes no records; chosen merge retires exactly one record.
+**Evidence.** Acceptance 1: `tests/core/records-merge-review.test.ts` — RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews (same-name contacts across two companies and with no company, and same-name companies, listed through the duplicates route with names compared lowercased and whitespace-collapsed; keyless contacts and companies with no email or domain listed together with a keyed same-name record; reviewing candidates leaves every record unchanged and visible; a chosen merge retires exactly one record and leaves the keyed same-name record untouched and still a candidate); `src/core/features/records/import-merge.ts`
+**Gap.** None.
 
 #### RECORD-010 — Manual entries
 
