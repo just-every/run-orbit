@@ -2398,8 +2398,8 @@ FORM-003 is proved by the native form journey and the emitted hosted, framed and
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 28 | 51 | 0 | 79 |
-| Target and push further | 8 | 85 | 32 | 125 |
-| All | 36 | 136 | 32 | 204 |
+| Target and push further | 9 | 84 | 32 | 125 |
+| All | 37 | 135 | 32 | 204 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |

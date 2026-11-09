@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 36 | 118 | 24 | 178 |
+| Core | 37 | 117 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 36 | 136 | 32 | 204 |
+| Full target | 37 | 135 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -1382,7 +1382,7 @@ Core · target · **partial** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PU
 
 #### FORM-003 — Form customer identity and consent
 
-Core · target · **partial** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PUBLIC-002, BASE-INPUT-001 · Rules D-1
+Core · target · **done** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PUBLIC-002, BASE-INPUT-001 · Rules D-1
 
 **Requirement.** A submission creates or updates by exact email key (RECORD-003). A new person becomes a contact; a company is linked or created from a non-free-mail domain; and when the form says so, a deal is created in a chosen pipeline and stage (OPP-009). For an existing contact, values fill only empty fields, and changes to existing values wait as a reviewed proposal (CAPTURE-004). Consent is captured with the wording, form revision and time. A form with a marketing consent box makes the person contactable only when it is ticked. An inquiry-only form records the request as the basis for one-to-one sales follow-up, as disclosed on the form. An existing do-not-contact stop always wins.
 
@@ -1390,8 +1390,8 @@ Core · target · **partial** · From FORM-001 · Cites BASE-PUBLIC-001, BASE-PU
 1. Submit a new person and an existing contact with a changed name through hosted, framed and direct-post forms; create exact-key contact/company/deal associations and leave changed stored values untouched behind a reviewed proposal.
 2. Read back consent wording, revision and time; marketing checkbox and inquiry basis govern contactability while a prior stop always wins.
 
-**Evidence.** `src/core/features/forms/`; `src/core/features/forms/field-values.ts`; `src/core/features/forms/embed-code.ts`; `migrations/core/0055_form_assignment.sql`; `src/core/features/capture/proposals.ts`; `newtests/t096/forms-native.test.ts`; `newtests/t096/forms-mapped-journey.ts`; `newtests/t096/forms-mapped-custody.ts`; `newtests/t096/browser-form-mapping.ts`; `docs/retained-verification/FORM-001/`
-**Gap.** Implemented first slice: Reviewed fixed forms retain consent, atomic intake, honeypot, signed fill proof, per-form/network limits, optional Turnstile, counted refusals, erasable spam and exactly-once release. Allowlisted HTTPS direct posts use the same admission without cookies or tracking. Required and optional free-text and picklist fields map to contact/company/new-deal native and custom JSON properties; exact business domains link/create companies, chosen stages enter NOW, empty values fill and populated differences wait as CAPTURE-004 proposals. A picklist accepts only its reviewed choices. Hidden fields carry a fixed value from the reviewed definition or one declared query parameter, read from the hosted page address, copied from the embedding page by the generated framed embed or sent by a direct post; publication review lists them, and a saved definition change takes effect only after its new revision is compiled, reviewed and published. Forged choices, undeclared names and fixed-value overrides are refused as `invalid_fields` without a customer or proposal write. Existing contact owners remain; fixed, durable active-user round robin and unassigned rules record each choice and notify the selected full operator once per accepted submission. Team selection, team queues and team notifications inherit TEAM-005; explicit full-operator lists are used meanwhile. Lead/custom-object kinds inherit RECORD-014 and email/push delivery NOTIFY-003.
+**Evidence.** Point 1: `newtests/t096/browser-form-identity.ts` — formIdentityBrowserJourney, called by `newtests/t096/browser-journeys.test.ts`: hosted, framed and direct forms, exact identity, company and selected pipeline and stage, empty-field fill and reviewed name proposals at 1440 and 390. Point 2: `newtests/t096/forms-basis-journey.ts` — formsBasisJourney, called by `newtests/t096/forms-native.test.ts`: authenticated wording, revision and time readback, checkbox and inquiry contactability, prior stops, denied reads and erased replay; the emitted browser journey also reads both bases in Settings.
+**Gap.** None.
 
 #### FORM-004 — Form owner routing and sales follow-up
 
