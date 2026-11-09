@@ -14,14 +14,14 @@ import {formCompany} from './company-intake';
 import {formOpportunity} from './opportunity-intake';
 import {formAssignment,formAssignmentTimeline,formSubmissionNotice} from './assignment';
 import {contactBasis} from './contact-basis';
-export async function nativeCapture(db:D1Database,input:{form:FormDefinition;intake:FormIntake;formId:string;ownerId:string;operationId:string;artifactHash:string;payloadHash:string;consentOccurredAt?:string}){
+export async function nativeCapture(db:D1Database,input:{form:FormDefinition;intake:FormIntake;formId:string;ownerId:string;operationId:string;artifactHash:string;publishedHtml:string;payloadHash:string;consentOccurredAt?:string}){
  const {form,intake}=input,submitted=submittedFormValues(form,intake.values,intake.consent);
  const values=mappedFormValues(form.fields,submitted),email=String(values.contact.email??'');if(!email)throw new RecordError(400,'Enter a valid email address.');
  const matches=(await db.prepare("SELECT * FROM contacts WHERE email_key=? UNION SELECT c.* FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key=?").bind(email,email).all<Record<string,any>>()).results;
  if(matches.length>1)throw new RecordError(409,'This identity needs operator review before capture.');
- const at=new Date().toISOString(),basis=contactBasis(form,intake.consent,intake.revision,input.artifactHash,input.consentOccurredAt??at),existing=matches[0],statements:D1PreparedStatement[]=[],company=await formCompany(db,form,values.company,email,input.ownerId,at);
+ const at=new Date().toISOString(),basis=contactBasis(form,intake.consent,intake.revision,input.artifactHash,input.consentOccurredAt??at,input.publishedHtml),existing=matches[0],statements:D1PreparedStatement[]=[],company=await formCompany(db,form,values.company,email,input.ownerId,at);
  statements.push(...company.statements);
- const contactValues={...values.contact,contactability:!form.consentWording||intake.consent?'contactable':'do_not_contact',...(company.id&&!company.created?{company_id:company.id}:{})},saved=existing?null:await new RecordsRepository(db).prepareSave('contact',contactValues,input.ownerId,undefined,{ordinaryEdit:true});
+ const contactValues={...values.contact,contactability:basis?.accepted?'contactable':'do_not_contact',...(company.id&&!company.created?{company_id:company.id}:{})},saved=existing?null:await new RecordsRepository(db).prepareSave('contact',contactValues,input.ownerId,undefined,{ordinaryEdit:true});
  const contactId=existing?.id??saved!.id,submissionId=createId(),signalId=createId(),source=`form:${input.formId}`,event={eventId:submissionId,type:'form.submitted',subject:form.title,occurredAt:at,email,record:{type:'contact' as const,id:contactId}};
  const proposals=[...company.proposals];
  if(saved){statements.push(...saved.statements);if(company.id&&company.created)statements.push(db.prepare('UPDATE contacts SET company_id=?,updated_at=? WHERE id=?').bind(company.id,at,contactId));}
