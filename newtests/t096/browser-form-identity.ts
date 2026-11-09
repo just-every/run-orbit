@@ -5,6 +5,7 @@ import {fixture} from './fixture';
 import {emittedWorker,httpsBuyerSite} from './emitted-fixture';
 import {accessible,watchBrowser} from './browser-observations';
 import {formEmbedCode} from '../../src/core/features/forms/embed-code';
+import {undisclosedInquiry} from './undisclosed-inquiry-fixture';
 
 /** The three published doors, record associations and saved basis as an operator sees them. */
 export async function formIdentityBrowserJourney(directory:string){
@@ -12,6 +13,7 @@ export async function formIdentityBrowserJourney(directory:string){
  for(const width of [1440,390]){
   const f=await fixture();let worker:Awaited<ReturnType<typeof emittedWorker>>|undefined,buyer:Awaited<ReturnType<typeof httpsBuyerSite>>|undefined,browser:Browser|undefined;
   try{
+   const legacy=await undisclosedInquiry(f,`existing-inquiry-${width}`);
    worker=await emittedWorker(f.target);buyer=await httpsBuyerSite(worker.certificate);const origin=worker.origin;
    browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs,...buyer.browserArgs]});
    const owner=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}}),errors=watchBrowser(owner),page=await owner.newPage(),base='/api/v2/workspaces/workspace/forms';
@@ -63,10 +65,18 @@ export async function formIdentityBrowserJourney(directory:string){
      const submitted=inquiryPage.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname===`/api/public/forms/${inquiry.slug}`);await inquiryPage.getByRole('button',{name:'Submit enquiry',exact:true}).click();const response=await submitted;assert.equal(response.status(),200,await response.text());const receipt=await response.json(),rows=await call(`${base}/${inquiry.saved.id}/submissions`),submission=rows.find((row:any)=>row.id===receipt.submissionId),detail=await call(`/api/v1/records/contact/${submission.contact_id}`);assert.equal(submission.contact_basis.kind,'inquiry');assert.equal(submission.contact_basis.wording,disclosure);assert.equal(submission.contact_basis.formRevision,inquiry.saved.revision);assert.ok(Number.isFinite(Date.parse(submission.contact_basis.occurredAt)));assert.equal(detail.record.contactability,submission.contact_id===contacts[0]?'do_not_contact':'contactable');if(email.endsWith('gmail.com'))assert.equal(detail.record.company_id,null);
     }
    }finally{await visitor.close();}
+   const legacyVisitor=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true});try{
+    const legacyPage=await legacyVisitor.newPage();await legacyPage.goto(`/p/${legacy.slug}`);assert.equal(await legacyPage.locator('#inquiry-disclosure').count(),0);
+    await legacyPage.getByLabel('Name',{exact:true}).fill('Avery Patel');await legacyPage.getByLabel('Email',{exact:true}).fill([`synthetic-orbit-existing-${width}`,domain].join('@'));
+    await expect(legacyPage.getByRole('button',{name:'Submit enquiry',exact:true})).toBeEnabled();const submitted=legacyPage.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname===`/api/public/forms/${legacy.slug}`);await legacyPage.getByRole('button',{name:'Submit enquiry',exact:true}).click();const response=await submitted;assert.equal(response.status(),200,await response.text());await expect(legacyPage.getByRole('status')).toContainText('Your enquiry was received');
+    const receipt=await response.json(),rows=await call(`${base}/${legacy.saved.id}/submissions`),submission=rows.find((row:any)=>row.id===receipt.submissionId);assert.equal(submission.contact_basis,null);assert.equal((await call(`/api/v1/records/contact/${submission.contact_id}`)).record.contactability,'do_not_contact');
+    assert.equal(await (await legacyVisitor.request.get(`/p/${legacy.slug}`)).text(),legacy.compiled.html);await accessible(legacyPage,`identity-existing-inquiry-received-${width}`,directory);
+   }finally{await legacyVisitor.close();}
    await page.goto('/app/settings/forms');
    for(const form of [marketing,inquiry]){
     const row=page.locator('div.fold-row').filter({has:page.getByRole('heading',{name:form.form.title,exact:true})});await row.getByRole('button',{name:'Read submissions',exact:true}).click();const bases=page.getByRole('region',{name:'Contact basis',exact:true});await expect(bases).toHaveCount(form===marketing?6:3);await expect(bases.first()).toContainText(form===marketing?marketing.form.consentWording!:'One-to-one follow-up requested');await expect(bases.first()).toContainText(`Form revision ${form.saved.revision}`);await expect(bases.first()).toContainText('Recorded');await accessible(page,`identity-${form===marketing?'consent':'inquiry'}-readback-${width}`,directory);
    }
+   const legacyRow=page.locator('div.fold-row').filter({has:page.getByRole('heading',{name:legacy.saved.form.title,exact:true})});await legacyRow.getByRole('button',{name:'Read submissions',exact:true}).click();await expect(page.locator('article.fold-row')).toContainText('Avery Patel');await expect(page.getByRole('region',{name:'Contact basis',exact:true})).toHaveCount(0);await accessible(page,`identity-existing-inquiry-readback-${width}`,directory);
    await errors.check(directory,`identity-operator-${width}`);await owner.close();
   }finally{await browser?.close();await worker?.dispose();await buyer?.dispose();await f.close();}
  }
