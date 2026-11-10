@@ -14,7 +14,7 @@ export async function releasedDatabase(){
  await mkdir(migrations);
  for(const path of released)await writeFile(join(migrations,path.split('/').at(-1)!),git(['show',`v0.3.0:${path}`]),{mode:0o600});
  await writeFile(config,`name = "orbit-released-upgrade"\ncompatibility_date = "2026-09-08"\ncompatibility_flags = ["nodejs_compat"]\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "orbit-released-upgrade"\ndatabase_id = "00000000-0000-0000-0000-000000000001"\nmigrations_dir = ${JSON.stringify(migrations)}\n`,{mode:0o600});
- const migrate=()=>execFileSync(process.execPath,['node_modules/wrangler/bin/wrangler.js','d1','migrations','apply','DB','--local','--config',config,'--persist-to',state],{env:{...process.env,CI:'1'},timeout:120000,stdio:'pipe'});
+ const migrate=()=>execFileSync(process.execPath,['node_modules/wrangler/bin/wrangler.js','d1','migrations','apply','DB','--local','--config',config,'--persist-to',state],{env:{...process.env,CI:'1'},timeout:120000,stdio:'pipe',maxBuffer:268435456});
  const open=()=>getPlatformProxy<{DB:D1Database}>({configPath:config,persist:{path:join(state,'v3')},remoteBindings:false});
  let platform:Awaited<ReturnType<typeof open>>|undefined;
  try{migrate();platform=await open();}catch(error){await rm(directory,{recursive:true,force:true});throw error;}
