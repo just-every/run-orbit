@@ -83,6 +83,7 @@ export async function equalOperatorBrowser(){
      await accessible(shared,`team-shared-${record.kind}-${width}`,directory);
      const blocked=unshared.find(item=>item.kind===record.kind)!;
      guestErrors.allowDeniedResource(`${sharedPath}/${record.kind}/${blocked.id}`,403);
+     await unavailableSurvivesLateList(shared,record,blocked.id);
      await shared.goto(`/app/shared-records?kind=${record.kind}&id=${blocked.id}`);
      await expect(shared.getByRole('alert')).toContainText('Record is unavailable');
      await expect(shared.getByRole('region',{name:'Shared record details',exact:true})).toHaveCount(0);
@@ -129,4 +130,20 @@ async function createAndDelete(page:Page,kind:TeamRecord['kind'],name:string){
  await expect(page.getByLabel(titleLabel[kind],{exact:true})).toHaveValue(name);
  await page.getByRole('button',{name:`Delete ${kind}`,exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(new RegExp(`/app/${plural[kind]}$`));
  await expect(page.getByRole('link',{name,exact:true})).toHaveCount(0);
+}
+/** The list read lands after the open read's 403: the refusal must still be on screen once the list has rendered. */
+async function unavailableSurvivesLateList(page:Page,record:TeamRecord,blockedId:string){
+ let release!:()=>void;const held=new Promise<void>(resolve=>{release=resolve;});
+ const isList=(url:URL)=>url.pathname===sharedPath&&url.searchParams.get('kind')===record.kind;
+ await page.route(isList,async route=>{await held;await route.continue();});
+ try{
+  const refused=page.waitForResponse(response=>new URL(response.url()).pathname===`${sharedPath}/${record.kind}/${blockedId}`&&response.status()===403);
+  await page.goto(`/app/shared-records?kind=${record.kind}&id=${blockedId}`);await refused;
+  await expect(page.getByRole('alert')).toContainText('Record is unavailable');
+  const listed=page.waitForResponse(response=>isList(new URL(response.url())));
+  release();await listed;
+  await expect(page.getByRole('button',{name:record.name,exact:true})).toBeVisible();
+  await expect(page.getByRole('alert')).toContainText('Record is unavailable');
+  await expect(page.getByRole('region',{name:'Shared record details',exact:true})).toHaveCount(0);
+ }finally{release();await page.unroute(isList);}
 }

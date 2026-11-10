@@ -3731,7 +3731,7 @@
       "executable": false
     },
     "newtests/t096/team-operator-browser.ts": {
-      "sha256": "b5b4efdf43a2fa8cfbdd5aa986a43ed139900af988677bb00975130bbd785006",
+      "sha256": "8491f7e122ec10cd3eb67cc639071358b07b4f6e0e1664d14f3d0634680acf32",
       "executable": false
     },
     "newtests/t096/team-operator-doors.ts": {
@@ -5227,7 +5227,7 @@
       "executable": false
     },
     "src/core/features/access/shared-records.tsx": {
-      "sha256": "593d2b184332ed3680ba745bfe3963956ef78e66d93b1bae97180a4d216a5264",
+      "sha256": "fa24462c5bc9901e9d97c716202472a8b60e500ead4f7ce9598731194fbe8b6c",
       "executable": false
     },
     "src/core/features/access/workspace-reads.ts": {
