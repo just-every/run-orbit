@@ -3,6 +3,7 @@ import {Link,useNavigate} from '@tanstack/react-router';
 import {OperatorShell,OperatorState} from './operator-shell';
 import {RecordSearchField} from './record-search-field';
 import {recordPath} from './records-query';
+import {useHydrated} from './use-hydrated';
 import type {CustomerRecord} from './records-api';
 import './records.css';
 
@@ -12,7 +13,7 @@ const words={contact:{title:'New contact',create:'Create contact',identity:'emai
 /** Creating a contact or a company is one committed action: a few fields and one Create; the record then opens at its
  * own address in place of this page, with the caret in its first empty field. */
 export function RecordCreatePage({kind}:{kind:'contact'|'company'}){
- const navigate=useNavigate(),[values,setValues]=useState({name:'',email:'',primary_domain:''}),[company,setCompany]=useState<CustomerRecord|null>(null);
+ const navigate=useNavigate(),hydrated=useHydrated(),[values,setValues]=useState({name:'',email:'',primary_domain:''}),[company,setCompany]=useState<CustomerRecord|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[existing,setExisting]=useState<Existing|null>(null);
  async function create(event:FormEvent){
   event.preventDefault();setBusy(true);setError('');setExisting(null);
@@ -29,7 +30,7 @@ export function RecordCreatePage({kind}:{kind:'contact'|'company'}){
   }catch(e){setError((e as Error).message);}finally{setBusy(false);}
  }
  const taken=(field:Existing['field'])=>existing?.field===field?<p className="record-create__taken" role="alert">{existing.name} already uses this {words[kind].identity}. <Link to={recordPath[kind]} params={{id:existing.id}}>Open {existing.name}</Link></p>:null;
- const field=(name:'name'|'email'|'primary_domain',label:string,type='text',autoFocus=false)=><label>{label}<input type={type} autoFocus={autoFocus} maxLength={500} required={kind==='company'&&name==='name'} value={values[name]} onChange={e=>{setValues({...values,[name]:e.target.value});if(existing?.field===name)setExisting(null);}}/></label>;
+ const field=(name:'name'|'email'|'primary_domain',label:string,type='text',autoFocus=false)=><label>{label}<input type={type} autoFocus={autoFocus} maxLength={500} required={kind==='company'&&name==='name'} readOnly={!hydrated} value={values[name]} onChange={e=>{setValues({...values,[name]:e.target.value});if(existing?.field===name)setExisting(null);}}/></label>;
  return <OperatorShell title={words[kind].title}>
   <form className="operator-surface workbench-form record-create" onSubmit={create}>
    {field('name','Name','text',true)}
@@ -37,7 +38,7 @@ export function RecordCreatePage({kind}:{kind:'contact'|'company'}){
     <div className="record-create__company"><span className="record-create__label">Company</span>{company?<p className="record-link-picker__chip"><span>{company.name}</span><button type="button" className="operator-text-button" onClick={()=>setCompany(null)}>Change</button></p>:<RecordSearchField kind="company" label="Company" placeholder="Search companies" onChoose={setCompany}/>}</div>
    </>:<>{field('primary_domain','Website')}{taken('primary_domain')}</>}
    {error?<OperatorState kind="error">{error}</OperatorState>:null}
-   <button className="operator-button" disabled={busy}>{busy?'Creating…':words[kind].create}</button>
+   <button className="operator-button" disabled={busy||!hydrated}>{busy?'Creating…':words[kind].create}</button>
   </form>
  </OperatorShell>;
 }

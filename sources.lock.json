@@ -3731,7 +3731,7 @@
       "executable": false
     },
     "newtests/t096/team-operator-browser.ts": {
-      "sha256": "8491f7e122ec10cd3eb67cc639071358b07b4f6e0e1664d14f3d0634680acf32",
+      "sha256": "2177f6422e11dc3da6cdb897dbdb5717c3ec4cf36598c655184e71445ad801ac",
       "executable": false
     },
     "newtests/t096/team-operator-doors.ts": {
@@ -6807,7 +6807,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record-create.tsx": {
-      "sha256": "c71624d3d493fba237a7de5148e5d88377de7a3a1259859e31dd36af7c1739a4",
+      "sha256": "80a411d3eb3b2614d895243126eef9e38e3342ce7c9623247096b0b7f53b6000",
       "executable": false
     },
     "src/core/features/operator/ui/record-entry-details.tsx": {

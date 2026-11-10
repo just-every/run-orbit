@@ -51,6 +51,7 @@ export async function equalOperatorBrowser(){
       await createAndDelete(screen,record.kind,`${operator} temporary ${record.kind} ${width}`);
      }
     }
+    await createBeforeHydration(page,`Early company ${width}`);
     for(const record of records){
      await other.goto('/app/settings/team');
      await expect(other.locator('section[aria-labelledby="sign-in-policy"]').getByRole('alert')).toBeVisible();
@@ -130,6 +131,22 @@ async function createAndDelete(page:Page,kind:TeamRecord['kind'],name:string){
  await expect(page.getByLabel(titleLabel[kind],{exact:true})).toHaveValue(name);
  await page.getByRole('button',{name:`Delete ${kind}`,exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(new RegExp(`/app/${plural[kind]}$`));
  await expect(page.getByRole('link',{name,exact:true})).toHaveCount(0);
+}
+/** A click on a form the page's script has not reached yet must not submit it natively: while the client bundle is held
+ * back the fields stay read-only and Create stays disabled; once it runs, the typed name creates the company once. */
+async function createBeforeHydration(page:Page,name:string){
+ const isScript=(url:URL)=>/\.m?js$/.test(url.pathname);let release!:()=>void;const held=new Promise<void>(resolve=>{release=resolve;});
+ await page.route(isScript,async route=>{await held;await route.continue();});
+ try{
+  await page.goto('/app/companies/new',{waitUntil:'domcontentloaded'});
+  const create=page.getByRole('button',{name:'Create company',exact:true});
+  await expect(create).toBeDisabled();await expect(page.getByLabel('Name',{exact:true})).not.toBeEditable();
+  const typed=page.getByLabel('Name',{exact:true}).fill(name);
+  release();await typed;await expect(create).toBeEnabled();await create.click();
+ }finally{release();await page.unroute(isScript);}
+ await expect(page).toHaveURL(/\/app\/companies\/[0-9A-HJKMNP-TV-Z]{26}$/);
+ await expect(page.getByLabel(titleLabel.company,{exact:true})).toHaveValue(name);
+ await page.getByRole('button',{name:'Delete company',exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(/\/app\/companies$/);
 }
 /** The list read lands after the open read's 403: the refusal must still be on screen once the list has rendered. */
 async function unavailableSurvivesLateList(page:Page,record:TeamRecord,blockedId:string){
