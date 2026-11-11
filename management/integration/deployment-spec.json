@@ -444,6 +444,12 @@
       "name": "0078_business_retired.sql",
       "sha256": "1bfc79bfe6432e03a4eba9843ab10fae6a501e7ac5b9fd98caf42054c9f36c0c",
       "sql": "-- Value-free tombstones of people erased from the installation: domain-separated SHA-256 digests of the roster\n-- address and the Business member id, with the invite number they had. Never a name, address or id.\nCREATE TABLE bs_retired (\n  digest TEXT PRIMARY KEY,\n  invite INTEGER NOT NULL CHECK(invite >= 0),\n  erasure_id TEXT NOT NULL\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0079_direct_notification_actor.sql",
+      "sha256": "f2fabfd2fb93aa1a7c0f2a1fdc5ed028679cac971f168f5d34cc744302346367",
+      "sql": "-- Every notification kind shares this rule, including inserts from triggers.\n-- The native request writer sets and clears the actor in the same D1 batch.\n-- Agent, provider and scheduled writes carry no direct-person context.\nCREATE TRIGGER notification_skip_direct_actor BEFORE INSERT ON notifications\nWHEN NEW.operator_id=(SELECT value FROM runtime_controls WHERE name='direct_notification_actor')\n AND NOT EXISTS(SELECT 1 FROM orbit_agent_write_context)\n AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import','workflow_chain'))\nBEGIN\n SELECT RAISE(IGNORE);\nEND;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

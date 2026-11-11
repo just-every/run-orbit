@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
 import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
@@ -176,6 +177,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     const call=async(name:string,args:Record<string,unknown>)=>{
       const answer=await door.invoke(name,args,principal);assert.equal(answer.outcome,'done',name+': '+JSON.stringify(answer));return answer.result as Record<string,any>;
     };
+    await notificationDirectProof({bindings,cookie,reviewerCookie,ownerId:owner.operatorId,businessCall});
     const contact=await call('orbit.records.create',{kind:'contact',record:{name:'Maya Chen',email:'maya@example.test',company_id:companyId},idempotency_key:'native-contact'});
     const stage=await fixture.db.prepare('SELECT id FROM pipeline_stages ORDER BY position LIMIT 1').first<string>('id');
     const opportunity=await call('orbit.records.create',{kind:'opportunity',record:{title:'Brightwork Team plan',stage_id:stage,value_cents:750000,company_id:companyId,contact_ids:[contact.id],primary_contact_id:contact.id},idempotency_key:'native-opportunity'});

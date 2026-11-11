@@ -50,8 +50,13 @@ try {
     staleReason: null
   };
   await dependencies.drafts.ensureDraft(draft);
-  const session = await dependencies.auth.createSession(sampleData.operators[0].id);
-  process.stdout.write(JSON.stringify({ cookieName: sessionCookieName, expiresAt: session.expiresAt, token: session.token, draft }));
+  let operatorId=sampleData.operators[0].id;
+  if(process.argv.includes('--notification-colleague')){
+    operatorId='01J0000000000000000000000B';
+    await dependencies.auth.ensureOperator({id:operatorId,email:'synthetic-orbit-colleague@example.test',displayName:'Notification colleague'});
+  }
+  const session = await dependencies.auth.createSession(operatorId);
+  process.stdout.write(JSON.stringify({ cookieName: sessionCookieName, expiresAt: session.expiresAt, token: session.token, operatorId, draft }));
 } finally {
   await platform.dispose();
 }

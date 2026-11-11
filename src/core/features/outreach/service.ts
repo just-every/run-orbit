@@ -1,4 +1,5 @@
 import {recordMailRecipientScope} from './record-mail-storage';
+import {automaticNotificationAction} from '../notifications/direct-action';
 import type { OutboundMail } from '../../platform/outbound-mail';
 import { submissionOutcome, transientSubmission } from '../../platform/outbound-mail';
 import { OutreachRepository } from '../workbench/outreach-repository';
@@ -11,6 +12,9 @@ import { messageOptOutUrl } from './opt-out-capability';
 export class OutreachService {
  constructor(readonly db:D1Database,readonly mail:OutboundMail){}
  async submit(message:OutboundMessage){
+  return automaticNotificationAction(()=>this.submitToProvider(message));
+ }
+ private async submitToProvider(message:OutboundMessage){
   if(message.state!=='queued')throw new Error('Only a claimed operator approval may be submitted.');
   const eligible=await this.db.prepare(`SELECT m.id FROM outbound_messages m JOIN drafts d ON d.id=m.draft_id JOIN contacts c ON c.id=m.contact_id LEFT JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN opportunity_contacts oc ON oc.opportunity_id=o.id AND oc.contact_id=c.id JOIN operators a ON a.id=m.operator_id
    WHERE m.id=? AND m.state='queued' AND d.revision=m.revision AND d.is_stale=0 AND d.recipient_contact_id=m.contact_id

@@ -71,9 +71,11 @@ export async function notificationResponsibility(db:D1Database,context:TestConte
    assert.equal(latest.actor_id,latestActor);
    const event={eventId:createId(),type:'meeting.booked',subject:'Confirmed meeting enters NOW',occurredAt:new Date().toISOString()};
    await call(latestActor,`/workbench/opportunities/${deal.id}/events`,event,201);
-   const entered=await assertNotice('opportunity.now',nowBefore+1);
+   // Attesting a customer event is this person's direct action. The other
+   // responsible owner is notified; an unassigned deal's acting person is not.
+   const entered=await assertNotice('opportunity.now',nowBefore+(assigned?1:0));
    await call(latestActor,`/workbench/opportunities/${deal.id}/events`,event,201);
-   assert.deepEqual(await assertNotice('opportunity.now',nowBefore+1),entered,'Source replay preserves the same notification identities');
+   assert.deepEqual(await assertNotice('opportunity.now',nowBefore+(assigned?1:0)),entered,'Source replay preserves the same notification identities');
 
    const accepted=await send(),beforeReplyNow=(await inbox(expected,'opportunity.now')).length;
    const reply=replyForm(email,`<${createId()}>`,accepted.message_id);

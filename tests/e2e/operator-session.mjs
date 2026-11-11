@@ -6,8 +6,8 @@ const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const issuerPath = path.join(workspaceRoot, "tests/support/issue-operator-session.ts");
 const tsxCliPath = path.join(workspaceRoot, "node_modules/tsx/dist/cli.mjs");
 
-function issueSession() {
-  const output = execFileSync(process.execPath, [tsxCliPath, issuerPath], {
+function issueSession(colleague) {
+  const output = execFileSync(process.execPath, [tsxCliPath, issuerPath, ...(colleague?['--notification-colleague']:[])], {
     cwd: workspaceRoot,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"]
@@ -15,8 +15,8 @@ function issueSession() {
   return JSON.parse(output);
 }
 
-export async function authenticateOperator(context) {
-  const session = issueSession();
+export async function authenticateOperator(context, {colleague=false}={}) {
+  const session = issueSession(colleague);
   await context.setExtraHTTPHeaders({ Cookie: `${session.cookieName}=${session.token}` });
   // Browser navigations after a native form redirect use the cookie jar, not
   // Playwright's injected request header. Match the native session attributes.

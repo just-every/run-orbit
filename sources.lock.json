@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "aa9638541f5d4ebdd07337b9859a981d6393a22d044158def1737144c6cb7812",
+      "sha256": "64485b957be57605eb0d26811b29db352d150944e7ce69abfcaf4e6b5d6a3cb6",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2216,6 +2216,10 @@
     },
     "migrations/core/0078_business_retired.sql": {
       "sha256": "1bfc79bfe6432e03a4eba9843ab10fae6a501e7ac5b9fd98caf42054c9f36c0c",
+      "executable": false
+    },
+    "migrations/core/0079_direct_notification_actor.sql": {
+      "sha256": "f2fabfd2fb93aa1a7c0f2a1fdc5ed028679cac971f168f5d34cc744302346367",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3927,7 +3931,7 @@
       "executable": false
     },
     "scripts/browser-runtime.mjs": {
-      "sha256": "2d0183300808df3cdeb7e5d53d618145ec7873f4806c8b9ed3e672d1c531c8ad",
+      "sha256": "87717644ec18ed9418fbff0b32debd482359c0ada98326b8311e800fbda90ce2",
       "executable": false
     },
     "scripts/browser-server.mjs": {
@@ -5111,7 +5115,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "036bb7a866be5b98cfd3c00e763f96f93ff620a888bbebd2f28045da9a1876fc",
+      "sha256": "377f99c0999238d0b94390c052db97055d4592846863d3f513464701a5ce12fb",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -6406,6 +6410,10 @@
       "sha256": "b09ad0cfbca65086b714c597a2341fd454fca6e5f617eae6c9516eadb4765b1c",
       "executable": false
     },
+    "src/core/features/notifications/direct-action.ts": {
+      "sha256": "f1f46b80ebe8130022e9278c0996410aa15ee51aa6a6891861d6f85317e71d9c",
+      "executable": false
+    },
     "src/core/features/notifications/personal-access.ts": {
       "sha256": "bf8e90613e409329a743135e0722ed9c6685b7b4f25b0a2f731690fee95cda09",
       "executable": false
@@ -7399,7 +7407,7 @@
       "executable": false
     },
     "src/core/features/outreach/service.ts": {
-      "sha256": "9ff7f815b25bfb0fb6d49a6202cb7c7dbe46312c94ca9e0f704c95d8de3c6f05",
+      "sha256": "881f67fbabd2c4cf86457172ba1f9ad6e7cb0a887485ef010e3ef22a2b78841e",
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
@@ -10339,7 +10347,7 @@
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {
-      "sha256": "b22bfe194853df9f930d9e4e0aa41190e9d41382cf4e7993641d5f0f9b7938fd",
+      "sha256": "ace6ea7565a0301518404d14bd71c62dd6bc098d6dae57f43dce5a99a1370014",
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
@@ -10363,7 +10371,7 @@
       "executable": false
     },
     "tests/e2e/zz-notifications.spec.mjs": {
-      "sha256": "1a2b5c9223c5b0d9ff3abf23274fbe9220710a1794221698699934f818fda7b2",
+      "sha256": "36aec5d4e164fb5d6e1cf6821f43ad610d7abcc0a1df38ebc3cd49b9c2f208be",
       "executable": false
     },
     "tests/evidence/contract/AGENT-002/deal-risks-open-1440.png": {
@@ -10971,7 +10979,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "43a75701e0cd1b8bb287e562f4b239f998c4332203af5d0ba05304ecb3bac7d7",
+      "sha256": "dfa86c1a77d3a72d17e084472d29df3ea6eca6789de7f97e8e46c4f22e714c67",
       "executable": false
     },
     "tests/support/agent-erasure-matcher-proof.ts": {
@@ -11171,7 +11179,7 @@
       "executable": false
     },
     "tests/support/issue-operator-session.ts": {
-      "sha256": "25dc5c8690fb5e9b3412eaa7f209740fb96599e8f53bb6f2fcff06dd3d9f7ed6",
+      "sha256": "ed91fde57445ded85e80f051d070ded1a1a3f677914a1623c6cd1ca016134916",
       "executable": false
     },
     "tests/support/keyboard-focus.mjs": {
@@ -11190,8 +11198,12 @@
       "sha256": "63ea594aef60c2d860b26fadf4c3cb9b5962486f5d53f8dde8fc0146236c0171",
       "executable": false
     },
+    "tests/support/notification-direct-proof.ts": {
+      "sha256": "5aa8b43f29ae37c83c8a8cd4d968c72a4742a1c815c7099bc27b52312233a2c4",
+      "executable": false
+    },
     "tests/support/notification-responsibility.ts": {
-      "sha256": "932979e886370dbf3f8b6e4f3fd6e7af479d383261cf8c8be2dc93295a3cbd17",
+      "sha256": "e0a6248aed01c346ce044f46d53572aeb9b6a7953c64a320bcac0d718b161aad",
       "executable": false
     },
     "tests/support/notification-session.ts": {
