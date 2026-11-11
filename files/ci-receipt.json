@@ -1,14 +1,14 @@
 {
-  "observed_at": "2026-11-11T11:57:36.960305+00:00",
+  "observed_at": "2026-11-11T12:22:39.889857+00:00",
   "run": {
     "id": 43016169093,
     "name": "Verify",
-    "status": "pending",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "head_sha": "6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43016169093",
     "event": "push",
     "created_at": "2026-11-11T11:57:08Z",
-    "updated_at": "2026-11-11T11:57:09Z"
+    "updated_at": "2026-11-11T12:19:45Z"
   }
 }

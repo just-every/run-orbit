@@ -5,9 +5,9 @@ Expected close and Schedule for later now use the same locale policy for numeric
 Repository: just-every/run-orbit
 Branch: cloud/main-orbit-us-dates-1
 Head: 6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c
-Custody: PUSHED; no main push, merge, deployment or landing was performed.
+Custody: READY; main was merged into the cloud branch. No main push, production deployment or landing was performed.
 PR: none; the seed's cloud-branch landing path applies.
-Verify: 43016169093 — pending / None — https://github.com/just-every/run-orbit/actions/runs/43016169093
+Verify: 43016169093 — completed / success — https://github.com/just-every/run-orbit/actions/runs/43016169093
 
 ## Plan and implementation
 
