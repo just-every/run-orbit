@@ -199,7 +199,6 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await call('orbit.handoffs.upsert',handoffArgs);
     assert.equal(await fixture.db.prepare('SELECT count(*) n FROM handoff_tasks WHERE id=?').bind('seller-day').first('n'),1);
     assert.equal((await door.invoke('orbit.handoffs.upsert',{...handoffArgs,idempotency_key:'stale-handoff'},principal)).code,'revision_conflict');
-    await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
     const draft=await call('orbit.drafts.create',{kind:'opportunity',id:opportunity.id,contact_id:contact.id,subject:'Brightwork next steps',body:'Maya, here is the saved proposal outline.',idempotency_key:'native-draft'});
     const saved=await call('orbit.drafts.read',{id:draft.id});
     await call('orbit.drafts.update',{id:draft.id,recipient_email:'maya@example.test',subject:'Brightwork next steps',body:'Maya, here is the revised saved proposal outline.',expected_revision:saved.draft.revision,idempotency_key:'native-draft-update'});
@@ -259,6 +258,8 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
+    // Append this flow after the established audit-history fixture.
+    await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
