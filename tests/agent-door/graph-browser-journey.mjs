@@ -32,9 +32,9 @@ export async function graphProposalScreens({page,screenshots}){
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:900});await page.goto(`/app/companies/${company}`,{waitUntil:'networkidle'});
   if(width===1440){
-   const job=page.getByRole('article',{name:'Set job_title from this message'});
+   const job=page.getByRole('article',{name:'Set job title from this message'});
    await expect(job).toContainText(lines[0]);await expect(job).toContainText('Director of Operations');await expect(job).toContainText('Proposed by '+client+' for');await expect(job).toContainText('observed');await expect(job).toContainText(signal);
-   await expect(page.getByRole('article',{name:'Set expected_close_at from this message'})).toContainText(lines[1]);
+   await expect(page.getByRole('article',{name:'Set close date from this message'})).toContainText(lines[1]);
    await expect(page.getByRole('article',{name:'Who is the decision-maker for this deal?'})).toContainText('no contact or stakeholder role is created');
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   }

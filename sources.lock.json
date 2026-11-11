@@ -6607,7 +6607,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "5e21764a350398f3bf553835e0da425987d5f80514f1add56a23dc1bcc53a939",
+      "sha256": "9f02d58c0382e7b469a5cf820101f9cd13c99598b21c3bb6f6e719ee2ce0cd85",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -10051,7 +10051,7 @@
       "executable": false
     },
     "tests/agent-door/graph-browser-journey.mjs": {
-      "sha256": "ad1c877e6b45f23d6bdb5f96ead141a39576a6e105380e6ae520075b7ffb3782",
+      "sha256": "e2c1226c610fd9d368f21826975c0153aff1705cba21e9067737f78f3295cfeb",
       "executable": false
     },
     "tests/agent-door/graph-fixture.mjs": {
@@ -11031,7 +11031,7 @@
       "executable": false
     },
     "tests/support/agent-door-graph-proof.ts": {
-      "sha256": "ec40e9254a1d192af9113e7162c570114937943cb7aafd8e71b93853b03fa25f",
+      "sha256": "e7b5092c808a27d4adc46b4d8d6a88c19f55c34c3b9a16c95bfa42722f150383",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {
