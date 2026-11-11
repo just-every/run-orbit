@@ -87,7 +87,7 @@ export class WorkbenchRepository {
     if (input.contactId) statements.push(this.db.prepare("INSERT INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,'contact',?,'operator-attested contact ID',?)").bind(id,input.contactId,timestamp));
     if (stopsContact) statements.push(...await contactStopStatements(this.db,input.contactId!));
     if (opportunity.lifecycle === 'open' && (weights[input.type]??0)!==0) {
-      statements.push(...evaluationStatements(this.db,opportunityId,actor,'New customer evidence',now));
+      statements.push(...evaluationStatements(this.db,opportunityId,actor,'New customer evidence',now,input.type));
       if(['email.replied','email.bounced'].includes(input.type))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL WHERE id=? AND lifecycle='open'").bind(input.type==='email.replied'?'Customer reply':'Delivery problem',opportunityId));
     }
     if(input.contactId && (['email.replied','meeting.booked','email.unsubscribed'].includes(input.type)||stopsContact))statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(input.type),timestamp,input.contactId),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(input.type),timestamp,input.contactId));
