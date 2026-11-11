@@ -1,3 +1,4 @@
+import {agentDoorDraftParityProof} from '../support/agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {agentWorkflowProof} from '../support/agent-workflow-proof';
 import {test} from 'node:test';
@@ -164,7 +165,7 @@ test('Managed owner claim verifies RER authority and creates the native owner an
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof);
+  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof,agentDoorDraftParityProof);
   await agentDoorBusinessStopProof();
   await businessRosterErasureProof();
   await agentErasureMatcherProof();

@@ -1,5 +1,6 @@
 import {draftMailDatabase,messageMailDatabase} from '../outreach/record-mail-storage';
 import {RecordMailRepository} from '../outreach/record-mail-repository';
+import {manualDraftCreateContent} from '../drafts/input';
 import { followUpOutcomes } from '../outreach/follow-up-outcomes';
 import { draftOptOut, markDraftOptOut } from '../outreach/opt-out';
 import {senderTestRoutes} from './sender-test';
@@ -33,7 +34,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
   app.get('/onboarding',async c=>c.json({...await onboardingState(database,Boolean(mail),aiConfigured),mailSettings:mailSettings??null}));
   app.get('/',async context=>context.json({...await repository.inventory(),mailConfigured:Boolean(mail)}));
   app.get('/records/:kind/:id/mail-context',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind'));if(!kind.success||!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid record.'},400);return c.json(await new RecordMailRepository(database).context(kind.data,c.req.param('id')));});
-  app.post('/records/:kind/:id/drafts',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind')),input=z.object({contactId:id,opportunityId:id.nullable().optional(),subject:z.string().trim().min(1).max(998),body:z.string().trim().min(1).max(100000)}).strict().safeParse(await c.req.json());if(!kind.success||!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a recipient, deal link and message.'},400);return c.json(await new RecordMailRepository(database).create(kind.data,c.req.param('id'),input.data,c.get('operator').operatorId),201);});
+  app.post('/records/:kind/:id/drafts',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind')),input=z.object({contactId:id,opportunityId:id.nullable().optional(),...manualDraftCreateContent(998)}).strict().safeParse(await c.req.json());if(!kind.success||!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a recipient, deal link and message.'},400);return c.json(await new RecordMailRepository(database).create(kind.data,c.req.param('id'),input.data,c.get('operator').operatorId),201);});
   app.get('/records/contact/:id/mail',async c=>{if(!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid contact.'},400);return c.json({...await new RecordMailRepository(database).history(c.req.param('id')),mailProvider:mail?.provider??'sendgrid'});});
   app.post('/record-mail/:id/complete',async c=>{if(!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid message.'},400);return c.json(await new RecordMailRepository(database).complete(c.req.param('id'),c.get('operator').operatorId));});
   app.post('/opportunities',async context=>{
@@ -46,7 +47,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
     return context.json(await repository.recordEvent(context.req.param('id'),input.data,context.get('operator').operatorId),201);
   });
   app.post('/opportunities/:id/drafts',async context=>{
-    const input=z.object({contactId:id,subject:z.string().trim().min(1).max(998),body:z.string().trim().min(1).max(100000)}).safeParse(await context.req.json());if(!input.success)return context.json({error:'Choose a recipient and enter a subject and message.'},400);
+    const input=z.object({contactId:id,...manualDraftCreateContent(998)}).safeParse(await context.req.json());if(!input.success)return context.json({error:'Choose a recipient and enter a subject and message.'},400);
     return context.json(await outreach.createDraft(context.req.param('id'),input.data,context.get('operator').operatorId),201);
   });
   app.get('/opportunities/:id/messages',async context=>context.json({messages:await outreach.messages(context.req.param('id')),outcomes:await followUpOutcomes(database,context.req.param('id')),mailProvider:mail?.provider??'sendgrid',scheduler:hosted?await schedulerStatus(database):null,outcomesTracked:deliveryOutcomesTracked(mailEvents)}));
