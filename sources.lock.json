@@ -5279,7 +5279,7 @@
       "executable": false
     },
     "src/core/features/agent-door/contact-erasure.ts": {
-      "sha256": "964e327b5be764ed4c7ad9798d783c0d446d60c3c5efb6078d1aae38df754ede",
+      "sha256": "46a88ef75532698d7c10b2ff0421f6ed361dd5cc6367f593f0659364e18118e6",
       "executable": false
     },
     "src/core/features/agent-door/drafts.ts": {
@@ -5294,6 +5294,10 @@
       "sha256": "c45b2116dd7c1eb3d963d21541e0c929e0f32581ed746a4a9e7003c65f1a3bdf",
       "executable": false
     },
+    "src/core/features/agent-door/event-cursor.ts": {
+      "sha256": "5c2c45dd19778111a4abdb1320a62aa8dde019171c80ceb8797d9ce15290881e",
+      "executable": false
+    },
     "src/core/features/agent-door/evidence.ts": {
       "sha256": "337db0014345a8c241f08956c6c87b883e4ee620c3511872f6508bf197f4b717",
       "executable": false
@@ -5303,7 +5307,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "86347cf5684f39e10b7b2eef42c0ce209829ab2c6c0f4e24ebd5df14703c155d",
+      "sha256": "dfa58208f637351ac46aa48af227c6ea711c52c7d8699d02f21dd1ae36692ec0",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -11019,7 +11023,7 @@
       "executable": false
     },
     "tests/support/business-roster-erasure-proof.ts": {
-      "sha256": "a8bf2393f6e2bf3a5da515201d3cc4e53fa4d8ddce1470bd71b209fb8e3139e5",
+      "sha256": "783e764bc9685904c01e8cc8a0cf5a29c348d4a0c52b88c57499a64498f8643c",
       "executable": false
     },
     "tests/support/buying-context.ts": {
