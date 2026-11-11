@@ -1,0 +1,47 @@
+2026-11-11T10:17:37.7642999Z Verification (fold-domain-1): pnpm exec node scripts/verification-build.mjs check
+2026-11-11T10:17:38.0798090Z 
+2026-11-11T10:17:38.0799906Z Verification (fold-domain-1): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-1-results.jsonl newtests/t096/browser-journeys.test.ts newtests/t096/report-time-boundaries.test.ts
+2026-11-11T10:17:38.6079062Z (node:2606) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+2026-11-11T10:17:38.6080830Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-11T10:18:31.5855786Z PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:18:37.4054556Z PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:18:43.0623322Z PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:19:24.2406015Z PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:19:29.9657980Z PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:19:35.5019320Z PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+2026-11-11T10:20:05.1396960Z PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+2026-11-11T10:20:06.3768134Z (node:2606) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+2026-11-11T10:21:03.5809282Z ✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (202460.727072ms)
+2026-11-11T10:23:39.2731200Z ✔ report periods compare instants across ISO precision and timezone equality boundaries (153706.337533ms)
+2026-11-11T10:23:39.3017233Z ℹ tests 2
+2026-11-11T10:23:39.3017657Z ℹ suites 0
+2026-11-11T10:23:39.3018687Z ℹ pass 1
+2026-11-11T10:23:39.3019079Z ℹ fail 1
+2026-11-11T10:23:39.3021735Z ℹ cancelled 0
+2026-11-11T10:23:39.3022234Z ℹ skipped 0
+2026-11-11T10:23:39.3022665Z ℹ todo 0
+2026-11-11T10:23:39.3023040Z ℹ duration_ms 360946.007934
+2026-11-11T10:23:39.3040927Z 
+2026-11-11T10:23:39.3041386Z ✖ failing tests:
+2026-11-11T10:23:39.3041585Z 
+2026-11-11T10:23:39.3041899Z test at newtests/t096/browser-journeys.test.ts:1:1527
+2026-11-11T10:23:39.3043971Z ✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (202460.727072ms)
+2026-11-11T10:23:39.3045370Z   Error: expect(locator).toHaveText(expected) failed
+2026-11-11T10:23:39.3045874Z   
+2026-11-11T10:23:39.3046638Z   Locator: locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link')
+2026-11-11T10:23:39.3047743Z   Expected: "Morgan Chen"
+2026-11-11T10:23:39.3048098Z   Timeout: 5000ms
+2026-11-11T10:23:39.3048479Z   Error: element(s) not found
+2026-11-11T10:23:39.3048822Z   
+2026-11-11T10:23:39.3049165Z   Call log:
+2026-11-11T10:23:39.3050128Z     - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link') with timeout 5000ms
+2026-11-11T10:23:39.3051365Z     - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link')
+2026-11-11T10:23:39.3052113Z   
+2026-11-11T10:23:39.3052887Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-11T10:23:39.3054011Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-11T10:23:39.3055111Z       at Object.toHaveText (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-11T10:23:39.3056084Z       at recordMailBrowserJourney (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-record-mail.ts:15:49)
+2026-11-11T10:23:39.3057255Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-journeys.test.ts:40:2) {
+2026-11-11T10:23:39.3066172Z     matcherResult: { name: 'toHaveText', expected: 'Morgan Chen', message: `expect(locator).toHaveText(expected) failed\n\nLocator: locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link')\nExpected: "Morgan Chen"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link') with timeout 5000ms\n  - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link')\n`, pass: false, actual: undefined, log: [ `  - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link') with timeout 5000ms`, `  - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M610CCARRDDC47RAKY1D6KB7"]') }).first().getByRole('link')` ], timeout: 5000, ariaSnapshot: '- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit\n  - navigation "Main menu":\n    - link "NOW":\n      - /url: /app\n    - link "Brief":\n      - /url: /app/brief\n    - link "Tasks":\n      - /url: /app/tasks\n    - link "Records":\n      - /url: /app/opportunities\n    - link "Reports":\n      - /url: /app/reports\n    - link "Notifications":\n      - /url: /app/notifications\n  - link "Settings":\n    - /url: /app/settings/workspace\n  - button "Sign out"\n- main:\n  - paragraph: Notifications\n  - heading "Notifications inbox" [level=1]\n  - text: 0 unread\n  - paragraph:\n    - text: Review recent updates and open the record to take action.\n    - link "Your Slack mention preference":\n      - /url: /app/settings/integrations#personal-slack\n  - checkbox "Show unread only"\n  - text: Show unread only Notification type\n  - combobox "Notification type":\n    - option "All types" [selected]\n    - option "Assignments"\n    - option "Tasks"\n    - option "Needs attention"\n    - option "Customer replies"\n    - option "Mentions"\n    - option "Delivery outcomes"\n  - status: No notifications.\n  - heading "Mentions" [level=2]\n  - status: Nobody has mentioned you yet.' }
+2026-11-11T10:23:39.3074323Z   }
+2026-11-11T10:23:39.5248897Z ##[error]Process completed with exit code 1.

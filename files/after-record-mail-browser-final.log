@@ -1,0 +1,38 @@
+TAP version 13
+# (node:26306) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+# (node:26306) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+# PROBE FORM-002 browser: no pre-interaction third-party request or cookie; optional verification follows interaction; withdrawn publication refuses UI release and retains pending payload; erasure disables release
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":921,"parts":69,"observations":[{"operation":"POST /exports","milliseconds":8000.355745000066,"status":201},{"operation":"GET /exports/01M75GQGN8Q1G4FBBYX14GEH84","milliseconds":144.09778800001368,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":12376.37652099994,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":7007.793967999984,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":5210.848648000043,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":5894.268948999932,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":5868.876963999937,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":5747.767821999965,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":5160.208706999896,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":4144.015147999977,"status":200},{"operation":"POST /exports/01M75GQGN8Q1G4FBBYX14GEH84/advance","milliseconds":3767.8542339999694,"status":200},{"operation":"GET /exports/01M75GQGN8Q1G4FBBYX14GEH84/download","milliseconds":67.78194200003054,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":896,"parts":68,"observations":[{"operation":"POST /exports","milliseconds":4618.335948999971,"status":201},{"operation":"GET /exports/01M75H785139HTWD9KE5HDBCHA","milliseconds":68.40792699996382,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":6235.394068999914,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":4323.440862999996,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":3949.5455100000836,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":4600.997216999996,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":4080.6516330000013,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":3896.9002829999663,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":6653.198374000145,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":4811.317380999913,"status":200},{"operation":"POST /exports/01M75H785139HTWD9KE5HDBCHA/advance","milliseconds":3809.5000720000826,"status":200},{"operation":"GET /exports/01M75H785139HTWD9KE5HDBCHA/download","milliseconds":70.28018300002441,"status":200}]}
+# Owned capture Worker PID 47442
+# Owned capture browser PIDs [
+#   { pid: 47486, type: 'browser' },
+#   { pid: 47512, type: 'GPU' },
+#   { pid: 47514, type: 'network.mojom.NetworkService' }
+# ]
+# Subtest: OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+ok 1 - OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+  ---
+  duration_ms: 1256367.106083
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1262051.440683

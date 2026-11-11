@@ -1,0 +1,1046 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Your Worker has access to the following bindings:
+# Binding                                              Resource                  Mode
+# env.DB (orbit-local-db)                              D1 Database               local
+# env.ASSETS                                           Assets                    local
+# env.MAIL_PROVIDER ("sendgrid")                       Environment Variable      local
+# env.MAIL_FROM ("")                                   Environment Variable      local
+# env.MAIL_RELAY_URL ("")                              Environment Variable      local
+# env.AUTH_ORIGIN ("(hidden)")                         Environment Variable      local
+# env.AUTH_LOCAL ("(hidden)")                          Environment Variable      local
+# env.SESSION_SECRET ("(hidden)")                      Environment Variable      local
+# env.OWNER_EMAIL ("(hidden)")                         Environment Variable      local
+# env.OPENAI_API_KEY ("(hidden)")                      Environment Variable      local
+# env.AI_MODEL ("(hidden)")                            Environment Variable      local
+# env.AI_INPUT_COST_PER_MILLION ("(hidden)")           Environment Variable      local
+# env.AI_OUTPUT_COST_PER_MILLION ("(hidden)")          Environment Variable      local
+# Attaching additional modules:
+# ┌──────────────────────────────────────────────────────────┬──────┬─────────────┐
+# │ Name                                                     │ Type │ Size        │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/ClientOnly-BNeYPPGG.js                            │ esm  │ 1.38 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/DocsPage-9YoJ-ORR.js                              │ esm  │ 11.42 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/Match-BkNmErdU.js                                 │ esm  │ 11.50 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/OrbitMark-d_5d-vTy.js                             │ esm  │ 1.45 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/ScrollRestoration-sU0zrpFz.js                     │ esm  │ 0.61 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/SiteFooter-DvZfbAE2.js                            │ esm  │ 4.70 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/__23tanstack-start-server-fn-resolver-DQv_MWQS.js │ esm  │ 1.66 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/_tanstack-start-manifest_v-_UQO_o3y.js            │ esm  │ 21.53 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/_virtual_orbit-docs-C15eZ7R7.js                   │ esm  │ 3.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/action-tooltip-RjDxnQNV.js                        │ esm  │ 2.87 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/agents-DhCRLZvj.js                                │ esm  │ 21.39 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app-BvksSaeO.js                                   │ esm  │ 25.30 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app-access-UevSSqGT.js                            │ esm  │ 0.56 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.access-D6YtHOAK.js                            │ esm  │ 3.16 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.assistance._id-JZffOlWx.js                    │ esm  │ 20.02 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.brief-QuvrbSUS.js                             │ esm  │ 14.36 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.companies._id-DW_PV4k9.js                     │ esm  │ 0.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.companies.index-BicZYbG_.js                   │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.companies.new-BwtjUetn.js                     │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.contacts._id-DR0_SS_W.js                      │ esm  │ 0.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.contacts.index-19Za2r5p.js                    │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.contacts.new-DAuiXBPt.js                      │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.dashboards._id-D1fkhzDA.js                    │ esm  │ 89.97 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.drafts._id-DHaouqME.js                        │ esm  │ 37.85 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.index-CKHik9DP.js                             │ esm  │ 9.54 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.meetings._id-B9hOes9U.js                      │ esm  │ 17.57 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.notifications-BNziLjrs.js                     │ esm  │ 0.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.opportunities._id-DKtirQY5.js                 │ esm  │ 36.46 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.opportunities.index-CMuOz9CB.js               │ esm  │ 0.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.opportunities.new-ClPzDUA6.js                 │ esm  │ 7.33 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.reports._id-0QbM2la1.js                       │ esm  │ 48.42 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.reports.forecast-JnuQfqYR.js                  │ esm  │ 32.77 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.reports.index-CDreHLgF.js                     │ esm  │ 11.79 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.review-DtShV8E-.js                            │ esm  │ 12.08 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings-DOM7GCyE.js                          │ esm  │ 0.30 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.capture.connect._method-BYeU9Urz.js  │ esm  │ 64.12 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.capture.index-umCVeuNm.js            │ esm  │ 67.01 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.data.import-BOYcSl1J.js              │ esm  │ 31.88 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.data.index-gz3NNXvF.js               │ esm  │ 39.18 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.forms-D_h8a0Vb.js                    │ esm  │ 6.09 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.integrations-hDkqzseq.js             │ esm  │ 56.28 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.mail.index-DhgISM3X.js               │ esm  │ 42.25 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.mail.library-BMDO4ESk.js             │ esm  │ 11.71 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.pipeline-18SnK9XF.js                 │ esm  │ 114.10 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.team-DY4tdSWr.js                     │ esm  │ 21.68 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.settings.workspace-CAMIeolp.js                │ esm  │ 17.20 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.shared-records-BMQv2Ohu.js                    │ esm  │ 18.32 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.tasks-CHzF0jsN.js                             │ esm  │ 33.29 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.tasks._id-MYoeH4yI.js                         │ esm  │ 0.31 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/app.tasks.index-km1iAJOl.js                       │ esm  │ 0.21 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/area-lKVIo2bP.js                                  │ esm  │ 0.70 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/audit-value-C5K1C2VG.js                           │ esm  │ 2.94 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/booking-recipe-DriLO5i7.js                        │ esm  │ 14.58 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/bootstrap-nbrjxEdR.js                             │ esm  │ 1.24 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/capture-copy-field-BPIzE77V.js                    │ esm  │ 2.12 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/capture-proposals-Dk30_NjM.js                     │ esm  │ 10.22 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/capture-proposals-xge6CLFZ.js                     │ esm  │ 6.88 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/capture-scope-5J8v--zp.js                         │ esm  │ 16.31 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/collaborator-console-BcImYTFH.js                  │ esm  │ 22.64 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/config-BvZMsKZk.js                                │ esm  │ 1.55 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/connect-gmail-BJzcarrn.js                         │ esm  │ 14.41 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/connect-outlook-BCS77jZC.js                       │ esm  │ 15.17 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/connected-applications-4r0xlPNH.js                │ esm  │ 7.93 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/console-CHRthaz9.js                               │ esm  │ 38.96 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/contracts-BtCf-B28.js                             │ esm  │ 0.30 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/createServerFn-LbQwuMn2.js                        │ esm  │ 12.08 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/createServerRpc-clVF8hjL.js                       │ esm  │ 0.45 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/createSsrRpc-DyoiAekM.js                          │ esm  │ 0.65 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/csv-DvgEJywl.js                                   │ esm  │ 6.93 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/customer-record-yV0YOIDg.js                       │ esm  │ 27.09 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/dashboard-dialogs-CMJh80nw.js                     │ esm  │ 5.60 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/data-value-CcFRPSWe.js                            │ esm  │ 3.05 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/definition-editor-DPSDPo7v.js                     │ esm  │ 10.75 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/delegation-protocol-hnxCZcAC.js                   │ esm  │ 12.21 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/demo-qrGCQ71D.js                                  │ esm  │ 10.60 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/demo-story-DB1zjGD4.js                            │ esm  │ 2.71 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/dependencies-CdP_NsMG.js                          │ esm  │ 454.92 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/deploy-environment-CyJIxpyU.js                    │ esm  │ 1.87 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/display-BTGvaqAw.js                               │ esm  │ 3.90 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/dist-BTbwg1YT.js                                  │ esm  │ 52.24 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/docs._slug-6gUZrGwH.js                            │ esm  │ 0.66 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/docs.index-AGgNi975.js                            │ esm  │ 0.62 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/draft-content-fields-BwuhSxUW.js                  │ esm  │ 2.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/effects-MVU-qm28.js                               │ esm  │ 11.00 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/empty-plugin-adapters-D_0twvAa.js                 │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/entry-privacy-BjqU5iwC.js                         │ esm  │ 1.76 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/errors-BFt3LERE.js                                │ esm  │ 0.56 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/field-DTNOP0CG.js                                 │ esm  │ 5.32 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/filter-panel-CdUrsZR0.js                          │ esm  │ 3.21 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/formatters-Bynh5sFH.js                            │ esm  │ 3.12 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/getting-started-Cwd6-n8X.js                       │ esm  │ 2.58 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/grant-entries-DJeJ_4B1.js                         │ esm  │ 2.19 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/grant-fields-BgEVd1ti.js                          │ esm  │ 2.63 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/group-labels-LYEagHHb.js                          │ esm  │ 15.77 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/hash-target-CAhm8k_U.js                           │ esm  │ 2.87 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/identity-DfB73QKn.js                              │ esm  │ 279.14 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/ids-BAIcZZAO.js                                   │ esm  │ 5.67 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/import-provenance-VeYQoJa7.js                     │ esm  │ 1.80 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/inline-confirm-VrNdAKGe.js                        │ esm  │ 2.19 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/invariant-B8Adqqro.js                             │ esm  │ 8.25 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/jsx-runtime-CE-71699.js                           │ esm  │ 2.78 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/lazyRouteComponent-C7S7zf_B.js                    │ esm  │ 10.28 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/leaf-Cweyejhj.js                                  │ esm  │ 1.36 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/legacy-database-5VDg84z_.js                       │ esm  │ 20.12 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/library-api-DSIVEDki.js                           │ esm  │ 0.47 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/link-BzwgC-ej.js                                  │ esm  │ 6.81 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/link-card-BEVq3gTu.js                             │ esm  │ 1.18 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/live-edit-runtime-BEEYGG7d.js                     │ esm  │ 15.08 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/load-Bgggb0Ta.js                                  │ esm  │ 1.22 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/load-BrCLKa7t.js                                  │ esm  │ 1.01 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/loader-ljFZBpUn.js                                │ esm  │ 1.85 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/loaders-AiJfmJNJ.js                               │ esm  │ 0.76 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/loaders-D4cj5isd.js                               │ esm  │ 2.60 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/manifest-BL6Vk_kh.js                              │ esm  │ 107.04 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/menu-button-TSwrn_pT.js                           │ esm  │ 2.44 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/moving-in-BODsfKNx.js                             │ esm  │ 11.07 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/nav-DipCmYqs.js                                   │ esm  │ 10.23 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/not-found-DhdZhR3a.js                             │ esm  │ 0.92 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/not-found-Onlrt82C.js                             │ esm  │ 20.79 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/operations-CpkrLaB8.js                            │ esm  │ 35.64 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/operator-api-DxBkyyF6.js                          │ esm  │ 4.39 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/operator-dialog-C3vhMcON.js                       │ esm  │ 4.05 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/operator-shell-CsCxMg7F.js                        │ esm  │ 30.78 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/owner-loader-DmM097Vv.js                          │ esm  │ 1.20 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/owner-steps-Dp8sLbbn.js                           │ esm  │ 12.88 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/page-DAjpD53F.js                                  │ esm  │ 11.65 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/path-E273zKfp.js                                  │ esm  │ 4.76 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/policy-BZip83h2.js                                │ esm  │ 6.96 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/presentation-date-CpT4HPj-.js                     │ esm  │ 2.13 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/public-config-Bq9SmcRB.js                         │ esm  │ 1.07 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/query-policy-BaOf1uGz.js                          │ esm  │ 4.75 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-api-DUaZGM5y.js                            │ esm  │ 16.79 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-create-DS6FaWNp.js                         │ esm  │ 6.35 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-foot-BhLCTyCh.js                           │ esm  │ 138.38 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-link-picker-BivpH6-3.js                    │ esm  │ 8.01 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-policies-DtEsMD6y.js                       │ esm  │ 2.71 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-presentation-BWaSlU05.js                   │ esm  │ 0.34 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-search-field-v0k2Idck.js                   │ esm  │ 2.69 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/record-selection-D8VRdzbf.js                      │ esm  │ 2.40 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/records-api-CvUTuUw8.js                           │ esm  │ 0.62 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/records-page-lS5JPLrW.js                          │ esm  │ 23.11 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/redirect-BDbpra0T.js                              │ esm  │ 1.72 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/report-format-Dcm94Lsm.js                         │ esm  │ 0.85 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/report-population-BNDGHvo0.js                     │ esm  │ 5.64 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/repository-C0zcmiHF.js                            │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/repository-DAAA0g6d.js                            │ esm  │ 35.54 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/request-response-BGzFtdnp.js                      │ esm  │ 15.41 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/request.server-DGQzJjRG.js                        │ esm  │ 1.29 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/results-rz4TYvHx.js                               │ esm  │ 18.71 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/review-line-CnCmW1LW.js                           │ esm  │ 1.41 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/root-BkKgunb-.js                                  │ esm  │ 0.24 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/router-HMUeW7vA.js                                │ esm  │ 50.29 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/rows-DznbTqcT.js                                  │ esm  │ 7.98 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/run-locally-DSjJAGDo.js                           │ esm  │ 27.23 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/sales-definition-TzrioCnt.js                      │ esm  │ 7.50 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/sales-format-Cjp0gL-8.js                          │ esm  │ 0.72 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/sales-result-BSqxLjx5.js                          │ esm  │ 8.32 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/save-failure-CgiH83yI.js                          │ esm  │ 2.22 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/saved-label-BqrWfj8c.js                           │ esm  │ 0.49 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/schemas-BAlMQMkc.js                               │ esm  │ 97.50 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/scroll-restoration-BqgoNT-J.js                    │ esm  │ 2.22 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/service-B6yVs117.js                               │ esm  │ 8.20 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/setup-Cs1eZlQG.js                                 │ esm  │ 5.98 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/setup-line-Cu8MbAAV.js                            │ esm  │ 1.99 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/signals-and-mail-CohLsW3S.js                      │ esm  │ 12.36 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/start-Bfr6pcKA.js                                 │ esm  │ 0.28 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/time-DToUOz_H.js                                  │ esm  │ 5.16 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/today-api-C1y-6LgZ.js                             │ esm  │ 1.47 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/trial-owner-CQSsSCIq.js                           │ esm  │ 20.11 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/undo-snapshot-Camhubak.js                         │ esm  │ 373.22 KiB  │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/unit-3F4yLeNA.js                                  │ esm  │ 0.48 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/updating-Z-m0LAz7.js                              │ esm  │ 9.36 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/use-operator-resource-D2D8ngHP.js                 │ esm  │ 1.26 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/use-workspace-settings-BtqJu9dQ.js                │ esm  │ 0.82 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/useMatch-UPn4MfhK.js                              │ esm  │ 1.45 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/useParams-BFaT5tXk.js                             │ esm  │ 1.12 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/useRouterState-M73zDL0m.js                        │ esm  │ 1.04 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/useSearch-rajMEgbd.js                             │ esm  │ 1.07 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/useSelector-DTP4DdB8.js                           │ esm  │ 22.99 KiB   │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/utils-CsV-5Usq.js                                 │ esm  │ 0.61 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/workbench-api-BZI7VJRn.js                         │ esm  │ 0.58 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ assets/workflows-types-B_Azkf1H.js                       │ esm  │ 4.19 KiB    │
+# ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+# │ Total (182 modules)                                      │      │ 3387.08 KiB │
+# └──────────────────────────────────────────────────────────┴──────┴─────────────┘
+# ⎔ Starting local server...
+# [wrangler:info] Ready on http://127.0.0.1:36825
+# [wrangler:info] GET /api/v1/notifications 200 OK (3918ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (3421ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (86ms)
+# [wrangler:info] GET /fonts/fonts.css 200 OK (20ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 200 OK (36ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 200 OK (33ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 200 OK (36ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 200 OK (34ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 200 OK (34ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 200 OK (27ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 200 OK (46ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 200 OK (42ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 200 OK (81ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 200 OK (61ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 200 OK (81ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 200 OK (65ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 200 OK (36ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 200 OK (34ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 200 OK (41ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 200 OK (40ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 200 OK (19ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 200 OK (28ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 200 OK (29ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 200 OK (30ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 200 OK (28ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 200 OK (41ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 200 OK (37ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 200 OK (51ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 200 OK (52ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 200 OK (52ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 200 OK (46ms)
+# [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 200 OK (44ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 200 OK (45ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 200 OK (19ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 200 OK (26ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 200 OK (37ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 200 OK (37ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 200 OK (43ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 200 OK (47ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 200 OK (47ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 200 OK (17ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 200 OK (40ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 200 OK (13ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 200 OK (33ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 200 OK (18ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 200 OK (15ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 200 OK (16ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 200 OK (19ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 200 OK (15ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 200 OK (25ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 200 OK (46ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 200 OK (47ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 200 OK (72ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 200 OK (63ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 200 OK (71ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 200 OK (53ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 200 OK (14ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 200 OK (24ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 200 OK (20ms)
+# [wrangler:info] GET /favicon.svg 200 OK (28ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (60ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (90ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (232ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (315ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (314ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (331ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (314ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (439ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (877ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (910ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (64ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (63ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (155ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/conflicts/preview 200 OK (78ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/conflicts 502 Bad Gateway (81ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/conflicts 200 OK (181ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (34ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (181ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (99ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (49ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (41ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (47ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (18ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (102ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (65ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (63ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (71ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (97ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (97ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (124ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (62ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (64ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (61ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (49ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (717ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (54ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (55ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (55ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (59ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (103ms)
+# [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 304 Not Modified (115ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (74ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (82ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (83ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (85ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (8ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (49ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (26ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (23ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (28ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (54ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (91ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (92ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (93ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (93ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (32ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (70ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (51ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (55ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (65ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (63ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (28ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (43ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (67ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (44ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (28ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (28ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (41ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (36ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (43ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (17ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 200 OK (24ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 200 OK (25ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 200 OK (32ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 200 OK (62ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (53ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 200 OK (74ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 200 OK (32ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 200 OK (70ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 200 OK (31ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 200 OK (25ms)
+# [wrangler:info] GET /favicon.svg 200 OK (27ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (68ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (809ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (807ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (817ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (808ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (830ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (772ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (71ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (70ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (128ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (73ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (73ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (198ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (23ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75FZV3HNAF4NCTR3DP941MX 200 OK (76ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (127ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (169ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75FZV3HNAF4NCTR3DP941MX 200 OK (170ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (171ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75FZV3HNAF4NCTR3DP941MX 200 OK (202ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (241ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75FZV3HNAF4NCTR3DP941MX/messages 200 OK (232ms)
+# [wrangler:info] GET /delegation/handoffs/01M75FZV3HNAF4NCTR3DP941MX 200 OK (223ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (151ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (152ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (153ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (152ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (136ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (152ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (88ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (87ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (87ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (83ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (94ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G0KPW9PE5R0W6Y7TK3SMZ 200 OK (71ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (53ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (26ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (65ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (69ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (70ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (26ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (25ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (67ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (86ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (63ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (68ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (41ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (63ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (44ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (69ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (61ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (15ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (62ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (29ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (51ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (58ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (28ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (22ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (31ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (102ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (102ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (176ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (546ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (542ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (523ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 304 Not Modified (65ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 304 Not Modified (66ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 304 Not Modified (65ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (29ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (81ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (413ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (414ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (424ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (479ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (492ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (498ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (124ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (123ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (152ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (76ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (72ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (142ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (70ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (29ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (55ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (67ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (66ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (54ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (54ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (43ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (70ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (44ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (43ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (79ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (25ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (70ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (70ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (70ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (57ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (57ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (85ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (51ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (58ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 304 Not Modified (14ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 304 Not Modified (41ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (40ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (45ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (210ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (211ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (212ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (229ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (229ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (206ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (112ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (93ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (119ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (46ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (130ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (153ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (124ms)
+# [wrangler:info] GET /app/tasks/01M75G18X12Y6YXBKW3E3N31H0 200 OK (55ms)
+# [wrangler:info] GET /assets/app-RYHwbrca.css 200 OK (20ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/records-aMaExbty.css 200 OK (30ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (10ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/app.tasks-D_YEm1lL.js 200 OK (39ms)
+# [wrangler:info] GET /assets/filter-panel-C69xlNi-.js 200 OK (31ms)
+# [wrangler:info] GET /assets/operator-dialog-BXdzj20E.js 200 OK (22ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/app.tasks._id-DPlmDxKj.js 200 OK (26ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (36ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (61ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (61ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (53ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (49ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (15ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (19ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (29ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (39ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (13ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (43ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (34ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (154ms)
+# [wrangler:info] GET /api/v1/tasks/01M75G18X12Y6YXBKW3E3N31H0 200 OK (176ms)
+# [wrangler:info] GET /api/v1/tasks 200 OK (177ms)
+# [wrangler:info] GET /api/v1/entries/visibility/task/01M75G18X12Y6YXBKW3E3N31H0 200 OK (117ms)
+# [wrangler:info] GET /api/v1/tasks 200 OK (135ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (50ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (25ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (49ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (23ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (9ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (9ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (17ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (25ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (41ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (43ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (29ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (26ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (11ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (6ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (26ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (8ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (14ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (44ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (62ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 304 Not Modified (53ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (62ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 304 Not Modified (54ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 304 Not Modified (53ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (200ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (206ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (207ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (204ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (222ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (270ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (44ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (96ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (116ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (111ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (134ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (67ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (101ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (155ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (193ms)
+# [wrangler:info] GET /api/v1/entries/visibility/handoff/2be703cbacdbe5e97d3b951f0ba502d1 200 OK (52ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (392ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/dismissals 201 Created (38ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (61ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/rules 201 Created (65ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (68ms)
+# [wrangler:info] POST /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/tasks 201 Created (294ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (91ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (141ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (68ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (142ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (175ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (175ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (192ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (175ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (123ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (63ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (449ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (356ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (338ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (341ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (338ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (338ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (345ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (35ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (36ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (23ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (36ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (47ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (55ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (58ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (58ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (10ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (64ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (19ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (14ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (45ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (58ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (33ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (34ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (48ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (28ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (47ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (25ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (23ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (18ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (9ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 304 Not Modified (40ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 304 Not Modified (54ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (34ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (54ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (80ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (152ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (192ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (164ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (170ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (201ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (161ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (81ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (138ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (137ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (137ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (197ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (43ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (47ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (52ms)
+# [wrangler:info] GET /app/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (42ms)
+# [wrangler:info] GET /fonts/fonts.css 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (20ms)
+# [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (19ms)
+# [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (28ms)
+# [wrangler:info] GET /assets/record-presentation-BHLkJDWM.css 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/capture-proposals-DrytbBvQ.css 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/record-foot-BW9di2hv.css 304 Not Modified (21ms)
+# [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/menu-button-BJTU8Frn.css 304 Not Modified (50ms)
+# [wrangler:info] GET /assets/index-P1_NBbJe.js 304 Not Modified (44ms)
+# [wrangler:info] GET /assets/operator-shell-CifHT00w.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (17ms)
+# [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (78ms)
+# [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (79ms)
+# [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (41ms)
+# [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (58ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (86ms)
+# [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (109ms)
+# [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (97ms)
+# [wrangler:info] GET /assets/loaders-CM_H7rIf.js 304 Not Modified (104ms)
+# [wrangler:info] GET /assets/presentation-date-BjSRmrpz.js 304 Not Modified (53ms)
+# [wrangler:info] GET /assets/app.opportunities._id-C9uIqYbA.js 304 Not Modified (52ms)
+# [wrangler:info] GET /assets/app-HNS0SCst.js 304 Not Modified (68ms)
+# [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (31ms)
+# [wrangler:info] GET /assets/formatters-COlHYlPW.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (32ms)
+# [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (27ms)
+# [wrangler:info] GET /assets/record-foot-CHAnvnUG.js 304 Not Modified (24ms)
+# [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (17ms)
+# [wrangler:info] GET /assets/inline-confirm-B4S1Hbog.js 304 Not Modified (17ms)
+# [wrangler:info] GET /assets/record-api-BgnN6XfJ.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/action-tooltip-vScARSGv.js 304 Not Modified (46ms)
+# [wrangler:info] GET /assets/saved-label-sbp1WJwW.js 304 Not Modified (56ms)
+# [wrangler:info] GET /assets/field-Bl19dlPu.js 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/record-search-field-CcyEsBtD.js 304 Not Modified (38ms)
+# [wrangler:info] GET /assets/setup-line-Bd3hmalO.js 304 Not Modified (37ms)
+# [wrangler:info] GET /assets/menu-button-CahAYL4s.js 304 Not Modified (8ms)
+# [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (15ms)
+# [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 304 Not Modified (29ms)
+# [wrangler:info] GET /assets/data-value-DEhKu7lG.js 304 Not Modified (30ms)
+# [wrangler:info] GET /assets/entry-privacy-BZYeTDuo.js 304 Not Modified (42ms)
+# [wrangler:info] GET /assets/hash-target-B9p7dN9A.js 304 Not Modified (59ms)
+# [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (61ms)
+# [wrangler:info] GET /assets/audit-value-B043yzVF.js 304 Not Modified (60ms)
+# [wrangler:info] GET /assets/capture-proposals-ZpWF_WGa.js 304 Not Modified (19ms)
+# [wrangler:info] GET /assets/record-selection-pe4fYWuu.js 304 Not Modified (16ms)
+# [wrangler:info] GET /assets/record-presentation-B07rKE7v.js 304 Not Modified (22ms)
+# [wrangler:info] GET /assets/record-link-picker-T9HVsh-M.js 304 Not Modified (70ms)
+# [wrangler:info] GET /favicon.svg 304 Not Modified (72ms)
+# [wrangler:info] GET /assets/workflows-types-B2JlGiI0.js 304 Not Modified (59ms)
+# [wrangler:info] GET /api/v1/notifications 200 OK (64ms)
+# [wrangler:info] GET /api/v1/settings 200 OK (140ms)
+# [wrangler:info] GET /api/v1/drafts 200 OK (118ms)
+# [wrangler:info] GET /api/v1/relationships/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (107ms)
+# [wrangler:info] GET /api/v1/opportunities/01M75G11HQGVQM970VA3MZD92Y 200 OK (125ms)
+# [wrangler:info] GET /api/v1/records/opportunity/01M75G11HQGVQM970VA3MZD92Y 200 OK (163ms)
+# [wrangler:info] GET /api/v1/workbench/onboarding 200 OK (192ms)
+# [wrangler:info] GET /api/v1/workbench/opportunities/01M75G11HQGVQM970VA3MZD92Y/messages 200 OK (111ms)
+# [wrangler:info] GET /api/v1/settings/custom-fields 200 OK (114ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (178ms)
+# [wrangler:info] GET /api/workflows/approvals 200 OK (115ms)
+# [wrangler:info] GET /api/v1/entries/visibility/entry/01M75G1584QSZB7JTSGFQSZ0KG 200 OK (120ms)
+# [wrangler:info] GET /api/v1/risks/01M75G11HQGVQM970VA3MZD92Y/findings 200 OK (166ms)
+# [wrangler:info] GET /delegation/handoffs/01M75G11HQGVQM970VA3MZD92Y 200 OK (205ms)
+# [wrangler:info] GET /api/v1/entries/visibility/handoff/9f3afee772b4f164e0d853475df5f516 200 OK (25ms)
+# ⎔ Shutting down local server...
+# Subtest: BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+ok 1 - BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+  ---
+  duration_ms: 168977.907379
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 178043.358904

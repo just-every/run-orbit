@@ -1,0 +1,45 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (320880.185975ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 326586.402138
+
+✖ failing tests:
+
+test at newtests/t096/browser-journeys.test.ts:1:1527
+✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (320880.185975ms)
+  Error: expect(locator).toHaveText(expected) failed
+  
+  Locator: locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link')
+  Expected: "Morgan Chen"
+  Timeout: 5000ms
+  Error: element(s) not found
+  
+  Call log:
+    - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link') with timeout 5000ms
+    - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link')
+  
+      at captureRawStack (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+      at callMatcherAsStep (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+      at Object.toHaveText (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+      at recordMailBrowserJourney (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/newtests/t096/browser-record-mail.ts:15:49)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/newtests/t096/browser-journeys.test.ts:40:2) {
+    matcherResult: { name: 'toHaveText', expected: 'Morgan Chen', message: `expect(locator).toHaveText(expected) failed\n\nLocator: locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link')\nExpected: "Morgan Chen"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link') with timeout 5000ms\n  - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link')\n`, pass: false, actual: undefined, log: [ `  - Expect "toHaveText" locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link') with timeout 5000ms`, `  - waiting for locator('.notification-list--inbox li').filter({ has: locator('a[href="/app/contacts/01M61E2R39TRT2V6ZQH20VYEH1"]') }).first().getByRole('link')` ], timeout: 5000, ariaSnapshot: '- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit\n  - navigation "Main menu":\n    - link "NOW":\n      - /url: /app\n    - link "Brief":\n      - /url: /app/brief\n    - link "Tasks":\n      - /url: /app/tasks\n    - link "Records":\n      - /url: /app/opportunities\n    - link "Reports":\n      - /url: /app/reports\n    - link "Notifications":\n      - /url: /app/notifications\n  - link "Settings":\n    - /url: /app/settings/workspace\n  - button "Sign out"\n- main:\n  - paragraph: Notifications\n  - heading "Notifications inbox" [level=1]\n  - text: 0 unread\n  - paragraph:\n    - text: Review recent updates and open the record to take action.\n    - link "Your Slack mention preference":\n      - /url: /app/settings/integrations#personal-slack\n  - checkbox "Show unread only"\n  - text: Show unread only Notification type\n  - combobox "Notification type":\n    - option "All types" [selected]\n    - option "Assignments"\n    - option "Tasks"\n    - option "Needs attention"\n    - option "Customer replies"\n    - option "Mentions"\n    - option "Delivery outcomes"\n  - status: No notifications.\n  - heading "Mentions" [level=2]\n  - status: Nobody has mentioned you yet.' }
+  }

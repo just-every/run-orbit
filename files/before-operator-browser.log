@@ -1,0 +1,38 @@
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (268531.794736ms)
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (360185.169085ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 632363.504468
+
+✖ failing tests:
+
+test at tests/rer/operator-desktop.test.mjs:7:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (268531.794736ms)
+  locator.waitFor: Timeout 60000ms exceeded.
+  Call log:
+  [2m  - waiting for getByRole('link', { name: 'Operator review opportunity', exact: true }).first() to be visible[22m
+  
+      at Object.ready (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-routes.mjs:93:141)
+      at operatorRouteJourney (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-route-journey.mjs:11:75)
+      at async withOperatorWorkspace (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-workspace.mjs:29:3) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for getByRole('link', { name: 'Operator review opportunity', exact: true }).first() to be visible" ]
+  }
+
+test at tests/rer/operator-phone.test.mjs:7:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (360185.169085ms)
+  locator.waitFor: Timeout 60000ms exceeded.
+  Call log:
+  [2m  - waiting for getByRole('link', { name: 'Operator review opportunity', exact: true }).first() to be visible[22m
+  
+      at Object.ready (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-routes.mjs:93:141)
+      at operatorRouteJourney (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-route-journey.mjs:11:75)
+      at async withOperatorWorkspace (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-workspace.mjs:29:3) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for getByRole('link', { name: 'Operator review opportunity', exact: true }).first() to be visible" ]
+  }

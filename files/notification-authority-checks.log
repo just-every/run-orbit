@@ -1,0 +1,104 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:19408) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage
+ok 1 - AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage
+  ---
+  duration_ms: 9004.875273
+  type: 'test'
+  ...
+# Subtest: AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once
+ok 2 - AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once
+  ---
+  duration_ms: 9407.77114
+  type: 'test'
+  ...
+# Subtest: AI-001 DATA-002 changed or deleted preview context never leaves deployment
+ok 3 - AI-001 DATA-002 changed or deleted preview context never leaves deployment
+  ---
+  duration_ms: 22285.581711
+  type: 'test'
+  ...
+# Subtest: NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in
+ok 4 - NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in
+  ---
+  duration_ms: 5087.35517
+  type: 'test'
+  ...
+# Subtest: NOTIFY-001 assigned owners override latest actors; unassigned NOW, replies and failures follow the latest actor once
+ok 5 - NOTIFY-001 assigned owners override latest actors; unassigned NOW, replies and failures follow the latest actor once
+  ---
+  duration_ms: 104240.681429
+  type: 'test'
+  ...
+# Subtest: NOTIFY-001 BASE-OPS-005 an unassigned opportunity without operator history notifies every active operator and leaves a durable feature audit
+ok 6 - NOTIFY-001 BASE-OPS-005 an unassigned opportunity without operator history notifies every active operator and leaves a durable feature audit
+  ---
+  duration_ms: 2031.978557
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-013.current-registry","policy":"autonomous","tools":28,"resourceTemplates":10,"nativeMatch":true}
+# {"proof":"BASE-AGENT-013.current-registry","policy":"held","tools":28,"resourceTemplates":10,"nativeMatch":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"fe9c751c-8295-4a6c-a4fe-3f7fd3f5b2c1","revision":8,"summary_sha256":"fd4154f30971e0c1ee699a9f981847a3fb573a234761690fdb977fc6386b8f81","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"01571f95-3475-41a3-b6bc-1cbb03f0d286","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"f626efbb-0321-46fc-9f86-c320452cc021"},"approval":{"id":"e10c679e-bdf6-4eb2-9881-819b69f2b6a5","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":295,"parts":42,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M75GEWBCHG64CPB1247ERHWR"}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification
+not ok 7 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification
+  ---
+  duration_ms: 445146.470011
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/core/managed-owner.test.ts:1:9969'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"error":"invalid_settings"}
+    
+    403 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 403
+  operator: 'strictEqual'
+  stack: |-
+    bearerFor (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/support/agent-door-proof.ts:249:16)
+    async agentDoorCollaboratorProof (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/support/agent-door-collaborator-proof.ts:49:16)
+    async agentDoorProof (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/support/agent-door-proof.ts:244:5)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/core/managed-owner.test.ts:179:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write
+ok 8 - API-002 native credential lifecycle and delegation D1 reject ambient cookies, scope escalation, expiration, disable and revocation on every read and write
+  ---
+  duration_ms: 260660.185138
+  type: 'test'
+  ...
+# Subtest: delegation D1 transaction rolls back task, timeline, provenance and receipt together; concurrent exact replay has one effect
+ok 9 - delegation D1 transaction rolls back task, timeline, provenance and receipt together; concurrent exact replay has one effect
+  ---
+  duration_ms: 45773.921931
+  type: 'test'
+  ...
+# Subtest: delegation D1 authority changing after snapshot refuses every durable effect
+ok 10 - delegation D1 authority changing after snapshot refuses every durable effect
+  ---
+  duration_ms: 38496.094042
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1017112.300593

@@ -1,0 +1,44 @@
+TAP version 13
+# Subtest: BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+not ok 1 - BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+  ---
+  duration_ms: 334024.795312
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-desktop.test.mjs:7:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    expect(locator).toBeVisible() failed
+    
+    Locator: locator('.workflows-settings').locator('details.workflows-card').first().getByText('Trigger and source evidence', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+    
+    Call log:
+      - Expect "toBeVisible" locator('.workflows-settings').locator('details.workflows-card').first().getByText('Trigger and source evidence', { exact: true }) with timeout 5000ms
+      - waiting for locator('.workflows-settings').locator('details.workflows-card').first().getByText('Trigger and source evidence', { exact: true })
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toBeVisible (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    workflowBrowserJourney (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/workflow-journey.mjs:50:180)
+    async operatorRouteJourney (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-route-journey.mjs:16:17)
+    async withOperatorWorkspace (/home/agent/rer-consolidation/work/main-orbit-own-notifications-1-c1/repo/tests/rer/operator-workspace.mjs:29:3)
+  ...
+# Subtest: BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px
+ok 2 - BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px
+  ---
+  duration_ms: 336518.455334
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 675360.66934

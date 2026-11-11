@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "head": "78cb6f33609b7afa72e5941f95c7247dd1082df1",
+  "test_inventory_before": 200,
+  "test_inventory_after": 200,
+  "local_selected_cases": 20,
+  "source_check_ok": true,
+  "source_manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+  "migrations_changed": [
+    "migrations/core/0080_notification_context_fence.sql"
+  ],
+  "existing_migrations_unchanged": true,
+  "contract_and_generated_views_unchanged": true,
+  "contract_check": "Contract documents are current.",
+  "deployment_spec_check": "Deployment spec matches the build; setup digest matches rer-setup.json.",
+  "typecheck_log_sha256": "37f5f56e137eab039704ee855485598209c57b29a618b8728cb8450316f8674e",
+  "final_build_log_sha256": "0170d3bc0e198b36e71493ea44c4929d298340524c85604951a936a9df1b142f",
+  "typecheck": "passed",
+  "final_build": "passed",
+  "browser_executable": "/usr/bin/chromium",
+  "notification_proof_widths": [
+    1440,
+    390
+  ],
+  "product_tree_clean": true
+}
