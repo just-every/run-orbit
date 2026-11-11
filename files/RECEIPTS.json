@@ -1,0 +1,225 @@
+{
+  "blocker": "Base cached successful mutations retain original classes, overriding the current gated classification after provider refusal",
+  "branch": "cloud/sd-orbit-c-f157",
+  "checks": [
+    {
+      "cases": 1,
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "MANAGED.log",
+      "name": "managed-owner"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/capture-providers.test.ts",
+      "exit": 1,
+      "failed": 1,
+      "failure": "migration process ETIMEDOUT before oversized-mail body",
+      "log": "PROVIDERS.log",
+      "name": "capture-provider-native",
+      "passed": 4
+    },
+    {
+      "cases": 1,
+      "command": "pnpm exec tsx --test --test-name-pattern='oversized mail' tests/core/capture-providers.test.ts",
+      "exit": 0,
+      "log": "PROVIDERS-RETRY.log",
+      "name": "capture-provider-unchanged-retry"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "exit": 0,
+      "log": "CONFORMANCE.log",
+      "name": "agent-conformance",
+      "points_passed": 5468,
+      "points_total": 5468
+    },
+    {
+      "assert_width": 1440,
+      "cases": 1,
+      "chromium": "/usr/bin/chromium",
+      "command": "pnpm exec playwright test --config=/tmp/orbit-browser.config.mjs capture.spec.mjs --grep revoked",
+      "exit": 0,
+      "log": "BROWSER.log",
+      "name": "capture-browser",
+      "widths": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-capture-probe.mts",
+      "exit": 0,
+      "log": "CAPTURE-PROBE.log",
+      "name": "capture-public-door-probe",
+      "provider_policy_combinations": 10,
+      "source": "CAPTURE-PROBE.mts"
+    },
+    {
+      "actual": [
+        "standard"
+      ],
+      "command": "pnpm exec tsx /tmp/orbit-capture-replay-assertion.mts",
+      "exit": 1,
+      "expected": [
+        "gated"
+      ],
+      "log": "REPLAY-PROBE.log",
+      "name": "historical-success-replay-blocker",
+      "source": "REPLAY-PROBE.mts",
+      "test": "every later source sync call must compute gated from the stored provider answer"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "TYPECHECK.log",
+      "name": "typecheck"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "BOUNDARIES.log",
+      "name": "boundaries"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "name": "first-party"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "BUILD.log",
+      "name": "build"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0,
+      "log": "DEPLOYMENT-CHECK.log",
+      "name": "deployment-spec"
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0,
+      "name": "manifest"
+    },
+    {
+      "changed": 0,
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "name": "views-write"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "name": "views-check",
+      "views_restored_from": "origin/main"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "name": "source-lock"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "name": "source-lock-check"
+    },
+    {
+      "command": null,
+      "exit": 0,
+      "name": "migration-ledger",
+      "reason": "no migration changed"
+    }
+  ],
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "85b9af2ec2db69c3911076e0d984023ffe94f30d",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43120719536",
+      "id": 43120719536,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "commits": [
+    {
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "head": "85b9af2ec2db69c3911076e0d984023ffe94f30d"
+    },
+    {
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "head": "e08ec8508057081375c46a50cfb40d36ca7a9eec"
+    },
+    {
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "head": "f03537e4fe9ef75d3b1a1c32c58ac445606fac58"
+    },
+    {
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "head": "5e20af9220dcfcba2fc9bfe008749136ab0a2a78"
+    }
+  ],
+  "contract_diff": "",
+  "counts_after": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "counts_before": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "disposition": "BLOCKED",
+  "head": "85b9af2ec2db69c3911076e0d984023ffe94f30d",
+  "main_equal": false,
+  "main_head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "product_commit_identity_check": "pass; all candidate parents inspected; no trailers",
+  "product_push": "success",
+  "publication_scan": {
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "reason": "cloud route delegates exact-head scan to fleet"
+  },
+  "qualification_note": "Native action and changed-screen component bytes match passing runs. Later source changes only clarify historical receipt text; final focused and registered journeys include the known buyer, recent native sign-in and audit paging fixes.",
+  "ready": false,
+  "recorded_at": "2026-11-11T23:34:27.224905+00:00",
+  "repository": "just-every/run-orbit",
+  "run_site": {
+    "reason": "product main was not pushed",
+    "status": "not_run"
+  },
+  "schema": 1,
+  "source_hashes": {
+    "src/core/features/agent-door/capture-sources.ts": "bcecaffa764357ab385e783197d5f22975fec8b631ccf9d9c568483b240276b0",
+    "src/core/features/agent-door/native-access.ts": "2f732c1601f545af54013f1c3e5f15ed0d6c4ef36632bbe1cb5fe1b303acbae3",
+    "src/core/features/capture/providers/service.ts": "0613454f38decdb664c53fe0e75caec63d725e22e4c133f1d0d8a9a4a6fdf138",
+    "src/core/features/capture/providers/token-errors.ts": "57fcac163c91226c47fe7fb7b89156d2288e06e6fee5fb9486e3e2cde9ad25cc",
+    "tests/agent-door/capture-browser-journey.mjs": "2ca71ac6d2bbd8f139cf66fad05b4852127a62eb23885a18f216106ee5fadd88",
+    "tests/agent-door/capture-fixture.mjs": "336c64d14434244510165202b65c111991804507bc81ece493a09408f3d98447",
+    "tests/agent-door/capture-network.mjs": "c2f236300f025149730297c4a3fa571ac74ead5c329a3de60ed471631fa0faaa",
+    "tests/support/agent-door-audit-proof.ts": "db28d5663bb86671dd5dacfb2a3d5a1c3cb849c21ea5c7977210d7a7652361c4",
+    "tests/support/agent-door-capture-source-proof.ts": "4cd202e1c8ec48ff0f3b3f6a3ceacd4bf961461b4af05851b341cc6a3fb35135",
+    "tests/support/agent-door-proof.ts": "6ca3031aa798d6d4dd9c2acc36d12124d8245a9fc6f5bb39fec141e9ee833022"
+  },
+  "tag": "sd-orbit-c-f157",
+  "tests": {
+    "qualifications": 2,
+    "registered": 198,
+    "total": 200
+  }
+}

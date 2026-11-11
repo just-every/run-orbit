@@ -1,0 +1,76 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"SURFACE-013.stalled-deal","clock":"2026-11-11T23:00:54.633Z","expected":{"id":"01M4M0RGQ97PFBWZ6A2H5H3T25","evidenceId":"01M4PK57Q95RJEK1HT83W55D0B","quote":"In Synthetic proposal since 2026-10-11","since":"2026-10-11T23:00:54.633Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"69835aac-0a9c-4c41-b615-c3c120c53fbf","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"7f35bf03-141b-4489-a1cd-cd5c1beed222","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"884625aa-4c5f-4b06-a7fc-07b9e0c7d863"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"40535397-e182-4410-b75b-2332e1cfcfb8","revision":12,"summary_sha256":"03513ff94b12307ce1aa88c7cef0d8ea7076c54050f0e4588132a77404efb4ab","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"2ae5dc6a-18f9-4470-9b8e-8d9c63b71a7b","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"32dea0d4-4748-457c-bad1-c0e89b0b4629"},"approval":{"id":"e294e7a5-9279-4d46-b7a3-4d1fae9baa0d","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+{"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":331,"parts":43,"observations":[]}
+{"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M76DNYJYBJF0JRCPSHQ4Z7JS"}
+{"proof":"SURFACE-005.provider-response","provider":"google","step":"invalid_grant","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"google","step":"invalid_grant","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"invalid_grant","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"interaction_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"consent_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"login_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"invalid_grant","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"interaction_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"consent_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"login_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors (734240.884972ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 745528.190782
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:9189
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors (734240.884972ms)
+  AssertionError [ERR_ASSERTION]: <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Confirm with your email · Orbit</title><link rel="stylesheet" href="/operator-native.css"></head><body><div class="operator-shell ob-app">
+  <a class="operator-skip-link" href="#operator-main">Skip to content</a>
+  <header class="operator-header" data-menu="settings">
+  <a class="operator-mark" href="/app" aria-label="Orbit home"><span class="ob-brand"><img class="ob-mark" src="/brand/mark.svg" alt="" width="34" height="34"><span class="ob-brand-name" data-rer-name>Orbit</span></span></a>
+  <nav aria-label="Settings menu" class="operator-nav"><a class="operator-nav__back" href="/app"><span aria-hidden="true">← </span>NOW</a><span class="operator-nav__label" aria-hidden="true">Settings</span><a href="/app/settings/workspace">Workspace</a><a href="/app/settings/team" aria-current="page">Team</a><a href="/app/settings/pipeline">Pipeline</a><a href="/app/settings/capture">Capture</a><a href="/app/settings/mail">Mail</a><a href="/app/settings/forms">Forms</a><a href="/app/settings/integrations">Integrations</a><a href="/app/settings/data">Data</a></nav>
+  <div class="operator-header__end"><form class="operator-signout" action="/auth/signout" method="post"><button class="operator-back-link">Sign out</button></form></div>
+  <button class="operator-menu-toggle" type="button" aria-expanded="false" aria-controls="operator-menu-sheet">Menu</button>
+  <nav id="operator-menu-sheet" class="operator-menu-sheet" aria-label="Settings menu" hidden><a class="operator-menu-sheet__back" href="/app"><span aria-hidden="true">← </span>NOW</a><p class="operator-menu-sheet__label" aria-hidden="true">Settings</p><a href="/app/settings/workspace">Workspace</a><a href="/app/settings/team" aria-current="page">Team</a><a href="/app/settings/pipeline">Pipeline</a><a href="/app/settings/capture">Capture</a><a href="/app/settings/mail">Mail</a><a href="/app/settings/forms">Forms</a><a href="/app/settings/integrations">Integrations</a><a href="/app/settings/data">Data</a><hr><form action="/auth/signout" method="post"><button>Sign out</button></form></nav>
+  </header>
+  <div class="operator-menu-scrim" aria-hidden="true" hidden></div>
+  <main id="operator-main" tabindex="-1" class="operator-main"><header class="operator-titlebar"><div><p class="operator-eyebrow"><a href="/app/settings/team">Settings › Team</a></p><h1>Confirm with your email</h1></div></header><p>The confirmation email could not be sent. Try again later.</p><a href="/delegation/settings">Cancel</a></main>
+  </div><script>
+  (()=>{
+   const toggle=document.querySelector('.operator-menu-toggle'),sheet=document.getElementById('operator-menu-sheet'),scrim=document.querySelector('.operator-menu-scrim');
+   const show=(open,refocus)=>{toggle.setAttribute('aria-expanded',String(open));sheet.hidden=!open;scrim.hidden=!open;if(open)sheet.querySelector('a,button').focus();else if(refocus)toggle.focus();};
+   toggle.addEventListener('click',()=>show(sheet.hidden,false));
+   scrim.addEventListener('click',()=>show(false,true));
+   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!sheet.hidden){event.preventDefault();show(false,true);}});
+   sheet.addEventListener('click',event=>{if(event.target.closest('a'))show(false,false);});
+  })();
+  </script></body></html>
+  
+  503 !== 303
+  
+      at localAgentCredentialProof (/workspace/orbit-f157/tests/support/agent-door-local-proof.ts:17:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorProof (/workspace/orbit-f157/tests/support/agent-door-proof.ts:259:5)
+      at async TestContext.<anonymous> (/workspace/orbit-f157/tests/core/managed-owner.test.ts:167:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 303,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

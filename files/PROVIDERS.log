@@ -1,0 +1,55 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives (65408.850697ms)
+✔ CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks (213375.641147ms)
+✔ CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure (68756.179724ms)
+✖ CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars (60284.718287ms)
+✔ CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes (504907.269446ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 919190.063435
+
+✖ failing tests:
+
+test at tests/core/capture-providers.test.ts:1:8433
+✖ CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars (60284.718287ms)
+  Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1160:20)
+      at spawnSync (node:child_process:928:24)
+      at execFileSync (node:child_process:971:15)
+      at isolatedDatabase (/workspace/orbit-f157/tests/support/isolated-database.ts:11:3)
+      at async captureFixture (/workspace/orbit-f157/tests/support/capture-fixture.ts:16:20)
+      at async captureRecoveryFixture (/workspace/orbit-f157/tests/support/capture-recovery-fixture.ts:11:10)
+      at async oversizedMessageProof (/workspace/orbit-f157/tests/support/capture-provider-items.ts:10:11)
+      at async TestContext.<anonymous> (/workspace/orbit-f157/tests/core/capture-providers.test.ts:62:56)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-7qedGJ' ],
+    error: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at execFileSync (node:child_process:971:15)
+        at isolatedDatabase (/workspace/orbit-f157/tests/support/isolated-database.ts:11:3)
+        at async captureFixture (/workspace/orbit-f157/tests/support/capture-fixture.ts:16:20)
+        at async captureRecoveryFixture (/workspace/orbit-f157/tests/support/capture-recovery-fixture.ts:11:10)
+        at async oversizedMessageProof (/workspace/orbit-f157/tests/support/capture-provider-items.ts:10:11)
+        at async TestContext.<anonymous> (/workspace/orbit-f157/tests/core/capture-providers.test.ts:62:56)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 976955 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 9321,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 976955 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }

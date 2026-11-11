@@ -1,0 +1,24 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dr9n8x5kdnmc7bd3er3x3","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"google","step":"invalid_grant","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dr9n8x5kdnmc7bd3er3x3","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"google","step":"invalid_grant","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"invalid_grant","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"interaction_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"consent_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"login_required","policy":"autonomous","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"invalid_grant","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"interaction_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"consent_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+{"probe":"completed-success-after-authorization-attention","source":"capture-01m76dt4jtanx843kr5j38m5py","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}],"isError":false}
+{"proof":"SURFACE-005.provider-response","provider":"microsoft","step":"login_required","policy":"held","standard":true,"refusal":true,"gated":true,"replayProviderCalls":0,"nativeReconnect":true}
+PROBE SURFACE-005 provider-response: native MCP sync, token refusal, gated replay and native reconnect -> PASS
