@@ -1,0 +1,106 @@
+{
+  "tag": "sd-orbit-c-f154",
+  "statuses": "all listed local commands completed; full extended native registration passed",
+  "commands": [
+    {
+      "name": "regression reproduction: prior raw adapter",
+      "command": "cloud_run timeout 300 pnpm exec tsx --test .draft-normalization-probe.ts",
+      "exit": 1,
+      "log": "normalization-before.log",
+      "expectedRegressionFailure": true,
+      "logSha256": "ff62b0296f80cae539c12c9c5e3368245a5370146c37809bcb772c37cdbd2cc6"
+    },
+    {
+      "name": "regression reproduction: shared normalizer",
+      "command": "cloud_run timeout 300 pnpm exec tsx --test .draft-normalization-probe.ts",
+      "exit": 0,
+      "log": "normalization-after.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "b74fdc53703e9c3403b7c3763ff207b23985343000d5c3acd544893ad72252d5"
+    },
+    {
+      "name": "predecessor native registration",
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "managed-owner-baseline.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "81aea000073fe1c97c95c7be66e92e37d9435b7a4b3d6a1922af90da207b7ae1"
+    },
+    {
+      "name": "built application",
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "cb2c99d82bacef3af435739813f318f73f0467e8941148cf1fb3c6ca34f9c5d6"
+    },
+    {
+      "name": "typecheck after final proof edit",
+      "command": "cloud_run pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "75b9ba1252b45711e77cf007dbf1332d3cb2a7cbef411d380741f2878b9ba446"
+    },
+    {
+      "name": "first-party contract",
+      "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "contract generator",
+      "command": "node src/base/contract-docs.mjs write && node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-generation.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "cdada4f46860989b6e41904b5bffd1be7976cfde8b8dba1b4a7dcf41c522fcda"
+    },
+    {
+      "name": "source lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock && node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "6e8476c020251e48b3cb81b190eca73652a2fa4bce057469a8cac47d4d3e4b13"
+    },
+    {
+      "name": "retained emitted browser registration",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1800 pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts",
+      "exit": 0,
+      "log": "browser.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "a1e4a6451755339fe6714ed612aa12181970f87bbdf4ab1051546a576c6e7b24"
+    },
+    {
+      "name": "extended native registration",
+      "command": "cloud_run timeout 1800 pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "log": "managed-owner.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "7b62e76a76e3b83f23034c1be5687c6937f572960c6447a5504885903ba7c914"
+    },
+    {
+      "name": "committed source lock check",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-final-check.log",
+      "expectedRegressionFailure": false,
+      "logSha256": "0cbb72b4e8d9642d16bca5329d9fa6b63538fa90cbb54cbef3cae1de7448d4e3"
+    }
+  ],
+  "migrationsChanged": false,
+  "ledger": "not applicable",
+  "head": "ecd95760764af8d529587fd51df2b5fdc19156c6",
+  "branch": "cloud/sd-orbit-c-f154",
+  "mainAtCandidatePush": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contractStatusChanges": [],
+  "providerCallsInSelectedNativeProof": 0
+}

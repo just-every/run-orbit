@@ -1,0 +1,40 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "ecd95760764af8d529587fd51df2b5fdc19156c6",
+  "branch": "cloud/sd-orbit-c-f154",
+  "main": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "mainEqualsCandidate": false,
+  "productRemoteHeadVerified": true,
+  "pr": null,
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "ecd95760764af8d529587fd51df2b5fdc19156c6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43107128141",
+      "id": 43107128141,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "githubApiCalls": 4,
+  "publicationScan": {
+    "commit": "ecd95760764af8d529587fd51df2b5fdc19156c6",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "not run in cloud; required at guarded landing"
+  },
+  "candidateRunSite": "main-only; pending guarded landing",
+  "countsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "contractJudgmentsChanged": false
+}

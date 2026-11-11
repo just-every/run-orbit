@@ -1,0 +1,21 @@
+Identity and trailer inspection passed for every candidate, including side parents: 4 commits
+ecd95760764af8d529587fd51df2b5fdc19156c6
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+Prove manual draft normalization retains native and MCP input boundaries
+
+12b016db68a798982a9ac6bbe4c02c47f2f9c1e6
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+Keep manual draft parity proof independent of native audit pagination
+
+4c17986f3298f8d97f8f29335a39bcc22dc0897c
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+Preserve complete refusal witnesses and inspect saved draft revision [skip ci]
+
+90b378bf5fc1fcc3c20730514ae8d99495628944
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+Normalize manual drafts consistently across native and MCP doors [skip ci]
+

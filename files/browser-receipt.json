@@ -1,0 +1,47 @@
+{
+  "proof": "BASE-AGENT-002.5.manual-draft-browser",
+  "source": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6 with boundary-only native proof additions",
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1800 pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts",
+  "exit": 0,
+  "registeredTests": 1,
+  "passed": 1,
+  "widths": [
+    1440,
+    390
+  ],
+  "assertionWidth": 1440,
+  "inspected": true,
+  "screenshots": [
+    {
+      "path": "manual-draft-1440.png",
+      "bytes": 165410,
+      "sha256": "35eb4ac9d31076e1b046ac8357088c98989e66d1449a59e15d90e3d1519fea5d"
+    },
+    {
+      "path": "manual-draft-390.png",
+      "bytes": 142556,
+      "sha256": "ef92c835ce4bf09aeaf781517166f690ca1f4e0eb09d2c972e40413ed51b384a"
+    },
+    {
+      "path": "manual-draft-review-1440.png",
+      "bytes": 222479,
+      "sha256": "dd59b13d2ff45322551b4b4691e0fe927b71d7e0fe860aabb696fad7ba369fb2"
+    },
+    {
+      "path": "manual-draft-review-390.png",
+      "bytes": 200348,
+      "sha256": "afae358010a1a272fe80d6682450c0764d7e49ebdd793aae6bc46980f5e439eb"
+    }
+  ],
+  "reviewMarked": true,
+  "outboundMessageDelta": 0,
+  "relevantBrowserFunctionAndRuntimeUnchangedSinceRun": true,
+  "candidateHead": "ecd95760764af8d529587fd51df2b5fdc19156c6",
+  "relevantCodeBlobs": {
+    "src/core/features/drafts/input.ts": "f38b025d452367f21e2639fdf0e97a991ea5ae01",
+    "src/core/features/agent-door/drafts.ts": "3aebcd4bd6ad27abd896a860053e84677ac6d82e",
+    "src/core/features/drafts/routes.ts": "c8c650038839431ed48747fd1d93b85b15aeb8c7",
+    "src/core/features/workbench/routes.ts": "94d90e11b1c1ff5e4142c71f5dffa20309ec67fd",
+    "tests/delegation-browser/today-brief.test.ts": "6c5cf620336e99c3ded72ea0b1461ed6e4af1cd5"
+  }
+}
