@@ -3,7 +3,8 @@ import {agentDoorCaptureSourceProof} from './agent-door-capture-source-proof';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
-import {identityResponse, operatorFromRequest} from '../../src/core/features/identity';
+import {emailLinkSignIn} from './email-link';
+import {createOrbitIdentity,identityResponse, operatorFromRequest} from '../../src/core/features/identity';
 import {orbitAgentDoor, orbitBusinessSettings} from '../../src/core/features/agent-door';
 import {SettingsRepository} from '../../src/core/features/settings/repository';
 import {localAgentCredentialProof} from './agent-door-local-proof';
@@ -256,7 +257,12 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
         assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
         return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
       }});
-    await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
+    // This populated journey can outlast native consent's recent-authentication window.
+    // Obtain a current person's session through the normal captured mail edge.
+    const consentSession=await emailLinkSignIn(bindings.DB,bindings.OWNER_EMAIL,{origin,returnTo:'/delegation/settings',
+      createIdentity:(config,options)=>createOrbitIdentity({...config,...bindings},options)});
+    assert.equal(consentSession.operator.operatorId,owner.operatorId);
+    await localAgentCredentialProof(bindings,consentSession.cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});

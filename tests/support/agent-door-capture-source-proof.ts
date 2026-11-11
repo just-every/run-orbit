@@ -43,6 +43,14 @@ export async function agentDoorCaptureSourceProof({bindings,door,cookie,adopt,bu
    };
    const app=createApp({database:db,assets:bindings.ASSETS,sourceSecurity:security,captureOrigin:origin,captureFetch:network.fetcher,
     authenticate:request=>operatorFromRequest(request,bindings),stepUp:(request,action,returnTo)=>requireStepUp(request,bindings,action,returnTo)});
+   if(provider==='google'){
+    const create=async(kind:string,body:object)=>{
+     const response=await app.request(origin+'/api/v1/records/'+kind,{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)});
+     assert.equal(response.status,201);return response.json() as Promise<{id:string}>;
+    };
+    const company=await create('company',{name:'Synthetic Capture sync account',primary_domain:'acme.example'});
+    await create('contact',{name:'Synthetic Capture sync buyer',email:['ana','acme.example'].join('@'),company_id:company.id});
+   }
    const native=(path:string,body?:unknown)=>app.request(origin+'/api/v1/capture'+path,{method:body===undefined?'GET':'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
    let id=await nativeProviderConnection(provider,native,network);
    const scope=async()=>assert.equal((await native(`/sources/${id}/scope`,{mail:{folders:['INBOX']}})).status,200);
@@ -53,7 +61,7 @@ export async function agentDoorCaptureSourceProof({bindings,door,cookie,adopt,bu
     const key=`synthetic-orbit-${provider}-${policyName}`;
     const positive=await mcp('sync',{id,source_revision:source.revision,idempotency_key:key+'-positive',classes:['gated'],confirmed:true});
     const positiveResult=result(positive);assert.equal(positiveResult.structuredContent.source.state,'connected');
-    assert.ok(positiveResult.structuredContent.source.captured+positiveResult.structuredContent.source.skipped>0,'native Capture is populated');
+    assert.ok(positiveResult.structuredContent.source.captured>0,'native Capture is populated');
     await decision(positive,standard,policyName==='held'?'review':'autonomous');
     assert.deepEqual(Object.keys(positiveResult.structuredContent).sort(),['source','summary']);
     assert.ok(!JSON.stringify(positive.body).includes('synthetic-orbit-secret'));
@@ -72,7 +80,7 @@ export async function agentDoorCaptureSourceProof({bindings,door,cookie,adopt,bu
      assert.equal(network.state.tokens,tokens+1);assert.equal(network.state.reads.length,reads+1,'the token refusal is not retried');
      await decision(refusal,standard,policyName==='held'?'review':'autonomous');
      assert.ok(!JSON.stringify(refusal.body).includes('synthetic-orbit-private-description'));
-     const snapshot=await nativeState(id);assert.equal((snapshot.source as any).state,'error');
+     const snapshot=await nativeState(id);assert.ok(snapshot.signals.length>0,'the refusal preserves populated captured evidence');assert.equal((snapshot.source as any).state,'error');
      assert.match((snapshot.source as any).last_error,/Authorization requires attention/);
      const gated=[{class:'gated',facts:{measure:1,provider,step}}];
      for(const replayArgs of [args,{...args,idempotency_key:args.idempotency_key+'-fresh',source_revision:(await read(id)).revision,classes:['standard'],confirmed:true}]){

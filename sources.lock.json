@@ -10987,7 +10987,7 @@
       "executable": false
     },
     "tests/support/agent-door-audit-proof.ts": {
-      "sha256": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+      "sha256": "db28d5663bb86671dd5dacfb2a3d5a1c3cb849c21ea5c7977210d7a7652361c4",
       "executable": false
     },
     "tests/support/agent-door-body-limit.ts": {
@@ -11007,7 +11007,7 @@
       "executable": false
     },
     "tests/support/agent-door-capture-source-proof.ts": {
-      "sha256": "eed140c22ecd86e43f2a0df051d9ea3207473d1c035721534cd95787cc8fba11",
+      "sha256": "4cd202e1c8ec48ff0f3b3f6a3ceacd4bf961461b4af05851b341cc6a3fb35135",
       "executable": false
     },
     "tests/support/agent-door-classification-proof.ts": {
@@ -11023,7 +11023,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "b22b9f9c11306089bc7fc5d5e7f326f4c96ac9f9f8fc10ed69727687d189c99d",
+      "sha256": "6ca3031aa798d6d4dd9c2acc36d12124d8245a9fc6f5bb39fec141e9ee833022",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {

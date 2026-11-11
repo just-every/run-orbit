@@ -51,9 +51,17 @@ export async function agentAuditRetentionProof(input: {
     assert.equal(await bindings.DB.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first('name'), update.fields.name);
 
     const audit = async (session: string) => {
-      const response = await orbitAgentDoor(bindings).handle(new Request(origin + '/agents/api/audit?agent=' + encodeURIComponent(agent.id), {headers: {Cookie: session}}));
-      assert.equal(response!.status, 200);
-      return await response!.json() as {rows: AuditRow[]; differs_from_policy: number};
+      const retained={rows:[] as AuditRow[],differs_from_policy:0};
+      let after='0';
+      for(;;){
+        const response = await orbitAgentDoor(bindings).handle(new Request(origin + '/agents/api/audit?agent=' + encodeURIComponent(agent.id)+'&after='+after, {headers: {Cookie: session}}));
+        assert.equal(response!.status, 200);
+        const page=await response!.json() as {rows: AuditRow[]; differs_from_policy: number;cursor:string|null};
+        retained.rows.push(...page.rows);retained.differs_from_policy+=page.differs_from_policy;
+        if(!page.cursor||page.cursor===after)break;
+        after=page.cursor;
+      }
+      return retained;
     };
     const before = await audit(cookie);
     assert.equal(before.rows.length, 2, 'the admitted agent has real read and write history');
