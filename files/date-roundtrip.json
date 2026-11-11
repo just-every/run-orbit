@@ -1,0 +1,23 @@
+{
+  "width": 1440,
+  "locale": "en-US",
+  "workspaceTimezone": "America/Chicago",
+  "close": {
+    "typed": "04/11/2027",
+    "display": "04/11/2027",
+    "api": "2027-04-11T05:00:00.000Z"
+  },
+  "invalidDayRejected": "02/30/2027",
+  "schedule": {
+    "typed": "01/11/2027 10:00",
+    "requestedAt": "2027-01-11T16:00:00.000Z",
+    "reviewedAt": "2027-01-11T16:00:00.000Z",
+    "savedAt": "2027-01-11T16:00:00.000Z",
+    "displayed": "01/11/2027, 10:00 AM"
+  },
+  "british": {
+    "locale": "en-GB",
+    "display": "04/11/2027",
+    "api": "2027-11-04T00:00:00.000Z"
+  }
+}

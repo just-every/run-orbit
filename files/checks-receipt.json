@@ -1,0 +1,101 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-us-dates-1",
+  "head": "0d98096030fb8a83a622ffb7631da99f261f08ea",
+  "tree": "837ba0162a1efbf5287f3209f5d050a7f39a3520",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "node --test --test-concurrency=1 --test-name-pattern='at 1440$' tests/rer/onboarding.test.mjs",
+      "exit": 0,
+      "test": "SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build (through cloud_run)",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "inventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clauseCounts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "clauseStatusChanges": [],
+  "browser": {
+    "width": 1440,
+    "locale": "en-US",
+    "workspaceTimezone": "America/Chicago",
+    "close": {
+      "typed": "04/11/2027",
+      "display": "04/11/2027",
+      "api": "2027-04-11T05:00:00.000Z"
+    },
+    "invalidDayRejected": "02/30/2027",
+    "schedule": {
+      "typed": "01/11/2027 10:00",
+      "requestedAt": "2027-01-11T16:00:00.000Z",
+      "reviewedAt": "2027-01-11T16:00:00.000Z",
+      "savedAt": "2027-01-11T16:00:00.000Z",
+      "displayed": "01/11/2027, 10:00 AM"
+    },
+    "british": {
+      "locale": "en-GB",
+      "display": "04/11/2027",
+      "api": "2027-11-04T00:00:00.000Z"
+    }
+  },
+  "ci": {
+    "observed_at": "2026-11-11T11:41:33.998998+00:00",
+    "run": {
+      "id": 43013997109,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "0d98096030fb8a83a622ffb7631da99f261f08ea",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43013997109",
+      "event": "push",
+      "created_at": "2026-11-11T11:41:18Z",
+      "updated_at": "2026-11-11T11:41:21Z"
+    }
+  },
+  "priorRuns": [
+    {
+      "scope": "first draft snapshot",
+      "result": "1440 failed on Intl rendering; corrected before final run; 390 passed after that correction"
+    },
+    {
+      "scope": "US desktop date assertions and locale-switch check",
+      "result": "US/API/invalid-day/schedule checks passed; header override within en-US context did not change browser locale; replaced with independent en-GB synthetic fixture context"
+    }
+  ],
+  "publicationScan": "Not run in cloud; fleet Mac owns complete publication scan and landing."
+}

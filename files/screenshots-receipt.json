@@ -1,0 +1,45 @@
+{
+  "product_head": "0d98096030fb8a83a622ffb7631da99f261f08ea",
+  "files": [
+    {
+      "file": "before-deal-1440.png",
+      "bytes": 153976,
+      "sha256": "23f860c577231276504d7bd3f5cff2a9edf13727e85cc2b69a13da0928182235"
+    },
+    {
+      "file": "before-deal-390.png",
+      "bytes": 136478,
+      "sha256": "783c7b4338d6dd416dc35b41ef424db6ef1c4742b1d79ab8c824164b57fec2a5"
+    },
+    {
+      "file": "before-draft-1440.png",
+      "bytes": 152294,
+      "sha256": "d3cf2c1e5ad04a2d1284ac72ed9ccb54d0c832dd5d3387f3850647265d5743a5"
+    },
+    {
+      "file": "before-draft-390.png",
+      "bytes": 129722,
+      "sha256": "320c58fad7d34c90cf9a45e49923b2d5dd26f42265badbb4af0322d87283a44a"
+    },
+    {
+      "file": "after-deal-1440.png",
+      "bytes": 319038,
+      "sha256": "3c543d61fbe9eacf8063e7ee6f0d547f558b9de4982f6ecd4c4182e7bcc36209"
+    },
+    {
+      "file": "after-deal-390.png",
+      "bytes": 284043,
+      "sha256": "1d761caa20b94ce10d92358c377ffcf404d89b486782e226b046d0284bbe0189"
+    },
+    {
+      "file": "after-draft-1440.png",
+      "bytes": 141407,
+      "sha256": "dad13365204ca0a69e2c5c73d2cebad43786d73e50cfc45dc85347b56dc3f3a1"
+    },
+    {
+      "file": "after-draft-390.png",
+      "bytes": 123703,
+      "sha256": "eb55610ffc94fc20b05dbaf295d3b159037e289b22995c4cf3e33f84a5d1846b"
+    }
+  ]
+}

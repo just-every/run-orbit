@@ -1,0 +1,13 @@
+{
+  "context": {
+    "locale": "en-US",
+    "timezone": "America/Chicago"
+  },
+  "recordURL": "/app/opportunities/01M755B6X865BAW7YH1BD1CNZN",
+  "expectedCloseInput": {
+    "type": "date",
+    "domValue": "2027-04-11"
+  },
+  "draftHistory": "Human-reviewed outreach\n\nEditable draft\n← Opportunity detail\nRecipient\nSubject\nBody\nUse a template, snippet or signature\n\nSave the exact message before approving or scheduling it below.\n\nSave draft\nAudit details\n\nDraft history\n\nAuthor\nSynthetic Orbit Owner\nSource recommendation\nNo source recommendation\nCreated\n11 Nov 2026, 5:19 am\nLast updated\n11 Nov 2026, 5:19 am\nRevision\n1\nApprove and send\n\nTo: synthetic-orbit-2 <synthetic-orbit-2@example.test>\n\nSubject: Synthetic date review\n\nSynthetic date format proof.\n\nApproval uses the saved recipient, subject and body shown above, revision 1.\n\nOpt-out: not included — no List-Unsubscribe header and no unsubscribe footer.\n\nOne-to-one email carries no opt-out by default (Settings → Opt-out links).\n\nAdd opt-out to this message\n\nChecking mail sender…\n\nSchedule for later (leave empty to send now)\nApprove and send exact revision",
+  "finding": "Shared formatter renders day before month despite en-US browser and America/Chicago workspace; native date control appearance depends on Chromium host locale."
+}
