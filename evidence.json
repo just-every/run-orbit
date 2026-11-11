@@ -7,10 +7,22 @@
       "sha256": "1c026e83a846c3db71d3e4e0de300fd4adbe4fb0de808bd2cd84617b0aa37ac6"
     },
     {
+      "blob": "91983740b2395180f45439259daa2864704b05e5",
+      "bytes": 647,
+      "path": "CI.json",
+      "sha256": "2b4360ee02d16a97954d2515a374964462947fc966042ad245a7e8447586bede"
+    },
+    {
       "blob": "f6c6eb5fd6d43c4bbb3683809df63443ae6c04e9",
       "bytes": 581,
       "path": "CUSTODY.json",
       "sha256": "4991f21d865fe098012cb8a829afd5d27371efab916f187332ffcf5be18f5c1d"
+    },
+    {
+      "blob": "c3028ea7716bdae76fdc38af98a70787e7457ac2",
+      "bytes": 8106,
+      "path": "EVIDENCE-TRANSFER-1.json",
+      "sha256": "abba3c673457c2ae6d5011a36daa11e7f99535fb20dde2e9e09b5d63aeb84105"
     },
     {
       "blob": "a8b62179568edfda65a25a9a55f1df1cb1d446b5",
@@ -19,16 +31,16 @@
       "sha256": "42dc1d7003804ac6fed2ce707f269e41c28ee448f03cdcf44f1d7ae47c002aa2"
     },
     {
-      "blob": "2d003bb10cb516f79983712ad8e77a0621eb25b2",
-      "bytes": 6558,
+      "blob": "6ec43ec994cb0da76d63702a14789a6ac772054d",
+      "bytes": 7023,
       "path": "PACKET-REVIEW.json",
-      "sha256": "910f3b6dca0a28f40b68747c6c330766a2a0b7fc4b9d92a05bc13145648512b2"
+      "sha256": "ba1bc19d916451ccef2afffcc024b76b9f15f8789094f1422bf6f3988ccf8a36"
     },
     {
-      "blob": "9a55a5c80cb906ba6a9f4333ded26ca198f87d61",
-      "bytes": 12316,
+      "blob": "5700b74afde4b75d488ab127449cbc528e3e4d7f",
+      "bytes": 13059,
       "path": "REPORT.md",
-      "sha256": "dd4cf70b3a6f7b6551c25aff4f94df4834f22ea6792e549b5990ed9d9c61ed2e"
+      "sha256": "1a5b715c31218263e6abad071686908fa8c42d463d27375a212fd6f13dacf92a"
     },
     {
       "blob": "7a0ba99102ad37c00dd1d16e79aeae24ca56f240",
@@ -121,10 +133,16 @@
       "sha256": "71f173563af5598e664972d8495864f6f2daeea6733d6265d046a1d9ceb1025d"
     },
     {
-      "blob": "be07ab5288dd011fb25a07baf7583d00976da916",
-      "bytes": 383,
+      "blob": "9975d2d1249aaf1e42d7b71b0a3171e3a2121401",
+      "bytes": 395,
+      "path": "candidate-ci-observation-2.json",
+      "sha256": "e1c7917d2a291f349a402d0ef41e5b9076f5d19e603e79f02fd93a6cdad238c0"
+    },
+    {
+      "blob": "3f974a7786211477ff080a8fdbb550ab13a1435a",
+      "bytes": 769,
       "path": "ci-watcher.log",
-      "sha256": "deef4a8974fc140bd3dc0502e4510fb148a46f1441737e9a36339b978d786f59"
+      "sha256": "2da4f52a77f7112e1617f9b992a50faaaad05cd40f3fd6f5ba0da2ed1d6966eb"
     },
     {
       "blob": "ae869b2fafd3acf46a2dc6ce35ec869497ae9cfb",

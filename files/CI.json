@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "original_failed_run": 43001814461,
+  "original_failed_shards": 6,
+  "candidate": {
+    "id": 43043047002,
+    "name": "Verify",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "78cb6f33609b7afa72e5941f95c7247dd1082df1",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43043047002",
+    "head_branch": "cloud/main-orbit-own-notifications-1-c1",
+    "run_attempt": 1,
+    "github_budget_calls_used": 9,
+    "elapsed_seconds": 1680
+  },
+  "status": "passed",
+  "exact_sha_verified": true,
+  "github_budget_calls_used": 9
+}

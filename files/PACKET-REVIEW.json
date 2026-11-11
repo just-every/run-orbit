@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "REPORT.md",
-      "bytes": 12316,
-      "sha256": "dd4cf70b3a6f7b6551c25aff4f94df4834f22ea6792e549b5990ed9d9c61ed2e"
+      "bytes": 13059,
+      "sha256": "1a5b715c31218263e6abad071686908fa8c42d463d27375a212fd6f13dacf92a"
     },
     {
       "path": "CHECKS.json",
@@ -199,8 +199,23 @@
     },
     {
       "path": "ci-watcher.log",
-      "bytes": 383,
-      "sha256": "deef4a8974fc140bd3dc0502e4510fb148a46f1441737e9a36339b978d786f59"
+      "bytes": 769,
+      "sha256": "2da4f52a77f7112e1617f9b992a50faaaad05cd40f3fd6f5ba0da2ed1d6966eb"
+    },
+    {
+      "path": "candidate-ci-observation-2.json",
+      "bytes": 395,
+      "sha256": "e1c7917d2a291f349a402d0ef41e5b9076f5d19e603e79f02fd93a6cdad238c0"
+    },
+    {
+      "path": "CI.json",
+      "bytes": 647,
+      "sha256": "2b4360ee02d16a97954d2515a374964462947fc966042ad245a7e8447586bede"
+    },
+    {
+      "path": "EVIDENCE-TRANSFER-1.json",
+      "bytes": 8106,
+      "sha256": "abba3c673457c2ae6d5011a36daa11e7f99535fb20dde2e9e09b5d63aeb84105"
     }
   ]
 }

@@ -72,7 +72,7 @@ Browser proof: `notifications-1440.png`, `notifications-390.png`, `record-mail-n
 
 ## Exact-SHA Verify
 
-Verify `43043047002` (https://github.com/just-every/run-orbit/actions/runs/43043047002) is running on the exact final SHA. Its first REST observation at 18 minutes was `in_progress`, conclusion null. No green/READY claim is made while it is pending. Seven GitHub-budget invocations read the original jobs/log archives. Candidate discovery and polling use the remaining three calls, one watcher, with at least 300 seconds between observations. A report-only evidence ref never signals product READY or landing.
+Verify `43043047002` (https://github.com/just-every/run-orbit/actions/runs/43043047002) completed with **success** on exact SHA `78cb6f33609b7afa72e5941f95c7247dd1082df1`. The 18-minute observation was in progress; the 28-minute observation was completed/success. The watcher used two candidate REST requests; total task GitHub budget usage is 9 of 10. The original run had six failed shards; the final required Verify is green. Seven GitHub-budget invocations read the original jobs/log archives. Candidate discovery and polling use the remaining three calls, one watcher, with at least 300 seconds between observations. A report-only evidence ref never signals product READY or landing.
 
 ## Tests whose old self-notification expectations were replaced
 
@@ -83,3 +83,9 @@ Their registration names are unchanged; the supporting public-door fixtures now 
 - `tests/rer/operator-phone.test.mjs#BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px`
 
 The risk-task, meeting-action and exact historical-schema assertions were retained. Their failures were repaired in product code/new migration, not removed or relaxed in the tests.
+
+## Terminal result
+
+All 20 selected local cases passed, the final build/typecheck/source/contract/deployment checks passed, and exact-SHA Verify 43043047002 is green. No product blocker remains. Test registrations: 200 → 200. Direct-own-create unread delta: 0 → 0. NOTIFY-001 and NOTIFY-002 remain PARTIAL, with the point-1 claims above retained. The fleet still owns publication scanning and landing; this result does not publish main or deploy the product.
+
+READY branch=cloud/main-orbit-own-notifications-1-c1 head=78cb6f33609b7afa72e5941f95c7247dd1082df1
