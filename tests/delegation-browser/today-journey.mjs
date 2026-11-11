@@ -105,3 +105,52 @@ export async function todayJourney({first,second,colleague,evidence}){
  for(const id of [acme,bright,bright2])expect((await(await again.request.get(`/api/v1/workbench/opportunities/${id}/messages`)).json()).messages).toEqual([]);
  expect(errors).toEqual([]);
 }
+
+/** The populated stalled-risk limb of the specialist week, with a linked held review. */
+export async function stalledRiskPolicyJourney({page,expected,policy,bearer,evidence}) {
+ const {stalledRiskComparison}=await import('../agent-door/native-journey.mjs');
+ await page.setViewportSize({width:1440,height:900});
+ const origin=new URL((await page.request.get('/health')).url()).origin;
+ let rpc=0;
+ const native=async()=>{const response=await page.request.get(`/api/v1/risks/${expected.id}/findings`);expect(response.status()).toBe(200);return response.json();};
+ const baseline=await native();
+ const recordPath=`/api/v1/records/opportunity/${expected.id}`;
+ const originalRecord=await page.request.get(recordPath);expect(originalRecord.status()).toBe(200);const recordBefore=await originalRecord.json();
+ for(const mode of ['autonomous','held']) {
+  const adoption=await page.request.post('/api/rer/agent-policy',{headers:{Origin:origin},data:{policy:await policy(mode)}});expect(adoption.status(),await adoption.text()).toBe(200);
+  const response=await page.request.post('/mcp',{headers:{Authorization:'Bearer '+await bearer(),'MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':'orbit.risks.read'},data:{jsonrpc:'2.0',id:++rpc,method:'tools/call',params:{name:'orbit.risks.read',arguments:{id:expected.id},_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}}});
+  expect(response.status()).toBe(200);const result=(await response.json()).result;expect(result.isError).toBe(false);
+  const {finding,evidence:source}=stalledRiskComparison(result.structuredContent.risks,await native(),expected);
+  expect(result._meta['com.runeditrun/decision'].disposition).toBe(mode==='held'?'review':'autonomous');
+  await page.goto(`/app/opportunities/${expected.id}`);
+  const risks=page.getByTestId('deal-risks');await risks.locator(':scope > summary').click();
+  const stalled=risks.locator('[data-kind="stalled"]');
+  await expect(stalled.getByRole('heading')).toHaveText(finding.title);
+  await expect(stalled.locator('blockquote')).toHaveText(expected.quote);
+  await expect(stalled.getByText('Rule inference:',{exact:true})).toBeVisible();
+  await expect(stalled.getByText(finding.inference.text,{exact:false})).toBeVisible();
+  await expect(stalled.getByLabel('Proposed next task')).toHaveValue(expected.nextTask);
+  const citation=stalled.getByRole('link',{name:source.label,exact:true});await expect(citation).toHaveAttribute('href',source.href);
+  if(mode==='held') {
+   // Assertions run once at desktop; each changed state is then shown once at both widths.
+   for(const width of [1440,390]) {await page.setViewportSize({width,height:900});await stalled.scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/specialist-stalled-${width}.png`,fullPage:true});}
+  }
+  await page.setViewportSize({width:1440,height:900});await citation.click();
+  await expect(page.locator(`[id="entry-${expected.evidenceId}"]`)).toBeVisible();
+  const unauthenticated=await page.request.get(source.href,{headers:{Cookie:''},maxRedirects:0});expect([302,303,401]).toContain(unauthenticated.status());
+  if(mode==='held') {
+   const review=result._meta['com.runeditrun/review'];expect(review.id).toBeTruthy();
+   await page.goto('/agents');const item=page.locator(`[data-review-id="${review.id}"]`);
+   await expect(item).toHaveAttribute('data-review-state','open');await expect(item).toContainText('Synthetic risk specialist for Rose Owner');
+   await expect(item.getByRole('button',{name:'Mark reviewed',exact:true})).toBeVisible();
+   for(const width of [1440,390]) {await page.setViewportSize({width,height:900});await item.scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/specialist-risk-review-${width}.png`,fullPage:true});}
+   await page.setViewportSize({width:1440,height:900});await item.getByRole('button',{name:'Mark reviewed',exact:true}).click();await expect(item).toHaveCount(0);
+   const reviews=await page.request.get('/agents/api/reviews');expect((await reviews.json()).reviews.find(item=>item.id===review.id).state).toBe('reviewed');
+  } else {expect(result._meta['com.runeditrun/review']).toBeUndefined();}
+  expect(await native()).toEqual(baseline,'reading risk evidence and reviewing the agent preserve the native deal and findings');
+  const recordAfter=await page.request.get(recordPath);expect(recordAfter.status()).toBe(200);
+  expect(await recordAfter.json()).toEqual(recordBefore,'the browser read and review preserve the native sales fields and timeline');
+ }
+ console.log(JSON.stringify({proof:'SURFACE-013.stalled-browser',evidenceId:expected.evidenceId,quote:expected.quote,nativeMatch:true,evidenceLinkAuthenticated:true,reviewMarked:true,widths:[1440,390]}));
+ await page.close();
+}

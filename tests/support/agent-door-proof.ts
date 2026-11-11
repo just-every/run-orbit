@@ -18,6 +18,7 @@ import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
 import type {CaptureSecurityProofContext} from './agent-door-capture-security-proof';
+import {agentDoorStalledRiskProof} from './agent-door-stalled-risk-proof';
 import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
@@ -188,6 +189,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     const risks=await call('orbit.risks.read',{id:opportunity.id});
     assert.equal(risks.risks.deal.id,opportunity.id);
     assert.ok(Array.isArray(risks.risks.findings),'native rule findings are available over MCP as JSON');
+    await agentDoorStalledRiskProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     const target=`opportunities/${opportunity.id}/handoffs/seller-day`;
     const handoff=await call('orbit.handoffs.read',{target});
     const content={title:'Prepare buyer follow-up',description:'Use the current customer context',assigneeId:owner.operatorId,dueAt:null,status:'open'};

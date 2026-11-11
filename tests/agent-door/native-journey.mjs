@@ -55,6 +55,24 @@ export function nonToolDocsInventory({html,notTools}) {
  assert.deepEqual(rows,notTools.map(item=>[item.clauses.join(', '),item.reason,item.description]),'the rendered guide carries every discovered reason and its scope');
 }
 
+/** Compare a populated rule explanation with the native door and the recorded stage source. */
+export function stalledRiskComparison(risks,native,expected) {
+ const {aiConfigured,...projection}=native;
+ assert.deepEqual(risks,projection,'MCP returns the same current finding, evidence, rules and deal as native Findings');
+ assert.equal(risks.deal.id,expected.id);
+ const finding=risks.findings.find(item=>item.kind==='stalled');assert.ok(finding,'the stale native opportunity has a populated stalled finding');
+ assert.equal(finding.key,`stalled:${expected.evidenceId}`);
+ assert.equal(finding.title,`No stage change for ${expected.days} days`);
+ assert.deepEqual(finding.citations,[{evidenceId:expected.evidenceId,quote:expected.quote}]);
+ assert.deepEqual(finding.inference,{source:'rule',text:`Longer than the ${expected.intervalDays}-day stale interval for this stage, with no customer reply recorded since.`});
+ assert.equal(finding.nextTask,expected.nextTask);assert.equal(finding.dismissed,null);
+ const evidence=risks.evidence.find(item=>item.id===expected.evidenceId);assert.ok(evidence);
+ assert.equal(evidence.text,expected.quote);assert.equal(evidence.confidence,'observed');assert.equal(evidence.occurredAt,expected.since);
+ assert.equal(evidence.ref,expected.evidenceId);assert.equal(evidence.label,'Stage change');
+ assert.equal(evidence.href,`/app/opportunities/${expected.id}#entry-${expected.evidenceId}`);
+ return {finding,evidence};
+}
+
 export default async function sellerDay({tool,request,origin,cookie}) {
  const surface=JSON.parse(readFileSync(new URL('../../agent-surface.json',import.meta.url),'utf8'));
  async function call(name,args={}) {
