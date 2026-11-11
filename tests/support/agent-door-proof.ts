@@ -1,3 +1,4 @@
+import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
@@ -34,7 +35,7 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>,draftParityProof:(context:DraftParityProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -198,6 +199,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await call('orbit.handoffs.upsert',handoffArgs);
     assert.equal(await fixture.db.prepare('SELECT count(*) n FROM handoff_tasks WHERE id=?').bind('seller-day').first('n'),1);
     assert.equal((await door.invoke('orbit.handoffs.upsert',{...handoffArgs,idempotency_key:'stale-handoff'},principal)).code,'revision_conflict');
+    await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
     const draft=await call('orbit.drafts.create',{kind:'opportunity',id:opportunity.id,contact_id:contact.id,subject:'Brightwork next steps',body:'Maya, here is the saved proposal outline.',idempotency_key:'native-draft'});
     const saved=await call('orbit.drafts.read',{id:draft.id});
     await call('orbit.drafts.update',{id:draft.id,recipient_email:'maya@example.test',subject:'Brightwork next steps',body:'Maya, here is the revised saved proposal outline.',expected_revision:saved.draft.revision,idempotency_key:'native-draft-update'});
