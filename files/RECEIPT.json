@@ -139,7 +139,76 @@
       "head": "9e7f46ce42c6bde7c5f29a6ab7cdb07e82978c8f",
       "verify": 43080825102,
       "site": 43078851042
-    }
+    },
+    "finalMainRuns": [
+      {
+        "conclusion": "skipped",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087312585",
+        "id": 43087312585,
+        "name": "Run demo",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087312642",
+        "id": 43087312642,
+        "name": "Run site",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "event": "dynamic",
+        "head_branch": "main",
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087311514",
+        "id": 43087311514,
+        "name": "Push on main",
+        "status": "completed"
+      },
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_branch": "main",
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087312761",
+        "id": 43087312761,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "currentBranchObservations": [
+      {
+        "observedAt": 1794425657.4223197,
+        "run": 43087510309,
+        "conclusion": null,
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087510309",
+        "status": "in_progress"
+      },
+      {
+        "observedAt": 1794425957.424461,
+        "run": 43087510309,
+        "conclusion": null,
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087510309",
+        "status": "in_progress"
+      }
+    ],
+    "requiredExactShaSuccess": {
+      "run": 43082331013,
+      "event": "push",
+      "head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+      "status": "completed",
+      "conclusion": "success",
+      "note": "Original continuation branch Verify on the identical final candidate commit; new branch duplicate 43087510309 remained in progress at both permitted polls."
+    },
+    "githubCalls": 7
   },
   "publicationScan": {
     "commit": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
@@ -170,5 +239,10 @@
     "skipped": 0,
     "durationMs": 192475.341809
   },
-  "tree": "d6c7038481b38c5c3c66a762e885f6da3ee3d22e"
+  "tree": "d6c7038481b38c5c3c66a762e885f6da3ee3d22e",
+  "evidenceTransportCheck": {
+    "firstPublishedHead": "81b2eba831fb14527f7662afce6bdad2a96f21d4",
+    "filesFetchedAndMatched": 11,
+    "productHeadUnchanged": true
+  }
 }
