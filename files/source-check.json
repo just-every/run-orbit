@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "check"
+  ],
+  "exit": 0,
+  "started": "2026-11-11T23:24:16.689373+00:00",
+  "ended": "2026-11-11T23:24:19.065565+00:00"
+}

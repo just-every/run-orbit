@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "write"
+  ],
+  "exit": 0,
+  "started": "2026-11-11T23:20:42.927478+00:00",
+  "ended": "2026-11-11T23:20:43.167804+00:00"
+}

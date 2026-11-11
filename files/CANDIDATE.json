@@ -1,0 +1,25 @@
+{
+  "head": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+  "branch": "cloud/sd-orbit-c-f155",
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "all_candidate_commits": [
+    {
+      "head": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "trailers": ""
+    },
+    {
+      "head": "4468b1213cf0c1e6b52e2871b1054940667d9f67",
+      "author": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "trailers": ""
+    }
+  ],
+  "identity_and_trailers": "pass",
+  "contract_unchanged": true
+}

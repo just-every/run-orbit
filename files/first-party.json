@@ -1,0 +1,13 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "exit": 0,
+  "started": "2026-11-11T22:53:23.091467+00:00",
+  "ended": "2026-11-11T22:53:26.610317+00:00"
+}

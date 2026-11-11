@@ -1,0 +1,74 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "exit": 0,
+  "started": "2026-11-11T23:07:47.887030+00:00",
+  "ended": "2026-11-11T23:20:19.813913+00:00",
+  "files": {
+    "tests/core/managed-owner.test.ts": "736599e3c50ad9eec6815b47eaf74ad2873fae99a8628d06f8f21a37ea8123b2",
+    "tests/support/agent-door-proof.ts": "7fd231226bf9d2a8679b664dc7ec9383575083adf28f5ae54153fcc4bbd68956",
+    "tests/support/agent-door-forecast-proof.ts": "52d70267257e094c8602cd9605ed307c91e3d7e2ac0183668294f3a362206da9"
+  },
+  "proofs": [
+    {
+      "proof": "SURFACE-004.2.nonbinding-estimate",
+      "policies": [
+        {
+          "mode": "autonomous",
+          "decision": "497fc92e-7dd5-4165-82c7-95dec299e290",
+          "disposition": "autonomous",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": null,
+          "forecast": "01M76E1MAPZDX3ZNYX34EJRMVT",
+          "probability": 40,
+          "category": "best_case",
+          "currency": "USD",
+          "salesState": {
+            "amount": 750000,
+            "stage": "01M76DZ84ZNY6MNHE3QM2040B6",
+            "lifecycle": "open",
+            "closedAt": null
+          }
+        },
+        {
+          "mode": "held",
+          "decision": "d04b7f0d-8bb8-4e3c-8e26-4ee92c881f8e",
+          "disposition": "review",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": "3f75c00f-78e0-4746-b19f-a9595b5271cb",
+          "forecast": "01M76E1PZ6YE3NQDYYY8BPJGPY",
+          "probability": 65,
+          "category": "committed",
+          "currency": "USD",
+          "salesState": {
+            "amount": 750000,
+            "stage": "01M76DZ84ZNY6MNHE3QM2040B6",
+            "lifecycle": "open",
+            "closedAt": null
+          }
+        }
+      ],
+      "appliedWithoutApproval": true,
+      "unchangedDeal": true
+    }
+  ]
+}
