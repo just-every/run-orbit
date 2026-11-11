@@ -10923,7 +10923,7 @@
       "executable": false
     },
     "tests/rer/scheduled-outreach.mjs": {
-      "sha256": "4820d7138541194aa38dc4eee4f90e24785959178a4e09316d32c377fb31e0c5",
+      "sha256": "e84271cc295cbc4c973c26e9de55dcc1354f1fc58a87734bd9d8a60fa1b9b0e8",
       "executable": false
     },
     "tests/rer/sent-message-proof.mjs": {

@@ -24,7 +24,9 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
   await expect.poll(readClose).toBe('2027-04-11T05:00:00.000Z');
   // Invalid calendar dates must never roll over into a different saved day.
   await close.fill('02/30/2027');await close.press('Enter');
-  await expect(page.getByText('Enter a date as mm/dd/yyyy.',{exact:true})).toBeVisible();
+  const invalidClose=close.locator('..').locator('..').getByRole('alert');
+  await expect(invalidClose).toBeVisible();
+  await expect(invalidClose).toContainText(await close.getAttribute('placeholder'));
   assert.equal(await readClose(),'2027-04-11T05:00:00.000Z');
   await close.press('Escape');
  }
