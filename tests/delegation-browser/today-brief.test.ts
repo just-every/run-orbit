@@ -54,7 +54,7 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   assert.deepEqual(model.unexpected,[],'Risk review makes no customer mail or other outbound request');
   await runtime.teardown();await fixture.reopen();
   assert.deepEqual(await riskBusinessState(fixture.db),before,'Risk review changes no sales state, stakeholders, commitments, drafts or mail');
-  const riskFixture=await isolatedDatabase(),riskRuntime=new unstable_DevEnv();
+  const riskFixture=await isolatedDatabase(),riskRuntime=new unstable_DevEnv(),messageRuntime=new unstable_DevEnv();
   try {
   const stalled=await stalledRiskBrowser(testContext,riskFixture.db,origin);
   await riskFixture.close();
@@ -65,11 +65,11 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   await riskRuntime.teardown();await riskFixture.reopen();
   const messages=await savedMessageBrowserFixture(testContext,riskFixture.db,stalled,origin);
   await riskFixture.close();
-  const messageWorker=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(messages.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async()=>{throw new Error('Inspecting saved mail must not submit mail');}}});await messageWorker.ready;
+  const messageWorker=await messageRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(messages.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async()=>{throw new Error('Inspecting saved mail must not submit mail');}}});await messageWorker.ready;
   const mailContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await savedMessageScreens(await mailContext.newPage(),messages,resolve(process.env.ORBIT_MESSAGE_EVIDENCE??'verification/ui/messages'));
   await mailContext.close();
-  } finally {await riskRuntime.teardown();await riskFixture.dispose();}
+  } finally {await messageRuntime.teardown();await riskRuntime.teardown();await riskFixture.dispose();}
 
  }finally{
   await browser?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await runtime.teardown();await fixture.dispose();

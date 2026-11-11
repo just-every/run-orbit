@@ -69,9 +69,9 @@ export function messageTools(bindings:PlatformBindings) {
    const saved=await current(args,ctx),schedule=args.scheduled_at?await new ApprovalRepository(await draftMailDatabase(bindings.DB,saved.draft.id)).preview(saved.draft.id,new Date(ctx.now()),String(args.scheduled_at)):null;
    return {target:{id:saved.draft.id,name:saved.rendered.review.subject},recipients:[saved.draft.recipientEmail],
     items:[saved.rendered.review.subject,saved.rendered.review.body,`Sender: ${agentSenderName(ctx.agent.name,ctx.person.name)}`,
-     `Saved revision: ${saved.draft.revision}`,`Send revision: ${saved.revision}`,
-     `Merge review: ${saved.rendered.review.reviewed?'reviewed':'required'} (${saved.rendered.review.reviewHash})`,
-     `Opt-out: ${JSON.stringify(saved.optOut)}`,...(args.scheduled_at?[`Requested schedule: ${args.scheduled_at}`,`Scheduled time: ${schedule&&'scheduledAt' in schedule?schedule.scheduledAt:''} (${schedule&&'scheduledLocalTime' in schedule?schedule.scheduledLocalTime:''})`]:[])]};
+     `Saved revision: ${saved.draft.revision}`,
+     `Merge review: ${saved.rendered.review.reviewed?'reviewed':'required'}`,
+     `Opt-out: ${saved.optOut.carries?'link included':'no link'}; ${saved.optOut.setting?'on':'off'} by default; removal ${saved.optOut.removalAllowed?'allowed':'forbidden'}; ${saved.optOut.choice??'no exception'}; transport ${saved.optOut.transport?'supports links':'cannot carry links'}; ${saved.optOut.reply?'reply in an existing thread':'new message'}${saved.optOut.refusal?'; '+saved.optOut.refusal:''}`,...(args.scheduled_at?[`Requested schedule: ${args.scheduled_at}`,`Scheduled time: ${schedule&&'scheduledAt' in schedule?schedule.scheduledAt:''} (${schedule&&'scheduledLocalTime' in schedule?schedule.scheduledLocalTime:''})`]:[])]};
   },
   run:async(args,ctx)=>nativeMessage(async()=>{
    const saved=await current(args,ctx);
@@ -87,9 +87,11 @@ export function messageTools(bindings:PlatformBindings) {
     senderName:agentSenderName(ctx.agent.name,ctx.person.name),attribution:{preparedBy:ctx.actor,approvers:ctx.approvers},expectedRenderHash:saved.rendered.review.reviewHash,expectedOptOut:saved.optOut,
     guards:[db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'message_recipient_changed',NULL WHERE COALESCE((${recipientSql}),'')<>?`).bind(saved.draft.id,saved.recipientValue)],
    });
-   if(message.state==='scheduled'){ctx.emit('message.scheduled',`orbit://drafts/${saved.draft.id}`,{messageId:message.id,state:message.state});return {result:{id:message.id,state:message.state,scheduledAt:message.scheduled_at}};}
-   if(message.state==='draft')return {result:{id:message.id,state:message.state,reason:message.failure,retryAfter:message.next_attempt_at}};
-   const result=await new OutreachService(db,saved.mail).submit(message);
+   if(message.state==='scheduled'){ctx.emit('message.scheduled',`orbit://drafts/${saved.draft.id}`,{messageId:message.id,state:message.state});return {result:{id:message.id,contactId:saved.draft.recipientContactId,state:message.state,scheduledAt:message.scheduled_at}};}
+   if(message.state==='draft')return {result:{id:message.id,contactId:saved.draft.recipientContactId,state:message.state,reason:message.failure,retryAfter:message.next_attempt_at}};
+   // Keep the native recipient identity in retained outcomes so contact erasure
+   // retires this call and its replay alias with the existing artifact matcher.
+   const result={...await new OutreachService(db,saved.mail).submit(message),contactId:saved.draft.recipientContactId};
    ctx.emit('message.submitted',`orbit://drafts/${saved.draft.id}`,{messageId:message.id,state:result.state});
    return {result,resources:[{uri:`orbit://drafts/${saved.draft.id}`,name:'Saved message and outcome'}]};
   }),

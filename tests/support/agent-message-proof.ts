@@ -53,7 +53,7 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
   const draft=await makeDraft('held');await review(draft);
   const original=await read(draft);assert.equal(original.render.subject,'Next steps for Synthetic buyer');
   await adopt(heldPolicy());
-  const heldArgs=await sendArgs(draft,'held'),before=await inventory(),approval=await pending(heldArgs);
+  const heldArgs={...await sendArgs(draft,'held'),confirmed:true,confirmExternal:true,classes:['standard'],policy:'autonomous'},before=await inventory(),approval=await pending(heldArgs);
   assert.equal(approval.prepared_by.agent.name,'Ari');assert.equal(approval.prepared_by.for.name,'Morgan Lee');
   assert.deepEqual(approval.summary.recipients,[email]);assert.ok(approval.summary.items.includes(original.render.body));
   assert.ok(approval.summary.items.includes('Sender: Ari for Morgan Lee'));
@@ -109,6 +109,12 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
   assert.equal(limitedResult.state,'draft');assert.match(limitedResult.reason,/Sending limit/);assert.equal(submissions.length,4);
   await native(`/api/v1/settings/sending/operators/${ownerId}`,'PUT',{oneToOnePerDay:null});
 
+  const optDraft=await makeDraft('opt-out');await review(optDraft);await adopt(heldPolicy());
+  const optApproval=await pending(await sendArgs(optDraft,'old-opt-out'));
+  await native('/api/v1/settings/opt-out/one_to_one','POST',{carries:false,removalAllowed:true});
+  const optChanged=await approve(optApproval);assert.equal(optChanged.body.approval.state,'refused');assert.equal(optChanged.body.approval.code,'revision_conflict');assert.equal(submissions.length,4);
+  await native('/api/v1/settings/opt-out/one_to_one','POST',{carries:true,removalAllowed:true});await adopt(autonomousPolicy());
+
   const fenced=await makeDraft('fences');await review(fenced);
   const fenceArgs=await sendArgs(fenced,'missing-scope'),fenceBefore=await inventory();
   assert.equal((await mcp('messages.send',fenceArgs,{scope:'drafts:read'})).status,403);assert.equal(await inventory(),fenceBefore);
@@ -129,7 +135,7 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
   assert.deepEqual((await native(`/api/v1/workbench/records/contact/${contact.id}/mail`)).messages,[]);
   const erasedApproval=await person(approval.id);assert.deepEqual((await erasedApproval!.json() as any).approval.summary,{});
   const revoke=await door.handle(new Request(origin+'/agents/api/agents/'+agent.sub+'/revoke',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'{}'}));
-  assert.equal(revoke!.status,200);assert.equal((await mcp('messages.send',autoArgs)).status,401);assert.equal(submissions.length,4);
-  console.log(JSON.stringify({proof:'SURFACE-009.saved-message',held:'accepted-once',mergeConflict:'refused',freshRevision:'accepted-once',autonomous:'accepted-once',submissions:submissions.length,nativeHistory:true,actor:'agent-for-person',sender:'agent-for-person',scheduledAttribution:'preserved',limits:'native-held',erasureReplay:'subject-erased',revoked:'refused',scope:'refused',quietHours:'refused',unsupportedSender:'refused',suppression:'refused'}));
+  assert.equal(revoke!.status,200);const revoked=await mcp('messages.send',autoArgs);assert.equal(revoked.status,401);assert.equal(revoked.body.result,undefined);assert.equal(submissions.length,4);
+  console.log(JSON.stringify({proof:'SURFACE-009.saved-message',held:'accepted-once',mergeConflict:'refused',freshRevision:'accepted-once',autonomous:'accepted-once',submissions:submissions.length,nativeHistory:true,actor:'agent-for-person',sender:'agent-for-person',optOutRevision:'refused',scheduledAttribution:'preserved',limits:'native-held',erasureReplay:'subject-erased',revoked:'refused',scope:'refused',quietHours:'refused',unsupportedSender:'refused',suppression:'refused'}));
  } finally {globalThis.fetch=originalFetch;context.mock.timers.reset();Object.assign(bindings,old);delete bindings.MAIL_RELAY_URL;delete bindings.MAIL_API_KEY;await adopt(autonomousPolicy());}
 }

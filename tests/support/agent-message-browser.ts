@@ -14,14 +14,14 @@ export async function savedMessageBrowserFixture(context:TestContext,db:D1Databa
  const bindings={...installation.bindings,...vars,DB:db},door=orbitAgentDoor(bindings),submissions:any[]=[];
  const app=createApp({database:db,assets:bindings.ASSETS,authenticate:request=>operatorFromRequest(request,bindings),stepUp:(request,action,returnTo)=>requireStepUp(request,bindings,action,returnTo)});
  const native=async(path:string,body:object)=>{
-  const response=await app.request(origin+path,{method:'POST',headers:{Cookie:installation.cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const response=await app.request(origin+path,{method:'POST',headers:{Cookie:installation.cookie,Origin:origin,Host:new URL(origin).host,'Content-Type':'application/json'},body:JSON.stringify(body)});
   assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;
  };
- const mcp=async(name:string,args:object)=>{
-  const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+await installation.bearer('drafts:read drafts:write messages:send'),'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args}})}));
-  assert.equal(response!.status,200);const body=await response!.json() as any;assert.equal(body.result?.isError,false,JSON.stringify(body));return body.result;
+ const mcp=async(name:string,args:object,pending=false)=>{
+  const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+await installation.bearer('drafts:read drafts:write messages:send'),Host:new URL(origin).host,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name,Origin:origin,Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name,arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+  const body=await response!.json() as any;assert.equal(response!.status,200,JSON.stringify(body));if(pending){assert.equal(body.result?.resultType,'input_required',JSON.stringify(body));assert.equal(body.result.structuredContent,undefined);}else assert.equal(body.result?.isError,false,JSON.stringify(body));return body.result;
  };
- const adopt=async(mode:'held'|'autonomous')=>{const response=await door.handle(new Request(origin+'/api/rer/agent-policy',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({policy:await installation.policy(mode)})}));assert.equal(response!.status,200);};
+ const adopt=async(mode:'held'|'autonomous')=>{const response=await door.handle(new Request(origin+'/api/rer/agent-policy',{method:'POST',headers:{Origin:origin,Host:new URL(origin).host,'Content-Type':'application/json'},body:JSON.stringify({policy:await installation.policy(mode)})}));assert.equal(response!.status,200);};
  const email=['synthetic-orbit-browser-buyer','customer.test'].join('@'),contact=await native('/api/v1/records/contact',{name:'Synthetic message buyer',email,timezone:'UTC'});
  const subject='Synthetic exact saved message',body='Hello buyer,\nHere are the exact saved next steps.';
  const create=async(key:string)=>(await mcp('orbit.drafts.create',{kind:'contact',id:contact.id,contact_id:contact.id,opportunity_id:null,subject,body,idempotency_key:'synthetic-orbit-browser-'+key})).structuredContent.id as string;
@@ -32,7 +32,7 @@ export async function savedMessageBrowserFixture(context:TestContext,db:D1Databa
  try {
   await adopt('autonomous');
   globalThis.fetch=(async(input:RequestInfo|URL,init?:RequestInit)=>{
-   if(String(input)!=='https://api.sendgrid.com/v3/mail/send')throw new Error('Unexpected message fixture network request');
+   if(String(input)!=='https://api.sendgrid.com/v3/mail/send')return original(input,init);
    submissions.push(JSON.parse(String(init?.body)));return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-browser-receipt'}});
   }) as typeof fetch;
   sentDraft=await create('sent');const sent=await mcp('orbit.messages.send',await args(sentDraft,'sent'));assert.equal(sent.structuredContent.state,'accepted');
@@ -41,7 +41,7 @@ export async function savedMessageBrowserFixture(context:TestContext,db:D1Databa
  } finally {globalThis.fetch=original;context.mock.timers.reset();}
  // The pending handle uses the real inspection clock; no expired fixture is presented as pending.
  await adopt('autonomous');const heldDraft=await create('held');await adopt('held');
- const pending=await mcp('orbit.messages.send',await args(heldDraft,'held'));
+ const pending=await mcp('orbit.messages.send',await args(heldDraft,'held'),true);
  assert.equal(pending.resultType,'input_required');assert.equal(submissions.length,1);
  return {vars,approvalId:pending._meta['com.runeditrun/approval'].id as string,sentDraft,contactId:contact.id,email,subject,body,submissions:submissions.length};
 }

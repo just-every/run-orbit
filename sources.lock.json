@@ -5327,7 +5327,7 @@
       "executable": false
     },
     "src/core/features/agent-door/messages.ts": {
-      "sha256": "ccaddb5c31e62af24fc5155a9b9617f7d65f507b072e4b3d25f27a8853183f6e",
+      "sha256": "ad702faf21ee892f1bb8d72efe846065bd38607d67068c8fae38eed28b958a4f",
       "executable": false
     },
     "src/core/features/agent-door/native-access.ts": {
@@ -8563,7 +8563,7 @@
       "executable": false
     },
     "src/core/platform/outbound-mail.ts": {
-      "sha256": "78e70e87852879b732bc4aec32893ea7871aa8cea90a44ad92da7ab2d2f16e1c",
+      "sha256": "b0c49af1efd88fc56c9d5d254b4d97f8d26cde999958716f43512c1db927d926",
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
@@ -10307,7 +10307,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "07c26e58c9abe99cdf92de7ed51cc6c728ee661c12b3a3c42bbd9681e0661a78",
+      "sha256": "94e78b7004f5f2a96087df2decfc08c3cc058a707c193a4d4a26de14b9882fe6",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
@@ -11031,11 +11031,11 @@
       "executable": false
     },
     "tests/support/agent-message-browser.ts": {
-      "sha256": "07df1c9e90cb9d1d02f1c2a64d276a3c60e0a2450058e5b15cd398da75205dcd",
+      "sha256": "e2e9bdf3d806372cfd4876a6e4720da268c43a61db02b547046d33ea2caa7d49",
       "executable": false
     },
     "tests/support/agent-message-proof.ts": {
-      "sha256": "66d198ef3ec1daadb624285be1632abd44bef7c8f81ad8db6d86a76d953418ec",
+      "sha256": "8a93647f3858098aba6d55409251e4ed8f4b09e87ee343e093cca9180c24644e",
       "executable": false
     },
     "tests/support/agent-report-deletion-proof.ts": {
