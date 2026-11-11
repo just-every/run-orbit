@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "714e725bc296f21ddaf8d36069573a94bc743bcf4322b488de29a2c9c513734f",
+      "sha256": "a8a75dcaadd7cf0452ec2831d545f35adb230371ca69421cde69debd605a9d57",
       "executable": false
     },
     "AGENTS.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "64d112122773f9fadacf6e03d5135862890c4fef468d837d31b0fbce6db300a1",
+      "sha256": "741b09ecdf4009360e6eb3b51975a3d6a2303ff25d8053ccf699aa3585a5e95a",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -3927,7 +3927,7 @@
       "executable": false
     },
     "scripts/agent-surface.ts": {
-      "sha256": "03cb6b86b6677a12f923e9816ed961a7c08c9bcbac7faecb5fc7ea37ca71f3f9",
+      "sha256": "4b367f17d323a271a1597eb21646c0c30399b58699de20065d874412d6245396",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -5315,7 +5315,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "dfa58208f637351ac46aa48af227c6ea711c52c7d8699d02f21dd1ae36692ec0",
+      "sha256": "f1f060f9fa83669b177d21b1b026991749f1d45f7c69758ece7f317d2420b731",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -10035,7 +10035,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "01ec503110966a3a38a913559b5099a53b89cbb4151f775eb63c57c4c0031919",
+      "sha256": "d9d06250ddf8c67522aa942e81331adb8d2042c592457bc26374b96bf42b6ffe",
       "executable": false
     },
     "tests/agent-door/workflow-fixture.mjs": {
@@ -10171,7 +10171,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "bddf6eaca1065be23325fe1406b31afc4654f5933c2452eaa99f8befe5046f0d",
+      "sha256": "29299bf37ef53b098e9be589ee33d292d13e1a803a7afa74290b4916a2ac9726",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {

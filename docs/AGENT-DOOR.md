@@ -158,6 +158,30 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit://reports/{id}/definition/{version}` | Native report definition | `reports:read` |
 | `orbit://signals/{id}` | Immutable signal | `signals:read` |
 
+## Declared non-tool parts
+
+These are the contract’s existing exceptions, not a completed Core coverage map.
+Risk never supplies a non-tool reason. Settings actions, server-side mobile jobs
+and gated provider handoffs remain eligible for future tools. DATA-001 export
+and restore jobs have no blanket import-door exemption and remain unimplemented
+by this registry. These declarations grant no authority or provider effect.
+
+| Core clause | Reason | Non-tool part |
+| --- | --- | --- |
+| `TEAM-001` | installation | The installation authorization model applies to every action; it is not an action itself. |
+| `TEAM-003` | installation | The single workspace and its timezone are installation facts. Actions that configure them remain eligible for settings tools. |
+| `PUBLIC-001` | screen | The public information page is a screen for a person. |
+| `PUBLIC-002` | screen | The interactive fictional demo is a screen for a person, without owner-data actions. |
+| `PUBLIC-003` | screen | The installation readiness and unavailable sign-in page is a screen for a person. |
+| `PUBLIC-004` | screen | A person completes their own sign-in, proof confirmation and identity-provider screens. |
+| `MOBILE-001` | device | Only native device, offline and push behavior is device-only. Server-side sales jobs remain eligible for tools. |
+| `OPS-001` | installation | Installation and provider setup facts are not actions. Person-only provider consent remains a gated handoff; provider jobs remain eligible for tools. |
+| `BOUNDARY-001` | installation | Product boundaries and the cross-product qualification journey describe the installation; sales and integration actions remain eligible for tools. |
+| `RECORD-008` | import-door | CSV import uses the reviewed import door with saved preview, explicit mappings and Apply. |
+| `MIGRATE-001` | import-door | HubSpot migration uses the guided migration and import door with authorization and saved review. |
+| `MIGRATE-002` | import-door | Pipedrive migration uses the guided migration and import door with authorization and saved review. |
+| `MIGRATE-003` | import-door | Salesforce migration uses the guided migration and import door with authorization and saved review. |
+
 ## Records and retained outcomes
 
 Resource readers recheck current native visibility and scope. Absent and

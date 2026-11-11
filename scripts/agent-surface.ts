@@ -1,5 +1,6 @@
 import {readFile,writeFile} from 'node:fs/promises';
 import {orbitTools,orbitResources} from '../src/core/features/agent-door';
+import {orbitNotTools} from '../src/core/features/agent-door/not-tools';
 import type {PlatformBindings} from '../src/core/platform/assets';
 const bindings={AUTH_ORIGIN:'https://orbit.example.invalid'} as PlatformBindings;
 const resources=orbitResources(bindings).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate));
@@ -59,7 +60,7 @@ step('save_workflow_draft','workflows.save_draft',{id:{$fixture:'workflow',point
 journey.find(item=>item.id==='save_workflow_draft').target={kind:'workflow',id:{$fixture:'workflow',pointer:'/id'}};
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});
-const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:[{clauses:['DATA-001'],reason:'import-door'},{clauses:['PUBLIC-003'],reason:'installation'}],witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email',ORBIT_ENCRYPTION_KEY:{module:'tests/agent-door/capture-encryption.mjs'},CAPTURE_MAIL_ADDRESS:{module:'tests/agent-door/capture-mailbox.mjs'}},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
+const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:orbitNotTools(),witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email',ORBIT_ENCRYPTION_KEY:{module:'tests/agent-door/capture-encryption.mjs'},CAPTURE_MAIL_ADDRESS:{module:'tests/agent-door/capture-mailbox.mjs'}},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
 const encoded=JSON.stringify(surface,null,2)+'\n';
 if(process.argv.includes('--check')) {if(await readFile('agent-surface.json','utf8')!==encoded)throw new Error('Agent surface drift: run pnpm exec tsx scripts/agent-surface.ts');}
 else await writeFile('agent-surface.json',encoded);
@@ -70,6 +71,7 @@ const table=['| Tool | Scope | Possible classes |','| --- | --- | --- |',...tool
 const resourceTable=['| Resource template | Name | Scope |','| --- | --- | --- |',...resources.map(resource=>`| \`${resource.uriTemplate}\` | ${resource.name} | \`${resource.scope??'none'}\` |`)].join('\n');
 const docStart=doc.indexOf('## Current tool inventory'),docEnd=doc.indexOf('## Records and retained outcomes');
 if(docStart<0||docEnd<=docStart)throw new Error('Agent docs inventory boundaries are missing');
-const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n## Current resource template inventory\n\n'+resourceTable+'\n\n'+doc.slice(docEnd);
+const notToolTable=['| Core clause | Reason | Non-tool part |','| --- | --- | --- |',...surface.notTools.map(item=>`| ${item.clauses.map(clause=>`\`${clause}\``).join(', ')} | ${item.reason} | ${item.description} |`)].join('\n');
+const expectedDoc=doc.slice(0,docStart)+'## Current tool inventory\n\n'+table+'\n\n## Current resource template inventory\n\n'+resourceTable+'\n\n## Declared non-tool parts\n\nThese are the contract’s existing exceptions, not a completed Core coverage map.\nRisk never supplies a non-tool reason. Settings actions, server-side mobile jobs\nand gated provider handoffs remain eligible for future tools. DATA-001 export\nand restore jobs have no blanket import-door exemption and remain unimplemented\nby this registry. These declarations grant no authority or provider effect.\n\n'+notToolTable+'\n\n'+doc.slice(docEnd);
 if(process.argv.includes('--check')) {if(doc!==expectedDoc)throw new Error('Agent docs inventory drift: regenerate scripts/agent-surface.ts');}
 else await writeFile(docPath,expectedDoc);

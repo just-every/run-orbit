@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import {agentWorkflowProof} from '../support/agent-workflow-proof';
 import {test} from 'node:test';
-import {buildSite} from '../../src/core/features/public/docs/build/site';
-import {agentDocsInventory} from '../agent-door/native-journey.mjs';
+import {agentDiscoveryProof} from '../support/agent-discovery-proof';
 import {isolatedDatabase} from '../support/isolated-database';
 import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
 import {agentDoorBusinessStopProof} from '../support/agent-door-business-stop-proof';
@@ -17,18 +16,7 @@ import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/con
 async function rejectedNativeReportProof(context: RejectedReportProofContext) {
   const {bindings,door,cookie,ownerId,sourceId,period,adopt,businessCall}=context;
   const origin=bindings.AUTH_ORIGIN!,db=bindings.DB;
-  const docs=buildSite(process.cwd()),page=docs.pages.find(page=>page.slug==='agents');
-  assert.deepEqual(docs.problems,[]);
-  assert.ok(page,'the published agent guide exists');
-  const metadata=await door.handle(new Request(origin+'/.well-known/oauth-protected-resource/mcp'));
-  assert.equal(metadata!.status,200);
-  const scopes=(await metadata!.json() as {scopes_supported:string[]}).scopes_supported;
-  for(const [name,policy] of [['autonomous',autonomousPolicy()],['held',heldPolicy()]] as const) {
-    await adopt(policy);
-    const inventory=await agentDocsInventory({html:page.html,mcp:(method:string)=>businessCall('',{},{scope:scopes.join(' ')},method)});
-    console.log(JSON.stringify({proof:'BASE-AGENT-013.current-registry',policy:name,...inventory,nativeMatch:true}));
-  }
-  await adopt(autonomousPolicy());
+  await agentDiscoveryProof(context);
   const inventory=async()=>{
     const queries={
       definitions:'SELECT * FROM analytics_definitions',
