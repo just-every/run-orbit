@@ -5330,6 +5330,10 @@
       "sha256": "1c860f16eb1a6af6caaebcb9190eb935f012bf427e39b35ae81e94a8caf1b137",
       "executable": false
     },
+    "src/core/features/agent-door/not-tools.ts": {
+      "sha256": "990453cc91969ddb1b65d49a80e347e9fb9ab7e11a4100482aceb72b542cfcb3",
+      "executable": false
+    },
     "src/core/features/agent-door/operator-erasure.ts": {
       "sha256": "d28b219a24c08f3db30c2370af494ceaf0498d4117d8587dd0720c9c33dee16b",
       "executable": false
@@ -10964,6 +10968,10 @@
     },
     "tests/rer/workflow-values-journey.mjs": {
       "sha256": "e794804bd4716f5e112e1d2192fef0472e0a6cbc73db2354f7d89cd58f0e37e2",
+      "executable": false
+    },
+    "tests/support/agent-discovery-proof.ts": {
+      "sha256": "b34ff57091ed6f94b08348e5d592d87d3d6900c240a8c4e1910e83bed47b0f6f",
       "executable": false
     },
     "tests/support/agent-door-audit-proof.ts": {
