@@ -450,6 +450,12 @@
       "name": "0079_direct_notification_actor.sql",
       "sha256": "f2fabfd2fb93aa1a7c0f2a1fdc5ed028679cac971f168f5d34cc744302346367",
       "sql": "-- Every notification kind shares this rule, including inserts from triggers.\n-- The native request writer sets and clears the actor in the same D1 batch.\n-- Agent, provider and scheduled writes carry no direct-person context.\nCREATE TRIGGER notification_skip_direct_actor BEFORE INSERT ON notifications\nWHEN NEW.operator_id=(SELECT value FROM runtime_controls WHERE name='direct_notification_actor')\n AND NOT EXISTS(SELECT 1 FROM orbit_agent_write_context)\n AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name IN('restore','archive_import','workflow_chain'))\nBEGIN\n SELECT RAISE(IGNORE);\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0080_notification_context_fence.sql",
+      "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
+      "sql": "-- A direct-person notification marker is transaction-local writer context, not\n-- an authority change. Keep real runtime controls fenced, including renames to\n-- or from the marker, without invalidating the write's reviewed epoch ourselves.\nDROP TRIGGER delegation_fence_runtime_controls_insert;\nCREATE TRIGGER delegation_fence_runtime_controls_insert AFTER INSERT ON runtime_controls\nWHEN NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_update;\nCREATE TRIGGER delegation_fence_runtime_controls_update AFTER UPDATE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor' OR NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_delete;\nCREATE TRIGGER delegation_fence_runtime_controls_delete AFTER DELETE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

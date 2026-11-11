@@ -1,4 +1,4 @@
-import {preCallingCatalog} from '../../src/core/features/records/archive-generations';
+import {preCallingCatalog,preDirectNotificationCatalog} from '../../src/core/features/records/archive-generations';
 import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
 import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
 import {preFormAssignmentCatalog} from '../../src/core/features/forms/archive';
@@ -64,6 +64,9 @@ export async function proveReleasedForecastUpgrade(){
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
+  const installed=await foldInstalledCatalog(db),preDirect=preDirectNotificationCatalog(installed),currentRows=await snapshot(db);
+  assert.deepEqual((await validateFoldManifest(db,manifestFor(installed,currentRows,await foldSchemaHash(installed),now))).inputCatalog,installed);
+  assert.deepEqual((await validateFoldManifest(db,manifestFor(preDirect,currentRows,await foldSchemaHash(preDirect),now))).inputCatalog,preDirect,'An archive before direct-person suppression still restores when only its notification trigger inventory differs');
   const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(db))))))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
   const previous=preForecastCatalog(preOptOutCapabilityCatalog(preLibrary));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(catalog,before,schemaHash,now))).inputCatalog,previous);

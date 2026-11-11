@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "64485b957be57605eb0d26811b29db352d150944e7ce69abfcaf4e6b5d6a3cb6",
+      "sha256": "38f940651983b4cb1cbd0076a3d83a987d4cb5fcb89fc909874bda7415e8bf78",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -3711,7 +3711,7 @@
       "executable": false
     },
     "newtests/t096/record-mail-browser-seed.ts": {
-      "sha256": "0c67d025cb921246460a62664a1c5a092f6b87a46352805e1e23eb6a7eef3af0",
+      "sha256": "1f69e7c3a6553b28ecd1bae268dd15a974f20d2daa28a3adbacbfddc496d0d3e",
       "executable": false
     },
     "newtests/t096/released-database.ts": {
@@ -3719,7 +3719,7 @@
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "6183d6ac4863bb6500ccbc8f26301702e88df77bddad7cd5c4d872dc5f447db9",
+      "sha256": "09190b3c97df90757f91d2606aa635cb86d5617a52ec40e80b9e245ddefb4681",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
@@ -7811,11 +7811,11 @@
       "executable": false
     },
     "src/core/features/records/archive-fold-validation.ts": {
-      "sha256": "ec41de7c68d4ef488ee4740dc7b8b44d51e2f075f23117231bf02d6f2060eb61",
+      "sha256": "0f5a94893c0ea4aba7a59e751ef5d37e09663544fdc27c6d6f06537bd65b6604",
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "6915c9c95b8cee7e5f51e96e944ea48246f51f428ee5d92eeb03574111b9c5dd",
+      "sha256": "8eae54fbf7401e94fbbb9f55b7795ea200c853723ae2e3f0c0f850aced933a86",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -10875,7 +10875,7 @@
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
-      "sha256": "2c13a835341797f1456be0a68b367d8c0a731de3289a9923f3e63e4261fe2a0a",
+      "sha256": "6be8f462b731014616e27e16bd69131df426fd43c9000b0761f68835a3ffe105",
       "executable": false
     },
     "tests/rer/operator-manual-meeting.mjs": {

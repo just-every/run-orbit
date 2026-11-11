@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
 import {browserAPI} from './browser-api.mjs';
+import {notificationAutomation} from '../support/notification-automation.mjs';
 
 // Browser fetch supplies the session cookie and the native Origin on mutations.
 export async function request(page,path,data,method='POST'){return browserAPI(page,path,method,data);}
@@ -26,6 +27,7 @@ export async function devSignIn(page,open){
 export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail){
  const inventory=await request(page,'/api/v1/workbench',undefined,'GET');
  const created=await request(page,'/api/v1/workbench/opportunities',{title:'Operator review opportunity',companyName:'Operator review company',contactName:'Operator review contact',email:'review@example.test',stageId:inventory.stages[0].id,valueCents:450000});
+ assert.equal((await request(page,'/api/v1/notifications',undefined,'GET')).notifications.filter(row=>row.opportunityId===created.id).length,0,'Creating an opportunity directly never notifies its own actor');
  const opportunity=await request(page,`/api/v1/opportunities/${created.id}`,undefined,'GET');
  const contact=opportunity.opportunity.contacts[0];
  const provenance={vendor:'hubspot',account:'Imported account',sourceId:'customer-1042',owner:'Account manager',stage:'Evaluation',description:'Imported customer context',additional:{region:'Pacific'}};
@@ -60,5 +62,12 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
   try{await operator.goto(origin+'/auth/dev/enter?as=seller&returnTo=/app');assert.deepEqual(await request(operator,'/api/v2/access/class',undefined,'GET'),{access_class:'native_full'});return {context,page:operator};}
   catch(error){await context.close();throw error;}
  };
+ const ownerId=(await request(page,'/api/v1/settings',undefined,'GET')).operators.find(row=>row.email===ownerEmail).id;
+ const colleague=await openFullOperator();
+ try{
+  await request(colleague.page,'/api/v1/tasks',{title:'Colleague requested opportunity review',recordType:'opportunity',recordId:created.id,ownerId,dueAt:null,priority:'normal',type:'follow_up',notes:'',recurrence:'none',timezone:'UTC',reminderMinutes:null});
+  assert.ok((await request(page,'/api/v1/notifications',undefined,'GET')).notifications.some(row=>row.kind==='task.assigned'&&row.opportunityId===created.id&&!row.readAt),'Another person still notifies this operator about the opportunity');
+ }finally{await colleague.context.close();}
+ await notificationAutomation((path,body)=>request(page,path,body,body===undefined?'GET':'POST'),{kind:'opportunity',id:created.id,title:'Operator review opportunity',ownerId});
  return {provenance,timelineEntryId:timelineEntry.id,opportunityId:created.id,contactId:contact.id,companyId:opportunity.opportunity.companyId,draftId:draft.id,authorize,collaboratorContext,collaborator,openFullOperator};
 }
