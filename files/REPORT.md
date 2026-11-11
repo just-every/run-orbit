@@ -84,3 +84,11 @@ Main baseline b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31 has successful Verify 430
 CLAIM BASE-AGENT-002 PARTIAL points=5 tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors
 
 This claim covers only the selected manual draft slice. Every other omitted obligation and hold above remains. There is no DONE promotion and no count change.
+
+## Terminal observation
+
+Exact candidate Verify 43101418941 remains in progress after the required five-minute polling interval. The raw final REST observation is in ci-final-observation.json. This is a PUSHED handoff, with no claim of green candidate CI, publication scanning, main landing or Run site on the candidate. There is no known unresolved local product or test failure. The fleet retains its independent admission and landing gates.
+
+The initial 38-file evidence packet was fetched back from its exact evidence head and every selected byte and manifest hash matched; EVIDENCE-VERIFY.json records that specific packet version. The final packet additionally includes that verification receipt and the final CI observation. The evidence publisher supplies the final complete manifest separately from product custody.
+
+PUSHED branch=cloud/sd-orbit-c-f153 head=12b016db68a798982a9ac6bbe4c02c47f2f9c1e6

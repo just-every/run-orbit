@@ -1,0 +1,9 @@
+{
+  "repository": "just-every/run-orbit",
+  "ref": "refs/heads/evidence/sd-orbit-c-f153",
+  "verified_evidence_head": "24007bf56aa19e8c05a91672ad5ef8dc247e592b",
+  "product_head": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6",
+  "files_verified": 38,
+  "regular_packet_matches_remote": true,
+  "identity_verified": true
+}
