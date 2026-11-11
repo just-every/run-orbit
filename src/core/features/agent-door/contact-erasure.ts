@@ -17,7 +17,8 @@ export async function contactAgentErasureStatements(db: D1Database, secret: stri
     tombstone, checkpoint: () => redactionStatements(db),
   });
   // Base keeps a redacted event's row id, but Orbit's own timeline trigger builds that id from the contact's id
-  // (`<timeline entry>:contact:<contact id>`). Run after Base's guarded redaction; the sequence keeps ids unique.
+  // (`<timeline entry>:contact:<contact id>`). Run after Base's guarded redaction; the sequence keeps ids unique and
+  // the row keeps its place in the feed. A cursor that still holds the old id resolves to this row (event-cursor.ts).
   statements.push(db.prepare("UPDATE agent_door_events SET id=replace(id,?1,'erased-'||sequence),event=json_set(event,'$.id',replace(id,?1,'erased-'||sequence)) WHERE instr(id,?1)>0").bind(contactId));
   return statements;
 }

@@ -65,7 +65,7 @@ export async function businessRosterErasureProof() {
 
     // Agent work first. Alex's agent creates Al and Zed, Sam's agent creates Sal; every create is held for the owner.
     const door = orbitAgentDoor(bindings), ownerCookie = claimed!.headers.get('set-cookie')!.split(';')[0]!;
-    const held = {...heldPolicy(), rules: [{id: 'all', class: '*', do: 'approval', approver: ['person:business-owner'], wait: 'PT1H'}]};
+    const held = {...heldPolicy(), rules: [{id: 'all', class: '*', do: 'approval', approver: ['person:business-owner'], wait: 'PT1H'}, {id: 'standard', class: 'standard', do: 'autonomous', agent: 'business-feed'}]};
     const adopted = await door.handle(post('/api/rer/agent-policy', {policy: (await policyEnvelope({origin, business: 'roster-company', seq: 0, revision: 0,
       signer: {privateKey: keys.privateKey, kid: 'test', issuer, installationId: installation}}, held)).policy}));
     assert.equal(adopted!.status, 200);
@@ -81,7 +81,7 @@ export async function businessRosterErasureProof() {
     };
     const al = {name: 'Al Brandt', email: 'al@example.com'}, sal = {name: 'Sal Brandt', email: 'sal@example.com'}, zed = {name: 'Zed Carter', email: 'zed@example.com'};
     const alId = (await agentContact(invited.get(alex.business)!, 'alex-al-agent', al))!, salId = (await agentContact(invited.get(sam.business)!, 'sam-sal-agent', sal))!;
-    await agentContact(invited.get(alex.business)!, 'alex-zed-agent', zed);
+    const zedId = (await agentContact(invited.get(alex.business)!, 'alex-zed-agent', zed))!;
     // Every agent_door row that names an agent or one of its decisions, as stored, to compare byte for byte.
     const agentRecords = async (agent: string) => {
       const decisions = (await db.prepare('SELECT decision_id FROM agent_door_calls WHERE agent=?').bind(agent).all<{decision_id: string}>()).results.map(row => row.decision_id);
@@ -103,6 +103,26 @@ export async function businessRosterErasureProof() {
         }
       return [...hits].sort();
     };
+    // An agent that follows the change feed through the Business door holds a cursor (an event id) and reads on from it.
+    const feedCall = async (after?: string, padding = 0) => {
+      const issued = Math.floor(Date.now() / 1000);
+      const bearer = await sign('at+jwt', {iss: issuer, aud: origin + '/mcp', sub: 'business-owner', email: bindings.OWNER_EMAIL, act: {sub: 'business-feed', name: 'Feed'}, client_id: 'business-client',
+        business: 'roster-company', scope: 'events:read records:read', consent: 'roster-feed-consent', jti: crypto.randomUUID(), iat: issued, exp: issued + 300});
+      return door.handle(new Request(origin + '/mcp', {method: 'POST', headers: {Authorization: 'Bearer ' + bearer, 'Content-Type': 'application/json',
+        'MCP-Protocol-Version': '2026-07-28', 'MCP-Method': 'tools/call', 'MCP-Name': 'orbit.events.list'},
+      body: JSON.stringify({jsonrpc: '2.0', id: 9, method: 'tools/call', params: {name: 'orbit.events.list', arguments: {...(after ? {after} : {}), limit: 200}, _meta: {'io.modelcontextprotocol/protocolVersion': '2026-07-28'}}}) + ' '.repeat(padding)}));
+    };
+    const feed = async (after?: string) => {
+      const response = await feedCall(after);
+      assert.equal(response!.status, 200, await response!.clone().text());
+      const result = (await response!.json() as any).result.structuredContent as {events: Array<{id: string; uri: string}>; cursor: string | null};
+      return {...result, records: result.events.filter(event => /:contact:/.test(event.id)).map(event => event.uri)};
+    };
+    const beforeAl = await feed(), alEvent = beforeAl.events.find(event => event.id.endsWith(':contact:' + alId))!;
+    const salEvent = beforeAl.events.find(event => event.id.endsWith(':contact:' + salId))!, zedEvent = beforeAl.events.find(event => event.id.endsWith(':contact:' + zedId))!;
+    assert.ok(alEvent && salEvent && zedEvent, 'the feed carries the native event of each contact ');
+    const before = beforeAl.events[beforeAl.events.indexOf(alEvent) - 1], cursors = {before: before!.id, at: alEvent.id, after: salEvent.id};
+    assert.ok(before, 'something precedes the erased contact\'s event');
     const [salBefore, samAgentBefore] = [await agentRecords('sam-sal-agent'), await db.prepare("SELECT * FROM agent_door_agents WHERE id='sam-sal-agent'").first()];
     const zedBefore = await db.prepare('SELECT * FROM contacts WHERE email=?').bind(zed.email).first();
     assert.ok(salBefore.length >= 6, 'the neighbour left calls, audit, approvals, events and usage');
@@ -121,6 +141,28 @@ export async function businessRosterErasureProof() {
       {person: {id: invited.get(alex.business)!}, agent: {id: 'alex-al-agent', name: 'alex-al-agent'}, scopes: ['records:read', 'records:write'], consent: 'consent-alex-al-agent'});
     assert.equal(replayed.code, 'subject_erased', 'a retried call for the erased contact never creates them again');
     assert.equal(await db.prepare('SELECT count(*) n FROM contacts WHERE email=?').bind(al.email).first<number>('n'), 0);
+
+    // The change feed after the contact is gone: a cursor at the erased contact's event, before it and after it
+    // each keep delivering what follows, in order, with no replay and nothing skipped (the erased event itself is
+    // redacted and so never delivered, as for any redacted row).
+    const mia = {name: 'Mia Novak', email: 'mia@example.com'};
+    const miaId = (await agentContact(invited.get(sam.business)!, 'sam-mia-agent', mia))!;
+    const nativeContacts = (uris: string[]) => uris.filter(uri => uri.startsWith('orbit://records/contact/'));
+    const zedUri = zedEvent.uri, miaUri = 'orbit://records/contact/' + miaId, salUri = salEvent.uri;
+    for (const [where, cursor, expected] of [['at the erased contact\'s event', cursors.at, [salUri, zedUri, miaUri]], ['before it', cursors.before, [salUri, zedUri, miaUri]],
+      ['after it', cursors.after, [zedUri, miaUri]]] as const) {
+      const next = await feed(cursor);
+      console.log(JSON.stringify({proof: 'orbit.events.cursor-across-contact-erasure', cursor: where, events: next.events.length, cursorAdvanced: next.cursor !== cursor}));
+      assert.deepEqual(nativeContacts(next.records), expected, 'a feed cursor ' + where + ' keeps delivering the following events in order');
+      assert.ok(next.cursor && next.cursor !== cursor && next.events.at(-1)!.id === next.cursor, 'the cursor ' + where + ' advances to the last delivered event');
+      const again = await feed(next.cursor);
+      assert.deepEqual([again.events.length, again.cursor], [0, next.cursor], 'reading on from the new cursor replays nothing');
+    }
+    const embedded = await door.invoke('orbit.events.list', {after: cursors.at, limit: 200}, {person: {id: owner.operatorId}, agent: {id: 'business-feed', name: 'Feed'}, scopes: ['events:read', 'records:read'], consent: 'embedded-feed'});
+    assert.deepEqual(nativeContacts((embedded.result as {events: Array<{uri: string}>}).events.map(event => event.uri)), [salUri, zedUri, miaUri], 'the embedded door resolves the same cursor');
+    const oversized = await feedCall(cursors.at, 1048577);
+    assert.equal(oversized!.status, 413, 'a body over the door\'s limit is still refused, not read to the end');
+    assert.deepEqual((await tablesHolding(...alValues)), [], 'following the feed from the erased contact\'s cursor writes no trace of the contact');
 
     // (a) Alex is erased through the owner's route: no trace in the roster, and the audit event keeps its shape.
     const alexId = invited.get(alex.business)!;
