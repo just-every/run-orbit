@@ -5127,7 +5127,7 @@
       "executable": false
     },
     "src/core/app/loaders.ts": {
-      "sha256": "5236ae911faaa8a2babd293da2799db7786d96af6e01a60bd6cca384db93f161",
+      "sha256": "5173b93c05f592d215a484d6a6119cf14b5f3bc20d3752ccfeacc9a5ec765023",
       "executable": false
     },
     "src/core/app/mounts/assistance.ts": {
@@ -6439,7 +6439,7 @@
       "executable": false
     },
     "src/core/features/operator/presentation-date.ts": {
-      "sha256": "639296ed28619af814881f34caaff7b3dc740940463355bb769645b11947ff74",
+      "sha256": "d3b27febf9ca5fc2787f57f88e199b8dab2b887810ee2108715201c26d6a993d",
       "executable": false
     },
     "src/core/features/operator/ui/action-tooltip.tsx": {
@@ -6639,7 +6639,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/draft-approval.tsx": {
-      "sha256": "790aab406006d965b4a76c4cd0bf73c030eee54f69885553ffc731133a59d3d3",
+      "sha256": "22bb7221b31598adf4890775a290bd8690242e957529942f558928d9eee8edf0",
       "executable": false
     },
     "src/core/features/operator/ui/draft-opt-out.tsx": {
@@ -6679,7 +6679,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/formatters.ts": {
-      "sha256": "6a675d346549b63fdd2082b1829625590a15ba1ec6428e58ecaacc1818146b8a",
+      "sha256": "44960438f6c748b761af8b15419d0b8abe1fa1f639b11b0fdb81706ba242fcbf",
       "executable": false
     },
     "src/core/features/operator/ui/handoff-tasks.css": {
@@ -6931,7 +6931,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-details.tsx": {
-      "sha256": "be398e701338f525b6c4f4636da13d201994918c72e5c4f0ad3e06379f82a28b",
+      "sha256": "e09f2f0ceb086acc859b5c6a3ea1df2f731c09b63e28c5f9e85b9844cc703b8b",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-outcome.tsx": {
@@ -9923,7 +9923,7 @@
       "executable": false
     },
     "src/routes/app.tsx": {
-      "sha256": "0dc8bf68fe549e71c83beff73da535f5409e3671a3e4160e1801452c81a4d9cd",
+      "sha256": "89685ee1967d80de57688b39a6720f13236a6a11aacc7e853e51ee185100dda5",
       "executable": false
     },
     "src/routes/demo.tsx": {
@@ -10859,7 +10859,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "43922dd88635ed140bfc20b566ba9333214519b877027240884f4c37c5c8f2bd",
+      "sha256": "fc03a864a7cedfdd5f374170cd5c970421e7dbb54cf66b06b3fd94aad23694a9",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
@@ -10923,7 +10923,7 @@
       "executable": false
     },
     "tests/rer/scheduled-outreach.mjs": {
-      "sha256": "bebf785e155655efe556629ccf8822bdf0caefe912fe15e20918c2bf0461a3b8",
+      "sha256": "eff1810b00fc22f2b803f13e51a10a481169ff816b23c789955f49069a0c195a",
       "executable": false
     },
     "tests/rer/sent-message-proof.mjs": {

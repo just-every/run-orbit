@@ -6,7 +6,7 @@ import { workbenchRequest } from './workbench-api';
 import { OperatorState } from './operator-shell';
 import { DraftOptOut, type OptOutState } from './draft-opt-out';
 import { messageStatus } from './message-status';
-import { formatDateTime, formatTime, workspaceInstant, workspaceTimeZone, zoneLabel } from './formatters';
+import { dateInputPlaceholder, parseDateInput, formatDateTime, formatTime, workspaceInstant, workspaceTimeZone, zoneLabel } from './formatters';
 interface AvailablePreview {available:true;timezone:string;localTime:string;quietHours:boolean;confirmationExpiresAt:string;requestedAt?:string;scheduledAt?:string;scheduledLocalTime?:string;scheduleReason?:string|null}
 type ApprovalPreview=AvailablePreview|{available:false;reason:string;settingsUrl:string};
 export function DraftApproval({draft,dirty,recipientName,onSubmitted,mailProvider,onOptOutChanged}:{mailProvider?:string;onOptOutChanged?:()=>void;draft:OperatorDraft;dirty:boolean;recipientName?:string;onSubmitted?:(message:{state:string;scheduledAt:string|null})=>void}) {
@@ -15,7 +15,7 @@ export function DraftApproval({draft,dirty,recipientName,onSubmitted,mailProvide
  useEffect(()=>{let active=true;setAvailability(null);setPreview(null);setError('');void workbenchRequest<ApprovalPreview>(`/drafts/${draft.id}/approval-preview`).then(value=>{if(active)setAvailability(value);},error=>{if(active)setError((error as Error).message);});return()=>{active=false;};},[draft.id]);
  const differentZones=Boolean(preview&&preview.timezone!==workspaceTimeZone());
  async function approve(confirmation?:AvailablePreview){if(!availability?.available)return;setBusy(true);setError('');try{
-  const requestedAt=scheduledAt?workspaceInstant(scheduledAt):undefined;
+  const requestedAt=scheduledAt?workspaceInstant(parseDateInput(scheduledAt,true)):undefined;
   if(!confirmation){
    const next=await workbenchRequest<ApprovalPreview>(`/drafts/${draft.id}/approval-preview${requestedAt?`?scheduledAt=${encodeURIComponent(requestedAt)}`:''}`);
    setAvailability(next);if(!next.available)return;
@@ -30,7 +30,7 @@ export function DraftApproval({draft,dirty,recipientName,onSubmitted,mailProvide
   {dirty&&<OperatorState>Save your changes before approving this revision.</OperatorState>}
   {availability?.available===false?<OperatorState>{availability.reason} <a className="operator-button" href={availability.settingsUrl}>Set up mail sender</a></OperatorState>:<>
   {!availability&&<OperatorState>Checking mail sender…</OperatorState>}
-  <label>Schedule for later (leave empty to send now)<input type="datetime-local" disabled={!availability?.available||busy||Boolean(result)} value={scheduledAt} onChange={e=>{setScheduledAt(e.target.value);setPreview(null);}}/></label>
+  <label>Schedule for later (leave empty to send now)<input type="text" placeholder={dateInputPlaceholder(true)} disabled={!availability?.available||busy||Boolean(result)} value={scheduledAt} onChange={e=>{setScheduledAt(e.target.value);setPreview(null);}}/></label>
   {!preview?<button type="button" className="operator-button" disabled={!availability?.available||busy||dirty||mergeBlocked||draft.isStale||Boolean(result)||Boolean(optOut?.refusal)} onClick={()=>void approve()}>{busy?'Checking…':scheduledAt?'Review schedule for exact revision':'Approve and send exact revision'}</button>:<div role="alert" className="confirm-actions">
    {preview.scheduledAt?<><p>Requested: <time dateTime={preview.requestedAt!}>{formatDateTime(preview.requestedAt!)}</time>{differentZones?` (${zoneLabel()})`:''}.</p><p><strong>Scheduled send: <time dateTime={preview.scheduledAt}>{formatDateTime(preview.scheduledAt)}</time>{differentZones?` (${zoneLabel()})`:''}.</strong>{differentZones&&<> Recipient time: <time dateTime={preview.scheduledAt}>{formatDateTime(preview.scheduledAt,preview.timezone)}</time> ({zoneLabel(preview.timezone)}).</>}</p>{preview.scheduleReason&&<p>{preview.scheduleReason}</p>}</>:<p>Recipient time reviewed: {preview.localTime}{differentZones?` (${zoneLabel(preview.timezone)})`:''}, outside permitted hours. Send now when you confirm. You have ten minutes to decide, until <time dateTime={preview.confirmationExpiresAt}>{formatTime(preview.confirmationExpiresAt)}</time>{differentZones?` (${zoneLabel()})`:''}.</p>}
    <button type="button" className="operator-button" disabled={busy||dirty||mergeBlocked||draft.isStale} onClick={()=>void approve(preview)}>{preview.scheduledAt?'Approve and schedule exact revision':'Confirm send now'}</button><button type="button" disabled={busy} onClick={()=>setPreview(null)}>Cancel</button></div>}</>}

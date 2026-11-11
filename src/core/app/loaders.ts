@@ -29,3 +29,14 @@ export const loadNow = createServerFn({ method: "GET" }).handler(async () => {
   if (!presentation) throw new Error("Workspace is not configured. Run rer setup.");
   return { ...queue, presentation };
 });
+
+/** Carry the browser's language preference into server and client date rendering. */
+export const loadWorkspaceDateLocale = createServerFn({ method: "GET" }).handler(async () => {
+  await requireOperator();
+  const { getRequest } = await import("@tanstack/react-start/server");
+  for (const preference of (getRequest().headers.get("accept-language") ?? "").split(",")) {
+    const locale = preference.split(";")[0]!.trim();
+    try { if (Intl.DateTimeFormat.supportedLocalesOf([locale]).length) return locale; } catch { /* Try the next language. */ }
+  }
+  return "en-AU";
+});

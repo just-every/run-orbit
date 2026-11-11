@@ -1,6 +1,6 @@
 import type { WorkspacePresentation } from "./operator-api";
 import { workspaceTimeZone } from "../presentation-date";
-export { setWorkspaceTimeZone, workspaceTimeZone, zoneLabel, formatDate, formatTime, formatDay, formatDateTime } from "../presentation-date";
+export { setWorkspaceDateLocale, workspaceDateLocale, dateInputPlaceholder, formatDateInput, parseDateInput, setWorkspaceTimeZone, workspaceTimeZone, zoneLabel, formatDate, formatTime, formatDay, formatDateTime } from "../presentation-date";
 
 /** Minutes the clock in `timeZone` runs ahead of UTC at this instant. */
 function offsetMinutes(at: number, timeZone: string): number {

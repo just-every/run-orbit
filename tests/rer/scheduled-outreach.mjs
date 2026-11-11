@@ -7,6 +7,28 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  const width=page.viewportSize().width;
  const opportunityId=new URL(opportunityURL).pathname.split('/').at(-1);
  const messagesPath=`/api/v1/workbench/opportunities/${opportunityId}/messages`;
+ // Keep these two fields on the same calendar, even when the browser's clock differs.
+ await page.goto(new URL('/app/settings/workspace',opportunityURL).href);
+ const savedZone=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/v1/settings'&&response.request().method()==='PUT');
+ await page.getByLabel('Time zone',{exact:true}).selectOption('America/Chicago');
+ assert.equal((await savedZone).status(),200);
+ await page.goto(opportunityURL);
+ const close=page.getByLabel('Expected close',{exact:true});
+ await close.fill('04/11/2027');await close.press('Enter');
+ await expect(close).toHaveValue('04/11/2027');
+ const recordPath=`/api/v1/records/opportunity/${opportunityId}`;
+ const readClose=async()=>(await browserAPI(page,recordPath)).record.expected_close_at;
+ if(width===1440){
+  await expect(close).toHaveAttribute('placeholder','mm/dd/yyyy');
+  await expect.poll(readClose).toBe('2027-04-11T05:00:00.000Z');
+  // Invalid calendar dates must never roll over into a different saved day.
+  await close.fill('02/30/2027');await close.press('Enter');
+  await expect(page.getByText('Enter a date as mm/dd/yyyy.',{exact:true})).toBeVisible();
+  assert.equal(await readClose(),'2027-04-11T05:00:00.000Z');
+  await close.press('Escape');
+ }
+ await page.reload({waitUntil:'networkidle'});await expect(close).toHaveValue('04/11/2027');
+ await page.screenshot({path:`${evidence}/us-date-deal-${width}.png`,fullPage:true});
  const before=await browserAPI(page,messagesPath);
  assert.equal(before.scheduler.lastRunAt,null,'An ordinary request does not claim that Cloudflare ran its timer');
  assert.equal(before.scheduler.ready,false);
@@ -20,12 +42,14 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await expect(approval).toContainText(contact.email);
  await expect(approval).toContainText(subject);
  await expect(approval).toContainText(body);
- // Workspace and recipient use UTC. Choose a future weekday in sending hours;
- // the field reads workspace time, as its label says.
- const requested=new Date(Date.now()+86400000);requested.setUTCHours(10,0,0,0);
+ // A future January weekday at 10:00 Chicago is 16:00 UTC. The contact has no
+ // separate timezone, so scheduling and the displayed date share the workspace clock.
+ const requested=new Date(Date.UTC(new Date().getUTCFullYear()+1,0,11,16));
  while([0,6].includes(requested.getUTCDay()))requested.setUTCDate(requested.getUTCDate()+1);
- const requestedAt=requested.toISOString();
- await approval.getByLabel(/Schedule for later/).fill(requestedAt.slice(0,16));
+ const requestedAt=requested.toISOString(),typed=`01/${String(requested.getUTCDate()).padStart(2,'0')}/${requested.getUTCFullYear()} 10:00`;
+ const schedule=approval.getByLabel(/Schedule for later/);
+ if(width===1440)await expect(schedule).toHaveAttribute('placeholder','mm/dd/yyyy HH:mm');
+ await schedule.fill(typed);
  const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approval-preview`);
  await approval.getByRole('button',{name:'Review schedule for exact revision',exact:true}).click();
  const response=await previewResponse;assert.equal(response.status(),200);
@@ -36,6 +60,11 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  const reviewedTime=approval.getByRole('alert').locator('strong time');
  await expect(reviewedTime).toBeVisible();
  await expect(reviewedTime).toHaveAttribute('datetime',preview.scheduledAt);
+ if(width===1440){
+  const display=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',minute:'2-digit'}).format(requested);
+  await expect(reviewedTime).toHaveText(display);
+ }
+
  assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
  await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});
  const approvedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approve`&&response.request().method()==='POST');
@@ -67,4 +96,18 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  assert.equal(submissions.length,submitted,'Cancellation does not submit the scheduled mail');
  await expect(message).toContainText('cancelled');
  await page.screenshot({path:`${evidence}/cancelled-outreach-${width}.png`,fullPage:true});
+ if(width===1440){
+  // The browser locale supplies other date orders outside the US workspace default.
+  await page.setExtraHTTPHeaders({'Accept-Language':'en-GB'});
+  await page.goto(new URL('/app/settings/workspace',opportunityURL).href);
+  const changed=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/v1/settings'&&response.request().method()==='PUT');
+  await page.getByLabel('Time zone',{exact:true}).selectOption('Europe/London');assert.equal((await changed).status(),200);
+  await page.goto(opportunityURL);
+  await expect(close).toHaveAttribute('placeholder','dd/mm/yyyy');
+  await close.fill('04/11/2027');await close.press('Enter');
+  await expect.poll(readClose).toBe('2027-11-04T00:00:00.000Z');
+  await page.reload({waitUntil:'networkidle'});await expect(close).toHaveValue('04/11/2027');
+  await page.setExtraHTTPHeaders({});
+ }
+
 }
