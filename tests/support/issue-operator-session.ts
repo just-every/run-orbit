@@ -50,7 +50,14 @@ try {
     staleReason: null
   };
   await dependencies.drafts.ensureDraft(draft);
-  const session = await dependencies.auth.createSession(sampleData.operators[0].id);
+  // This journey needs the actual native administrator role, rather than a privileged HTTP stub.
+  const guideOwner = process.argv.includes('--guide-owner');
+  const operatorId = guideOwner ? '01J00000000000000000000998' : sampleData.operators[0].id;
+  if (guideOwner) {
+    await dependencies.auth.ensureOperator({id:operatorId,email:'synthetic-orbit-api-owner@example.test',displayName:'API guide owner'});
+    await platform.env.DB.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(operatorId).run();
+  }
+  const session = await dependencies.auth.createSession(operatorId);
   process.stdout.write(JSON.stringify({ cookieName: sessionCookieName, expiresAt: session.expiresAt, token: session.token, draft }));
 } finally {
   await platform.dispose();

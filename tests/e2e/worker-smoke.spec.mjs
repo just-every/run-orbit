@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { contract } from "../contract.mjs";
 import {readFile} from "node:fs/promises";
+import {proveIntegrationsApiGuide} from "../support/integrations-api-guide.mjs";
 
 const viewports = [
   { name: "desktop", width: 1280, height: 900 },
@@ -49,7 +50,8 @@ for (const viewport of viewports) {
 
 }
 
-contract("DOCS-001", "installed docs navigation reaches every page", async ({ page }) => {
+contract("DOCS-001", "installed docs navigation reaches every page and Integrations leads to a working scoped read credential", async ({ page }) => {
+  test.setTimeout(120000);
   await page.setViewportSize({ width: 1440, height: 900 });
   const failures = watchPageFailures(page);
   const initialResponse = await page.goto("/docs", { waitUntil: "networkidle" });
@@ -95,6 +97,7 @@ contract("DOCS-001", "installed docs navigation reaches every page", async ({ pa
   await expect(menu.locator('[aria-current="page"]')).toHaveAttribute('href', links[1]);
   await expectNoHorizontalOverflow(page);
   expect(failures).toEqual([]);
+  await proveIntegrationsApiGuide(page,test.info());
 });
 
 contract("PUBLIC-003", "sign-in honestly reports unconfigured mail delivery", async ({ page }) => {
