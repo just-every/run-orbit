@@ -10355,7 +10355,7 @@
       "executable": false
     },
     "tests/e2e/workbench.spec.mjs": {
-      "sha256": "603279f535553a46e735977643967d62b10258a315c2d1569dffaff1d4ba68fa",
+      "sha256": "9aaa942c77b44b96f17fb6ae16bc18e8cbb33c6c45f1fde4673d403149615676",
       "executable": false
     },
     "tests/e2e/worker-smoke.spec.mjs": {
