@@ -1192,6 +1192,10 @@
           "$from": "draft",
           "pointer": "/id"
         },
+        "send_revision": {
+          "$from": "send_read",
+          "pointer": "/sendRevision"
+        },
         "expected_revision": {
           "$from": "send_read",
           "pointer": "/sendRevision"

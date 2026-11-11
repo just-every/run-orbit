@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "cab09cbaa043d46bfe4cd2ee6e431c497d57365e0c31c7f88322bef2f8cc2b5d",
+      "sha256": "c046e2e21579b33d72b5e24256dd736d9721ea994b2a0dea4a35d8a7ad4b0a1e",
       "executable": false
     },
     "AGENTS.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "2003a38177968df34d36303edfe9bf392f3bdc8df7feb7eecdecd68dc76a28ef",
+      "sha256": "3d80813221904cd382a724062551422be549c13092495310db3646903f64960b",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -3931,7 +3931,7 @@
       "executable": false
     },
     "scripts/agent-surface.ts": {
-      "sha256": "5b619a6d0f017ced2fcc40bfb58ae4c5025834a31f57dca475d572722299cbf1",
+      "sha256": "110c353e78be34f90d824e32da38491660f220ee90263f3e2ff1deb7f45a2fdf",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -5324,6 +5324,10 @@
     },
     "src/core/features/agent-door/local-credentials.ts": {
       "sha256": "6ed2fa2dc996f21b2542d45d567151c81a61e242b38bdb6263de3283302d6e29",
+      "executable": false
+    },
+    "src/core/features/agent-door/messages.ts": {
+      "sha256": "ccaddb5c31e62af24fc5155a9b9617f7d65f507b072e4b3d25f27a8853183f6e",
       "executable": false
     },
     "src/core/features/agent-door/native-access.ts": {
@@ -7311,7 +7315,7 @@
       "executable": false
     },
     "src/core/features/outreach/approval-repository.ts": {
-      "sha256": "7b4652074fd6d8a29caf167dbce6d96a097fd8cd17ba14c3ad74d5ca4ed5845e",
+      "sha256": "8c067728a911d41b45050c244176cfcad8b4408cd4c1336e37865978ffb178c3",
       "executable": false
     },
     "src/core/features/outreach/automatic-replies.ts": {
@@ -7391,7 +7395,7 @@
       "executable": false
     },
     "src/core/features/outreach/record-mail-repository.ts": {
-      "sha256": "7dd715ab836b6a7f7c89ade2f74c74f1458a4872646c0146631490a147908b61",
+      "sha256": "aee740c0b6857f381d683a3347e3335bfeccda72654fee92854b8cd13a20f8d7",
       "executable": false
     },
     "src/core/features/outreach/record-mail-storage.ts": {
@@ -7431,7 +7435,7 @@
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
-      "sha256": "ee02fc3f34eb1e45a021d4076a1ab84dfaa989f853dd025061852ee01d322017",
+      "sha256": "836a7ccdce3430a4fa62e0a96e3b52d0f0dd43994a96ef0fc72a351a4af89283",
       "executable": false
     },
     "src/core/features/outreach/stop-reason.ts": {
@@ -8423,7 +8427,7 @@
       "executable": false
     },
     "src/core/features/workbench/repository.ts": {
-      "sha256": "01ae13eae2fa1b9306b344c74675d5dc72f64a92904f1ada30605b7bca4f0dc4",
+      "sha256": "9708735082eef4ddc25b62e95d6f83f8be616ba99c18a3d577c2f072ebdf5e6b",
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
@@ -10042,6 +10046,14 @@
       "sha256": "86defdcb1a268d1a13a497d8ef1ad46c08e003cdde72dbe14561fa938631ff29",
       "executable": false
     },
+    "tests/agent-door/mail-group.mjs": {
+      "sha256": "d89df94b40894aa3528da25d2667a864c81764ce64ad6a17809e06f8727db5ab",
+      "executable": false
+    },
+    "tests/agent-door/mail-key.mjs": {
+      "sha256": "67e1cbc6fb13ff8fa9a986ae5a949af98f5b24f83f254c370f310fca9f79783d",
+      "executable": false
+    },
     "tests/agent-door/native-journey.mjs": {
       "sha256": "af5b7cd74aab5ff031a0ee05b20765e070c782bbcbfe1057fdf55c2573eb794f",
       "executable": false
@@ -11016,6 +11028,14 @@
     },
     "tests/support/agent-erasure-matcher-proof.ts": {
       "sha256": "56db6ba750f811bb9c5d36fe88908febd040cf9a0826fb3d28e663271ba72575",
+      "executable": false
+    },
+    "tests/support/agent-message-browser.ts": {
+      "sha256": "07df1c9e90cb9d1d02f1c2a64d276a3c60e0a2450058e5b15cd398da75205dcd",
+      "executable": false
+    },
+    "tests/support/agent-message-proof.ts": {
+      "sha256": "66d198ef3ec1daadb624285be1632abd44bef7c8f81ad8db6d86a76d953418ec",
       "executable": false
     },
     "tests/support/agent-report-deletion-proof.ts": {

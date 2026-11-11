@@ -39,7 +39,7 @@ step('draft','drafts.create',{kind:'opportunity',id:from('fixture','/items/0/ref
 step('draft_read','drafts.read',{id:from('draft','/id')});
 step('draft_update','drafts.update',{id:from('draft','/id'),recipient_email:from('fixture_contact','/items/0/fields/email'),subject:'Brightwork next steps',body:'Maya, here is the revised saved proposal outline.',expected_revision:from('draft_read','/draft/revision')});
 step('send_read','drafts.read',{id:from('draft','/id')});
-step('send_message','messages.send',{id:from('draft','/id'),expected_revision:from('send_read','/sendRevision'),scheduled_at:{$fixture:'messageSchedule',pointer:''}},[{class:'external',facts:{measure:1,counterparty:'known'}}]);
+step('send_message','messages.send',{id:from('draft','/id'),send_revision:from('send_read','/sendRevision'),expected_revision:from('send_read','/sendRevision'),scheduled_at:{$fixture:'messageSchedule',pointer:''}},[{class:'external',facts:{measure:1,counterparty:'known'}}]);
 journey.find(item=>item.id==='send_message').target={kind:'draft',id:from('draft','/id')};
 step('definition','reports.update',{definition:{name:'Seller opportunities',description:'Count native opportunities, without causal revenue claims.',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30}});
 step('report_preview','reports.preview',{id:from('definition','/id'),version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'});

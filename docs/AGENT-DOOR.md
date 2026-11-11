@@ -35,7 +35,9 @@ preparation does not approve, schedule or send a message. The saved send call be
 Read `orbit.drafts.read` with the same agent identity that will send. Its
 `sendRevision` binds the saved draft revision, exact recipient, current rendered
 subject and body, merge review, opt-out state and outside sender. Call
-`orbit.messages.send` with `id`, that `expected_revision` and an idempotency key.
+`orbit.messages.send` with `id`, that hash as both `send_revision` and
+`expected_revision`, and an idempotency key. The native send fence retains
+`send_revision`; the shared door consumes its reserved `expected_revision`.
 An optional `scheduled_at` uses the native recipient-hours schedule; omit it
 for immediate sending. The person sees that requested schedule in their summary.
 

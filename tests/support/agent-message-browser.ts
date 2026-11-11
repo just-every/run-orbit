@@ -25,7 +25,7 @@ export async function savedMessageBrowserFixture(context:TestContext,db:D1Databa
  const email=['synthetic-orbit-browser-buyer','customer.test'].join('@'),contact=await native('/api/v1/records/contact',{name:'Synthetic message buyer',email,timezone:'UTC'});
  const subject='Synthetic exact saved message',body='Hello buyer,\nHere are the exact saved next steps.';
  const create=async(key:string)=>(await mcp('orbit.drafts.create',{kind:'contact',id:contact.id,contact_id:contact.id,opportunity_id:null,subject,body,idempotency_key:'synthetic-orbit-browser-'+key})).structuredContent.id as string;
- const args=async(id:string,key:string)=>({id,expected_revision:(await mcp('orbit.drafts.read',{id})).structuredContent.sendRevision,idempotency_key:'synthetic-orbit-browser-send-'+key});
+ const args=async(id:string,key:string)=>{const {sendRevision}=(await mcp('orbit.drafts.read',{id})).structuredContent;return {id,send_revision:sendRevision,expected_revision:sendRevision,idempotency_key:'synthetic-orbit-browser-send-'+key};};
  const original=globalThis.fetch;
  let sentDraft:string;
  context.mock.timers.enable({apis:['Date'],now:new Date('2026-11-11T12:00:00.000Z')});

@@ -51,10 +51,10 @@ export class RecordMailRepository {
  }
 }
 /** One activity, linked to the actual recipient, their primary company and optional closed origin. */
-export function recordMailTimeline(db:D1Database,draftId:string,actor:string,kind:string,payload:unknown,at:string,settlement?:string){
+export function recordMailTimeline(db:D1Database,draftId:string,actor:string,kind:string,payload:unknown,at:string,settlement?:string,actorType:'operator'|'agent'='operator'){
  const entry=createId(),guard=settlement?' AND EXISTS(SELECT 1 FROM outbound_messages WHERE settlement_id=?)':'',bindings=settlement?[settlement]:[];
  return [
-  db.prepare(`INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) SELECT ?,?,?,?,'operator',?,'outreach',? FROM drafts WHERE id=?${guard}`).bind(entry,kind,at,at,actor,JSON.stringify(payload),draftId,...bindings),
+  db.prepare(`INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) SELECT ?,?,?,?,?,?,'outreach',? FROM drafts WHERE id=?${guard}`).bind(entry,kind,at,at,actorType,actor,JSON.stringify(payload),draftId,...bindings),
   db.prepare("INSERT INTO timeline_entry_records SELECT ?,'contact',recipient_contact_id FROM drafts WHERE id=? AND recipient_contact_id IS NOT NULL AND EXISTS(SELECT 1 FROM timeline_entries WHERE id=?)").bind(entry,draftId,entry),
   db.prepare("INSERT INTO timeline_entry_records SELECT ?,'company',c.company_id FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id WHERE d.id=? AND c.company_id IS NOT NULL AND EXISTS(SELECT 1 FROM timeline_entries WHERE id=?)").bind(entry,draftId,entry),
   db.prepare("INSERT OR IGNORE INTO timeline_entry_records SELECT ?,'opportunity',opportunity_id FROM drafts WHERE id=? AND opportunity_id IS NOT NULL AND EXISTS(SELECT 1 FROM timeline_entries WHERE id=?)").bind(entry,draftId,entry),

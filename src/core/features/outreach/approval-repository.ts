@@ -7,7 +7,7 @@ import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
 import { bindOptOut, draftOptOut, relayRefusalAudit } from './opt-out';
 import { capabilityStatement } from './opt-out-capability';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string;senderName?:string;expectedRenderHash?:string;expectedOptOut?:Awaited<ReturnType<typeof draftOptOut>>;guards?:D1PreparedStatement[]}
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string;senderName?:string;attribution?:{preparedBy:{agent:{id:string;name:string};for:{id:string;name:string};label:string};approvers:readonly Readonly<{id:string;name:string}>[]};expectedRenderHash?:string;expectedOptOut?:Awaited<ReturnType<typeof draftOptOut>>;guards?:D1PreparedStatement[]}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -40,7 +40,7 @@ export class ApprovalRepository {
    ${recordMailRecipientScope(this.db)}
    AND EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active')
    AND(d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))
-   ON CONFLICT DO NOTHING`).bind(id,actor,rendered.review.subject,rendered.review.body,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,JSON.stringify({...rendered.review,...(input.senderName?{senderName:input.senderName}:{})}),draftId,revision,actor);
+   ON CONFLICT DO NOTHING`).bind(id,actor,rendered.review.subject,rendered.review.body,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,JSON.stringify({...rendered.review,...(input.senderName?{senderName:input.senderName}:{}),...(input.attribution?{attribution:input.attribution}:{})}),draftId,revision,actor);
   let result:D1Result[];try{result=await this.db.batch([insertion,
     this.db.prepare(`UPDATE outbound_messages SET state='draft',claimed_at=NULL,first_attempt_at=NULL,attempt_count=0,failure='Sending limit reached; review and retry after the displayed time',next_attempt_at=? WHERE id=? AND state='queued' AND ((SELECT COUNT(*) FROM outbound_delivery_budget WHERE claimed_at>?)>${sharedLimitSql} OR (SELECT COUNT(*) FROM outbound_delivery_budget WHERE operator_id=? AND claimed_at>?)>${oneToOneLimitSql('?')})`).bind(at,id,minute,actor,day,actor),
     this.db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Scheduled message',next_due_at=?,updated_at=? WHERE id=(SELECT opportunity_id FROM outbound_messages WHERE id=? AND state='scheduled') AND lifecycle='open'").bind(scheduled,at,id),

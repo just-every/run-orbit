@@ -3,6 +3,7 @@ import type {TestContext} from 'node:test';
 import {createApp} from '../../src/core/app/app';
 import {operatorFromRequest,requireStepUp} from '../../src/core/features/identity';
 import {createOutboundMail} from '../../src/core/platform/outbound-mail';
+import {runHostedTimers} from '../../src/core/features/outreach/scheduler';
 import {autonomousPolicy,heldPolicy} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {RejectedReportProofContext} from './agent-door-proof';
 
@@ -11,7 +12,7 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
  const origin=bindings.AUTH_ORIGIN!,db=bindings.DB,submissions:any[]=[],originalFetch=globalThis.fetch;
  const old={MAIL_FROM:bindings.MAIL_FROM,MAIL_REPLY_TO:bindings.MAIL_REPLY_TO,SENDGRID_API_KEY:bindings.SENDGRID_API_KEY,SENDGRID_UNSUBSCRIBE_GROUP_ID:bindings.SENDGRID_UNSUBSCRIBE_GROUP_ID,MAIL_PROVIDER:bindings.MAIL_PROVIDER};
  Object.assign(bindings,{MAIL_FROM:['synthetic-orbit-sender','installation.test'].join('@'),MAIL_REPLY_TO:['synthetic-orbit-replies','installation.test'].join('@'),SENDGRID_API_KEY:'synthetic-orbit-mail-edge',SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'});
- const app=createApp({database:db,assets:bindings.ASSETS,outboundMail:createOutboundMail(bindings),authenticate:request=>operatorFromRequest(request,bindings),
+ const app=createApp({database:db,assets:bindings.ASSETS,agentErasureSecret:bindings.SESSION_SECRET,outboundMail:createOutboundMail(bindings),authenticate:request=>operatorFromRequest(request,bindings),
   stepUp:(request,action,returnTo)=>requireStepUp(request,bindings,action,returnTo)});
  const nativeResponse=(path:string,method='GET',body?:object,session=cookie)=>app.request(origin+path,{method,headers:{Cookie:session,Origin:origin,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
  const native=async(path:string,method='GET',body?:object)=>{const response=await nativeResponse(path,method,body);assert.ok(response.ok,`native message ${response.status}: ${await response.clone().text()}`);return response.json() as Promise<any>;};
@@ -21,9 +22,9 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
  const mcp=(name:string,args:Record<string,unknown>,overrides={})=>businessCall('orbit.'+name,args,{act:agent,...overrides},'tools/call',++rpc);
  const done=(response:Awaited<ReturnType<typeof businessCall>>)=>{assert.equal(response.status,200);assert.equal(response.body.error,undefined);assert.equal(response.body.result?.isError,false,JSON.stringify(response.body));return response.body.result.structuredContent;};
  const refused=(response:Awaited<ReturnType<typeof businessCall>>,code:string)=>{assert.equal(response.status,200);assert.equal(response.body.result?.isError,true,JSON.stringify(response.body));assert.equal(response.body.result._meta['com.runeditrun/error'].code,code);};
- const inventory=async()=>JSON.stringify(await db.prepare('SELECT * FROM record_mail_outbound_messages ORDER BY id').all());
+ const inventory=async()=>JSON.stringify((await db.prepare('SELECT * FROM record_mail_outbound_messages ORDER BY id').all()).results);
  const read=async(id:string)=>done(await mcp('drafts.read',{id}));
- const sendArgs=async(id:string,key:string)=>({id,expected_revision:(await read(id)).sendRevision,idempotency_key:'synthetic-orbit-'+key});
+ const sendArgs=async(id:string,key:string)=>{const {sendRevision}=await read(id);return {id,send_revision:sendRevision,expected_revision:sendRevision,idempotency_key:'synthetic-orbit-'+key};};
  const pending=async(args:Record<string,unknown>)=>{
   const response=await mcp('messages.send',args);assert.equal(response.status,200);assert.equal(response.body.result.resultType,'input_required',JSON.stringify(response.body));
   const result=response.body.result,decision=result._meta['com.runeditrun/decision'];
@@ -75,7 +76,7 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
 
   await adopt(autonomousPolicy());const changedDraft=await makeDraft('merge');await review(changedDraft);
   await adopt(heldPolicy());const staleArgs=await sendArgs(changedDraft,'old-merge'),staleApproval=await pending(staleArgs);
-  await native(`/api/v1/records/contact/${contact.id}`,'PUT',{job_title:'Director'});
+  await native(`/api/v1/records/contact/${contact.id}`,'PATCH',{changes:{job_title:'Director'},base:{job_title:'Buyer'}});
   const stale=await approve(staleApproval);assert.equal(stale.body.approval.state,'refused');assert.equal(stale.body.approval.code,'revision_conflict');assert.equal(submissions.length,1);
   const staleRead=await native(`/api/v1/drafts/${changedDraft}`),staleDraft=staleRead.draft;
   assert.equal(staleDraft.isStale,true);
@@ -91,26 +92,44 @@ export async function agentMessageProof(context:TestContext,{bindings,door,cooki
   assert.equal(submissions[2].subject,autoSaved.render.subject);assert.equal(submissions[2].content[0].value,autoSaved.render.body);assert.equal(submissions[2].from.name,'Ari for Morgan Lee');
   done(await mcp('messages.send',autoArgs));assert.equal(submissions.length,3);
 
+  const scheduled=await makeDraft('scheduled');await review(scheduled);
+  const scheduledArgs={...await sendArgs(scheduled,'scheduled'),scheduled_at:'2026-11-11T12:02:00.000Z'};
+  const queued=done(await mcp('messages.send',scheduledArgs));assert.equal(queued.state,'scheduled');assert.equal(submissions.length,3);
+  context.mock.timers.setTime(Date.parse('2026-11-11T12:02:00.000Z'));
+  await runHostedTimers(db,createOutboundMail(bindings));assert.equal(submissions.length,4);assert.equal(submissions[3].from.name,'Ari for Morgan Lee');
+  const scheduledHistory=await native(`/api/v1/records/contact/${contact.id}`);
+  const scheduledEntry=scheduledHistory.timeline.find((entry:any)=>entry.kind==='message.accepted'&&JSON.parse(entry.payload_json).messageId===queued.id);
+  assert.ok(scheduledEntry);assert.equal(scheduledEntry.actor_type,'agent');assert.equal(JSON.parse(scheduledEntry.payload_json).preparedBy.label,'Ari for Morgan Lee');
+  await runHostedTimers(db,createOutboundMail(bindings));assert.equal(submissions.length,4,'timer replay adds no submission');
+  done(await mcp('messages.send',scheduledArgs));assert.equal(submissions.length,4);
+
   const limited=await makeDraft('limited');await review(limited);
   await native(`/api/v1/settings/sending/operators/${ownerId}`,'PUT',{oneToOnePerDay:1});
   const limitedResult=done(await mcp('messages.send',await sendArgs(limited,'limited')));
-  assert.equal(limitedResult.state,'draft');assert.match(limitedResult.reason,/Sending limit/);assert.equal(submissions.length,3);
+  assert.equal(limitedResult.state,'draft');assert.match(limitedResult.reason,/Sending limit/);assert.equal(submissions.length,4);
   await native(`/api/v1/settings/sending/operators/${ownerId}`,'PUT',{oneToOnePerDay:null});
 
   const fenced=await makeDraft('fences');await review(fenced);
   const fenceArgs=await sendArgs(fenced,'missing-scope'),fenceBefore=await inventory();
   assert.equal((await mcp('messages.send',fenceArgs,{scope:'drafts:read'})).status,403);assert.equal(await inventory(),fenceBefore);
   // Neither an ordinary confirmation nor invented class facts can supply a native time confirmation.
-  context.mock.timers.setTime(new Date('2026-11-11T22:00:00.000Z'));
+  context.mock.timers.setTime(Date.parse('2026-11-11T22:00:00.000Z'));await adopt(autonomousPolicy());
   const quietArgs=await sendArgs(fenced,'quiet');
-  refused(await mcp('messages.send',{...quietArgs,confirmed:true,quietHoursConfirmation:'confirmed',classes:['standard']}),'revision_conflict');
-  assert.equal(await inventory(),fenceBefore);assert.equal(submissions.length,3);
-  context.mock.timers.setTime(new Date('2026-11-11T12:00:00.000Z'));
+  const quiet=await mcp('messages.send',{...quietArgs,confirmed:true,quietHoursConfirmation:'confirmed',classes:['standard']});refused(quiet,'revision_conflict');assert.match(quiet.body.result._meta['com.runeditrun/error'].reason,/Outside recipient sending hours/);
+  assert.equal(await inventory(),fenceBefore);assert.equal(submissions.length,4);
+  context.mock.timers.setTime(Date.parse('2026-11-11T12:00:00.000Z'));await adopt(autonomousPolicy());
   bindings.MAIL_PROVIDER='rer';bindings.MAIL_RELAY_URL='https://relay.example.test/mail';bindings.MAIL_API_KEY='synthetic-orbit-relay';
-  refused(await mcp('messages.send',await sendArgs(fenced,'transport')),'sender_unavailable');assert.equal(submissions.length,3);assert.equal(await inventory(),fenceBefore);
+  const unsupported=await mcp('messages.send',await sendArgs(fenced,'transport'));refused(unsupported,'sender_unavailable');assert.match(unsupported.body.result._meta['com.runeditrun/error'].reason,/cannot name the agent/);assert.equal(submissions.length,4);assert.equal(await inventory(),fenceBefore);
   bindings.MAIL_PROVIDER=undefined;
-  await native(`/api/v1/records/contact/${contact.id}`,'PUT',{contactability:'do_not_contact'});
-  refused(await mcp('messages.send',await sendArgs(fenced,'stopped')),'revision_conflict');assert.equal(submissions.length,3);
-  console.log(JSON.stringify({proof:'SURFACE-009.saved-message',held:'accepted-once',mergeConflict:'refused',freshRevision:'accepted-once',autonomous:'accepted-once',submissions:submissions.length,nativeHistory:true,actor:'agent-for-person',sender:'agent-for-person',scope:'refused',quietHours:'refused',unsupportedSender:'refused',suppression:'refused'}));
+  await native(`/api/v1/records/contact/${contact.id}`,'PATCH',{changes:{contactability:'do_not_contact'},base:{contactability:'contactable'}});
+  refused(await mcp('messages.send',await sendArgs(fenced,'stopped')),'revision_conflict');assert.equal(submissions.length,4);
+  await native(`/api/v1/records/contact/${contact.id}`,'DELETE',{confirmed:true});
+  assert.equal((await nativeResponse(`/api/v1/records/contact/${contact.id}`)).status,404);
+  refused(await mcp('messages.send',autoArgs),'subject_erased');assert.equal(submissions.length,4);
+  assert.deepEqual((await native(`/api/v1/workbench/records/contact/${contact.id}/mail`)).messages,[]);
+  const erasedApproval=await person(approval.id);assert.deepEqual((await erasedApproval!.json() as any).approval.summary,{});
+  const revoke=await door.handle(new Request(origin+'/agents/api/agents/'+agent.sub+'/revoke',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'{}'}));
+  assert.equal(revoke!.status,200);assert.equal((await mcp('messages.send',autoArgs)).status,401);assert.equal(submissions.length,4);
+  console.log(JSON.stringify({proof:'SURFACE-009.saved-message',held:'accepted-once',mergeConflict:'refused',freshRevision:'accepted-once',autonomous:'accepted-once',submissions:submissions.length,nativeHistory:true,actor:'agent-for-person',sender:'agent-for-person',scheduledAttribution:'preserved',limits:'native-held',erasureReplay:'subject-erased',revoked:'refused',scope:'refused',quietHours:'refused',unsupportedSender:'refused',suppression:'refused'}));
  } finally {globalThis.fetch=originalFetch;context.mock.timers.reset();Object.assign(bindings,old);delete bindings.MAIL_RELAY_URL;delete bindings.MAIL_API_KEY;await adopt(autonomousPolicy());}
 }

@@ -55,11 +55,11 @@ export class WorkbenchRepository {
     ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'The pipeline rules changed. Reload before creating an opportunity.');const duplicate=await this.db.prepare("SELECT id FROM contacts WHERE email_key=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type='contact' AND identity_key=?").bind(emailKey,emailKey).first<{id:string}>();if(duplicate)throw new WorkbenchError(409,`A contact already uses that identity: ${duplicate.id}.`,duplicate.id);throw error;}
     return { id };
   }
-  timeline(opportunityId: string, actor: string, kind: string, payload: unknown, now: string, occurredAt = now, settlement?: string) {
+  timeline(opportunityId: string, actor: string, kind: string, payload: unknown, now: string, occurredAt = now, settlement?: string,actorType:'operator'|'agent'='operator') {
     const id = createId();
     const guard = settlement ? " WHERE EXISTS(SELECT 1 FROM outbound_messages WHERE settlement_id='" + settlement + "')" : '';
     return [
-      this.db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) SELECT ?,?,?,?,'operator',?,'workbench',?" + guard).bind(id,kind,occurredAt,now,actor,JSON.stringify(payload)),
+      this.db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) SELECT ?,?,?,?,?,?,'workbench',?" + guard).bind(id,kind,occurredAt,now,actorType,actor,JSON.stringify(payload)),
       this.db.prepare("INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'opportunity',?" + guard).bind(id,opportunityId),
       this.db.prepare("INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,?,'opportunity',?,?,?" + guard).bind(createId(),actor,kind,opportunityId,JSON.stringify(payload),now)
     ];
