@@ -54,7 +54,7 @@ export async function proveSlackDisconnect(f:SlackFixture,{posts,call,signed,sec
  const unused=(await f.db.prepare("SELECT t.id,t.action,n.message_ts,n.channel_id FROM slack_action_tokens t JOIN slack_notices n ON n.id=t.notice_id WHERE t.consumed_at IS NULL AND n.state='sent' AND n.message_ts IS NOT NULL").all<any>()).results;
  assert.ok(unused.length>0,'The disconnect has real unused actions to revoke');
  const before=await call(''),oldNotices=before.notices.map((n:any)=>n.id),postCount=posts.length;
- await call('disconnect','POST',{});const disconnected=await call('');assert.equal(disconnected.installation.state,'disconnected');
+ await call('disconnect','POST',{});const disconnected=await call('');assert.equal(disconnected.installation.state,'disconnected');assert.deepEqual(disconnected.declaration,before.declaration,'Disabling Slack preserves its setup declaration');
  assert.equal(await f.db.prepare('SELECT count(*) n FROM slack_credentials').first('n'),0);assert.ok(disconnected.channels.every((c:any)=>!c.enabled));assert.ok(disconnected.mappings.every((m:any)=>m.revoked_at));
  const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');
  await call('process','POST',{});assert.equal(posts.length,postCount);

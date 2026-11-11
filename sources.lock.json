@@ -11379,7 +11379,7 @@
       "executable": false
     },
     "tests/support/slack-actions-proof.ts": {
-      "sha256": "a2bf88f5c2d9b3cb4a5583bf18515d300633c60722f328966910c975e2de36a7",
+      "sha256": "03b92c8492e7c51b269f55fe3096792d8aa70c2ae8dd926695899309c96051ca",
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
