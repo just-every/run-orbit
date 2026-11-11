@@ -93,6 +93,8 @@ export async function equalOperatorBrowser(){
      await accessible(shared,`team-denied-${record.kind}-${width}`,directory);
      await shared.goto(`/app/${plural[record.kind]}/${blocked.id}`);await expect(shared).toHaveURL(/\/app\/shared-records$/);
      await expect(shared.getByRole('heading',{name:blocked.name,exact:true})).toHaveCount(0);
+     // Finish the redirected page's list read before changing its permission epoch.
+     await shared.waitForLoadState('networkidle');
      const row=other.locator('.fold-row').filter({has:other.getByRole('button',{name:'Revoke grant',exact:true})}).filter({hasText:record.name});
      await row.getByRole('button',{name:'Revoke grant',exact:true}).click();await expect(other.getByRole('status').filter({hasText:'Grant revoked'})).toBeVisible();
      guestErrors.allowDeniedResource(`${sharedPath}/${record.kind}/${record.id}`,403);
@@ -145,7 +147,8 @@ async function createBeforeHydration(page:Page,name:string){
   release();await typed;await expect(create).toBeEnabled();await create.click();
  }finally{release();await page.unroute(isScript);}
  await expect(page).toHaveURL(/\/app\/companies\/[0-9A-HJKMNP-TV-Z]{26}$/);
- await expect(page.getByLabel(titleLabel.company,{exact:true})).toHaveValue(name);
+ // The URL can change while the submitted form is still awaiting the destination loader.
+ await expect(page.getByLabel(titleLabel.company,{exact:true})).toHaveValue(name,{timeout:30_000});
  await page.getByRole('button',{name:'Delete company',exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(/\/app\/companies$/);
 }
 /** The list read lands after the open read's 403: the refusal must still be on screen once the list has rendered. */
