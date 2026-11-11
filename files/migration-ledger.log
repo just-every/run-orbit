@@ -1,0 +1,1 @@
+{"unchangedAppliedMigrations": 75, "additions": ["migrations/core/0081_graph_proposals.sql"], "deploymentLedgerMatches": true}

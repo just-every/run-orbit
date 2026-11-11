@@ -1,0 +1,96 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f159",
+  "head": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+  "recorded": "2026-11-11T23:17:48.523244+00:00",
+  "checks": [
+    {
+      "file": "managed-owner.log",
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "observed": "\u2139 fail 0",
+      "sha256": "fe4791d60dc6f3cc11b594cf1ce1f9635cd4d27459e5407d5d8901156740fe88",
+      "bytes": 7459,
+      "executedBeforeCandidateCommit": true
+    },
+    {
+      "file": "browser.log",
+      "command": "pnpm exec playwright test --config /tmp/orbit-browser-config.mjs tests/e2e/capture.spec.mjs --grep provider status",
+      "exit": 0,
+      "observed": "1 passed",
+      "sha256": "d15344f6ccfcb3fd64f73b088d996e7034bcc98a2a032ab6056793f88f14c6fb",
+      "bytes": 5588,
+      "executedBeforeCandidateCommit": true
+    },
+    {
+      "file": "capture-upgrade.log",
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-upgrade.test.ts",
+      "exit": 0,
+      "observed": "\u2139 fail 0",
+      "sha256": "c870f24cefd5586b0779ca1ceee86b32219904b44d14ee3d8e27e332105e5fec",
+      "bytes": 850,
+      "executedBeforeCandidateCommit": true
+    },
+    {
+      "file": "agent-conformance.log",
+      "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "exit": 0,
+      "observed": "Agent door conformance: 4978/4978 points passed.",
+      "sha256": "7bad611e95a37546e382bf64f57091e632685099b8a611ae7cc8c4b1c7943a57",
+      "bytes": 205241,
+      "executedBeforeCandidateCommit": true
+    }
+  ],
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    }
+  },
+  "publicationScan": {
+    "status": "PENDING_FLEET",
+    "commit": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": {
+    "mainEquality": false,
+    "runSite": "PENDING_FLEET"
+  },
+  "contractChanged": false,
+  "pr": null,
+  "productCommits": [
+    "4e59880ca53e9d2f8fb63b8ba90f324d9934d2e0",
+    "501d8ad86a4d8728ed42717ad3315adc73231d1a"
+  ],
+  "baseMain": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "workingTreeClean": true,
+  "viewsRestoredFromMain": true,
+  "contractUnchanged": true,
+  "screens": [
+    {
+      "width": 1440,
+      "file": "graph-review-1440.png",
+      "sha256": "bd9cf8a32b3865d146ade37ecde55ddfdb4b9bdbb3f0e5472cefe338afa2aa5b",
+      "inspected": true
+    },
+    {
+      "width": 390,
+      "file": "graph-review-390.png",
+      "sha256": "16dc896b9f5de8947180173f45eb62f766d385e6358f06ec08c99f5f77453d59",
+      "inspected": true
+    }
+  ]
+}

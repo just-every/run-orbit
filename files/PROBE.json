@@ -1,0 +1,46 @@
+{
+  "proof": "AGENT-001.written-evidence",
+  "policies": [
+    {
+      "mode": "held",
+      "decision": "d6c25068-813f-4d90-85ea-cba85cdcdaa5",
+      "disposition": "review",
+      "classes": [
+        {
+          "class": "standard",
+          "rule": "standard",
+          "do": "review",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "mode": "autonomous",
+      "decision": "94f72694-922f-4ce7-ae7a-c77bad780116",
+      "disposition": "autonomous",
+      "classes": [
+        {
+          "class": "standard",
+          "rule": "all",
+          "do": "autonomous",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    }
+  ],
+  "proposals": 3,
+  "conflict": true,
+  "acceptedOnce": true,
+  "edited": true,
+  "declinedStable": true,
+  "questionCreatesNoContact": true,
+  "revokedWithdraws": true,
+  "revokedReadRefused": true,
+  "erasedReplayEmpty": true,
+  "foreignAccountRefused": true,
+  "hostileTextInert": true
+}

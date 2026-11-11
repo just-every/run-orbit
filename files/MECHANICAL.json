@@ -1,0 +1,166 @@
+[
+  {
+    "name": "typecheck",
+    "command": [
+      "pnpm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:02.774617+00:00",
+    "log": "typecheck.log",
+    "bytes": 168,
+    "sha256": "7dbff0ef22bcbce339b7cde1d257ab14eed62d0f1b0afde467b5344192ed4dea"
+  },
+  {
+    "name": "boundaries",
+    "command": [
+      "node",
+      "scripts/check-boundaries.mjs"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:22.372975+00:00",
+    "log": "boundaries.log",
+    "bytes": 49,
+    "sha256": "aabe86b7a5d523d232d0d20384394aa63cb0ca09ca3a90221d32ffb67a4a63ee"
+  },
+  {
+    "name": "manifest",
+    "command": [
+      "node",
+      "tools/seed-schema/validate.mjs",
+      "--schema",
+      "SEED",
+      "seed.json"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:22.590701+00:00",
+    "log": "manifest.log",
+    "bytes": 68,
+    "sha256": "110eaf260ee30eb8a265fbe00b5be0428a56f49be991081b9be74969f86feb78"
+  },
+  {
+    "name": "agent-surface",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsx",
+      "scripts/agent-surface.ts",
+      "--check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:22.663365+00:00",
+    "log": "agent-surface.log",
+    "bytes": 63,
+    "sha256": "9bb5dc014f68fe2d61c495907efa75660c15e7bee2604f93f0ab64096dd69918"
+  },
+  {
+    "name": "deployment",
+    "command": [
+      "node",
+      "scripts/publish-deployment-spec.mjs",
+      "--check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:24.121340+00:00",
+    "log": "deployment.log",
+    "bytes": 72,
+    "sha256": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053"
+  },
+  {
+    "name": "migration-ledger",
+    "command": [
+      "python3",
+      "/tmp/orbit-migration-history.py"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:24.223771+00:00",
+    "log": "migration-ledger.log",
+    "bytes": 127,
+    "sha256": "6dd8b124701fd5d57a74f5493f4b47609928411cfb20d8340d581e809bdba0dd"
+  },
+  {
+    "name": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:24.581153+00:00",
+    "log": "views-write.log",
+    "bytes": 28,
+    "sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+  },
+  {
+    "name": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:24.951240+00:00",
+    "log": "views-check.log",
+    "bytes": 32,
+    "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+  },
+  {
+    "name": "restore-generated-views",
+    "command": [
+      "git",
+      "checkout",
+      "origin/main",
+      "--",
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:25.093091+00:00",
+    "log": "restore-generated-views.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "lock",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:25.101800+00:00",
+    "log": "lock.log",
+    "bytes": 503901,
+    "sha256": "5edac8f7b359fdda075267f78340f550e25c0dba8ba956d0b3aedc395ead7f5e"
+  },
+  {
+    "name": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:25.613947+00:00",
+    "log": "lock-check.log",
+    "bytes": 503915,
+    "sha256": "d0bf2d5c10deff2cdce16d36036868811acf3e719ec5dd59ec7a62e25b3f4577"
+  },
+  {
+    "name": "first-party",
+    "command": [
+      "pnpm",
+      "exec",
+      "rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:14:26.149203+00:00",
+    "log": "first-party.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
