@@ -21,3 +21,16 @@ export async function providerFixture(provider:Provider){
  async function proposals(){const response=await request(`/proposals?recordType=contact&recordId=${f.ana}`);assert.equal(response.status,200);return (await response.json() as any).proposals;}
  return {...f,...network,db,get app(){return app;},request,start,callback,connect,count,drain,source,contact,proposals,reopen:async()=>{await f.platform.close();await f.platform.reopen();app=build();},crash:()=>{crash=true;}};
 }
+
+/** Reuse the same provider HTTP fixture with a managed owner's native session. */
+export async function nativeProviderConnection(provider:Provider,request:(path:string,body?:unknown)=>Promise<Response>,network:ReturnType<typeof captureProviderNetwork>,sourceId?:string){
+ const started=await request(`/oauth/${provider}/start`,{name:`Synthetic ${provider} source`,clientId:'synthetic-orbit-client',clientSecret:'synthetic-orbit-secret',sourceId});
+ assert.equal(started.status,200);
+ const authorization=new URL((await started.json() as any).authorizationUrl);
+ network.state.challenge=authorization.searchParams.get('code_challenge')!;
+ const callback=await request(`/oauth/${provider}/callback?state=${encodeURIComponent(authorization.searchParams.get('state')!)}&code=synthetic-orbit-code`);
+ assert.equal(callback.status,303);
+ const location=new URL(callback.headers.get('location')!,'https://orbit.test');
+ assert.ok(!location.searchParams.has('error'),location.searchParams.get('error')??'');
+ return location.searchParams.get('connected')!;
+}

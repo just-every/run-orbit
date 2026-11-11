@@ -33,6 +33,13 @@ step('capture_address','capture.address_read',{});
 step('rotate_address','capture.address_rotate',{source_revision:from('capture_address','/revision')},[{class:'security',facts:{measure:1,setting:'private_capture_address',provider:'orbit'}}]);
 delete journey.find(item=>item.id==='rotate_address').inject;
 journey.find(item=>item.id==='rotate_address').target={kind:'capture_source',id:'capture-forward'};
+step('capture_source','capture.source_read',{id:{$fixture:'capture',pointer:'/id'}});
+step('capture_sync','capture.source_sync',{id:{$fixture:'capture',pointer:'/id'},source_revision:from('capture_source','/revision')});
+step('capture_person_step','capture.source_sync',{id:{$fixture:'capture',pointer:'/id'},source_revision:from('capture_source','/revision')},[{class:'gated',facts:{measure:1,provider:'google',step:'invalid_grant'}}]);
+for(const id of ['capture_sync','capture_person_step']){
+ delete journey.find(item=>item.id===id).inject;
+ journey.find(item=>item.id===id).target={kind:'capture_source',id:{$fixture:'capture',pointer:'/id'}};
+}
 step('handoff','handoffs.read',{opportunity_id:from('opportunity','/id'),id:from('opportunity','/id')});
 step('save_handoff','handoffs.upsert',{target:from('handoff','/target'),source_revision:from('handoff','/revision'),audience_revision:from('handoff','/audienceRevision'),content:{title:'Prepare buyer follow-up',description:'Use current source evidence; this is an internal handoff.',assigneeId:{$sponsor:'id'},dueAt:null,status:'open'}});
 step('draft','drafts.create',{kind:'opportunity',id:from('fixture','/items/0/ref/id'),contact_id:from('fixture_contact','/items/0/ref/id'),subject:'Brightwork next steps',body:'Maya, here is the saved proposal outline.'});
@@ -60,7 +67,7 @@ step('save_workflow_draft','workflows.save_draft',{id:{$fixture:'workflow',point
 journey.find(item=>item.id==='save_workflow_draft').target={kind:'workflow',id:{$fixture:'workflow',pointer:'/id'}};
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});
-const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:orbitNotTools(),witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email',ORBIT_ENCRYPTION_KEY:{module:'tests/agent-door/capture-encryption.mjs'},CAPTURE_MAIL_ADDRESS:{module:'tests/agent-door/capture-mailbox.mjs'}},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
+const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:orbitNotTools(),witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{network:{module:'tests/agent-door/capture-network.mjs',origins:['https://oauth2.googleapis.com','https://gmail.googleapis.com','https://www.googleapis.com']},fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email',ORBIT_ENCRYPTION_KEY:{module:'tests/agent-door/capture-encryption.mjs'},CAPTURE_MAIL_ADDRESS:{module:'tests/agent-door/capture-mailbox.mjs'}},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
 const encoded=JSON.stringify(surface,null,2)+'\n';
 if(process.argv.includes('--check')) {if(await readFile('agent-surface.json','utf8')!==encoded)throw new Error('Agent surface drift: run pnpm exec tsx scripts/agent-surface.ts');}
 else await writeFile('agent-surface.json',encoded);

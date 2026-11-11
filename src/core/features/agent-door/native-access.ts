@@ -39,6 +39,15 @@ export class AgentAccess extends AccessService {
     this.addDependencyFences(actor,fullOperatorFence(actor),'native-class');
     return actor;
   }
+  /** A prepared sync keeps its native connection and selected scope through every commit. */
+  async captureSource(id:string):Promise<ActorContext> {
+    const actor=await this.fullOperator();
+    const source=await this.db.prepare("SELECT connection_id,scope_json FROM capture_sources WHERE id=? AND adapter IN('google','microsoft') AND state<>'disconnected' AND connection_id IS NOT NULL").bind(id).first<{connection_id:string;scope_json:string}>();
+    if(!source)deny();
+    const guard=crypto.randomUUID();
+    this.addDependencyFences(actor,[{sql:"INSERT INTO access_write_guards VALUES(?,CASE WHEN EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id=? AND scope_json=? AND state<>'disconnected') THEN 1 ELSE 0 END)",bindings:[guard,id,source.connection_id,source.scope_json]},{sql:'DELETE FROM access_write_guards WHERE id=?',bindings:[guard]}],'capture-source');
+    return actor;
+  }
   override async refreshContext(c: ActorContext) {
     if (!this.contexts.has(c)) deny('Native agent context required.');
     const current = await this.context();

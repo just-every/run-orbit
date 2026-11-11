@@ -117,6 +117,8 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.briefs.read` | `briefs:read` | standard |
 | `orbit.capture.address_read` | `capture:read` | standard |
 | `orbit.capture.address_rotate` | `capture:write` | security |
+| `orbit.capture.source_read` | `capture:read` | standard |
+| `orbit.capture.source_sync` | `capture:write` | standard, gated |
 | `orbit.drafts.create` | `drafts:write` | standard |
 | `orbit.drafts.read` | `drafts:read` | standard |
 | `orbit.drafts.update` | `drafts:write` | standard |
@@ -241,3 +243,34 @@ Captured evidence and proposals remain; mail to the old address stops entering.
 Read the new address in Settings → Capture. The address, private tag and forwarding
 confirmation are excluded from tool results, retained summaries, audits and archives.
 Provisioning and other credential changes are outside this adapter.
+
+## Connected Capture sync
+
+A full native operator can prepare an existing Google or Microsoft source with
+`orbit.capture.source_read`, then call `orbit.capture.source_sync` with its
+`id`, `source_revision` and a fresh `idempotency_key`. The revision binds the
+native connection, selected scope and current source progress. Sync uses the
+same native intake, lease, saved authorization and durable cursor as Capture.
+It returns counts and source state, never message content or credentials.
+Reading the company's own connected mailbox computes standard: this operation
+sends no company information to an outside recipient.
+
+A Google `invalid_grant`, or Microsoft `invalid_grant`, `interaction_required`,
+`consent_required` or `login_required` token answer stops native intake and
+records authorization attention. That first call reports
+`provider_person_required` with provider, step and a person-only reconnect URL;
+it does not retry the refused token request. Later sync attempts compute gated
+from the allowlisted stored token answer. They only return the source state and
+that handoff, subject to the company's policy. Even approving a held handoff
+cannot begin OAuth or complete provider consent. The signed-in person opens
+Capture and reconnects there. A fresh revision then permits standard sync again.
+Agent-supplied classes and confirmation flags grant no authority. Configuration
+errors, outages and other revoked-access answers are not invented person steps.
+
+The managed-owner sanity journey replaces only provider HTTP responses and
+covers both providers under autonomous and held policy. The existing agent
+conformance journey also exercises standard sync and a gated handoff with a
+disposable Google HTTP edge. These fixtures prove native behavior; they provide
+no live account qualification or release of owner-consent holds. Send consent,
+first-connection consent and company-credential API routes remain outside this
+adapter.

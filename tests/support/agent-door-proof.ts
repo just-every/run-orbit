@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {agentDoorCaptureSourceProof} from './agent-door-capture-source-proof';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
@@ -222,6 +223,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await captureSecurityProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
+    await agentDoorCaptureSourceProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
     const blockEnvelope=await policyEnvelope({origin,business:'door-company',seq:++policySeq,revision:policySeq,signer:{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation}},sensitiveBlocked);

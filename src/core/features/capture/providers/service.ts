@@ -1,3 +1,5 @@
+import {storedPersonStep} from './token-errors';
+import {hash} from '../../delegation/protocol';
 import {reconcileWritebacks} from './writeback-reconcile';
 import {audit} from '../../records/shared';
 import {AccessService} from '../../access/service';
@@ -70,4 +72,15 @@ export async function pollProviders(db:D1Database,security:SourceSecurity|undefi
  await db.prepare('DELETE FROM capture_oauth WHERE expires_at<?').bind(Date.now()).run();
  const sources=(await db.prepare(`SELECT id FROM capture_sources WHERE adapter IN('google','microsoft') AND state IN('connected','syncing') AND EXISTS(SELECT 1 FROM capture_credentials WHERE source_id=capture_sources.id) AND (json_array_length(scope_json,'$.mail.folders')>0 OR json_array_length(scope_json,'$.calendars')>0) ORDER BY updated_at,id LIMIT 4`).all<{id:string}>()).results;
  for(const source of sources){try{await syncProvider(db,source.id,security,defaultProviderFetch,1);}catch{/* Durable status records provider failures; contention waits until the next minute. */}}
+}
+
+/** Credential-free projection shared by agent preparation and sync readback. */
+export async function captureProviderState(db:D1Database,id:string){
+ const row=await db.prepare('SELECT id,adapter,state,connection_id,scope_json,cursor,last_error,updated_at,captured_count,skipped_count FROM capture_sources WHERE id=?').bind(id).first<{id:string;adapter:string;state:string;connection_id:string|null;scope_json:string;cursor:string|null;last_error:string|null;updated_at:string;captured_count:number;skipped_count:number}>();
+ if(!row)throw new CaptureError(404,'Capture source not found.');
+ const provider=providerId(row.adapter);
+ if(!row.connection_id||row.state==='disconnected')throw new CaptureError(409,'This source is disconnected.');
+ const step=storedPersonStep(provider,row.state,row.last_error);
+ if(row.state==='error'&&!step)throw new CaptureError(409,'Reconnect this source to resume intake.');
+ return {id:row.id,provider,state:row.state,revision:await hash(JSON.stringify(row)),captured:row.captured_count,skipped:row.skipped_count,step};
 }

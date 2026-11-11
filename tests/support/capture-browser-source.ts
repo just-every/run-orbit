@@ -4,6 +4,7 @@ import { connectSource } from '../../src/core/features/capture/sources';
 import { createSourceSecurity, payloadHash } from '../../src/core/platform/source-security';
 import { createId } from '../../src/core/shared/ids';
 import { sampleData } from '../fixtures/sample-data';
+import {captureProviderState} from '../../src/core/features/capture/providers/service';
 import {orbitAgentDoor} from '../../src/core/features/agent-door';
 import {createForwardAddress,forwardAddressRevision} from '../../src/core/features/capture/forward/source';
 import {receiveForwarded} from '../../src/core/features/capture/forward/receive';
@@ -29,7 +30,7 @@ const sourceSpecs = [
   { id: 'capture-browser-revoked-microsoft', adapter: 'microsoft', name: 'Revoked Outlook proof' },
 ] as const;
 
-async function seedRevokedSource(db: D1Database, security: NonNullable<ReturnType<typeof createSourceSecurity>>, source: typeof sourceSpecs[number]) {
+async function seedRevokedSource(db: D1Database, security: NonNullable<ReturnType<typeof createSourceSecurity>>, source: {id:string;adapter:'google'|'microsoft';name:string}) {
   const eventId = `${source.adapter}-browser-fixture-event`;
   await db.prepare('DELETE FROM signals WHERE source_id=? AND source_event_id=?').bind(source.id, eventId).run();
   await connectSource(db, {
@@ -90,6 +91,12 @@ try {
   const pending=await orbitAgentDoor(bindings).invoke('orbit.capture.address_rotate',{source_revision:await forwardAddressRevision(db,addressConfig),idempotency_key:'synthetic-orbit-browser-rotation-'+crypto.randomUUID()},
    {person:{id:actor},agent:{id:'synthetic-orbit-browser-assistant',name:'Synthetic assistant'},scopes:['capture:write']});
   if(pending.outcome!=='pending')throw new Error('Capture browser approval preparation failed.');
+  const personSource={id:'capture-browser-person-google',adapter:'google',name:'Synthetic Gmail authorization attention'} as const;
+  await seedRevokedSource(db,security,personSource);
+  await db.prepare("UPDATE capture_sources SET last_error=? WHERE id=?").bind('Authorization requires attention: The saved authorization requires a new sign-in or consent. Provider step: invalid_grant. Reconnect to resume.',personSource.id).run();
+  const person=await orbitAgentDoor(bindings).invoke('orbit.capture.source_sync',{id:personSource.id,source_revision:(await captureProviderState(db,personSource.id)).revision,idempotency_key:'synthetic-orbit-browser-person-'+crypto.randomUUID()},
+   {person:{id:actor},agent:{id:'synthetic-orbit-browser-capture-assistant',name:'Synthetic Capture assistant'},scopes:['capture:write']});
+  if(person.outcome!=='pending')throw new Error('Capture person handoff preparation failed.');
   process.stdout.write(JSON.stringify({sources:sourceSpecs.map(({id})=>id),approval:pending.approval?.id}));
 } finally {
   await platform.dispose();

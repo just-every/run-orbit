@@ -3,7 +3,7 @@ import {eml} from './capture-mail';
 import {scopes,type Provider,type ProviderFetch} from '../../src/core/features/capture/providers/config';
 /** Only the external HTTP edge is replaced. Orbit auth, D1, normalizers and intake run unchanged. */
 export function captureProviderNetwork(provider:Provider){
- const state={fixedWindow:false,writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
+ const state={fixedWindow:false,writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,tokenError:'',total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
  const calendarWindows=new Map<string,{start:string;end:string}>();
  const windowEvents=[{id:'synthetic-orbit-401',start:'2025-12-15',end:'2025-12-16'},{id:'synthetic-orbit-402',start:'2027-03-15',end:'2027-03-16'}];
  const mail=(id:string)=>eml({From:id==='unknown'?'other@unknown.test':'Ana <ana@acme.example>',To:'seller@orbit.test',Subject:`Provider ${id}`,Date:'Mon, 05 Oct 2026 10:00:00 +0000','Message-ID':`<${provider}-${id}@acme.example>`,...state.mailHeaders[id]},`Evidence ${id}`);
@@ -34,7 +34,7 @@ export function captureProviderNetwork(provider:Provider){
   if(url.pathname.endsWith('/token')){
    assert.equal(init.method,'POST');const body=new URLSearchParams(init.body as string);assert.ok(body.get('client_secret'));
    if(body.get('grant_type')==='authorization_code'){assert.ok(body.get('code_verifier'));const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body.get('code_verifier')!));assert.equal(Buffer.from(digest).toString('base64url'),state.challenge,'PKCE verifier binds this initiating authorization');}
-   state.tokens++;return json({access_token:`access-${state.tokens}`,refresh_token:`refresh-${state.tokens}`,expires_in:3600,scope:state.scope});
+   state.tokens++;if(state.tokenError)return json({error:state.tokenError,error_description:'synthetic-orbit-private-description'},400);return json({access_token:`access-${state.tokens}`,refresh_token:`refresh-${state.tokens}`,expires_in:3600,scope:state.scope});
   }
   if(/\/events(?:\/[^/]+)?(?:\/cancel)?$/.test(url.pathname)&&(init.method!=='GET'||/\/events\/[^/]+$/.test(url.pathname))){
    assert.ok(new Headers(init.headers).get('authorization'));

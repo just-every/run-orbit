@@ -56,6 +56,29 @@
       }
     },
     {
+      "name": "orbit.capture.source_read",
+      "scope": "capture:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SURFACE-005"
+      ]
+    },
+    {
+      "name": "orbit.capture.source_sync",
+      "scope": "capture:write",
+      "readOnly": false,
+      "classes": [
+        "standard",
+        "gated"
+      ],
+      "clauses": [
+        "SURFACE-005"
+      ]
+    },
+    {
       "name": "orbit.drafts.create",
       "scope": "drafts:write",
       "readOnly": false,
@@ -980,6 +1003,92 @@
       }
     },
     {
+      "id": "capture_source",
+      "tool": "orbit.capture.source_read",
+      "args": {
+        "id": {
+          "$fixture": "capture",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "capture_sync",
+      "tool": "orbit.capture.source_sync",
+      "args": {
+        "id": {
+          "$fixture": "capture",
+          "pointer": "/id"
+        },
+        "source_revision": {
+          "$from": "capture_source",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "target": {
+        "kind": "capture_source",
+        "id": {
+          "$fixture": "capture",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
+      "id": "capture_person_step",
+      "tool": "orbit.capture.source_sync",
+      "args": {
+        "id": {
+          "$fixture": "capture",
+          "pointer": "/id"
+        },
+        "source_revision": {
+          "$from": "capture_source",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "gated",
+          "facts": {
+            "measure": 1,
+            "provider": "google",
+            "step": "invalid_grant"
+          }
+        }
+      ],
+      "target": {
+        "kind": "capture_source",
+        "id": {
+          "$fixture": "capture",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
       "id": "handoff",
       "tool": "orbit.handoffs.read",
       "args": {
@@ -1718,6 +1827,14 @@
     }
   ],
   "verification": {
+    "network": {
+      "module": "tests/agent-door/capture-network.mjs",
+      "origins": [
+        "https://oauth2.googleapis.com",
+        "https://gmail.googleapis.com",
+        "https://www.googleapis.com"
+      ]
+    },
     "fixtures": {
       "module": "tests/agent-door/workflow-fixture.mjs"
     },
