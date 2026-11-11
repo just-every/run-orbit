@@ -1,0 +1,25 @@
+{
+  "version": "0.4.5",
+  "previousVersion": "0.4.4",
+  "date": "2026-11-11",
+  "publicReleaseNotes": "Orbit 0.4.5 keeps a stopped or detached Business from pulling decisions, takes an erased person off your Business team list, and carries the changes made since 0.4.4. Orbit now runs on rer 0.2.107.\n\n- **A stopped or detached Business can no longer pull decisions.** A Business-linked Orbit now answers a Business pull only while that Business is positively running; if the Business is stopped or detached, the pull is refused. An older approval that came from a Business that has since stopped is refused too, including an approval saved before approvals recorded which Business they belong to. When you pair Orbit with a new Business, an approval from the old one stays with the old one.\n- **Erasing a person also removes them from your Business team list.** Erasing a person now takes them off the team list the Business signs and keeps them off it, so a later Business update that still names them does not bring them back. People erased on earlier versions drop off at your next Business update. Orbit keeps only a value-free marker of each erased person for this, never a name, address or id. An archive restore does not carry that list of erased people: a Business that re-pairs after a restore and still lists an erased person could invite them again.\n- **Erasing one person no longer touches another person's agent records.** Where two people's email addresses end alike, such as al@ and sal@, erasing one no longer selects the other's agent records. Erasing a person does not yet remove the names agents recorded about them; that work is still to come.\n- **Updating `rer`.** The pinned `rer` is now 0.2.107. Its `rer deploy --dry-run` finishes cleanly, setup-token retirement tolerates a partial Cloudflare list, and `rer signin` prints the link for a custom domain. Update the checkout with `pnpm install --frozen-lockfile`.\n\nIt updates 0.4.4 in place and keeps every row. It adds three migrations, so take a private backup first: one new table for retired agent-door references, one that removes only the Business pull records provably copied across two different Businesses (every audit record stays), and one new table for the erased-people list. Nothing else in your data is changed.",
+  "contractChanges": {},
+  "proseChanges": [],
+  "extensionPointChanges": [],
+  "migrations": [
+    {
+      "id": "0076_agent_retired_refs.sql",
+      "buyerSteps": "Adds one empty table for retired agent-door references. No existing table is rewritten. No owner action beyond the backup."
+    },
+    {
+      "id": "0077_agent_door_relay_privacy.sql",
+      "buyerSteps": "Removes only the Business pull records that were provably copied across two different Businesses, and recreates the two triggers that keep each decision with its own Business. Every audit record is kept and no historical membership is inferred. No owner action beyond the backup."
+    },
+    {
+      "id": "0078_business_retired.sql",
+      "buyerSteps": "Adds one table for the erased-people list: a value-free marker for each erased person, never a name, address or id. No existing table is rewritten. No owner action beyond the backup."
+    }
+  ],
+  "breaking": false,
+  "agentUpdateInstructions": "Update from 0.4.4 in place; never reset or replace the installation. Before updating, stop rer dev and hosted writes and take a private backup outside the checkout: locally with rer export to a file outside the checkout, hosted through Records → Export archive after signing in (it asks for a fresh emailed confirmation). Check out v0.4.5, then rer install (Node 22.20.0, pnpm 10.12.4, rer 0.2.107 pinned exactly) and rer setup locally, or rer deploy --env-file .dev.vars.deploy for a hosted installation: they apply only the pending migrations 0076_agent_retired_refs.sql, 0077_agent_door_relay_privacy.sql and 0078_business_retired.sql and keep the owner, operators, settings and every row, and every applied migration byte stays as it was. No new setting is required. After the update a Business-linked Orbit answers a Business pull only while its Business is positively running, and people erased on earlier versions leave the Business team list at the next Business update. An archive restore does not carry the erased-people list. Afterwards check records, forms, drafts, scheduled messages, dashboards, saved reports and the Business team list before resuming."
+}
