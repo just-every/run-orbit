@@ -47,6 +47,7 @@ export async function notificationResponsibility(db:D1Database,context:TestConte
     return notices;
    };
    const send=async(mode:typeof outcome='accepted')=>{
+    const beforeUnread=(await call(latestActor,'/notifications')).unread;
     // Advance the fixed clock so normal sending limits remain active throughout the journey.
     context.mock.timers.tick(65000);outcome=mode;
     const draft=await call(latestActor,`/workbench/opportunities/${deal.id}/drafts`,{contactId:contact.id,subject:'Reviewed notification proof',body:'Please confirm the next step.'},201);
@@ -61,6 +62,7 @@ export async function notificationResponsibility(db:D1Database,context:TestConte
     const repeat=await request(latestActor,`/workbench/drafts/${draft.id}/approve`,approval);
     assert.equal(repeat.status,409,'Replaying approval never submits again');assert.equal(submissions,before+1);
     assert.equal(edge.at(-1).id,message.id);assert.ok(edge.at(-1).message_id);
+    assert.equal((await call(latestActor,'/notifications')).unread,beforeUnread,'A direct send and its immediate response add no unread notification for the sender');
     return {...message,message_id:edge.at(-1).message_id,idempotency_key:edge.at(-1).idempotency_key};
    };
    await send();
@@ -92,10 +94,17 @@ export async function notificationResponsibility(db:D1Database,context:TestConte
    const bounced=await assertNotice('message.bounced');
    assert.equal((await delivery([bounce])).status,200);
    assert.deepEqual(await assertNotice('message.bounced'),bounced,'Provider event replay preserves one bounce notice');
-   await send('failed');await assertNotice('message.failed');
-   await send('delivery-unknown');await assertNotice('message.delivery-unknown');
+   await send('failed');await assertNotice('message.failed',assigned?1:0);
+   await send('delivery-unknown');await assertNotice('message.delivery-unknown',assigned?1:0);
+   const dropped={sg_event_id:createId(),event:'dropped',timestamp:Math.floor(Date.now()/1000),email,rer_product:'orbit',rer_delivery_id:accepted.idempotency_key};
+   assert.equal((await delivery([dropped])).status,200);
+   const failed=await assertNotice('message.failed',assigned?2:1);
+   assert.equal((await delivery([dropped])).status,200);
+   assert.deepEqual(await assertNotice('message.failed',assigned?2:1),failed,'A later provider failure still reaches the sender once');
    assert.equal((await inbox(excluded,'customer.reply')).length,0);
-   for(const kind of ['message.failed','message.bounced','message.delivery-unknown'])await assertNotice(kind);
+   await assertNotice('message.failed',assigned?2:1);
+   await assertNotice('message.delivery-unknown',assigned?1:0);
+   await assertNotice('message.bounced');
   }
  }finally{context.mock.timers.reset();}
 }

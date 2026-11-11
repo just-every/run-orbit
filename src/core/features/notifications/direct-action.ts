@@ -1,16 +1,11 @@
 import {AsyncLocalStorage} from 'node:async_hooks';
 
-const directActor = new AsyncLocalStorage<string|undefined>();
+const directActor = new AsyncLocalStorage<string>();
 
-/** Only a native, authenticated person's mutation enters this scope. Provider,
+/** Only a native, authenticated person's mutation enters this scope. Provider callbacks,
  * agent and background work use their own doors and never borrow the person. */
 export function directNotificationAction<T>(actor:string,work:()=>T):T {
  return directActor.run(actor,work);
-}
-
-/** A provider's delivery result is automatic even after a person clicks Send. */
-export function automaticNotificationAction<T>(work:()=>T):T {
- return directActor.run(undefined,work);
 }
 
 /** Triggers and explicit writers share the same recipient rule. The context
