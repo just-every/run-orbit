@@ -88,3 +88,15 @@ Exact-final Verify is reported in CI.json and RECEIPT.json. Publication scan, gu
 ## CI observation
 
 Exact candidate Verify 43080033804 is a push event on 69df93f45604450d1183f1943fabb5bd09206bda. The current observation remains in progress, with no conclusion; CI.json is the actual status receipt. The one discarded release-head lookup used a mistyped SHA, returned no runs and provides no evidence; its call is counted in the ten-call budget. No workflow has been dispatched or rerun.
+
+The initial report-only transfer was fetched back independently and all 42 selected file hashes and the product SHA verified. Its actual publication and fetch receipts are included in the final packet; the final evidence update also carries the final CI observation.
+
+The independent riders are reported for a scoped PARTIAL change. No whole acceptance point, new Core status, foundation acceptance, live provider proof or hold release is claimed. The final CLAIM therefore uses points=none while naming the existing journeys for the proven non-tool portion.
+
+## Terminal observation
+
+At 2026-11-11T19:06:35.233952+00:00, exact-SHA push Verify 43080033804 remains in progress on 69df93f45604450d1183f1943fabb5bd09206bda, with no conclusion. Eight of the ten GitHub calls are used, including the discarded lookup. The watcher is stopped with two calls reserved for failed-job diagnostics; no green result or READY is claimed. Product custody is PUSHED. No known product assertion is failing, and all local touched checks pass. The final report-only packet is published separately; evidence publication is neither product acceptance nor landing.
+
+CLAIM SURFACE-001 PARTIAL points=none tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; tests/agent-door/native-journey.mjs#sellerDay
+
+GAP SURFACE-001: Other Core jobs and tool coverage, customer-message, sequence, quote, file and integration tools, and acceptance 2 complete conformance remain unclaimed. All holds and release prerequisites remain unchanged.

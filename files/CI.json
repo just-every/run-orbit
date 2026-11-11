@@ -1,7 +1,7 @@
 {
   "head": "69df93f45604450d1183f1943fabb5bd09206bda",
   "discoveredAtUnix": 1794422491.840123,
-  "githubCallsUsed": 4,
+  "githubCallsUsed": 8,
   "runs": [
     {
       "id": 43080033804,
@@ -16,5 +16,7 @@
   "discardedLookup": {
     "reason": "Mistyped full release SHA; lookup returned no runs and supplies no evidence."
   },
-  "lastPolledAtUnix": 1794422792.5647693
+  "lastPolledAtUnix": 1794423995.233952,
+  "watcherStopped": "Eight of ten calls used; reserve two for failed-job diagnostics. No further polling.",
+  "handoff": "PUSHED pending exact-SHA Verify"
 }

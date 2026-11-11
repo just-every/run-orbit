@@ -42,5 +42,41 @@
     "autonomous",
     "held"
   ],
-  "productRemoteHeadConfirmed": "69df93f45604450d1183f1943fabb5bd09206bda"
+  "productRemoteHeadConfirmed": "69df93f45604450d1183f1943fabb5bd09206bda",
+  "initialEvidenceTransportVerified": {
+    "head": "b9252c3616d034127fdf52c83ae0f8160d08780c",
+    "fileCount": 42,
+    "productHeadMatches": true
+  },
+  "claim": {
+    "clause": "SURFACE-001",
+    "status": "PARTIAL",
+    "wholePointsProven": [],
+    "selectedScopeProven": "Acceptance 1 declared non-tool reasons",
+    "coreStatusChanges": 0,
+    "holdReleases": 0
+  },
+  "ciObservation": {
+    "head": "69df93f45604450d1183f1943fabb5bd09206bda",
+    "discoveredAtUnix": 1794422491.840123,
+    "githubCallsUsed": 8,
+    "runs": [
+      {
+        "id": 43080033804,
+        "name": "Verify",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_sha": "69df93f45604450d1183f1943fabb5bd09206bda",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43080033804"
+      }
+    ],
+    "discardedLookup": {
+      "reason": "Mistyped full release SHA; lookup returned no runs and supplies no evidence."
+    },
+    "lastPolledAtUnix": 1794423995.233952,
+    "watcherStopped": "Eight of ten calls used; reserve two for failed-job diagnostics. No further polling.",
+    "handoff": "PUSHED pending exact-SHA Verify"
+  },
+  "handoff": "PUSHED"
 }

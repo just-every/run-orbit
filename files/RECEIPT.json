@@ -72,13 +72,17 @@
       "bytes": 8524,
       "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
     },
+    "initial-evidence-publication.log": {
+      "bytes": 7657,
+      "sha256": "2a5741a7923c7b19674c0d2cf1ffa1e909339f99786d97465caa309a73d10df1"
+    },
     "source-provenance.json": {
       "bytes": 1320,
       "sha256": "db7d4f338730f2a27535c6b1e26989b988c39ab8c74cc93d8e28e5f3fb4cc264"
     },
     "CI.json": {
-      "bytes": 590,
-      "sha256": "b22d33bae30b7441291b834ce3e88f0213cc468ad52376ec595bf69cc167b713"
+      "bytes": 745,
+      "sha256": "f7b7d85c92ce579f3de5f23e6b1c97101ee80a6e12b7350acb4227f92d7c381d"
     },
     "managed-owner.log": {
       "bytes": 3527,
@@ -88,9 +92,13 @@
       "bytes": 984,
       "sha256": "65457a0f7747a49f79b517f947faaead1c2ee11778a9c218bf6a51e9fb66501f"
     },
+    "initial-evidence-fetch.json": {
+      "bytes": 7843,
+      "sha256": "b0d524bc4b0a6d57d71e21f6dc5fc499b249affafdf857be389b7e24b4793cdd"
+    },
     "REPORT.md": {
-      "bytes": 11929,
-      "sha256": "69add7561be3b1178df524ad64f89346bfde59ae1e011ceb2b41333d2a3f85bc"
+      "bytes": 13569,
+      "sha256": "a4e7e88faef9f7ac07fe23ac88b78dc4a05baeda43bdc7117767a828298317dd"
     },
     "candidate-push.log": {
       "bytes": 969,
@@ -121,8 +129,8 @@
       "sha256": "899bf9d3646e6418cebe024f38033f77b44ac4b03ffc1550acc7e0ab2590191e"
     },
     "FINAL-CHECKS.json": {
-      "bytes": 1127,
-      "sha256": "cebad64e3197c3407474681acd826a519faf6f76d1b7f8cb324f9105f5e49444"
+      "bytes": 2330,
+      "sha256": "d53898d2294f6098969b0be6c303732ed12c747597fa9b5e5082f995aa791e73"
     },
     "guide-390.png": {
       "bytes": 1533965,
@@ -191,6 +199,41 @@
     "discovery-receipt.json": {
       "bytes": 1588,
       "sha256": "b362545f9d20e485406bd97648690c8bc8d07a35cb4401119dc4a89973eaa59b"
+    }
+  },
+  "ci": {
+    "head": "69df93f45604450d1183f1943fabb5bd09206bda",
+    "discoveredAtUnix": 1794422491.840123,
+    "githubCallsUsed": 8,
+    "runs": [
+      {
+        "id": 43080033804,
+        "name": "Verify",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_sha": "69df93f45604450d1183f1943fabb5bd09206bda",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43080033804"
+      }
+    ],
+    "discardedLookup": {
+      "reason": "Mistyped full release SHA; lookup returned no runs and supplies no evidence."
+    },
+    "lastPolledAtUnix": 1794423995.233952,
+    "watcherStopped": "Eight of ten calls used; reserve two for failed-job diagnostics. No further polling.",
+    "handoff": "PUSHED pending exact-SHA Verify"
+  },
+  "handoff": {
+    "landed": false,
+    "scan": "pending fleet",
+    "exactShaVerify": {
+      "id": 43080033804,
+      "name": "Verify",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "69df93f45604450d1183f1943fabb5bd09206bda",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43080033804"
     }
   }
 }
