@@ -1,0 +1,33 @@
+{
+  "tag": "main-orbit-hubspot-import-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-hubspot-import-1",
+  "head": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+  "tree": "0f5d6a9ad39623f645b2353fec78482b6c96bc2a",
+  "status": "READY",
+  "verify": {
+    "conclusion": "success",
+    "head_sha": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42992780622",
+    "id": 42992780622,
+    "status": "completed",
+    "globalCalls": 10
+  },
+  "notesBefore": {
+    "input": 2,
+    "ready": 0,
+    "rejected": 2
+  },
+  "notesAfter": {
+    "input": 2,
+    "ready": 2,
+    "rejected": 0,
+    "importedTimelineEntries": 2
+  },
+  "testBudgetBefore": 200,
+  "testBudgetAfter": 200,
+  "clauseStatusChanges": [],
+  "blockers": [],
+  "recordedAt": "2026-11-11T09:35:28.441107+00:00",
+  "publicationScan": "Fleet landing gate; unavailable in cloud."
+}

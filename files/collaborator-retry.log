@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+PROBE TEAM-001 UI: built CRM pages at 1440 and 390 let both full operators read, edit, create and delete; Guest sees only shared fields, forbidden record URLs show refusal, native URLs redirect and revoked-share replay returns 403.
+✔ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (435389.936121ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 442089.370349

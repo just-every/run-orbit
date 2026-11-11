@@ -1,0 +1,10 @@
+{
+  "head": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+  "range": "origin/main..HEAD",
+  "candidateCommits": 2,
+  "authorAndCommitter": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "trailers": "absent",
+  "identityAudit": "passed, including all candidate side parents",
+  "productDiffCredentialCheck": "passed: no injected value or GitHub credential-shaped value",
+  "publicationScan": "Not run in cloud; fleet publication scan remains a landing gate."
+}

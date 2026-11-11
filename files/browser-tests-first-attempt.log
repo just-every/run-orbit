@@ -1,0 +1,141 @@
+[WebServer] (node:3841) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3849) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3861) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:3905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:3878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:3878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:4408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:4421) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:4514) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:4522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+
+Running 1 test using 1 worker
+
+(node:4562) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard
+[WebServer] (node:4924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:4932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+  1) tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard 
+
+    Error: route.continue: Route is already handled!
+
+       at imports-hydration.mjs:11
+
+       9 |  source.files.push({kind:'suppression',name:'hubspot-suppression.csv',csv:'Email\nsynthetic-orbit-standalone@example.test',mapping:{email:'Email'},separator:';'});
+      10 |  let release;const scripts=new Promise(resolve=>{release=resolve;});
+    > 11 |  const hold=async route=>{if(route.request().resourceType()==='script')await scripts;await route.continue();};
+         |                                                                                                          ^
+      12 |  await page.route('**/*',hold);
+      13 |  try{
+      14 |   await page.goto('/app/settings/data/import',{waitUntil:'commit'});
+        at hold (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/e2e/imports-hydration.mjs:11:106)
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('.crm-file-description').filter({ hasText: 'hubspot-note.csv' })
+    Expected: visible
+    Error: Test ended.
+
+    Call log:
+      - Expect "toBeVisible" locator('.crm-file-description').filter({ hasText: 'hubspot-note.csv' }) with timeout 5000ms
+      - waiting for locator('.crm-file-description').filter({ hasText: 'hubspot-note.csv' })
+      - Test ended.
+
+
+       at imports-hydration.mjs:20
+
+      18 |  const next=page.getByRole('button',{name:'Review dry run',exact:true});await expect(next).toBeEnabled();
+      19 |  await expect(page.getByRole('radio',{name:'HubSpot CSV',exact:true})).toBeChecked();
+    > 20 |  for(const file of source.files)await expect(page.locator('.crm-file-description').filter({hasText:file.name})).toBeVisible();
+         |                                                                                                                 ^
+      21 |  await expect.poll(()=>page.evaluate(()=>window.__rerHydration?.count??0)).toBe(0);
+      22 |  const proof=async name=>{await page.screenshot({path:join(screenshots,`${name}-1440.png`),fullPage:true});await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,`${name}-390.png`),fullPage:true});await page.setViewportSize({width:1440,height:900});};
+      23 |  await proof('hubspot-upload');await next.click();await page.getByLabel('Name for this import').fill(source.account);
+        at hydrationImportFlow (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/e2e/imports-hydration.mjs:20:113)
+        at /home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/e2e/imports.spec.mjs:16:2
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard 

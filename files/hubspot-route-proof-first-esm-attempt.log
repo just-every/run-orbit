@@ -1,0 +1,16 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+AssertionError [ERR_ASSERTION]: 409: {"error":"Import stopped: NATIVE_EDIT_CONFLICT"}
+    at json (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/support/crm-import-flow.ts:4:94)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async finish (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/support/crm-import-flow.ts:5:104)
+    at async hubspotExportFlow (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/support/hubspot-export.ts:45:76)
+    at async main (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/hubspot-proof.mts:4:90) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

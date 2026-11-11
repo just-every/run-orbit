@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/imports.spec.mjs --workers=1 --reporter=line",
+  "tests": 1,
+  "test": "RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard",
+  "assertionWidth": 1440,
+  "proofWidths": [
+    1440,
+    390
+  ],
+  "browser": "/usr/bin/chromium --no-sandbox",
+  "notes": {
+    "input": 2,
+    "ready": 2,
+    "rejected": 0,
+    "appliedToTimeline": 2
+  },
+  "selectedFilesBeforeScripts": 5,
+  "hydrationRecoveries": 0,
+  "screenshots": [
+    "hubspot-upload-1440.png",
+    "hubspot-upload-390.png",
+    "hubspot-mapping-1440.png",
+    "hubspot-mapping-390.png",
+    "hubspot-review-1440.png",
+    "hubspot-review-390.png",
+    "hubspot-completed-1440.png",
+    "hubspot-completed-390.png"
+  ],
+  "productHead": "f3bd24f93130404f9dc3de0823363a5d5ee72b76",
+  "sourceVerification": "Browser proof used the same product source bytes later committed at productHead; exact-SHA Verify repeats retained tests.",
+  "visualReview": "Passed: upload, mapping, review and completed screens inspected at both 1440 and 390.",
+  "finalProductHead": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+  "runtimeChangesSinceRecordedProof": false
+}

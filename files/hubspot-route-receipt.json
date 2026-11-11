@@ -1,0 +1,25 @@
+{
+  "started": "2026-11-11T08:06:51.059Z",
+  "finished": "2026-11-11T08:08:16.737Z",
+  "status": "passed",
+  "door": "/api/v1/imports/dry-run, /apply, /undo and native record GET",
+  "notes": {
+    "input": 2,
+    "ready": 2,
+    "rejected": 0
+  },
+  "checks": [
+    "display-label contacts, companies, deals, notes",
+    "explicit associations and no unused name-derived company",
+    "saved review without customer writes",
+    "Apply and exact text/time on contact, company and deal timelines",
+    "prepared/API-style notes still import",
+    "unchanged replay has no duplicate notes",
+    "undo",
+    "Activity date or hs_timestamp wins over Create Date",
+    "future and missing note times rejected"
+  ],
+  "productHead": "f3bd24f93130404f9dc3de0823363a5d5ee72b76",
+  "finalProductHead": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+  "runtimeChangesSinceRecordedProof": false
+}

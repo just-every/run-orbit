@@ -1,0 +1,30 @@
+{
+  "mapping": "Create Date",
+  "notes": {
+    "input": 2,
+    "ready": 2,
+    "rejected": 0,
+    "reasons": [
+      "",
+      ""
+    ]
+  },
+  "banner": "Review your dry run\n\n3 rows to check · 0 will not import · 1 address marked Do not contact.\n\nThose contacts are marked Do not contact because your file does not say they agreed to email, or it says they unsubscribed or bounced. Orbit will not email them. To change this before importing, go back and choose “I confirm they agreed to hear from us”; after importing, you can clear Do not contact on a contact.\n\nContacts already in Orbit keep their saved name, details and company. Open their record below to check them.\n\nImporting sends no email and starts no follow-ups. Imported deals do not join NOW until something new happens on them.\n\nSynthetic Person · synthetic-orbit-1@example.test · ready to import\ncontacts.csv, row 2\nAudit details\nNotes — row 2 · ready to import\nnotes.csv, row 2\nAudit details\nNotes — row 3 · ready to import\nnotes.csv, row 3\nAudit details\nI checked these rows, including any that will not import and any marked Do not contact.\nImporting…\nAudit details: retained records\nStart another dry run",
+  "early": {
+    "source": "HubSpot CSV",
+    "files": [
+      "early-notes.csv"
+    ]
+  },
+  "late": {
+    "source": "HubSpot CSV",
+    "files": [
+      "early-notes.csv"
+    ],
+    "reviewDisabled": false,
+    "hydration": null
+  },
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ]
+}

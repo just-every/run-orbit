@@ -1,0 +1,46 @@
+{
+  "limit": 10,
+  "used": 10,
+  "calls": [
+    {
+      "call": 1,
+      "operation": "initial exact-SHA discovery"
+    },
+    {
+      "call": 2,
+      "operation": "initial exact-SHA poll"
+    },
+    {
+      "call": 3,
+      "operation": "initial exact-SHA poll"
+    },
+    {
+      "call": 4,
+      "operation": "initial exact-SHA poll"
+    },
+    {
+      "call": 5,
+      "operation": "initial exact-SHA poll"
+    },
+    {
+      "call": 6,
+      "operation": "initial exact-SHA poll"
+    },
+    {
+      "call": 7,
+      "operation": "initial failed-job listing"
+    },
+    {
+      "call": 8,
+      "operation": "gh run view 42986499140 --repo just-every/run-orbit --job 130410050543 --log-failed (once; archive succeeded)"
+    },
+    {
+      "call": 9,
+      "operation": "final exact-SHA discovery"
+    },
+    {
+      "call": 10,
+      "operation": "final exact-SHA poll after 25 minutes; completed/success"
+    }
+  ]
+}

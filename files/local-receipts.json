@@ -1,0 +1,102 @@
+{
+  "task": "main-orbit-hubspot-import-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-hubspot-import-1",
+  "commands": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "phase": "baseline reproduction"
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "phase": "final staged source tree",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "phase": "final staged source tree",
+      "exit": 0
+    }
+  ],
+  "testBudget": {
+    "before": 200,
+    "after": 200,
+    "cap": 200,
+    "registered": 198,
+    "qualifications": 2
+  },
+  "baselineNotes": {
+    "input": 2,
+    "ready": 0,
+    "rejected": 2
+  },
+  "afterNotes": {
+    "input": 2,
+    "ready": 2,
+    "rejected": 0,
+    "appliedToTimeline": 2
+  },
+  "contractStatusChanges": [],
+  "publicationScan": "The cloud cannot run the fleet publication scan; fleet must scan before landing.",
+  "head": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+  "tree": "0f5d6a9ad39623f645b2353fec78482b6c96bc2a",
+  "touchedCoreTests": {
+    "status": "passed",
+    "cases": 4,
+    "coverage": "Three cases passed in the initial complete-file run; the affected vendor/import-owner case passed in its targeted rerun after using the already fresh operator session."
+  },
+  "browserTests": {
+    "status": "passed",
+    "cases": 1
+  },
+  "status": "READY",
+  "verify": {
+    "conclusion": "success",
+    "head_sha": "2c3212cc106f8c82bed3c14673bd74277ddcf7ca",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42992780622",
+    "id": 42992780622,
+    "status": "completed",
+    "globalCalls": 10
+  },
+  "collaboratorFollowup": {
+    "status": "passed",
+    "test": "TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences",
+    "assertions": "Original authorization, native readback and console assertions retained; list reads settle before revocation and post-create detail readback allows the destination loader to finish.",
+    "runtimeChangesSinceFirstHead": false
+  },
+  "initialVerify": {
+    "id": 42986499140,
+    "head": "f3bd24f93130404f9dc3de0823363a5d5ee72b76",
+    "conclusion": "failure",
+    "failedJob": 130410050543,
+    "cascadeJob": 130418212629
+  },
+  "followupChecks": {
+    "typecheck": 0,
+    "sourceLock": 0,
+    "contractViews": 0,
+    "testBudget": 200
+  },
+  "blockers": []
+}

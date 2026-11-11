@@ -1,0 +1,55 @@
+shards (batch-7)	Verify routine product shard	2026-11-11T08:25:50.8753399Z Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+shards (batch-7)	Verify routine product shard	2026-11-11T08:25:51.3004883Z 
+shards (batch-7)	Verify routine product shard	2026-11-11T08:25:51.3008753Z Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+shards (batch-7)	Verify routine product shard	2026-11-11T08:26:57.2171690Z (node:2888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-7)	Verify routine product shard	2026-11-11T08:26:57.2176834Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:29:00.6142265Z PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+shards (batch-7)	Verify routine product shard	2026-11-11T08:30:19.9624662Z ✖ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (264560.300648ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:30:47.0955192Z ✔ selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive (27134.805332ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:31:22.1981268Z ✔ emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts (32274.783805ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:31:56.6462728Z ✔ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (31240.18086ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:31:58.1100292Z (node:6329) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-7)	Verify routine product shard	2026-11-11T08:31:58.1102951Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:34:43.5837950Z {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":2099.2286889999814,"status":201},{"operation":"GET /exports/01M74VX67YW8XCYHF6FRHT1069","milliseconds":46.56495600001654,"status":200},{"operation":"POST /exports/01M74VX67YW8XCYHF6FRHT1069/advance","milliseconds":2863.203886000003,"status":200},{"operation":"POST /exports/01M74VX67YW8XCYHF6FRHT1069/advance","milliseconds":1988.5168450000056,"status":200},{"operation":"POST /exports/01M74VX67YW8XCYHF6FRHT1069/advance","milliseconds":1989.6360590000113,"status":200},{"operation":"POST /exports/01M74VX67YW8XCYHF6FRHT1069/advance","milliseconds":911.9200760000094,"status":200},{"operation":"GET /exports/01M74VX67YW8XCYHF6FRHT1069/download","milliseconds":43.476244999998016,"status":200}]}
+shards (batch-7)	Verify routine product shard	2026-11-11T08:37:37.6485690Z {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":1962.3143439999549,"status":201},{"operation":"GET /exports/01M74W2G9WWSXQ064WFBWD2F9J","milliseconds":46.38502200000221,"status":200},{"operation":"POST /exports/01M74W2G9WWSXQ064WFBWD2F9J/advance","milliseconds":2814.308182000008,"status":200},{"operation":"POST /exports/01M74W2G9WWSXQ064WFBWD2F9J/advance","milliseconds":1981.3904930000426,"status":200},{"operation":"POST /exports/01M74W2G9WWSXQ064WFBWD2F9J/advance","milliseconds":2050.2255989999976,"status":200},{"operation":"POST /exports/01M74W2G9WWSXQ064WFBWD2F9J/advance","milliseconds":947.2988550000009,"status":200},{"operation":"GET /exports/01M74W2G9WWSXQ064WFBWD2F9J/download","milliseconds":43.74587699997937,"status":200}]}
+shards (batch-7)	Verify routine product shard	2026-11-11T08:38:36.8995330Z OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+shards (batch-7)	Verify routine product shard	2026-11-11T08:38:36.9125574Z ✔ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (397383.029675ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.3763857Z ✔ a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence (28624.521908ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4312453Z ℹ tests 6
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4313206Z ℹ suites 0
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4314647Z ℹ pass 5
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4315234Z ℹ fail 1
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4316219Z ℹ cancelled 0
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4316700Z ℹ skipped 0
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4317181Z ℹ todo 0
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4323335Z ℹ duration_ms 796760.304369
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4334389Z 
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4334641Z ✖ failing tests:
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4334907Z 
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4335242Z test at newtests/t096/collaborator-lifecycle.test.ts:1:780
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4336590Z ✖ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (264560.300648ms)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4337913Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4338590Z   + actual - expected
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4338941Z   
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4339247Z   + [
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4339547Z   +   {
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4340630Z   +     message: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4341281Z   +     tracing: false,
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4341947Z   +     url: 'https://127.0.0.1:25012/api/v2/workspaces/workspace/records?kind=contact&q='
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4342559Z   +   }
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4342859Z   + ]
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4343121Z   - []
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4343391Z   
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4344140Z       at Object.check (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-observations.ts:17:244)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4345460Z       at async equalOperatorBrowser (/home/runner/work/run-orbit/run-orbit/newtests/t096/team-operator-browser.ts:105:118)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4346708Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/collaborator-lifecycle.test.ts:32:2)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4347732Z       at async Test.run (node:internal/test_runner/test:1054:7)
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4348563Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4349297Z     generatedMessage: true,
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4349977Z     code: 'ERR_ASSERTION',
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4351440Z     actual: [ { message: 'Failed to load resource: the server responded with a status of 403 (Forbidden)', url: 'https://127.0.0.1:25012/api/v2/workspaces/workspace/records?kind=contact&q=', tracing: false } ],
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4353214Z     expected: [],
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4353648Z     operator: 'deepStrictEqual',
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4354080Z     diff: 'simple'
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.4354412Z   }
+shards (batch-7)	Verify routine product shard	2026-11-11T08:39:08.5727791Z ##[error]Process completed with exit code 1.

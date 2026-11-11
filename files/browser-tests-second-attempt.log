@@ -1,0 +1,127 @@
+[WebServer] (node:5126) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5134) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5146) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5182) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:5190) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:5163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:5948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:6150) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:6159) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+
+Running 1 test using 1 worker
+
+(node:6304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard
+[WebServer] (node:6704) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+
+[WebServer] (node:6712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+  1) tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('details').filter({ has: getByText('Contacts: csv-contact.csv', { exact: true }) }).getByLabel('Column seats', { exact: true })
+    Expected: "custom"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('details').filter({ has: getByText('Contacts: csv-contact.csv', { exact: true }) }).getByLabel('Column seats', { exact: true }) with timeout 5000ms
+      - waiting for locator('details').filter({ has: getByText('Contacts: csv-contact.csv', { exact: true }) }).getByLabel('Column seats', { exact: true })
+        14 × locator resolved to <select aria-label="Column seats">…</select>
+           - unexpected value ""
+
+
+      24 |   const contactMapping=page.locator('details').filter({has:page.getByText(`Contacts: ${vendor}-contact.csv`,{exact:true})});
+      25 |   if(vendor==='csv'){
+    > 26 |    await expect(contactMapping.getByLabel('ID in your old system',{exact:true})).toHaveValue('');await expect(contactMapping.getByLabel('Column seats',{exact:true})).toHaveValue('custom');
+         |                                                                                                                                                                       ^
+      27 |    await expect(contactMapping.getByLabel('Email',{exact:true})).toHaveValue('email');
+      28 |    await expect(contactMapping.getByLabel('Full name',{exact:true})).toHaveValue('name');
+      29 |    await expect(contactMapping.getByLabel('Company name',{exact:true})).toHaveValue('company');
+        at /home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/e2e/imports.spec.mjs:26:167
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../browser-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard 

@@ -1,0 +1,37 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes (698438.789348ms)
+ℹ hubspot: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+ℹ pipedrive: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+✔ RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed (41640.580278ms)
+✔ RECORD-008 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans (39232.428965ms)
+Orbit records: unexpected Error: D1_ERROR: Finish or undo the pending suppression import before creating contacts: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER) (cause: Error: Finish or undo the pending suppression import before creating contacts: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER))
+✔ RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held (54790.56454ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 840709.975921
+
+✖ failing tests:
+
+test at tests/core/crm-import.test.ts:1:965
+✖ RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes (698438.789348ms)
+  AssertionError [ERR_ASSERTION]: 503: {"error":"The email confirmation is unavailable right now. Try again later.","code":"client_ip_unavailable"}
+      at json (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/support/crm-import-flow.ts:4:94)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async importOwnerFlow (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/support/import-owners.ts:64:2)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/main-orbit-hubspot-import-1/run-orbit/tests/core/crm-import.test.ts:51:27)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
