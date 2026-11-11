@@ -8,8 +8,8 @@ import {SlackSettings} from './slack-settings';
 import {useOperatorResource} from './use-operator-resource';
 import type {ConnectedProduct} from '../../settings/connected-products';
 
-const stateWords={connected:'Connected','unresolved-setup':'Unresolved setup',receiving:'Receiving bookings','awaiting-delivery':'Not set up yet'} as const;
-interface Row {key:string;name:string;job:string;state:string;action:string;panel:ReactNode}
+const stateWords={connected:'Connected','unresolved-setup':'Needs attention: connection setup',receiving:'Receiving bookings','awaiting-delivery':'Awaiting first booking'} as const;
+interface Row {connected:boolean|null;key:string;name:string;job:string;state:string;action:string;panel:ReactNode}
 
 async function readProducts(){
  const response=await fetch('/api/v1/settings/products');if(!response.ok)throw new Error('Connected products could not load.');
@@ -18,7 +18,7 @@ async function readProducts(){
  return {products:(await response.json() as {products:ConnectedProduct[]}).products,calls};
 }
 
-/** Settings › Integrations › Connected to Orbit: one row per product Orbit connects to, its job and real state, and one
+/** Settings › Integrations: group products by their real connection state, with one row per product and one
  * action that opens that product's setup in place under the row. */
 export function ConnectedProducts({operators}:{operators:any[]}){
  const resource=useOperatorResource('connected-products',useCallback(readProducts,[])),[open,setOpen]=useState('');
@@ -30,19 +30,24 @@ export function ConnectedProducts({operators}:{operators:any[]}){
  for(const [key,name] of [['slack','Slack'],['calendly','Calendly'],['calcom','Cal.com'],['mailchimp','Mailchimp']] as const){
   const item=product(name);if(!item)continue;
   const live=item.state==='connected'||item.state==='receiving',booking=key==='calendly'||key==='calcom';
-  rows.push({key,name,job:item.job,state:stateWords[item.state],action:live?'Open':booking?'Set up':'Connect',
+  rows.push({connected:live,key,name,job:item.job,state:stateWords[item.state],action:live?'Open':booking?'Set up':'Connect',
    panel:key==='slack'?<SlackSettings operators={operators}/>:key==='mailchimp'?<MailchimpSettings/>:<BookingSetup vendor={key==='calendly'?'calendly':'calcom'} onRefresh={resource.reload}/>});
  }
- if(resource.data)rows.push({key:'twilio',name:'Twilio',job:'Calls',state:resource.data.calls===null?'Set up by the installation owner':resource.data.calls?'Connected':'Not connected',action:resource.data.calls===null?'':resource.data.calls?'Open':'Connect',panel:<CallingSettings/>});
- return <section className="operator-surface settings-card" aria-labelledby="integrations-connected"><h2 id="integrations-connected">Connected to Orbit</h2>
+ if(resource.data)rows.push({connected:resource.data.calls,key:'twilio',name:'Twilio',job:'Calls',state:resource.data.calls===null?'Check with the installation owner':resource.data.calls?'Connected':'Not connected',action:resource.data.calls===null?'':resource.data.calls?'Open':'Connect',panel:<CallingSettings/>});
+ return <>
   {resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:null}
   {!resource.data&&!resource.error?<OperatorState>Loading connections…</OperatorState>:null}
-  <ul className="settings-rows integration-rows">{rows.map(row=><li key={row.key} data-product={row.key}>
-   <div className="integration-row"><div><strong>{row.name}</strong><p>{row.job} · {row.state}</p></div>
-    {row.action?<button type="button" className="integration-row__action" aria-expanded={open===row.key} aria-controls={`integration-${row.key}`} aria-label={`${row.action} ${row.name}`} onClick={()=>setOpen(open===row.key?'':row.key)}>{row.action}</button>:null}</div>
-   {open===row.key?<div className="integration-panel" id={`integration-${row.key}`}>{row.panel}</div>:null}
-  </li>)}</ul>
- </section>;
+  {[true,false,null].map(connected=>{
+   const group=rows.filter(row=>row.connected===connected),id=connected===null?'integrations-status-unavailable':connected?'integrations-connected':'integrations-not-connected';
+   return group.length?<section key={id} className="operator-surface settings-card" aria-labelledby={id}><h2 id={id}>{connected===null?'Connection status unavailable':connected?'Connected to Orbit':'Not connected'}</h2>
+    <ul className="settings-rows integration-rows">{group.map(row=><li key={row.key} data-product={row.key}>
+     <div className="integration-row"><div><strong>{row.name}</strong><p>{row.job} · {row.state}</p></div>
+      {row.action?<button type="button" className="integration-row__action" aria-expanded={open===row.key} aria-controls={`integration-${row.key}`} aria-label={`${row.action} ${row.name}`} onClick={()=>setOpen(open===row.key?'':row.key)}>{row.action}</button>:null}</div>
+     {open===row.key?<div className="integration-panel" id={`integration-${row.key}`}>{row.panel}</div>:null}
+    </li>)}</ul>
+   </section>:null;
+  })}
+ </>;
 }
 
 /** Calendly and Cal.com sign their deliveries with a website and app source's secret, so their setup uses one. */

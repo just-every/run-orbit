@@ -50,9 +50,14 @@ try {
     staleReason: null
   };
   await dependencies.drafts.ensureDraft(draft);
-  let operatorId=sampleData.operators[0].id;
-  if(process.argv.includes('--notification-colleague')){
-    operatorId='01J0000000000000000000000B';
+  // Preserve the native administrator and the independent notification colleague.
+  const guideOwner = process.argv.includes('--guide-owner');
+  const colleague = process.argv.includes('--notification-colleague');
+  const operatorId = guideOwner ? '01J00000000000000000000998' : colleague ? '01J0000000000000000000000B' : sampleData.operators[0].id;
+  if (guideOwner) {
+    await dependencies.auth.ensureOperator({id:operatorId,email:'synthetic-orbit-api-owner@example.test',displayName:'API guide owner'});
+    await platform.env.DB.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(operatorId).run();
+  } else if (colleague) {
     await dependencies.auth.ensureOperator({id:operatorId,email:'synthetic-orbit-colleague@example.test',displayName:'Notification colleague'});
   }
   const session = await dependencies.auth.createSession(operatorId);

@@ -1,8 +1,8 @@
 # Read deals with an API credential
 
-Create a credential while signed in as the installation owner. Finish first-run setup and add at least one deal first. There is no credential setup screen; the existing authenticated API creates it.
+Create a credential while signed in as the installation owner. Finish first-run setup and add at least one deal first. From Settings › Integrations, choose **Create and use a read credential** to open this guide on your installation. The steps below use its existing authenticated API; no terminal is needed.
 
-These steps work on your local `rer dev` instance and on your hosted Orbit. Open an app page on that installation, then open your browser’s developer tools and its **Console** tab. Run the following JavaScript there, in order. You do not need Node or a terminal. Keep the console private: the newly issued secret grants access to the selected deals.
+These steps work on your local `rer dev` instance and on your hosted Orbit. Keep this guide open on that installation while signed in, then open your browser’s developer tools and its **Console** tab (Chrome: View › Developer › JavaScript Console; Firefox: Tools › Browser Tools › Web Console). Run the following JavaScript there, in order. You do not need Node or a terminal. Keep the console private: the newly issued secret grants access to the selected deals.
 
 ## Find the principal and deal IDs
 
@@ -69,7 +69,7 @@ A successful request returns HTTP 201 with this shape (IDs and timestamps vary):
 }
 ```
 
-Save `issued.secret` privately in your integration’s credential store before closing the console. It is returned only by creation and rotation. The example deliberately hides it in console output; `GET /api/v1/settings/api-credentials` lists metadata without returning secrets.
+Run `copy(issued.secret)` in the browser console, then paste into your integration’s private credential store before closing the console. The browser’s `copy` helper copies it without printing it. Never paste it into a URL, chat or log. It is returned only by creation and rotation. The example deliberately hides it in console output; `GET /api/v1/settings/api-credentials` lists metadata without returning secrets.
 
 ## Use it without your browser session
 

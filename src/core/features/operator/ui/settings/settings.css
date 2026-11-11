@@ -31,6 +31,7 @@
 .settings-rows.integration-rows > li { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; gap: 4px; }
 .integration-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; }
 .integration-row > div { min-width: 0; }
+.ob-app .integration-row__action { flex: none; white-space: nowrap; }
 .integration-panel { min-width: 0; padding: 4px 0 16px; }
 .integration-panel .integration-setup { margin: 0; padding: 0; }
 .integration-panel .integration-setup > h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

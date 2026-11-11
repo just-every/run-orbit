@@ -61,10 +61,35 @@ export const contactAgentArtifacts: AgentArtifactMap = { artifacts: [
 // Business holds only external decision projections. Tombstone pulls purge personal
 // projections; authority loss, stop and unreachable rules govern its custody (W-r1–W-r5).
 
-// Erasing an operator retires their policy references and, with them, their Business roster entry
-// (Base's rule inside agentErasureStatements). It selects no agent record by value: attributed agent
-// records keep Orbit's existing operator-erasure behaviour, so every selection here is empty. The
-// subject carries `policyRefs`, the JSON list `operatorPolicyRefs` returns for the erased operator.
+// Erasing an operator does two things. It retires their policy references and, with them, their
+// Business roster entry (Base's rule inside agentErasureStatements; the subject carries `policyRefs`,
+// the JSON list `operatorPolicyRefs` returns). And it redacts what the door recorded about them, chosen
+// by structured native columns, never by text: the operator's own id on a sponsored agent, a decision's
+// sponsor, an approval or review mark, or an event actor. A policy reference or Business id is never a
+// selector, so the policy evidence in every other decision is untouched. `values` is the JSON list of
+// the erased operator's native ids. Peers' agents, decisions and approvals stay byte for byte.
+const ids = 'SELECT value FROM json_each(?1)'
+const sponsored = 'SELECT id FROM agent_door_agents WHERE sponsor IN (' + ids + ')'
+const marks = (column: string, path: string) => 'EXISTS(SELECT 1 FROM json_each(CASE WHEN json_valid(' + column + ') THEN ' + column + " ELSE '[]' END" + (path ? ",'" + path + "'" : '') + ") mark WHERE (CASE WHEN mark.type='object' THEN json_extract(mark.value,'$.person') ELSE mark.value END) IN (" + ids + '))'
+const ownAudit = 'agent IN (' + sponsored + ") OR json_extract(row,'$.sponsor.id') IN (" + ids + ') OR ' + marks('row', '$.approval.by') + ' OR ' + marks('row', '$.review.by')
+const ownApprovals = "json_extract(saved,'$.principal.person.id') IN (" + ids + ') OR ' + marks('approvals', '')
+const ownReviews = "json_extract(saved,'$.principal.person.id') IN (" + ids + ') OR marked_by IN (' + ids + ')'
+const ownEvents = "json_extract(event,'$.actor.for.id') IN (" + ids + ") OR json_extract(event,'$.actor.person.id') IN (" + ids + ')'
+// D1 allows five terms in a compound SELECT: a pending audit row is its own decision, a later one names it.
+const operatorDecisions = 'SELECT decision_id FROM agent_door_calls WHERE agent IN (' + sponsored + ')'
+  + " UNION SELECT coalesce(json_extract(row,'$.decision_id'),id) FROM agent_door_audit WHERE " + ownAudit
+  + " UNION SELECT json_extract(saved,'$.decision_id') FROM agent_door_approvals WHERE " + ownApprovals
+  + " UNION SELECT json_extract(saved,'$.decision_id') FROM agent_door_reviews WHERE " + ownReviews
+  + " UNION SELECT json_extract(event,'$.decision_id') FROM agent_door_events WHERE " + ownEvents
+const operatorMatches: Record<string, string> = {
+  agent_door_agents: 'sponsor IN (' + ids + ')',
+  agent_door_calls: 'decision_id IN (' + operatorDecisions + ')',
+  agent_door_audit: 'id IN (' + operatorDecisions + ") OR json_extract(row,'$.decision_id') IN (" + operatorDecisions + ") OR json_extract(row,'$.replay_of') IN (" + operatorDecisions + ') OR ' + ownAudit,
+  agent_door_approvals: "json_extract(saved,'$.decision_id') IN (" + operatorDecisions + ') OR ' + ownApprovals,
+  agent_door_reviews: "json_extract(saved,'$.decision_id') IN (" + operatorDecisions + ') OR ' + ownReviews,
+  agent_door_events: "json_extract(event,'$.decision_id') IN (" + operatorDecisions + ') OR ' + ownEvents,
+  agent_door_usage: 'decision_id IN (' + operatorDecisions + ') OR agent IN (' + sponsored + ')',
+}
 export const operatorAgentArtifacts: AgentArtifactMap = { artifacts: contactAgentArtifacts.artifacts.map(item => item.table === 'agent_door_state'
   ? { table: item.table, columns: item.columns, retire: { refs: 'policyRefs' } }
-  : item.match ? { table: item.table, columns: item.columns, match: { sql: '0', params: [] } } : item) }
+  : operatorMatches[item.table] ? { table: item.table, columns: item.columns, match: match(operatorMatches[item.table]!) } : item) }

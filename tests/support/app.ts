@@ -15,6 +15,7 @@ export function identityBindings(database: D1Database, request: Request) {
 /** The real application with Base operator-auth composed over the test database. */
 export function createApp(input: AppInput) {
   return createOrbitApp({
+    agentErasureSecret: TEST_SESSION_SECRET,
     ...input,
     authenticate: request => operatorFromRequest(request, identityBindings(input.database, request)),
     stepUp: (request, action, returnTo) => requireStepUp(request, identityBindings(input.database, request), action, returnTo),
