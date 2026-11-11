@@ -3,7 +3,9 @@
 Repository: just-every/run-orbit
 Branch: cloud/main-orbit-integrations-api-1
 Product head: 8a4519f99fcee94b7753f1251a95f11667dae9ec
-Verify: 42996633629, exact SHA; in progress at report creation.
+Verify: 42996633629, completed/success on exact SHA 8a4519f99fcee94b7753f1251a95f11667dae9ec.
+Run URL: https://github.com/just-every/run-orbit/actions/runs/42996633629
+GitHub API calls: 6; each observation was at least 300 seconds apart.
 PR: none; repository guidance uses the fleet branch landing gate.
 
 ## Plan and implementation
@@ -24,7 +26,7 @@ PR: none; repository guidance uses the fleet branch landing gate.
 - Documented source lock and check: both exit 0; SOURCE-CHECK.json records the commands and exits.
 - API access entries: 0 → 1. Unconnected or unknown-state rows under a connected heading: 5 → 0. Credential lifecycle: 201 → bearer 200 → revoke 200 → bearer 401. Actual non-secret HTTP receipt: api-guide-receipt.json.
 - Browser proof: Integrations and the API guide captured at 1440 and 390. Functional assertions run once at 1440. Existing docs navigation assertions and the existing 390 docs-menu assertions remain.
-- An initial full run of the touched browser file had two unchanged PUBLIC-001 Lobby failures caused by a console 404; its four other unchanged cases passed. The guide initially exposed the shared fixture's lack of administrator authority, which was corrected using a dedicated native owner fixture. The final guide test passes. No unrelated Lobby assertion was altered; exact-SHA branch Verify remains the full wall.
+- An initial full run of the touched browser file had two unchanged PUBLIC-001 Lobby failures caused by a console 404; its four other unchanged cases passed. The guide initially exposed the shared fixture's lack of administrator authority, which was corrected using a dedicated native owner fixture. The final guide test passes. No unrelated Lobby assertion was altered; exact-SHA branch Verify subsequently completed/success, including its full required wall.
 
 ## Clauses and limits
 
@@ -37,3 +39,7 @@ GAP API-002: This round proves discoverability and create/read/revoke through th
 GAP BOUNDARY-001: This round changes connection presentation only; it makes no claim about the full cross-product buyer walk or live-provider qualification.
 
 Reports and screenshots are exclusively in the separate evidence packet/ref. Product provenance is in PRODUCT-RECEIPT.json and PRODUCT-PUSH.log. No provider credentials, environment dumps, secret values, trace archives or held-out gate material are selected for publication.
+
+## Final result
+
+The requested API discovery and connection grouping changes are pushed and exact-SHA Verify is successful. There are no product blockers. The full publication scan and landing remain the fleet Mac's independent gates. No PR was required or created. The preliminary evidence ref was fetched back and all 21 selected files verified against its manifest and hashes (EVIDENCE-READBACK.json); this final packet adds the terminal CI receipt and updated report. The pushed clean clone is removed after the final evidence publication, per the brief.

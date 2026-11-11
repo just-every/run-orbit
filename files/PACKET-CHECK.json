@@ -13,14 +13,24 @@
       "sha256": "2d7d8dc23fdb877f6ba8424e6f94c96a61e1edf9f271de743dca642a14afe16a"
     },
     {
+      "file": "CI-FINAL.json",
+      "bytes": 315,
+      "sha256": "cb8925361c5cadf6ac47260b67a16894669c5551b3191ad061ec005e62a26d71"
+    },
+    {
       "file": "CI-OBSERVATIONS.jsonl",
-      "bytes": 464,
-      "sha256": "13e4024a3dd10b554fcb0673cb2bf3a3e44de301dc36bd2e15a6d8b63855949a"
+      "bytes": 1163,
+      "sha256": "36dfcb766e74fc48a5e5e1f5e542cb3b9417cfb021f437ee620495adf6a85cbd"
+    },
+    {
+      "file": "EVIDENCE-READBACK.json",
+      "bytes": 4210,
+      "sha256": "aa8436a72f6ad0af3e16fe3613674ba6f6f9844e5a6cbd6a39aeda4e48fcbdc6"
     },
     {
       "file": "GITHUB-CALLS.jsonl",
-      "bytes": 603,
-      "sha256": "51a5f9b545e25fabdfcc18eab536abe62476ec11c27d2e269f0b1cbb425d9cb2"
+      "bytes": 1128,
+      "sha256": "1e315312b082b1062e476edc98c97f22c2926a1d318bf54ab621eaca9e6118a8"
     },
     {
       "file": "INITIAL-BROWSER.log",
@@ -39,13 +49,13 @@
     },
     {
       "file": "PRODUCT-RECEIPT.json",
-      "bytes": 927,
-      "sha256": "152f8b369d0284e1db535b3aa9fd28cbaf4ab1232c563d573a1d2e2371a5899b"
+      "bytes": 1306,
+      "sha256": "3c62d5587b6516353521c394d373bf8bdcbcc891a52d0d80736c19d228906c8f"
     },
     {
       "file": "REPORT.md",
-      "bytes": 5759,
-      "sha256": "f8b397545f94a5f5dd290018793fc47e558be2ef54ebf82ef8f5798d05773be9"
+      "bytes": 6536,
+      "sha256": "7f2f4b37ab5441367ba28656153607e9e88b8e6d272c25db5b4480f235916b61"
     },
     {
       "file": "REPRODUCTION.json",
