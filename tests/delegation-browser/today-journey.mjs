@@ -113,6 +113,7 @@ export async function stalledRiskPolicyJourney({page,expected,policy,bearer,evid
  const origin=new URL((await page.request.get('/health')).url()).origin;
  let rpc=0;
  const native=async()=>{const response=await page.request.get(`/api/v1/risks/${expected.id}/findings`);expect(response.status()).toBe(200);return response.json();};
+ const baseline=await native();
  for(const mode of ['autonomous','held']) {
   const adoption=await page.request.post('/api/rer/agent-policy',{headers:{Origin:origin},data:{policy:await policy(mode)}});expect(adoption.status(),await adoption.text()).toBe(200);
   const response=await page.request.post('/mcp',{headers:{Authorization:'Bearer '+await bearer(),'MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':'orbit.risks.read'},data:{jsonrpc:'2.0',id:++rpc,method:'tools/call',params:{name:'orbit.risks.read',arguments:{id:expected.id},_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}}});
@@ -144,6 +145,8 @@ export async function stalledRiskPolicyJourney({page,expected,policy,bearer,evid
    await page.setViewportSize({width:1440,height:900});await item.getByRole('button',{name:'Mark reviewed',exact:true}).click();await expect(item).toHaveCount(0);
    const reviews=await page.request.get('/agents/api/reviews');expect((await reviews.json()).reviews.find(item=>item.id===review.id).state).toBe('reviewed');
   } else {expect(result._meta['com.runeditrun/review']).toBeUndefined();}
+  expect(await native()).toEqual(baseline,'reading risk evidence and reviewing the agent preserve the native deal and findings');
  }
+ console.log(JSON.stringify({proof:'SURFACE-013.stalled-browser',evidenceId:expected.evidenceId,quote:expected.quote,nativeMatch:true,evidenceLinkAuthenticated:true,reviewMarked:true,widths:[1440,390]}));
  await page.close();
 }

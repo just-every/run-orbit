@@ -67,6 +67,10 @@ export async function agentDoorStalledRiskProof(context:TestContext,input:Captur
     const page=await person('/agents');assert.equal(page.status,200);assert.ok((await page.text()).includes(`data-review-id="${review.id}"`));
     const marked=await person(`/agents/api/reviews/${review.id}/reviewed`,cookie,{});assert.equal(marked.status,200);
     const reviewed=(await marked.json() as any).review;assert.equal(reviewed.state,'reviewed');assert.equal(reviewed.marked_by,ownerId);
+    const retained=await person('/agents/api/audit?agent='+agent.sub);assert.equal(retained.status,200);
+    const reviewedAudit=(await retained.json() as any).rows.find((item:any)=>item.id===decision.id);
+    assert.deepEqual(reviewedAudit.review,{id:review.id,by:ownerId},'the persisted review decision names the signed-in sponsor without replacing the agent actor');
+    assert.deepEqual(reviewedAudit.agent,row.agent);assert.deepEqual(reviewedAudit.sponsor,row.sponsor);
    } else {assert.equal(review,undefined);assert.equal(row.review,null);}
    assert.deepEqual(await state(),before,'risk reads and linked reviews change no sales, mail, model or evidence state');
    proofs.push({mode,decision:decision.id,disposition:decision.disposition,classes,review:review?.id??null});

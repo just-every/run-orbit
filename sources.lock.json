@@ -10291,7 +10291,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "1482aebc0252cbf0bf550aed96be59bef0309d38aee8487f48066a8f4cc0e79b",
+      "sha256": "60285197930a7559a47173572a6adf631ea84e19faad392d1245fc486b9beb46",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
@@ -10999,7 +10999,7 @@
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {
-      "sha256": "7851a28c251878abee9d563a29f3cda64de3308a2c941388f0119512c588dad6",
+      "sha256": "96348f6d5cda64ddc58bc49fecc917928d3f5f474ba0425f7f4368e54c1c3ada",
       "executable": false
     },
     "tests/support/agent-erasure-matcher-proof.ts": {
