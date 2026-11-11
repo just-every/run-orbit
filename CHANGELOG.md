@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.6 — 2026-11-11
+
+Orbit 0.4.6 erases more of what your agents recorded when you erase a person or a contact, explains a missing mail sender before you approve a draft, stops notifying you about your own actions, and carries the fixes found by people trying Orbit for the first time. Orbit still runs on rer 0.2.107.
+
+- **Erasing a person or a contact also erases what your agents recorded about them.** Erasing a person now removes their name from what agents recorded as their sponsor and from the approver marks on agent actions that person approved. Erasing a contact now removes the values an agent saved about that contact in approvals, call outcomes, the audit trail and events. If an agent retries a call for a contact you have erased, Orbit answers that the contact was erased instead of creating it again. An agent following the change feed keeps working across a contact erasure and carries on from where it was. Not covered yet: a former sponsor or approver of a colleague's agent action can still appear by name in that colleague's timeline and audit rows, and an approver's name stays in the search index until the index is rebuilt.
+- **The Mail page explains a missing sender before you approve a draft.** If no mail sender is set up, a draft now says so where you would approve or schedule it, with a link to set one up, and your draft stays saved. Settings › Customer mail sender lists each missing setting by name with what to do about it, instead of a count.
+- **You are no longer notified of your own actions.** Something you do yourself, such as sending a message, no longer lands in your own notifications. Other people, agents, providers and scheduled sends still notify as before.
+- **HubSpot notes import, and early selections are kept.** A HubSpot notes export with its normal column labels (Record ID, Note Body, Activity date, Activity assigned to and the associated record columns) now maps without renaming anything, and the moving guide lists those labels. Files and a source you choose before the page has finished loading are no longer lost.
+- **Integrations explains API access and groups connections truthfully.** Settings › Integrations has an API access section that explains how to let a reporting tool read selected deals and fields, and opens the guide on your own installation with steps you can run from your browser's console. Connections are grouped as Connected to Orbit, Not connected, and Connection status unavailable, with clearer wording for products that need attention or are waiting for a first booking.
+- **A saved form keeps its compile step after you reload.** Open a saved form after a reload and its wording comes back into the editor with the compile and approve steps available.
+- **Dates read in your locale.** Dates and times follow your browser's locale (month first for workspaces in the Americas time zones), and typed dates such as Expected close and Schedule for later are text fields that show the order they expect. A date that is impossible, or not in that order, is refused with that hint rather than guessed.
+- **The queue names what caused it.** A deal that moves to Now because of new evidence names the event that caused it rather than saying its priority rose, and the deal timeline and Today list no longer repeat the same label twice.
+
+It updates 0.4.5 in place and keeps every row. It adds two migrations, so take a private backup first: one adds a rule that keeps a person's own direct actions out of their notifications, and one replaces three internal rules so that rule does not disturb agent access. Nothing in your existing data is rewritten.
+
 ## 0.4.5 — 2026-11-11
 
 Orbit 0.4.5 keeps a stopped or detached Business from pulling decisions, takes an erased person off your Business team list, and carries the changes made since 0.4.4. Orbit now runs on rer 0.2.107.
