@@ -1,0 +1,32 @@
+{
+  "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+  "full_history": true,
+  "clean_worktree": true,
+  "changed_files": [
+    "sources.lock.json",
+    "src/core/features/operator/ui/slack-settings.tsx",
+    "src/core/features/settings/connected-products.ts",
+    "src/core/features/settings/routes.ts",
+    "src/core/features/slack/content.ts",
+    "src/core/features/slack/contracts.ts",
+    "src/core/features/slack/declaration.ts",
+    "src/core/features/slack/installation.ts",
+    "src/core/features/slack/routes.ts",
+    "tests/delegation-browser/calling-journey.mjs",
+    "tests/support/slack-actions-proof.ts",
+    "tests/support/slack-archive-proof.ts",
+    "tests/support/slack-network.ts",
+    "tests/support/slack-notices-proof.ts"
+  ],
+  "contract_and_view_diff": "",
+  "hook_active": true,
+  "candidate_commits": [
+    "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "9ebc8b43779cb67c81652b01904ad5f71ae44971",
+    "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "6cb7ae315980cf33a2c29974eeb3133336b14517"
+  ],
+  "source_equivalence": true,
+  "source_equivalence_basis": "proof-binding.json",
+  "candidate_identity_check": "Every author and committer matched the fleet identity; no trailers."
+}

@@ -1,0 +1,14 @@
+{
+  "candidate": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+  "native_source_digest": "21ee06478e9dec0d72ea5704f4763c5c1113199361a36495615865439a12267e",
+  "native_pass": true,
+  "native_started_head": "9ebc8b43779cb67c81652b01904ad5f71ae44971",
+  "native_started_dirty": [
+    " M tests/support/slack-actions-proof.ts"
+  ],
+  "candidate_clean": true,
+  "native_sources_match_committed_candidate": true,
+  "browser_pass_head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+  "browser_relevant_sources_and_journeys_unchanged": true,
+  "browser_equivalence_command": "git diff --exit-code 44b4259 HEAD -- src tests/delegation-browser"
+}

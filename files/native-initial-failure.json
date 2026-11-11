@@ -1,0 +1,13 @@
+{
+  "command": "pnpm exec tsx --test tests/core/source-onboarding.test.ts",
+  "started_head": "6cb7ae315980cf33a2c29974eeb3133336b14517",
+  "finished_head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+  "exit": 1,
+  "pass": 1,
+  "fail": 1,
+  "cancelled": 1,
+  "failure": "Messages posted before the reconnect hold unused action buttons",
+  "location": "tests/support/slack-archive-proof.ts:60",
+  "source_rotation": "test timed out after 60000ms",
+  "seconds": 1027.646516
+}

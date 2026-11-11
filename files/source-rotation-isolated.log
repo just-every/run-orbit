@@ -1,0 +1,18 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (60003.722029ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 0
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66810.79136
+
+✖ failing tests:
+
+test at tests/core/source-onboarding.test.ts:1:26905
+✖ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (60003.722029ms)
+  'test timed out after 60000ms'

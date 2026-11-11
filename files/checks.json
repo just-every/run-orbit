@@ -1,0 +1,238 @@
+[
+  {
+    "name": "boundaries",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "pnpm",
+      "run",
+      "check:boundaries"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T22:56:32.325782+00:00",
+    "seconds": 1.238,
+    "log": "boundaries.log"
+  },
+  {
+    "name": "first-party",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "npx",
+      "-y",
+      "@runeditrun/rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T22:56:33.669811+00:00",
+    "seconds": 3.159,
+    "log": "first-party.log"
+  },
+  {
+    "name": "source-lock",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T22:56:36.931797+00:00",
+    "seconds": 1.159,
+    "log": "source-lock.log"
+  },
+  {
+    "name": "typecheck",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "pnpm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T22:56:38.234908+00:00",
+    "seconds": 41.742,
+    "log": "typecheck.log"
+  },
+  {
+    "name": "browser-final",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "env",
+      "ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium",
+      "ORBIT_CALL_EVIDENCE=/home/agent/rer-consolidation/work/sd-orbit-c-f156/packet/screens",
+      "perl",
+      "-e",
+      "alarm 1200; exec @ARGV",
+      "--",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "tests/delegation-browser/records-layout.test.ts"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T22:56:41.677095+00:00",
+    "seconds": 282.845,
+    "log": "browser-final.log"
+  },
+  {
+    "name": "views-write",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:02:20.806275+00:00",
+    "seconds": 0.332,
+    "log": "views-write.log"
+  },
+  {
+    "name": "views-check",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:02:21.277534+00:00",
+    "seconds": 0.257,
+    "log": "views-check.log"
+  },
+  {
+    "name": "source-rotation-isolated",
+    "head": "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "command": [
+      "env",
+      "NODE_OPTIONS=--max-old-space-size=8192",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-name-pattern=source rotation and disabling atomically",
+      "tests/core/source-onboarding.test.ts"
+    ],
+    "exit": 1,
+    "started": "2026-11-11T23:09:04.596920+00:00",
+    "seconds": 67.622,
+    "log": "source-rotation-isolated.log"
+  },
+  {
+    "name": "source-rotation-main",
+    "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+    "command": [
+      "env",
+      "NODE_OPTIONS=--max-old-space-size=8192",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-name-pattern=source rotation and disabling atomically",
+      "tests/core/source-onboarding.test.ts"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:10:35.584348+00:00",
+    "seconds": 66.908,
+    "log": "source-rotation-main.log"
+  },
+  {
+    "name": "source-rotation-pinned",
+    "head": "9ebc8b43779cb67c81652b01904ad5f71ae44971",
+    "command": [
+      "env",
+      "NODE_OPTIONS=--max-old-space-size=8192",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-name-pattern=source rotation and disabling atomically",
+      "tests/core/source-onboarding.test.ts"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:12:12.005462+00:00",
+    "seconds": 66.021,
+    "log": "source-rotation-pinned.log"
+  },
+  {
+    "name": "native-slack-final",
+    "head": "9ebc8b43779cb67c81652b01904ad5f71ae44971",
+    "source_digest": "21ee06478e9dec0d72ea5704f4763c5c1113199361a36495615865439a12267e",
+    "dirty": [
+      " M tests/support/slack-actions-proof.ts"
+    ],
+    "node_version": "v22.20.0",
+    "command": [
+      "perl",
+      "-e",
+      "alarm 1200; exec @ARGV",
+      "--",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "--test-name-pattern=NOTIFY-003 opt-in personal mention",
+      "tests/core/source-onboarding.test.ts"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:13:18.353477+00:00",
+    "seconds": 703.995,
+    "log": "native-slack-final.log",
+    "receipt_metadata_correction": "Output file was renamed after a recorder label collision; command, exit, time, source digest and initial worktree metadata are preserved.",
+    "validated_candidate": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "source_digest_matches_clean_candidate": true
+  },
+  {
+    "name": "final-typecheck",
+    "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "source_digest": "21ee06478e9dec0d72ea5704f4763c5c1113199361a36495615865439a12267e",
+    "dirty": [],
+    "node_version": "v22.20.0",
+    "command": [
+      "pnpm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:25:24.374151+00:00",
+    "seconds": 28.57,
+    "log": "final-typecheck.log"
+  },
+  {
+    "name": "final-first-party",
+    "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "source_digest": "21ee06478e9dec0d72ea5704f4763c5c1113199361a36495615865439a12267e",
+    "dirty": [],
+    "node_version": "v22.20.0",
+    "command": [
+      "npx",
+      "-y",
+      "@runeditrun/rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:25:53.142978+00:00",
+    "seconds": 2.217,
+    "log": "final-first-party.log"
+  },
+  {
+    "name": "final-source-lock",
+    "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "source_digest": "21ee06478e9dec0d72ea5704f4763c5c1113199361a36495615865439a12267e",
+    "dirty": [],
+    "node_version": "v22.20.0",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0,
+    "started": "2026-11-11T23:25:55.535973+00:00",
+    "seconds": 0.695,
+    "log": "final-source-lock.log"
+  }
+]

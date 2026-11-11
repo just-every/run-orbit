@@ -1,0 +1,37 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (912196.725892ms)
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked (45440.884983ms)
+✖ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (60012.884428ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1027646.516246
+
+✖ failing tests:
+
+test at tests/core/source-onboarding.test.ts:1:2178
+✖ NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (912196.725892ms)
+  AssertionError [ERR_ASSERTION]: Messages posted before the reconnect hold unused action buttons
+      at proveSlackArchive (/home/agent/rer-consolidation/work/sd-orbit-c-f156/run-orbit/tests/support/slack-archive-proof.ts:60:187)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async proveSlackNotices (/home/agent/rer-consolidation/work/sd-orbit-c-f156/run-orbit/tests/support/slack-notices-proof.ts:127:3)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f156/run-orbit/tests/core/source-onboarding.test.ts:138:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/core/source-onboarding.test.ts:1:26905
+✖ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (60012.884428ms)
+  'test timed out after 60000ms'
