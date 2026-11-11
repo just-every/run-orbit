@@ -5,5 +5,7 @@ export default async function workflowFixture({request,origin,cookie}){
    conditions:[{field:'title',operator:'equals',value:'synthetic-orbit-no-trigger'}],actions:[{kind:'set',field:'title',value:'synthetic-orbit-old-definition'}]}})});
  if(response.status!==200)throw new Error('Native workflow fixture could not be saved');
  const {workflow}=await response.json();
- return {values:{workflow}};
+ // Use the native schedule path so conformance is independent of the runner's weekday and hour.
+ const messageSchedule=new Date(Date.now()+7*86400000).toISOString();
+ return {values:{workflow,messageSchedule}};
 }

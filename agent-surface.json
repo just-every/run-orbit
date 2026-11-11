@@ -161,6 +161,17 @@
       ]
     },
     {
+      "name": "orbit.messages.send",
+      "scope": "messages:send",
+      "readOnly": false,
+      "classes": [
+        "external"
+      ],
+      "clauses": [
+        "SURFACE-009"
+      ]
+    },
+    {
       "name": "orbit.operations.read",
       "scope": "operations:read",
       "readOnly": true,
@@ -1148,6 +1159,74 @@
       }
     },
     {
+      "id": "send_read",
+      "tool": "orbit.drafts.read",
+      "args": {
+        "id": {
+          "$from": "draft",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "send_message",
+      "tool": "orbit.messages.send",
+      "args": {
+        "id": {
+          "$from": "draft",
+          "pointer": "/id"
+        },
+        "expected_revision": {
+          "$from": "send_read",
+          "pointer": "/sendRevision"
+        },
+        "scheduled_at": {
+          "$fixture": "messageSchedule",
+          "pointer": ""
+        }
+      },
+      "expect": [
+        {
+          "class": "external",
+          "facts": {
+            "measure": 1,
+            "counterparty": "known"
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "target": {
+        "kind": "draft",
+        "id": {
+          "$from": "draft",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
       "id": "definition",
       "tool": "orbit.reports.update",
       "args": {
@@ -1726,6 +1805,13 @@
         "RER_MANAGEMENT_ORIGIN": "issuer",
         "RER_INSTALLATION_ID": "installationId",
         "MAIL_FROM": "email",
+        "MAIL_REPLY_TO": "email",
+        "SENDGRID_API_KEY": {
+          "module": "tests/agent-door/mail-key.mjs"
+        },
+        "SENDGRID_UNSUBSCRIBE_GROUP_ID": {
+          "module": "tests/agent-door/mail-group.mjs"
+        },
         "ORBIT_ENCRYPTION_KEY": {
           "module": "tests/agent-door/capture-encryption.mjs"
         },

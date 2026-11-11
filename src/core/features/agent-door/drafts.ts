@@ -5,6 +5,7 @@ import {RecordMailRepository} from '../outreach/record-mail-repository';
 import {objectSchema,outputSchema,standard,string,kindSchema,nativeRecords} from './records';
 import {fullSeller} from './evidence';
 import {agentDatabase} from './native-access';
+import {savedMessage} from './messages';
 import type {PlatformBindings} from '../../platform/assets';
 
 export function draftTools(bindings:PlatformBindings) {
@@ -15,7 +16,7 @@ export function draftTools(bindings:PlatformBindings) {
   return [
     defineTool({name:'orbit.drafts.read',title:'Read an exact saved draft',description:'Read saved customer content and its native revision. Reading never approves or sends it.',scope:'drafts:read',readOnly:true,
       inputSchema:objectSchema({id:string}),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],untrusted:true,
-      classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},run:async(args,ctx)=>{await fullSeller(bindings,ctx);return {result:{draft:await read(String(args.id))}};}}),
+      classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},run:async(args,ctx)=>{await fullSeller(bindings,ctx);const saved=await savedMessage(bindings,String(args.id),ctx.person,ctx.agent);return {result:{draft:saved.draft,sendRevision:saved.revision,render:saved.rendered.review,optOut:saved.optOut}};}}),
     defineTool({name:'orbit.drafts.create',title:'Prepare a customer draft',description:'Create an exact private draft with a current contact and native relationship. This is preparation and supplies no send approval.',scope:'drafts:write',readOnly:false,
       inputSchema:objectSchema({kind:kindSchema,id:string,contact_id:string,opportunity_id:{type:['string','null']},subject:{type:'string',minLength:1,maxLength:1000},body:text},['kind','id','contact_id','subject','body']),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],
       classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},summary:args=>({target:{id:String(args.id)},items:[String(args.subject),String(args.body),`Contact: ${args.contact_id}`]}),

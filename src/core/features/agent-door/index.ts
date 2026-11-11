@@ -7,6 +7,7 @@ import {handoffTools,handoffResource} from './handoffs';
 import {localCredentials,currentScopes} from './local-credentials';
 import {evidenceTools,evidenceResources} from './evidence';
 import {draftTools,draftResource} from './drafts';
+import {messageTools} from './messages';
 import {reportTools,reportResources} from './reports';
 import {nativeTool} from './errors';
 import {captureSecurityTools} from './capture-security';
@@ -23,10 +24,10 @@ function installationTrust(bindings: PlatformBindings): Trust | null {
   return {issuer,installationId,appOrigin,publicKeys:JSON.parse(publicKeys) as Trust['publicKeys']};
 }
 
-export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...reportTools(bindings),...workflowTools(bindings),...captureSecurityTools(bindings)].map(nativeTool);}
+export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...messageTools(bindings),...reportTools(bindings),...workflowTools(bindings),...captureSecurityTools(bindings)].map(nativeTool);}
 export function orbitResources(bindings:PlatformBindings) {return [recordResource(bindings),handoffResource(bindings),...evidenceResources(bindings),draftResource(bindings),...reportResources(bindings),outreachResource(bindings)];}
 export function orbitAgentDoor(bindings: PlatformBindings, tools: ToolDefinition[] = orbitTools(bindings), resources: ResourceDefinition[] = orbitResources(bindings)) {
-  return followingErasedEvents(bindings.DB,createAgentDoor({seed:'orbit',name:'Orbit',specialist:'sales rep',db:bindings.DB,
+  return followingErasedEvents(bindings.DB,createAgentDoor({seed:'orbit',name:'Orbit',specialist:'sales rep',db:bindings.DB,now:()=>Date.now(),
     origin:bindings.AUTH_ORIGIN!,trust:installationTrust(bindings),people:orbitPeople(bindings),tools,resources,
     // Redaction of an erased subject's records happens in the erasure batch itself (a guarded, atomic batch is the
     // fence), so the door only needs the shared secret that lets a retried erased call answer `subject_erased`.

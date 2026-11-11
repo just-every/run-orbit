@@ -34,10 +34,10 @@ export async function stalledRiskBrowser(context:TestContext,db:D1Database,origi
  try {expected=await createStalledRiskFixture(context,native,current);} finally {context.mock.timers.reset();}
  const signer={privateKey:keys.privateKey,kid:'test',issuer,installationId:installation};
  let revision=0;
- return {vars,cookie,expected,
+ return {vars,bindings,cookie,expected,
   async policy(mode:'autonomous'|'held') {const seq=++revision;return (await policyEnvelope({origin,business,seq,revision:seq,signer},mode==='held'?heldPolicy():autonomousPolicy())).policy;},
-  async bearer() {const iat=Math.floor(Date.now()/1000);return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'synthetic-orbit-owner',email:vars.OWNER_EMAIL,
-   act:{sub:'synthetic-orbit-browser-specialist',name:'Synthetic risk specialist',specialist:'sales rep'},client_id:'synthetic-orbit-risk-browser',business,scope:'risks:read',
+  async bearer(scope='risks:read') {const iat=Math.floor(Date.now()/1000);return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:'synthetic-orbit-owner',email:vars.OWNER_EMAIL,
+   act:{sub:'synthetic-orbit-browser-specialist',name:'Synthetic risk specialist',specialist:'sales rep'},client_id:'synthetic-orbit-risk-browser',business,scope,
    consent:'synthetic-orbit-risk-consent',jti:crypto.randomUUID(),iat,exp:iat+300});},
  };
 }

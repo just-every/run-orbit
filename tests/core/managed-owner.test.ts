@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {agentWorkflowProof} from '../support/agent-workflow-proof';
+import {agentMessageProof} from '../support/agent-message-proof';
 import {test} from 'node:test';
 import {agentDiscoveryProof} from '../support/agent-discovery-proof';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -121,7 +122,7 @@ async function rejectedNativeReportProof(context: RejectedReportProofContext) {
     autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
 }
 
-test('Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors', async context => {
+test('Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; exact saved messages honor policy and native send fences', async context => {
   const fixture = await isolatedDatabase();
   try {
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';
@@ -164,7 +165,7 @@ test('Managed owner claim verifies RER authority and creates the native owner an
     assert.equal(direct!.status, 409);
     assert.equal((await direct!.json() as {error: string}).error, 'already_initialized');
   } finally { await fixture.dispose(); }
-  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof);
+  await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof,agentMessageProof);
   await agentDoorBusinessStopProof();
   await businessRosterErasureProof();
   await agentErasureMatcherProof();

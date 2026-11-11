@@ -7,7 +7,7 @@ import { permitted, localTime, nextPermitted, recentLocalTime } from './time';
 import { deferral, oneToOneLimitSql, sharedLimitSql } from './sending-limits';
 import { bindOptOut, draftOptOut, relayRefusalAudit } from './opt-out';
 import { capabilityStatement } from './opt-out-capability';
-export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string}
+export interface ApprovalInput {idempotencyKey?:string;scheduledAt?:string;scheduledAtConfirmation?:string;quietHoursConfirmation?:string;now?:Date;messageIdDomain?:string;optOutTransport?:boolean;optOutOrigin?:string;senderName?:string;expectedRenderHash?:string;expectedOptOut?:Awaited<ReturnType<typeof draftOptOut>>;guards?:D1PreparedStatement[]}
 export class ApprovalRepository {
  constructor(readonly db:D1Database){}
  async preview(draftId:string,now=new Date(),scheduledAt?:string) {
@@ -30,6 +30,7 @@ export class ApprovalRepository {
   const rendered=await renderDraft(this.db,draftId,actor);requireRendered(rendered.review);
   const id=createId(),key=input.idempotencyKey??`${draftId}:${revision}`,messageId=`<${id}@${input.messageIdDomain??'orbit.local'}>`;
   const optOut=await draftOptOut(this.db,draftId,input.optOutTransport??true);
+  if(input.expectedRenderHash&&input.expectedRenderHash!==rendered.review.reviewHash||input.expectedOptOut&&JSON.stringify(input.expectedOptOut)!==JSON.stringify(optOut))throw new WorkbenchError(409,'The saved message review changed. Read a fresh send revision.');
   if(optOut.refusal){await relayRefusalAudit(this.db,actor,'draft',draftId).run();throw new WorkbenchError(409,optOut.refusal);}
   const minute=new Date(now.getTime()-60000).toISOString(),day=new Date(now.getTime()-86400000).toISOString();
   const insertion=this.db.prepare(`INSERT INTO outbound_messages(id,draft_id,revision,opportunity_id,operator_id,contact_id,recipient_email,subject,body,state,created_at,updated_at,idempotency_key,message_id,reference_ids,scheduled_at,approved_at,claimed_at,first_attempt_at,attempt_count,render_snapshot_json)
@@ -39,11 +40,11 @@ export class ApprovalRepository {
    ${recordMailRecipientScope(this.db)}
    AND EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active')
    AND(d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))
-   ON CONFLICT DO NOTHING`).bind(id,actor,rendered.review.subject,rendered.review.body,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,JSON.stringify(rendered.review),draftId,revision,actor);
+   ON CONFLICT DO NOTHING`).bind(id,actor,rendered.review.subject,rendered.review.body,scheduled?'scheduled':'queued',at,at,key,messageId,scheduled,at,scheduled?null:at,scheduled?null:at,scheduled?0:1,JSON.stringify({...rendered.review,...(input.senderName?{senderName:input.senderName}:{})}),draftId,revision,actor);
   let result:D1Result[];try{result=await this.db.batch([insertion,
     this.db.prepare(`UPDATE outbound_messages SET state='draft',claimed_at=NULL,first_attempt_at=NULL,attempt_count=0,failure='Sending limit reached; review and retry after the displayed time',next_attempt_at=? WHERE id=? AND state='queued' AND ((SELECT COUNT(*) FROM outbound_delivery_budget WHERE claimed_at>?)>${sharedLimitSql} OR (SELECT COUNT(*) FROM outbound_delivery_budget WHERE operator_id=? AND claimed_at>?)>${oneToOneLimitSql('?')})`).bind(at,id,minute,actor,day,actor),
     this.db.prepare("UPDATE opportunities SET queue_state='next',queue_reason='Scheduled message',next_due_at=?,updated_at=? WHERE id=(SELECT opportunity_id FROM outbound_messages WHERE id=? AND state='scheduled') AND lifecycle='open'").bind(scheduled,at,id),
-    ...rendered.guards,
+    ...rendered.guards,...(input.guards??[]),
     ...bindOptOut(this.db,id,draftId,optOut),
     ...(input.optOutOrigin&&optOut.carries?[capabilityStatement(this.db,id,input.optOutOrigin)]:[])
   ]);}catch(error){if(/runtime_controls.value/.test(String(error)))throw new WorkbenchError(409,'Merge values, permissions or the opt-out state changed. Review the exact rendered message again before approving.');throw error;}

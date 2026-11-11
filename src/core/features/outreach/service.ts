@@ -24,11 +24,13 @@ export class OutreachService {
    await this.db.batch([this.db.prepare("UPDATE outbound_messages SET state='failed',failure=?,updated_at=? WHERE id=? AND state='queued'").bind(relayRefusal,at,message.id),this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(relayRefusal,at,message.opportunity_id),relayRefusalAudit(this.db,message.operator_id,'outbound_message',message.id)]);
    return {id:message.id,state:'failed'};
   }
+  const sender=message.render_snapshot_json?JSON.parse(message.render_snapshot_json).senderName as string|undefined:undefined;
+  if(sender&&!this.mail.senderName){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'failed',null,'This mail transport cannot name the agent for the person as the outside sender.');return {id:message.id,state:'failed'};}
   const repository=new OutreachRepository(this.db);let receipt;
   const optOut=await boundOptOut(this.db,message.id);
   try{
    const url=this.mail.provider==='rer'&&this.mail.optOutOrigin&&optOut!==false?await messageOptOutUrl(this.db,message.id,this.mail.optOutOrigin):undefined;
-   receipt=await this.mail.send({...message,...(optOut===undefined?{}:{opt_out:optOut}),...(url?{opt_out_url:url}:{})});
+   receipt=await this.mail.send({...message,...(sender?{sender_name:sender}:{}),...(optOut===undefined?{}:{opt_out:optOut}),...(url?{opt_out_url:url}:{})});
   }catch(error){
    const now=new Date(),at=now.toISOString();
    if(transientSubmission(error)&&message.attempt_count<5&&now.getTime()-Date.parse(message.first_attempt_at??message.approved_at)<3600000){await this.db.prepare("UPDATE outbound_messages SET state='scheduled',next_attempt_at=?,failure=?,updated_at=? WHERE id=? AND state='queued'").bind(new Date(now.getTime()+message.attempt_count*60000).toISOString(),error instanceof Error?error.message:'Provider rate limit',at,message.id).run();return {id:message.id,state:'scheduled'};}

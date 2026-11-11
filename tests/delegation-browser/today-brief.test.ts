@@ -10,6 +10,7 @@ import {createDependencies} from '../support/dependencies';
 import {sessionCookieName} from '../support/test-auth';
 import {identityVarArgs} from '../support/worker-identity.mjs';
 import {stalledRiskBrowser} from '../support/stalled-risk-browser';
+import {savedMessageBrowserFixture,savedMessageScreens} from '../support/agent-message-browser';
 import {stalledRiskPolicyJourney} from './today-journey.mjs';
 import {todayJourney} from './today-journey.mjs';
 import {riskJourney} from './risk-journey.mjs';
@@ -61,6 +62,13 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await signedIn.close();
+  await riskRuntime.teardown();await riskFixture.reopen();
+  const messages=await savedMessageBrowserFixture(testContext,riskFixture.db,stalled,origin);
+  await riskFixture.close();
+  const messageWorker=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(messages.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async()=>{throw new Error('Inspecting saved mail must not submit mail');}}});await messageWorker.ready;
+  const mailContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
+  await savedMessageScreens(await mailContext.newPage(),messages,resolve(process.env.ORBIT_MESSAGE_EVIDENCE??'verification/ui/messages'));
+  await mailContext.close();
   } finally {await riskRuntime.teardown();await riskFixture.dispose();}
 
  }finally{

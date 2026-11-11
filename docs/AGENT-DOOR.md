@@ -10,8 +10,8 @@ person or grants a sales role.
 
 This adoption currently supports CRM reads and edits, cited internal handoffs,
 private drafts, native report measurements, exact saved-report deletion, reasoned forecasts
-and private Capture address rotation. Customer
-sending, scheduling, calling, marketing handoff, provider sync, public-form
+private Capture address rotation and revision-bound one-to-one customer messages.
+Calling, marketing handoff, provider sync, public-form
 activation, access administration and broader erasure are not exposed by this registry.
 Use their existing native screens and admission requirements. This is a limited
 surface, not completion of Orbit's full agent adoption.
@@ -28,8 +28,36 @@ seller authority.
 Edit a permitted CRM field at its actual revision. Keep deal amount and forecast
 estimates separate from payment, legal acceptance and independently observed
 customer events. Prepare and revise an exact saved draft, then inspect it. Draft
-preparation does not approve, schedule or send a message. Customer-send tools
-still need native integration with the aligned company-policy contract.
+preparation does not approve, schedule or send a message. The saved send call below uses the aligned company policy and native Workbench checks.
+
+## Send one exact saved message
+
+Read `orbit.drafts.read` with the same agent identity that will send. Its
+`sendRevision` binds the saved draft revision, exact recipient, current rendered
+subject and body, merge review, opt-out state and outside sender. Call
+`orbit.messages.send` with `id`, that `expected_revision` and an idempotency key.
+An optional `scheduled_at` uses the native recipient-hours schedule; omit it
+for immediate sending. The person sees that requested schedule in their summary.
+
+The server computes one external recipient and its counterparty from current
+contact and company records, active operators and the installation's sender and
+owner domains, excluding configured free-mail domains. Caller class facts and
+confirmation flags grant nothing. Held policy waits for the named sponsor to
+approve the exact summary in Agents. All-autonomous policy runs a permitted
+message without that approval. Both use the native Workbench approval claim and
+mail service, with current suppression, opt-out, sending limits, quiet hours and
+stale-review checks. Immediate mail outside recipient hours still needs native
+person confirmation; an agent flag cannot provide it.
+
+A contact merge-field change invalidates the saved send revision. Review the
+changed draft through the native door, save its new revision, review its rendered
+values and make a fresh call. Approval and call replay add no submission. Native
+Workbench message history retains the saved bytes and agent for person actor.
+The outside sender names the agent for that person using the configured sender
+address. A transport that cannot carry that name refuses visibly; the managed
+relay is currently such a transport. This one-to-one path does not implement
+commitment jobs, attachments, tracking, multiple recipients, connected-mailbox
+sending, sequences or workflow messages, or release their existing holds.
 
 ## Identity and policy
 
@@ -126,6 +154,7 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
 | `orbit.meetings.read` | `meetings:read` | standard |
+| `orbit.messages.send` | `messages:send` | external |
 | `orbit.operations.read` | `operations:read` | standard |
 | `orbit.records.create` | `records:write` | standard |
 | `orbit.records.list` | `records:read` | standard, sensitive |
@@ -221,7 +250,7 @@ refresh still needs unavailable ancestry when it crosses an edition migration
 retain their history; the door refresh does not claim to migrate them.
 
 The current main contract supplies the aligned SURFACE requirements. Completing
-the customer-send and retained delegation integrations, the broader registry and
+the remaining customer-send and retained delegation integrations, the broader registry and
 client-data custody remains necessary for the full agent adoption.
 
 ## Rotate an existing private Capture address
