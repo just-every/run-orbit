@@ -5938,6 +5938,10 @@
       "sha256": "9b794d6cf6f5395c968cd71611b5c9fb9df533150ea1f74969279aa52a63db9d",
       "executable": false
     },
+    "src/core/features/drafts/input.ts": {
+      "sha256": "1ea9578b971c7ffd5dfe3e6ef361ae720c24b72086bcb24043658eaa74841913",
+      "executable": false
+    },
     "src/core/features/drafts/library-repository.ts": {
       "sha256": "e167e92cbc465991611873bab7e101690930842275f4c3bd4a097f7ad695dec7",
       "executable": false
@@ -11000,6 +11004,10 @@
     },
     "tests/support/agent-door-collaborator-proof.ts": {
       "sha256": "63bfc5525924ffb7bc697fc7e287110f2085029417de1cd50f953862f32bd527",
+      "executable": false
+    },
+    "tests/support/agent-door-draft-parity-proof.ts": {
+      "sha256": "d7fb29b4b0b2a7a117d35aa79c518c69eb0eefaf6664b530afb4e48ed3fefd37",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {

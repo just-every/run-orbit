@@ -102,12 +102,16 @@ export async function agentDoorDraftParityProof({bindings,door,cookie,ownerId,op
   const rejected=await call('create',{...createArgs,...fields,idempotency_key:'synthetic-orbit-invalid-'+rpc});assert.equal(rejected.body.result.isError,true);assert.equal(rejected.body.result._meta['com.runeditrun/error'].code,'invalid_arguments');
  }
  const noScope=await call('create',{...createArgs,idempotency_key:'synthetic-orbit-draft-no-scope'},{scope:'drafts:read'});assert.equal(noScope.status,403);
+ assert.deepEqual(await inventories(),beforeRefusals,'invalid inputs and missing scope change no native state or event');
  const blocked=autonomousPolicy();blocked.rules=[{id:'synthetic-orbit-draft-block',class:'standard',do:'blocked'}];await adopt(blocked);
+ const beforeBlocked=await inventories();
  const denied=await call('create',retainedCreate);assert.equal(denied.body.result._meta['com.runeditrun/error'].code,'policy_blocked');
+ assert.deepEqual(await inventories(),beforeBlocked,'blocked replay changes no native state or event');
  await adopt(autonomousPolicy());
  const revoked=await door.handle(new Request(origin+'/agents/api/agents/'+agent.sub+'/revoke',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:'{}'}));assert.equal(revoked!.status,200);
+ const beforeRevoked=await inventories();
  assert.equal((await call('create',retainedCreate)).status,401,'revoked authority cannot replay the completed creation');
- assert.deepEqual(await inventories(),beforeRefusals);assert.deepEqual(await outbound(),outboundBefore);assert.deepEqual(providerCalls,[]);
+ assert.deepEqual(await inventories(),beforeRevoked,'revoked replay changes no native state or event');assert.deepEqual(await outbound(),outboundBefore);assert.deepEqual(providerCalls,[]);
  console.log(JSON.stringify({proof:'BASE-AGENT-002.5.manual-draft-parity',modes:['autonomous','held'],normalized:true,saved:savedProofs,events:['draft.created','draft.updated'],replayEffects:0,staleEffects:0,providerCalls:0}));
 }
 
@@ -145,6 +149,10 @@ export async function draftParityBrowserJourney({page,policy,bearer,evidence}:{p
    await page.goto('/app/drafts/'+id,{waitUntil:'networkidle'});
    await expect(page.getByTestId('draft-subject')).toHaveValue(final.subject);await expect(page.getByTestId('draft-body')).toHaveValue(final.body);
    await expect(page.getByTestId('draft-recipient')).toHaveValue(final.recipientEmail);await expect(page.getByTestId('draft-editor')).toContainText(final.preparedByLabel);
+   await expect(page.getByRole('link',{name:'← Opportunity detail',exact:true})).toHaveAttribute('href','/app/opportunities/'+opportunity.id);
+   await page.getByText('Audit details',{exact:true}).click();
+   const revision=page.locator('dl > div').filter({has:page.locator('dt').filter({hasText:/^Revision$/})});
+   await expect(revision.locator('dd')).toHaveText(String(final.revision));
    for(const width of [1440,390]){await page.setViewportSize({width,height:900});await page.screenshot({path:evidence+'/manual-draft-'+width+'.png',fullPage:true});}
    await page.setViewportSize({width:1440,height:900});await page.goto('/agents',{waitUntil:'networkidle'});
    const reviewId=updated._meta['com.runeditrun/review'].id,item=page.locator('[data-review-id="'+reviewId+'"]');
