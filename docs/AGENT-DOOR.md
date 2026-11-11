@@ -274,3 +274,10 @@ disposable Google HTTP edge. These fixtures prove native behavior; they provide
 no live account qualification or release of owner-consent holds. Send consent,
 first-connection consent and company-credential API routes remain outside this
 adapter.
+
+Completed successful calls retain Base's original receipt and effect classes on
+idempotent replay. An earlier successful sync can therefore still report
+standard after a later provider refusal, while making no new provider request.
+New attempts and retries of the refused call compute gated. Updating the
+current decision for that historical-success replay requires a Base replay
+contract change; the full SURFACE-005 guarantee is not complete.

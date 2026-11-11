@@ -1,4 +1,3 @@
-import {beforeCaptureStep} from './capture-fixture.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
@@ -169,5 +168,3 @@ export async function afterStep({step,args,result,request,origin,cookie}){
  assert.equal(saved.name,args.name);
  assert.ok(inventory.runs.every(run=>run.workflowId!==args.id),'saving a draft creates no run');
 }
-
-export async function beforeStep(context){await beforeCaptureStep(context);}

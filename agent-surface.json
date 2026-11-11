@@ -1063,12 +1063,9 @@
       "args": {
         "id": {
           "$fixture": "capture",
-          "pointer": "/id"
+          "pointer": "/personId"
         },
-        "source_revision": {
-          "$from": "capture_source",
-          "pointer": "/revision"
-        }
+        "source_revision": "0000000000000000000000000000000000000000000000000000000000000000"
       },
       "expect": [
         {
@@ -1084,7 +1081,7 @@
         "kind": "capture_source",
         "id": {
           "$fixture": "capture",
-          "pointer": "/id"
+          "pointer": "/personId"
         }
       }
     },

@@ -35,10 +35,10 @@ delete journey.find(item=>item.id==='rotate_address').inject;
 journey.find(item=>item.id==='rotate_address').target={kind:'capture_source',id:'capture-forward'};
 step('capture_source','capture.source_read',{id:{$fixture:'capture',pointer:'/id'}});
 step('capture_sync','capture.source_sync',{id:{$fixture:'capture',pointer:'/id'},source_revision:from('capture_source','/revision')});
-step('capture_person_step','capture.source_sync',{id:{$fixture:'capture',pointer:'/id'},source_revision:from('capture_source','/revision')},[{class:'gated',facts:{measure:1,provider:'google',step:'invalid_grant'}}]);
+step('capture_person_step','capture.source_sync',{id:{$fixture:'capture',pointer:'/personId'},source_revision:'0'.repeat(64)},[{class:'gated',facts:{measure:1,provider:'google',step:'invalid_grant'}}]);
 for(const id of ['capture_sync','capture_person_step']){
  delete journey.find(item=>item.id===id).inject;
- journey.find(item=>item.id===id).target={kind:'capture_source',id:{$fixture:'capture',pointer:'/id'}};
+ journey.find(item=>item.id===id).target={kind:'capture_source',id:{$fixture:'capture',pointer:id==='capture_person_step'?'/personId':'/id'}};
 }
 step('handoff','handoffs.read',{opportunity_id:from('opportunity','/id'),id:from('opportunity','/id')});
 step('save_handoff','handoffs.upsert',{target:from('handoff','/target'),source_revision:from('handoff','/revision'),audience_revision:from('handoff','/audienceRevision'),content:{title:'Prepare buyer follow-up',description:'Use current source evidence; this is an internal handoff.',assigneeId:{$sponsor:'id'},dueAt:null,status:'open'}});

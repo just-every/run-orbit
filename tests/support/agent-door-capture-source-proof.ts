@@ -77,11 +77,12 @@ export async function agentDoorCaptureSourceProof({bindings,door,cookie,adopt,bu
      const gated=[{class:'gated',facts:{measure:1,provider,step}}];
      for(const replayArgs of [args,{...args,idempotency_key:args.idempotency_key+'-fresh',source_revision:(await read(id)).revision,classes:['standard'],confirmed:true}]){
       let credentialReads=0;
-      bindings.DB=new Proxy(db,{get(target,key){
+      const observed=new Proxy(db,{get(target,key){
        if(key==='prepare')return (sql:string)=>{if(/capture_credentials/i.test(sql))credentialReads++;return target.prepare(sql);};
        const value=Reflect.get(target,key);return typeof value==='function'?value.bind(target):value;
       }});
       let replay;
+      bindings.DB=observed;
       try{replay=await mcp('sync',replayArgs);}finally{bindings.DB=db;}
       assert.equal(credentialReads,0,'gated admission and execution do not read credentials');
       await decision(replay,gated,policyName==='held'?'approval':'autonomous');
@@ -91,7 +92,10 @@ export async function agentDoorCaptureSourceProof({bindings,door,cookie,adopt,bu
        const review=await door.handle(new Request(origin+'/agents/api/approvals/'+approval.id,{headers:{Cookie:cookie}}));
        assert.equal(review!.status,200);const pending=(await review!.json() as any).approval;
        assert.ok(pending.summary.items.includes(error.url));assert.ok(pending.summary.items.includes('Only the signed-in person can reconnect'));
-       const approved=await door.handle(new Request(origin+'/agents/api/approvals/'+approval.id+'/approve',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({revision:pending.revision,summary_sha256:pending.summary_sha256})}));
+       bindings.DB=observed;
+       let approved;
+       try{approved=await door.handle(new Request(origin+'/agents/api/approvals/'+approval.id+'/approve',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({revision:pending.revision,summary_sha256:pending.summary_sha256})}));}finally{bindings.DB=db;}
+       assert.equal(credentialReads,0,'even a signed-in approval only returns the handoff, without reading credentials');
        assert.equal(approved!.status,200);
        assert.equal((await approved!.json() as any).approval.state,'executed','approval returns only a handoff, never provider consent');
       }else {const completed=result(replay);const {code:_,...handoff}=error;assert.deepEqual(completed.structuredContent.handoff,handoff);}
