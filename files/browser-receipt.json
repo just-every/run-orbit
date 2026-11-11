@@ -1,0 +1,21 @@
+{
+  "command": "pnpm exec playwright test --config=/tmp/orbit-docs.config.mjs --grep 'installed docs navigation' --reporter=line",
+  "exit": 0,
+  "test": "DOCS-001 \u2014 installed docs navigation reaches every page and Integrations leads to a working scoped read credential",
+  "assertionWidth": 1440,
+  "inspectedWidths": [
+    1440,
+    390
+  ],
+  "browser": "/usr/bin/chromium",
+  "launchArgs": [
+    "--no-sandbox",
+    "--use-mock-keychain",
+    "--password-store=basic"
+  ],
+  "screenshots": {
+    "guide-1440.png": "6eba5323ad396f543b19c35e62514e6c94fec279fdcb820e6bc644a8728ec4d1",
+    "guide-390.png": "99d413127b37837b74c07e5b3b7dfb4af459e5d2bb02bf5fd4bb005dcb07c2a3"
+  },
+  "inspection": "Populated tool, resource and non-tool tables; new exception descriptions readable in the existing layout. No redesign and no new icon-only controls."
+}

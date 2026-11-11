@@ -1,0 +1,17 @@
+{
+  "unchangedManifestFields": [
+    "tools",
+    "resources",
+    "journey",
+    "verification",
+    "escalations",
+    "witness"
+  ],
+  "counts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "testTotal": 200,
+  "contractChanged": false
+}

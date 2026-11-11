@@ -1,0 +1,20 @@
+{
+  "productSave": "02bc5789a0907e6fb43ef11777aed84c8f3cc528",
+  "mainAtStart": "752cf8ec8dbc2f9a5c8d0829d08bde518406c428",
+  "files": {
+    "src/core/features/agent-door/index.ts": "f1f060f9fa83669b177d21b1b026991749f1d45f7c69758ece7f317d2420b731",
+    "src/core/features/agent-door/not-tools.ts": "990453cc91969ddb1b65d49a80e347e9fb9ab7e11a4100482aceb72b542cfcb3",
+    "scripts/agent-surface.ts": "4b367f17d323a271a1597eb21646c0c30399b58699de20065d874412d6245396",
+    "agent-surface.json": "a8a75dcaadd7cf0452ec2831d545f35adb230371ca69421cde69debd605a9d57",
+    "docs/AGENT-DOOR.md": "741b09ecdf4009360e6eb3b51975a3d6a2303ff25d8053ccf699aa3585a5e95a",
+    "tests/core/managed-owner.test.ts": "29299bf37ef53b098e9be589ee33d292d13e1a803a7afa74290b4916a2ac9726",
+    "tests/support/agent-discovery-proof.ts": "b34ff57091ed6f94b08348e5d592d87d3d6900c240a8c4e1910e83bed47b0f6f",
+    "tests/agent-door/native-journey.mjs": "d9d06250ddf8c67522aa942e81331adb8d2042c592457bc26374b96bf42b6ffe"
+  },
+  "sourceLockHasNewTrackedPaths": true,
+  "finalHead": "69df93f45604450d1183f1943fabb5bd09206bda",
+  "mainAtFinalIntegration": "9e7f46ce42c6bde7c5f29a6ab7cdb07e82978c8f",
+  "runtimeAndProofFilesUnchanged": true,
+  "finalLockSha256": "6d19f79bad819c778cd48f712ec1163e7b201bb6df8bff51478dabb102d42a6e",
+  "fullGitHistory": true
+}

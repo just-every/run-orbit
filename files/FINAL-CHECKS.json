@@ -1,0 +1,46 @@
+{
+  "head": "69df93f45604450d1183f1943fabb5bd09206bda",
+  "cleanProductCheckout": true,
+  "statusAndViewsUnchanged": true,
+  "finalCommitRunsCI": true,
+  "sourceLockCoversNewPaths": true,
+  "localChecks": {
+    "typecheck": 0,
+    "firstParty": 0,
+    "boundaries": 0,
+    "manifest": 0,
+    "contractWrite": 0,
+    "contractCheck": 0,
+    "sourceLockWrite": 0,
+    "sourceLockCheck": 0,
+    "managedOwner": 0,
+    "documentationBrowser": 0,
+    "installedConformance": 0
+  },
+  "conformancePoints": {
+    "passed": 4884,
+    "total": 4884
+  },
+  "scan": {
+    "status": "not_run_cloud_route",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "planRowsChanged": [
+    "SURFACE-001 scoped declared non-tool evidence only; no status change"
+  ],
+  "testAssertionsRemovedOrNarrowed": false,
+  "newEmailShapedStrings": false,
+  "browserScreensInspected": [
+    1440,
+    390
+  ],
+  "noNewIconOnlyControls": true,
+  "providerEffectsFromDiscovery": 0,
+  "nativeStateUnchangedUnderPolicies": [
+    "autonomous",
+    "held"
+  ],
+  "productRemoteHeadConfirmed": "69df93f45604450d1183f1943fabb5bd09206bda"
+}

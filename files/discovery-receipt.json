@@ -1,0 +1,60 @@
+{
+  "sourceHead": "02bc5789a0907e6fb43ef11777aed84c8f3cc528",
+  "pointsScope": "SURFACE-001 acceptance 1 declared non-tool reasons only",
+  "observations": [
+    {
+      "proof": "SURFACE-001.declared-non-tools",
+      "policy": "autonomous",
+      "tools": 28,
+      "resourceTemplates": 10,
+      "nonToolClauses": [
+        "TEAM-001",
+        "TEAM-003",
+        "PUBLIC-001",
+        "PUBLIC-002",
+        "PUBLIC-003",
+        "PUBLIC-004",
+        "MOBILE-001",
+        "OPS-001",
+        "BOUNDARY-001",
+        "RECORD-008",
+        "MIGRATE-001",
+        "MIGRATE-002",
+        "MIGRATE-003"
+      ],
+      "nativeMatch": true,
+      "providerCalls": 0,
+      "unchangedNativeState": true
+    },
+    {
+      "proof": "SURFACE-001.declared-non-tools",
+      "policy": "held",
+      "tools": 28,
+      "resourceTemplates": 10,
+      "nonToolClauses": [
+        "TEAM-001",
+        "TEAM-003",
+        "PUBLIC-001",
+        "PUBLIC-002",
+        "PUBLIC-003",
+        "PUBLIC-004",
+        "MOBILE-001",
+        "OPS-001",
+        "BOUNDARY-001",
+        "RECORD-008",
+        "MIGRATE-001",
+        "MIGRATE-002",
+        "MIGRATE-003"
+      ],
+      "nativeMatch": true,
+      "providerCalls": 0,
+      "unchangedNativeState": true
+    }
+  ],
+  "wholeRegistration": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "exit": 0,
+    "test": "Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification",
+    "log": "managed-owner-serial.log"
+  }
+}

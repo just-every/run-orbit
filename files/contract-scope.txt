@@ -1,0 +1,15 @@
+| `SURFACE-001` | Registry and complete sales jobs | target | partial | `agent-surface.json`; `scripts/agent-surface.ts`; `tests/agent-door/native-journey.mjs`; `tests/support/agent-door-proof.ts` | Implemented: a registry of 23 tools, 10 resources and two non-tool reasons, and a seller-day journey on Orbit's own fixtures. Remaining: tools for customer messages, sequences, quotes, files and integrations, and Core ids and non-tool reasons covering every row of this table; the Base conformance result for the complete registry is not asserted by a cited test. |
+
+**Not tools, and why.** TEAM-001: An installation's authorization model, applied by every action. TEAM-003: An installation's workspace and timezone configuration, exposed through settings tools. PUBLIC-001: A person's public information page. PUBLIC-002: A person's interactive fictional demo screen. PUBLIC-003: An installation readiness/sign-in screen for a person. PUBLIC-004: A person's own sign-in, confirmation and identity-provider screen. MOBILE-001: Device-only native app, offline and push behavior; server-side sales jobs retain tools. OPS-001: Installation and provider setup facts; provider consent kept for a person is a gated handoff. BOUNDARY-001: An installation's product boundaries and cross-product qualification journey. RECORD-008: The reviewed CSV import door. MIGRATE-001: The HubSpot migration/import door. MIGRATE-002: The Pipedrive migration/import door. MIGRATE-003: The Salesforce migration/import door.
+
+
+#### SURFACE-001 — Registry and complete sales jobs
+
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013 · *Rules:* D-3
+
+**Requirement.** The action registry exposes the sales jobs and Core coverage in this table; existing selected-record delegation remains distinct until the complete MCP surface is implemented.
+
+**Acceptance.**
+1. Compare the registry’s jobs, Core ids and concrete non-tool reasons with this table, including every split part.
+2. Run the Base conformance journey on Orbit’s own customer, deal, message, sequence and integration fixtures.
+
