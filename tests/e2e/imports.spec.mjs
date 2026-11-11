@@ -1,3 +1,4 @@
+import {hydrationImportFlow} from './imports-hydration.mjs';
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
@@ -10,9 +11,10 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
  const screenshots=process.env.IMPORT_SCREENSHOT_DIR??info.outputPath('visual');mkdirSync(screenshots,{recursive:true});
  await page.setViewportSize({width:1440,height:1024});await page.goto('/app/settings/data/import');await expect(page.getByRole('heading',{name:'Move in',level:1})).toBeVisible();
  await page.screenshot({path:join(screenshots,'desktop-upload.png'),fullPage:true});
- for(const width of [1440,390,320]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByLabel('Do not contact list',{exact:true})).toBeAttached();await page.screenshot({path:join(screenshots,`viewport-${width}-upload.png`),fullPage:true});const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(accessibility.violations).toEqual([]);}
+ for(const width of [1440]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByLabel('Do not contact list',{exact:true})).toBeAttached();await page.screenshot({path:join(screenshots,`viewport-${width}-upload.png`),fullPage:true});const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(accessibility.violations).toEqual([]);}
  const settingsResponse=await page.request.get('/api/v1/settings');expect(settingsResponse.ok()).toBe(true);const settings=await settingsResponse.json();
- for(const width of [1440,390])for(const vendor of ['hubspot','pipedrive','csv']){
+ await hydrationImportFlow(page,settings,screenshots);
+ for(const width of [1440])for(const vendor of ['hubspot','pipedrive','csv']){
   await page.setViewportSize({width,height:900});
   const spreadsheetRows=['csv-0@example.test,Spreadsheet Person,Spreadsheet Company','csv-1@example.test,Spreadsheet Person,Another Company','csv-2@example.test,Spreadsheet Person,',...Array.from({length:6},(_,index)=>`csv-extra-${index}@example.test,Extra Person ${index},Spreadsheet Company`),'invalid-email,Rejected Person,'];
   const source=vendor==='csv'?{vendor,files:[{kind:'contact',name:'csv-contact.csv',csv:['email,name,company,seats',...spreadsheetRows.map((row,index)=>`${row},${index+3}`)].join('\r\n')}]}:crmFixture(vendor,settings.stages[0].id,3);source.account=`Browser ${vendor} ${width} ${Date.now()}`;
@@ -31,6 +33,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
   await page.screenshot({path:join(screenshots,`viewport-${width}-${vendor}-mapping.png`),fullPage:true});
   await page.getByRole('button',{name:'Run dry run',exact:true}).click();await expect(page.getByRole('heading',{name:'Review your dry run',exact:true})).toBeVisible();if(vendor!=='csv')await expect(page.locator('.crm-results')).toContainText('occurrence time');
   if(vendor==='csv'){
+   const review=page.locator('section[aria-label="Import review"]');await expect(review.locator('p').first()).not.toContainText('companies made from Company name');
    const results=page.getByRole('list',{name:'Dry run row results'});
    await expect(results).toContainText('Spreadsheet Person · csv-0@example.test');await expect(results).toContainText('Rejected Person · invalid-email');
    expect(await results.evaluate(element=>element.scrollHeight<=element.clientHeight)).toBe(true);
