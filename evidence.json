@@ -7,10 +7,10 @@
       "sha256": "cb377d550b20b49a1a15d248763f2183bc75c00a834c30bdf6deb50b8f6e3e29"
     },
     {
-      "blob": "5363d6b86855a5a6e0393bbb96553f0f48e5f966",
+      "blob": "4f2e7377fa78bb0c9a065f561b69e41c7ba8e275",
       "bytes": 6244,
       "path": "REPORT.md",
-      "sha256": "07e65856ef4ce4142384d91426a29a1a67ce2a2576ea5c49899c854c42869507"
+      "sha256": "63ef8565da9fc62e5a715ce03c02e870006ac6b3e18f979b76b1676334a15f78"
     },
     {
       "blob": "a90128ead7317f471eaee71a835d41e0d1c1c9ba",
@@ -61,10 +61,10 @@
       "sha256": "342fd1e9b02b5be7ddbf5b40a7c94e8eb8768270d33494e29387fb7dafa4dc88"
     },
     {
-      "blob": "0657c7a3e2673de6f902ae243d3780cca663d9b5",
-      "bytes": 2154,
+      "blob": "1a772c430515e493e5c120b319d6a8b507f1c988",
+      "bytes": 3022,
       "path": "ci-receipt.json",
-      "sha256": "2a29212e4794d46506d028666d65e5efceb3bdca9914790bc2bba5d045a215fb"
+      "sha256": "f8ff684e27455b0060186e191cbf95d72518af1c80df0905cee201550e6f0559"
     },
     {
       "blob": "ae869b2fafd3acf46a2dc6ce35ec869497ae9cfb",
@@ -83,6 +83,12 @@
       "bytes": 52,
       "path": "contract-counts-before.json",
       "sha256": "e60f7a020f5f70548a44ddb231624eeac4012f4ab79ede6481579a06c53ded57"
+    },
+    {
+      "blob": "285640b8560173810b9b6b776fbe9d4961336400",
+      "bytes": 14864,
+      "path": "evidence-transfer-initial.json",
+      "sha256": "789696065a9ad82f6d5c0510884939eac94c25dca34ea6b0814aa2d76e54c66e"
     },
     {
       "blob": "4e9565bab76c0af075ac24524cb214f3fd6f7258",

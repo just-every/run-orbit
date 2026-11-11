@@ -54,11 +54,36 @@
         "id": 43011685796,
         "status": "in_progress"
       }
+    },
+    {
+      "time": "2026-11-11T11:45:13.762415+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43011685796",
+      "exit": 0,
+      "result": {
+        "conclusion": null,
+        "head_sha": "af353b77aff81014ae7f7ac054ee71532cf350e7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43011685796",
+        "id": 43011685796,
+        "status": "in_progress"
+      }
+    },
+    {
+      "time": "2026-11-11T11:50:14.504493+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43011685796",
+      "exit": 0,
+      "result": {
+        "conclusion": "success",
+        "head_sha": "af353b77aff81014ae7f7ac054ee71532cf350e7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43011685796",
+        "id": 43011685796,
+        "status": "completed"
+      }
     }
   ],
   "githubBudget": 10,
   "cadenceSeconds": 300,
-  "status": "running",
+  "status": "completed",
   "runId": 43011685796,
-  "url": "https://github.com/just-every/run-orbit/actions/runs/43011685796"
+  "url": "https://github.com/just-every/run-orbit/actions/runs/43011685796",
+  "conclusion": "success"
 }

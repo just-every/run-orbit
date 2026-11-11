@@ -5,7 +5,7 @@ Branch: cloud/main-orbit-forms-compile-1
 Product head: af353b77aff81014ae7f7ac054ee71532cf350e7
 Base main: 89c84362bbc010156bc30081d8a530704a9533e2
 PR: none; this brief uses the fleet branch landing contract.
-Verify: 43011685796 — running — https://github.com/just-every/run-orbit/actions/runs/43011685796
+Verify: 43011685796 — success — https://github.com/just-every/run-orbit/actions/runs/43011685796
 
 ## Result
 
@@ -21,7 +21,7 @@ Only `src/core/features/forms/console.tsx`, the existing `newtests/t096/browser-
 4. Extended the existing mapped-forms journey without adding a registration. It saves through the UI, reloads, selects the saved row's compile action without Edit, compiles, checks the submitted form ID and saved revision and its exact preview, then continues the existing approval/publication and mapped hosted, framed and direct HTTPS submission checks. New behavior assertions target 1440; the existing journey and changed-screen proof also render at 390.
 5. Ran the focused existing `formMappingBrowserJourney` with its native fixture, real emitted Worker, D1 and separate allowlisted HTTPS buyer site. It passed. Typecheck, build, source-lock validation, contract-doc validation, test inventory and whitespace checks passed. All checked product bytes match the committed candidate. Browser proof at 1440 and 390 confirms compilation and that publication remains disabled until approval. Screenshots were visually inspected.
 6. Fetched main and rebased with the fleet identity before publication; main had not moved. Regenerated and checked the source lock last. Committed once without a skip marker; audited every candidate author, committer and trailer including side parents. The guarded push succeeded on its first attempt. The checkout is clean.
-7. Started one REST watcher for exact-SHA Verify, using a minimum 300-second interval and a ten-call budget. Current result: running, run 43011685796, calls used 4. The report/receipt/screens packet is returned only through evidence/main-orbit-forms-compile-1. The fleet Mac retains its independent publication scan and landing gates.
+7. Started one REST watcher for exact-SHA Verify, using a minimum 300-second interval and a ten-call budget. Current result: success, run 43011685796, calls used 6. The report/receipt/screens packet is returned only through evidence/main-orbit-forms-compile-1. The fleet Mac retains its independent publication scan and landing gates.
 
 ## Actual local checks
 
@@ -49,6 +49,6 @@ The existing journey proves mapped fields, exact publication review and hosted/f
 
 ## Custody and limitations
 
-Product branch push succeeded: af353b77aff81014ae7f7ac054ee71532cf350e7. Exact-SHA Verify result: running. Evidence transport is separate from product READY/landing. No product evidence, screenshots, receipts or proof files were committed. No main/default branch push, force push, deployment or PR write occurred. The fleet Mac's publication scan and final landing checks remain with the fleet, as required by the cloud brief.
+Product branch push succeeded: af353b77aff81014ae7f7ac054ee71532cf350e7. Exact-SHA Verify result: success. Evidence transport is separate from product READY/landing. No product evidence, screenshots, receipts or proof files were committed. No main/default branch push, force push, deployment or PR write occurred. The fleet Mac's publication scan and final landing checks remain with the fleet, as required by the cloud brief.
 
 The retained receipts are `local-checks.json`, `product-provenance.json`, `product-push.txt`, `ci-receipt.json`, `reproduction.json`, `browser-proof.json` and `forms-journey/receipt.json`. The complete plan is also in `PLAN.md`; screen and accessibility results are beside those receipts. No local product blocker is known.
