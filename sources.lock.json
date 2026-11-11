@@ -11007,7 +11007,7 @@
       "executable": false
     },
     "tests/support/agent-door-draft-parity-proof.ts": {
-      "sha256": "d7fb29b4b0b2a7a117d35aa79c518c69eb0eefaf6664b530afb4e48ed3fefd37",
+      "sha256": "68ace6286961364dcee898e712d8b52f81c3e6b005a2a7f9dd0b214131838055",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {

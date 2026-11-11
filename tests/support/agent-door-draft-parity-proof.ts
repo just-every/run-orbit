@@ -97,6 +97,36 @@ export async function agentDoorDraftParityProof({bindings,door,cookie,ownerId,op
  const retainedCreate={...createArgs,subject:longSubject};
  const longDraft=completed(await call('create',retainedCreate)).structuredContent.id;
  assert.equal((await native('/drafts/'+longDraft)).draft.subject,longSubject);
+ // Native creation trims before its action limit, including the opportunity composer.
+ const paddedLimit={subject:' \t'+'x'.repeat(998)+'\n ',body:' \n'+'y'.repeat(100000)+'\t '};
+ const nativeLimitIds:string[]=[];
+ for(const path of ['/workbench/records/opportunity/'+opportunityId+'/drafts','/workbench/opportunities/'+opportunityId+'/drafts']){
+  const id=(await native(path,{contactId,...paddedLimit},'POST',201)).id;
+  nativeLimitIds.push(id);
+  const draft=(await native('/drafts/'+id)).draft;
+  assert.equal(draft.subject,'x'.repeat(998));assert.equal(draft.body,'y'.repeat(100000));
+  assert.equal(draft.recipientContactId,contactId);assert.equal(draft.opportunityId,opportunityId);assert.equal(draft.revision,1);
+  await native(path,{contactId,subject:'x'.repeat(999),body:'Message'},'POST',400);
+ }
+ // MCP retains raw transport bounds before the shared action normalization.
+ const beforeRawLimit=await inventories();
+ const rawCreate=await call('create',{...createArgs,...paddedLimit,idempotency_key:'synthetic-orbit-draft-raw-limit'});
+ assert.equal(rawCreate.body.result._meta['com.runeditrun/error'].code,'invalid_arguments');
+ assert.deepEqual(await inventories(),beforeRawLimit);
+ const rawEdit={id:longDraft,recipient_email:(await native('/drafts/'+longDraft)).draft.recipientEmail,expected_revision:1,idempotency_key:'synthetic-orbit-edit-raw-limit'};
+ for(const fields of [{subject:' '+'x'.repeat(1000)+' ',body:'Message'},{subject:'Subject',body:' '+'y'.repeat(100000)+' '},{subject:' \t\n ',body:'Message'},{subject:'Subject',body:' \t\n '}]){
+  const rejected=await call('update',{...rawEdit,...fields,idempotency_key:'synthetic-orbit-edit-invalid-'+rpc});
+  assert.equal(rejected.body.result._meta['com.runeditrun/error'].code,'invalid_arguments');
+  assert.deepEqual(await inventories(),beforeRawLimit,'MCP edit limits refuse before a revision or event');
+ }
+ const acceptedEdit={subject:' '+'x'.repeat(998)+' ',body:' '+'y'.repeat(99998)+' '};
+ completed(await call('update',{...rawEdit,...acceptedEdit,idempotency_key:'synthetic-orbit-edit-at-limit'}));
+ const agentAtLimit=(await native('/drafts/'+longDraft)).draft;
+ const nativeAtLimit=(await native('/drafts/'+nativeLimitIds[0],{revision:1,recipientEmail:agentAtLimit.recipientEmail,...acceptedEdit},'PUT')).draft;
+ assert.deepEqual(snapshot(agentAtLimit),snapshot(nativeAtLimit),'accepted raw-boundary editing still normalizes identically');
+ // Native editing historically has no size ceiling; sharing normalization retains it.
+ const nativeUnbounded=(await native('/drafts/'+nativeLimitIds[1],{revision:1,recipientEmail:agentAtLimit.recipientEmail,subject:' '+'x'.repeat(1001)+' ',body:' '+'y'.repeat(100001)+' '},'PUT')).draft;
+ assert.equal(nativeUnbounded.subject,'x'.repeat(1001));assert.equal(nativeUnbounded.body,'y'.repeat(100001));assert.equal(nativeUnbounded.revision,2);
  const beforeRefusals=await inventories();
  for(const fields of [{subject:'x'.repeat(1001)},{body:'x'.repeat(100001)},{subject:' \t\n '},{body:' \t\n '}]){
   const rejected=await call('create',{...createArgs,...fields,idempotency_key:'synthetic-orbit-invalid-'+rpc});assert.equal(rejected.body.result.isError,true);assert.equal(rejected.body.result._meta['com.runeditrun/error'].code,'invalid_arguments');
@@ -112,7 +142,7 @@ export async function agentDoorDraftParityProof({bindings,door,cookie,ownerId,op
  const beforeRevoked=await inventories();
  assert.equal((await call('create',retainedCreate)).status,401,'revoked authority cannot replay the completed creation');
  assert.deepEqual(await inventories(),beforeRevoked,'revoked replay changes no native state or event');assert.deepEqual(await outbound(),outboundBefore);assert.deepEqual(providerCalls,[]);
- console.log(JSON.stringify({proof:'BASE-AGENT-002.5.manual-draft-parity',modes:['autonomous','held'],normalized:true,saved:savedProofs,events:['draft.created','draft.updated'],replayEffects:0,staleEffects:0,providerCalls:0}));
+ console.log(JSON.stringify({proof:'BASE-AGENT-002.5.manual-draft-parity',modes:['autonomous','held'],normalized:true,transportLimitsRetained:true,nativeCreateDoors:2,saved:savedProofs,events:['draft.created','draft.updated'],replayEffects:0,staleEffects:0,providerCalls:0}));
 }
 
 /** Existing emitted browser registration shows the same saved draft and linked review. */
