@@ -1,0 +1,73 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-forms-compile-1",
+  "head": "af353b77aff81014ae7f7ac054ee71532cf350e7",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec tsx /tmp/orbit-forms-journey.mts",
+      "exit": 0,
+      "journey": "newtests/t096/browser-form-mapping.ts#formMappingBrowserJourney",
+      "note": "Existing journey invoked with its native fixture and emitted Worker; no test registration added."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "beforeTotal": 200,
+      "afterTotal": 200
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "python3 /tmp/fleet-audit.py",
+      "exit": 0,
+      "candidateCommits": 1,
+      "sideParentsIncluded": true
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": "src/core/features/forms/console.tsx",
+      "sha256": "cd4fcefb50733130075bfe6d6ed70d76b398872ae42a55352b887c19f9662775"
+    },
+    {
+      "path": "newtests/t096/browser-form-mapping.ts",
+      "sha256": "80bd269967fedc8d999112194be3897e588d24034124808262a950e9d7d3b160"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "c27da4ca0e404796d2579adebdf01fab19a28100f0f5abff09741b3c01f741a5"
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox"
+    ],
+    "viewports": [
+      1440,
+      390
+    ],
+    "newAssertionsWidth": 1440
+  },
+  "contractStatusChanges": [],
+  "publicationScan": "Fleet Mac lander owns final publication scan; unavailable in cloud.",
+  "checkedBytesMatchCandidate": true
+}

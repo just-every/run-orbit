@@ -1,0 +1,18 @@
+{
+  "status": "reproduced",
+  "baseHead": "89c84362bbc010156bc30081d8a530704a9533e2",
+  "route": "/app/settings/forms",
+  "savedCompileVisible": true,
+  "reloadedCompileVisible": false,
+  "reloadedActions": [
+    "Edit saved form",
+    "Reopen latest publication",
+    "Read submissions",
+    "Read spam and refusals"
+  ],
+  "editRevealsCompile": true,
+  "widths": [
+    1440,
+    390
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "route": "/app/settings/forms",
+  "widths": [
+    1440,
+    390
+  ],
+  "reloadCompileEntry": true,
+  "editNotRequired": true,
+  "selectedRevision": 1,
+  "compileStatus": 200,
+  "previewHeading": "Talk about your rollout",
+  "approvalRequired": true,
+  "publicationDisabledBeforeApproval": true,
+  "horizontalOverflow": false
+}

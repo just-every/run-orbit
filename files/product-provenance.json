@@ -1,0 +1,22 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-forms-compile-1",
+  "head": "af353b77aff81014ae7f7ac054ee71532cf350e7",
+  "base": "89c84362bbc010156bc30081d8a530704a9533e2",
+  "tree": "f162e7e0da463680bf13d419e881aec412d10b37",
+  "clean": true,
+  "commit": {
+    "authorName": "Run Edit Run fleet",
+    "authorEmail": "fleet@runeditrun.com",
+    "committerName": "Run Edit Run fleet",
+    "committerEmail": "fleet@runeditrun.com",
+    "subject": "Keep saved form compilation visible after reload"
+  },
+  "changedFiles": [
+    "newtests/t096/browser-form-mapping.ts",
+    "sources.lock.json",
+    "src/core/features/forms/console.tsx"
+  ],
+  "diffStat": "newtests/t096/browser-form-mapping.ts | 14 ++++++++++++--\n sources.lock.json                     |  4 ++--\n src/core/features/forms/console.tsx   | 10 ++++++----\n 3 files changed, 20 insertions(+), 8 deletions(-)",
+  "pr": null
+}

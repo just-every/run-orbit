@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "journey": "formMappingBrowserJourney",
+  "source": "newtests/t096/browser-form-mapping.ts",
+  "registeredBy": "newtests/t096/browser-journeys.test.ts",
+  "widths": [
+    1440,
+    390
+  ],
+  "newAssertionsAt": 1440,
+  "saveReloadCompile": true,
+  "hostedFramedDirect": true
+}
