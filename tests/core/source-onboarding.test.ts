@@ -49,6 +49,21 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const approval={revision:1,quietHoursConfirmation:preview.localTime};
  const saved=(await(await f.request(`drafts/${draft.id}`)).json() as any).draft;
  assert.deepEqual([saved.id,saved.recipientEmail,saved.subject,saved.body,saved.revision,saved.isStale],[draft.id,contact.email,'Your inquiry','Hi Maya, would Thursday suit a walkthrough?',1,false]);
+ // A fresh installation can keep this exact draft without offering a send it cannot make.
+ const noSender=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})}});
+ const withoutSender=(method:string,body?:unknown)=>noSender.request(`https://orbit.test/api/v1/workbench/drafts/${draft.id}/${method==='GET'?'approval-preview':'approve'}`,{method,headers:{Cookie:`__Host-orbit_session=${f.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
+ const sendsBeforeSetup=f.sends(),unavailable=await withoutSender('GET');assert.equal(unavailable.status,200);
+ const unavailablePreview=await unavailable.json() as {available:boolean;reason:string;settingsUrl:string};
+ assert.equal(unavailablePreview.available,false);assert.ok(unavailablePreview.reason.trim());
+ const setupProgress=await noSender.request('https://orbit.test/api/v1/workbench/onboarding',{headers:{Cookie:`__Host-orbit_session=${f.token}`}});
+ assert.equal((await setupProgress.json() as {mailConfigured:boolean}).mailConfigured,false);
+ for(const options of [{},{scheduledAt:new Date(Date.now()+86400000).toISOString()}]){
+  const refused=await withoutSender('POST',{...approval,...options});assert.ok(refused.status>=400);assert.ok((await refused.json() as {error:string}).error);
+ }
+ assert.equal(f.sends(),sendsBeforeSetup,'Neither preview nor immediate/scheduled approval without a sender reaches the provider');
+ assert.equal(await f.db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0,'No outbound job is queued while mail is unavailable');
+ assert.deepEqual((await(await f.request(`drafts/${draft.id}`)).json() as any).draft,saved,'Refusal keeps the saved draft intact');
+ assert.equal(preview.available,true,'A configured sender retains recipient-time preview and exact-message approval');
  assert.deepEqual((await(await f.request(`workbench/opportunities/${customer.id}/messages`)).json() as any).messages,[],'The saved draft has not been approved or sent');
  await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
  const apiSecrets=[(await issueNativeCredential(f.db,f.actor,customer.id)).secret];

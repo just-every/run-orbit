@@ -18,8 +18,8 @@ export interface CustomerMailStatus {provider?:'rer'|'sendgrid';present:number;t
 export function customerMailStatus(env:OutreachEnvironment):CustomerMailStatus{
  const managed=env.MAIL_PROVIDER==='rer',settings=managed?['MAIL_FROM','MAIL_RELAY_URL','MAIL_API_KEY'] as const:customerMailSettings;
  const missing=settings.filter(name=>!env[name]?.trim()),group=env.SENDGRID_UNSUBSCRIBE_GROUP_ID?.trim();
- let problem=!managed&&group&&!/^[1-9]\d*$/.test(group)?'SENDGRID_UNSUBSCRIBE_GROUP_ID must be the number in SendGrid’s Group ID column.':null;
- if(managed&&env.MAIL_RELAY_URL?.trim())try{validateRerConfig({relayUrl:env.MAIL_RELAY_URL});}catch{problem='MAIL_RELAY_URL must be the assigned HTTPS relay URL.';}
+ let problem=!managed&&group&&!/^[1-9]\d*$/.test(group)?'The unsubscribe group must be the number in SendGrid’s Group ID column.':null;
+ if(managed&&env.MAIL_RELAY_URL?.trim())try{validateRerConfig({relayUrl:env.MAIL_RELAY_URL});}catch{problem='The mail relay address must be the assigned HTTPS address.';}
  return {provider:managed?'rer':'sendgrid',present:settings.length-missing.length,total:settings.length,missing,problem};
 }
 /** Customer mail, or undefined until every setting is present: a partly configured installation keeps running and says what is missing. */
