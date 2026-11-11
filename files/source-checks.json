@@ -1,0 +1,20 @@
+{
+  "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0,
+      "log": "manifest-final.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-final.log"
+    }
+  ]
+}

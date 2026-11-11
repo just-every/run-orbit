@@ -1,0 +1,16 @@
+[
+  {
+    "width": 1440,
+    "file": "agent-guide-1440.png",
+    "sha256": "6eba5323ad396f543b19c35e62514e6c94fec279fdcb820e6bc644a8728ec4d1",
+    "sameAsVisuallyInspectedImage": true,
+    "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d"
+  },
+  {
+    "width": 390,
+    "file": "agent-guide-390.png",
+    "sha256": "99d413127b37837b74c07e5b3b7dfb4af459e5d2bb02bf5fd4bb005dcb07c2a3",
+    "sameAsVisuallyInspectedImage": true,
+    "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d"
+  }
+]

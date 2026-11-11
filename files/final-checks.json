@@ -1,0 +1,50 @@
+{
+  "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d",
+  "serialized": true,
+  "checks": [
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/managed-owner.test.ts"
+      ],
+      "started": "2026-11-11T19:39:00.584238+00:00",
+      "finished": "2026-11-11T19:48:18.960630+00:00",
+      "exit": 0,
+      "log": "managed-owner-serial.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "/tmp/orbit-browser.config.mjs",
+        "tests/e2e/worker-smoke.spec.mjs",
+        "--grep",
+        "installed docs navigation reaches every page",
+        "--reporter=list"
+      ],
+      "started": "2026-11-11T19:48:18.965007+00:00",
+      "finished": "2026-11-11T19:49:47.649988+00:00",
+      "exit": 0,
+      "log": "browser-serial.log"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+        ".",
+        "deploy.json"
+      ],
+      "started": "2026-11-11T19:49:47.650512+00:00",
+      "finished": "2026-11-11T19:51:02.927243+00:00",
+      "exit": 0,
+      "log": "conformance-serial.log"
+    }
+  ]
+}

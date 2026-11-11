@@ -1,0 +1,11 @@
+{
+  "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d",
+  "attempts": [
+    {"command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts", "exit": 1, "log": "managed-owner-final.log", "failure": "spawnSync node ETIMEDOUT while applying fixture migrations before the test body", "fixtureStatus": 143},
+    {"command": "pnpm exec playwright test --config /tmp/orbit-browser.config.mjs tests/e2e/worker-smoke.spec.mjs --grep installed-docs-navigation", "exit": 1, "log": "browser-final.log", "failure": "Timed out waiting 90000ms from config.webServer"},
+    {"command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json", "exit": 1, "log": "conformance-final.log", "failure": "BASE-AGENT-004.7: ENOENT opening dist/server/index.js while a concurrent browser run rebuilt dist"}
+  ],
+  "sourceRepair": false,
+  "assertionChangeForFailure": false,
+  "nextAction": "Serialize final checks after existing native registration finishes; restore stable dist before conformance."
+}

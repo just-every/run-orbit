@@ -1,0 +1,17 @@
+{
+  "head": "4727a0bd929b8adac285a72c9cfc373ccda74c0d",
+  "before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "total": 204,
+  "statusChanges": [],
+  "acceptanceChanges": [],
+  "testTotal": 200
+}
