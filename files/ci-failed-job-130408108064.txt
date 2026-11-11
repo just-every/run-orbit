@@ -1,0 +1,29 @@
+  1) tests/e2e/workbench.spec.mjs:3:1 › a real account, attributed event and durable reviewed draft can be created 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForResponse: Test timeout of 30000ms exceeded.
+
+      62 |   await page.reload();
+      63 |   await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
+    > 64 |   const preview=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/approval-preview'));
+         |                      ^
+      65 |   await page.getByRole('button',{name:'Approve and send exact revision'}).click();
+      66 |   expect((await preview).status()).toBe(503);
+      67 |   await expect(page.getByRole('alert').locator('a[href="/app/settings/mail"]')).toBeVisible();
+        at /home/runner/work/run-orbit/run-orbit/tests/e2e/workbench.spec.mjs:64:22
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Approve and send exact revision' })
+
+
+      63 |   await expect(page.getByTestId('draft-body')).toHaveValue('Thank you for requesting a follow-up. What time suits you?');
+      64 |   const preview=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/approval-preview'));
+    > 65 |   await page.getByRole('button',{name:'Approve and send exact revision'}).click();
+         |                                                                           ^
+      66 |   expect((await preview).status()).toBe(503);
+      67 |   await expect(page.getByRole('alert').locator('a[href="/app/settings/mail"]')).toBeVisible();
+      68 |   await expect(page.getByRole('button',{name:'Confirm send now',exact:true})).toHaveCount(0);
+        at /home/runner/work/run-orbit/run-orbit/tests/e2e/workbench.spec.mjs:65:75
+

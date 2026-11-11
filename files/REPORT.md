@@ -3,6 +3,8 @@
 Repository: just-every/run-orbit
 Branch: cloud/main-orbit-mail-setup-1
 
+Terminal custody: PUSHED at `81e9125e1e7bd533a7a7545469255d7b9613b484`. Exact-SHA Verify [42990112687](https://github.com/just-every/run-orbit/actions/runs/42990112687) is in progress. The ten-call GitHub API budget is exhausted. This packet makes no READY or landing claim.
+
 ## Plan
 
 1. Reproduce saving a draft and requesting its approval preview through the authenticated public HTTP routes with no mail transport.
@@ -42,7 +44,23 @@ An isolated rerun of `tests/core/source-onboarding.test.ts` was started with the
 
 The isolated pinned Node 22.20.0 source-onboarding run passed all 3 tests, with no skips or failures, in 678.813 seconds. All newly added assertions remained enabled. A final fetch/rebase found no main drift. The candidate was typechecked again with pinned Node 22, then the source lock was regenerated last and checked.
 
-CLAIM OUT-001 PARTIAL points=1 tests=tests/rer/onboarding.test.mjs#SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440
+CLAIM OUT-001 PARTIAL points=1 tests=tests/e2e/workbench.spec.mjs#a real account, attributed event and durable reviewed draft can be created; tests/rer/onboarding.test.mjs#SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440
 GAP OUT-001: This focused round does not promote the clause or replace its other recorded acceptance gaps.
 
-Product published on `cloud/main-orbit-mail-setup-1` at `31e8cf27d8a4dc9576151f3356ca4813e90d4d4f`. The fleet push guard succeeded on its first attempt. All candidate authors and committers were the fleet identity; no trailers survived. The worktree was clean and the receipt verifies the changed source bytes equal the committed tree. Verify run 42985902444 was discovered in progress on that exact SHA; this is not yet a READY claim.
+Product published on `cloud/main-orbit-mail-setup-1` at `31e8cf27d8a4dc9576151f3356ca4813e90d4d4f`. The fleet push guard succeeded on its first attempt. All candidate authors and committers were the fleet identity; no trailers survived. The worktree was clean and the receipt verifies the changed source bytes equal the committed tree. Verify run 42985902444 completed with failure on that exact SHA. Its failed jobs were read once each through the log archive.
+
+## CI correction
+
+Verify 42985902444 failed in batch-13 because the existing `tests/e2e/workbench.spec.mjs` expected the enabled send button and HTTP 503 preview that this brief removes. That retained test is updated to read the public preview after page load, assert HTTP 200 with unavailable state, show the server reason and settings destination, offer no send/confirmation button, create no outbound job and navigate to Mail settings while preserving the saved draft. Its registration is retained.
+
+Batch-8 also failed before its existing collaborator/report assertions: Wrangler fixture migrations hit the unchanged 60-second subprocess timeout. The failed jobs are 130408108064 and 130408108192; `ci-failures.json` and their selected non-secret log excerpts retain the actual errors. The verify gate failed downstream. Neither fixture timeouts nor product assertions were weakened. The next branch head will need its own Verify; the first run is never reported green.
+
+The published branch fetched and merged origin/main (already current), retaining published history. Nine GitHub calls have been used: six run discovery/status reads, one failed-job listing, and the two failed-job log archive reads. One call remains for discovery of the corrected exact SHA.
+
+The corrected existing workbench end-to-end test passed at 1440 with Node 22.20.0 and /usr/bin/chromium (one case, 20.6 seconds; 1.2 minutes including startup/build). A local response-capture/navigation race was removed by reading the same public route through the authenticated request API, then asserting its reason and link in the page. Typecheck passed again, the test inventory remains 200, and source-lock regeneration/check passed. No provider or fixture-timeout code changed.
+
+## Terminal result
+
+Both product commits are published without skip markers or rewritten history. Corrected head: `81e9125e1e7bd533a7a7545469255d7b9613b484`. Its new Verify run is `42990112687`, observed in progress on this exact SHA with GitHub call 10. The previous run `42985902444` failed; its obsolete send/503 assertion is corrected and passes locally, while its separate collaborator/report fixture migration timeouts remain an observed CI risk. No workflow was re-run or dispatched, and no green result from another SHA is substituted.
+
+Local results: source-onboarding 3/3; retained first-hour browser 1/1 at 1440; corrected workbench browser 1/1 at 1440; focused Draft/Mail/NOW proof at 1440 and 390; typecheck, source lock and contract-view checks passed. Test count 200 before and after. Contract counts remain 42 done / 130 partial / 32 missing (204 total). No clause Status, Gap or Evidence changes. No PR was created; the fleet owns landing. Remaining gate: completed exact-SHA Verify. The cloud cannot claim READY while it is pending.

@@ -1,12 +1,13 @@
 {
   "repository": "just-every/run-orbit",
   "branch": "cloud/main-orbit-mail-setup-1",
-  "head": "31e8cf27d8a4dc9576151f3356ca4813e90d4d4f",
+  "head": "81e9125e1e7bd533a7a7545469255d7b9613b484",
   "base": "36f701cc53e127f0ed4baf367625af329fef6768",
   "productPush": {
     "result": "success",
     "attempts": 1,
-    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-mail-setup-1"
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-mail-setup-1",
+    "substantialCorrection": "pushed successfully on first attempt"
   },
   "identity": {
     "author": "Run Edit Run fleet <fleet@runeditrun.com>",
@@ -18,7 +19,7 @@
     {
       "path": "sources.lock.json",
       "bytes": 500555,
-      "sha256": "1d065786f87cbe1083812578f192f83862f4a7dd9344679c204b7cc712cd0301"
+      "sha256": "645f8c39733d7dc2c796fdec1300c39d478649046c6c7e6c472a50019e376894"
     },
     {
       "path": "src/core/features/operator/ui/draft-approval.tsx",
@@ -51,9 +52,18 @@
       "sha256": "6f29b6e43e066f4c4716254eea5b584f0bf74515602946fa70dff1c8f4447301"
     },
     {
+      "path": "tests/e2e/workbench.spec.mjs",
+      "bytes": 6711,
+      "sha256": "9aaa942c77b44b96f17fb6ae16bc18e8cbb33c6c45f1fde4673d403149615676"
+    },
+    {
       "path": "tests/rer/onboarding-journey.mjs",
       "bytes": 14674,
       "sha256": "2359f32082edd15d01d77e00a684304d1767340d38c86d38ee06ad1db61c96ac"
     }
+  ],
+  "productCommits": [
+    "81e9125e1e7bd533a7a7545469255d7b9613b484 Align workbench journey with unavailable mail sender",
+    "31e8cf27d8a4dc9576151f3356ca4813e90d4d4f Explain missing mail sender before draft approval"
   ]
 }

@@ -1,0 +1,97 @@
+✖ failing tests:
+
+test at newtests/t096/collaborator-links.test.ts:1:314
+✖ collaborator relationship edits require current access to the actual native related rows (60309.274879ms)
+  Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/collaborator-links.test.ts:5:115)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    path: '/opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-fold-domain-0-lnoYSG/orbit-restore-test-LDjPl8' ],
+    error: Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/collaborator-links.test.ts:5:115)
+        at async Test.run (node:internal/test_runner/test:1054:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 528189 more bytes>, <Buffer > ],
+    pid: 2646,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 528189 more bytes>,
+    stderr: <Buffer >
+  }
+
+test at newtests/t096/report-disclosure.test.ts:1:3138
+✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (60198.427347ms)
+  Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+      at async TestHook.run (node:internal/test_runner/test:1054:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    path: '/opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-fold-domain-0-lnoYSG/ob-pL5Koz/orbit-restore-test-u7VqCq' ],
+    error: Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+        at async TestHook.run (node:internal/test_runner/test:1054:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 543668 more bytes>, <Buffer > ],
+    pid: 2883,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 543668 more bytes>,
+    stderr: <Buffer >
+  }
+
+test at newtests/t096/report-disclosure.test.ts:1:9419
+✖ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (23.691371ms)
+  Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+      at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+      at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+      at async TestHook.run (node:internal/test_runner/test:1054:7) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    path: '/opt/hostedtoolcache/node/22.20.0/x64/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-fold-domain-0-lnoYSG/ob-pL5Koz/orbit-restore-test-u7VqCq' ],
+    error: Error: spawnSync /opt/hostedtoolcache/node/22.20.0/x64/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/home/runner/work/run-orbit/run-orbit/tests/support/isolated-database.ts:11:3)
+        at async fixture (/home/runner/work/run-orbit/run-orbit/newtests/t096/fixture.ts:23:46)
+        at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:29:4)
+        at async TestHook.run (node:internal/test_runner/test:1054:7),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 543668 more bytes>, <Buffer > ],
+    pid: 2883,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 0a e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 e2 94 80 ... 543668 more bytes>,
+    stderr: <Buffer >
+  }
+##[error]Process completed with exit code 1.

@@ -71,7 +71,37 @@
       "node": "24.19.0",
       "result": "failed",
       "reason": "Fixture migration subprocess timeout in the existing Slack archive proof; later fixture migrations also timed out."
+    },
+    {
+      "scope": "corrected workbench e2e",
+      "result": "failed",
+      "reason": "captured browser response was navigated away from; the final test reads the authenticated public API response and asserts the rendered state"
     }
   ],
-  "head": "31e8cf27d8a4dc9576151f3356ca4813e90d4d4f"
+  "head": "81e9125e1e7bd533a7a7545469255d7b9613b484",
+  "workbenchE2E": {
+    "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/workbench.spec.mjs",
+    "node": "22.20.0",
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "duration": "1.2 minutes including build/startup; 20.6 seconds in the test",
+    "chromium": "/usr/bin/chromium",
+    "viewport": 1440
+  },
+  "ci": {
+    "corrected": {
+      "id": 42990112687,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "81e9125e1e7bd533a7a7545469255d7b9613b484",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/42990112687"
+    },
+    "previousRun": 42985902444,
+    "previousConclusion": "failure",
+    "callsUsed": 10,
+    "budget": 10,
+    "custody": "PUSHED",
+    "remainingGate": "completed successful exact-SHA Verify"
+  }
 }

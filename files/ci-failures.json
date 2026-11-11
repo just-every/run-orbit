@@ -1,0 +1,14 @@
+[
+  {
+    "job": 130408108064,
+    "command": "gh run view 42985902444 --repo just-every/run-orbit --job 130408108064 --log-failed",
+    "exit": 0,
+    "result": "obsolete 503 UI assertion"
+  },
+  {
+    "job": 130408108192,
+    "command": "gh run view 42985902444 --repo just-every/run-orbit --job 130408108192 --log-failed",
+    "exit": 0,
+    "result": "existing fixture migration subprocess ETIMEDOUT before collaborator/report assertions"
+  }
+]

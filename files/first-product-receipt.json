@@ -1,0 +1,59 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-mail-setup-1",
+  "head": "31e8cf27d8a4dc9576151f3356ca4813e90d4d4f",
+  "base": "36f701cc53e127f0ed4baf367625af329fef6768",
+  "productPush": {
+    "result": "success",
+    "attempts": 1,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-mail-setup-1"
+  },
+  "identity": {
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": ""
+  },
+  "cleanCheckout": true,
+  "changedFiles": [
+    {
+      "path": "sources.lock.json",
+      "bytes": 500555,
+      "sha256": "1d065786f87cbe1083812578f192f83862f4a7dd9344679c204b7cc712cd0301"
+    },
+    {
+      "path": "src/core/features/operator/ui/draft-approval.tsx",
+      "bytes": 6852,
+      "sha256": "790aab406006d965b4a76c4cd0bf73c030eee54f69885553ffc731133a59d3d3"
+    },
+    {
+      "path": "src/core/features/operator/ui/sender-status.tsx",
+      "bytes": 2707,
+      "sha256": "e6728b302bd6d3fd888a9c38a0b342d99adab45a25d0eb42e9287e0ac614a63a"
+    },
+    {
+      "path": "src/core/features/operator/ui/setup-line.tsx",
+      "bytes": 1790,
+      "sha256": "2995540136a07447aa4cc2e8bdefec06ba6e9f54d84654621774bd31fb8ceec9"
+    },
+    {
+      "path": "src/core/features/workbench/routes.ts",
+      "bytes": 12149,
+      "sha256": "3d6e78c2387db09723a031ef56d1f7cc24811bb6a95a2ad6398f3ed7533e2d30"
+    },
+    {
+      "path": "src/core/platform/outbound-mail.ts",
+      "bytes": 6076,
+      "sha256": "6790e07bb3d0e4bd1aa9508c4c16713a7d0578e109854d973cef9fce025b9fae"
+    },
+    {
+      "path": "tests/core/source-onboarding.test.ts",
+      "bytes": 31307,
+      "sha256": "6f29b6e43e066f4c4716254eea5b584f0bf74515602946fa70dff1c8f4447301"
+    },
+    {
+      "path": "tests/rer/onboarding-journey.mjs",
+      "bytes": 14674,
+      "sha256": "2359f32082edd15d01d77e00a684304d1767340d38c86d38ee06ad1db61c96ac"
+    }
+  ]
+}
