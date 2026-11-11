@@ -1,14 +1,40 @@
 {
   "repository": "just-every/run-orbit",
   "branch": "cloud/main-orbit-us-dates-1",
-  "head": "0d98096030fb8a83a622ffb7631da99f261f08ea",
-  "tree": "837ba0162a1efbf5287f3209f5d050a7f39a3520",
-  "base": "89c84362bbc010156bc30081d8a530704a9533e2",
+  "head": "6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c",
+  "tree": "d88f12f839a44af753dab66b31411503d234a398",
+  "base": "f336b13d063a9922cadb8f76bf8d8ebe2a39fe82",
   "pushGuard": "cloud-push.py",
   "pushResult": "success",
-  "remoteHeadVerified": "0d98096030fb8a83a622ffb7631da99f261f08ea",
+  "remoteHeadVerified": "6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c",
   "cleanCheckout": true,
   "candidateCommits": [
+    {
+      "sha": "6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "subject": "Merge main with verified US date input behavior",
+      "trailers": []
+    },
+    {
+      "sha": "b65e26bcf507016108cdecf9dd307e6ae42eb968",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "subject": "Assert invalid dates through their field validation",
+      "trailers": []
+    },
     {
       "sha": "0d98096030fb8a83a622ffb7631da99f261f08ea",
       "author": {

@@ -1,5 +1,5 @@
 {
-  "product_head": "0d98096030fb8a83a622ffb7631da99f261f08ea",
+  "product_head": "6fe339f7e7bf1ecdcc9ee018e364e11c46675d8c",
   "files": [
     {
       "file": "before-deal-1440.png",
@@ -23,13 +23,13 @@
     },
     {
       "file": "after-deal-1440.png",
-      "bytes": 319038,
-      "sha256": "3c543d61fbe9eacf8063e7ee6f0d547f558b9de4982f6ecd4c4182e7bcc36209"
+      "bytes": 314781,
+      "sha256": "71a3e4abd93b6091961c074a4372a5b2006f64acc570530432cc411e98024678"
     },
     {
       "file": "after-deal-390.png",
-      "bytes": 284043,
-      "sha256": "1d761caa20b94ce10d92358c377ffcf404d89b486782e226b046d0284bbe0189"
+      "bytes": 279970,
+      "sha256": "b2f8ba8285c0e07f3eb7815e6c12150b378d375818b23a4312b9bebcc348790b"
     },
     {
       "file": "after-draft-1440.png",
