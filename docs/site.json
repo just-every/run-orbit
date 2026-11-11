@@ -59,6 +59,11 @@
           "label": "Connected applications"
         },
         {
+          "slug": "api-credentials",
+          "source": "docs/API-CREDENTIALS.md",
+          "label": "API access"
+        },
+        {
           "slug": "updating",
           "source": "MIGRATION-RECOVERY.md",
           "label": "Updating and recovery"

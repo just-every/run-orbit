@@ -40,6 +40,9 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
   tools=<><EntryPrivacy source="entry" id={line.id}/>{editable?<><Opens summary="Edit entry">{()=><EntryEditor kind={kind} recordId={recordId} entry={{id:line.id,kind:line.kind,occurredAt:line.occurredAt,text:text(payload.text),durationMinutes:minutes,contactIds:Array.isArray(payload.contactIds)?payload.contactIds.map(String):[]}} onSaved={()=>onChanged?.()}/>}</Opens><DeleteTimelineEntry kind={kind} recordId={recordId} entryId={line.id} onDeleted={reload}/></>:null}</>;
  }
  else rest=text(payload.note)||by;
+ // A subject that is just the event label needs one label, not a second headline.
+ const same=(a:string,b:string)=>a.trim().toLowerCase()===b.trim().toLowerCase();
+ if(typeof title==='string'&&(same(title,kindWord)||same(title,mailEvidenceTitle(line.kind,type||undefined)))){kindWord=title;title=null;}
  return {key:`timeline-${line.id}`,anchor:`entry-${line.id}`,kind:kindWord,title,line:rest,at:line.occurredAt,tools,
   details:<><p className="r-muted">Occurred {formatDateTime(line.occurredAt)} · recorded {formatDateTime(line.recordedAt)} · {line.actorName??label(line.actorType)} · {sourceLabel(line.sourceName)}</p><AuditValue value={payload}/></>};
 }

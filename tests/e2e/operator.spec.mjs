@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { createHmac, randomUUID } from "node:crypto";
 
 import { contract } from "../contract.mjs";
 import { authenticateOperator } from "./operator-session.mjs";
@@ -31,7 +32,7 @@ test.describe("authenticated operator UI", () => {
   });
 
   contract("OPP-006", "the desktop NOW queue applies persisted filters before ordered results", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
     await page.goto("/app", { waitUntil: "networkidle" });
 
@@ -63,6 +64,36 @@ test.describe("authenticated operator UI", () => {
     await page.getByLabel("Filter by band").selectOption("high");
     await bandResponse;
     await expect(page.locator(".operator-queue-card")).toHaveCount(4);
+    await expectNoHorizontalOverflow(page);
+    expect(failures).toEqual([]);
+
+    // A fresh booking crosses a band: the ordinary queue and deal badge name
+    // that signed event, while the expanded evidence still carries its subject.
+    const unique = randomUUID(), origin = new URL(page.url()).origin;
+    const inventory = await (await page.request.get('/api/v1/workbench')).json();
+    const created = await page.request.post('/api/v1/workbench/opportunities', {headers:{Origin:origin},data:{
+      title:`Booking cause ${unique}`,companyName:`Synthetic booking ${unique}`,contactName:'Synthetic booking contact',
+      email:`synthetic-orbit-${unique}@example.test`,stageId:inventory.stages[0].id,valueCents:100
+    }});
+    expect(created.status()).toBe(201);
+    const {id} = await created.json(), sourceId = randomUUID();
+    const connected = await page.request.put(`/api/v1/sources/${sourceId}`, {headers:{Origin:origin},data:{name:`Synthetic booking ${unique}`,enabled:true}});
+    expect(connected.status()).toBe(200);
+    const {secret} = await connected.json(), type = 'meeting.booked', subject = `Customer booking ${unique}`;
+    const body = JSON.stringify({eventId:unique,type,subject,occurredAt:new Date().toISOString(),record:{type:'opportunity',id}});
+    const timestamp = String(Math.floor(Date.now()/1000));
+    const signature = createHmac('sha256',secret).update(`${timestamp}.${body}`).digest('hex');
+    const accepted = await page.request.post(`/api/v1/signals/${sourceId}`, {headers:{'Content-Type':'application/json','X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':signature},data:body});
+    expect(accepted.status()).toBe(201);
+    await page.goto('/app', {waitUntil:'networkidle'});
+    const cause = type.replaceAll('.', ' ').replace(/^./, letter => letter.toUpperCase());
+    const booking = page.getByRole('link', {name:`Open Booking cause ${unique}`,exact:true});
+    await expect(booking.locator('.operator-queue-card__reason > span')).toHaveText(cause);
+    await booking.click();
+    await expect(page.locator('.r-why .r-chip')).toHaveText(cause);
+    const evidence = page.getByTestId('contributing-evidence');
+    await evidence.locator('summary').click();
+    await expect(evidence).toContainText(subject);
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });
