@@ -1,7 +1,14 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 
 /** Compare rendered public inventories with authenticated native MCP discovery. */
 export async function agentDocsInventory({html,mcp}) {
+ const surface=JSON.parse(readFileSync(new URL('../../agent-surface.json',import.meta.url),'utf8'));
+ const discovery=await mcp('server/discover');
+ assert.equal(discovery.status,200,'authenticated server discovery succeeds');
+ const notTools=discovery.body.result?._meta?.['com.runeditrun/notTools'];
+ assert.deepEqual(notTools,surface.notTools,'live non-tool reasons match the generated manifest');
+ nonToolDocsInventory({html,notTools});
  const tools=await mcp('tools/list'),resources=await mcp('resources/templates/list');
  assert.equal(tools.status,200,'authenticated tool discovery succeeds');
  assert.equal(resources.status,200,'authenticated resource discovery succeeds');
@@ -19,12 +26,33 @@ export async function agentDocsInventory({html,mcp}) {
    [...row[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map(cell=>cell[1].replace(/<[^>]+>/g,'')));
  };
  const toolRows=tableAfter('current-tool-inventory');
+ assert.deepEqual(tools.body.result.tools.map(tool=>({name:tool.name,scope:tool._meta['com.runeditrun/scope'],readOnly:tool.annotations.readOnlyHint,classes:tool._meta['com.runeditrun/classes'],clauses:tool._meta['com.runeditrun/clauses']})).sort((a,b)=>a.name.localeCompare(b.name)),
+  surface.tools.map(({name,scope,readOnly,classes,clauses})=>({name,scope,readOnly,classes,clauses})),
+  'discovery preserves the manifest tool scopes, read authority, classes and clause coverage');
  assert.deepEqual(toolRows.map(row=>row[0]).sort(),tools.body.result.tools.map(tool=>tool.name).sort(),'rendered tools exactly match native discovery');
  const resourceRows=tableAfter('current-resource-template-inventory');
  assert.deepEqual(resourceRows.map(([uriTemplate,name])=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
   resources.body.result.resourceTemplates.map(({uriTemplate,name})=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
   'rendered resource templates and names exactly match native discovery');
- return {tools:toolRows.length,resourceTemplates:resourceRows.length};
+ return {tools:toolRows.length,resourceTemplates:resourceRows.length,nonToolClauses:notTools.flatMap(item=>item.clauses)};
+}
+
+/** Check declared exceptions against the independent contract and the built guide. */
+export function nonToolDocsInventory({html,notTools}) {
+ const contract=readFileSync(new URL('../../CONTRACT.md',import.meta.url),'utf8');
+ const exceptions=contract.match(/\*\*Not tools, and why\.\*\* ([^\n]+)/)?.[1];
+ assert.ok(exceptions,'the contract declares the permitted non-tool parts');
+ const ids=[...exceptions.matchAll(/\b([A-Z]+-\d{3}):/g)].map(match=>match[1]).sort();
+ assert.deepEqual(notTools.flatMap(item=>item.clauses).sort(),ids,'all and only the declared contract exceptions are exposed');
+ const reasons={installation:['TEAM-001','TEAM-003','OPS-001','BOUNDARY-001'],screen:['PUBLIC-001','PUBLIC-002','PUBLIC-003','PUBLIC-004'],device:['MOBILE-001'],'import-door':['RECORD-008','MIGRATE-001','MIGRATE-002','MIGRATE-003']};
+ for(const item of notTools) {
+  assert.ok(item.clauses.every(id=>reasons[item.reason]?.includes(id)),'each exception uses its contract kind, never risk');
+  assert.equal(typeof item.description,'string');assert.ok(item.description.trim(),'each reason explains its concrete non-action part');
+ }
+ const section=html.slice(html.indexOf('id="declared-non-tool-parts"')).split(/<h[23]\b/)[0];
+ const rows=[...section.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].filter(row=>row[1].includes('<td>')).map(row=>
+  [...row[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map(cell=>cell[1].replace(/<[^>]+>/g,'')));
+ assert.deepEqual(rows,notTools.map(item=>[item.clauses.join(', '),item.reason,item.description]),'the rendered guide carries every discovered reason and its scope');
 }
 
 /** Compare a populated rule explanation with the native door and the recorded stage source. */
@@ -46,6 +74,7 @@ export function stalledRiskComparison(risks,native,expected) {
 }
 
 export default async function sellerDay({tool,request,origin,cookie}) {
+ const surface=JSON.parse(readFileSync(new URL('../../agent-surface.json',import.meta.url),'utf8'));
  async function call(name,args={}) {
   const answer=await tool('orbit.'+name,args);
   assert.equal(answer.status,200,name);
@@ -53,6 +82,11 @@ export default async function sellerDay({tool,request,origin,cookie}) {
   assert.ok(answer.result?.structuredContent,`${name} must return native structured content`);
   return answer.result.structuredContent;
  }
+ const beforeDocs=await call('operations.read');
+ const guide=await request(new URL('/docs/agents',origin).href);
+ assert.equal(guide.status,200);
+ nonToolDocsInventory({html:await guide.text(),notTools:surface.notTools});
+ assert.deepEqual(await call('operations.read'),beforeDocs,'reading the non-tool guide changes no native state');
  const selected=await call('records.list',{kind:'opportunity',query:'Door specialist fixture opportunity',limit:1});
  const id=selected.items[0].ref.id,record=await call('records.read',{kind:'opportunity',id});
  const signals=await call('signals.list',{opportunity_id:id});
