@@ -10287,7 +10287,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "f71586ce7761bab14d330d809598697c723e0f3b267c75e5247fd7e783664fe7",
+      "sha256": "1d9019b06148d5e9e652eeff5a53314ae86e14949ebad480c946b374e6d60f4f",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {

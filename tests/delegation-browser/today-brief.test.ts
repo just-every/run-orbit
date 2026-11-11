@@ -53,15 +53,15 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   assert.deepEqual(model.unexpected,[],'Risk review makes no customer mail or other outbound request');
   await runtime.teardown();await fixture.reopen();
   assert.deepEqual(await riskBusinessState(fixture.db),before,'Risk review changes no sales state, stakeholders, commitments, drafts or mail');
-  const riskFixture=await isolatedDatabase();
+  const riskFixture=await isolatedDatabase(),riskRuntime=new unstable_DevEnv();
   try {
   const stalled=await stalledRiskBrowser(testContext,riskFixture.db,origin);
   await riskFixture.close();
-  const riskOnly=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(stalled.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port}}});await riskOnly.ready;
+  const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(stalled.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port}}});await riskOnly.ready;
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await signedIn.close();
-  } finally {await runtime.teardown();await riskFixture.dispose();}
+  } finally {await riskRuntime.teardown();await riskFixture.dispose();}
 
  }finally{
   await browser?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await runtime.teardown();await fixture.dispose();
