@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "tag": "main-orbit-own-notifications-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-own-notifications-1",
+  "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c",
+  "tree": "50225c468b6e4a10a92094337015ecc57c081ebc",
+  "base": "81e9125e1e7bd533a7a7545469255d7b9613b484",
+  "pushed": true,
+  "push_attempts": [
+    1,
+    1
+  ],
+  "pr_url": null,
+  "recorded_at": "2026-11-11T10:15:39.714239+00:00",
+  "local_checks": [
+    {
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "log": "agent-tests-validated.tap",
+      "scope": "before final main synchronization and direct-send refinement; complete test passed; final branch CI reruns it"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/assistance.test.ts",
+      "exit": 0,
+      "passed": 6,
+      "failed": 0,
+      "log": "assistance-tests-direct-send.tap",
+      "scope": "final direct-send refinement before its commit; six tests passed"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-notification-playwright.config.mjs zz-notifications.spec.mjs",
+      "status": "passed",
+      "log": "browser-test-final-candidate.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c",
+      "assertion_width": 1440,
+      "proof_widths": [
+        1440,
+        390
+      ],
+      "chromium": "/usr/bin/chromium",
+      "launch_args": [
+        "--no-sandbox"
+      ],
+      "exit": 0,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-final-candidate.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "scope": "before final main synchronization; candidate browser also rebuilt"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check-final.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0,
+      "log": "deployment-spec-final.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "boundaries-final.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-docs-check-final.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    },
+    {
+      "command": "pnpm run build:app (browser harness)",
+      "exit": 0,
+      "log": "browser-test-final-candidate.log",
+      "head": "285123446209ab1c0eb5496c6a593dd2b54bc66c"
+    }
+  ],
+  "tests_before": 200,
+  "tests_after": 200,
+  "contract_status_changes": [],
+  "notification_proof": {
+    "proof": "direct-notifications",
+    "directCreateDelta": 0,
+    "colleagueDelta": 1,
+    "agentDelta": 1,
+    "automationDelta": 1,
+    "replayDelta": 0,
+    "existingRowsUnchanged": true
+  },
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_branch": "cloud/main-orbit-own-notifications-1",
+    "head_sha": "285123446209ab1c0eb5496c6a593dd2b54bc66c",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43001814461",
+    "id": 43001814461,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "publication_scan": "Fleet-owned external gate; not run in this cloud",
+  "product_worktree_clean": true,
+  "screenshots": [
+    {
+      "path": "notifications-1440.png",
+      "sha256": "32d51a115d62c12f3fa266e41bc57ee69463db046f119d8980e0e0f41d293188"
+    },
+    {
+      "path": "notifications-390.png",
+      "sha256": "e805a84f33e8b0cb416ea0d484e4d32630db53d3db019e43c218d536e3499b6c"
+    }
+  ],
+  "superseded_heads": [
+    {
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e",
+      "verify_run": 42999862255
+    }
+  ],
+  "product_commits": 2,
+  "product_pushes": 2,
+  "send_notification_proof": {
+    "immediate_sender_delta": 0,
+    "modes": [
+      "accepted",
+      "failed",
+      "delivery-unknown"
+    ],
+    "later_signed_provider_failure_notifies_sender": true,
+    "provider_replay_adds_no_notification": true,
+    "log": "assistance-tests-direct-send.tap"
+  },
+  "github_calls_used": 8,
+  "custody": "PUSHED",
+  "ready": false,
+  "remaining_calls_reserved_for_failure_diagnostics": 2,
+  "ci_last_polled_at": "2026-11-11T10:39:03.875682+00:00",
+  "blockers": [],
+  "pending": [
+    "Exact-SHA Verify run 43001814461 was still in_progress at the final permitted status observation; fleet must await its conclusion before landing.",
+    "Fleet-owned publication scan and landing gates."
+  ]
+}

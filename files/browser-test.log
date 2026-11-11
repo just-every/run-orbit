@@ -1,0 +1,94 @@
+[WebServer] (node:3665) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3677) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:3693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4635) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4647) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3658) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:4763) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✘  1 tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read (38.9s)
+
+
+  1) tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.goto: Test timeout of 30000ms exceeded.
+    Call log:
+      - navigating to "http://127.0.0.1:8722/app/notifications", waiting until "networkidle"
+
+
+       7 |   await authenticateOperator(colleague,{colleague:true});
+       8 |   const origin=`http://127.0.0.1:${process.env.ORBIT_BROWSER_PORT ?? 8722}`,headers={Origin:origin};
+    >  9 |   await page.goto('/app/notifications',{waitUntil:'networkidle'});
+         |              ^
+      10 |   const before=await(await page.request.get('/api/v1/notifications')).json(),inventory=await(await page.request.get('/api/v1/workbench')).json(),name=`Notification journey ${Date.now()}`;
+      11 |   const created=await page.request.post('/api/v1/workbench/opportunities',{headers,data:{title:`Own ${name}`,companyName:name,contactName:'Notification contact',email:`notification-${Date.now()}@example.test`,stageId:inventory.stages[0].id,valueCents:0}});expect(created.status()).toBe(201);
+      12 |   expect((await(await page.request.get('/api/v1/notifications')).json()).unread).toBe(before.unread);
+        at /workspace/run-orbit/tests/e2e/zz-notifications.spec.mjs:9:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read 

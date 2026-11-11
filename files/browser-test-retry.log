@@ -1,0 +1,99 @@
+[WebServer] (node:6032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6079) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6079) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:6079) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6994) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:7006) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6021) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:7159) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✘  1 tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read (55.4s)
+
+
+  1) tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('link', { name: 'Notifications, 5 unread' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('link', { name: 'Notifications, 5 unread' }) with timeout 5000ms
+      - waiting for getByRole('link', { name: 'Notifications, 5 unread' })
+
+
+      16 |   const event={type:'meeting.booked',subject:'Another person recorded an enquiry',occurredAt:new Date().toISOString(),eventId:`synthetic-orbit-${Date.now()}`};
+      17 |   expect((await colleague.request.post(origin+`/api/v1/workbench/opportunities/${id}/events`,{headers,data:event})).status()).toBe(201);
+    > 18 |   await expect(page.getByRole('link',{name:`Notifications, ${before.unread+1} unread`})).toBeVisible({timeout:5000});
+         |                                                                                          ^
+      19 |   const title=page.getByRole('link',{name,exact:true}),item=page.locator('.notification-list--inbox li').filter({has:title}),mark=item.getByRole('button',{name:'Mark read',exact:true});
+      20 |   await expect(item).toBeVisible();await title.focus();await expect(title).toBeFocused();await expect(mark).toBeInViewport();await mark.focus();await expect(mark).toBeFocused();await expect(mark).toBeEnabled();
+      21 |   const inbox=await(await page.request.get('/api/v1/notifications')).json();expect(inbox.unread).toBe(inbox.notifications.filter(row=>!row.readAt).length);
+        at /workspace/run-orbit/tests/e2e/zz-notifications.spec.mjs:18:90
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-notification-test-results/zz-notifications-NOTIFY-00-fd1ce-d-opening-persists-one-read/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/zz-notifications.spec.mjs:4:1 › NOTIFY-002 direct actions stay silent while another person updates the badge within five seconds and opening persists one read 

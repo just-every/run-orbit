@@ -1,0 +1,11 @@
+{
+  "door": "POST /api/v1/workbench/opportunities",
+  "before": 0,
+  "after": 1,
+  "kinds": [
+    "opportunity.now"
+  ],
+  "messages": [
+    "Operator created opportunity"
+  ]
+}

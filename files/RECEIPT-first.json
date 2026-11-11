@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "tag": "main-orbit-own-notifications-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-own-notifications-1",
+  "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e",
+  "tree": "0409e5d0c67836f13da213f6c07428b1673e1b47",
+  "base": "81e9125e1e7bd533a7a7545469255d7b9613b484",
+  "pushed": true,
+  "push_attempts": 1,
+  "pr_url": null,
+  "recorded_at": "2026-11-11T10:03:57.545461+00:00",
+  "local_checks": [
+    {
+      "command": "pnpm exec tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "log": "agent-tests-validated.tap",
+      "scope": "before final main synchronization"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/assistance.test.ts",
+      "exit": 0,
+      "passed": 6,
+      "failed": 0,
+      "log": "assistance-tests-serial.tap",
+      "scope": "before final main synchronization"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-notification-playwright.config.mjs zz-notifications.spec.mjs",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "log": "browser-test-candidate.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e",
+      "assertion_width": 1440,
+      "proof_widths": [
+        1440,
+        390
+      ],
+      "chromium": "/usr/bin/chromium",
+      "launch_args": [
+        "--no-sandbox"
+      ]
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-candidate.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "scope": "before final main synchronization; candidate browser also rebuilt"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check-candidate.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0,
+      "log": "deployment-spec-candidate.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "boundaries.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-docs-check-candidate.log",
+      "head": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e"
+    }
+  ],
+  "tests_before": 200,
+  "tests_after": 200,
+  "contract_status_changes": [],
+  "notification_proof": {
+    "proof": "direct-notifications",
+    "directCreateDelta": 0,
+    "colleagueDelta": 1,
+    "agentDelta": 1,
+    "automationDelta": 1,
+    "replayDelta": 0,
+    "existingRowsUnchanged": true
+  },
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_branch": "cloud/main-orbit-own-notifications-1",
+    "head_sha": "f50ca67804c1c6ead251e1a40c69b7a0bf18483e",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/42999862255",
+    "id": 42999862255,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "publication_scan": "Fleet-owned external gate; not run in this cloud",
+  "product_worktree_clean": true,
+  "screenshots": [
+    {
+      "path": "notifications-1440.png",
+      "sha256": "a34e215a6e71d6faed0f153b78c545e7d2e01e18f940db6de2e147a01786bfe3"
+    },
+    {
+      "path": "notifications-390.png",
+      "sha256": "23a12dbb3aa2e41eff90538abd6eaa575d29d0c9f3c3eb1377fcc4f17733f441"
+    }
+  ]
+}

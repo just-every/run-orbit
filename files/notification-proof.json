@@ -1,0 +1,9 @@
+{
+  "proof": "direct-notifications",
+  "directCreateDelta": 0,
+  "colleagueDelta": 1,
+  "agentDelta": 1,
+  "automationDelta": 1,
+  "replayDelta": 0,
+  "existingRowsUnchanged": true
+}

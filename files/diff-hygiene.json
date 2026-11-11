@@ -1,0 +1,9 @@
+{
+  "scope": "staged diff credential-shape check only; fleet publication scan remains external",
+  "findings": {
+    "github-token": 0,
+    "private-key": 0,
+    "aws-access-key": 0
+  },
+  "passed": true
+}
