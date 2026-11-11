@@ -3743,7 +3743,7 @@
       "executable": false
     },
     "newtests/t096/team-operator-browser.ts": {
-      "sha256": "2177f6422e11dc3da6cdb897dbdb5717c3ec4cf36598c655184e71445ad801ac",
+      "sha256": "163e4e9638e86ad87b7fbe26f1858244777b1aee3ec217d1713462ae1baf875b",
       "executable": false
     },
     "newtests/t096/team-operator-doors.ts": {
