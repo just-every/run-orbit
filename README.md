@@ -50,7 +50,7 @@ curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 
 Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
 
-To start it again later: `cd run-orbit && rer dev`.
+To start it again later: `cd run-orbit && rer dev`. After the installer script, a terminal without `~/.local/bin` on PATH needs `export PATH="$HOME/.local/bin:$PATH"` before a bare `rer dev`, or it says `rer: command not found` (add that line to your shell startup file to keep it; `"$HOME/.local/bin/rer" cli path` shows the line for your shell).
 
 Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; `rer` brings both into its own cache and installs the frozen dependencies, so you install neither yourself. `rer dev just-every/run-orbit` clones the current `main`. `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@run-orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings › Team › Owner email. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 

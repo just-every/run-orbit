@@ -14,7 +14,8 @@ The `OPERATIONS.json` argv and `package.json` aliases use `rer VERB`.
 curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-From a runnable edition's root, `rer dev` is the whole launch (the line above clones and starts it in one step; later, `cd run-orbit && rer dev`). It installs
+From a runnable edition's root, `rer dev` is the whole launch (the line above clones and starts it in one step; later, `cd run-orbit && rer dev`; a terminal without `~/.local/bin` on PATH needs
+`export PATH="$HOME/.local/bin:$PATH"` first, or it says `rer: command not found`; `"$HOME/.local/bin/rer" cli path` shows the line for your shell). It installs
 locked dependencies when they are missing or older than the lockfile. On a
 checkout that is not set up it prepares a local trial owner
 named after the checkout's folder
