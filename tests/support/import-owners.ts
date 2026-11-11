@@ -61,7 +61,8 @@ export async function importOwnerFlow(f:any){
  const inactiveSource={...mapped,account:'Synthetic inactive owner',files:[{...source.files[0],csv:contactHeaders.join(',')+'\r\n728,Inactive owner contact,synthetic-orbit-728@ownership.test,Former rep'}]},inactiveReview=await json(await f.request('imports/dry-run','POST',inactiveSource));
  await f.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.id).run();
  assert.equal((await f.request(`imports/${inactiveReview.id}/apply`,'POST',{confirmed:true,fingerprint:inactiveReview.fingerprint})).status,409);await finish(f,inactiveReview,'undo');assert.equal((await f.request('imports/dry-run','POST',mapped)).status,409);
- await json(await f.request(`settings/operators/${owner.id}/erase`,'POST',{confirmed:true}));
+ // Use the fresh session already obtained for this protected action; the full import flow can outlive its initial email proof.
+ await json(await f.request(`settings/operators/${owner.id}/erase`,'POST',{confirmed:true},headers));
  assert.equal((await json(await f.request(`imports/${guarded.id}`))).sourceWithdrawn,true);
  const copies=JSON.stringify((await f.db.prepare('SELECT original_json FROM crm_import_targets').all()).results);assert.ok(!copies.includes('Import receiving rep'));assert.ok(!copies.includes('synthetic-orbit-716@ownership.test'));
  assert.ok(!(await f.db.prepare("SELECT id FROM notifications WHERE message LIKE '%Import receiving rep%'").first()));
