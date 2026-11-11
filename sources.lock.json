@@ -11002,12 +11002,16 @@
       "sha256": "63bfc5525924ffb7bc697fc7e287110f2085029417de1cd50f953862f32bd527",
       "executable": false
     },
+    "tests/support/agent-door-forecast-proof.ts": {
+      "sha256": "52d70267257e094c8602cd9605ed307c91e3d7e2ac0183668294f3a362206da9",
+      "executable": false
+    },
     "tests/support/agent-door-local-proof.ts": {
       "sha256": "40713852bcee73cde6f7396c989b21c1964ae931664892327e88e3067d87bba6",
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "6e300b706fed804121508456ceb36bb597a670ae354cac8da6fe9cd5794d9a2a",
+      "sha256": "7fd231226bf9d2a8679b664dc7ec9383575083adf28f5ae54153fcc4bbd68956",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {
