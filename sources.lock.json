@@ -11015,7 +11015,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "ccfea3c8e37096259081dbd2d45b66767dc7ac72679b3520466392fd4abda676",
+      "sha256": "67bc6b54e071fbdb13254d6c73ccc8e70680a66caf8565e29cadd688da30120f",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {
