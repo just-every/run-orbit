@@ -2226,6 +2226,10 @@
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
       "executable": false
     },
+    "migrations/core/0081_graph_proposals.sql": {
+      "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+      "executable": false
+    },
     "migrations/rewrites.json": {
       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
       "executable": false
@@ -5314,6 +5318,10 @@
       "sha256": "337db0014345a8c241f08956c6c87b883e4ee620c3511872f6508bf197f4b717",
       "executable": false
     },
+    "src/core/features/agent-door/graph.ts": {
+      "sha256": "4301955498d6da0d802fea09e8cc16d2c4c0fc0b22f94db20c3bc3a3e8a29076",
+      "executable": false
+    },
     "src/core/features/agent-door/handoffs.ts": {
       "sha256": "076464b5a90ec5748c39b66cc450a1da9f8b0d8aa923ff8b9cdbb0d8af768747",
       "executable": false
@@ -6595,7 +6603,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "5e21764a350398f3bf553835e0da425987d5f80514f1add56a23dc1bcc53a939",
+      "sha256": "9f02d58c0382e7b469a5cf820101f9cd13c99598b21c3bb6f6e719ee2ce0cd85",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -10034,6 +10042,14 @@
       "sha256": "2b9cb2f03913f702008d9948672db4562c8c328b43ec577b4eb2d2596488d660",
       "executable": false
     },
+    "tests/agent-door/graph-browser-journey.mjs": {
+      "sha256": "e2c1226c610fd9d368f21826975c0153aff1705cba21e9067737f78f3295cfeb",
+      "executable": false
+    },
+    "tests/agent-door/graph-fixture.mjs": {
+      "sha256": "b3a284c80dc0a45db04c75e02daa222d4893c7a76e41c11167cd1e553f43b953",
+      "executable": false
+    },
     "tests/agent-door/initialize-owner.mjs": {
       "sha256": "0b542c7a733b23587ab8477786a17d7419b194c4a582f770877b2ff0bbf83a28",
       "executable": false
@@ -11000,6 +11016,10 @@
     },
     "tests/support/agent-door-collaborator-proof.ts": {
       "sha256": "63bfc5525924ffb7bc697fc7e287110f2085029417de1cd50f953862f32bd527",
+      "executable": false
+    },
+    "tests/support/agent-door-graph-proof.ts": {
+      "sha256": "e7b5092c808a27d4adc46b4d8d6a88c19f55c34c3b9a16c95bfa42722f150383",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {

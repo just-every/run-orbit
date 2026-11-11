@@ -36,8 +36,14 @@ export async function agentDoorGraphProof(input:CaptureSecurityProofContext){
  const code=new URL(consent.headers.get('location')!).searchParams.get('code')!;
  const exchange=await form('/api/delegation/v1/token',{grant_type:'authorization_code',client_id:client,redirect_uri:callback,code,code_verifier:verifier});assert.equal(exchange.status,200);
  const token=(await exchange.json() as any).access_token;
- const call=async(args:object,name='orbit.graph.propose')=>{
-  const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name},body:JSON.stringify({jsonrpc:'2.0',id:901,method:'tools/call',params:{name,arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
+ const readVerifier=crypto.randomUUID()+crypto.randomUUID();
+ const readConsent=await form('/delegation/authorize',{client_id:client,redirect_uri:callback,response_type:'code',state:crypto.randomUUID(),code_challenge:await challenge(readVerifier),code_challenge_method:'S256',account_id:'workspace',scope:'crm.evidence.read',targets:JSON.stringify([`companies/${company}`,`contacts/${contact}`,`opportunities/${deal}`,`signals/${signal}`])});
+ assert.equal(readConsent.status,303);
+ const readCode=new URL(readConsent.headers.get('location')!).searchParams.get('code')!;
+ const readExchange=await form('/api/delegation/v1/token',{grant_type:'authorization_code',client_id:client,redirect_uri:callback,code:readCode,code_verifier:readVerifier});assert.equal(readExchange.status,200);
+ const readToken=(await readExchange.json() as any).access_token;
+ const call=async(args:object,name='orbit.graph.propose',credential=token)=>{
+  const response=await door.handle(new Request(origin+'/mcp',{method:'POST',headers:{Authorization:'Bearer '+credential,'Content-Type':'application/json','MCP-Protocol-Version':'2026-07-28','MCP-Method':'tools/call','MCP-Name':name},body:JSON.stringify({jsonrpc:'2.0',id:901,method:'tools/call',params:{name,arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}})}));
   assert.ok(response);return {status:response.status,body:await response.json() as any};
  };
  const args={company_id:company,signal_id:signal,job_change:{id:contact,value:'Director of Operations',citation:{quote:lines[0]!,label:'observed'}},close_date:{id:deal,value:'2026-12-15T00:00:00.000Z',citation:{quote:lines[1]!,label:'observed'}},question:{quote:lines[2]!,label:'inferred'},idempotency_key:'synthetic-orbit-graph-original'};
@@ -46,6 +52,7 @@ export async function agentDoorGraphProof(input:CaptureSecurityProofContext){
  let proposals:any[]=[];
  for(const mode of ['held','autonomous'] as const){
   await adopt(mode==='held'?heldPolicy():autonomousPolicy());
+  const readOnly=await call({...args,idempotency_key:'synthetic-orbit-read-only-'+mode},'orbit.graph.propose',readToken);assert.equal(readOnly.status,403,'read consent alone cannot propose a graph change');
   const answer=await call({...args,idempotency_key:args.idempotency_key+'-'+mode});assert.equal(answer.status,200);
   const result=answer.body.result;assert.equal(result.isError,false,JSON.stringify(answer));assert.equal(result._meta['com.runeditrun/untrusted'],true);
   const decision=result._meta['com.runeditrun/decision'];assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
@@ -65,6 +72,7 @@ export async function agentDoorGraphProof(input:CaptureSecurityProofContext){
  assert.ok(proposals.every(p=>review.proposals.some((r:any)=>r.id===p.id)),'native review displays the populated proposals');
  const job=proposals.find(p=>p.field==='job_title'),close=proposals.find(p=>p.field==='expected_close_at'),question=proposals.find(p=>p.kind==='question');
  assert.equal((await request(`/api/v1/capture/proposals/${job.id}/accept`,'POST',{},'')).status,401);
+ const agentAccept=await app.request(origin+`/api/v1/capture/proposals/${job.id}/accept`,{method:'POST',headers:{Authorization:'Bearer '+token,Origin:origin,'Content-Type':'application/json'},body:'{}'});assert.equal(agentAccept.status,401,'an agent credential cannot perform native person review');
  await native(`/api/v1/records/contact/${contact}`,'PATCH',{changes:{job_title:'Native owner correction'},base:{job_title:'Analyst'}});
  assert.equal((await request(`/api/v1/capture/proposals/${job.id}/accept`,'POST',{})).status,409);
  assert.equal(await db.prepare('SELECT job_title FROM contacts WHERE id=?').bind(contact).first('job_title'),'Native owner correction');
