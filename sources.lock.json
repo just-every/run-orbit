@@ -2295,7 +2295,7 @@
       "executable": false
     },
     "newtests/t096/browser-form-mapping.ts": {
-      "sha256": "aa86156fb1390adff8ee2de9c798bb17019d089686040ee2dd23834523a2d4e0",
+      "sha256": "80bd269967fedc8d999112194be3897e588d24034124808262a950e9d7d3b160",
       "executable": false
     },
     "newtests/t096/browser-form-no-script.ts": {
@@ -6075,7 +6075,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "4a4104529ab353f9398e88a13ed52149d50fa4ab7f843f26b40b002ece2217a2",
+      "sha256": "cd4fcefb50733130075bfe6d6ed70d76b398872ae42a55352b887c19f9662775",
       "executable": false
     },
     "src/core/features/forms/contact-basis.ts": {
