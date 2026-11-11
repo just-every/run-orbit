@@ -13,7 +13,7 @@ import { createArchiveRoutes } from './archive-routes';
 import { RecordError, type RecordKind } from './shared';
 import { MentionAccessError, mentionable, mentionsOf } from './mentions';
 import {logUnexpected} from '../../platform/unexpected-error';
-export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean}={}){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repo=new RecordsRepository(db),imports=new ImportMergeRepository(db),manual=new ManualRepository(db),data=new DataRepository(db);
+export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean;agentErasureSecret?:string}={}){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>(),repo=new RecordsRepository(db),imports=new ImportMergeRepository(db),manual=new ManualRepository(db),data=new DataRepository(db,options.agentErasureSecret);
  app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message,recordId:e.recordId,...(e instanceof MentionAccessError?{withoutAccess:e.colleagues}:{})},e.status);logUnexpected('records',e);return c.json({error:'Record operation failed; no success was confirmed.'},500);});
  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.use('*',async(c,next)=>{const match=/\/(contact|company|opportunity)\/([^/]+)(?:\/entries\/([^/]+))?/.exec(c.req.path);if(match&&!['duplicates','merge'].includes(match[2])){for(const value of [match[2],match[3]].filter(Boolean)){if(!recordId.safeParse(value).success)return c.json({error:'Invalid record ID.'},400);}}await next();});

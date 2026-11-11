@@ -8,9 +8,10 @@ import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import {containsWord,redactJsonText,redactionSql} from './erasure-redaction';
 import {messageReviewOperatorErasure} from '../drafts/privacy';
 import {operatorRetirementStatements} from '../agent-door/operator-erasure';
+import {createId} from '../../shared/ids';
 
 /** Retain stable attribution IDs while removing a retired operator's personal details. */
-export async function eraseOperator(db:D1Database,id:string,actor:string){
+export async function eraseOperator(db:D1Database,id:string,actor:string,agentErasureSecret?:string){
  const operator=await db.prepare('SELECT email,display_name,status FROM operators WHERE id=?').bind(id).first<{email:string;display_name:string;status:string}>();
  if(!operator)throw new RecordError(404,'Operator not found.');
  if(operator.status!=='removed')throw new RecordError(409,'Remove the operator before erasing their personal details.');
@@ -22,12 +23,13 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   const others=(await db.prepare("SELECT display_name AS name FROM operators WHERE id<>? AND instr(lower(display_name),lower(?))>0 UNION ALL SELECT name FROM contacts WHERE instr(lower(name),lower(?))>0").bind(id,name,name).all<{name:string|null}>()).results;
   if(others.some(other=>other.name&&containsWord(other.name,name)))throw new RecordError(409,'Another operator or contact has a name containing this display name, so Orbit cannot tell whose name attributed text means. Nothing was erased.');
  }
- const now=new Date().toISOString(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
+ const now=new Date().toISOString(),erasureId=createId(),statements=[db.prepare(`DELETE FROM api_credentials WHERE principal_id=? OR ${identityMatch('name')}`).bind(id,...identityPatterns(operator.email)),db.prepare('DELETE FROM sessions WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_proofs WHERE operator_id=?').bind(id),db.prepare('DELETE FROM identity_bindings WHERE operator_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE operator_id=?').bind(id)];
  statements.push(...await eraseImportOwnerIdentity(db,id,operator.email,actor));
  statements.push(...ownershipOperatorErasure(db,id),...workflowOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
  // The Business roster entry, policy references and portability checkpoint retire in this same batch.
- statements.push(...await operatorRetirementStatements(db,id));
+ // Their agent-door records are redacted here too; the tombstone is the `operator.erased` audit entry itself.
+ statements.push(...await operatorRetirementStatements(db,id,agentErasureSecret,{erasure_id:erasureId,at:now}));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
  const contentColumns:Record<string,string[]>={workflow_versions:['name','definition_json','preview_json'],audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],record_mail_drafts:['subject','body'],record_mail_outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
@@ -47,6 +49,6 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
   // Display names cannot identify somebody in another operator's content.
   if(scope&&redactName&&!column.endsWith('_json'))statements.push(db.prepare(`UPDATE ${table} SET ${column}=${redactionSql(column,'word')} WHERE ${scope} AND instr(lower(${column}),lower(?))>0`).bind(name,'Erased operator',...Array(scope.match(/\?/g)?.length??0).fill(id),name));
  }
- statements.push(db.prepare("UPDATE owner_bootstrap SET email=?,display_name='Erased operator' WHERE owner_id=?").bind(`erased-${id.toLowerCase()}@example.invalid`,id),db.prepare("UPDATE operators SET email=?,display_name='Erased operator',updated_at=? WHERE id=? AND status='removed'").bind(`erased-${id.toLowerCase()}@example.invalid`,now,id),audit(db,actor,'operator.erased','operator',id));
+ statements.push(db.prepare("UPDATE owner_bootstrap SET email=?,display_name='Erased operator' WHERE owner_id=?").bind(`erased-${id.toLowerCase()}@example.invalid`,id),db.prepare("UPDATE operators SET email=?,display_name='Erased operator',updated_at=? WHERE id=? AND status='removed'").bind(`erased-${id.toLowerCase()}@example.invalid`,now,id),audit(db,actor,'operator.erased','operator',id,{},now,erasureId));
  await executeArchiveErasure(db,statements);return {erased:true};
 }

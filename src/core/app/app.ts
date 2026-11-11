@@ -60,7 +60,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   app.all('/unsubscribe/:token',c=>optOutResponse(c.req.raw,input.database));
@@ -166,10 +166,10 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route('/api/v1/calls',callRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
-  app.route("/api/v1/records", createRecordsRoutes(input.database));
+  app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));
   app.route('/api/v1/tasks',createSalesTaskRoutes(input.database));
   app.route('/api/v1/relationships',createRelationshipRoutes(input.database));
-  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings/team')));
+  app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings/team'),input.agentErasureSecret));
   app.route("/api/v1/setup", createSetupRoutes(input.database));
   app.route("/api/v1/sources", createSourceRoutes(input.database,input.sourceSecurity));
   app.route("/api/v1/notifications", createNotificationRoutes(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin}));
