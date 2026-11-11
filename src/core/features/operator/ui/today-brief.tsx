@@ -18,8 +18,9 @@ const sections:{title:string;test:(line:BriefLine)=>boolean}[]=[
 
 function Line({line,presentation}:{line:BriefLine;presentation:WorkspacePresentation}){
  const {full}=useAppAccess();
+ const prefix=linePrefix(line),repeated=prefix.trim().toLowerCase()===line.title.trim().toLowerCase();
  return <li className="today-line" data-line={line.id}>
-  <div className="today-line__what"><a href={line.href}><span className="today-line__prefix">{linePrefix(line)}:</span> {line.title}</a>{line.detail&&<span className="today-line__detail">{line.detail}</span>}</div>
+  <div className="today-line__what"><a href={line.href}>{repeated?<span className="today-line__prefix">{line.title}</span>:<><span className="today-line__prefix">{prefix}:</span> {line.title}</>}</a>{line.detail&&<span className="today-line__detail">{line.detail}</span>}</div>
   <div className="today-line__when"><time dateTime={line.occurredAt}>{formatDateTime(line.occurredAt,presentation)}</time>{line.dueAt&&line.group!=='proposal'&&<span>Due {formatDateTime(line.dueAt,presentation)}</span>}{full&&line.planHref&&<a href={line.planHref}>Plan this meeting</a>}</div>
  </li>;
 }
