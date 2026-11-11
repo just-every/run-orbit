@@ -1,0 +1,26 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-integrations-api-1",
+  "head": "8a4519f99fcee94b7753f1251a95f11667dae9ec",
+  "pushed": true,
+  "pushAttempt": 1,
+  "identitiesAndTrailers": "Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\n",
+  "workingTreeClean": true,
+  "testCountBefore": 200,
+  "testCountAfter": 200,
+  "productFiles": [
+    "docs/API-CREDENTIALS.md",
+    "docs/site.json",
+    "scripts/browser-runtime.mjs",
+    "sources.lock.json",
+    "src/core/features/operator/ui/connected-products.tsx",
+    "src/core/features/operator/ui/settings/integrations.tsx",
+    "src/core/features/operator/ui/settings/settings.css",
+    "tests/e2e/operator-session.mjs",
+    "tests/e2e/worker-smoke.spec.mjs",
+    "tests/support/integrations-api-guide.mjs",
+    "tests/support/issue-operator-session.ts"
+  ],
+  "clauseStatusChanges": [],
+  "pullRequest": null
+}

@@ -1,0 +1,177 @@
+[WebServer] (node:3045) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:3072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3038) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 7 tests using 1 worker
+
+(node:3771) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/worker-smoke.spec.mjs:26:1 › the Worker health endpoint proves its D1 schema is reachable (66ms)
+  ✘  2 tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at desktop size (1.1s)
+(node:3904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at mobile size (1.0s)
+(node:4034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✘  4 tests/contract.mjs:4:3 › DOCS-001 — installed docs navigation reaches every page and Integrations leads to a working scoped read credential (16.3s)
+(node:4311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 tests/contract.mjs:4:3 › PUBLIC-003 — sign-in honestly reports unconfigured mail delivery (882ms)
+  ✓  6 tests/e2e/worker-smoke.spec.mjs:112:1 › the operator route stays server-gated until magic-link authentication exists (32ms)
+  ✓  7 tests/e2e/worker-smoke.spec.mjs:119:1 › retired public product routes are not served (80ms)
+
+
+  1) tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at desktop size 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+    + ]
+
+       at worker-smoke.spec.mjs:47
+
+      45 |       .toHaveAttribute('href', state.state === 'claimed' ? '/signin' : '/setup');
+      46 |     await expectNoHorizontalOverflow(page);
+    > 47 |     expect(failures).toEqual([]);
+         |                      ^
+      48 |   });
+      49 |
+      50 |
+        at /workspace/run-orbit/tests/e2e/worker-smoke.spec.mjs:47:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--c0d76--and-usable-at-desktop-size/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--c0d76--and-usable-at-desktop-size/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--c0d76--and-usable-at-desktop-size/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--c0d76--and-usable-at-desktop-size/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at mobile size 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+    + ]
+
+       at worker-smoke.spec.mjs:47
+
+      45 |       .toHaveAttribute('href', state.state === 'claimed' ? '/signin' : '/setup');
+      46 |     await expectNoHorizontalOverflow(page);
+    > 47 |     expect(failures).toEqual([]);
+         |                      ^
+      48 |   });
+      49 |
+      50 |
+        at /workspace/run-orbit/tests/e2e/worker-smoke.spec.mjs:47:22
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--1bfb5-s-and-usable-at-mobile-size/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--1bfb5-s-and-usable-at-mobile-size/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--1bfb5-s-and-usable-at-mobile-size/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-integrations-test-results/worker-smoke-PUBLIC-001-—--1bfb5-s-and-usable-at-mobile-size/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/contract.mjs:4:3 › DOCS-001 — installed docs navigation reaches every page and Integrations leads to a working scoped read credential 
+
+    Error: The guide example executes successfully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+       at ../support/integrations-api-guide.mjs:39
+
+      37 |  const execute=async expression=>{
+      38 |   const result=await session.send('Runtime.evaluate',{expression,awaitPromise:true,replMode:true});
+    > 39 |   expect(Boolean(result.exceptionDetails),'The guide example executes successfully').toBe(false);
+         |                                                                                      ^
+      40 |  };
+      41 |  try{
+      42 |   // Save only URL paths/status codes. The secret stays within the browser's console scope.
+        at execute (/workspace/run-orbit/tests/support/integrations-api-guide.mjs:39:86)
+        at proveIntegrationsApiGuide (/workspace/run-orbit/tests/support/integrations-api-guide.mjs:49:3)
+        at /workspace/run-orbit/tests/e2e/worker-smoke.spec.mjs:100:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-DOCS-001-—-in-5f462-king-scoped-read-credential/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-integrations-test-results/worker-smoke-DOCS-001-—-in-5f462-king-scoped-read-credential/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-integrations-test-results/worker-smoke-DOCS-001-—-in-5f462-king-scoped-read-credential/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-integrations-test-results/worker-smoke-DOCS-001-—-in-5f462-king-scoped-read-credential/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at desktop size 
+    tests/contract.mjs:4:3 › PUBLIC-001 — the installed Lobby is sessionless and usable at mobile size 
+    tests/contract.mjs:4:3 › DOCS-001 — installed docs navigation reaches every page and Integrations leads to a working scoped read credential 
+  4 passed (1.1m)

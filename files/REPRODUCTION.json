@@ -1,0 +1,30 @@
+[
+  {
+    "width": 1440,
+    "path": "/app/settings/integrations",
+    "apiAccessEntries": 0,
+    "heading": "Connected to Orbit",
+    "rows": [
+      "SlackTeam notifications · Unresolved setupConnect",
+      "CalendlyBooking · Not set up yetSet up",
+      "Cal.comBooking · Not set up yetSet up",
+      "MailchimpMarketing audiences · Unresolved setupConnect",
+      "TwilioCalls · Set up by the installation owner"
+    ],
+    "horizontalOverflow": false
+  },
+  {
+    "width": 390,
+    "path": "/app/settings/integrations",
+    "apiAccessEntries": 0,
+    "heading": "Connected to Orbit",
+    "rows": [
+      "SlackTeam notifications · Unresolved setupConnect",
+      "CalendlyBooking · Not set up yetSet up",
+      "Cal.comBooking · Not set up yetSet up",
+      "MailchimpMarketing audiences · Unresolved setupConnect",
+      "TwilioCalls · Set up by the installation owner"
+    ],
+    "horizontalOverflow": false
+  }
+]

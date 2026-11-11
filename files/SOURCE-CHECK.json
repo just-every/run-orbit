@@ -1,0 +1,10 @@
+[
+  {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "exitCode": 0
+  },
+  {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exitCode": 0
+  }
+]

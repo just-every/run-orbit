@@ -1,0 +1,36 @@
+{
+  "receipts": [
+    {
+      "path": "/api/v1/settings",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/records/opportunity",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/settings/api-credentials",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "path": "/api/rest/v1/deals/01J0000000000000000000000Z",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/settings/api-credentials/01M74ZCC82ENV2EWDZKF1G2CR7/revoke",
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "path": "/api/rest/v1/deals/01J0000000000000000000000Z",
+      "method": "GET",
+      "status": 401
+    }
+  ],
+  "secretReturnedToTest": false,
+  "bearerRequestsCarryNativeCookie": false
+}
