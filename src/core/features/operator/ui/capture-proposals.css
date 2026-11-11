@@ -3,7 +3,7 @@
 .capture-proposals > p { max-width: 72ch; }
 .capture-proposal { margin-top: 18px; padding: 22px 24px 24px; border: 1.5px solid var(--ob-ink); border-radius: var(--ob-radius); background: var(--ob-card); box-shadow: var(--app-shadow); }
 .capture-proposal h3 { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.35; }
-.capture-proposal > p { margin: 10px 0 18px; color: var(--ob-body); font-size: 14px; line-height: 1.55; }
+.capture-proposal > p { overflow-wrap: anywhere; margin: 10px 0 18px; color: var(--ob-body); font-size: 14px; line-height: 1.55; }
 .operator-shell .capture-proposal .capture-quote { margin: 0 0 18px; padding: 16px 18px; border: 1px solid var(--ob-line-strong); border-radius: 12px; background: var(--ob-paper); }
 .operator-shell .capture-proposal .capture-quote p { margin: 0; color: var(--ob-ink); line-height: 1.55; }
 .operator-shell .capture-proposal .capture-change { table-layout: fixed; margin: 0; border-collapse: separate; border-spacing: 0; border: 1px solid var(--ob-line-strong); border-radius: 12px; overflow: hidden; }
