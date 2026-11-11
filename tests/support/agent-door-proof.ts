@@ -244,12 +244,12 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await collaboratorProof({bindings,door,cookie,setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()),
       async bearerFor(email,operatorId) {
         const subject='synthetic-orbit-collaborator';
-        const mapped={...roster,jti:crypto.randomUUID(),rev:3,team:[...roster.team,{id:subject,email,name:'Synthetic collaborator',role:'member',invite:0}]};
+        const issued=Math.floor(Date.now()/1000);
+        const mapped={...roster,jti:crypto.randomUUID(),iat:issued,exp:issued+300,rev:3,team:[...roster.team,{id:subject,email,name:'Synthetic collaborator',role:'member',invite:0}]};
         const applied=await settings.handle(post('/api/rer/business-settings',{settings:await sign('rer-business-settings+jwt',mapped)}));
         assert.equal(applied!.status,200,await applied!.clone().text());
         const sponsor=await people.sponsor({sub:subject});
         assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
-        const issued=Math.floor(Date.now()/1000);
         return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
       }});
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));

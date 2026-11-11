@@ -45,11 +45,12 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,{...current.record,title:'Account review candidate',custom_fields:JSON.parse(current.record.custom_fields_json)},'PUT');
  await settings.getByRole('button',{name:'Execution history',exact:true}).click();
  await settings.getByRole('button',{name:'Process due runs',exact:true}).click();
- await expect(settings.getByText('Completed',{exact:false}).first()).toBeVisible();
+ const run=settings.getByRole('region',{name:'Execution history',exact:true}).locator('details.workflows-card').filter({hasText:'Prepare account review'}).first();
+ await expect(run).toContainText('Completed');
  const record=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');assert.equal(record.record.title,'Account review ready');
- const run=settings.locator('details.workflows-card').first();await run.locator('summary').first().click();await expect(run.getByText('Trigger and source evidence',{exact:true})).toBeVisible();
+ await run.locator('summary').first().click();await expect(run.getByText('Trigger and source evidence',{exact:true})).toBeVisible();
  await page.screenshot({path:join(directory,`workflow-execution-${width}.png`),fullPage:false});
- await settings.getByRole('button',{name:'Undo applied changes',exact:true}).first().click();
+ await run.getByRole('button',{name:'Undo applied changes',exact:true}).click();
  await expect(settings.getByText('Undo inspected every recorded write',{exact:false})).toBeVisible();
  await settings.getByRole('button',{name:'Approvals',exact:true}).click();await expect(settings.getByText('No changes are waiting for approval.',{exact:true})).toBeVisible();await page.screenshot({path:join(directory,`workflow-approvals-${width}.png`),fullPage:false});
  const workflows=await request(page,'/api/workflows',undefined,'GET');for(const workflow of workflows.workflows)await request(page,`/api/workflows/${workflow.id}/pause`,{});

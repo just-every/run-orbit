@@ -10891,7 +10891,7 @@
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
-      "sha256": "6be8f462b731014616e27e16bd69131df426fd43c9000b0761f68835a3ffe105",
+      "sha256": "9d2d60e505ea6030828815c8a36ad287bc4352b88ea0fd589c33abc3ba2d512d",
       "executable": false
     },
     "tests/rer/operator-manual-meeting.mjs": {
@@ -10955,7 +10955,7 @@
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
-      "sha256": "291ed21a169af9544a9870d3ed2cd23acf1647b083201e43456314a235cad41d",
+      "sha256": "62d5adb19f86c3319bddb5a20b9aa2f41af3dc7a7c1f189cab74a1e5c7fca5a1",
       "executable": false
     },
     "tests/rer/workflow-values-journey.mjs": {
@@ -10995,7 +10995,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "dfa86c1a77d3a72d17e084472d29df3ea6eca6789de7f97e8e46c4f22e714c67",
+      "sha256": "720ffce0b49236d8f9d30ecc010ebb82390b0f21bc277f77e2ec852cbd87082c",
       "executable": false
     },
     "tests/support/agent-erasure-matcher-proof.ts": {
@@ -11223,7 +11223,7 @@
       "executable": false
     },
     "tests/support/notification-automation.mjs": {
-      "sha256": "96fde20fbd002ca202bb02e9a5c76acd0080e738fa32d436a4db3c9e056f58ac",
+      "sha256": "54bdde0b775e33937525d60e59a74c8897975468242d7ab8446e86c7e0be821c",
       "executable": false
     },
     "tests/support/notification-direct-proof.ts": {

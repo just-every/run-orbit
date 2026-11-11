@@ -65,7 +65,7 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
  const ownerId=(await request(page,'/api/v1/settings',undefined,'GET')).operators.find(row=>row.email===ownerEmail).id;
  const colleague=await openFullOperator();
  try{
-  await request(colleague.page,'/api/v1/tasks',{title:'Colleague requested opportunity review',recordType:'opportunity',recordId:created.id,ownerId,dueAt:null,priority:'normal',type:'follow_up',notes:'',recurrence:'none',timezone:'UTC',reminderMinutes:null});
+  await request(colleague.page,'/api/v1/tasks',{title:'Colleague requested opportunity review',recordType:'opportunity',recordId:created.id,ownerId,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'follow_up',notes:'',recurrence:'none',timezone:'UTC',reminderMinutes:null});
   assert.ok((await request(page,'/api/v1/notifications',undefined,'GET')).notifications.some(row=>row.kind==='task.assigned'&&row.opportunityId===created.id&&!row.readAt),'Another person still notifies this operator about the opportunity');
  }finally{await colleague.context.close();}
  await notificationAutomation((path,body)=>request(page,path,body,body===undefined?'GET':'POST'),{kind:'opportunity',id:created.id,title:'Operator review opportunity',ownerId});
