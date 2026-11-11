@@ -20,7 +20,7 @@ export function captureSourceTools(bindings:PlatformBindings){
    inputSchema:objectSchema({id:string}),outputSchema,classes:['standard'],clauses:['SURFACE-005'],
    classify:async(args,ctx)=>{await current(String(args.id),ctx);return standard();},
    run:async(args,ctx)=>{const {source}=await current(String(args.id),ctx);return {result:{...source,...(source.step?{handoff:handoff(source,ctx)}:{})}};}}),
-  defineTool({name:'orbit.capture.source_sync',title:'Sync a connected Capture source',description:'Sync the existing selected Google or Microsoft Capture source at its exact saved revision. Uses only native saved authorization. A provider person step stops intake and hands reconnect to a person, without retrying or starting OAuth.',scope:'capture:write',readOnly:false,
+  defineTool({name:'orbit.capture.source_sync',title:'Sync a connected Capture source',description:'Sync the existing selected Google or Microsoft Capture source at its exact saved revision. Uses only native saved authorization. Completed keys return historical receipts; read the source again for current state. A provider person step stops intake and hands reconnect to a person, without retrying or starting OAuth.',scope:'capture:write',readOnly:false,
    inputSchema:objectSchema({id:string,source_revision:{type:'string',pattern:'^[a-f0-9]{64}$'}}),outputSchema,classes:['standard','gated'],clauses:['SURFACE-005'],
    revisionType:'string',revision:async(args,ctx)=>(await current(String(args.id),ctx)).source.revision,
    target:async(args,ctx)=>{const {source}=await current(String(args.id),ctx);return {kind:'capture_source',id:source.id};},

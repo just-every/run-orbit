@@ -5291,7 +5291,7 @@
       "executable": false
     },
     "src/core/features/agent-door/capture-sources.ts": {
-      "sha256": "69fcbc4c8bbfba46bfa9c9ecd15391d36f25cc74f2ecddbebe56a94c6440560c",
+      "sha256": "bcecaffa764357ab385e783197d5f22975fec8b631ccf9d9c568483b240276b0",
       "executable": false
     },
     "src/core/features/agent-door/contact-erasure.ts": {
