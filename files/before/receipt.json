@@ -1,0 +1,49 @@
+{
+  "phase": "before",
+  "opportunityId": "01M755AY4GRYS0T0X18M4F114X",
+  "meetingSignalId": "01M755AYBK02AQY22MZ42W20RX",
+  "screens": [
+    {
+      "width": 1440,
+      "now": "Priority band rose",
+      "badge": "Priority band rose",
+      "timeline": [
+        {
+          "kind": "Meeting",
+          "title": "Meeting booked",
+          "kindWidth": 58
+        },
+        {
+          "kind": "Opportunity Created",
+          "title": "Opportunity Created",
+          "kindWidth": 58
+        }
+      ],
+      "brief": [
+        "Meeting booked: Meeting booked",
+        "Form submitted: Form submitted"
+      ]
+    },
+    {
+      "width": 390,
+      "now": "Priority band rose",
+      "badge": "Priority band rose",
+      "timeline": [
+        {
+          "kind": "Meeting",
+          "title": "Meeting booked",
+          "kindWidth": 204.921875
+        },
+        {
+          "kind": "Opportunity Created",
+          "title": "Opportunity Created",
+          "kindWidth": 204.921875
+        }
+      ],
+      "brief": [
+        "Meeting booked: Meeting booked",
+        "Form submitted: Form submitted"
+      ]
+    }
+  ]
+}

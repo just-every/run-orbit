@@ -1,0 +1,80 @@
+{
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0
+  },
+  "source_lock": {
+    "commands": [
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+    ],
+    "ok": true
+  },
+  "inventory": {
+    "before": {
+      "registered": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "registered": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  },
+  "signal_checks": {
+    "command": "pnpm exec tsx --test --test-name-pattern='signed replay-safe ingestion|completion removes|unlinked review evaluates|evaluation failure|standard and source-namespaced' tests/core/signals-outreach.test.ts",
+    "passed": 5,
+    "failed": 0
+  },
+  "contract_counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "contract_status_changes": [],
+  "browser_proof": {
+    "before": "before/receipt.json",
+    "after": "after/receipt.json",
+    "widths": [
+      1440,
+      390
+    ]
+  },
+  "publication_scan": "Required Mac fleet gate; not runnable in this cloud adaptation. No landing performed.",
+  "operator_browser": {
+    "command": "pnpm exec playwright test --config /tmp/orbit-plain-playwright.config.mjs operator.spec.mjs",
+    "passed": 5,
+    "failed": 1,
+    "failure": "Existing ACTION-004 draft editor hit 30s test timeout during reload; isolated retry pending.",
+    "system_chromium": "/usr/bin/chromium",
+    "assertion_width": 1440,
+    "isolated_default_timeout_retry": "same existing 30s timeout on reload",
+    "cloud_timeout_probe": {
+      "command": "pnpm exec playwright test --config /tmp/orbit-plain-playwright.config.mjs operator.spec.mjs --grep ACTION-004 --timeout 90000",
+      "passed": 1,
+      "failed": 0,
+      "duration_seconds": 33.8,
+      "assertions_changed": false,
+      "repository_timeout_changed": false
+    },
+    "final_local_result": "All six cases completed: five under normal 30s setting; unchanged ACTION-004 passed separately in 33.8s with temporary cloud --timeout 90000."
+  },
+  "CI": {
+    "run_id": 43012203260,
+    "head_sha": "c5f86c26d9a6842fad619d492210878c6a8ecf54",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43012203260",
+    "REST_calls": 6
+  }
+}

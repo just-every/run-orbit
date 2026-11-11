@@ -1,0 +1,16 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing (2365.034277ms)
+✔ OPP-008 completion removes an exhausted recommendation; new observed evidence produces another (2303.520443ms)
+✔ SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects (2637.222423ms)
+✔ BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh (1481.212565ms)
+✔ SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action (12213.895936ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61398.591689

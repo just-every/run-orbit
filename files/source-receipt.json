@@ -1,0 +1,22 @@
+{
+  "base_head": "89c84362bbc010156bc30081d8a530704a9533e2",
+  "files": {
+    "sources.lock.json": "26c2638c82095f5c4873dc44e235713a5ad373e5995a7574baa16116ac34de65",
+    "src/core/features/ingestion/repository.ts": "bc2072779166cc662da56bc0ee33d39bdea9d0bf7667626977855b46e76301fa",
+    "src/core/features/operator/ui/record/activity.tsx": "d5737dab794142d5b6d4ea8b42500688736c05fe39a20ca831e0e940d9caaa5d",
+    "src/core/features/operator/ui/record/record.css": "da6f9fd931b2834d56ee4be233663a159302760110d1ed977cfaaed93f971a6b",
+    "src/core/features/operator/ui/record/timeline-entries.tsx": "f515614092f820ad1ca05409e1ba3ac21d70d822e687e5158888edd601cdb2bf",
+    "src/core/features/operator/ui/today-brief.tsx": "7d96d83f2272e1b3ae4a9322cd414c3323ab23fcaf977bf04ac8d080d8b608ba",
+    "src/core/features/workbench/evaluation-repository.ts": "7c3935d970f6b1932598a86656eac3e2611ce37fff88b7eafb74e1a7501c6266",
+    "src/core/features/workbench/repository.ts": "01ae13eae2fa1b9306b344c74675d5dc72f64a92904f1ada30605b7bca4f0dc4",
+    "tests/e2e/operator.spec.mjs": "26b53d8df2f00b1850a1bc83b8caeda17603d1e0ef3894807734085d10a5649a"
+  },
+  "proof_source": "after/receipt.json",
+  "widths": [
+    1440,
+    390
+  ],
+  "fixture": "Synthetic customer/source through native APIs; HMAC signed signal; private local owner sign-in.",
+  "product_head": "c5f86c26d9a6842fad619d492210878c6a8ecf54",
+  "committed_files_match_proof": true
+}
