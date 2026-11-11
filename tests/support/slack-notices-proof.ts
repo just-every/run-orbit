@@ -6,6 +6,7 @@ import {createHmac} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
 import {snapshot} from '../../src/core/features/delegation/evidence';
 import type {createApp} from './app';
+import {proveSlackDisconnect} from './slack-actions-proof';
 import {proveSlackActions} from './slack-actions-proof';
 import {proveSlackArchive} from './slack-archive-proof';
 export interface SlackFixture {token:string;setClock:(value:Date|undefined)=>void;db:D1Database;actor:string;stage:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>}
@@ -21,7 +22,25 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
  try{
   await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
   assert.equal((await f.request('settings/slack/connect','POST',{token,signingSecret:secret},{Cookie:''})).status,401);
-  await call('connect','POST',{token,signingSecret:secret});assert.ok(!JSON.stringify(await call('')).includes(secret)&&!JSON.stringify(await call('')).includes(token));
+  assert.equal((await f.request('settings/slack','GET',undefined,{Cookie:''})).status,401,'Setup facts require Orbit sign-in');
+  const beforeConnect=await call(''),declaration=beforeConnect.declaration;
+  assert.equal(beforeConnect.installation,null,'The declaration is available before a bot has been activated');
+  assert.deepEqual(declaration.scopes.filter((s:any)=>s.when==='always').map((s:any)=>s.name).sort(),['channels:read','chat:write','users:read']);
+  assert.equal(declaration.scopes.find((s:any)=>s.name==='groups:read').when,'private-channels');
+  assert.ok(!declaration.scopes.some((s:any)=>s.name==='users:read.email'));assert.deepEqual(declaration.prohibitedScopes,['users:read.email']);
+  for(const [kind,path] of [['interactivity','actions'],['events','events']]){assert.equal(declaration.callbacks[kind].url,'https://orbit.test/api/v1/slack/'+path);assert.match(declaration.callbacks[kind].verification,/HMAC-SHA256/);}
+  assert.ok(declaration.callbacks.events.subscriptions.includes('user_change'));
+  const declaredKeys=declaration.allowedFields.map((field:any)=>field.key).sort();
+  assert.deepEqual(declaredKeys,['eventKind','link','recordDisplayName','stageFrom','stageTo','ownerDisplayName','dueDate','taskType','taskPriority'].sort());
+  assert.deepEqual(declaration.custody,{location:'installation-local',encryption:'AES-GCM with the installation encryption key',credentials:['bot token','app signing secret'],readBack:false,exported:false});
+  assert.deepEqual(declaration.audience,{membershipCanChangeBetweenChecks:true,newlyLinkedOrganizationMaySeeChannelHistory:true,prePostCheck:true,safetyEventsSuspendRouting:true});
+  assert.deepEqual(declaration.controls,{disconnect:'/api/v1/settings/slack/disconnect',reconnect:'/api/v1/settings/slack/connect',replaysOldNotices:false,replaysOldActions:false});
+  const product=async()=>((await(await f.request('settings/products')).json() as any).products.find((p:any)=>p.products.includes('Slack')));
+  assert.deepEqual((await product()).declaration,declaration);assert.equal((await product()).state,'unresolved-setup');assert.equal(edge.requests.length,0,'Reading setup never calls Slack');
+  await call('connect','POST',{token,signingSecret:secret});const afterConnect=await call('');
+  assert.deepEqual(afterConnect.declaration,declaration);assert.deepEqual((await product()).declaration,declaration);assert.equal((await product()).state,'connected');
+  assert.ok(!JSON.stringify(afterConnect).includes(secret)&&!JSON.stringify(afterConnect).includes(token));
+  const ciphertext=await f.db.prepare("SELECT ciphertext FROM slack_credentials WHERE id='slack'").first<string>('ciphertext');assert.ok(ciphertext);assert.ok(!ciphertext.includes(token)&&!ciphertext.includes(secret),'Stored credentials are encrypted, not just hidden from the read response');
   assert.deepEqual((await call('channels')).channels.map((c:any)=>c.id),['CINTERNAL']);
   for(const id of ['CEXTERNAL','CNOTMEMBER'])assert.equal((await f.request('settings/slack/channels','PUT',{id,events:['stage'],enabled:true})).status,400);
   const routed=((await call('')).channels as any[]).map(c=>c.id);for(const id of ['CEXTERNAL','CNOTMEMBER'])assert.ok(!routed.includes(id),`${id} is refused and leaves no stored route`);
@@ -49,7 +68,13 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   edge.setOutcome('sent');await confirm();await call(`notices/${unaccepted.id}/retry`,'POST',{});assert.equal((await notices()).find(n=>n.id===unaccepted.id).state,'sent');
   const event=(type:string,extra:object={})=>({type:'event_callback',team_id:'TWORKSPACE',api_app_id:'AORBIT',authorizations:[{team_id:'TWORKSPACE',enterprise_id:null}],event_id:'Ev'+crypto.randomUUID().replaceAll('-',''),event:{type,channel:'CINTERNAL',...extra}});
   const shared=event('channel_shared');assert.equal((await signed(shared,'events')).status,200);assert.equal((await call('')).channels[0].enabled,0);assert.equal((await signed(shared,'events')).data.replayed,true);await signed(event('channel_unshared'),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();await signed(event('member_left_channel',{user:'UBOT'}),'events');assert.equal((await call('')).channels[0].enabled,0);await confirm();
-  await call('mappings','PUT',{slackUserId:'UDEACTIVATE',operatorId:f.actor,revoked:false});await signed(event('user_change',{user:{id:'UDEACTIVATE',team_id:'TWORKSPACE',deleted:true}}),'events');assert.ok((await call('')).mappings.find((m:any)=>m.slack_user_id==='UDEACTIVATE').revoked_at);
+  await call('mappings','PUT',{slackUserId:'UDEACTIVATE',operatorId:f.actor,revoked:false});
+  const mappingsBefore=(await call('')).mappings,deletedUser=event('user_change',{user:{id:'UDEACTIVATE',team_id:'TWORKSPACE',deleted:true}});
+  assert.equal((await signed(deletedUser,'events',{unsigned:true})).status,401);assert.deepEqual((await call('')).mappings,mappingsBefore);
+  assert.equal((await signed(deletedUser,'events')).status,200);const mappingsAfter=(await call('')).mappings;
+  assert.ok(mappingsAfter.find((m:any)=>m.slack_user_id==='UDEACTIVATE').revoked_at);
+  assert.deepEqual(mappingsAfter.filter((m:any)=>m.slack_user_id!=='UDEACTIVATE'),mappingsBefore.filter((m:any)=>m.slack_user_id!=='UDEACTIVATE'),'Signed deactivation revokes only its installation mapping');
+  assert.equal((await signed(deletedUser,'events')).data.replayed,true);assert.deepEqual((await call('')).mappings,mappingsAfter);
   // BOUNDARY-001: challenge the won notice and a person's actual handoff, not a call's generic handoff notice.
   const privateProduct='synthetic-orbit-private-product-74',privateCommitment='synthetic-orbit-private-commitment-74',privateHandoff='synthetic-orbit-private-handoff-74',privateDescription='synthetic-orbit-private-description-74',privateWin='Private win reason synthetic-orbit-private-win-74',amountCents=987654321;
   const privateAmount='$9,876,543.21',recordPath=`records/opportunity/${deal}`,beforeRecord=await(await f.request(recordPath)).json() as any;
@@ -90,11 +115,15 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
   await provePersonalSlack(f,deal,edge);
+  await proveSlackDisconnect(f,{posts,call,signed,secret,token});
   // DATA-001: a second deal's notice reaches Slack now, so a contact erasure while Slack is revoked leaves a pending deletion for the Records export.
   const witness=await(await f.request('workbench/opportunities','POST',{title:'Erasure witness',companyName:'Witness company',contactName:'Witness contact',email:'witness@harbour.test',stageId:f.stage,valueCents:1000})).json() as any,witnessContact=await f.db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(witness.id).first<string>('contact_id');assert.ok(witnessContact);
   const witnessMove=await f.request(`records/opportunity/${witness.id}/move`,'POST',{stageId:second,reviewedStageId:f.stage});assert.ok(witnessMove.ok,await witnessMove.clone().text());assert.ok((await notices()).some(n=>n.record_id===witness.id&&n.state==='sent'&&n.message_ts),'The witness deal notice reached Slack');
   edge.setOutcome('revoked');await process();assert.equal((await f.request('settings/slack/verify','POST',{})).status,503);assert.equal((await call('')).installation.state,'revoked');assert.equal((await call('')).installation.error,'token_revoked');const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');await move(second,f.stage);assert.ok((await notices()).some(n=>n.state==='paused'));
   const erased=await f.request(`records/contact/${witnessContact}`,'DELETE',{confirmed:true});assert.equal(erased.status,200,await erased.clone().text());await process();const pending=(await call('')).deletions as any[];assert.ok(pending.length>0&&pending.every(d=>d.state==='paused'),'An erasure while Slack is revoked leaves its provider deletion pending');
-  edge.setOutcome('sent');await proveSlackArchive(f,{contact,secret,token,deletes,posts,call,signed});
+  edge.setOutcome('sent');
+  for(const n of await notices())if(n.content_json)assert.ok(Object.keys(JSON.parse(n.content_json)).every(key=>declaredKeys.includes(key)),'Persisted delivery uses only declared fields');
+  assert.ok(edge.requests.some(request=>request.method==='conversations.info'),'The proof crosses Slack’s channel HTTP boundary');
+  await proveSlackArchive(f,{contact,secret,token,deletes,posts,call,signed});
  }finally{edge.restore();}
 }
