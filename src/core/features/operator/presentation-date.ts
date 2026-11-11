@@ -11,7 +11,7 @@ export function workspaceTimeZone(): string { return workspaceZone ?? Intl.DateT
 
 /** The shell carries the browser locale from the request, including during SSR. */
 export function setWorkspaceDateLocale(locale: string) { workspaceLocale = locale; }
-export function workspaceDateLocale(): string { return workspaceZone?.startsWith("America/") ? "en-US" : workspaceLocale; }
+export function workspaceDateLocale(timeZone = workspaceTimeZone()): string { return (workspaceZone ?? timeZone).startsWith("America/") ? "en-US" : workspaceLocale; }
 
 /** Zone names are for Settings and reviews that compare two clocks. */
 export function zoneLabel(timeZone = workspaceTimeZone()): string {
@@ -23,13 +23,13 @@ function display(value: DateValue, style: DateStyle, timeZone = workspaceTimeZon
   if (Number.isNaN(date.getTime())) return String(value);
   // A calendar date has no clock to convert; keep its written day in every zone.
   if (style === "date" && typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) timeZone = "UTC";
-  const locale = workspaceDateLocale();
+  const locale = workspaceDateLocale(timeZone);
   const key = `${locale}:${style}:${timeZone}`;
   let formatter = formats.get(key);
   if (!formatter) {
-    const options: Intl.DateTimeFormatOptions = { timeZone };
+    const options: Intl.DateTimeFormatOptions = { timeZone, calendar:"gregory" };
     if (style !== "time") Object.assign(options, {year:"numeric", month:"2-digit", day:"2-digit", numberingSystem:"latn"});
-    if (style !== "date") options.timeStyle = "short";
+    if (style !== "date") Object.assign(options, {hour:"numeric", minute:"2-digit"});
     formatter = new Intl.DateTimeFormat(locale, options);
     formats.set(key, formatter);
   }
@@ -54,7 +54,7 @@ export function formatDateTime(value: DateValue | null | undefined, presentation
 
 /** The same calendar formatter supplies the field hint, display and parsing order. */
 function inputParts() {
-  return new Intl.DateTimeFormat(workspaceDateLocale(), {year:"numeric",month:"2-digit",day:"2-digit",timeZone:"UTC",numberingSystem:"latn"})
+  return new Intl.DateTimeFormat(workspaceDateLocale(), {year:"numeric",month:"2-digit",day:"2-digit",timeZone:"UTC",numberingSystem:"latn",calendar:"gregory"})
     .formatToParts(new Date("2006-11-22T00:00:00Z"));
 }
 export function dateInputPlaceholder(withTime = false): string {

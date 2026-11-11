@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
 import {expect} from '@playwright/test';
 import {browserAPI} from './browser-api.mjs';
 
@@ -15,7 +16,7 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await page.goto(opportunityURL);
  const close=page.getByLabel('Expected close',{exact:true});
  await close.fill('04/11/2027');await close.press('Enter');
- await expect(close).toHaveValue('04/11/2027');
+ if(width===1440)await expect(close).toHaveValue('04/11/2027');
  const recordPath=`/api/v1/records/opportunity/${opportunityId}`;
  const readClose=async()=>(await browserAPI(page,recordPath)).record.expected_close_at;
  if(width===1440){
@@ -27,8 +28,10 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
   assert.equal(await readClose(),'2027-04-11T05:00:00.000Z');
   await close.press('Escape');
  }
- await page.reload({waitUntil:'networkidle'});await expect(close).toHaveValue('04/11/2027');
- await page.screenshot({path:`${evidence}/us-date-deal-${width}.png`,fullPage:true});
+ await page.reload({waitUntil:'networkidle'});
+ if(width===1440)await expect(close).toHaveValue('04/11/2027');
+ const closeReadback={typed:'04/11/2027',display:await close.inputValue(),api:await readClose()};
+ await dateProof(page,evidence,'us-date-deal',width);
  const before=await browserAPI(page,messagesPath);
  assert.equal(before.scheduler.lastRunAt,null,'An ordinary request does not claim that Cloudflare ran its timer');
  assert.equal(before.scheduler.ready,false);
@@ -66,7 +69,8 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  }
 
  assert.equal((await browserAPI(page,messagesPath)).messages.some(message=>message.draftId===draft.id),false,'Schedule preview does not approve a send');
- await page.screenshot({path:`${evidence}/schedule-approval-preview-${width}.png`,fullPage:true});
+ await dateProof(page,evidence,'schedule-approval-preview',width);
+ const reviewedDisplay=await reviewedTime.textContent();
  const approvedResponse=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/v1/workbench/drafts/${draft.id}/approve`&&response.request().method()==='POST');
  await approval.getByRole('button',{name:'Approve and schedule exact revision',exact:true}).click();
  const approved=await approvedResponse;assert.equal(approved.status(),200);
@@ -97,17 +101,31 @@ export async function scheduleOutreach(page,opportunityURL,evidence,submissions)
  await expect(message).toContainText('cancelled');
  await page.screenshot({path:`${evidence}/cancelled-outreach-${width}.png`,fullPage:true});
  if(width===1440){
-  // The browser locale supplies other date orders outside the US workspace default.
-  await page.setExtraHTTPHeaders({'Accept-Language':'en-GB'});
+  // A separate synthetic fixture context exercises a real British browser locale.
+  // Its native test sign-in stays in memory; no real browser profile is read.
   await page.goto(new URL('/app/settings/workspace',opportunityURL).href);
   const changed=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/v1/settings'&&response.request().method()==='PUT');
   await page.getByLabel('Time zone',{exact:true}).selectOption('Europe/London');assert.equal((await changed).status(),200);
-  await page.goto(opportunityURL);
-  await expect(close).toHaveAttribute('placeholder','dd/mm/yyyy');
-  await close.fill('04/11/2027');await close.press('Enter');
-  await expect.poll(readClose).toBe('2027-11-04T00:00:00.000Z');
-  await page.reload({waitUntil:'networkidle'});await expect(close).toHaveValue('04/11/2027');
-  await page.setExtraHTTPHeaders({});
+  const british=await page.context().browser().newContext({locale:'en-GB',viewport:{width:1440,height:900},ignoreHTTPSErrors:true,storageState:await page.context().storageState()});
+  try{
+   const britishPage=await british.newPage();await britishPage.goto(opportunityURL,{waitUntil:'networkidle'});
+   const britishClose=britishPage.getByLabel('Expected close',{exact:true});
+   await expect(britishClose).toHaveAttribute('placeholder','dd/mm/yyyy');
+   await britishClose.fill('04/11/2027');await britishClose.press('Enter');
+   const readBritish=async()=>(await browserAPI(britishPage,recordPath)).record.expected_close_at;
+   await expect.poll(readBritish).toBe('2027-11-04T00:00:00.000Z');
+   await britishPage.reload({waitUntil:'networkidle'});await expect(britishClose).toHaveValue('04/11/2027');
+   await writeFile(`${evidence}/date-roundtrip.json`,JSON.stringify({width,locale:'en-US',workspaceTimezone:'America/Chicago',close:closeReadback,invalidDayRejected:'02/30/2027',schedule:{typed,requestedAt:preview.requestedAt,reviewedAt:preview.scheduledAt,savedAt:saved.scheduledAt,displayed:reviewedDisplay},british:{locale:await britishPage.evaluate(()=>navigator.language),display:await britishClose.inputValue(),api:await readBritish()}},null,2)+'\n');
+  }finally{await british.close();}
  }
+}
 
+/** Assert the journey at desktop width; retain the changed screens once at each width. */
+async function dateProof(page,evidence,name,width){
+ await page.screenshot({path:`${evidence}/${name}-${width}.png`,fullPage:true});
+ if(width===1440){
+  await page.setViewportSize({width:390,height:900});
+  await page.screenshot({path:`${evidence}/${name}-390.png`,fullPage:true});
+  await page.setViewportSize({width:1440,height:900});
+ }
 }
