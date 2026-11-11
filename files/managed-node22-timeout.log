@@ -1,0 +1,47 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:15358) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-11T18:32:21.488Z","expected":{"id":"01M4KHCS7GDRTXYJNYV1G11H5Y","evidenceId":"01M4P3SG7GMWZP169HJ0HYRZ79","quote":"In Synthetic proposal since 2026-10-11","since":"2026-10-11T18:32:21.488Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"d756a307-3690-450f-acb5-ae298d054269","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"da5901f2-9222-40a2-bf3a-d0d06ece2b1f","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"59f659a6-990c-4e82-84c9-cb7e875bd8d3"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# {"proof":"BASE-AGENT-013.current-registry","policy":"autonomous","tools":28,"resourceTemplates":10,"nativeMatch":true}
+# {"proof":"BASE-AGENT-013.current-registry","policy":"held","tools":28,"resourceTemplates":10,"nativeMatch":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"c12ec4e6-ac39-4cc4-a8db-6489cbc2d160","revision":12,"summary_sha256":"a32ddd26c7920de55232343bf0ca72a99c17360a036edb8113489ccc7305d380","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"aaf89796-b139-44e0-aca7-2545734ce97f","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"58b92595-f636-43fd-acb9-5f1b225a5c34"},"approval":{"id":"0c6a15cf-6c81-4a83-9b47-51a398c6b7ae","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":331,"parts":43,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M75YB312QC2RN0MZESG1AQG0"}
+# {"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+# {"proof":"SURFACE-008.draft-save","modes":["autonomous","held"],"savedVersions":2,"activeVersion":1,"classes":[{"class":"standard","facts":{"measure":1}}],"replayAddsVersion":false,"saveEffects":false,"providerCalls":0,"oldDefinitionExecuted":true,"refusals":["stale","company-block","non-owner","insufficient-scope","revoked"]}
+# PROBE BASE-AGENT-011 1: raw authenticated MCP under autonomous; discovered capacity=600; admitted native create; overrun=429 Retry-After=50; early retry=429; clock recovery=200 with one native create
+# PROBE BASE-AGENT-011 1: raw authenticated MCP under held; discovered capacity=600; admitted native create; overrun=429 Retry-After=60; early retry=429; clock recovery=200 with one native create
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors
+  ---
+  duration_ms: 578911.639438
+  type: 'test'
+  location: '/workspace/sd-orbit-c-f150/tests/core/managed-owner.test.ts:1:9969'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/workspace/sd-orbit-c-f150/tests/support/isolated-database.ts:11:3)
+    async agentDoorBusinessStopProof (/workspace/sd-orbit-c-f150/tests/support/agent-door-business-stop-proof.ts:13:19)
+    async TestContext.<anonymous> (/workspace/sd-orbit-c-f150/tests/core/managed-owner.test.ts:180:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 584831.590917

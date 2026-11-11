@@ -1,0 +1,87 @@
+{
+  "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "equivalence": {
+    "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+    "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+    "unchanged_paths": [
+      "src",
+      "tests"
+    ],
+    "same_product_and_test_bytes": true,
+    "merge_changes": [
+      "CHANGELOG.md",
+      "RELEASE.json",
+      "package.json",
+      "release-history/0.4.5.json",
+      "seed.json",
+      "sources.lock.json"
+    ]
+  },
+  "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+  "node": "24.19.0",
+  "runner": "cloud_run",
+  "command": [
+    "perl",
+    "-e",
+    "alarm 1200; exec @ARGV",
+    "--",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "exit": 1,
+  "registration_status": "existing migration setup timeout in later business-stop fixture",
+  "selected_probe_status": "passed",
+  "proofs": [
+    {
+      "proof": "SURFACE-013.stalled-deal",
+      "clock": "2026-11-11T18:43:29.465Z",
+      "expected": {
+        "id": "01M4KJ15HSCAS1T95YX7073HWS",
+        "evidenceId": "01M4P4DWHS2N5CGZ265D78YTMY",
+        "quote": "In Synthetic proposal since 2026-10-11",
+        "since": "2026-10-11T18:43:29.465Z",
+        "days": 31,
+        "intervalDays": 14,
+        "nextTask": "Agree a dated next step with Synthetic risk buyer or close the deal"
+      },
+      "policies": [
+        {
+          "mode": "autonomous",
+          "decision": "b5627261-9cec-4576-8a24-6333f34ea05a",
+          "disposition": "autonomous",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": null
+        },
+        {
+          "mode": "held",
+          "decision": "0a656838-a0bb-4149-932e-068b4c48fe4c",
+          "disposition": "review",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": "53aaa622-6c1b-4d27-91a6-cbd7290e493f"
+        }
+      ],
+      "nativeMatch": true,
+      "salesMailModelUnchanged": true,
+      "blockedRefused": true,
+      "revokedRefused": true
+    }
+  ],
+  "error": "spawnSync Node ETIMEDOUT in tests/support/isolated-database.ts:11"
+}

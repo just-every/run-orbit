@@ -1,0 +1,62 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"SURFACE-013.stalled-deal","clock":"2026-11-11T18:43:29.465Z","expected":{"id":"01M4KJ15HSCAS1T95YX7073HWS","evidenceId":"01M4P4DWHS2N5CGZ265D78YTMY","quote":"In Synthetic proposal since 2026-10-11","since":"2026-10-11T18:43:29.465Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"b5627261-9cec-4576-8a24-6333f34ea05a","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"0a656838-a0bb-4149-932e-068b4c48fe4c","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"53aaa622-6c1b-4d27-91a6-cbd7290e493f"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+{"proof":"BASE-AGENT-013.current-registry","policy":"autonomous","tools":28,"resourceTemplates":10,"nativeMatch":true}
+{"proof":"BASE-AGENT-013.current-registry","policy":"held","tools":28,"resourceTemplates":10,"nativeMatch":true}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"53200ab9-6b40-4099-80c6-81cf293e695e","revision":12,"summary_sha256":"f0a924f030fa6fb21092db1dc7611122911ca6f433ed20df9d1b7fe9a402633f","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"2f1127fb-9442-4635-afd0-ea83c597877c","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"dba48166-ca09-44f1-926f-07349bfe25a3"},"approval":{"id":"5376bdc6-2fef-49af-9367-1e6fd9976f39","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+{"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+{"proof":"native-archive-export-requests","version":3,"tables":128,"rows":331,"parts":43,"observations":[]}
+{"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M75YWS6Y05P395BR6ZP8ZZ6K"}
+{"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+{"proof":"SURFACE-008.draft-save","modes":["autonomous","held"],"savedVersions":2,"activeVersion":1,"classes":[{"class":"standard","facts":{"measure":1}}],"replayAddsVersion":false,"saveEffects":false,"providerCalls":0,"oldDefinitionExecuted":true,"refusals":["stale","company-block","non-owner","insufficient-scope","revoked"]}
+PROBE BASE-AGENT-011 1: raw authenticated MCP under autonomous; discovered capacity=600; admitted native create; overrun=429 Retry-After=50; early retry=429; clock recovery=200 with one native create
+PROBE BASE-AGENT-011 1: raw authenticated MCP under held; discovered capacity=600; admitted native create; overrun=429 Retry-After=60; early retry=429; clock recovery=200 with one native create
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors (450031.561188ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458674.434285
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:9969
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors (450031.561188ms)
+  Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1160:20)
+      at spawnSync (node:child_process:928:24)
+      at execFileSync (node:child_process:971:15)
+      at isolatedDatabase (/workspace/sd-orbit-c-f150/tests/support/isolated-database.ts:11:3)
+      at async agentDoorBusinessStopProof (/workspace/sd-orbit-c-f150/tests/support/agent-door-business-stop-proof.ts:13:19)
+      at async TestContext.<anonymous> (/workspace/sd-orbit-c-f150/tests/core/managed-owner.test.ts:180:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-JR0tT6' ],
+    error: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at execFileSync (node:child_process:971:15)
+        at isolatedDatabase (/workspace/sd-orbit-c-f150/tests/support/isolated-database.ts:11:3)
+        at async agentDoorBusinessStopProof (/workspace/sd-orbit-c-f150/tests/support/agent-door-business-stop-proof.ts:13:19)
+        at async TestContext.<anonymous> (/workspace/sd-orbit-c-f150/tests/core/managed-owner.test.ts:180:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    status: 143,
+    signal: null,
+    output: [ null, <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 361990 more bytes>, <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes> ],
+    pid: 17989,
+    stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 361990 more bytes>,
+    stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  }

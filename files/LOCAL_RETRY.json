@@ -1,0 +1,34 @@
+{
+  "kind": "local_existing_migration_timeout",
+  "head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+  "node": "22.20.0",
+  "command": [
+    "perl",
+    "-e",
+    "alarm 1200; exec @ARGV",
+    "--",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "runner": "cloud_run",
+  "exit": 1,
+  "error": "spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT",
+  "location": "tests/support/isolated-database.ts:11 while creating the fixture for agentDoorBusinessStopProof",
+  "selected_stalled_risk_probe_passed": true,
+  "source_or_guard_changed_for_retry": false,
+  "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "additional_retry": {
+    "node": "24.19.0",
+    "exit": 1,
+    "same_fixture_timeout": true
+  },
+  "fixture_only_probe": {
+    "metrics_disabled_as_in_Verify": true,
+    "exit": 1,
+    "same_timeout": true,
+    "helper_and_migrations_match_main": true
+  }
+}

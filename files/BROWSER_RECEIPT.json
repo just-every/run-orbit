@@ -1,0 +1,53 @@
+{
+  "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "equivalence": {
+    "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+    "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+    "unchanged_paths": [
+      "src",
+      "tests"
+    ],
+    "same_product_and_test_bytes": true,
+    "merge_changes": [
+      "CHANGELOG.md",
+      "RELEASE.json",
+      "package.json",
+      "release-history/0.4.5.json",
+      "seed.json",
+      "sources.lock.json"
+    ]
+  },
+  "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+  "node": "22.20.0",
+  "runner": "cloud_run",
+  "command": [
+    "perl",
+    "-e",
+    "alarm 1200; exec @ARGV",
+    "--",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/delegation-browser/today-brief.test.ts"
+  ],
+  "chromium_executable": "/usr/bin/chromium",
+  "exit": 0,
+  "tests": 1,
+  "pass": 1,
+  "fail": 0,
+  "proofs": [
+    {
+      "proof": "SURFACE-013.stalled-browser",
+      "evidenceId": "01M4P3M1K42VCT80BSX7YTSZQB",
+      "quote": "In Synthetic proposal since 2026-10-11",
+      "nativeMatch": true,
+      "evidenceLinkAuthenticated": true,
+      "reviewMarked": true,
+      "widths": [
+        1440,
+        390
+      ]
+    }
+  ]
+}

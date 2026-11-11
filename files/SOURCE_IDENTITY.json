@@ -1,0 +1,45 @@
+{
+  "head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "origin_main": "9e7f46ce42c6bde7c5f29a6ab7cdb07e82978c8f",
+  "full_history": true,
+  "contract_unchanged": true,
+  "generated_views_unchanged": true,
+  "clean": true,
+  "product_src_tree": "40312bf16c670b312e2e7adf451f72d2936a7ab3",
+  "execution_src_tree": "40312bf16c670b312e2e7adf451f72d2936a7ab3",
+  "product_source_unchanged": true,
+  "files": [
+    {
+      "path": "sources.lock.json",
+      "sha256": "13bce96d93299520cb3dcdfe22b5ad297c29ea9c36d5910f4b909ec8e9756269"
+    },
+    {
+      "path": "tests/agent-door/native-journey.mjs",
+      "sha256": "48157b18cd2c0a48a980c143cd2c44ab251625b8bd959b5a7a9d9659cd6c0cb1"
+    },
+    {
+      "path": "tests/core/managed-owner.test.ts",
+      "sha256": "e00cea7c1f44ada7dea81ff875a66b1624d856779f77d3198b95b9fe799c8d1e"
+    },
+    {
+      "path": "tests/delegation-browser/today-brief.test.ts",
+      "sha256": "1d9019b06148d5e9e652eeff5a53314ae86e14949ebad480c946b374e6d60f4f"
+    },
+    {
+      "path": "tests/delegation-browser/today-journey.mjs",
+      "sha256": "eba76fe4fd931b25e610effb41e480773906d31dfc57d06489438eecdc4c888b"
+    },
+    {
+      "path": "tests/support/agent-door-proof.ts",
+      "sha256": "6e300b706fed804121508456ceb36bb597a670ae354cac8da6fe9cd5794d9a2a"
+    },
+    {
+      "path": "tests/support/agent-door-stalled-risk-proof.ts",
+      "sha256": "96348f6d5cda64ddc58bc49fecc917928d3f5f474ba0425f7f4368e54c1c3ada"
+    },
+    {
+      "path": "tests/support/stalled-risk-browser.ts",
+      "sha256": "bc47fdbf9ed54f201fc3cf9c92575860f1e5badc23d8e0f203d680f021540c6f"
+    }
+  ]
+}

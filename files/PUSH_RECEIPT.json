@@ -1,0 +1,11 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f150",
+  "head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "guard": "cloud-push.py",
+  "attempts": 1,
+  "exit": 0,
+  "remote_head_verified": true,
+  "identity_and_all_candidate_trailers_checked": true,
+  "main_pushed": false
+}

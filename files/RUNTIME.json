@@ -1,0 +1,153 @@
+{
+  "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "branch": "cloud/sd-orbit-c-f150",
+  "equivalence": {
+    "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+    "candidate_head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+    "unchanged_paths": [
+      "src",
+      "tests"
+    ],
+    "same_product_and_test_bytes": true,
+    "merge_changes": [
+      "CHANGELOG.md",
+      "RELEASE.json",
+      "package.json",
+      "release-history/0.4.5.json",
+      "seed.json",
+      "sources.lock.json"
+    ]
+  },
+  "native": {
+    "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+    "node": "24.19.0",
+    "runner": "cloud_run",
+    "command": [
+      "perl",
+      "-e",
+      "alarm 1200; exec @ARGV",
+      "--",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "tests/core/managed-owner.test.ts"
+    ],
+    "exit": 1,
+    "registration_status": "existing migration setup timeout in later business-stop fixture",
+    "selected_probe_status": "passed",
+    "proofs": [
+      {
+        "proof": "SURFACE-013.stalled-deal",
+        "clock": "2026-11-11T18:43:29.465Z",
+        "expected": {
+          "id": "01M4KJ15HSCAS1T95YX7073HWS",
+          "evidenceId": "01M4P4DWHS2N5CGZ265D78YTMY",
+          "quote": "In Synthetic proposal since 2026-10-11",
+          "since": "2026-10-11T18:43:29.465Z",
+          "days": 31,
+          "intervalDays": 14,
+          "nextTask": "Agree a dated next step with Synthetic risk buyer or close the deal"
+        },
+        "policies": [
+          {
+            "mode": "autonomous",
+            "decision": "b5627261-9cec-4576-8a24-6333f34ea05a",
+            "disposition": "autonomous",
+            "classes": [
+              {
+                "class": "standard",
+                "facts": {
+                  "measure": 1
+                }
+              }
+            ],
+            "review": null
+          },
+          {
+            "mode": "held",
+            "decision": "0a656838-a0bb-4149-932e-068b4c48fe4c",
+            "disposition": "review",
+            "classes": [
+              {
+                "class": "standard",
+                "facts": {
+                  "measure": 1
+                }
+              }
+            ],
+            "review": "53aaa622-6c1b-4d27-91a6-cbd7290e493f"
+          }
+        ],
+        "nativeMatch": true,
+        "salesMailModelUnchanged": true,
+        "blockedRefused": true,
+        "revokedRefused": true
+      }
+    ],
+    "error": "spawnSync Node ETIMEDOUT in tests/support/isolated-database.ts:11"
+  },
+  "browser": {
+    "execution_head": "7bd2d7f37272aeeee73e2a9c19812b3c6e577732",
+    "node": "22.20.0",
+    "runner": "cloud_run",
+    "command": [
+      "perl",
+      "-e",
+      "alarm 1200; exec @ARGV",
+      "--",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "tests/delegation-browser/today-brief.test.ts"
+    ],
+    "chromium_executable": "/usr/bin/chromium",
+    "exit": 0,
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "proofs": [
+      {
+        "proof": "SURFACE-013.stalled-browser",
+        "evidenceId": "01M4P3M1K42VCT80BSX7YTSZQB",
+        "quote": "In Synthetic proposal since 2026-10-11",
+        "nativeMatch": true,
+        "evidenceLinkAuthenticated": true,
+        "reviewMarked": true,
+        "widths": [
+          1440,
+          390
+        ]
+      }
+    ]
+  },
+  "screens": [
+    {
+      "path": "screens/specialist-risk-review-1440.png",
+      "sha256": "ae16a861d34823eb9409ba7f040255725adb075b1bf675179410570e2082b888",
+      "bytes": 109909
+    },
+    {
+      "path": "screens/specialist-risk-review-390.png",
+      "sha256": "ed5a89fa296bb94a2024c885c40550509ebd8c03b3aa2c3c653e9bda03584b6d",
+      "bytes": 97571
+    },
+    {
+      "path": "screens/specialist-stalled-1440.png",
+      "sha256": "6afe99cdca5a576e61113864a815399df4f02ece1c7a354f959e5eda3632f090",
+      "bytes": 279099
+    },
+    {
+      "path": "screens/specialist-stalled-390.png",
+      "sha256": "17fddb55e5bd65053de2a5c4296b9fd9d327d04dfa68e1814474b48f4a39a93b",
+      "bytes": 236367
+    }
+  ],
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "qualification": "Selected native probe, full browser registration and mechanical checks pass. Complete native registration remains locally unqualified because an unchanged later migration fixture times out; exact-SHA Verify is required by the fleet."
+}
