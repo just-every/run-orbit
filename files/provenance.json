@@ -46,6 +46,9 @@
     "event": "push",
     "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
     "status": "in_progress",
-    "conclusion": null
-  }
+    "conclusion": null,
+    "observed": "2026-11-11T23:51:37.620176+00:00"
+  },
+  "custody": "PUSHED",
+  "github_api_calls": 8
 }
