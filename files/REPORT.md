@@ -4,7 +4,7 @@ Repository: just-every/run-orbit
 Branch: cloud/sd-orbit-c-f155
 Starting main: b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31
 Candidate: 41ba287376164266fa9ba5e3853dacd17c3691d8
-Verify: push run 43119569580 on 41ba287376164266fa9ba5e3853dacd17c3691d8, in_progress at initial discovery; final status is recorded in CI.json.
+Verify: push run 43119569580 on 41ba287376164266fa9ba5e3853dacd17c3691d8, still in_progress with conclusion null at 2026-11-11 23:50:57Z. Eight of ten GitHub calls used; all polls were more than 300 seconds apart. Final custody is PUSHED, not READY. No completed green candidate CI result is claimed.
 PR: none; the existing push workflow is the branch entry point.
 
 ## Result and scope
@@ -45,7 +45,7 @@ This is a partial-point claim, not a whole-clause DONE award.
 | --- | --- | --- |
 | 1 | PARTIAL | R3–R6 reach the selected outcome; R1 and R2 remain external and unclaimed. |
 | 2 | PASS for selected boundary | A populated native deal has a real amount and stage. Financial and commitment claims remain ordinary text, and both policy legs save and read the estimate while sales state stays unchanged. |
-| 3 | PENDING CI | The existing registered managed-owner file is included by the unchanged push Verify core discovery in scripts/verification-plan.mjs. Exact candidate run listed above. |
+| 3 | PENDING CI | The existing registered managed-owner file is included by the unchanged push Verify core discovery in scripts/verification-plan.mjs. The direct parent is a skipped-CI checkpoint, so scripts/verify-plan.mjs requires full coverage; tests also fall outside orbitLightReaders in scripts/verification-ci-plan.mjs. Exact candidate run listed above. |
 | 4 | PASS | The receipt records SHA-256 values of all three changed test files; candidate binding checks compare these exact bytes. No relevant source changes follow the passing run. |
 | 5 | INSPECTED | SURFACE-004 already cites BASE-AGENT-006 at CONTRACT.md:2197. Only its relevant classifier duty is exercised; no claim of complete inherited matrix coverage. |
 | 6 | PASS for builder mechanics | Contract write and check pass; generated views are restored from main; every judgment cell and the counts remain unchanged. |
@@ -62,11 +62,11 @@ Typecheck and first-party checks: exit 0, actual command receipts included.
 Contract generator write and check: exit 0; generated views restored unchanged from origin/main.
 Edition source lock regenerated last through the documented command and checked: exit 0.
 Migration ledger: not applicable; no migration added or edited.
-Test budget: 198 registrations + 2 qualifications = 200, unchanged.
+Test budget: 198 registrations + 2 qualifications = 200, unchanged. Actual inventory output is retained in TEST-BUDGET.json.
 
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0; ledger=none exit=0
 
-Pre-READY checks: the selected behavior has the native sanity proof above; existing assertions remain; no runtime implementation or authority, erasure or replay mechanism changes; no screens are touched; source lock is fresh. Full publication scanning and the final main gates remain pending fleet custody and are not represented as a cloud scan receipt.
+Local candidate checks: the selected behavior has the native sanity proof above; existing assertions remain; no runtime implementation or authority, erasure or replay mechanism changes; no screens are touched; source lock is fresh. Full publication scanning and the final main gates remain pending fleet custody and are not represented as a cloud scan receipt.
 
 Starting main has exact-SHA successful push Verify 43089571350 and Run site 43094710902. A later duplicate Verify 43094710689 on the identical main SHA reports failure; no result from another SHA is credited. Candidate Verify is reported independently above. No workflow was edited and no PR, dispatch or rerun was needed for this change.
 
@@ -84,3 +84,9 @@ No clause-specific hold is released. SURFACE-002 record edits and BASE-AGENT-006
 Plan row result for SURFACE-004: record the proved nonbinding-estimate limb as partial progress; leave the held remainder unchanged. The shipped plan extract is read-only and no Mac plan or inbox file was accessed. No further clause touching these files was released by this brief.
 
 CLAIM SURFACE-004 PARTIAL points=2 tests=tests/core/managed-owner.test.ts#Managed owner authority and native agent doors preserve classification, stalled risks and nonbinding forecasts under both policies
+
+## Terminal disposition
+
+PUSHED branch=cloud/sd-orbit-c-f155 head=41ba287376164266fa9ba5e3853dacd17c3691d8
+
+Selected local proof and all touched checks pass. There is no known candidate assertion failure. Exact-SHA Verify remains running after discovery and five status polls. The limited GitHub budget retains two calls for diagnostics; no CI dispatch, rerun or PR was created. Hand the exact branch and SHA to the fleet for remaining CI, full-history publication scanning and guarded landing. No READY, DONE award or main landing is claimed. The evidence packet is published on its separate report-only ref. The scratch clone is removed after the final successful evidence transfer; the actual packet remains outside it.

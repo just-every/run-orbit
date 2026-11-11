@@ -57,6 +57,50 @@
       "status": "in_progress"
     }
   ],
-  "github_calls": 3,
-  "observed_at": "2026-11-11T23:24:50.379756+00:00"
+  "github_calls": 8,
+  "observed_at": "2026-11-11T23:24:50.379756+00:00",
+  "polls": [
+    {
+      "run_id": 43119569580,
+      "observed_at": "2026-11-11T23:30:00Z",
+      "conclusion": null,
+      "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+      "status": "in_progress"
+    },
+    {
+      "run_id": 43119569580,
+      "observed_at": "2026-11-11T23:35:10Z",
+      "conclusion": null,
+      "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+      "status": "in_progress"
+    },
+    {
+      "run_id": 43119569580,
+      "observed_at": "2026-11-11T23:40:24Z",
+      "conclusion": null,
+      "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+      "status": "in_progress"
+    },
+    {
+      "run_id": 43119569580,
+      "observed_at": "2026-11-11T23:45:33Z",
+      "conclusion": null,
+      "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+      "status": "in_progress"
+    },
+    {
+      "run_id": 43119569580,
+      "observed_at": "2026-11-11T23:50:57Z",
+      "conclusion": null,
+      "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+      "status": "in_progress"
+    }
+  ],
+  "github_call_budget": 10,
+  "terminal_custody": "PUSHED; exact-SHA Verify still running"
 }

@@ -48,5 +48,17 @@
     }
   },
   "publication_scan": "NOT RUN in cloud; fleet custody",
-  "main_landing": "not performed"
+  "main_landing": "not performed",
+  "terminal_custody": "PUSHED",
+  "ci": {
+    "run_id": 43119569580,
+    "event": "push",
+    "observed_at": "2026-11-11T23:50:57Z",
+    "conclusion": null,
+    "head_sha": "41ba287376164266fa9ba5e3853dacd17c3691d8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119569580",
+    "status": "in_progress"
+  },
+  "github_calls": 8,
+  "readiness": "not claimed; completed successful exact-SHA Verify remains pending"
 }
