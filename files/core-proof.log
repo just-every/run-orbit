@@ -1,0 +1,44 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:4566) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-11T20:33:39.125Z","expected":{"id":"01M4KRAW9NNRX0QDN78V3E8J32","evidenceId":"01M4PAQK9NC7T884A2HMTETHB9","quote":"In Synthetic proposal since 2026-10-11","since":"2026-10-11T20:33:39.125Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"3d123b25-c721-42d5-ba05-fa377338097e","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"e644ba9a-7ba9-4fe2-99a7-bf5abc2fa7c9","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"ab20580b-c7fb-47a5-929f-27e380060afe"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors
+  ---
+  duration_ms: 294072.214989
+  type: 'test'
+  location: '/workspace/orbit-f153/tests/core/managed-owner.test.ts:1:9269'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'idempotency_conflict'
+    - 'policy_blocked'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'policy_blocked'
+  actual: 'idempotency_conflict'
+  operator: 'strictEqual'
+  stack: |-
+    agentDoorDraftParityProof (/workspace/orbit-f153/tests/support/agent-door-draft-parity-proof.ts:105:54)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async agentDoorProof (/workspace/orbit-f153/tests/support/agent-door-proof.ts:202:5)
+    async TestContext.<anonymous> (/workspace/orbit-f153/tests/core/managed-owner.test.ts:168:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 303982.226652

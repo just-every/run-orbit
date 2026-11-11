@@ -1,0 +1,62 @@
+{
+  "tag": "sd-orbit-c-f153",
+  "head": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6",
+  "probes": [
+    {
+      "source_log": "core-registration-qualified.log",
+      "line": 17,
+      "observed": {
+        "proof": "BASE-AGENT-002.5.manual-draft-parity",
+        "modes": [
+          "autonomous",
+          "held"
+        ],
+        "normalized": true,
+        "saved": [
+          {
+            "mode": "autonomous",
+            "nativeId": "01M7670CR6B3V4S0KSKNTVA5SG",
+            "agentId": "01M7670E7CXG8AEGQ45W2NA857",
+            "revision": 2,
+            "subject": "Revised synthetic proposal",
+            "body": "Revised message.\\n\\n  Keep the indentation."
+          },
+          {
+            "mode": "held",
+            "nativeId": "01M7670NFG7GMBR5FTZZK5REMM",
+            "agentId": "01M7670PCEHZ7WFS32G97TE96J",
+            "revision": 2,
+            "subject": "Revised synthetic proposal",
+            "body": "Revised message.\\n\\n  Keep the indentation."
+          }
+        ],
+        "events": [
+          "draft.created",
+          "draft.updated"
+        ],
+        "replayEffects": 0,
+        "staleEffects": 0,
+        "providerCalls": 0
+      }
+    },
+    {
+      "source_log": "browser-registration.log",
+      "line": 1768,
+      "observed": {
+        "proof": "BASE-AGENT-002.5.manual-draft-browser",
+        "widths": [
+          1440,
+          390
+        ],
+        "modes": [
+          "autonomous",
+          "held"
+        ],
+        "draft": "01M765GW29R688209XBBJT4D5Z",
+        "revision": 2,
+        "reviewMarked": true,
+        "outboundMessages": 0
+      }
+    }
+  ]
+}

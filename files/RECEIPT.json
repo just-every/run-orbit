@@ -1,0 +1,169 @@
+{
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "branch": "cloud/sd-orbit-c-f153",
+  "candidate_ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43101418941",
+      "id": 43101418941,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "changed_files": [
+    "sources.lock.json",
+    "src/core/features/agent-door/drafts.ts",
+    "src/core/features/drafts/input.ts",
+    "src/core/features/drafts/routes.ts",
+    "src/core/features/workbench/routes.ts",
+    "tests/core/managed-owner.test.ts",
+    "tests/delegation-browser/today-brief.test.ts",
+    "tests/support/agent-door-draft-parity-proof.ts",
+    "tests/support/agent-door-proof.ts",
+    "tests/support/stalled-risk-browser.ts"
+  ],
+  "checks": {
+    "boundaries": {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "boundaries.log"
+    },
+    "build": {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    "first_party": {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-final.log"
+    },
+    "migration_ledger": {
+      "command": null,
+      "exit": 0,
+      "reason": "no migration changed"
+    },
+    "source_lock": {
+      "commands": [
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+      ],
+      "exit": 0,
+      "lock_sha256": "788b0edc673c7c0a3cc9d5808c910f13932ebc8ff1c69cd5425ebbe90df107bc",
+      "log": "source-check.json",
+      "ok": true
+    },
+    "typecheck": {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck-final.log"
+    },
+    "views": {
+      "commands": [
+        "node src/base/contract-docs.mjs write",
+        "node src/base/contract-docs.mjs check"
+      ],
+      "exit": 0,
+      "log": "views.log",
+      "restored_from_main": [
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ]
+    }
+  },
+  "claim": {
+    "id": "BASE-AGENT-002",
+    "scope": "manual draft creation and editing only",
+    "selected_point": 5,
+    "status": "PARTIAL",
+    "whole_point_or_clause_completion": false
+  },
+  "contract_changed": false,
+  "counts_after": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "counts_before": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "dirty_tree": false,
+  "fixture_allowance": {
+    "committed": false,
+    "migration_subprocess_timeout_seconds": 180,
+    "scope": "VM-only setup deadline; every migration and assertion retained",
+    "source": "vm-migration-deadline.cjs"
+  },
+  "head": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6",
+  "landing": {
+    "custodian": "fleet guarded lander",
+    "status": "not landed"
+  },
+  "local_tests": {
+    "browser": {
+      "failed": 0,
+      "log": "browser-registration.log",
+      "passed": 1,
+      "sha256": "2cdb21876e9a5e87e611bb8164ab266cdf1777b18d573ef9e85c81a23c6a8f70"
+    },
+    "core": {
+      "failed": 0,
+      "log": "core-registration-qualified.log",
+      "passed": 1,
+      "sha256": "8d313d1e72988d25d6dc300af48e2fca7ceb8b76d40d0da876ac8eee94783850"
+    },
+    "main_comparison": {
+      "failed": 0,
+      "log": "main-core-registration.log",
+      "passed": 1,
+      "sha256": "32139c7105f7e749f830d5f691c5d523f1189bafc50c1bc8957f008b5d04d69a"
+    }
+  },
+  "main_equality": false,
+  "product_push_log": "product-push.log",
+  "proof_locations": {
+    "tests/core/managed-owner.test.ts": [
+      125
+    ],
+    "tests/delegation-browser/today-brief.test.ts": [
+      22
+    ],
+    "tests/support/agent-door-draft-parity-proof.ts": [
+      10,
+      119
+    ],
+    "tests/support/agent-door-proof.ts": [
+      262
+    ]
+  },
+  "publication_scan": {
+    "commit": "12b016db68a798982a9ac6bbe4c02c47f2f9c1e6",
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "status": "not run in cloud; guarded fleet lander owns this gate"
+  },
+  "repository": "just-every/run-orbit",
+  "source_sha256": {
+    "sources.lock.json": "788b0edc673c7c0a3cc9d5808c910f13932ebc8ff1c69cd5425ebbe90df107bc",
+    "src/core/features/agent-door/drafts.ts": "85bdd4e0ae5b156da878dfe48d8215c856586417f31323c6bf57242a9a22c7aa",
+    "src/core/features/drafts/input.ts": "1ea9578b971c7ffd5dfe3e6ef361ae720c24b72086bcb24043658eaa74841913",
+    "src/core/features/drafts/routes.ts": "216d5eef7314944788bdca960a78e6c71f5e72892910195c8f27c86d6a47e50a",
+    "src/core/features/workbench/routes.ts": "7decc1ecd49c8be2317482130ddf0f7184f3efcdafba7a43824518e5dbba5cb3",
+    "tests/core/managed-owner.test.ts": "f71b20c83507bca582dd2d8ed83f0ece5e5276c4adff9a31c57ae350121e1a60",
+    "tests/delegation-browser/today-brief.test.ts": "039d6fb4f231b647dbeb1cf20fd43a7b714ef9193301244cdb2074b685c146e2",
+    "tests/support/agent-door-draft-parity-proof.ts": "d7fb29b4b0b2a7a117d35aa79c518c69eb0eefaf6664b530afb4e48ed3fefd37",
+    "tests/support/agent-door-proof.ts": "67bc6b54e071fbdb13254d6c73ccc8e70680a66caf8565e29cadd688da30120f",
+    "tests/support/stalled-risk-browser.ts": "582cbe7afbbc32dc5680f7883ad3e8930e30aa887fe35e3189b48bc2c4a4ebbc"
+  },
+  "tag": "sd-orbit-c-f153",
+  "test_inventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  }
+}
