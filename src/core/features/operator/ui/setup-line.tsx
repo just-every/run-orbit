@@ -7,7 +7,7 @@ export function SetupLine({state}:{state:OnboardingState|null}){
  if(!state)return null;
  const opportunity=state.opportunityId?`/app/opportunities/${state.opportunityId}`:'/app/opportunities/new',review=state.draftId?`/app/drafts/${state.draftId}`:opportunity;
  const steps=[[state.mailConfigured?'Check your mail sender':'Set up your mail sender',state.mailChecked,'/app/settings/mail'],['Add your first customer',state.customer,'/app/opportunities/new'],['Connect a source',state.source,'/app/settings/capture'],['Send a test event',state.test,'/app/settings/capture'],['Write your first follow-up',state.draft,opportunity],['Approve and send',state.sent,review]] as const;
- const remaining=steps.filter(([,done])=>!done);
+ const remaining=steps.filter(([name,done])=>!done&&(name!=='Approve and send'||state.mailConfigured));
  if(!remaining.length)return null;
  return <p className="now-line"><span>Finish setting up:</span>{remaining.map(([name,,path],index)=><span className="now-line__step" key={name}>{index?<span className="now-line__sep" aria-hidden="true">·</span>:null}<a href={path}>{name}</a></span>)}</p>;
 }
