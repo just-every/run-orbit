@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.5 — 2026-11-11
+
+Orbit 0.4.5 keeps a stopped or detached Business from pulling decisions, takes an erased person off your Business team list, and carries the changes made since 0.4.4. Orbit now runs on rer 0.2.107.
+
+- **A stopped or detached Business can no longer pull decisions.** A Business-linked Orbit now answers a Business pull only while that Business is positively running; if the Business is stopped or detached, the pull is refused. An older approval that came from a Business that has since stopped is refused too, including an approval saved before approvals recorded which Business they belong to. When you pair Orbit with a new Business, an approval from the old one stays with the old one.
+- **Erasing a person also removes them from your Business team list.** Erasing a person now takes them off the team list the Business signs and keeps them off it, so a later Business update that still names them does not bring them back. People erased on earlier versions drop off at your next Business update. Orbit keeps only a value-free marker of each erased person for this, never a name, address or id. An archive restore does not carry that list of erased people: a Business that re-pairs after a restore and still lists an erased person could invite them again.
+- **Erasing one person no longer touches another person's agent records.** Where two people's email addresses end alike, such as al@ and sal@, erasing one no longer selects the other's agent records. Erasing a person does not yet remove the names agents recorded about them; that work is still to come.
+- **Updating `rer`.** The pinned `rer` is now 0.2.107. Its `rer deploy --dry-run` finishes cleanly, setup-token retirement tolerates a partial Cloudflare list, and `rer signin` prints the link for a custom domain. Update the checkout with `pnpm install --frozen-lockfile`.
+
+It updates 0.4.4 in place and keeps every row. It adds three migrations, so take a private backup first: one new table for retired agent-door references, one that removes only the Business pull records provably copied across two different Businesses (every audit record stays), and one new table for the erased-people list. Nothing else in your data is changed.
+
 ## 0.4.4 — 2026-11-10
 
 Orbit 0.4.4 keeps a truthful record of what each form visitor was shown, gives Reports one list of pages, and carries the changes made since 0.4.3. Orbit now runs on rer 0.2.96.
