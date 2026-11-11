@@ -7151,7 +7151,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/slack-settings.tsx": {
-      "sha256": "aff082c5572ef4c4a7a6e8cff503ce8a1c8f197609215a5cd24b13090b863f93",
+      "sha256": "ae7ee0a1166171a21aba09616c6370cfdd65d7bad46657fe40b0988f5cc6734c",
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
@@ -8224,6 +8224,10 @@
     },
     "src/core/features/slack/dashboard-suspension.ts": {
       "sha256": "be04b2909a15788c9d879a6b93c8e530b1d8f7fc8fd124d57b57e40d072aa5c2",
+      "executable": false
+    },
+    "src/core/features/slack/declaration.ts": {
+      "sha256": "6a7c6f6bd4560b855c9d0e8a318dcec62e65def730a0a8f24067556bd6497290",
       "executable": false
     },
     "src/core/features/slack/deletions.ts": {
