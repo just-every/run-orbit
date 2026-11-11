@@ -1,0 +1,22 @@
+{
+  "widths": [
+    1440,
+    390
+  ],
+  "assertionWidth": 1440,
+  "preview": {
+    "status": 200,
+    "available": false,
+    "reason": "Set up a mail sender before approving or scheduling this message. Your draft is saved.",
+    "settingsUrl": "/app/settings/mail"
+  },
+  "screens": [
+    "draft-1440.png",
+    "mail-1440.png",
+    "now-1440.png",
+    "draft-390.png",
+    "mail-390.png",
+    "now-390.png"
+  ],
+  "serverFailures": []
+}

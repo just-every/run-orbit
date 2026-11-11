@@ -1,0 +1,77 @@
+{
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0,
+    "node": "22.20.0"
+  },
+  "sourceLock": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0,
+    "ok": true
+  },
+  "contractViews": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "output": "Contract documents are current."
+  },
+  "browserOnboarding": {
+    "command": "node --import /tmp/orbit-chromium.mjs --test --test-name-pattern='at 1440$' tests/rer/onboarding.test.mjs",
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "durationMs": 256416.59092,
+    "chromium": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox"
+    ]
+  },
+  "inventory": {
+    "before": 200,
+    "after": 200,
+    "registered": 198,
+    "qualifications": 2
+  },
+  "contractCounts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "sourceOnboarding": {
+    "command": "pnpm exec tsx --test tests/core/source-onboarding.test.ts",
+    "node": "22.20.0",
+    "exit": 0,
+    "passed": 3,
+    "failed": 0,
+    "durationMs": 678812.562831
+  },
+  "publicationScan": {
+    "status": "fleet-only",
+    "reason": "Cloud adaptation reserves the publication scan and landing to the fleet Mac."
+  },
+  "baselineHead": "36f701cc53e127f0ed4baf367625af329fef6768",
+  "diffCheck": {
+    "exit": 0
+  },
+  "productDiffCredentialPatternCheck": {
+    "result": "passed",
+    "scope": "candidate diff only; not the fleet publication scan"
+  },
+  "previousAttempts": [
+    {
+      "scope": "source-onboarding",
+      "node": "24.19.0",
+      "result": "failed",
+      "reason": "Fixture migration subprocess timeout in the existing Slack archive proof; later fixture migrations also timed out."
+    }
+  ],
+  "head": "31e8cf27d8a4dc9576151f3356ca4813e90d4d4f"
+}

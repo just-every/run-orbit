@@ -1,0 +1,23 @@
+{
+  "phase": "before",
+  "draftSaved": true,
+  "previewStatus": 503,
+  "preview": {
+    "error": "Configure customer mail in Settings → Customer mail sender before approving or scheduling a message."
+  },
+  "onboarding": {
+    "mailConfigured": false,
+    "aiConfigured": false,
+    "mailChecked": 0,
+    "customer": 1,
+    "records": 1,
+    "source": 0,
+    "test": 0,
+    "draft": 1,
+    "sent": 0,
+    "opportunityId": "01M74S9Z56FBQZH6K203V7B1KW",
+    "draftId": "01M74S9ZMMXQB4FQ6XYJM643N8",
+    "mailSettings": null
+  },
+  "outboundRows": 0
+}

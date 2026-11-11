@@ -1,0 +1,26 @@
+{
+  "draft-1440.png": {
+    "bytes": 126656,
+    "sha256": "48e273dcd57aef6b67fe6836348e71ae04b447a7b213ff4db009a0408325600f"
+  },
+  "draft-390.png": {
+    "bytes": 109930,
+    "sha256": "51dc337b6e39f917f5bc4248884ec84c182d79273c8911da0f3d3a719e3c83b4"
+  },
+  "mail-1440.png": {
+    "bytes": 201315,
+    "sha256": "f7c32b2de5d169ef6e1c73cd51a303fa6748a8d2b24c9ca8c7f1255e9541717e"
+  },
+  "mail-390.png": {
+    "bytes": 111761,
+    "sha256": "7acb1945ec24d797a3e903c0061c49053abc64945d9a95bf2c87a5e656d40187"
+  },
+  "now-1440.png": {
+    "bytes": 51500,
+    "sha256": "6d5c725257825a95240e62c3871166e2d964f13afc34063871c34f5d7b0d7cd0"
+  },
+  "now-390.png": {
+    "bytes": 40438,
+    "sha256": "8e76fb7f20210c1f38be5aced24f1c092d34f6ee1ca494b900b44cda7ead8b4c"
+  }
+}
