@@ -6363,7 +6363,7 @@
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "7d9c2c0d1f5b4a63c0176474979fdf915c73f8d8a43bdc1872cc8db26dc70ce0",
+      "sha256": "bc2072779166cc662da56bc0ee33d39bdea9d0bf7667626977855b46e76301fa",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
@@ -6911,7 +6911,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/activity.tsx": {
-      "sha256": "2dceaf2ea4b102f1fd2326b2207dc3f41d1e8c2efcb3bb4be1ded908885dc66c",
+      "sha256": "d5737dab794142d5b6d4ea8b42500688736c05fe39a20ca831e0e940d9caaa5d",
       "executable": false
     },
     "src/core/features/operator/ui/record/company-details.tsx": {
@@ -7011,7 +7011,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record.css": {
-      "sha256": "c3029334dcae16079b4bfe5a545a7e248b18c0850b871c589ef02f347b679f82",
+      "sha256": "da6f9fd931b2834d56ee4be233663a159302760110d1ed977cfaaed93f971a6b",
       "executable": false
     },
     "src/core/features/operator/ui/record/recorded-details.tsx": {
@@ -7019,7 +7019,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
-      "sha256": "a5a29eb89a838d9d0c01cdb27b4d3bc964f12372bd25d6881f42bf77b79e5fb7",
+      "sha256": "f515614092f820ad1ca05409e1ba3ac21d70d822e687e5158888edd601cdb2bf",
       "executable": false
     },
     "src/core/features/operator/ui/record/use-refresh.ts": {
@@ -7163,7 +7163,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/today-brief.tsx": {
-      "sha256": "e6effcbf6c11c1e1a4a224305d6b41e52c1c7d2651e11a45636b7a6f88a3e0a4",
+      "sha256": "7d96d83f2272e1b3ae4a9322cd414c3323ab23fcaf977bf04ac8d080d8b608ba",
       "executable": false
     },
     "src/core/features/operator/ui/today-summary.tsx": {
@@ -8399,7 +8399,7 @@
       "executable": false
     },
     "src/core/features/workbench/evaluation-repository.ts": {
-      "sha256": "7f3d8c061868df75d1f00299fad4205ce60787d0df4f2aafe52c2f4aff2a8912",
+      "sha256": "7c3935d970f6b1932598a86656eac3e2611ce37fff88b7eafb74e1a7501c6266",
       "executable": false
     },
     "src/core/features/workbench/onboarding.ts": {
@@ -8415,7 +8415,7 @@
       "executable": false
     },
     "src/core/features/workbench/repository.ts": {
-      "sha256": "6550b9ba4247a573b00a820b4f67c95295aaa4e886c75c0a72d0ba9a5a6a340c",
+      "sha256": "01ae13eae2fa1b9306b344c74675d5dc72f64a92904f1ada30605b7bca4f0dc4",
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
@@ -10367,7 +10367,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "15899f0ebaebb6fdeaa93cdc18e676b0dc32f3fb1f5281aaf03e5de3db31f932",
+      "sha256": "26b53d8df2f00b1850a1bc83b8caeda17603d1e0ef3894807734085d10a5649a",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {

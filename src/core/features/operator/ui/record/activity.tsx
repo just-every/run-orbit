@@ -38,7 +38,7 @@ export function Activity({entries,actions,note,empty='No activity recorded yet.'
   {note}
   {sorted.length?<ol className="r-feed">{sorted.map(entry=><li key={entry.key} id={entry.anchor}>
    <span className={`r-kind ${entry.draft?'r-kind--draft':''}`}>{entry.kind}</span>
-   <div className="r-entry"><p className="r-entry-title">{entry.title}</p>{entry.line?<p className="r-entry-line">{entry.line}</p>:null}
+   <div className="r-entry">{entry.title?<p className="r-entry-title">{entry.title}</p>:null}{entry.line?<p className="r-entry-line">{entry.line}</p>:null}
     {entry.details?<details><summary>Recorded details</summary>{entry.details}</details>:null}
     {entry.tools?<div className="r-entry-actions">{entry.tools}</div>:null}
    </div>

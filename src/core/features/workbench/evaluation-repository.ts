@@ -3,8 +3,10 @@ import { weights, scoringPolicy } from './policies';
 import {customerSignalSql} from '../signals/test-events';
 
 /** SQL reads all committed evidence within the caller's D1 transaction. */
-export function evaluationStatements(db: D1Database, opportunityId: string, actor: string, reason: string, now = new Date()) {
+export function evaluationStatements(db: D1Database, opportunityId: string, actor: string, reason: string, now = new Date(), signalType?: string) {
   const at = now.toISOString(), evaluation = createId(), recommendation = createId();
+  // Name the event that caused this evaluation, rather than its scoring consequence.
+  const bandRiseReason = signalType ? signalType.replaceAll('.', ' ').replace(/^./, letter => letter.toUpperCase()) : 'Priority band rose';
   const open = `EXISTS(SELECT 1 FROM opportunities WHERE id=? AND lifecycle='open')`;
   const weight = 'CASE s.type ' + Object.entries(weights).map(([type,value])=>`WHEN '${type}' THEN ${value}`).join(' ')+' ELSE 0 END';
   const contribution = `CAST(ROUND((${weight})*MAX(0,1-MAX(0,julianday('${at}')-julianday(s.occurred_at))/30)) AS INTEGER)`;
@@ -20,7 +22,7 @@ export function evaluationStatements(db: D1Database, opportunityId: string, acto
     db.prepare(`INSERT INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?||':'||id,'opportunity',? FROM recommendations WHERE opportunity_id=? AND is_current=1 AND ${open}`).bind(evaluation,opportunityId,opportunityId,opportunityId),
     db.prepare(`UPDATE recommendations SET is_current=0,superseded_at=?,updated_at=? WHERE opportunity_id=? AND is_current=1 AND ${open}`).bind(at,at,opportunityId,opportunityId),
     db.prepare(`UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE opportunity_id=? AND ${open}`).bind(reason,at,opportunityId,opportunityId),
-    db.prepare(`UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE 'Priority band rose' END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open' AND (CASE band WHEN 'low' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END)<(SELECT CASE band WHEN 'low' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END FROM evaluations WHERE id=?)`).bind(at,opportunityId,evaluation),
+    db.prepare(`UPDATE opportunities SET queue_state='now',queue_reason=CASE WHEN queue_state='now' AND queue_reason IN ('Customer reply','Delivery problem') THEN queue_reason ELSE ? END,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open' AND (CASE band WHEN 'low' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END)<(SELECT CASE band WHEN 'low' THEN 0 WHEN 'medium' THEN 1 ELSE 2 END FROM evaluations WHERE id=?)`).bind(bandRiseReason,at,opportunityId,evaluation),
     db.prepare(`UPDATE opportunities SET score=(SELECT score FROM evaluations WHERE id=?),band=(SELECT band FROM evaluations WHERE id=?),last_contributing_signal_at=(SELECT MAX(s.occurred_at) FROM signals s JOIN evaluation_contributions c ON c.signal_id=s.id WHERE c.evaluation_id=?),updated_at=? WHERE id=? AND lifecycle='open'`).bind(evaluation,evaluation,evaluation,at,opportunityId),
     db.prepare(`INSERT INTO recommendations(id,opportunity_id,action_type,explanation,policy_version,is_current,created_at,updated_at) SELECT ?,?,'manual_action',NULL,'opportunity.next-action.v1',1,?,? WHERE EXISTS(SELECT 1 FROM evaluation_contributions c JOIN signals s ON s.id=c.signal_id WHERE c.evaluation_id=? AND s.confidence='observed')${completionGuard}`).bind(recommendation,opportunityId,at,at,evaluation),
     db.prepare(`INSERT INTO recommendation_evidence(recommendation_id,signal_id) SELECT ?,s.id FROM signals s JOIN evaluation_contributions c ON c.signal_id=s.id WHERE c.evaluation_id=? AND s.confidence='observed' AND EXISTS(SELECT 1 FROM recommendations WHERE id=?)`).bind(recommendation,evaluation,recommendation),
