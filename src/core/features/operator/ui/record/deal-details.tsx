@@ -2,7 +2,7 @@ import {useCallback,useMemo,useState} from 'react';
 import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
 import {InlineConfirm} from '../autosave/inline-confirm';
 import {SaveRefused,useAutosave,type AutosaveForm,type Parse,type Values} from '../autosave/use-autosave';
-import {formatCurrency,formatDay,workspaceInstant,workspaceLocalInput} from '../formatters';
+import {dateInputPlaceholder,formatDateInput,parseDateInput,formatCurrency,formatDay,workspaceInstant,workspaceLocalInput} from '../formatters';
 import {CompanyField} from './company-field';
 import {readRecord,saveRequest} from './record-api';
 import {CustomValues,type FieldDefinition} from './custom-values';
@@ -10,8 +10,8 @@ import {DetailsGroup} from './details-panel';
 
 const money=(workspace:any):Parse=>text=>{const amount=Number(text.replace(/[^0-9.]/g,''));return !text.trim()?{value:0}:Number.isFinite(amount)&&amount>=0&&amount<=1_000_000_000?{value:Math.round(amount*100)}:{error:'Enter an amount such as 18000.'};};
 /** A deal's expected close is a date on the workspace clock. */
-const day=(value:unknown)=>typeof value==='string'&&value?workspaceLocalInput(value).slice(0,10):'';
-const dayParse:Parse=text=>!text?{value:null}:/^\d{4}-\d{2}-\d{2}$/.test(text)?{value:workspaceInstant(`${text}T00:00`)}:{error:'Choose a date.'};
+const day=(value:unknown)=>typeof value==='string'&&value?formatDateInput(workspaceLocalInput(value).slice(0,10)):'';
+const dayParse:Parse=text=>{try{return {value:text.trim()?workspaceInstant(`${parseDateInput(text)}T00:00`):null};}catch(error){return {error:(error as Error).message};}};
 
 /** Details › Deal: Stage, Value, Owner, Expected close and Company, then the deal's own fields. */
 export function DealValues({id,record,settings,scheduled,definitions,context}:{id:string;record:AutosaveForm;settings:any;scheduled:number;definitions:FieldDefinition[];context:AutosaveForm}){
@@ -20,7 +20,7 @@ export function DealValues({id,record,settings,scheduled,definitions,context}:{i
   <StageField id={id} record={record} settings={settings} scheduled={scheduled}/>
   <AutosaveField form={record} field="value_cents" label="Value" quiet describe={value=>formatCurrency(Number(value??0),workspace)}><input inputMode="decimal" {...textProps(record,'value_cents',{show:value=>formatCurrency(Number(value??0),workspace),editText:value=>String(Number(value??0)/100),parse:money(workspace)})}/></AutosaveField>
   <AutosaveField form={record} field="owner_id" label="Owner" quiet describe={value=>owners.find((operator:any)=>operator.id===value)?.display_name??'Unassigned'}><select {...choiceProps(record,'owner_id',value=>value||null)}><option value="">Unassigned</option>{owners.map((operator:any)=><option key={operator.id} value={operator.id}>{operator.display_name}</option>)}</select></AutosaveField>
-  <AutosaveField form={record} field="expected_close_at" label="Expected close" quiet describe={value=>typeof value==='string'&&value?formatDay(value):'nothing'}><input type="date" {...textProps(record,'expected_close_at',{show:day,parse:dayParse})}/></AutosaveField>
+  <AutosaveField form={record} field="expected_close_at" label="Expected close" quiet describe={value=>typeof value==='string'&&value?formatDay(value):'nothing'}><input type="text" placeholder={dateInputPlaceholder()} {...textProps(record,'expected_close_at',{show:day,parse:dayParse})}/></AutosaveField>
   <CompanyField form={context} field="company" name={String(context.copy?.companyName??'')}/>
   <CustomValues form={record} definitions={definitions} operators={settings.operators??[]}/>
  </DetailsGroup>;
