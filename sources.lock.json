@@ -10035,7 +10035,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "01ec503110966a3a38a913559b5099a53b89cbb4151f775eb63c57c4c0031919",
+      "sha256": "48157b18cd2c0a48a980c143cd2c44ab251625b8bd959b5a7a9d9659cd6c0cb1",
       "executable": false
     },
     "tests/agent-door/workflow-fixture.mjs": {
@@ -10171,7 +10171,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "bddf6eaca1065be23325fe1406b31afc4654f5933c2452eaa99f8befe5046f0d",
+      "sha256": "e00cea7c1f44ada7dea81ff875a66b1624d856779f77d3198b95b9fe799c8d1e",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10287,11 +10287,11 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "f616e14debfd17d0995fe595d262ee550405801d30c049779113b472273bde3f",
+      "sha256": "f71586ce7761bab14d330d809598697c723e0f3b267c75e5247fd7e783664fe7",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "1185c41a4a44369e65240e98136ea721c09ac0c8bacd5ba1f1dcecf72e26daf3",
+      "sha256": "1482aebc0252cbf0bf550aed96be59bef0309d38aee8487f48066a8f4cc0e79b",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
@@ -10995,7 +10995,11 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "720ffce0b49236d8f9d30ecc010ebb82390b0f21bc277f77e2ec852cbd87082c",
+      "sha256": "6e300b706fed804121508456ceb36bb597a670ae354cac8da6fe9cd5794d9a2a",
+      "executable": false
+    },
+    "tests/support/agent-door-stalled-risk-proof.ts": {
+      "sha256": "7851a28c251878abee9d563a29f3cda64de3308a2c941388f0119512c588dad6",
       "executable": false
     },
     "tests/support/agent-erasure-matcher-proof.ts": {
@@ -11376,6 +11380,10 @@
     },
     "tests/support/source-stop-fixture.ts": {
       "sha256": "6eee65991c7036a3530c3eb320b9badeba0f04a903bc3ac311a1bebdc38499d4",
+      "executable": false
+    },
+    "tests/support/stalled-risk-browser.ts": {
+      "sha256": "bc47fdbf9ed54f201fc3cf9c92575860f1e5badc23d8e0f203d680f021540c6f",
       "executable": false
     },
     "tests/support/stop-attribution.ts": {
