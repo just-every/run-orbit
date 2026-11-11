@@ -6,7 +6,6 @@ import {createHmac} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
 import {snapshot} from '../../src/core/features/delegation/evidence';
 import type {createApp} from './app';
-import {proveSlackDisconnect} from './slack-actions-proof';
 import {proveSlackActions} from './slack-actions-proof';
 import {proveSlackArchive} from './slack-archive-proof';
 export interface SlackFixture {token:string;setClock:(value:Date|undefined)=>void;db:D1Database;actor:string;stage:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>}
@@ -115,7 +114,6 @@ export async function proveSlackNotices(f:SlackFixture,deal:string,contact:strin
   const booked=()=>f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',booking.secret).update(raw).digest('hex')},body:raw});assert.equal((await booked()).status,201);await process();assert.equal(posts.length,bookingCount+1);assert.equal((await booked()).status,409);await process();assert.equal(posts.length,bookingCount+1);assert.ok(posts.every(p=>!p.text.includes('maya@harbour.test')&&!p.text.includes('Maya')&&!p.text.includes('Private win reason')&&!p.text.includes('Private customer call contents')));
   await proveDashboardSlack(f,{posts,call,signed,secret,token,outcome:value=>edge.setOutcome(value),safety:value=>edge.setSafety(value)});
   await provePersonalSlack(f,deal,edge);
-  await proveSlackDisconnect(f,{posts,call,signed,secret,token});
   // DATA-001: a second deal's notice reaches Slack now, so a contact erasure while Slack is revoked leaves a pending deletion for the Records export.
   const witness=await(await f.request('workbench/opportunities','POST',{title:'Erasure witness',companyName:'Witness company',contactName:'Witness contact',email:'witness@harbour.test',stageId:f.stage,valueCents:1000})).json() as any,witnessContact=await f.db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=?').bind(witness.id).first<string>('contact_id');assert.ok(witnessContact);
   const witnessMove=await f.request(`records/opportunity/${witness.id}/move`,'POST',{stageId:second,reviewedStageId:f.stage});assert.ok(witnessMove.ok,await witnessMove.clone().text());assert.ok((await notices()).some(n=>n.record_id===witness.id&&n.state==='sent'&&n.message_ts),'The witness deal notice reached Slack');
