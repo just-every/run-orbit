@@ -11383,7 +11383,7 @@
       "executable": false
     },
     "tests/support/slack-archive-proof.ts": {
-      "sha256": "abc3be1c34ada7f0a5bc8622ea2d892cf0d1ac6ff5a9941eec8543f750170aac",
+      "sha256": "142d2d8000bf84852214eba805d40d49ea24481be2e58e8d503b0906e405b5eb",
       "executable": false
     },
     "tests/support/slack-network.ts": {
@@ -11391,7 +11391,7 @@
       "executable": false
     },
     "tests/support/slack-notices-proof.ts": {
-      "sha256": "574a515a73df54ea6608e86a8c3e8f3de2fe103ac7ead21ad798c015df66284f",
+      "sha256": "29ff01e99e4debc471238d070d2409e5352e3a87a9e212fa872598228e6c820d",
       "executable": false
     },
     "tests/support/source-stop-fixture.ts": {
