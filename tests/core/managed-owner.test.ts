@@ -6,6 +6,8 @@ import {agentDocsInventory} from '../agent-door/native-journey.mjs';
 import {isolatedDatabase} from '../support/isolated-database';
 import {agentDoorProof, type RejectedReportProofContext} from '../support/agent-door-proof';
 import {agentDoorBusinessStopProof} from '../support/agent-door-business-stop-proof';
+import {businessRosterErasureProof} from '../support/business-roster-erasure-proof';
+import {agentErasureMatcherProof} from '../support/agent-erasure-matcher-proof';
 import {savedReportDeletionProof} from '../support/agent-report-deletion-proof';
 import {agentDoorCaptureSecurityProof} from '../support/agent-door-capture-security-proof';
 import {agentDoorCollaboratorProof} from '../support/agent-door-collaborator-proof';
@@ -176,4 +178,6 @@ test('Managed owner claim verifies RER authority and creates the native owner an
   } finally { await fixture.dispose(); }
   await agentDoorProof(context,async proof=>{await rejectedNativeReportProof(proof);await savedReportDeletionProof(proof);},agentDoorCollaboratorProof,agentWorkflowProof,agentDoorCaptureSecurityProof);
   await agentDoorBusinessStopProof();
+  await businessRosterErasureProof();
+  await agentErasureMatcherProof();
 });

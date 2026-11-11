@@ -60,9 +60,18 @@ export function orbitTeam(db: D1Database): TeamAdapter {
   return {
     async ownerEmail() {return (await db.prepare("SELECT email FROM operators WHERE setup_owner=1 AND status='active'").first<{email:string}>())?.email ?? null;},
     async prepare({members, managed}) {
+      // A person erased by a release before the roster retired them still has a stored row. Their operator
+      // keeps its id with the erasure marker address (eraseOperator), so the row is reported gone and retired here.
+      const gone: string[] = [];
+      for (const row of managed) {
+        if (!row.operatorId || gone.includes(row.operatorId)) continue;
+        const native = await db.prepare('SELECT email FROM operators WHERE id=?').bind(row.operatorId).first<{email:string}>();
+        if (native?.email === `erased-${row.operatorId.toLowerCase()}@example.invalid`) gone.push(row.operatorId);
+      }
       const rows: ManagedMember[] = [];
       for (const member of members) {
         const prior = managed.find(row => member.id && row.businessId === member.id) ?? managed.find(row => row.email === member.email);
+        if (prior?.operatorId && gone.includes(prior.operatorId)) continue;
         // Once bound, even a removed identity owns its mapping. Address changes
         // cannot move work, audit or pending approval to a different operator.
         const native = prior?.operatorId
@@ -74,8 +83,8 @@ export function orbitTeam(db: D1Database): TeamAdapter {
         rows.push({email:member.email, operatorId:native?.id ?? prior?.operatorId ?? null, invite:member.invite,
           state: duplicate || owner || !native ? 'conflict' : native.status === 'active' && membership ? 'active' : 'inactive'});
       }
-      for (const old of managed) if (!members.some(member => member.email === old.email)) rows.push({...old,state:'inactive'});
-      return {statements:[], rows, async afterCommit() {}};
+      for (const old of managed) if (!members.some(member => member.email === old.email) && !(old.operatorId && gone.includes(old.operatorId))) rows.push({...old,state:'inactive'});
+      return {statements:[], rows, gone, async afterCommit() {}};
     },
   };
 }

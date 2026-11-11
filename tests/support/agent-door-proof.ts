@@ -10,7 +10,7 @@ import {agentDoorBodyLimitProof} from './agent-door-body-limit';
 import {agentDoorClassificationProof} from './agent-door-classification-proof';
 import {agentAuditRetentionProof} from './agent-door-audit-proof';
 import {checkAgentArtifacts} from '../../src/base/modules/agent-door/index.ts';
-import {contactAgentArtifacts} from '../../src/core/features/agent-door/erasure';
+import {contactAgentArtifacts,operatorAgentArtifacts} from '../../src/core/features/agent-door/erasure';
 import {foldInstalledCatalog} from '../../src/core/features/records/archive-fold-catalog';
 import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
@@ -36,6 +36,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
+    await checkAgentArtifacts(fixture.db,operatorAgentArtifacts);
     for(const table of ['agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs'])assert.ok(portabilityPolicy.excludeTables.includes(table),'CLI archives exclude '+table);
     for(const catalog of [await foldInstalledCatalog(fixture.db)]) {
       assert.ok(!catalog.some(table=>['agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs'].includes(table.name)),'agent replay and relay custody stays installation-local');

@@ -7,6 +7,7 @@ import {audit,RecordError} from '../records/shared';
 import {identityMatch,identityPatterns} from '../records/erasure-identity';
 import {containsWord,redactJsonText,redactionSql} from './erasure-redaction';
 import {messageReviewOperatorErasure} from '../drafts/privacy';
+import {operatorRetirementStatements} from '../agent-door/operator-erasure';
 
 /** Retain stable attribution IDs while removing a retired operator's personal details. */
 export async function eraseOperator(db:D1Database,id:string,actor:string){
@@ -25,6 +26,8 @@ export async function eraseOperator(db:D1Database,id:string,actor:string){
  statements.push(...await eraseImportOwnerIdentity(db,id,operator.email,actor));
  statements.push(...ownershipOperatorErasure(db,id),...workflowOperatorErasure(db,id));
  statements.push(...forecastErasureStatements(db,'operator',id,[operator.email]));
+ // The Business roster entry, policy references and portability checkpoint retire in this same batch.
+ statements.push(...await operatorRetirementStatements(db,id));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
  const contentColumns:Record<string,string[]>={workflow_versions:['name','definition_json','preview_json'],audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],record_mail_drafts:['subject','body'],record_mail_outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
