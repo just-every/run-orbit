@@ -10291,7 +10291,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "60285197930a7559a47173572a6adf631ea84e19faad392d1245fc486b9beb46",
+      "sha256": "eba76fe4fd931b25e610effb41e480773906d31dfc57d06489438eecdc4c888b",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
