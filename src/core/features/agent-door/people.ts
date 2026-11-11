@@ -32,6 +32,11 @@ export function orbitPeople(bindings: PlatformBindings): PeopleAdapter {
   }
   return {
     person, businessMember,
+    /** Fail closed: only a paired Business whose durable settings row is positively running reads false. */
+    async businessStopped() {
+      const state = await db.prepare('SELECT stopped,owner_id FROM bs_settings WHERE singleton=1').first<{stopped:number;owner_id:string|null}>();
+      return !(state?.stopped === 0 && typeof state.owner_id === 'string' && state.owner_id.length > 0);
+    },
     businessRole: subject => subject.role === 'owner' ? 'owner' : subject.role === 'admin' ? 'editor' : null,
     async sponsor({sub}) {
       const settings = await db.prepare('SELECT owner_id FROM bs_settings WHERE singleton=1 AND stopped=0').first<{owner_id:string|null}>();

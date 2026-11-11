@@ -36,9 +36,9 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
-    for(const table of ['agent_door_replay_aliases','agent_door_relay'])assert.ok(portabilityPolicy.excludeTables.includes(table),'CLI archives exclude '+table);
+    for(const table of ['agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs'])assert.ok(portabilityPolicy.excludeTables.includes(table),'CLI archives exclude '+table);
     for(const catalog of [await foldInstalledCatalog(fixture.db)]) {
-      assert.ok(!catalog.some(table=>['agent_door_replay_aliases','agent_door_relay'].includes(table.name)),'agent replay and relay custody stays installation-local');
+      assert.ok(!catalog.some(table=>['agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs'].includes(table.name)),'agent replay and relay custody stays installation-local');
     }
     const origin='https://orbit.example.test', issuer='https://business.example.test', installation='orbit-door-test';
     const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);

@@ -56,7 +56,8 @@ export function orbitDeploy(lifecycle) {
     for (const [names, feature, where] of later) store.report(`  - ${feature}: ${names.join(', ')}${where ? ` (${where})` : ''}`);
    }
    store.report('deploy: dry run complete; no deployment occurred and no provider request was made.');
-   return { dryRun: true, deployed: false };
+   // rer 0.2.106 plans again only for a hook that returns kit state; this hook validated its own plan, so it hands that plan back.
+   return { dryRun: true, deployed: false, plan: preview };
   }
   const absent = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN', ...required].filter(name => !process.env[name]?.trim());
   if (absent.length) throw missing(`Deployment needs ${absent.join(', ')}. Nothing was deployed. The README's "Deploy to your Cloudflare account" steps show where to get each value and how to pass it: https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account`);
