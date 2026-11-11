@@ -10179,7 +10179,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b957e75cca58716d7704a55cfb231d9828be154e165611399bd8cd3c36fb1a31",
+      "sha256": "736599e3c50ad9eec6815b47eaf74ad2873fae99a8628d06f8f21a37ea8123b2",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
