@@ -1,0 +1,174 @@
+{
+  "tag": "sd-orbit-c-f151",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f151",
+  "head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "main": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+  "recordedAt": "2026-11-11T19:29:17.493268+00:00",
+  "commands": [
+    {
+      "command": "node --import tsx --test tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "result": "Node 24.19.0; complete registration passed, one test"
+    },
+    {
+      "command": "cloud_run perl -e 'alarm 1800; exec @ARGV' -- node --import tsx --test tests/delegation-browser/today-brief.test.ts",
+      "exit": 0,
+      "result": "Node 22.20.0; complete registration passed, one test; Chromium /usr/bin/chromium with --no-sandbox"
+    },
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0,
+      "result": "frozen repository dependencies"
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email [fleet mailbox] --non-interactive",
+      "exit": 0,
+      "result": "private local setup; no setup log selected"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "result": "emitted app built"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "result": "TypeScript passed"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "result": "first-party passed"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "result": "zero documents written"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "result": "generated documents current"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "result": "generated views restored"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "result": "no tracked change"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "result": "source lock fresh"
+    },
+    {
+      "command": "git diff --exit-code ff49ff8f0e7137dd1963e9f03223ab93987e09d7 HEAD",
+      "exit": 0,
+      "result": "complete final product tree identical to tested pin"
+    },
+    {
+      "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f151",
+      "exit": 0,
+      "result": "successful first attempt; named branch created"
+    }
+  ],
+  "counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    }
+  },
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "screens": [
+    {
+      "path": "screens/specialist-risk-review-1440.png",
+      "bytes": 109613,
+      "sha256": "f0ec73e8684ace153859cf2e3a9a1a7e96ce7d7754c0fb8846351551cb692224"
+    },
+    {
+      "path": "screens/specialist-risk-review-390.png",
+      "bytes": 97218,
+      "sha256": "2d37dd5b76fd70f8df9b9f13ddc2060744b5bc92fefe3f13c933ffcff2e354f9"
+    },
+    {
+      "path": "screens/specialist-stalled-1440.png",
+      "bytes": 275925,
+      "sha256": "f85da851f043d0e638cae48d27df7870313744809872e204f1599ed1bf5ea00b"
+    },
+    {
+      "path": "screens/specialist-stalled-390.png",
+      "bytes": 234981,
+      "sha256": "8d97787870426d8963351c5a3165f102434b06a3f5ded5562d33c978a85db674"
+    }
+  ],
+  "ci": {
+    "candidateRuns": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f151",
+        "head_sha": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43087510309",
+        "id": 43087510309,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "priorContinuation": {
+      "id": 43082331013,
+      "head": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+      "conclusion": "success",
+      "event": "push"
+    },
+    "initialMain": {
+      "head": "9e7f46ce42c6bde7c5f29a6ab7cdb07e82978c8f",
+      "verify": 43080825102,
+      "site": 43078851042
+    }
+  },
+  "publicationScan": {
+    "commit": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "not run in cloud; fleet lander owns scan"
+  },
+  "newProductEdits": 0,
+  "sourceTreeEqualsPin": true,
+  "claim": "PARTIAL selected stalled-deal limb of points 1, 2 and 3 only",
+  "mainEquality": {
+    "checkedBy": "git ls-remote origin refs/heads/cloud/sd-orbit-c-f151 refs/heads/main",
+    "branchHead": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7",
+    "mainHead": "ff49ff8f0e7137dd1963e9f03223ab93987e09d7"
+  },
+  "coreSummary": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "durationMs": 589103.434638
+  },
+  "browserSummary": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "durationMs": 192475.341809
+  },
+  "tree": "d6c7038481b38c5c3c66a762e885f6da3ee3d22e"
+}
