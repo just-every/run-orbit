@@ -84,7 +84,7 @@ export function NowPage({ initialData }: { initialData?: Awaited<ReturnType<type
                 <span className="operator-queue-card__rank">{String(index + 1).padStart(2, "0")}</span>
                 <div className="operator-queue-card__headline">
                   <h2>{opportunity.title}</h2>
-                  <p>{[opportunity.companyName, opportunity.stage, ...(showOwners ? [opportunity.ownerName ?? "Unassigned"] : [])].filter(Boolean).join(" · ")}</p>
+                  <p>{[opportunity.companyName ?? "No company", opportunity.stage, ...(showOwners || !opportunity.ownerId ? [opportunity.ownerName ?? "Unassigned"] : [])].filter(Boolean).join(" · ")}</p>
                 </div>
                 <div className="operator-queue-card__reason">
                   <strong>Why NOW</strong>
