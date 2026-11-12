@@ -153,6 +153,8 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   const targetDependencies=createDependencies(target.db);
   await targetDependencies.auth.ensureOperator({id:ownerId,email:bindings.OWNER_EMAIL!,displayName:'Morgan Lee'});
   await targetDependencies.workspace.ensureWorkspace({name:'Restore destination',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
+  // Prior sections retain a completed immutable snapshot. Explicitly discard it through its native door.
+  for(const job of (await native('/records/archive/exports')).jobs)await native(`/records/archive/exports/${job.id}/abort`,'POST',{});
   let exported=await native('/records/archive/exports','POST',{},201);
   for(let n=0;n<500&&exported.state!=='ready';n++)exported=await native(`/records/archive/exports/${exported.id}/advance`,'POST',{});
   assert.equal(exported.state,'ready');const archive=await native(`/records/archive/exports/${exported.id}/download`);
@@ -179,6 +181,8 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   assert.equal(await target.db.prepare('SELECT count(*) n FROM notifications WHERE event_key=?').bind('obligation.due:'+retained.id).first('n'),0);
 
  }finally{await target.dispose();}
+ // Archive work can outlast the signed policy lease; refresh the same held policy before testing replay authority.
+ await adopt(heldPolicy());
  const survivor=await native('/records/contact','POST',{name:'Synthetic follow-up buyer',email:['synthetic-orbit-survivor','buyer.test'].join('@')},201);
  const pair=(await native('/records/contact/duplicates')).groups.find((group:any[])=>group.some(record=>record.id===buyer.id));
  await native('/records/contact/merge','POST',{survivorId:survivor.id,retiredId:buyer.id,choices:{email:'survivor'},reviewed:{survivor:pair.find((record:any)=>record.id===survivor.id).mergeReviewToken,retired:pair.find((record:any)=>record.id===buyer.id).mergeReviewToken},confirmed:true});

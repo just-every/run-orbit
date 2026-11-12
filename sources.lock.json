@@ -10339,7 +10339,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "201f6bb394038c1044616e24e9c3fcfc2971f32ff5fd280037ae35e875c47ae8",
+      "sha256": "f4ed894792dd8f5756c1cd46aab874255354d0f54849d5d2671fda2a3f015529",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
@@ -11067,7 +11067,7 @@
       "executable": false
     },
     "tests/support/agent-follow-up-proof.ts": {
-      "sha256": "23643dc566fde414e707018e6c9fd48ec434b9d41a90c4b627afa53ec0f3d3c6",
+      "sha256": "bfdb09ceb63b9194c421fe0d7ffe290a7572dd2d3583aea1eee39eedbf5d40c0",
       "executable": false
     },
     "tests/support/agent-report-deletion-proof.ts": {

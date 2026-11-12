@@ -41,6 +41,7 @@ test('Today brief, meeting plan, handoff review, mentions and follow-up outcomes
   browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{}),args:['--use-mock-keychain','--password-store=basic','--no-sandbox']});
   const context=(token:string)=>browser!.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:`${sessionCookieName}=${token}`}});
   await todayJourney({first:await context(first.token),second:await context(second.token),colleague:await context(third.token),evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  for(const prior of browser.contexts())await prior.close();
   const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;worker=undefined;
   await fixture.reopen();
   const data=await browserRiskData(fixture.db,owner),before=await riskBusinessState(fixture.db);
@@ -53,6 +54,7 @@ test('Today brief, meeting plan, handoff review, mentions and follow-up outcomes
    return Response.json({status:'completed',usage:{input_tokens:80,output_tokens:30},output:[{content:[{type:'output_text',text:JSON.stringify(model.output)}]}]});
   }}});await emitted.ready;
   await riskJourney(await(await context(second.token)).newPage(),data,model,resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today'));
+  for(const prior of browser.contexts())await prior.close();
   assert.deepEqual(model.unexpected,[],'Risk review makes no customer mail or other outbound request');
   await runtime.teardown();await fixture.reopen();
   assert.deepEqual(await riskBusinessState(fixture.db),before,'Risk review changes no sales state, stakeholders, commitments, drafts or mail');
