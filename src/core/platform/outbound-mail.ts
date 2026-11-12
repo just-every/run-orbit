@@ -4,6 +4,7 @@ import { sendDevelopment } from '../../base/modules/mail/src/development/index.m
 import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
 export interface OutboundMailBinding{id:string;operator_id:string;message_id:string;mailbox_source_id?:string|null;mailbox_connection_id?:string|null;mailbox_address?:string|null}
 export interface OutboundMail {
+ available?:(operatorId:string)=>Promise<boolean>;
  resolve?:(message:OutboundMailBinding)=>Promise<OutboundMail>;
  provider?:'rer'|'sendgrid'|'development'|'gmail'|'microsoft';
  optOutOrigin?:string;

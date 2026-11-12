@@ -18,6 +18,8 @@ export async function mailboxSendProof(provider:Provider){
  const f=await providerFixture(provider);try{
   const origin='https://orbit.test',headers={cookie:f.cookie,origin,'content-type':'application/json'};
   const request=(path:string,body?:unknown)=>f.app.request(origin+'/api/v1/workbench'+path,{method:body===undefined?'GET':'POST',headers,...body===undefined?{}:{body:JSON.stringify(body)}});
+  assert.equal((await (await request('/onboarding')).json() as any).mailConfigured,false);
+  const unavailable=await request('/drafts/'+f.unsentDraft+'/approve',{revision:1});assert.equal(unavailable.status,503);assert.equal(f.state.mailSubmissions.length,0,'An unavailable installation sender creates no mailbox fallback.');
   const first=await f.connect(),base=scopes[provider].join(' ');
   assert.equal((await request('/drafts/'+f.unsentDraft+'/approval-preview?mailboxSourceId='+first)).status,409,'Read-only capture cannot authorize sending.');
   const forbidden=await f.request('/oauth/'+provider+'/start',{sourceId:first,name:'Synthetic Orbit mailbox',clientId:'synthetic-orbit-1',clientSecret:'synthetic-orbit-2',sendConsent:true});
@@ -40,6 +42,7 @@ export async function mailboxSendProof(provider:Provider){
   assert.match((await f.callback(await f.start(first))).headers.get('location')!,/error=/,'unsolicited scope is refused');
   async function authorize(source:string){const flow=await f.start(source,f.cookie,false,true);assert.deepEqual(flow.searchParams.get('scope')!.split(/\s+/).sort(),[...scopes.google,sendScopes.google].sort());assert.match((await f.callback(flow)).headers.get('location')!,/connected=/);return source;}
   const source=await authorize(first),address=f.state.mailboxAddress;
+  assert.equal((await (await request('/onboarding')).json() as any).mailConfigured,true);
   const initialMailboxes=await request('/mailboxes');assert.equal(initialMailboxes.status,200);assert.equal((await initialMailboxes.json() as any).mailboxes.length,1);
   assert.equal((await (await f.request('/sources/'+source+'/send-authorization')).json() as any).authorization.address,address);
   const peerId=createId();await f.deps.auth.ensureOperator({id:peerId,email:['synthetic-orbit-peer','example.test'].join(String.fromCharCode(64)),displayName:'Another operator'});
@@ -51,7 +54,7 @@ export async function mailboxSendProof(provider:Provider){
   const signature=await libraryCall('',{kind:'signature',name:'Synthetic Orbit sender signature',body:'Synthetic signature.',visibility:'private'});
   async function draft(kind:'contact'|'company'|'opportunity'='contact'){
    const recordId=kind==='contact'?f.ana:kind==='company'?f.company:f.opportunity;
-   const response=await request('/records/'+kind+'/'+recordId+'/drafts',{contactId:f.ana,opportunityId:f.opportunity,subject:'Synthetic Orbit résumé 🚀 '.repeat(4).trim(),body:'Exact reviewed body.'});
+   const response=await request('/records/'+kind+'/'+recordId+'/drafts',{contactId:f.ana,opportunityId:kind==='contact'?null:f.opportunity,subject:'Synthetic Orbit résumé 🚀 '.repeat(4).trim(),body:'Exact reviewed body.'});
    assert.equal(response.status,201,await response.clone().text());const id=(await response.json() as any).id as string;
    const render=await libraryCall('/drafts/'+id+'/apply',{revision:1,signatureId:signature.id});await libraryCall('/drafts/'+id+'/render',{revision:render.revision,reviewHash:render.reviewHash});return id;
   }
@@ -96,7 +99,7 @@ export async function mailboxSendProof(provider:Provider){
   assert.equal(fallback,0);assert.equal(await f.db.prepare('SELECT state FROM record_mail_outbound_messages WHERE id=?').bind(noKey.id).first('state'),'failed');
   // Timeout after acceptance remains unknown through a restart and an empty Sent lookup, then settles once.
   const uncertain=await draft(),uncertainReview=await preview(uncertain);f.state.sendTimeout=true;
-  const unknownResponse=await approve(uncertain,uncertainReview);assert.equal(unknownResponse.status,502);const unknown=await unknownResponse.json() as any;assert.equal(unknown.state,'delivery-unknown');assert.equal(f.state.mailSubmissions.length,2);
+  const unknownResponse=await approve(uncertain,uncertainReview);assert.equal(unknownResponse.status,502);const unknown=await unknownResponse.json() as any;assert.equal(unknown.state,'delivery-unknown');assert.equal(f.state.mailSubmissions.length,2);assert.equal(await f.db.prepare('SELECT opportunity_id FROM record_mail_outbound_messages WHERE id=?').bind(unknown.id).first('opportunity_id'),null);
   await f.reopen();f.state.sentHidden=true;
   const recovered=new OutreachService(recordMailDatabase(f.db),mailboxTransportResolver(f.db,undefined,{security,origin,fetcher:f.fetcher})!);
   await recovered.reconcile(new Date(Date.now()+600000));assert.equal(await f.db.prepare('SELECT state FROM record_mail_outbound_messages WHERE id=?').bind(unknown.id).first('state'),'delivery-unknown');assert.equal(f.state.mailSubmissions.length,2);

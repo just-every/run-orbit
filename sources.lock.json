@@ -7443,7 +7443,7 @@
       "executable": false
     },
     "src/core/features/outreach/mailbox/transport.ts": {
-      "sha256": "eb9d64bb3c9cd300d68af4784e83edc0e74d7f70b65a259a377dc1de9dfdaef9",
+      "sha256": "8892a23007578bb3bf7a570ad134bade6f67fff1f5336cdcaf82c5bc1b33d15b",
       "executable": false
     },
     "src/core/features/outreach/opt-out-capability.ts": {
@@ -8547,7 +8547,7 @@
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
-      "sha256": "e225d61f89d0c39cc2b05b65570eb2f79d7a7fb9148327f1ad05b316a80ae67d",
+      "sha256": "a805201c0e1319d516fbc0186999514098f8b0ead767a60462ad4085dfb6b7e8",
       "executable": false
     },
     "src/core/features/workbench/sender-test.ts": {
@@ -8679,7 +8679,7 @@
       "executable": false
     },
     "src/core/platform/outbound-mail.ts": {
-      "sha256": "c994cb32ccff761250e02f632fa135174b99a6e11dbde798bbece7fc4de192f8",
+      "sha256": "5899f3602f29c9434389da5fc0c1da8dad5e08f9272f542032c0ed81ea29b48e",
       "executable": false
     },
     "src/core/platform/public-rate-limit.ts": {
@@ -10255,7 +10255,7 @@
       "executable": false
     },
     "tests/core/capture-providers.test.ts": {
-      "sha256": "ab7bb0a38d5e67849d76fc839f3ceef91f87b348b881cd72565dee2d288270f5",
+      "sha256": "cb7d2363c9f8b5ab587cb5e336a351b46cef0178857004d1997d8f443c1842e2",
       "executable": false
     },
     "tests/core/capture-replay-archive.test.ts": {
@@ -11423,7 +11423,7 @@
       "executable": false
     },
     "tests/support/mailbox-send-proof.ts": {
-      "sha256": "63359f250e58ede9d1e00fc3dd665ccdac10fa4d32fc71a54200c0c3123a6558",
+      "sha256": "7c6ff44f665e3d2ccc6b3b87f2d59d943a78bcebb08733ba1dc1eb2729714774",
       "executable": false
     },
     "tests/support/mailchimp-ledger-proof.ts": {

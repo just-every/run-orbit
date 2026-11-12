@@ -1,3 +1,4 @@
+import {sendMailboxes} from './binding';
 import {optOutOrigin} from '../opt-out-capability';
 import type {OutboundMail,OutboundMailBinding} from '../../../platform/outbound-mail';
 import type {SourceSecurity} from '../../../platform/source-security';
@@ -11,7 +12,7 @@ export interface MailboxConfig{security?:SourceSecurity;origin?:string;fetcher?:
 export function mailboxTransportResolver(db:D1Database,installation:OutboundMail|undefined,config:MailboxConfig):OutboundMail|undefined{
  if(!config.security&&!installation)return undefined;
  const security=config.security,fetcher=config.fetcher??defaultProviderFetch;
- const facade:OutboundMail={...installation,send:installation?.send??(async()=>{throw new MailboxSendError('Configure an installation sender or choose an authorized mailbox.','failed');}),async resolve(message){
+ const facade:OutboundMail={...installation,available:async actor=>Boolean(installation)||Boolean(security&&(await sendMailboxes(db,actor)).length),send:installation?.send??(async()=>{throw new MailboxSendError('Configure an installation sender or choose an authorized mailbox.','failed');}),async resolve(message){
   if(!message.mailbox_source_id){if(!installation)throw new MailboxSendError('The installation sender is unavailable. Choose a mailbox in a new review.','failed');return installation;}
   return bound(message);
  }};

@@ -63,6 +63,6 @@ test('CAPTURE-006 oversized mail skips once while both providers finish other me
  for(const provider of ['google','microsoft'] as const)await oversizedMessageProof(provider);
 });
 
-test('CAPTURE-006 provider deletion and distinct calendar consent; OUT-013 separately authorized mailbox sending preserves review, Sent, uncertainty and revocation',async()=>{
+test('CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation',async()=>{
  for(const provider of ['google','microsoft'] as const){await deletedEventProof(provider);await calendarWritebackProof(provider);await mailboxSendProof(provider);}
 });
