@@ -86,7 +86,11 @@ async function graphPolicyProof(input:CaptureSecurityProofContext,mode:'held'|'a
  assert.equal((await request(`/api/v1/capture/proposals/${close.id}/accept`,'POST',{value:'2026-12-20T00:00:00.000Z'})).status,200);
  assert.equal((await request(`/api/v1/capture/proposals/${close.id}/accept`,'POST',{})).status,409);
  assert.equal(await db.prepare('SELECT expected_close_at FROM opportunities WHERE id=?').bind(deal).first('expected_close_at'),'2026-12-20T00:00:00.000Z');
- const history=(await native(`/api/v1/records/opportunity/${deal}`)).timeline.filter((entry:any)=>JSON.parse(entry.payload_json).proposalId===close.id);
+ const reviewedDeal=await native(`/api/v1/records/opportunity/${deal}`);
+ assert.equal(reviewedDeal.record.expected_close_at,'2026-12-20T00:00:00.000Z','native readback shows the accepted edited date');
+ const reviewedContact=(await native(`/api/v1/records/contact/${contact}`)).record;
+ assert.deepEqual({title:reviewedContact.job_title,contactability:reviewedContact.contactability},{title:'Native owner correction',contactability:'do_not_contact'},'review preserves the native correction and sending permission');
+ const history=reviewedDeal.timeline.filter((entry:any)=>JSON.parse(entry.payload_json).proposalId===close.id);
  assert.equal(history.length,1);assert.equal(history[0].actor_type,'operator');assert.equal(history[0].actor_id,input.ownerId);assert.equal(JSON.parse(history[0].payload_json).preparedBy.label,client+' for Morgan Lee');
  assert.equal((await request(`/api/v1/capture/proposals/${question.id}/decline`,'POST',{})).status,200);
  const retry=await call({...args,idempotency_key:'synthetic-orbit-graph-retry'});assert.equal(retry.body.result.isError,false);
