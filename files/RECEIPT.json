@@ -27,14 +27,14 @@
     ]
   },
   "ci": {
-    "conclusion": null,
+    "conclusion": "success",
     "head_sha": "11f4a8bf2a061c3547a3c158acc1642a45f95ff0",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43181654250",
-    "status": "in_progress"
+    "status": "completed"
   },
   "ciRun": 43181654250,
   "ciEvent": "push",
-  "githubCallsUsed": 6,
+  "githubCallsUsed": 10,
   "publicationScan": "fleet lander pending",
   "mainLanding": "not performed",
   "clauses": {
@@ -54,5 +54,6 @@
     "DONE": 42,
     "PARTIAL": 130,
     "MISSING": 32
-  }
+  },
+  "terminalCustody": "READY"
 }

@@ -35,7 +35,7 @@ GAP MIGRATE-001: authorized account and real customer-export qualification, atta
 | --- | --- |
 | 1 | Selected native outcomes have public-door proof. Full acceptance remains PARTIAL for the named external and held remainder. |
 | 2 | Populated records are read after Apply; refused authority and scopes change no customer data; edited and unchanged effects take different undo paths. |
-| 3 | Exact-final Verify event and conclusion belong in the CI receipt. No green result from another SHA is substituted. |
+| 3 | PASS: push Verify 43181654250 completed successfully on 11f4a8bf2a061c3547a3c158acc1642a45f95ff0 and loads the native and browser registrations. No green result from another SHA is substituted. |
 | 4 | The browser proof ran at 35c9efe1df9a70d932d3e44d6996942b0bf3cbe6; the candidate differs only in generated sources.lock.json, with every runtime, UI and test byte unchanged. The current native source proof is recorded. Earlier complete retained tests are distinguished from subsequent focused proof of touched corrections. |
 | 5 | Existing BASE-DATA-001 and BASE-INPUT-001 citations remain unchanged. |
 | 6 | Contract write and check pass locally; generated views are restored from main and never authored in this branch. |
@@ -63,3 +63,5 @@ PROBE MIGRATE-001 1: explicit contact erasure and actual Records archive restore
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check exit=0; views=node src/base/contract-docs.mjs write then check exit=0, generated views restored from main; ledger=isolatedDatabase actual migration names compared with migration files exit=0 (77 rows).
 
 Proof entry lines: tests/core/crm-import.test.ts:17 and :52 load the native journey; tests/support/hubspot-api-proof.ts:37 defines the populated API journey and :71 invokes actual restore; tests/support/hubspot-restore-proof.ts:9 defines the restore journey; tests/e2e/imports.spec.mjs:10 and tests/e2e/imports-hubspot.mjs:11 load the browser proof. These are existing registered cases, extended in place.
+
+Final CI: push Verify 43181654250 completed successfully on 11f4a8bf2a061c3547a3c158acc1642a45f95ff0. No dispatch, rerun or CI repair was needed. Ten GitHub calls were used in total, with candidate observations separated by at least 300 seconds. Guarded scanning, landing, main equality and resulting Run site remain with the fleet.
