@@ -21,6 +21,8 @@ The manifest and guide are regenerated from the runtime registry. The existing m
 
 ## Acceptance and inherited-duty proof
 
+All leased acceptance and inherited-duty rows below are covered by the push Verify event, run 43121155664, conclusion success, exact head 088146e9bab27f7c093f59a1128273327b9956ab. The external commitment-job row remains NOT RUN.
+
 Retained registration: `tests/core/managed-owner.test.ts` — Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; exact saved messages honor policy and native send fences.
 
 | Item | Door and observed outcome | Proof on candidate source |
@@ -46,7 +48,7 @@ This is a partial claim. A pass below applies to the leased message limb; it is 
 | --- | --- | --- |
 | 1 | PASS for leased message; full clause held | Acceptance and inherited-duty rows above; commitment job is not proved |
 | 2 | PASS | Populated native records, exact positive submissions and unsafe attempts with no added submission; native history checked after actual send |
-| 3 | CI pending until exact-SHA result below | Existing push Verify loads managed-owner and emitted browser registrations; no new flag or nightly-only proof |
+| 3 | PASS | Push Verify 43121155664 completed success on 088146e9bab27f7c093f59a1128273327b9956ab; existing managed-owner and emitted browser registrations are retained in Verify; no new flag or nightly-only proof |
 | 4 | PASS exact candidate | Complete native rerun starts and ends on 088146e9bab27f7c093f59a1128273327b9956ab, exit 0; final browser proof and conformance pass; source hashes and local receipts are retained |
 | 5 | PASS | SURFACE-009 already cites BASE-AGENT-007 and BASE-AGENT-008 at CONTRACT.md line 2247; no inheritance text was rewritten |
 | 6 | PASS builder mechanics | Contract write and check pass; views restored from main and never committed; all parent Status rows retained; lock regenerated last and check passes. Lander owns any judgment synchronization |
@@ -82,7 +84,7 @@ Source conformance: 5,383 of 5,383 checks passed. The focused native helper coun
 ## Custody and independent gates
 
 Product push: successful through the fleet guard on 088146e9bab27f7c093f59a1128273327b9956ab. See product-push.txt.
-Exact-SHA Verify: push run 43121155664 observed in_progress on 088146e9bab27f7c093f59a1128273327b9956ab. Latest observation: in_progress after 6 calls at 2026-11-12T00:02:53.121086+00:00. No green or failure is inferred. Final conclusion is recorded in the terminal CI receipt if available.
+Exact-SHA Verify: push run 43121155664 completed success on 088146e9bab27f7c093f59a1128273327b9956ab. URL: https://github.com/just-every/run-orbit/actions/runs/43121155664. Seven GitHub calls were used; one watcher observed the run at intervals of at least 300 seconds. ci-final-receipt.json and all actual discovery and status receipts are included. No CI failure, workflow dispatch, rerun or repair round occurred. The unchanged verification plan includes every tests/core file in core shards and every tests/delegation-browser file in runtime-delegation (scripts/verification-plan.mjs lines 62 and 89 to 92), with an inventory check requiring each discovered test exactly once.
 Run site: NOT RUN here; post-landing fleet obligation.
 Publication scan: NOT RUN in cloud; full history is present for the fleet's exact-tree scan. Exact candidate scan state: {"commit":"088146e9bab27f7c093f59a1128273327b9956ab","complete":false,"historyScanned":false,"findings":null,"reason":"cloud route defers scan to guarded lander"}.
 Main equality: not landed; main incorporated is b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31.
@@ -93,5 +95,7 @@ Evidence publication: separate refs/heads/evidence/sd-orbit-c-f158; the terminal
 GAP SURFACE-009: Acceptance 2's commitment-job limb remains held on QUOTE-001 and an owner-created DocuSign developer sandbox. Attachments retain RECORD-018 and MIGRATE-001 inheritance or ct ruling; tracking retains OUT-016 policy; several recipients, CC, BCC and reply-all retain OUT-019 and Base relay support; connected mailbox sending retains OUT-013 owner consent; sequence, batch and workflow messages retain SEQUENCE-001, SEQUENCE-003 and AUTO-001 prerequisites. Broader BASE-AGENT-008 attribution, SURFACE-003 matrix, SURFACE-011 reconciliation and SURFACE-013 follow-up qualification remain unclaimed. OUT-001 gains no credit; TEAM-001, TEAM-005, live SURFACE-007 and every existing queue hold remain unchanged.
 
 CLAIM SURFACE-009 PARTIAL points=1 tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; exact saved messages honor policy and native send fences
+
+The cloud handoff is READY on the exact pushed candidate. Main equality, publication scanning and Run site remain pending the guarded fleet lander.
 
 No buildable leased message point is left unfinished. No whole-clause DONE, change to acceptance wording, acceptance count promotion, outside account qualification or landing is claimed.

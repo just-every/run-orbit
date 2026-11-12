@@ -1,6 +1,6 @@
 {
   "check": "Explicit packet files contain no injected bundle values or GitHub credential-shaped values; all are regular files",
-  "recorded_at": "2026-11-12T00:03:55.023531+00:00",
+  "recorded_at": "2026-11-12T00:08:55.878050+00:00",
   "exit": 0,
   "files": [
     {
@@ -20,8 +20,8 @@
     },
     {
       "path": "REPORT.md",
-      "bytes": 15180,
-      "sha256": "a09b4279ad3a25c58f4763e9fa5eb0c19bcee01d19fdd47662bc2b382477f89c"
+      "bytes": 16006,
+      "sha256": "d8a4bc40da7eb41dc2132872cc31ad2a60ac16d84dbc09998e3f489edaee4cfb"
     },
     {
       "path": "boundaries.txt",
@@ -36,12 +36,17 @@
     {
       "path": "ci-api-receipt.json",
       "bytes": 270,
-      "sha256": "804bbff34e005b5eea8fb6ca0bc184242ad31f4eed1f8bbab76cc10f005febdf"
+      "sha256": "536fe8144c4eb31e936d71cb463c3360aa8b60d4be6cd2a715ad0594d8013627"
     },
     {
       "path": "ci-discovery.json",
       "bytes": 261,
       "sha256": "2b9b690737d4a8dc294b888a4b5c6cd37bd76b1f103883b2b7d74b65937289fd"
+    },
+    {
+      "path": "ci-final-receipt.json",
+      "bytes": 346,
+      "sha256": "32ced072a8107e83caa9c47b211a6391c5ec67bead567f565ed92db4bff1d899"
     },
     {
       "path": "ci-run-2.json",
@@ -69,9 +74,24 @@
       "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
     },
     {
+      "path": "ci-run-7.json",
+      "bytes": 178,
+      "sha256": "34b974a847717f35dae2831bc9bde2b4e5d36c9593fa67c216a8af20dd8cd24f"
+    },
+    {
       "path": "conformance-run.txt",
       "bytes": 223583,
       "sha256": "36b973081d40274e548b6af376403544c3b7fcf6bcb3244db379f4b161a9bf59"
+    },
+    {
+      "path": "evidence-initial-custody.json",
+      "bytes": 299,
+      "sha256": "f6f9f11c8305b7aacbf5a6d8877b215b3a15e87c58b9b25844ffb07e325f98bb"
+    },
+    {
+      "path": "evidence-initial.txt",
+      "bytes": 7141,
+      "sha256": "5557a20a7e54f9633f947de1ff05f225d07a6a4f0c116f6d5cf1aa7c9f17844c"
     },
     {
       "path": "final-amend.diff",
