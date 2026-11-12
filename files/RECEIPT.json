@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "tag": "ct-orbit-own-action-notices-2",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/ct-orbit-own-action-notices-2",
+  "base": "bd9c4b5223b28c5c90923b2c8b22bfca2daaf42b",
+  "head": "bc1573da1a8c6ca747978c338dbef2a299a0e2e3",
+  "recorded_at": "2026-11-12T06:06:41.140950+00:00",
+  "scope": [
+    "OUT-005 Acceptance 1",
+    "OUT-006 Requirement",
+    "OUT-006 Acceptance 1"
+  ],
+  "product_files": [
+    "CONTRACT.md",
+    "sources.lock.json"
+  ],
+  "checks": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit": 0,
+      "result": "installed pinned dependency lock; Node v24.19.0 and pnpm 10.12.4 selected by provided toolchain"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "receipt": "contract-write.txt"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipt": "contract-check.txt",
+      "phase": "generated views present"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "result": "both generated views restored and excluded from product commit"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "receipt": "source-lock.txt"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-check.txt"
+    },
+    {
+      "command": "pnpm exec rer check",
+      "exit": 0,
+      "receipt": "rer-check.txt"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "git fetch origin main; git rebase origin/main",
+      "exit": 0,
+      "result": "fresh main unchanged at base; pre-publication replay clean"
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "exit": 0,
+      "receipt": "identity-check.txt",
+      "result": "all candidates and side parents inspected; one fleet commit, no trailers"
+    },
+    {
+      "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/ct-orbit-own-action-notices-2",
+      "exit": 0,
+      "receipt": "product-push.txt",
+      "result": "first attempt success"
+    }
+  ],
+  "not_run": {
+    "tests": "wording-only brief: no new tests or full suite",
+    "browser": "no UI or behavior changes",
+    "rer_setup": "no running installation needed for contract wording",
+    "publication_scan": "cloud adaptation reserves publication scan for fleet Mac; not available in cloud; no scan waiver claimed"
+  },
+  "counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "target_acceptance_points_before": {
+      "OUT-005": 1,
+      "OUT-006": 1
+    },
+    "target_acceptance_points_after": {
+      "OUT-005": 1,
+      "OUT-006": 1
+    },
+    "tests_added": 0,
+    "tests_changed": 0,
+    "tests_deleted": 0
+  },
+  "status_changes": [],
+  "clause_statuses": {
+    "OUT-005": {
+      "before": "partial",
+      "after": "partial"
+    },
+    "OUT-006": {
+      "before": "partial",
+      "after": "partial"
+    }
+  },
+  "ci": {
+    "run_id": 43165607287,
+    "head_sha": "bc1573da1a8c6ca747978c338dbef2a299a0e2e3",
+    "status": "completed",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43165607287",
+    "conclusion": "failure",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43165607287",
+    "failed_jobs": [
+      {
+        "id": 131006767727,
+        "name": "source and shared build"
+      },
+      {
+        "id": 131007005812,
+        "name": "verify"
+      }
+    ],
+    "assessment": "Expected generated-view-only failure: contract-docs check reports ACCEPTANCE.md differs. Source shard stops there; missing downstream artifacts, skipped shards and final verification gate are consequences. READY permitted under supplied generated-view exception; not a claim of literal green CI.",
+    "github_calls": 5,
+    "log_archive_commands": [
+      {
+        "command": "gh run view 43165607287 --repo just-every/run-orbit --job 131006767727 --log-failed",
+        "exit": 0,
+        "receipt": "ci-source-failure-excerpts.txt"
+      },
+      {
+        "command": "gh run view 43165607287 --repo just-every/run-orbit --job 131007005812 --log-failed",
+        "exit": 0,
+        "receipt": "ci-verify-failure-excerpts.txt"
+      }
+    ]
+  },
+  "pr": null,
+  "landing": "not attempted; fleet custody only",
+  "terminal_custody": "READY under explicit generated-view-only CI exception; fleet publication scan, regeneration, exact landing-SHA Verify and landing remain with the fleet",
+  "blockers": [],
+  "product_remote_ref_verified": true,
+  "product_clean_before_cleanup": true,
+  "cleanup": "Product clone and its node_modules will be removed after successful evidence publication, as brief requires."
+}

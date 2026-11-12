@@ -1,0 +1,35 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index 545b337..352329a 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -550,14 +550,14 @@ The primary journey: Bring customer records across, connect sales evidence, work
+ **Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move.
+ 
+ **Acceptance.**
+-1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
++1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and one notification for the responsible operator unless the outcome was caused by their own action, including their own immediate send outcome. The outcome remains visible on the record/timeline; this exception leaves other recipients' notices and later provider-event notices unchanged.
+ 
+ #### OUT-006 — Delivery failure
+ 
+-**Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012.
++**Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once unless the outcome was caused by their own action (including their own immediate send outcome), and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012. The own-action exception leaves the outcome visible on the record/timeline and leaves other recipients' notices and later provider-event notices unchanged.
+ 
+ **Acceptance.**
+-1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
++1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification unless the responsible operator's own action caused the outcome (including their own immediate send outcome), and permanent-bounce stop. Verify that the outcome remains visible on the record/timeline and that other recipients' notices and later provider-event notices are unchanged.
+ 
+ #### OUT-007 — Stop conditions
+ 
+diff --git a/sources.lock.json b/sources.lock.json
+index e4ef603..1919442 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "3885c2c472212429807d0d83a0af1a9576f36ad719e5902c685c9290a6a3b547",
++      "sha256": "abd6821613ef061a7e9849043403f3934020e322c2fe886aea3d35c50ad903c7",
+       "executable": false
+     },
+     "DEMO.md": {

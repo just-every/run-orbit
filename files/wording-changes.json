@@ -1,0 +1,23 @@
+{
+  "base": "bd9c4b5223b28c5c90923b2c8b22bfca2daaf42b",
+  "changes": [
+    {
+      "clause": "OUT-005",
+      "field": "Acceptance 1",
+      "before": "Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.",
+      "after": "Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and one notification for the responsible operator unless the outcome was caused by their own action, including their own immediate send outcome. The outcome remains visible on the record/timeline; this exception leaves other recipients' notices and later provider-event notices unchanged."
+    },
+    {
+      "clause": "OUT-006",
+      "field": "Requirement",
+      "before": "A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012.",
+      "after": "A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once unless the outcome was caused by their own action (including their own immediate send outcome), and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012. The own-action exception leaves the outcome visible on the record/timeline and leaves other recipients' notices and later provider-event notices unchanged."
+    },
+    {
+      "clause": "OUT-006",
+      "field": "Acceptance 1",
+      "before": "Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.",
+      "after": "Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification unless the responsible operator's own action caused the outcome (including their own immediate send outcome), and permanent-bounce stop. Verify that the outcome remains visible on the record/timeline and that other recipients' notices and later provider-event notices are unchanged."
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Explicit file selection reviewed: regular files only; report/plan/results and public product diff/provenance only; no credentials, secret values, environment dumps, private held-out gate material or symlinks selected. A bounded credential-shape review of these files found no credential-shaped values. This is not the fleet publication scan; that remains with the Mac lander.

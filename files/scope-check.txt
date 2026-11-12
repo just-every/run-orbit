@@ -1,0 +1,1 @@
+PASS: exactly three target passages; only CONTRACT.md and sources.lock.json differ; generated views equal origin/main; status/gap/evidence/tier/numbering/counts and all other clauses unchanged.

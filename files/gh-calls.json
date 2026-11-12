@@ -1,0 +1,55 @@
+[
+  {
+    "at": "2026-11-12T06:05:00.006835+00:00",
+    "args": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=bc1573da1a8c6ca747978c338dbef2a299a0e2e3&per_page=100",
+      "--jq",
+      "{total_count,workflow_runs:[.workflow_runs[]|{id,name,status,conclusion,head_sha,html_url,created_at}]}"
+    ]
+  },
+  {
+    "at": "2026-11-12T06:10:01.056508+00:00",
+    "args": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43165607287",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "at": "2026-11-12T06:10:14.859843+00:00",
+    "args": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43165607287/jobs?per_page=100",
+      "--jq",
+      "{jobs:[.jobs[]|{id,name,status,conclusion,steps:[.steps[]|{name,status,conclusion}]}]}"
+    ]
+  },
+  {
+    "at": "2026-11-12T06:10:22.640524+00:00",
+    "args": [
+      "run",
+      "view",
+      "43165607287",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "131006767727",
+      "--log-failed"
+    ]
+  },
+  {
+    "at": "2026-11-12T06:10:26.159533+00:00",
+    "args": [
+      "run",
+      "view",
+      "43165607287",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "131007005812",
+      "--log-failed"
+    ]
+  }
+]

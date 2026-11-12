@@ -1,0 +1,7 @@
+commit bc1573da1a8c6ca747978c338dbef2a299a0e2e3
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Thu Nov 12 06:04:23 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Thu Nov 12 06:04:23 2026 +0000
+
+    Clarify own-action exceptions for send-outcome notices
