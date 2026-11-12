@@ -8671,7 +8671,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "7b50453eb050f6b22356273ad4a1b1f41704826bb77747c35890438a42609045",
+      "sha256": "8f3f8718b9a9a0bc576fdfd9026351a67062692eb02aca10ecab0b297ec9cb05",
       "executable": false
     },
     "src/core/shared/csv.ts": {
@@ -10247,7 +10247,7 @@
       "executable": false
     },
     "tests/core/onboarding-archive.test.ts": {
-      "sha256": "69e0f5994d05ae4927b418247db1819c750d71cd9fa29cf8cb3eca0045d39f53",
+      "sha256": "6d941816a6600cf0bbd6cca697f8c2980fff74324c09f1b78da542cd4156b1e0",
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {

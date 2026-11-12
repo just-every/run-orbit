@@ -82,7 +82,7 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
  const previousManifest={...archive.manifest,schemaHash:await foldSchemaHash(previousCatalog),tables:previousTables,rows:previousTables.reduce((total,table)=>total+table.rows,0)};
  const previousImport=await request(target,'records/archive/imports','POST',{confirmed:true,manifest:previousManifest});
  await request(target,`records/archive/imports/${previousImport.id}/abort`,'POST',{});
- for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
+ for(const tables of [archive.manifest.tables.filter((t:any)=>t.name!=='form_embed_origins'),archive.manifest.tables.filter((t:any)=>t.name!=='follow_up_work'),[...archive.manifest.tables,{name:'unknown_records',columns:['id'],rows:0}]]){
   assert.equal((await target.request('records/archive/imports','POST',{confirmed:true,manifest:{...archive.manifest,tables}})).status,400);
  }
  const restore=async(destination:typeof target,document:typeof archive)=>{
