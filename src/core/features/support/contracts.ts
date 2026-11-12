@@ -15,4 +15,4 @@ export const organizationLink=(subdomain:string,id:string)=>`https://${subdomain
 export const ticketLink=(subdomain:string,id:string)=>`https://${subdomain}.zendesk.com/agent/tickets/${id}`;
 
 export const contextFields=['companyName','companyDomain','contactName'] as const;
-export interface HandoffInput {title:string;fields:(typeof contextFields)[number][];contactId?:string}
+export interface HandoffInput {requesterId:string;title:string;fields:(typeof contextFields)[number][];contactId?:string}

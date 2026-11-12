@@ -12,7 +12,7 @@ import {ZendeskFailure} from './provider';
 import {SupportError,ownership,contextFields,type SupportConfig} from './contracts';
 type Env={Variables:{operator:AuthenticatedOperator}};
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),orgId=z.string().regex(/^[1-9]\d{0,15}$/),digest=z.string().regex(/^[a-f0-9]{64}$/);
-const context=z.object({title:z.string().trim().min(1).max(160),fields:z.array(z.enum(contextFields)).min(1).max(3),contactId:id.optional()});
+const context=z.object({requesterId:orgId,title:z.string().trim().min(1).max(160),fields:z.array(z.enum(contextFields)).min(1).max(3),contactId:id.optional()});
 function errors(app:Hono<Env>){app.onError((error,c)=>{if(error instanceof SupportError||error instanceof RecordError)return c.json({error:error.message},error.status);if(error instanceof ZendeskFailure)return c.json({error:'Zendesk is unavailable or refused access. No automatic retry is made.'},502);if(refused(error))return c.json({error:'Zendesk or Orbit authority changed. Review again.'},409);return c.json({error:'Zendesk support could not be verified.'},503);});}
 export function zendeskSettingsRoutes(db:D1Database,config:SupportConfig){const app=new Hono<Env>();errors(app);
  app.get('/',async c=>{const actor=c.get('operator');await requireActor(db,actor);const owner=Boolean(await db.prepare("SELECT 1 FROM operators WHERE id=? AND setup_owner=1 AND status='active'").bind(actor.operatorId).first());return c.json({...await connectionStatus(db),owner,ownership,webhookUrl:owner?`${config.origin??new URL(c.req.url).origin}/api/v1/support/zendesk/webhook`:null});});

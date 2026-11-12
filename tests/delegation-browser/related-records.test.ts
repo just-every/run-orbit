@@ -1,3 +1,4 @@
+import {createId} from '../../src/core/shared/ids';
 import {unstable_DevEnv} from 'wrangler';
 import {zendeskNetwork} from '../support/zendesk-network';
 import {zendeskBrowserProof} from '../support/zendesk-browser-proof';
@@ -13,7 +14,7 @@ import { createTestDependencies } from '../support/test-dependencies';
 import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 
-test('full related names and associated-contact labels remain readable in native record details and editors; Zendesk settings and reviewed company support remain current at desktop and phone widths', async () => {
+test('full related names and associated-contact labels remain readable in native record details and editors, with current Zendesk settings and reviewed company support at desktop and phone widths', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RELATED_RECORD_PORT ?? 8729);
   const origin = `http://127.0.0.1:${port}`;
@@ -26,6 +27,7 @@ test('full related names and associated-contact labels remain readable in native
     await deps.sampleData.seed();
     await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
     const session = await deps.auth.createSession(sampleData.operators[0].id);
+    const readerId=createId();await deps.auth.ensureOperator({id:readerId,email:['synthetic-orbit-reader','example.test'].join('@'),displayName:'synthetic-orbit-reader'});const readerSession=await deps.auth.createSession(readerId);
     await fixture.close();
     const secret=(value:string)=>({type:'secret_text' as const,value});
     const worker=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>edge.fetcher(request.url,{method:request.method,headers:request.headers,body:request.method==='POST'?await request.text():undefined,redirect:'manual'})}});
@@ -99,7 +101,7 @@ test('full related names and associated-contact labels remain readable in native
         }
       }
     }
-    await zendeskBrowserProof(page,context,edge,evidence);
+    await zendeskBrowserProof(page,context,edge,evidence,{id:readerId,cookie:`${sessionCookieName}=${readerSession.token}`});
     expect(errors).toEqual([]);
   } finally {
     await browser?.close();

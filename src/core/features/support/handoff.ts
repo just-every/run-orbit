@@ -10,6 +10,10 @@ import {ticketSummary} from './tickets';
 import {contextFields,type HandoffInput} from './contracts';
 export async function handoffPlan(db:D1Database,config:SupportConfig,actor:Actor,companyId:string,input:HandoffInput){
  const record=await company(db,actor,companyId),connection=await openConnection(db,config),mapped=await mapping(db,companyId,connection);
+ // Zendesk permits an organization only when the requester belongs to it.
+ const {user}=await providerCall<{user:{id:number;active:boolean;suspended?:boolean}}>(db,config,connection,`/api/v2/users/${input.requesterId}.json`);
+ const {organization_memberships}=await providerCall<{organization_memberships:{user_id:number;organization_id:number}[]}>(db,config,connection,`/api/v2/users/${input.requesterId}/organization_memberships.json`);
+ if(!user?.active||user.suspended||String(user.id)!==input.requesterId||!Array.isArray(organization_memberships)||!organization_memberships.some(member=>String(member.user_id)===input.requesterId&&String(member.organization_id)===mapped.organization_id))throw new SupportError(409,'Choose an active Zendesk requester who belongs to this mapped organization. Nothing was handed off.');
  const fields=contextFields.filter(field=>input.fields.includes(field));
  let contact:{id:string;name:string|null;company_id:string|null}|null=null;
  if(fields.includes('contactName')){
@@ -19,7 +23,7 @@ export async function handoffPlan(db:D1Database,config:SupportConfig,actor:Actor
  }else if(input.contactId)throw new SupportError(400,'A contact can be included only when its name is selected.');
  const context=fields.flatMap(field=>field==='companyName'?[`Company: ${record.name}`]:field==='companyDomain'&&record.primary_domain?[`Domain: ${record.primary_domain}`]:field==='contactName'?[`Contact: ${contact!.name}`]:[]).join('\n');
  if(!context)throw new SupportError(400,'Choose at least one available context field.');
- const ticket={organization_id:Number(mapped.organization_id),subject:input.title,comment:{body:context,public:false}};
+ const ticket={requester_id:Number(input.requesterId),organization_id:Number(mapped.organization_id),subject:input.title,comment:{body:context,public:false}};
  const reviewed={companyId,contactId:contact?.id??null,fields,ticket,generation:connection.installation.generation,organizationId:mapped.organization_id,subdomain:mapped.subdomain};
  await company(db,actor,companyId);
  return{...reviewed,digest:await payloadHash(JSON.stringify(reviewed)),connection,mapped,record,contact};

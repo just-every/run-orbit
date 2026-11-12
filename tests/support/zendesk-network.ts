@@ -12,10 +12,14 @@ export function zendeskNetwork(){
   assert.ok(auth?.startsWith('Basic '));calls.push({method,path:url.pathname,body});
   if(revoked||auth!==`Basic ${btoa(`${email}/token:${token}`)}`)return Response.json({error:'Unauthorized'},{status:401});
   if(url.pathname==='/api/v2/users/me.json')return Response.json({user:{id:1,role:'admin',active:true,suspended:false}});
+  const membership=/^\/api\/v2\/users\/(301|302)\/organization_memberships\.json$/.exec(url.pathname);
+  if(membership)return Response.json({organization_memberships:[{id:1,user_id:Number(membership[1]),organization_id:membership[1]==='301'?11:22}]});
+  const user=/^\/api\/v2\/users\/(301|302)\.json$/.exec(url.pathname);if(user)return Response.json({user:{id:Number(user[1]),role:'end-user',active:true,suspended:false}});
   const org=/^\/api\/v2\/organizations\/(\d+)\.json$/.exec(url.pathname);if(org)return organizations.has(Number(org[1]))?Response.json({organization:organizations.get(Number(org[1]))}):Response.json({error:'RecordNotFound'},{status:404});
   const list=/^\/api\/v2\/organizations\/(\d+)\/tickets\.json$/.exec(url.pathname);if(list){if(beforeRead){const action=beforeRead;beforeRead=undefined;await action();}return Response.json({tickets:[...tickets.values()].filter(t=>t.organization_id===Number(list[1])),next_page:null});}
   const single=/^\/api\/v2\/tickets\/(\d+)\.json$/.exec(url.pathname);if(single){const id=Number(single[1]);return unreadable.has(id)?Response.json({error:'Forbidden'},{status:403}):tickets.has(id)?Response.json({ticket:tickets.get(id)}):Response.json({error:'RecordNotFound'},{status:404});}
   if(url.pathname==='/api/v2/tickets.json'&&method==='POST'){
+   if(body.ticket.requester_id!==301||body.ticket.organization_id!==11)return Response.json({error:'RecordInvalid'},{status:422});
    creates.push(body);if(uncertain)throw new TypeError('synthetic-orbit-uncertain');
    const created={...ticket(200+creates.length,body.ticket.organization_id),subject:body.ticket.subject};tickets.set(created.id,created);return Response.json({ticket:created},{status:201});
   }

@@ -90,11 +90,16 @@ link. Descriptions, comments and attachments stay in Zendesk. Deleted, inaccessi
 or unverified tickets show unavailable; a partial list never implies a healthy
 account. Support replies and SLA work remain in Zendesk.
 
-A full operator chooses a title and record context, previews the exact internal
-Zendesk comment and confirms one ticket creation. The saved operation prevents a
+A full operator chooses an existing Zendesk requester in the mapped organization,
+a title and record context, then previews the exact internal
+Zendesk comment and confirms one ticket creation. Orbit checks current requester
+activity and organization membership; it creates no requester and infers no
+identity from an email address. The saved operation prevents a
 second submission, including an uncertain result. Inspect Zendesk after an
 uncertain result before deciding whether to start another handoff. Contact
 erasure removes its handoff outcome and prevents its ticket being shown again.
+Zendesk retains the support ticket under its own retention and erasure controls;
+Orbit does not automatically delete support work from Zendesk.
 
 In Zendesk Admin Center, create a webhook for the address shown by the Settings
 card, copy its signing secret into the connection and configure a ticket trigger

@@ -173,7 +173,7 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject t
  }finally{await f.dispose();}
 });
 
-test('INTEGRATE-004 Zendesk reviewed support handoff, current visibility, signed outcome, erasure and paused restore; SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event',{timeout:600000},async()=>{
+test('INTEGRATE-004 Zendesk support preserves current access, reviewed handoff, signed outcomes, erasure and paused restore alongside SIGNAL-009 streaming source rotation',{timeout:600000},async()=>{
  const f=await fixture();try{
  await f.request('workbench/opportunities','POST',{title:'Source race customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
  const counts=async()=>{const result=[];for(const table of ['signals','signal_links','timeline_entries','evaluations'])result.push(await f.db.prepare(`SELECT count(*) AS n FROM ${table}`).first());return result;};

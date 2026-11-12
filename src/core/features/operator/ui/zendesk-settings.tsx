@@ -8,7 +8,7 @@ export function ZendeskSettings(){
  const resource=useOperatorResource('zendesk-settings',useCallback(()=>recordsRequest<Status>('settings/zendesk'),[]));
  const [subdomain,setSubdomain]=useState(''),[email,setEmail]=useState(''),[token,setToken]=useState(''),[secret,setSecret]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[asking,setAsking]=useState(false),[notice,setNotice]=useState('');
  async function run(action:string,body:unknown){setBusy(true);setError('');setNotice('');try{await recordsRequest(`settings/zendesk/${action}`,'POST',body);resource.reload();window.dispatchEvent(new Event('orbit-products-changed'));setAsking(false);setNotice(action==='connect'?'Zendesk accepted the credentials. Review each company’s organization before opening tickets.':'Zendesk disconnected. Support is unavailable.');}catch(e){setError((e as Error).message);resource.reload();window.dispatchEvent(new Event('orbit-products-changed'));}finally{setBusy(false);}}
- const data=resource.data;
+ const data=resource.error?null:resource.data;
  return <section className="workbench-form integration-setup" aria-labelledby="zendesk-settings-title" data-testid="zendesk-settings">
   <h2 id="zendesk-settings-title">Zendesk support</h2>
   <p>{data?.ownership??'Zendesk owns support replies and SLA work. Orbit shows authorized summaries and sends only a reviewed handoff.'}</p>

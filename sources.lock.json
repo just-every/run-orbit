@@ -819,7 +819,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "52656286e764550850617fbe773736486d9a6c492699d0381189a5004fbf8797",
+      "sha256": "127780f6c93fe94993755eb6daa2414cb32dffe0c60377b949fb4aa29a0413ba",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -2224,6 +2224,10 @@
     },
     "migrations/core/0080_notification_context_fence.sql": {
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
+      "executable": false
+    },
+    "migrations/core/0081_zendesk_support.sql": {
+      "sha256": "23339145f565ea6e3abaac2403bf3962947574290d317b8cbb88b536151b9ac1",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -6930,6 +6934,10 @@
       "sha256": "6f79a38d88c25d131206e095c1553972c259efa4d898b6bc3d3e31f252f7de6d",
       "executable": false
     },
+    "src/core/features/operator/ui/record/company-support.tsx": {
+      "sha256": "1b37b9c884b0e8ea25f340bcfcaa6b956b49ecd96d9aa9cd89b8a4528e3bf72b",
+      "executable": false
+    },
     "src/core/features/operator/ui/record/contact-details.tsx": {
       "sha256": "40d72e456b11a51a99d9916b835ad972ac336b061a1ad0b3f689067d696e13fa",
       "executable": false
@@ -7288,6 +7296,10 @@
     },
     "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
       "sha256": "93e33037c559a5a3a7f97307d6ff9e44ba4053a8e440f31747cf1e42dfde1f75",
+      "executable": false
+    },
+    "src/core/features/operator/ui/zendesk-settings.tsx": {
+      "sha256": "12c0cbf4c50b6804658eedea6811f934bad6be4be3e43a6d28f1ffa5f42635a2",
       "executable": false
     },
     "src/core/features/opportunities/contracts.ts": {
@@ -8258,6 +8270,42 @@
       "sha256": "9a6adcfb8ee9db52129c3dd3da8aef2edbe343c304cbdb5557627a0ed5f0c4be",
       "executable": false
     },
+    "src/core/features/support/authority.ts": {
+      "sha256": "f413593ae3f1fead813e185fbec7feb59095fe1a9739c9537b43c70aefc4bd63",
+      "executable": false
+    },
+    "src/core/features/support/connection.ts": {
+      "sha256": "65f3f99b2dc28ad5ed71820a29a739f5e929f6b97c1cb0f90dd05bbaf8999553",
+      "executable": false
+    },
+    "src/core/features/support/contracts.ts": {
+      "sha256": "4b6097fbd437b0afd367f69865f45bf0e74d0649dab64103d0b211dfb4f318ba",
+      "executable": false
+    },
+    "src/core/features/support/handoff.ts": {
+      "sha256": "e9ee52224dce69f942968b7fde415567e96ca1339ebbaa36618dc2d46d8aef57",
+      "executable": false
+    },
+    "src/core/features/support/mapping.ts": {
+      "sha256": "7e739dd724d529c6bc55d68f7fdab45364679f2e016812f72e18b1da630c31dc",
+      "executable": false
+    },
+    "src/core/features/support/provider.ts": {
+      "sha256": "c9cfb7cf317a6636f1283e6578a5acdae745088682caadd3a27020794b81fb18",
+      "executable": false
+    },
+    "src/core/features/support/routes.ts": {
+      "sha256": "ac39292cd68abc58f7c32724a71ae804e2ba4bf87bb7ec6544a888af402c2389",
+      "executable": false
+    },
+    "src/core/features/support/tickets.ts": {
+      "sha256": "31bb45c220efbf3ff5a6036ab2cd0ad7a90e5dfe44d89288de17dee4534f6e5b",
+      "executable": false
+    },
+    "src/core/features/support/webhook.ts": {
+      "sha256": "c2d4648acf82198e3d256b16599e580a2dffeb9a4053400f1e891187a5da9c74",
+      "executable": false
+    },
     "src/core/features/tasks/archive-compatibility.ts": {
       "sha256": "f03af93e0f6adf31b013759167b9202c77669d34055d938794fcbce8c59c59b9",
       "executable": false
@@ -8619,7 +8667,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "7b50453eb050f6b22356273ad4a1b1f41704826bb77747c35890438a42609045",
+      "sha256": "1a44c54cfa12f9a69676aac6a44820d7ecdc958d0bf743d203cce7954c159231",
       "executable": false
     },
     "src/core/shared/csv.ts": {
@@ -10247,7 +10295,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "569bbb87cf4cf117e28ef3ddfec1c149828851ba23598c8a000cb61692ef093e",
+      "sha256": "9b5839fbb3ffa779e8310ef07ed08318354ef7c6c27ec3e3d485f42e6770008e",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
@@ -10287,7 +10335,7 @@
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
-      "sha256": "0b9be1d98798c8c59582115a1be17eba02c469f5ad07fbefd787574d1e72a1d5",
+      "sha256": "955c8ce4cb3e9d2743b7445b0679cb9c76f472223b22c3e0c16ff1657b32f136",
       "executable": false
     },
     "tests/delegation-browser/risk-journey.mjs": {
@@ -11460,6 +11508,18 @@
     },
     "tests/support/workflow-undo-journey.ts": {
       "sha256": "7e484392b736ef273ea0bbc785a078ec71c37cc165bc925a266dc529c4362579",
+      "executable": false
+    },
+    "tests/support/zendesk-browser-proof.ts": {
+      "sha256": "9d9e0a32e983dc6457b3fab19e066695595a2042a83b35d1b7653528e0ba0c8e",
+      "executable": false
+    },
+    "tests/support/zendesk-network.ts": {
+      "sha256": "676c2f47a072ef721402c462cc5c52946f560c0381400a5c7f3c92e3f5e72be2",
+      "executable": false
+    },
+    "tests/support/zendesk-support-proof.ts": {
+      "sha256": "ac63a984b44ba618b60fcb27c13e57f436103bb6af4e8bd97ae3c278f2332327",
       "executable": false
     },
     "tools/seed-schema/business-field-inputs.mjs": {

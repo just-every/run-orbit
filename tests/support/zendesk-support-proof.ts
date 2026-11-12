@@ -7,8 +7,9 @@ import {createApp} from './app';
 import {isolatedDatabase} from './isolated-database';
 import {localArchiveRoundTrip} from './capture-privacy-archive';
 import {zendeskNetwork} from './zendesk-network';
-interface Fixture {db:D1Database;actor:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,override?:Record<string,string>)=>Promise<Response>}
+interface Fixture {setClock:(value:Date|undefined)=>void;db:D1Database;actor:string;app:ReturnType<typeof createApp>;request:(path:string,method?:string,body?:unknown,override?:Record<string,string>)=>Promise<Response>}
 export async function proveZendeskSupport(f:Fixture){
+ const clock=new Date('2026-11-01T12:00:00Z');f.setClock(clock);
  const edge=zendeskNetwork(),originalFetch=globalThis.fetch;
  globalThis.fetch=async(input,init)=>String(input).startsWith(`https://${edge.subdomain}.zendesk.com`)?edge.fetcher(input,init):originalFetch(input,init);
  const call=async(path:string,method='GET',body?:unknown)=>{const response=await f.request(path,method,body);assert.ok(response.ok,`${path}: ${response.status} ${await response.clone().text()}`);return response.json() as Promise<any>;};
@@ -46,13 +47,14 @@ export async function proveZendeskSupport(f:Fixture){
   const collaborator=createId();await f.db.prepare('INSERT INTO access_collaborators VALUES(?,?)').bind(collaborator,new Date().toISOString()).run();
   await deps.auth.ensureOperator({id:collaborator,email:['synthetic-orbit-3','example.test'].join('@'),displayName:'synthetic-orbit-collaborator'});const collab=await deps.auth.createSession(collaborator);
   const noWrites=await inventory(),callsBefore=edge.calls.length;
-  for(const [route,method,body] of [[path,'GET',undefined],[`${path}/mapping-preview`,'POST',{organizationId:'11'}],[`${path}/handoff-preview`,'POST',{title:'synthetic-orbit-1',fields:['companyName']}]] as const)assert.equal((await f.request(route,method,body,{Cookie:`__Host-orbit_session=${collab.token}`})).status,403);
+  for(const [route,method,body] of [[path,'GET',undefined],[`${path}/mapping-preview`,'POST',{organizationId:'11'}],[`${path}/handoff-preview`,'POST',{requesterId:'301',title:'synthetic-orbit-1',fields:['companyName']}]] as const)assert.equal((await f.request(route,method,body,{Cookie:`__Host-orbit_session=${collab.token}`})).status,403);
   assert.deepEqual(await inventory(),noWrites);assert.equal(edge.calls.length,callsBefore,'A collaborator never reaches Zendesk');
   edge.beforeRead(async()=>{await f.db.prepare('UPDATE sessions SET revoked_at=? WHERE id=?').bind(new Date().toISOString(),otherSession.id).run();});
   const registryBefore=(await f.db.prepare('SELECT * FROM support_tickets').all()).results;
   assert.equal((await f.request(path,'GET',undefined,otherCookie)).status,403,'Access revoked during the provider read exposes no ticket');assert.deepEqual((await f.db.prepare('SELECT * FROM support_tickets').all()).results,registryBefore);
-  const input={title:'synthetic-orbit-reviewed-handoff',fields:['companyName','contactName'],contactId:contact.id};
-  const review=await call(`${path}/handoff-preview`,'POST',input);assert.equal(edge.creates.length,0);assert.equal(review.ticket.comment.body,'Company: synthetic-orbit-1\nContact: synthetic-orbit-person-1');assert.equal(review.ticket.comment.public,false);assert.ok(!JSON.stringify(review).includes('hidden-'));
+  const input={requesterId:'301',title:'synthetic-orbit-reviewed-handoff',fields:['companyName','contactName'],contactId:contact.id};
+  const requesterBefore=await inventory();assert.equal((await f.request(`${path}/handoff-preview`,'POST',{...input,requesterId:'302'})).status,409);assert.deepEqual(await inventory(),requesterBefore,'A requester outside the mapped organization changes nothing');
+  const review=await call(`${path}/handoff-preview`,'POST',input);assert.equal(review.ticket.requester_id,301);assert.equal(edge.creates.length,0);assert.equal(review.ticket.comment.body,'Company: synthetic-orbit-1\nContact: synthetic-orbit-person-1');assert.equal(review.ticket.comment.public,false);assert.ok(!JSON.stringify(review).includes('hidden-'));
   assert.equal((await f.request(`${path}/handoffs`,'POST',{...input,digest:'0'.repeat(64),operationId:crypto.randomUUID(),confirmed:true})).status,409);assert.equal(edge.creates.length,0);
   await call(`records/contact/${contact.id}`,'PUT',{name:'synthetic-orbit-person-changed',company_id:company.id});
   assert.equal((await f.request(`${path}/handoffs`,'POST',{...input,digest:review.digest,operationId:crypto.randomUUID(),confirmed:true})).status,409,'An actual context edit invalidates the exact reviewed handoff');assert.equal(edge.creates.length,0);
@@ -62,34 +64,36 @@ export async function proveZendeskSupport(f:Fixture){
   assert.equal((await call(`${path}/handoffs`,'POST',operation)).replayed,true);assert.equal(edge.creates.length,1);
   const afterReplay=await inventory();assert.equal((await f.request(`${path}/handoffs`,'POST',{...operation,digest:'1'.repeat(64)})).status,409);assert.deepEqual(await inventory(),afterReplay);
   // A genuinely signed Zendesk delivery carries a ticket ID; current provider state supplies the outcome.
-  const ticketId=Number(created.ticketId),raw=JSON.stringify({ticket_id:String(ticketId)}),timestamp=new Date().toISOString();
+  const ticketId=Number(created.ticketId),raw=JSON.stringify({ticket_id:String(ticketId)}),timestamp=clock.toISOString();
   const signed=(body=raw,ts=timestamp,signature=createHmac('sha256',edge.signingSecret).update(ts+body).digest('base64'))=>f.app.request('https://orbit.test/api/v1/support/zendesk/webhook',{method:'POST',headers:{'X-Zendesk-Webhook-Signature-Timestamp':ts,'X-Zendesk-Webhook-Signature':signature},body});
   const timeline=async()=>((await call(`records/company/${company.id}`)).timeline as any[]).filter(t=>t.kind==='support.outcome');
   const pendingRaw=raw+'\n';assert.equal((await signed(pendingRaw)).status,200);assert.equal((await signed(pendingRaw)).status,409,'A nonterminal signed delivery is single-use too');assert.equal((await timeline()).length,0);
   edge.tickets.get(ticketId)!.status='solved';
-  assert.equal((await signed(raw,timestamp,'A'.repeat(43)+'=')).status,401);assert.equal((await signed(raw,new Date(Date.now()-600000).toISOString())).status,401);
+  assert.equal((await signed(raw,timestamp,'A'.repeat(43)+'=')).status,401);assert.equal((await signed(raw,new Date(clock.getTime()-600000).toISOString())).status,401);
   const actualSignature=createHmac('sha256',edge.signingSecret).update(timestamp+raw).digest('base64');assert.equal((await signed(raw+' ',timestamp,actualSignature)).status,401);assert.equal((await timeline()).length,0);
   assert.equal((await signed()).status,201);assert.equal((await timeline()).length,1);assert.deepEqual(JSON.parse((await timeline())[0].payload_json),{ticketId:String(ticketId),status:'solved',severity:'high',link:created.link});
-  assert.equal((await signed()).status,409);assert.equal((await signed(raw,new Date(Date.now()+1000).toISOString())).status,409);assert.equal((await timeline()).length,1,'A new signature cannot return the handoff outcome twice');
+  assert.equal((await signed()).status,409);assert.equal((await signed(raw,new Date(clock.getTime()+1000).toISOString())).status,409);assert.equal((await timeline()).length,1,'A new signature cannot return the handoff outcome twice');
   // Populated Records and CLI archives retain provenance, never credentials or resumed authority.
-  await proveZendeskArchive(f,edge,company.id,operation,raw,timestamp);
+  console.info('Zendesk proof: current reads, unsafe refusals, reviewed handoff and signed outcomes passed; starting populated archives');
+  await proveZendeskArchive(f,edge,company.id,operation,raw,timestamp,clock);
   // The reviewed contact context is erased, with inert ticket identity retained only to refuse resurrection.
   assert.equal((await f.request(`records/contact/${contact.id}`,'DELETE',{confirmed:true})).status,200);
   assert.equal((await timeline()).length,0,'Contact erasure removes its copied support outcome');
-  assert.equal((await signed(raw,new Date(Date.now()+2000).toISOString())).status,404);
+  assert.equal((await signed(raw,new Date(clock.getTime()+2000).toISOString())).status,404);
   panel=await call(path);assert.ok(!panel.tickets.some((t:any)=>t.id===String(ticketId)),'A provider ticket containing erased contact context is not re-exposed');
   assert.equal((await f.request(`${path}/handoffs`,'POST',operation)).status,409);assert.equal(edge.creates.length,1);
   // Ambiguous create results are durable and replay never submits another ticket.
-  edge.setUncertain(true);const uncertainInput={title:'synthetic-orbit-uncertain',fields:['companyName']},uncertainReview=await call(`${path}/handoff-preview`,'POST',uncertainInput),uncertainOperation={...uncertainInput,digest:uncertainReview.digest,operationId:crypto.randomUUID(),confirmed:true};
+  edge.setUncertain(true);const uncertainInput={requesterId:'301',title:'synthetic-orbit-uncertain',fields:['companyName']},uncertainReview=await call(`${path}/handoff-preview`,'POST',uncertainInput),uncertainOperation={...uncertainInput,digest:uncertainReview.digest,operationId:crypto.randomUUID(),confirmed:true};
   assert.equal((await f.request(`${path}/handoffs`,'POST',uncertainOperation)).status,502);assert.equal((await call(`${path}/handoffs`,'POST',uncertainOperation)).state,'uncertain');assert.equal(edge.creates.length,2);edge.setUncertain(false);
   edge.setRevoked(true);panel=await call(path);assert.equal(panel.state,'unavailable');assert.equal((await product()).state,'unresolved-setup');assert.equal(await f.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);assert.equal((await f.request(`${path}/handoff-preview`,'POST',uncertainInput)).status,409);
   edge.setRevoked(false);await call('settings/zendesk/connect','POST',connect);assert.equal((await call(path)).state,'unavailable','Reconnect alone does not reactivate the old mapping');
   const remap=await call(`${path}/mapping-preview`,'POST',{organizationId:'11'});await call(`${path}/mapping`,'PUT',{organizationId:'11',digest:remap.digest,confirmed:true});assert.ok((await call(path)).tickets.length);
   await call('settings/zendesk/disconnect','POST',{});assert.equal((await call(path)).state,'unavailable');assert.equal((await product()).state,'unresolved-setup');assert.equal((await f.request(`${path}/handoffs`,'POST',uncertainOperation)).status,409);assert.equal((await signed()).status,409);assert.equal(await f.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);
- }finally{globalThis.fetch=originalFetch;}
+ console.info('Zendesk proof: erasure, uncertain replay, revoked token and disconnect passed');
+ }finally{globalThis.fetch=originalFetch;f.setClock(undefined);}
 }
 
-async function proveZendeskArchive(f:Fixture,edge:ReturnType<typeof zendeskNetwork>,companyId:string,operation:any,raw:string,timestamp:string){
+async function proveZendeskArchive(f:Fixture,edge:ReturnType<typeof zendeskNetwork>,companyId:string,operation:any,raw:string,timestamp:string,clock:Date){
  const request=async(path:string,method='GET',body?:unknown)=>{const r=await f.request(path,method,body);assert.ok(r.ok,`${path}: ${r.status} ${await r.clone().text()}`);return r.json() as Promise<any>;};
  let job=await request('records/archive/exports','POST',{});while(job.state==='preparing')job=await request(`records/archive/exports/${job.id}/advance`,'POST',{});const archive=await request(`records/archive/exports/${job.id}/download`);
  assert.ok(!archive.manifest.tables.some((t:any)=>t.name==='support_credentials'));assert.ok(!JSON.stringify(archive).includes(edge.signingSecret)&&!JSON.stringify(archive).includes(edge.email));
@@ -97,19 +101,21 @@ async function proveZendeskArchive(f:Fixture,edge:ReturnType<typeof zendeskNetwo
  const target=await isolatedDatabase(),local=await isolatedDatabase();
  try{
   const deps=createDependencies(target.db),actor=createId();await deps.auth.ensureOperator({id:actor,email:['synthetic-orbit-restored','example.test'].join('@'),displayName:'synthetic-orbit-receiver'});await target.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();await deps.workspace.ensureWorkspace({name:'synthetic-orbit-restore',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});let session=await deps.auth.createSession(actor);
-  const app=createApp({database:target.db,assets:{fetch:async()=>new Response('')},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})});
+  const app=createApp({clock:{now:()=>clock},database:target.db,assets:{fetch:async()=>new Response('')},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})});
   const call=async(path:string,method='GET',body?:unknown)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
   const ok=async(path:string,method='GET',body?:unknown)=>{const r=await call(path,method,body);assert.ok(r.ok,`${path}: ${r.status} ${await r.clone().text()}`);return r.json() as Promise<any>;};
   let restored=await ok('records/archive/imports','POST',{manifest:archive.manifest,confirmed:true});for(const part of archive.parts)await ok(`records/archive/imports/${restored.id}/parts/${part.index}`,'PUT',part);for(let i=0;i<1000&&restored.state!=='complete';i++)restored=await ok(`records/archive/imports/${restored.id}/finalize`,'POST',{});assert.equal(restored.state,'complete');
   session=await deps.auth.createSession(actor);
   assert.equal((await ok('settings/zendesk')).state,'unresolved-setup');assert.equal((await ok(`support/zendesk/companies/${companyId}`)).state,'unavailable');assert.equal(await target.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);
-  for(const table of ['support_tickets','support_handoffs','support_webhooks'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results,`${table} populated provenance round-trips`);
+  for(const table of ['support_tickets','support_handoffs','support_webhooks'])assert.deepEqual((await target.db.prepare(`SELECT * FROM ${table} ORDER BY ${table==='support_webhooks'?'digest':table==='support_handoffs'?'id':'company_id,ticket_id,subdomain'}`).all()).results,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY ${table==='support_webhooks'?'digest':table==='support_handoffs'?'id':'company_id,ticket_id,subdomain'}`).all()).results,`${table} populated provenance round-trips`);
   const before=edge.creates.length;
   assert.equal((await call(`support/zendesk/companies/${companyId}/handoffs`,'POST',operation)).status,409);
   await ok('settings/zendesk/connect','POST',{subdomain:edge.subdomain,email:edge.email,token:edge.token,signingSecret:edge.signingSecret});assert.equal((await ok(`support/zendesk/companies/${companyId}`)).state,'unavailable','Restored mapping needs fresh review even after reconnect');
   assert.equal((await app.request('https://orbit.test/api/v1/support/zendesk/webhook',{method:'POST',headers:{'X-Zendesk-Webhook-Signature-Timestamp':timestamp,'X-Zendesk-Webhook-Signature':createHmac('sha256',edge.signingSecret).update(timestamp+raw).digest('base64')},body:raw})).status,409,'Previously recorded webhook cannot be replayed after restore');assert.equal(edge.creates.length,before);
+  console.info('Zendesk proof: populated Records restore preserves provenance and pauses authority');
   await localArchiveRoundTrip(f.db,local.db);
   assert.equal(await local.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);assert.equal(await local.db.prepare("SELECT count(*) n FROM support_installation WHERE state='paused'").first('n'),1);assert.equal(await local.db.prepare('SELECT count(*) n FROM support_mappings WHERE generation IS NOT NULL').first('n'),0);
-  for(const table of ['support_tickets','support_handoffs','support_webhooks'])assert.deepEqual((await local.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results,`CLI ${table} populated history round-trips`);
- }finally{await target.dispose();await local.dispose();await request(`records/archive/exports/${job.id}`,'DELETE');}
+  for(const table of ['support_tickets','support_handoffs','support_webhooks'])assert.deepEqual((await local.db.prepare(`SELECT * FROM ${table} ORDER BY ${table==='support_webhooks'?'digest':table==='support_handoffs'?'id':'company_id,ticket_id,subdomain'}`).all()).results,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY ${table==='support_webhooks'?'digest':table==='support_handoffs'?'id':'company_id,ticket_id,subdomain'}`).all()).results,`CLI ${table} populated history round-trips`);
+  console.info('Zendesk proof: populated CLI restore preserves provenance and pauses authority');
+ }finally{await target.dispose();await local.dispose();await request(`records/archive/exports/${job.id}/abort`,'POST',{});}
 }
