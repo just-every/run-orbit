@@ -10,12 +10,13 @@ export async function localGrant(db:D1Database,ctx:Pick<Principal,'person'|'clie
   scoped(grant,target,scope);return grant;
 }
 const scopes=(native:string[])=>[
+  ...(native.includes('crm.graph.propose')?['graph:write','events:read']:[]),
   ...(native.includes('crm.evidence.read')?['records:read','handoffs:read']:[]),
   ...(native.includes('crm.handoff.write')?['handoffs:write']:[]),
 ];
 export async function localCredentials(db:D1Database,request:Request) {
   if(!/^Bearer [a-f0-9]{64}$/.test(request.headers.get('authorization')??''))return null;
-  try {const grant=await bearer(db,request);return {sponsor:{id:grant.principal_id},agent:{id:grant.client_id,name:grant.client_id},clientId:clientPrefix+grant.id,scopes:scopes(JSON.parse(grant.scopes_json))};}
+  try {const grant=await bearer(db,request);return {sponsor:{id:grant.principal_id},agent:{id:grant.client_id,name:grant.client_id,specialist:'sales rep'},clientId:clientPrefix+grant.id,scopes:scopes(JSON.parse(grant.scopes_json))};}
   catch {return null;}
 }
 export async function currentScopes(db:D1Database,ctx:Principal) {
