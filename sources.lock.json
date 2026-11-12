@@ -2291,7 +2291,7 @@
       "executable": false
     },
     "newtests/t096/browser-dashboard.ts": {
-      "sha256": "04ecc34621e6b58e8c1b7bc9406030ba212507b15bd44d3c7a9fc3fb06258685",
+      "sha256": "e4fa5b463f5442c1bea4be7ce94e664d66dff9559f4751a9237feeb1c48a4f4e",
       "executable": false
     },
     "newtests/t096/browser-forecast-journey.ts": {
@@ -2384,6 +2384,10 @@
     },
     "newtests/t096/dashboard-slack-fixture.ts": {
       "sha256": "302db4e8a424f9fa43b4c1e60994af4eb211dacc87796736de5debebf5869db8",
+      "executable": false
+    },
+    "newtests/t096/dashboard-truth-journey.ts": {
+      "sha256": "68d49045441567449f33e3ee34f80f210ecd272dedebb73107db9729054a46fb",
       "executable": false
     },
     "newtests/t096/dashboard-upgrade.ts": {
@@ -5799,15 +5803,15 @@
       "executable": false
     },
     "src/core/features/dashboards/export.ts": {
-      "sha256": "5a0bfa49a6756a0ccc8b25ba69d0e8c7185e9840f0df6d5549b362c2878f4776",
+      "sha256": "5b3171911ddd07a780e8288f6240aa9bfc65e6aa23f572c0fbcaee76f97cc915",
       "executable": false
     },
     "src/core/features/dashboards/filters.tsx": {
-      "sha256": "843d4f98f2204f1909aaff7395beba4f89c3fb1ae76f320a4d44ae76ec6c80b8",
+      "sha256": "f7c17c4317a1cdb8727624fbe2e5448a7cd15200ef9a39b5031882615d545976",
       "executable": false
     },
     "src/core/features/dashboards/forecast-tile.tsx": {
-      "sha256": "dbd9a5248b787729676239601f24d1c9d7711072e13d4ce275dffa0f74c34025",
+      "sha256": "a1f2590666a00cf57870c526bd73fc096ad3708e361f9a4cbe18b12fcb165193",
       "executable": false
     },
     "src/core/features/dashboards/icons.tsx": {
@@ -5839,7 +5843,7 @@
       "executable": false
     },
     "src/core/features/dashboards/repository.ts": {
-      "sha256": "06ad2dcbb83df5f8bd6e8ea1bdbf9be48d9d61304d0072296ab4ea6d639ccdf5",
+      "sha256": "d6aa05cf8ef6c28148720b9fc42f18ecb123ea86711cc694baa3dfd8acbf182a",
       "executable": false
     },
     "src/core/features/dashboards/routes.ts": {
@@ -6048,6 +6052,10 @@
     },
     "src/core/features/forecast/privacy.ts": {
       "sha256": "9f7cd15ff423d467dd7a80c10a7b4e905c229a3a4b6ba358b1e90329f2ce4ec7",
+      "executable": false
+    },
+    "src/core/features/forecast/quota-periods.ts": {
+      "sha256": "d5ef6cb354317dfd4e328a4173c35091e82907560fb29762d786b095d99f3eb8",
       "executable": false
     },
     "src/core/features/forecast/repository.ts": {
@@ -8095,7 +8103,7 @@
       "executable": false
     },
     "src/core/features/reports/forecast-figures.tsx": {
-      "sha256": "44edf87b6b85c07f800792158aa2a08a3656b567c23e70f3cfdf95a470b2bd9e",
+      "sha256": "835fca7e13d38a1de294542fef10389327953c2b18d3dc47cbbb42f0ad2ad0c4",
       "executable": false
     },
     "src/core/features/reports/forecast-page.tsx": {
