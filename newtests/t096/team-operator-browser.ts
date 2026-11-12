@@ -1,3 +1,4 @@
+import {readableSharedValues} from './browser-shared-values';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {chromium,expect,type Page,type Browser} from '@playwright/test';
@@ -33,6 +34,7 @@ export async function equalOperatorBrowser(){
    peerErrors.allowDeniedResource('/api/v1/settings/sign-in-policy',403);
    try{
     const page=await owner.newPage(),other=await peer.newPage(),shared=await guest.newPage();
+    if(width===1440)await readableSharedValues(page,shared,t.guest.operator.operatorId,directory);
     assert.equal((await page.request.get('/api/v1/settings/sign-in-policy')).status(),200);
     assert.equal((await other.request.get('/api/v1/settings/sign-in-policy')).status(),403);
     for(const [operator,screen] of [['Alex',page],['Jordan',other]] as const){
