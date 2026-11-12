@@ -15,9 +15,11 @@ import {namedCompanies} from './named-companies';
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
 
-export async function prepareImport(input:ImportInput,context:D1ImportContext){
+export async function prepareImport(input:ImportInput,context:D1ImportContext,originals:import('../../../modules/import-kit/d1/index').SourceBundle['artifacts']=[]){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
+ source.artifacts.push(...originals);
  const ownerMappingTable=mapImportOwners(rows,input,await importOwners(db));
+ for(const row of rows)if(['deal','task'].includes(row.kind)&&row.ownerMapping){row.source.payload={...row.source.payload as any,chosenOwner:row.ownerMapping.ownerId};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
@@ -40,7 +42,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  const existing=new Set<Row>(),duplicates=new Set<string>();
  const identityRows=new Map<string,Row[]>();for(const row of rows){const key=identityKey(row);if(key){const group=identityRows.get(`${row.kind}:${key}`)??[];group.push(row);identityRows.set(`${row.kind}:${key}`,group);}}for(const group of identityRows.values())if(new Set(group.map(r=>r.id)).size>1)for(const row of group)row.error??='Several source IDs share this native identity. Consolidate them explicitly before importing.';
  const markerRows=(await db.prepare('SELECT kind,id,original_json FROM crm_import_targets WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify(rows.filter(r=>r.kind!=='suppression').flatMap(r=>[nativeId(namespace,r.kind,r.id),...r.kind==='task'?[nativeId(namespace,'task-series',r.id),nativeId(namespace,'task-entry',r.id)]:[]]))).all()).results;
- const originals=new Map(markerRows.map(r=>[`${r.kind}:${r.id}`,r.original_json]));
+ const nativeOriginals=new Map(markerRows.map(r=>[`${r.kind}:${r.id}`,r.original_json]));
  const currentIds=new Map<string,Set<string>>(),identities=new Map<string,string[]>();
  for(const kind of ['company','contact','deal','note','call','meeting','task']){const candidates=rows.filter(r=>r.kind===kind),ids=candidates.map(r=>nativeId(namespace,kind,r.id));currentIds.set(kind,new Set((await db.prepare(`SELECT id FROM ${tables[nativeKind(kind)]} WHERE id IN(SELECT value FROM json_each(?))`).bind(JSON.stringify(ids)).all()).results.map(r=>r.id)));
   if(kind==='contact'||kind==='company'){const keys=JSON.stringify(candidates.map(identityKey).filter(Boolean)),column=kind==='contact'?'email_key':'primary_domain_key';
@@ -52,7 +54,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   const key=`${row.kind}:${row.id}`;if(references.has(key)){duplicates.add(key);continue;}
   if(row.kind==='suppression'){references.set(key,stopId);continue;}
   let id=nativeId(namespace,row.kind,row.id),current=currentIds.get(row.kind)!.has(id);
-  if(current&&!originals.has(`${nativeKind(row.kind)}:${id}`))existing.add(row);
+  if(current&&!nativeOriginals.has(`${nativeKind(row.kind)}:${id}`))existing.add(row);
   if(!current&&(row.kind==='contact'||row.kind==='company')){
    const identity=identityKey(row);
    const matches=identity?identities.get(`${row.kind}:${identity}`)??[]:[];
@@ -71,8 +73,8 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   if(row.kind==='suppression'){const reference=nativeId(namespace,'suppression-reference',row.id);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:'suppression',record_id:stopId,source_id:row.id,mailbox:email(row.data.email)!},links:[]}}]});continue;}
   const ownerMapping=row.ownerMapping,ownerEffects=ownerMapping&&['contact','company'].includes(row.kind)?plannedOwner(ownerSnapshots,namespace,row.kind,references.get(`${row.kind}:${row.id}`)!,row.id,ownerMapping,context.authorization.principalId,at,input.account):[];
   if(existing.has(row)){const reference=nativeId(namespace,'reference',`${row.kind}:${row.id}`);results.set(row.source,{effects:[{targetKind:'reference',targetId:reference,value:{row:{id:reference,record_kind:row.kind,record_id:references.get(`${row.kind}:${row.id}`)!,source_id:row.id,mailbox:row.kind==='contact'?email(row.data.email)??null:null},links:[]}},...ownerEffects],unmapped:[{reason:'Already in Orbit, with the same email or website domain. Orbit keeps the saved record and does not apply differences from the file. Only a stop in the file (unsubscribed, bounced or Do not contact) changes whether Orbit may email them.'}]});continue;}
-  const id=references.get(`${row.kind}:${row.id}`)!,original=originals.get(`${nativeKind(row.kind)}:${id}`);
-  if(original&&row.kind==='task'){const seriesId=nativeId(namespace,'task-series',row.id),entryId=nativeId(namespace,'task-entry',row.id),series=originals.get(`task-series:${seriesId}`),entry=originals.get(`note:${entryId}`);if(!series||!entry)throw new Error('The imported task source is withdrawn. Start a fresh reviewed export.');results.set(row.source,{effects:[{targetKind:'task-series',targetId:seriesId,value:JSON.parse(series)},{targetKind:'task',targetId:id,value:JSON.parse(original)},{targetKind:'note',targetId:entryId,value:JSON.parse(entry)}]});continue;}
+  const id=references.get(`${row.kind}:${row.id}`)!,original=nativeOriginals.get(`${nativeKind(row.kind)}:${id}`);
+  if(original&&row.kind==='task'){const seriesId=nativeId(namespace,'task-series',row.id),entryId=nativeId(namespace,'task-entry',row.id),series=nativeOriginals.get(`task-series:${seriesId}`),entry=nativeOriginals.get(`note:${entryId}`);if(!series||!entry)throw new Error('The imported task source is withdrawn. Start a fresh reviewed export.');results.set(row.source,{effects:[{targetKind:'task-series',targetId:seriesId,value:JSON.parse(series)},{targetKind:'task',targetId:id,value:JSON.parse(original)},{targetKind:'note',targetId:entryId,value:JSON.parse(entry)}]});continue;}
   if(original){results.set(row.source,{effects:[{targetKind:nativeKind(row.kind),targetId:id,value:JSON.parse(original)},...ownerEffects]});continue;}
   const data=row.data,native:Record<string,any>={...shapes[nativeKind(row.kind)],id,created_at:at,updated_at:at},links:Record<string,any>[]=[];
   const provenance={vendor:input.vendor,account:input.account,sourceId:row.id,owner:data.owner??null,...ownerMapping?{ownerId:ownerMapping.ownerId}:{},stage:data.stage??null,description:data.description??null};
@@ -105,11 +107,12 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
   if(row.kind==='task'){
    const associations=['deal','contact','company'].flatMap(kind=>linked(row,kind,`${kind}_ids`).map(recordId=>({kind:kind==='deal'?'opportunity':kind,recordId}))),primary=associations[0];
    if(!primary)throw new Error('A task requires at least one explicit record association.');
+   if((data.text?.length??0)>20000)throw new Error('Task notes exceed 20,000 characters. Export a shorter note explicitly.');
    if(!data.title||data.title.length>300||!Number.isFinite(Date.parse(data.due_at)))throw new Error('Task needs a title and a valid due time.');
    const task=newTask({title:data.title,recordType:primary.kind as any,recordId:primary.recordId,ownerId:ownerMapping?.ownerId??null,dueAt:data.due_at,priority:data.priority==='HIGH'?'high':data.priority==='LOW'?'low':'normal',type:data.task_type==='CALL'?'call':data.task_type==='EMAIL'?'email':'other',notes:data.text??'',recurrence:'none',timezone:'UTC',reminderMinutes:null},context.authorization.principalId,at);
    Object.assign(native,task,{id,series_id:nativeId(namespace,'task-series',row.id),status:data.status==='COMPLETED'?'completed':'open'});
    const seriesId=native.series_id,entryId=nativeId(namespace,'task-entry',row.id),series={row:{id:seriesId,cancelled_at:null,cancelled_by:null,created_at:at},links:[]};
-   const entry={row:{id:entryId,kind:'task.created',occurred_at:at,recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({taskId:id,title:data.title,ownerId:task.owner_id,dueAt:task.due_at,status:native.status,importSource:provenance})},links:associations.map(record=>({timeline_entry_id:entryId,record_type:record.kind,record_id:record.recordId})),taskId:id};
+   const entry={row:{id:entryId,kind:'task.created',occurred_at:at,recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({taskId:id,title:data.title,ownerId:task.owner_id,dueAt:task.due_at,status:native.status,importSource:provenance})},links:associations.map(record=>({timeline_entry_id:entryId,record_type:record.kind,record_id:record.recordId})).sort((a,b)=>`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`)),taskId:id};
    results.set(row.source,{effects:[{targetKind:'task-series',targetId:seriesId,value:series},{targetKind:'task',targetId:id,value:{row:native,links:[]}},{targetKind:'note',targetId:entryId,value:entry}]});continue;
   }
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));

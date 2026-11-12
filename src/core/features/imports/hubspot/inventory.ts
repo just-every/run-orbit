@@ -1,9 +1,10 @@
+import {sourceFields} from './bundle';
 import {createId} from '../../../shared/ids';
 import type {AuthenticatedOperator} from '../../identity';
 import {importAuthority} from '../repository';
 import {canonicalJson,sha256} from '../../../../modules/import-kit/d1/index';
 import {openConnection,refuseConnection} from './connection';
-import {hubspotRead,HubSpotError,objectTypes,type HubSpotConfig,type ObjectType} from './provider';
+import {hubspotRead,HubSpotError,objectTypes,readScopes,type HubSpotConfig,type ObjectType} from './provider';
 export interface PageJob {kind:'owners'|'pipelines'|'properties'|'objects'|'associations';path:string;object?:ObjectType;sourceId?:string;target?:string}
 export interface Pull {id:string;actor_id:string;connection_id:string;portal_id:string;state:string;queue_json:string;checkpoint:number;validated:number;retry_at:string|null;error:string|null}
 export interface Page {ordinal:number;path:string;page_json:string}
@@ -28,7 +29,7 @@ export async function nextPage(db:D1Database,config:HubSpotConfig,actor:Authenti
  const allPages=await pages(db,id);
  if(job.kind==='objects'&&data.results.length+allPages.filter(page=>{const p=JSON.parse(page.page_json);return p.job.kind==='objects'&&p.job.object===job.object;}).reduce((n,page)=>n+JSON.parse(page.page_json).data.results.length,0)>1000)throw new HubSpotError(409,`HubSpot ${job.object} exceeds 1,000 rows in this reviewed bundle. Export smaller CSV batches with stable IDs; no rows were discarded.`);
  if(job.kind==='properties'){
-  const names=data.results.map((property:any)=>property.name);if(names.some((name:any)=>typeof name!=='string'||!/^[_a-zA-Z0-9]+$/.test(name)))throw new HubSpotError(409,`HubSpot ${job.object} has unsupported property names. Export those fields explicitly.`);
+  const included=new Set([...Object.values(sourceFields[job.object!]),...job.object==='deals'?['pipeline','dealstage']:[],...job.object==='calls'?['hs_call_title']:[],...job.object==='meetings'?['hs_meeting_title']:[]]);const names=data.results.filter((property:any)=>included.has(property.name)||!property.hubspotDefined||/^hs_email_optout_/.test(property.name)).map((property:any)=>property.name);if(names.some((name:any)=>typeof name!=='string'||!/^[_a-zA-Z0-9]+$/.test(name)))throw new HubSpotError(409,`HubSpot ${job.object} has unsupported property names. Export those fields explicitly.`);
   queue.push({kind:'objects',object:job.object,path:`/crm/v3/objects/${job.object}?limit=100&properties=${encodeURIComponent(names.join(','))}`});
  }
  if(job.kind==='objects')for(const item of data.results){if(typeof item.id!=='string'||!item.id||item.id.length>100)throw new HubSpotError(409,'HubSpot returned an invalid stable object ID. Export this object explicitly.');for(const target of associations[job.object!])queue.push({kind:'associations',object:job.object,sourceId:item.id,target,path:`/crm/v4/objects/${job.object}/${encodeURIComponent(item.id)}/associations/${target}?limit=500`});}
@@ -41,7 +42,7 @@ export async function nextPage(db:D1Database,config:HubSpotConfig,actor:Authenti
 export async function validatePage(db:D1Database,config:HubSpotConfig,actor:AuthenticatedOperator,pullId:string){
  const pull=await readPull(db,actor,pullId);retryReady(pull);if(pull.state!=='reviewable')throw new HubSpotError(409,'Finish the HubSpot pull before applying its reviewed bundle.');
  const saved=await pages(db,pullId);if(!saved.length)throw new HubSpotError(409,'The saved HubSpot source is unavailable. Pull it again.');
- const page=saved[pull.validated];if(!page){await openConnection(db,config,actor);return null;}
+ const page=saved[pull.validated];if(!page){const {row,token}=await openConnection(db,config,actor);if(row.id!==pull.connection_id)throw new HubSpotError(409,'The HubSpot connection changed. Start a new pull.');try{const info=await hubspotRead(config,token,'/oauth/v2/private-apps/get/access-token-info',{tokenKey:token});if(String(info.hubId)!==pull.portal_id||!Array.isArray(info.scopes)||readScopes.some(scope=>!info.scopes.includes(scope))||info.scopes.some((scope:unknown)=>typeof scope!=='string'||!scope.endsWith('.read')))throw new HubSpotError(409,'HubSpot authorization changed. Reconnect the read-only private app and review a new pull.');}catch(error){if(error instanceof HubSpotError)await refuseConnection(db,error);throw error;}return null;}
  const next=await checkedRead(db,config,actor,pull,page.path),prior=JSON.parse(page.page_json).data;
  if(sha256(canonicalJson(next))!==sha256(canonicalJson(prior)))throw new HubSpotError(409,'HubSpot changed since this dry run. Start a new pull and review the changed source before applying.');
  await db.batch([fenced(db,actor,pull),db.prepare('UPDATE crm_import_hubspot_pulls SET validated=validated+1,error=NULL,retry_at=NULL WHERE id=?').bind(pullId)]);

@@ -11,7 +11,7 @@ export class HubSpotError extends Error {
 export async function hubspotRead(config:HubSpotConfig,token:string,path:string,body?:unknown):Promise<any>{
  if(!path.startsWith('/crm/')&&path!=='/oauth/v2/private-apps/get/access-token-info')throw new HubSpotError(400,'Unsupported HubSpot read.');
  let response:Response;
- try{response=await(config.fetcher??fetch)(`https://api.hubapi.com${path}`,{method:body?'POST':'GET',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},redirect:'error',signal:AbortSignal.timeout(20_000),...(body?{body:JSON.stringify(body)}:{})});}
+ try{response=await(config.fetcher??fetch)(`https://api.hubapi.com${path}`,{method:body?'POST':'GET',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},redirect:'manual',signal:AbortSignal.timeout(20_000),...(body?{body:JSON.stringify(body)}:{})});}
  catch{throw new HubSpotError(502,'HubSpot did not answer. Resume from the saved page checkpoint.');}
  if(response.status===429){const value=response.headers.get('Retry-After'),seconds=Number(value),date=value?Date.parse(value):NaN,delay=value&&Number.isFinite(seconds)?Math.max(1,seconds)*1000:Number.isFinite(date)?Math.max(1000,date-Date.now()):60_000;throw new HubSpotError(429,'HubSpot rate limit. Resume this saved pull after the displayed retry time.',new Date(Date.now()+delay).toISOString());}
  if(response.status===401||response.status===403){let scopes:string[]=[];try{const data=await response.json() as any;scopes=(data.errors??[]).flatMap((error:any)=>error.context?.requiredScopes??[]).concat(data.requiredScopes??[]).filter((s:unknown)=>typeof s==='string'&&/^crm\.[a-z._]+$/.test(s as string));}catch{}
