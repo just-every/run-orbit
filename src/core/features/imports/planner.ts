@@ -22,7 +22,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext){
  for(const [kind,table] of Object.entries(tables)){const columns=(await db.prepare(`PRAGMA table_info(${table})`).all()).results;shapes[kind]=Object.fromEntries(columns.map(c=>[c.name,c.dflt_value==null?null:c.dflt_value.startsWith("'")?c.dflt_value.slice(1,-1).replaceAll("''", "'"):Number(c.dflt_value)]));}
  const identityKey=(row:Row)=>row.error?null:row.kind==='contact'?contactEmailKey(row.data.email):row.kind==='company'?companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]')):null;
  const stopEmails=new Set<string>(),consentHolds=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database),creationStops=await activeSuppressionTokens(db as unknown as D1Database,true);
- const contactKeys=JSON.stringify(rows.filter(row=>row.kind==='contact').map(row=>contactEmailKey(row.data.email)));
+ const contactKeys=JSON.stringify(rows.filter(row=>row.kind==='contact').flatMap(row=>{const address=email(row.data.email??'');return address?[contactEmailKey(address)]:[];}));
  const known=new Set((await db.prepare("SELECT email_key AS key FROM contacts WHERE email_key IN(SELECT value FROM json_each(?)) UNION SELECT identity_key AS key FROM record_aliases WHERE record_type='contact' AND identity_key IN(SELECT value FROM json_each(?))").bind(contactKeys,contactKeys).all()).results.map(r=>r.key));
  const emailTokens=new Map<string,string[]>();
  for(const row of rows){if(row.kind==='suppression'){const address=email(row.data.email??'');if(address)stopEmails.add(address);else row.error??='Suppression email is invalid.';}if(row.kind==='contact'){

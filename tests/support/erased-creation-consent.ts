@@ -26,8 +26,8 @@ export async function erasedCreationConsent(f:Awaited<ReturnType<typeof launchFi
  const linked=(await json(await f.request(`records/opportunity/${quick.id}`))).contacts;
  assert.equal(linked.length,1);assert.equal(linked[0].contactability,'do_not_contact','New-deal entry also inherits erasure protection');
  await json(await f.request(`records/contact/${linked[0].id}`,'DELETE',{confirmed:true}));
- const source={vendor:'csv',account:'Synthetic erased address consent',files:[{kind:'contact',name:'synthetic-orbit-consent.csv',csv:`email,name,permission\r\n${primary},Reimported primary,subscribed\r\n${alias},Reimported alias,subscribed\r\nsynthetic-orbit-consent-control@example.test,Existing customer,subscribed`,mapping:{email:'email',name:'name',permission:'permission'},separator:';'}],stages:{},contactability:'mapped_permission'};
- const dry=await json(await f.request('imports/dry-run','POST',source));await finish(f,dry);
+ const source={vendor:'csv',account:'Synthetic erased address consent',files:[{kind:'contact',name:'synthetic-orbit-consent.csv',csv:`email,name,permission\r\n${primary},Reimported primary,subscribed\r\n${alias},Reimported alias,subscribed\r\nsynthetic-orbit-consent-control@example.test,Existing customer,subscribed\r\ninvalid-email,Rejected customer,subscribed`,mapping:{email:'email',name:'name',permission:'permission'},separator:';'}],stages:{},contactability:'mapped_permission'};
+ const dry=await json(await f.request('imports/dry-run','POST',source));assert.equal(dry.counts.rejected,1,'Invalid addresses remain row-level rejections alongside erased-address holds');await finish(f,dry);
  for(const email of [primary,alias]){
   const records=(await json(await f.request(`records/contact?q=${encodeURIComponent(email)}`))).records;assert.equal(records.length,1);assert.equal(records[0].contactability,'do_not_contact');
   assert.equal((await json(await f.request(`records/contact/${records[0].id}`))).record.contactability_reason,'erased_address');
