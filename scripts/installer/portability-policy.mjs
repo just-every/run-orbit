@@ -12,6 +12,7 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(tables.signal_sources)await db.prepare(`UPDATE "${tables.signal_sources.replaceAll('"','""')}" SET enabled=0 WHERE id='zoom'`).run();
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
   if(tables.api_credentials)await db.prepare('DELETE FROM "'+tables.api_credentials.replaceAll('"','""')+'"').run();
   if(tables.call_credentials)await db.prepare('DELETE FROM "'+tables.call_credentials.replaceAll('"','""')+'"').run();
@@ -37,6 +38,7 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='signal_sources'&&row.id==='zoom')return {...row,enabled:0};
   if(table==='workflow_versions')return {...row,status:'paused',preview_id:null,preview_json:null};
   if(table==='workflow_runs'&&!['completed','undone'].includes(row.status))return {...row,status:'stopped',reason:'Archive transfer requires fresh activation'};
   if(table==='workflow_approvals'&&row.status==='pending')return {...row,status:'expired'};

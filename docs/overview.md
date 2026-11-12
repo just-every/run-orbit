@@ -20,7 +20,19 @@ A record's values and your workspace settings save as you change them. A value s
 
 ## What Orbit connects to
 
-Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences) and Twilio (calls). Orbit does not connect to Dial, Zoom, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
+Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences) Twilio (calls) and Zoom (meeting preparation and attendance). Orbit does not connect to Dial, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
+
+### Zoom meeting preparation
+
+The installation owner opens Settings › Integrations › Zoom and connects their Zoom Server-to-Server OAuth account ID, client ID, client secret and webhook secret token. Credentials are checked with Zoom, sealed only in this installation, never shown again and excluded from exports. A refused connection is unresolved setup; after a restore Zoom stays paused until connected again.
+
+In the Zoom app, grant `meeting:read:meeting:admin` and `meeting:read:list_past_participants:admin` (or the corresponding account-level read scopes). Subscribe to `meeting.ended` and `meeting.deleted`, using the endpoint shown in Settings. Orbit verifies Zoom’s timestamp and exact-body signature, answers endpoint validation, and refuses forged, stale and replayed deliveries. Rotating or disconnecting credentials stops old deliveries.
+
+A full operator finds the intended deal, enters the exact numeric ID of a scheduled, non-recurring meeting, and reads its real details. Review the topic, start, duration, host, Zoom URL, attendees and chosen deal, then confirm. If details change, review them again. Attaching creates one Zoom activity and a meeting preparation link; it sends no invitation and changes no outreach state. Participants match only one contact with the exact email or retained alias. Multiple exact matches stay visibly ambiguous.
+
+The meeting plan shows the actual Zoom link, attendees and recording state. Save the agenda and preparation there. A signed completion updates the same activity once and reads only Zoom’s past attendance metadata. Its record-backed recap cites the saved plan, attendance and signed completion; it never invents discussion or decisions. A follow-up is an internal next action only after your explicit review in the plan. A cancellation stops that meeting’s preparation and open plan follow-ups, leaving other meetings and handoffs alone.
+
+Recording permission is shown separately from attendance. A disabled recording, ungranted permission and missing transcript are stated plainly. Orbit fetches no recording or transcript content and makes no transcript-based recap. Unavailable attendance stays unresolved. Erasure removes attendee identity and its retained evidence, and old deliveries cannot recreate it. Export and restore retain the meeting history without its connection secrets. Zoom runs the meeting; meeting creation and rescheduling remain in Zoom. Live developer-account qualification and the complete cross-product buyer walk remain unproved.
 
 ## How a score works
 

@@ -1,3 +1,5 @@
+import {zoomSettingsRoutes,zoomMeetingRoutes} from '../features/zoom/routes';
+import {zoomWebhookRoutes} from '../features/zoom/webhook';
 import {workflowRoutes} from '../features/workflows/routes';
 import {directNotificationAction,notificationDatabase} from '../features/notifications/direct-action';
 import {collectWorkflowRuns} from '../features/workflows/engine';
@@ -92,6 +94,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/public-demo", createPublicDemoRoutes(input.publicDemoEnabled !== false));
   app.route("/api/v1/mail/events", createMailEventRoutes(input.database,input.mailEventKeys??{}));
   app.route('/api/v1/mail/capture',createForwardInboundRoutes(input.database,{security:input.sourceSecurity,address:input.captureMailAddress,parseKey:input.mailEventKeys?.parseKey}));
+  app.route('/api/v1/signals/zoom',zoomWebhookRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,now:input.clock?()=>input.clock!.now():undefined}));
   app.route('/api/v1/signals/mailchimp',mailchimpWebhookRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
@@ -166,6 +169,8 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
     }
   });
   app.route('/api/v1/settings/api-credentials',apiCredentialRoutes(input.database,input.clock));
+  app.route('/api/v1/settings/zoom',zoomSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/zoom/meetings',zoomMeetingRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/settings/mailchimp',mailchimpSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/marketing/mailchimp',mailchimpHandoffRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.use('/api/v1/*',mailchimpDeletionProcessing(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));

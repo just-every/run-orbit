@@ -1,3 +1,5 @@
+import {zoomNetwork} from '../support/zoom-network.mjs';
+import {zoomMeetingJourney} from './today-journey.mjs';
 import {draftParityBrowserJourney} from '../support/agent-door-draft-parity-proof';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
@@ -41,6 +43,12 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   await todayJourney({first:await context(first.token),second:await context(second.token),colleague:await context(third.token),evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;worker=undefined;
   await fixture.reopen();
+   await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(owner).run();
+  const zoom=zoomNetwork([['synthetic-orbit-450','example.test'].join(String.fromCharCode(64))]);
+  await fixture.close();
+  const zoomWorker=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,{type:'secret_text' as const,value}])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:request=>zoom.fetch(request)}});await zoomWorker.ready;
+  await zoomMeetingJourney(await(await context(second.token)).newPage(),{provider:zoom,fetch:zoomWorker.fetch.bind(zoomWorker),origin,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  await runtime.teardown();await fixture.reopen();
   const data=await browserRiskData(fixture.db,owner),before=await riskBusinessState(fixture.db);
   await fixture.close();
   const model={requests:[] as unknown[],output:{} as unknown,unexpected:[] as string[]};

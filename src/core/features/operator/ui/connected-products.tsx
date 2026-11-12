@@ -1,3 +1,4 @@
+import {ZoomSettings} from './zoom-settings';
 import {useCallback,useEffect,useRef,useState,type ReactNode} from 'react';
 import {BookingRecipe} from './booking-recipe';
 import {CallingSettings} from './calling-settings';
@@ -27,11 +28,11 @@ export function ConnectedProducts({operators}:{operators:any[]}){
  useEffect(()=>{const changed=()=>reload.current();window.addEventListener('orbit-products-changed',changed);return()=>window.removeEventListener('orbit-products-changed',changed);},[]);
  const product=(name:string)=>resource.data?.products.find(item=>item.products.includes(name));
  const rows:Row[]=[];
- for(const [key,name] of [['slack','Slack'],['calendly','Calendly'],['calcom','Cal.com'],['mailchimp','Mailchimp']] as const){
+ for(const [key,name] of [['slack','Slack'],['calendly','Calendly'],['calcom','Cal.com'],['mailchimp','Mailchimp'],['zoom','Zoom']] as const){
   const item=product(name);if(!item)continue;
   const live=item.state==='connected'||item.state==='receiving',booking=key==='calendly'||key==='calcom';
   rows.push({connected:live,key,name,job:item.job,state:stateWords[item.state],action:live?'Open':booking?'Set up':'Connect',
-   panel:key==='slack'?<SlackSettings operators={operators}/>:key==='mailchimp'?<MailchimpSettings/>:<BookingSetup vendor={key==='calendly'?'calendly':'calcom'} onRefresh={resource.reload}/>});
+   panel:key==='zoom'?<ZoomSettings/>:key==='slack'?<SlackSettings operators={operators}/>:key==='mailchimp'?<MailchimpSettings/>:<BookingSetup vendor={key==='calendly'?'calendly':'calcom'} onRefresh={resource.reload}/>});
  }
  if(resource.data)rows.push({connected:resource.data.calls,key:'twilio',name:'Twilio',job:'Calls',state:resource.data.calls===null?'Check with the installation owner':resource.data.calls?'Connected':'Not connected',action:resource.data.calls===null?'':resource.data.calls?'Open':'Connect',panel:<CallingSettings/>});
  return <>

@@ -7,7 +7,12 @@ export async function callingJourney(page,calling){
  page.on('requestfailed',request=>console.error('Calling browser request failed',new URL(request.url()).pathname,request.failure()?.errorText));
  const errors=[],expectedConsoleErrors=[];page.on('pageerror',e=>errors.push({text:e.message,url:'pageerror'}));page.on('console',m=>{if(m.type()==='error')errors.push({text:m.text(),url:m.location().url});});
  // Twilio is a row in Settings › Integrations; its connection opens in place under the row.
- await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
+ await page.goto('/app/settings/integrations');
+ await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Connect Zoom',exact:true}).click();
+ const zoom=page.getByRole('region',{name:'Zoom meetings',exact:true});await expect(zoom.getByRole('status')).toContainText('Unresolved setup');await expect(zoom.getByLabel('Zoom client secret',{exact:true})).toHaveValue('');
+ const zoomAxe=await new AxeBuilder({page}).include('[aria-labelledby="zoom-settings"]').analyze();expect(zoomAxe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await zoom.screenshot({path:`${evidence}/zoom-unconnected-${width}.png`});}
+ await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
  const settings=page.getByRole('region',{name:'Twilio calling',exact:true});
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');

@@ -154,3 +154,37 @@ export async function stalledRiskPolicyJourney({page,expected,policy,bearer,evid
  console.log(JSON.stringify({proof:'SURFACE-013.stalled-browser',evidenceId:expected.evidenceId,quote:expected.quote,nativeMatch:true,evidenceLinkAuthenticated:true,reviewMarked:true,widths:[1440,390]}));
  await page.close();
 }
+
+/** Reviewed Zoom attachment and a factual recap in the emitted application; Zoom HTTP alone is replaced. */
+export async function zoomMeetingJourney(page,{provider,fetch:workerFetch,origin,evidence}){
+ await page.setViewportSize({width:1440,height:900});await page.goto('/app/settings/integrations');
+ await page.getByRole('button',{name:'Connect Zoom',exact:true}).click();
+ const settings=page.getByRole('region',{name:'Zoom meetings',exact:true});
+ await expect(settings.getByRole('status')).toContainText('Unresolved setup');
+ for(const [name,key] of [['Zoom account ID','accountId'],['Zoom client ID','clientId'],['Zoom client secret','clientSecret'],['Zoom webhook secret token','webhookSecret']])await settings.getByLabel(name,{exact:true}).fill(provider.credentials[key]);
+ await settings.getByRole('button',{name:'Check and connect Zoom',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Open Zoom',exact:true})).toBeVisible();
+ await expect(settings.getByRole('status').filter({hasText:'Zoom connected'})).toBeVisible();
+ await expect(settings.getByLabel('Zoom client secret',{exact:true})).toHaveValue('');
+ await screenshots(settings,'zoom-connected-settings');
+ const post=async(path,data,status=201)=>{const response=await page.request.post(path,{headers:{Origin:origin},data});expect(response.status(),await response.text()).toBe(status);return response.json();};
+ const contact=await post('/api/v1/records/contact',{name:'Synthetic Zoom browser attendee',email:provider.attendance[0].user_email}),stages=(await(await page.request.get('/api/v1/settings')).json()).stages;
+ const deal=await post('/api/v1/records/opportunity',{title:'Synthetic Zoom browser deal',stage_id:stages[0].id,value_cents:350000,contact_ids:[contact.id],primary_contact_id:contact.id});
+ await settings.getByLabel('Find a deal',{exact:true}).fill('Synthetic Zoom browser deal');await settings.getByRole('button',{name:'Find deals',exact:true}).click();
+ await expect(settings.getByRole('option',{name:'Synthetic Zoom browser deal',exact:true})).toHaveCount(1);await settings.getByLabel('Deal',{exact:true}).selectOption(deal.id);
+ await settings.getByLabel('Exact Zoom meeting ID',{exact:true}).fill('98765432101');await settings.getByRole('button',{name:'Read meeting for review',exact:true}).click();
+ const review=settings.getByRole('region',{name:'Review Zoom attachment',exact:true});await expect(review).toContainText('Synthetic Zoom deal review');await expect(review).toContainText('Synthetic Zoom browser deal');await expect(review).toContainText('98765432101');await expect(review).toContainText('Recording permission not granted');
+ const attachment=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/v1/zoom/meetings/attach'&&response.request().method()==='POST');
+ await review.getByRole('button',{name:'Confirm this meeting and deal',exact:true}).click();const attached=await(await attachment).json();
+ await settings.getByRole('link',{name:'Open meeting preparation',exact:true}).click();
+ await expect(page.getByRole('link',{name:'Join in Zoom',exact:true})).toHaveAttribute('href','https://zoom.us/j/98765432101');
+ await expect(page.getByTestId('meeting-plan')).toContainText('Transcript missing');await expect(page.getByRole('link',{name:'Synthetic Zoom browser attendee',exact:true})).toBeVisible();
+ await page.getByLabel('Agenda',{exact:true}).fill('Review the saved deal evidence');await page.getByLabel('Prep notes',{exact:true}).fill('Bring the saved checklist');await page.getByRole('button',{name:'Save plan as note',exact:true}).click();await expect(page.getByText('Plan saved as a note.',{exact:true})).toBeVisible();
+ await screenshots(page.getByTestId('meeting-plan'),'zoom-scheduled-plan');
+ const timestamp=String(Math.floor(Date.now()/1000)),body=JSON.stringify({event:'meeting.ended',event_ts:Date.now(),payload:{object:{id:98765432101,uuid:provider.meetings.get('98765432101').uuid,end_time:new Date().toISOString()}}}),{createHmac}=await import('node:crypto'),signature='v0='+createHmac('sha256',provider.credentials.webhookSecret).update(`v0:${timestamp}:${body}`).digest('hex');
+ const completion=await workerFetch(origin+'/api/v1/signals/zoom',{method:'POST',headers:{'content-type':'application/json','x-zm-request-timestamp':timestamp,'x-zm-signature':signature},body});expect(completion.status,await completion.clone().text()).toBe(200);
+ await page.reload();await expect(page.getByRole('heading',{name:'Record-backed recap',exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'Saved meeting plan',exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'Signed Zoom completion',exact:true})).toHaveAttribute('href',new RegExp('^/app/opportunities/'+deal.id+'#entry-'));await expect(page.getByTestId('meeting-plan')).toContainText('Exact contact match');
+ await screenshots(page.getByTestId('meeting-plan'),'zoom-completed-plan');
+ expect(attached.planHref).toMatch(/^\/app\/meetings\//);expect(provider.unexpected).toEqual([]);await page.close();
+ async function screenshots(region,name){await expect(region).toBeVisible();expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);for(const width of [1440,390]){await page.setViewportSize({width,height:900});await region.screenshot({path:`${evidence}/${name}-${width}.png`});}await page.setViewportSize({width:1440,height:900});}
+}

@@ -101,8 +101,9 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  const products=async()=>((await(await f.request('settings/products')).json()) as any).products as any[],named=(list:any[],name:string)=>list.find(item=>item.products.includes(name));
  assert.equal((await f.request('settings/products','GET',undefined,{Cookie:''})).status,401);
  const unresolved=await products();assert.equal(named(unresolved,'Calendly').state,'awaiting-delivery');
+ assert.equal(named(unresolved,'Zoom').state,'unresolved-setup','Zoom now has its real connector; only Zoom is removed from the not-listed boundary assertion');
  // BOUNDARY-001: Integrations lists only the products Orbit connects to; the others are named in the docs, never as a connection or a substitute.
- for(const name of ['Dial','Zoom','Aircall','HappyToHelp','Help Scout','Zendesk','DocuSign','Nectar','Stripe','QuickBooks Online','Xero','Buoy'])assert.equal(named(unresolved,name),undefined,`${name} is not listed as a connection`);
+ for(const name of ['Dial','Aircall','HappyToHelp','Help Scout','Zendesk','DocuSign','Nectar','Stripe','QuickBooks Online','Xero','Buoy'])assert.equal(named(unresolved,name),undefined,`${name} is not listed as a connection`);
  assert.deepEqual([named(unresolved,'Mailchimp').state,named(unresolved,'Mailchimp').clause,named(unresolved,'Mailchimp').link],['unresolved-setup','INTEGRATE-007',undefined],'Mailchimp is unresolved setup until a key check passes and an audience is chosen');
  assert.equal((await f.request('settings/products/dial','POST',{})).status,404,'No substituted connector exists for an unbuilt product');
  assert.equal(named(unresolved,'Slack').state,'unresolved-setup');
