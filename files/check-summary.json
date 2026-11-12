@@ -1,0 +1,261 @@
+{
+  "updated_at": "2026-11-12T17:12:13Z",
+  "checks": [
+    {
+      "label": "build",
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:11Z",
+      "finished_at": "2026-11-12T16:24:23Z",
+      "duration_seconds": 12.643,
+      "exit_code": 0,
+      "log": "build.log",
+      "log_sha256": "1f507a6bb724efb8d38a691a318daba27330e1c220d8f07955667702789a97e0"
+    },
+    {
+      "label": "typecheck-pinned",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:25:47Z",
+      "finished_at": "2026-11-12T16:26:11Z",
+      "duration_seconds": 24.387,
+      "exit_code": 0,
+      "log": "typecheck-pinned.log",
+      "log_sha256": "7d134459acf4a1ce124025c06d599ac69ee3767769bf06eae46a824a07b15f75"
+    },
+    {
+      "label": "migration-ledger-pinned",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:26:11Z",
+      "finished_at": "2026-11-12T16:26:13Z",
+      "duration_seconds": 1.184,
+      "exit_code": 0,
+      "log": "migration-ledger-pinned.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "deployment-generate",
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:45Z",
+      "finished_at": "2026-11-12T16:24:45Z",
+      "duration_seconds": 0.087,
+      "exit_code": 0,
+      "log": "deployment-generate.log",
+      "log_sha256": "991a4cf6386e5f31fb08a006aa6443c4bb5a16cf06a7ad5ca306afa00e6c037d"
+    },
+    {
+      "label": "deployment-check",
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:45Z",
+      "finished_at": "2026-11-12T16:24:45Z",
+      "duration_seconds": 0.089,
+      "exit_code": 0,
+      "log": "deployment-check.log",
+      "log_sha256": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053"
+    },
+    {
+      "label": "contract-generate",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:45Z",
+      "finished_at": "2026-11-12T16:24:45Z",
+      "duration_seconds": 0.122,
+      "exit_code": 0,
+      "log": "contract-generate.log",
+      "log_sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+    },
+    {
+      "label": "contract-check-generated",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:45Z",
+      "finished_at": "2026-11-12T16:24:45Z",
+      "duration_seconds": 0.107,
+      "exit_code": 0,
+      "log": "contract-check-generated.log",
+      "log_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "label": "source-lock-final",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:28:39Z",
+      "finished_at": "2026-11-12T16:28:41Z",
+      "duration_seconds": 1.267,
+      "exit_code": 0,
+      "log": "source-lock-final.log",
+      "log_sha256": "b07804e1c95dfc0229c354f8b7738be52f4e81c3c95e93fd6452e6ee15a40e67"
+    },
+    {
+      "label": "source-check-final",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:28:41Z",
+      "finished_at": "2026-11-12T16:28:41Z",
+      "duration_seconds": 0.792,
+      "exit_code": 0,
+      "log": "source-check-final.log",
+      "log_sha256": "0fe8edc809824d687dda7d4dc3bd7e0566ae245cf78631c7d4fa7e6ca018d624"
+    },
+    {
+      "label": "prepare-state",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "tests/support/prepare-state.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:46Z",
+      "finished_at": "2026-11-12T16:25:18Z",
+      "duration_seconds": 31.444,
+      "exit_code": 0,
+      "log": "prepare-state.log",
+      "log_sha256": "59bd7a7bb9aced7cce22cdb6a9c7a5dbf2fc378ecbfbcb694e39aff89d7cea9a"
+    },
+    {
+      "label": "saved-views-core",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/records-complete.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:25:18Z",
+      "finished_at": "2026-11-12T16:33:06Z",
+      "duration_seconds": 467.838,
+      "exit_code": 0,
+      "log": "saved-views-core.log",
+      "log_sha256": "69b37edce407873b393ae6414d636402435912a210f1d995a1844edb38275a20"
+    },
+    {
+      "label": "saved-views-browser",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/delegation-browser/records-layout.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:33:06Z",
+      "finished_at": "2026-11-12T16:36:11Z",
+      "duration_seconds": 185.7,
+      "exit_code": 0,
+      "log": "saved-views-browser.log",
+      "log_sha256": "1dfe14f16bad5add44d42dac706022d9743b0d29dd3f1f2f35d117adc1d7ce5f"
+    },
+    {
+      "label": "archive-migration",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/migration-recovery.test.ts",
+        "newtests/t096/archive-schema-objects.test.ts",
+        "newtests/t096/forward-upgrade.test.ts",
+        "tests/core/archive-transfer.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:24:47Z",
+      "finished_at": "2026-11-12T16:31:21Z",
+      "duration_seconds": 393.695,
+      "exit_code": 1,
+      "log": "archive-migration.log",
+      "log_sha256": "fd7c0174d7a07a24f451c782c87731717a855c9a5d503791aa703403618a3d62"
+    },
+    {
+      "label": "forward-upgrade-retry",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "newtests/t096/forward-upgrade.test.ts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+      "started_at": "2026-11-12T16:32:50Z",
+      "finished_at": "2026-11-12T16:41:32Z",
+      "duration_seconds": 522.268,
+      "exit_code": 0,
+      "log": "forward-upgrade-retry.log",
+      "log_sha256": "a37b9612f57d265f5373cd8a4583f77f068388f5919e75d6f99292c9f64c234f"
+    }
+  ],
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "0fe9665a018e3e1d499fefdf14993163674be433",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43261466746",
+    "id": 43261466746,
+    "status": "completed",
+    "expected_head": "0fe9665a018e3e1d499fefdf14993163674be433",
+    "repository": "just-every/run-orbit",
+    "observed_at": "2026-11-12T17:11:47Z"
+  },
+  "product": {
+    "timestamp": "2026-11-12T16:41:46Z",
+    "repository": "just-every/run-orbit",
+    "branch": "cloud/sd-orbit-c-f162-rebase-1",
+    "head": "0fe9665a018e3e1d499fefdf14993163674be433",
+    "remote_head": "0fe9665a018e3e1d499fefdf14993163674be433",
+    "push_status": "pushed-and-remote-sha-verified",
+    "main": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+    "old_gate_passed_head": "f15a833113df39d8cbfbf8ac56202d1234b0720b",
+    "parents": [
+      "f15a833113df39d8cbfbf8ac56202d1234b0720b",
+      "e397ddbd66ed9254302f762b7db3e831b5b72de5"
+    ],
+    "new_commits": 1,
+    "candidate_commits_including_side_parents": 7,
+    "worktree_clean": true,
+    "pr_url": null
+  }
+}

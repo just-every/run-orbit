@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-11-12T17:12:13Z",
+  "passed": true,
+  "candidate_commits_including_side_parents": 7,
+  "commits": [
+    {
+      "head": "0fe9665a018e3e1d499fefdf14993163674be433",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": false
+    },
+    {
+      "head": "f15a833113df39d8cbfbf8ac56202d1234b0720b",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [
+        "Co-authored-by: OpenAI <noreply@github.com>"
+      ],
+      "already_published": true
+    },
+    {
+      "head": "a23c2c0eb13f358d41092e0eb85a12d571c18228",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": true
+    },
+    {
+      "head": "f780ad4e9fbc01bb11cd1e162153f8fb6d69fa56",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": true
+    },
+    {
+      "head": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": true
+    },
+    {
+      "head": "496a2b12db77f1d95dd7cf73c2d494342bd8ab3b",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": true
+    },
+    {
+      "head": "91ed9325b58cdc6e63953aac0cd42b0c72601bf7",
+      "author": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "committer": {
+        "name": "Run Edit Run fleet",
+        "email": "fleet@runeditrun.com"
+      },
+      "trailers": [],
+      "already_published": true
+    }
+  ]
+}

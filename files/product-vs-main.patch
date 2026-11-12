@@ -1,0 +1,773 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index e338031..1ae988b 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -462,6 +462,12 @@
+       "name": "0081_graph_proposals.sql",
+       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+       "sql": "-- Extend native review with a question that cannot create a contact.\n-- Refuse unexpected owner extensions before replacing the known proposal table.\nSELECT CASE WHEN (SELECT group_concat(name,',') FROM pragma_table_info('capture_proposals'))<>'id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,decided_by,decided_at,decided_value,created_at'\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name<>'capture_proposals' AND lower(sql) LIKE '%references%capture_proposals%')\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='index' AND sql IS NOT NULL AND name NOT IN('capture_proposals_status','capture_proposals_record'))\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='trigger' AND name NOT LIKE 'archive_guard_capture_proposals_%')\n THEN json_extract('ORBIT_GRAPH_PROPOSAL_SCHEMA_REQUIRES_REVIEW','$') ELSE 1 END;\nCREATE TABLE capture_proposals_new (\n id TEXT PRIMARY KEY,\n proposal_key TEXT NOT NULL UNIQUE,\n signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact','question')),\n record_type TEXT CHECK (record_type IN ('contact','company','opportunity')),\n record_id TEXT,\n field TEXT,\n current_value TEXT,\n proposed_value TEXT,\n details_json TEXT NOT NULL,\n status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined','withdrawn')),\n decided_by TEXT,\n decided_at TEXT,\n decided_value TEXT,\n created_at TEXT NOT NULL\n);\nINSERT INTO capture_proposals_new SELECT * FROM capture_proposals;\nDROP TABLE capture_proposals;\nALTER TABLE capture_proposals_new RENAME TO capture_proposals;\nCREATE INDEX capture_proposals_status ON capture_proposals(status,created_at);\nCREATE INDEX capture_proposals_record ON capture_proposals(record_type,record_id);\nCREATE TRIGGER archive_guard_capture_proposals_insert BEFORE INSERT ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_update BEFORE UPDATE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_delete BEFORE DELETE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\n\n-- Source withdrawal is terminal for this proposal, including after reconnection.\nCREATE TRIGGER capture_graph_source_withdrawn AFTER UPDATE ON capture_sources\nWHEN NEW.state='disconnected' OR NEW.connection_id IS NOT OLD.connection_id\nBEGIN\n UPDATE capture_proposals SET status='withdrawn',decided_at=NEW.updated_at,\n  details_json=json_set(details_json,'$.withdrawal','Evidence source revoked')\n WHERE status='pending' AND json_extract(details_json,'$.graphProposal')=1\n AND signal_id IN(SELECT id FROM signals WHERE source_id=NEW.id);\nEND;\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0082_saved_record_views.sql",
++      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
++      "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/migrations/core/0082_saved_record_views.sql b/migrations/core/0082_saved_record_views.sql
+new file mode 100644
+index 0000000..aeb7615
+--- /dev/null
++++ b/migrations/core/0082_saved_record_views.sql
+@@ -0,0 +1,13 @@
++-- Definitions contain no result rows or delegated grants. Every open reads current records.
++CREATE TABLE record_saved_views (
++ id TEXT PRIMARY KEY,
++ author_id TEXT NOT NULL REFERENCES operators(id),
++ kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),
++ name TEXT NOT NULL,
++ visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),
++ revision INTEGER NOT NULL CHECK(revision>0),
++ definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),
++ created_at TEXT NOT NULL,
++ updated_at TEXT NOT NULL
++);
++CREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);
+diff --git a/scripts/installer/portability-policy.mjs b/scripts/installer/portability-policy.mjs
+index b7fd164..dba872a 100644
+--- a/scripts/installer/portability-policy.mjs
++++ b/scripts/installer/portability-policy.mjs
+@@ -4,6 +4,7 @@
+ // with an installation, as in the Records archive.
+ export default {
+  product: 'just-every/sales-orbit',
++ // record_saved_views carries definitions only; restored opens recheck current native authority.
+  excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
+  // Migrations seed these rows in every empty database; the archive's rows replace them.
+diff --git a/sources.lock.json b/sources.lock.json
+index f005500..2a35713 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -1911,7 +1911,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "730df50b6cc9a02c50fc3669fe87cc27e81edc54663a9cc04069d6d67f3bc19c",
++      "sha256": "421ccd5a6a9a516f23b2f9b58f53bea9514a65c9b444cf3016e2ba661c934ef8",
+       "executable": false
+     },
+     "management/integration/profile.json": {
+@@ -2230,6 +2230,10 @@
+       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+       "executable": false
+     },
++    "migrations/core/0082_saved_record_views.sql": {
++      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
++      "executable": false
++    },
+     "migrations/rewrites.json": {
+       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
+       "executable": false
+@@ -4135,7 +4139,7 @@
+       "executable": false
+     },
+     "scripts/installer/portability-policy.mjs": {
+-      "sha256": "cf60bd37d5b707febe4beff41f96f0ef60ef37ddb9b11fefb83fb78f335bf0ce",
++      "sha256": "b2a59724193a091d619ddc34372e50ebd0fcc70654b0368d5f000d86e083a836",
+       "executable": false
+     },
+     "scripts/installer/portability.mjs": {
+@@ -7071,23 +7075,23 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-filters.tsx": {
+-      "sha256": "2845f3ea0be4d96cee391b3e9e1b753b2a27fc7b1bb205e8097e7432e382cc53",
++      "sha256": "8af2efbad96598cdae398ec38cdba50df0f75b9375046b85669049a46a23ac8a",
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-list.tsx": {
+-      "sha256": "6b801dd2433b699b478dc07bf0a1f4224a8e9a425fed41cb97576cf4d6dbd9a6",
++      "sha256": "63e419cae6b0b57c81543f2128b4114b11de564fc87e479f8b549dee1dc7655e",
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-page.tsx": {
+-      "sha256": "142244be7ca8c6e8d061b1d14bfa42c39b5ea127fad73e25e9e554277327a394",
++      "sha256": "1bcb611c5d1e1088d997a6cf0a5c6a4a81c5d1ccc62c09306c532179f98a43af",
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-query.ts": {
+-      "sha256": "8ce385bc1b8ef945df5caf91178639209dfc9e5d349acdc02fe4718e7eeb9017",
++      "sha256": "595d27103876f24f3fdf4a6141dd483508b48b18f12680bc075ded7941954ff2",
+       "executable": false
+     },
+     "src/core/features/operator/ui/records.css": {
+-      "sha256": "431121f5f750d5d7e67d4eca025d900ef5468805700fe2253280ef964d85fe62",
++      "sha256": "139f63cf3612678835d6cee855158dde96d37be7baacda3756932d7e4160e8c5",
+       "executable": false
+     },
+     "src/core/features/operator/ui/review-line.tsx": {
+@@ -7114,6 +7118,10 @@
+       "sha256": "88e96330bc2ba8ac86551abe3c7bcc6e5fbb0b9d50abf7619b703475682ea738",
+       "executable": false
+     },
++    "src/core/features/operator/ui/saved-record-views.tsx": {
++      "sha256": "ec2902c98114a55247bd57570a010b363cb7d0111de8bb212e55caa9cdb81906",
++      "executable": false
++    },
+     "src/core/features/operator/ui/sender-status.tsx": {
+       "sha256": "e6728b302bd6d3fd888a9c38a0b342d99adab45a25d0eb42e9287e0ac614a63a",
+       "executable": false
+@@ -7871,7 +7879,7 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-generations.ts": {
+-      "sha256": "5a8c3b1215ab7a41dc17990699f0e92828b78e5eb77d60d3874ff9373d5ead81",
++      "sha256": "30c8d2309bffb16ef3a1d19c5d24bb7fcda606ddc82232df95bb589e40d741e9",
+       "executable": false
+     },
+     "src/core/features/records/archive-import-context.ts": {
+@@ -7915,7 +7923,7 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-schema.ts": {
+-      "sha256": "d43f04dacc009fc101ce322d327619d9a693d9b9f3573c33e5cb45dd91dacd18",
++      "sha256": "c3f7ce8c661a93392a5be9df2e173b2672b95ddc6e77f79497c5518483388f30",
+       "executable": false
+     },
+     "src/core/features/records/archive-size-plan.ts": {
+@@ -8007,11 +8015,15 @@
+       "executable": false
+     },
+     "src/core/features/records/repository.ts": {
+-      "sha256": "93b10d87ea392354f02db5929a924b715326e94de435bdeb210f41648df3bbf1",
++      "sha256": "00d7003f80dd931e9f2ea285edb4c5af2a205268833398ea9b3fd864d9f13db3",
+       "executable": false
+     },
+     "src/core/features/records/routes.ts": {
+-      "sha256": "170d98b38c93a26f34b13e0979f0462f52cf800e6831e14324043bde2279b390",
++      "sha256": "85727e4c4716c3ff6183e3b50fa18bff93363f7b2729084b032ef32b8e91b79f",
++      "executable": false
++    },
++    "src/core/features/records/saved-views.ts": {
++      "sha256": "7484a977ea8990fe7c4462c8282cb7a3c808cf6116ceeaaad009f263ae0eddf8",
+       "executable": false
+     },
+     "src/core/features/records/schema.ts": {
+@@ -8055,7 +8067,7 @@
+       "executable": false
+     },
+     "src/core/features/records/typed-fields.ts": {
+-      "sha256": "16b206c1924ca4eef20ccfe2da83b1b89709a061bf9eda557986548d259079c8",
++      "sha256": "299758e57b6b9e481f5ef9ab9f891372cb691a564390173b6956576a0296145c",
+       "executable": false
+     },
+     "src/core/features/relationships/activity.ts": {
+@@ -8639,7 +8651,7 @@
+       "executable": false
+     },
+     "src/core/shared/archive-lineage.ts": {
+-      "sha256": "d0d270d8d46092d29750d4f0b202ab0d1110ee21103074bdc2b83dc50ff49213",
++      "sha256": "d50d85b9b6318a3efa40d50705313c894fb6d58d8a88e3a087594fb50568b8f5",
+       "executable": false
+     },
+     "src/core/shared/archive-lines.ts": {
+@@ -8659,7 +8671,7 @@
+       "executable": false
+     },
+     "src/core/shared/archive-transfer-profile.ts": {
+-      "sha256": "7b50453eb050f6b22356273ad4a1b1f41704826bb77747c35890438a42609045",
++      "sha256": "d14be645c8eb71257cd0c3e25d844df2e7dea619041a351779a04bfa289c342d",
+       "executable": false
+     },
+     "src/core/shared/csv.ts": {
+@@ -10279,7 +10291,7 @@
+       "executable": false
+     },
+     "tests/core/records-complete.test.ts": {
+-      "sha256": "307e3c67db651de1ba42767ca71a7445d0a6298b697f4a4a63f2097ae668145f",
++      "sha256": "6e0a092b26230654907ab1bdc6295f6ea2df7c080c574e4b508254624f6be2cf",
+       "executable": false
+     },
+     "tests/core/records-merge-review.test.ts": {
+@@ -10343,7 +10355,7 @@
+       "executable": false
+     },
+     "tests/delegation-browser/records-layout.test.ts": {
+-      "sha256": "424e8a2096c7051b5510ac248a328cf67b2e466e4bd5a6949502fb2a608d4da3",
++      "sha256": "6f92811f338ec05c15cb198d66460a6c544a704b63abf160be1ee2aef6558524",
+       "executable": false
+     },
+     "tests/delegation-browser/related-records.test.ts": {
+@@ -10354,6 +10366,10 @@
+       "sha256": "0770335f978818ab0fce2c72b2c695a7abbad01a3819b3da7e42b77124f57582",
+       "executable": false
+     },
++    "tests/delegation-browser/saved-deal-value-journey.mjs": {
++      "sha256": "3d1ed36cb16723d576f56d8d5c20efeb5d395863eca816d963e907b5a1173903",
++      "executable": false
++    },
+     "tests/delegation-browser/today-brief.test.ts": {
+       "sha256": "039d6fb4f231b647dbeb1cf20fd43a7b714ef9193301244cdb2074b685c146e2",
+       "executable": false
+@@ -10363,7 +10379,7 @@
+       "executable": false
+     },
+     "tests/delegation-browser/typed-fields-journey.mjs": {
+-      "sha256": "c3470ed40bcafcea8708c90076d42f0b02c03b506fc8f3cb918552a5bfa4e047",
++      "sha256": "1ef8d92aea0a7eda4d2f0eda36b1f55665ebb4b5d097a02d0d463091b2b02e20",
+       "executable": false
+     },
+     "tests/delegation-browser/viewport-journey.mjs": {
+@@ -11446,6 +11462,10 @@
+       "sha256": "871265a455855ff43c93cd3bb4ab8d40238518cdfb9da657c231922a26309977",
+       "executable": false
+     },
++    "tests/support/saved-views-proof.ts": {
++      "sha256": "7b47e6092caf5c70a3e59963f0a7c0902f0190a7aefac83e2c4b01450d6b22ac",
++      "executable": false
++    },
+     "tests/support/sdk-worker-fixture.ts": {
+       "sha256": "2259c9e742b0605819d5c5d782f4ba8275ec0cbd2a5561bd2cd28ab8c0a6b8ff",
+       "executable": false
+diff --git a/src/core/features/operator/ui/records-filters.tsx b/src/core/features/operator/ui/records-filters.tsx
+index 317cc44..4e08bc8 100644
+--- a/src/core/features/operator/ui/records-filters.tsx
++++ b/src/core/features/operator/ui/records-filters.tsx
+@@ -11,16 +11,16 @@ export function RecordsFilters({query,onQuery,filters,onFilters,settings,opportu
+   band:['low','medium','high'].map(value=>({id:value,name:recordStateLabel(value)})),
+   queue_state:['now','next','none'].map(value=>({id:value,name:recordStateLabel(value)})),
+   stage_id:settings?.stages.filter((stage:any)=>!filters.pipeline_id||stage.pipeline_id===filters.pipeline_id)??[],
+-  owner_id:(settings?.operators??[]).filter((operator:any)=>operator.status==='active').map((operator:any)=>({id:operator.id,name:operator.display_name}))
++  owner_id:[{id:'unassigned',name:'Unassigned'},...(settings?.operators??[]).filter((operator:any)=>operator.status==='active').map((operator:any)=>({id:operator.id,name:operator.display_name}))]
+  };
+- const fields:FilterField[]=Object.entries(names).map(([field,name])=>({field,name,all:field==='pipeline_id'?'All pipelines':'All',options:options[field]!}));
++ const fields:FilterField[]=Object.entries(names).filter(([field])=>opportunities||field==='owner_id').map(([field,name])=>({field,name,all:field==='pipeline_id'?'All pipelines':'All',options:options[field]!}));
+  function change(field:string,value:string){onFilters({...filters,[field]:value,...(field==='pipeline_id'?{stage_id:''}:{})});}
+  const applied=Object.values(filters).filter(Boolean).length;
+  return <section className="records-search" aria-label="Search and filters">
+   <div className="records-search__bar"><label>Search records and timeline<input value={query} onChange={event=>onQuery(event.target.value)} type="search"/></label>
+-   {opportunities?<FilterButton panel={panel} applied={applied}/>:null}
+-   {opportunities?<FilterChips fields={fields} values={filters} onChange={change} valueName={recordStateLabel}/>:null}
++   {settings?<FilterButton panel={panel} applied={applied}/>:null}
++   {settings?<FilterChips fields={fields} values={filters} onChange={change} valueName={recordStateLabel}/>:null}
+   </div>
+-  {opportunities?<FilterPanel panel={panel} fields={fields} values={filters} onChange={change}/>:null}
++  {settings?<FilterPanel panel={panel} fields={fields} values={filters} onChange={change}/>:null}
+  </section>;
+ }
+diff --git a/src/core/features/operator/ui/records-list.tsx b/src/core/features/operator/ui/records-list.tsx
+index 40aa3f8..c78e922 100644
+--- a/src/core/features/operator/ui/records-list.tsx
++++ b/src/core/features/operator/ui/records-list.tsx
+@@ -8,9 +8,9 @@ export function opportunityMeta(record:CustomerRecord,settings:any){return [reco
+ const closedLabel=(record:CustomerRecord)=>record.lifecycle==='won'?'Won':record.lifecycle==='lost'?'Lost':null;
+ export function ClosedDealBadge({record}:{record:CustomerRecord}){const label=closedLabel(record);return label?<b className="r-chip">{label}</b>:null;}
+ /** Each row is a link to its record, so a middle click opens it in a new tab and Back returns to the list. */
+-export function RecordsList({kind,records,settings,selected,onSelected,readOnly=false}:{kind:RecordKind;records:CustomerRecord[];settings:any;selected:string[];onSelected:(ids:string[])=>void;readOnly?:boolean}){
++export function RecordsList({kind,records,settings,selected,onSelected,readOnly=false,columns}:{kind:RecordKind;records:CustomerRecord[];settings:any;selected:string[];onSelected:(ids:string[])=>void;readOnly?:boolean;columns?:{key:string;label:string;archived:boolean}[]}){
+  return <ol className="operator-queue__list records-list">{records.map(record=><li className="operator-queue-card" key={record.id}>
+-  <Link to={recordPath[kind]} params={{id:record.id}}><h2>{record.title??record.name??record.email}{kind==='opportunity'&&closedLabel(record)?<> <ClosedDealBadge record={record}/></>:null}</h2><p>{kind==='company'?record.primary_domain:kind==='contact'?[record.email||record.company_name,record.contactability==='do_not_contact'?'Do not contact':undefined].filter(Boolean).join(' · '):opportunityMeta(record,settings)}</p></Link>
++  <Link to={recordPath[kind]} params={{id:record.id}}><h2>{record.title??record.name??record.email}{kind==='opportunity'&&closedLabel(record)?<> <ClosedDealBadge record={record}/></>:null}</h2>{!columns?<p>{kind==='company'?record.primary_domain:kind==='contact'?[record.email||record.company_name,record.contactability==='do_not_contact'?'Do not contact':undefined].filter(Boolean).join(' · '):opportunityMeta(record,settings)}</p>:null}{columns?<dl className="saved-record-values">{columns.filter(column=>column.key!==(kind==='opportunity'?'title':'name')).map(column=>{const value=column.key.startsWith('custom:')?JSON.parse(record.custom_fields_json??'{}')[column.key.slice(7)]:column.key==='owner_name'?record.ownership?.ownerName??record.owner_name:record[column.key];return <div key={column.key}><dt>{column.label}{column.archived?' (archived, read-only)':''}</dt><dd>{value===null||value===undefined||value===''?'—':column.key==='value_cents'&&settings?.workspace?formatCurrency(value,settings.workspace):typeof value==='boolean'?(value?'Yes':'No'):String(value)}</dd></div>;})}</dl>:null}</Link>
+   {!readOnly&&kind!=='opportunity'?<label className="record-selection record-selection--row"><input type="checkbox" aria-label={`Select ${record.name??record.email}`} checked={selected.includes(record.id)} onChange={event=>onSelected(event.target.checked?[...selected,record.id]:selected.filter(id=>id!==record.id))}/></label>:null}
+  </li>)}</ol>;
+ }
+diff --git a/src/core/features/operator/ui/records-page.tsx b/src/core/features/operator/ui/records-page.tsx
+index d3b04cc..0766f07 100644
+--- a/src/core/features/operator/ui/records-page.tsx
++++ b/src/core/features/operator/ui/records-page.tsx
+@@ -1,3 +1,4 @@
++import {SavedRecordViews} from './saved-record-views';
+ import {useAppAccess} from '../../access/app-access';
+ import {RecordsFilters} from './records-filters';
+ import {RecordsList} from './records-list';
+@@ -21,16 +22,18 @@ export function RecordsPage({kind}:{kind:RecordKind}){
+  const filters=listFilters(search),view=kind==='opportunity'&&search.view==='board'?'board':'list';
+  const [query,setQuery]=useState(search.q??''),written=useRef(search.q??'');
+  const [records,setRecords]=useState<CustomerRecord[]>([]),[settings,setSettings]=useState<any>(),[customers,setCustomers]=useState<boolean>(),[error,setError]=useState(''),[loadedFor,setLoadedFor]=useState(''),[selected,setSelected]=useState<string[]>([]);
+- const filtersKey=JSON.stringify([kind,query,filters]),filtered=Boolean(query.trim()||Object.values(filters).some(Boolean)),loading=!error&&loadedFor!==filtersKey;
++ const [refreshed,setRefreshed]=useState(0);
++ const [columns,setColumns]=useState<{key:string;label:string;archived:boolean}[]>([]);
++ const filtersKey=JSON.stringify([kind,query,filters,search.sort,search.direction,refreshed]),filtered=Boolean(query.trim()||Object.values(filters).some(Boolean)),loading=!error&&loadedFor!==filtersKey;
+  // The list's address follows its search, filters and view only while the app is still headed for this list: a record
+  // opened meanwhile, its route checks still running, is never replaced by the list.
+- function go(next:Partial<RecordsSearch>){if(router.latestLocation.pathname!==listPath[kind])return;void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
++ function go(next:Partial<RecordsSearch>){if(router.latestLocation.pathname.replace(/\/$/,'')!==listPath[kind])return;void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
+  // Typing filters the list at once; the address catches up after a pause, and Back or a link changes the box.
+  useEffect(()=>{if(query===written.current)return;const timer=setTimeout(()=>{written.current=query;go({q:query||undefined});},300);return()=>clearTimeout(timer);},[query]);
+  useEffect(()=>{if((search.q??'')!==written.current){written.current=search.q??'';setQuery(search.q??'');}},[search.q]);
+  useEffect(()=>{setSelected([]);},[filtersKey]);
+  const requestId=useRef(0);
+- async function reload(){const request=++requestId.current;try{setError('');setLoadedFor('');const [list,workspace]=await Promise.all([recordsRequest<{records:CustomerRecord[]}>(`records/${kind}?${new URLSearchParams({q:query,...filters})}`),settings?Promise.resolve(settings):recordsRequest('settings')]);if(request!==requestId.current)return;setRecords(list.records);setSettings(workspace);setLoadedFor(filtersKey);}catch(e){if(request===requestId.current)setError((e as Error).message);}}
++ async function reload(){const request=++requestId.current;try{setError('');setLoadedFor('');const [list,workspace]=await Promise.all([recordsRequest<{records:CustomerRecord[]}>(`records/${kind}?${new URLSearchParams({q:query,...filters,...(search.sort||search.direction?{sort_column:search.sort??(kind==='opportunity'?'title':'name'),sort_direction:search.direction??'asc'}:{})})}`),settings?Promise.resolve(settings):recordsRequest('settings')]);if(request!==requestId.current)return;setRecords(list.records);setSettings(workspace);setLoadedFor(filtersKey);}catch(e){if(request===requestId.current)setError((e as Error).message);}}
+  useEffect(()=>{void reload();return()=>{requestId.current++;};},[filtersKey]);
+  // Back to this list: the router restores its scroll as the route renders, before the list's read has answered, so the
+  // rows' first render takes the list back to where it was.
+@@ -44,10 +47,11 @@ export function RecordsPage({kind}:{kind:RecordKind}){
+   <nav className="records-tabs" aria-label="Record types">{kinds.map(type=><Link key={type} to={listPath[type]} aria-current={type===kind?'page':undefined}>{pluralName[type]}</Link>)}</nav>
+   {error?<OperatorState kind="error">{error}</OperatorState>:null}
+   <RecordsFilters query={query} onQuery={setQuery} filters={filters} onFilters={next=>go(searchFilters(next))} settings={settings} opportunities={kind==='opportunity'}/>
++  {full?<SavedRecordViews kind={kind} search={search} query={query} onSearch={go} onColumns={setColumns} onOpen={()=>setRefreshed(value=>value+1)}/>:null}
+   {kind==='opportunity'?<div className="records-tabs" aria-label="Records display">{(['list','board'] as const).map(type=><Link key={type} to={listPath[kind]} search={previous=>({...previous,view:type==='board'?'board':undefined})} replace aria-current={view===type?'page':undefined}>{type==='list'?'List':'Board'}</Link>)}</div>:null}
+   {full&&kind!=='opportunity'&&!loading&&!error&&records.length?<label className="record-selection"><input type="checkbox" checked={selected.length===records.length} onChange={e=>setSelected(e.target.checked?records.map(record=>record.id):[])}/>Select visible records</label>:null}
+   {full&&kind!=='opportunity'&&selected.length?<RecordOwner key={`bulk-${kind}-${selected.join('-')}`} kind={kind} ids={selected} operators={settings?.operators??[]} onChanged={reload}/>:null}
+-  {kind==='opportunity'&&view==='board'&&settings?<PipelineBoard records={!loading&&!error?records:[]} settings={settings} pipelineId={filters.pipeline_id??''}/>:<RecordsList kind={kind} records={!loading&&!error?records:[]} settings={settings} selected={selected} onSelected={setSelected} readOnly={!full}/>}
++  {kind==='opportunity'&&view==='board'&&settings?<PipelineBoard records={!loading&&!error?records:[]} settings={settings} pipelineId={filters.pipeline_id??''}/>:<RecordsList kind={kind} records={!loading&&!error?records:[]} settings={settings} selected={selected} onSelected={setSelected} readOnly={!full} columns={search.columns?search.columns.split(',').map(key=>columns.find(c=>c.key===key)).filter((c):c is {key:string;label:string;archived:boolean}=>Boolean(c)):undefined}/>}
+   {kind==='contact'&&records.some(r=>r.contactability==='do_not_contact')?<p className="records-contactability-note">Orbit never emails a contact marked Do not contact. Imported contacts get this mark unless the file said they agreed to email. Open a contact to see why it is marked and how to change it.</p>:null}
+   {loading?<OperatorState>Loading customer records…</OperatorState>:!error&&!records.length?<OperatorState>{filtered?<>No records match your search or filters. <button type="button" onClick={()=>{written.current='';setQuery('');void navigate({to:listPath[kind],search:{},replace:true});}}>Clear search and filters</button></>:emptyWords}</OperatorState>:null}
+  </div></OperatorShell>;
+diff --git a/src/core/features/operator/ui/records-query.ts b/src/core/features/operator/ui/records-query.ts
+index 7491992..2c8ffed 100644
+--- a/src/core/features/operator/ui/records-query.ts
++++ b/src/core/features/operator/ui/records-query.ts
+@@ -2,7 +2,7 @@ import type {RecordKind} from './records-api';
+ 
+ /** A Records list keeps its search, filters and view in its address (?q=harbour&stage=<id>&owner=<id>&band=high
+  * &lifecycle=open&view=board), so Back from a record and a shared link both open the list as it was. */
+-export interface RecordsSearch {q?: string; pipeline?: string; stage?: string; owner?: string; band?: string; lifecycle?: string; queue?: string; view?: 'board'}
++export interface RecordsSearch {q?: string; pipeline?: string; stage?: string; owner?: string; band?: string; lifecycle?: string; queue?: string; view?: 'board';saved?:string;columns?:string;sort?:string;direction?:'asc'|'desc'}
+ 
+ // The address's words for each filter, and the list API's names for them.
+ const filterKeys = {pipeline: 'pipeline_id', stage: 'stage_id', owner: 'owner_id', band: 'band', lifecycle: 'lifecycle', queue: 'queue_state'} as const;
+@@ -16,6 +16,8 @@ export function recordsSearch(search: Record<string, unknown>): RecordsSearch {
+  const q = text(search.q);
+  if (q) result.q = q;
+  for (const word of words) { const value = text(search[word]); if (value) result[word] = value; }
++ for(const key of ['saved','columns','sort'] as const){const value=text(search[key]);if(value)result[key]=value;}
++ if(search.direction==='asc'||search.direction==='desc')result.direction=search.direction;
+  if (search.view === 'board') result.view = 'board';
+  return result;
+ }
+diff --git a/src/core/features/operator/ui/records.css b/src/core/features/operator/ui/records.css
+index 28684a4..3953732 100644
+--- a/src/core/features/operator/ui/records.css
++++ b/src/core/features/operator/ui/records.css
+@@ -87,3 +87,20 @@
+ .records-detail-list dt {color:var(--ob-muted);font-size:13px;text-transform:none;letter-spacing:0}
+ .records-detail-list dd {margin:5px 0 0;overflow-wrap:anywhere;font-size:14px}
+ @media(max-width:700px){.records-detail-list{grid-template-columns:1fr}}
++
++.saved-record-views{display:grid;gap:12px;min-width:0;font-size:14px}
++.saved-record-views>label{max-width:420px}
++.saved-record-views label{display:grid;gap:6px;min-width:0}
++.saved-record-views input,.saved-record-views select{width:100%;min-height:44px}
++.saved-record-views summary{cursor:pointer;padding-block:10px;font-weight:600}
++.saved-record-views__options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
++.saved-record-views__options>fieldset,.saved-record-views__options>.workbench-actions{grid-column:1/-1}
++.saved-record-views__options fieldset{border:1px solid var(--ob-line);border-radius:12px;padding:14px}
++.saved-record-views__columns{display:flex;flex-wrap:wrap;gap:8px 18px}
++.saved-record-views__columns label{display:flex;align-items:center;min-height:44px;gap:8px}
++.saved-record-views__columns input{width:18px;min-height:18px}
++.saved-record-values{display:flex;flex-wrap:wrap;gap:10px 24px;margin:12px 0 0;font-size:14px}
++.saved-record-values div{min-width:0;overflow-wrap:anywhere}
++.saved-record-values dt{color:var(--ob-muted)}
++.saved-record-values dd{margin:3px 0 0}
++@media(max-width:700px){.saved-record-views__options{grid-template-columns:minmax(0,1fr)}}
+diff --git a/src/core/features/operator/ui/saved-record-views.tsx b/src/core/features/operator/ui/saved-record-views.tsx
+new file mode 100644
+index 0000000..d72a85f
+--- /dev/null
++++ b/src/core/features/operator/ui/saved-record-views.tsx
+@@ -0,0 +1,35 @@
++import {useEffect,useState} from 'react';
++import {recordsRequest,type RecordKind} from './records-api';
++import {listFilters,searchFilters,type RecordsSearch} from './records-query';
++
++type Column={key:string;label:string;archived:boolean};
++type View={id:string;authorId:string;revision:number;kind:RecordKind;name:string;visibility:'private'|'workspace';q:string;filters:Record<string,string>;columns:string[];sort:{column:string;direction:'asc'|'desc'}};
++/** Save list definitions, never a snapshot of the customer rows. */
++export function SavedRecordViews({kind,search,query,onSearch,onColumns,onOpen}:{kind:RecordKind;search:RecordsSearch;query:string;onSearch:(next:Partial<RecordsSearch>)=>void;onColumns:(columns:Column[])=>void;onOpen:()=>void}){
++ const [reopen,setReopen]=useState(0),[chosen,setChosen]=useState(search.saved??'');
++ useEffect(()=>setChosen(search.saved??''),[search.saved,kind]);
++ const [views,setViews]=useState<View[]>([]),[columns,setColumns]=useState<Column[]>([]),[current,setCurrent]=useState<View>(),[name,setName]=useState(''),[visibility,setVisibility]=useState<'private'|'workspace'>('private'),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
++ const defaultColumns=kind==='opportunity'?'title,company_name,stage_name':'name,'+(kind==='contact'?'email':'primary_domain'),defaultSort=kind==='opportunity'?'title':'name';
++ const [selected,setSelected]=useState((search.columns??defaultColumns).split(',').filter(Boolean)),[sort,setSort]=useState(search.sort??defaultSort),[direction,setDirection]=useState<'asc'|'desc'>(search.direction??'asc');
++ useEffect(()=>setSelected((search.columns??defaultColumns).split(',').filter(Boolean)),[search.columns,kind]);
++ useEffect(()=>setSort(search.sort??defaultSort),[search.sort,kind]);useEffect(()=>setDirection(search.direction??'asc'),[search.direction,kind]);
++ function options(next:{columns?:string[];sort?:string;direction?:'asc'|'desc'}){const columns=next.columns??selected,column=next.sort??sort,order=next.direction??direction;setSelected(columns);setSort(column);setDirection(order);onSearch({columns:columns.join(','),sort:column,direction:order});}
++ async function list(){const result=await recordsRequest<{views:View[];columns:Column[]}>(`records/views?kind=${kind}`);setViews(result.views);setColumns(result.columns);onColumns(result.columns);}
++ useEffect(()=>{let active=true;void recordsRequest<{views:View[];columns:Column[]}>(`records/views?kind=${kind}`).then(result=>{if(active){setViews(result.views);setColumns(result.columns);onColumns(result.columns);}}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[kind]);
++ useEffect(()=>{let active=true;if(!search.saved){setCurrent(undefined);setName('');setVisibility('private');return;}setError('');void Promise.all([recordsRequest<{view:View}>(`records/views/${search.saved}`),recordsRequest<{views:View[];columns:Column[]}>(`records/views?kind=${kind}`)]).then(([{view},catalog])=>{if(!active)return;setViews(catalog.views);setColumns(catalog.columns);onColumns(catalog.columns);setCurrent(view);setName(view.name);setVisibility(view.visibility);onSearch({q:view.q||undefined,...searchFilters(view.filters),columns:view.columns.join(','),sort:view.sort.column,direction:view.sort.direction});onOpen();}).catch(e=>{if(active){setError(e.message);onOpen();}});return()=>{active=false;};},[search.saved,kind,reopen]);
++ const definition=()=>({kind,name,visibility,q:query,filters:listFilters(search),columns:selected,sort:{column:sort,direction}});
++ async function save(update:boolean){setBusy(true);setError('');setNotice('');try{const result=await recordsRequest<{view:View}>(`records/views${update&&current?'/'+current.id:''}`,update?'PUT':'POST',update?{revision:current!.revision,view:definition()}:definition());setCurrent(result.view);setChosen(result.view.id);onSearch({saved:result.view.id});await list();setNotice('View saved.');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
++ async function remove(){if(!current)return;setBusy(true);setError('');try{await recordsRequest(`records/views/${current.id}`,'DELETE',{revision:current.revision});setChosen('');onSearch({saved:undefined});setCurrent(undefined);await list();setNotice('View deleted.');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
++ return <section className="saved-record-views" aria-label="Saved record views">
++  <label>Saved view<select aria-label="Saved view" value={chosen} onChange={e=>{setNotice('');setChosen(e.target.value);onSearch({saved:e.target.value||undefined});}}><option value="">Unsaved list</option>{views.map(view=><option key={view.id} value={view.id}>{view.name}{view.visibility==='private'?' · Private':' · Workspace'}</option>)}</select></label>
++  <details><summary>View options</summary><div className="saved-record-views__options">
++   <label>View name<input value={name} maxLength={100} onChange={e=>setName(e.target.value)}/></label>
++   <label>View visibility<select aria-label="View visibility" value={visibility} onChange={e=>setVisibility(e.target.value as 'private'|'workspace')}><option value="private">Private to me</option><option value="workspace">Workspace</option></select></label>
++   <label>Sort column<select aria-label="Sort column" value={sort} onChange={e=>options({sort:e.target.value})}>{columns.map(c=><option key={c.key} value={c.key}>{c.label}{c.archived?' (archived)':''}</option>)}</select></label>
++   <label>Sort direction<select aria-label="Sort direction" value={direction} onChange={e=>options({direction:e.target.value as 'asc'|'desc'})}><option value="asc">Ascending</option><option value="desc">Descending</option></select></label>
++   <fieldset><legend>Visible columns</legend><div className="saved-record-views__columns">{columns.map(column=><label key={column.key}><input type="checkbox" checked={selected.includes(column.key)} onChange={e=>options({columns:e.target.checked?[...selected,column.key]:selected.filter(c=>c!==column.key)})}/>{column.label}{column.archived?' (archived, read-only)':''}</label>)}</div></fieldset>
++   <div className="workbench-actions"><button type="button" disabled={busy||!name.trim()||!selected.length} onClick={()=>void save(false)}>Save new view</button>{current?<><button type="button" disabled={busy||!name.trim()||!selected.length} onClick={()=>void save(true)}>Save view changes</button><button type="button" disabled={busy} onClick={()=>void remove()}>Delete view</button><button type="button" disabled={busy} onClick={()=>setReopen(value=>value+1)}>Reopen saved view</button></>:null}</div>
++  </div></details>
++  {error?<p role="alert">{error}</p>:null}{notice?<p role="status">{notice}</p>:null}
++ </section>;
++}
+diff --git a/src/core/features/records/archive-generations.ts b/src/core/features/records/archive-generations.ts
+index 485e06a..0b234dd 100644
+--- a/src/core/features/records/archive-generations.ts
++++ b/src/core/features/records/archive-generations.ts
+@@ -1,6 +1,6 @@
+ import {preCallFailureCatalog} from '../calls/archive';
+ import {preTypedWorkflowCatalog} from '../workflows/archive';
+-import {personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
++import {savedViewArchiveTables,personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
+ import type {FoldArchiveTable} from './archive-fold-catalog';
+ import {preCaptureMailRuleCatalog,preGraphProposalCatalog} from '../capture/archive';
+ import {preRecordMailCatalog} from '../outreach/record-mail-archive';
+@@ -22,14 +22,14 @@ export const optOutArchiveTables=['opt_out_settings','draft_opt_out','outbound_m
+ export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(optOutArchiveTables as readonly string[]).includes(table.name));
+ export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
+ export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
+-/** Migration 0079 changes notification insertion only; earlier archives retain
++/** Migration 0079 changes notification insertion only; earlier archives omit later saved views and retain
+  * their exact trigger inventory. Runtime-control fences are never archived. */
+-export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preGraphProposalCatalog(catalog),[],['notification_skip_direct_actor']);
++export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preGraphProposalCatalog(catalog),savedViewArchiveTables,['notification_skip_direct_actor']);
+ /** Reconstruct only exact native additions; owner tables and objects remain bound. */
+ function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:readonly string[]=[]){return catalog.filter(table=>!tables.includes(table.name)).map(table=>{const objects=(table as FoldArchiveTable).objects;return objects?{...table,objects:objects.filter(object=>!triggers.includes(object.name))}:table;});}
+ const typedTriggers=['contacts','companies','deals'].flatMap(table=>['insert','update','delete'].map(operation=>`custom_field_${table}_${operation}`));
+ const privacyTriggers=['entry_privacy_timeline_delete','entry_privacy_task_delete','entry_privacy_handoff_delete'];
+ /** Complete native source generations in migration order; never arbitrary missing tables. */
+-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const graph=preGraphProposalCatalog(catalog),notifications=preDirectNotificationCatalog(graph),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,graph,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
++export function nativeCatalogGenerations(catalog:ArchiveTable[]){const saved=beforeSlice(catalog,savedViewArchiveTables),graph=preGraphProposalCatalog(saved),notifications=preDirectNotificationCatalog(graph),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,saved,graph,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+ export const preCallingCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).find(generation=>!generation.some(table=>table.name==='call_events'))!;
+ export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;
+diff --git a/src/core/features/records/archive-schema.ts b/src/core/features/records/archive-schema.ts
+index 4b13045..e701907 100644
+--- a/src/core/features/records/archive-schema.ts
++++ b/src/core/features/records/archive-schema.ts
+@@ -17,6 +17,7 @@ export type ArchiveTable = {
+     columns: ArchiveColumn[];
+     dependencies: string[];
+ };
++// Saved list definitions travel as data; sessions and grants remain installation-local.
+ const excluded = new Set(['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context','api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'first_run_setup', 'd1_migrations', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'capture_credentials','capture_oauth','capture_locks','slack_credentials','slack_action_tokens','record_owner_reviews']);
+ export const secretColumns: Record<string, readonly string[]> = { signal_sources: ['secret_ciphertext'] };
+ const catalogCache = new WeakMap<D1Database, Promise<ArchiveTable[]>>();
+diff --git a/src/core/features/records/repository.ts b/src/core/features/records/repository.ts
+index 07019de..17cb20e 100644
+--- a/src/core/features/records/repository.ts
++++ b/src/core/features/records/repository.ts
+@@ -1,3 +1,4 @@
++import {sortViewRecords,type ViewSort} from './saved-views';
+ import {workflowAssociationEvent} from '../workflows/events';
+ import {normalizedTypedFields,typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
+ import {fieldLabel,valueText} from '../operator/ui/data-value';
+@@ -140,7 +141,7 @@ export class RecordsRepository extends RecordSeedRepository {
+  const company=record.company_id?await this.db.prepare('SELECT * FROM companies WHERE id=?').bind(record.company_id).first():null;
+  const ownership=kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)?(await reconcileLegacyOwnership(this.db),await readOwnership(this.db,kind,id)):undefined;
+  return {record,company,...(ownership?{ownership}:{}),timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
+- async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean}={}){
++ async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean;sort?:ViewSort}={}){
+   if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db))await reconcileLegacyOwnership(this.db);
+   const clauses=['1=1'],values:string[]=[];if(query.trim()){
+    const match=query.trim().split(/\s+/).map(token=>`"${token.replaceAll('"','""')}"*`).join(' AND ');
+@@ -150,10 +151,10 @@ export class RecordsRepository extends RecordSeedRepository {
+   if(kind==='opportunity'&&filters.owner_id==='unassigned'){clauses.push('owner_id IS NULL');delete filters.owner_id;}
+   if(kind==='opportunity')for(const field of ['lifecycle','stage_id','owner_id','band','queue_state'])if(filters[field]){clauses.push(`${field}=?`);values.push(filters[field]);}
+   if(kind==='opportunity'&&filters.pipeline_id){clauses.push('stage_id IN(SELECT stage_id FROM pipeline_stage_rules WHERE pipeline_id=?)');values.push(filters.pipeline_id);}
+-  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id,(SELECT name FROM companies WHERE id=opportunities.company_id) AS company_name,(SELECT name FROM pipeline_stages WHERE id=opportunities.stage_id) AS stage_name':kind==='contact'?'*,(SELECT name FROM companies WHERE id=contacts.company_id) AS company_name':'*';
+-  const records=(await this.db.prepare(`SELECT ${selection} FROM ${tables[kind]} WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC,id LIMIT 50`).bind(...values).all()).results;
+-  if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)){const owners=await ownershipForRecords(this.db,kind,records.map(record=>String(record.id)));return records.map(record=>({...record,ownership:owners.get(String(record.id))??{ownerId:null,ownerName:null,revision:0}}));}
+-  return records;
++  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id,(SELECT name FROM companies WHERE id=opportunities.company_id) AS company_name,(SELECT name FROM pipeline_stages WHERE id=opportunities.stage_id) AS stage_name,(SELECT display_name FROM operators WHERE id=opportunities.owner_id) AS owner_name':kind==='contact'?'*,(SELECT name FROM companies WHERE id=contacts.company_id) AS company_name':'*';
++  const records=(await this.db.prepare(`SELECT ${selection} FROM ${tables[kind]} WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC,id ${options.sort?'':'LIMIT 50'}`).bind(...values).all()).results;
++  if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)){const owners=await ownershipForRecords(this.db,kind,records.map(record=>String(record.id)));const enriched=records.map(record=>({...record,ownership:owners.get(String(record.id))??{ownerId:null,ownerName:null,revision:0}}));return options.sort?sortViewRecords(enriched,options.sort):enriched;}
++  return options.sort?sortViewRecords(records,options.sort):records;
+  }
+  async lifecycle(id:string,state:'open'|'won'|'lost',reason:string,actor:string){await requireRecord(this.db,'opportunity',id);if(state!=='open'&&!reason.trim())throw new RecordError(400,'Give a closing reason.');const now=new Date().toISOString();await this.db.batch([this.db.prepare("UPDATE opportunities SET lifecycle=?,closed_at=?,closed_by=?,close_reason=?,queue_state='none',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=?").bind(state,state==='open'?null:now,state==='open'?null:actor,state==='open'?null:reason,state==='open'?'Operator reopened':'Operator closed',now,id),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity lifecycle changed' WHERE opportunity_id=?").bind(id),...(state==='open'?[]:[this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(closedReason(state),now,id)]),...(state==='open'?[mutationJob(this.db,id,actor,'Operator reopened')]:[]),...timeline(this.db,actor,'opportunity',id,'lifecycle.changed',{state,reason}),audit(this.db,actor,'lifecycle.changed','opportunity',id,{state,reason})]);return {id,state};}
+ }
+diff --git a/src/core/features/records/routes.ts b/src/core/features/records/routes.ts
+index f06b999..6f74082 100644
+--- a/src/core/features/records/routes.ts
++++ b/src/core/features/records/routes.ts
+@@ -1,3 +1,4 @@
++import {savedViewRoutes,savedViewColumns,viewSort} from './saved-views';
+ import {createOwnershipRoutes} from '../ownership/routes';
+ import {moveOpportunity} from '../pipelines/movement';
+ import { clearContactSuppression } from './suppression';
+@@ -17,6 +18,7 @@ export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean;ag
+  app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message,recordId:e.recordId,...(e instanceof MentionAccessError?{withoutAccess:e.colleagues}:{})},e.status);logUnexpected('records',e);return c.json({error:'Record operation failed; no success was confirmed.'},500);});
+  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+  app.use('*',async(c,next)=>{const match=/\/(contact|company|opportunity)\/([^/]+)(?:\/entries\/([^/]+))?/.exec(c.req.path);if(match&&!['duplicates','merge'].includes(match[2])){for(const value of [match[2],match[3]].filter(Boolean)){if(!recordId.safeParse(value).success)return c.json({error:'Invalid record ID.'},400);}}await next();});
++ app.route('/views',savedViewRoutes(db,options));
+  app.route('/archive',createArchiveRoutes(db));
+  if(options.ownership!==false)app.route('/ownership',createOwnershipRoutes(db));
+  app.get('/mentionable',async c=>c.json({colleagues:await mentionable(db)}));
+@@ -27,7 +29,7 @@ export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean;ag
+   return c.json(await clearContactSuppression(db,c.req.param('id'),c.get('operator').operatorId,input.data));
+  });
+  for(const kind of ['contact','company','opportunity'] as RecordKind[]){
+-  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.literal(''),z.literal('unassigned')]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);if(options.ownership===false&&kind!=='opportunity'&&filters.data.owner_id)return c.json({error:'Owner filters require a full operator.'},403);return c.json({records:await repo.search(kind,filters.data.q??'',filters.data as Record<string,string>,options)});});
++  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),sort_column:z.string().min(1).max(100).optional(),sort_direction:z.enum(['asc','desc']).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.literal(''),z.literal('unassigned')]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);if(options.ownership===false&&kind!=='opportunity'&&filters.data.owner_id)return c.json({error:'Owner filters require a full operator.'},403);const sort=filters.data.sort_column?viewSort.parse({column:filters.data.sort_column,direction:filters.data.sort_direction??'asc'}):undefined;if(sort&&(options.ownership===false||!(await savedViewColumns(db,kind)).some(c=>c.key===sort.column)))return c.json({error:'Choose an available sort column with full operator access.'},400);return c.json({records:await repo.search(kind,filters.data.q??'',filters.data as Record<string,string>,{...options,sort})});});
+   app.post(`/${kind}`,async c=>c.json(await repo.save(kind,await c.req.json(),c.get('operator').operatorId,undefined,{ordinaryEdit:true}),201));
+   if(kind!=='opportunity'){
+    app.get(`/${kind}/duplicates`,async c=>c.json({groups:await imports.candidates(kind)}));
+diff --git a/src/core/features/records/saved-views.ts b/src/core/features/records/saved-views.ts
+new file mode 100644
+index 0000000..7e0b858
+--- /dev/null
++++ b/src/core/features/records/saved-views.ts
+@@ -0,0 +1,39 @@
++import {Hono} from 'hono';
++import {z} from 'zod';
++import type {AuthenticatedOperator} from '../identity';
++import {isFullOperator} from '../access/identity-class';
++import {actorFence,guard,clearGuards,version} from '../identity/store';
++import {createId} from '../../shared/ids';
++import {audit,RecordError,type RecordKind} from './shared';
++import {RecordsRepository} from './repository';
++import {typedFields} from './typed-fields';
++
++const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
++export const viewFilters=z.object({lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([id,z.literal('')]).optional(),stage_id:z.union([id,z.literal('')]).optional(),owner_id:z.union([id,z.literal(''),z.literal('unassigned')]).optional()}).strict();
++export const viewSort=z.object({column:z.string().min(1).max(100),direction:z.enum(['asc','desc'])}).strict();
++const definition=z.object({name:z.string().trim().min(1).max(100),kind:z.enum(['contact','company','opportunity']),visibility:z.enum(['private','workspace']),q:z.string().max(500),filters:viewFilters,columns:z.array(z.string().min(1).max(100)).min(1).max(30).refine(v=>new Set(v).size===v.length),sort:viewSort}).strict();
++export type SavedViewDefinition=z.infer<typeof definition>;
++export type ViewSort=z.infer<typeof viewSort>;
++export const builtInColumns:Record<RecordKind,Record<string,string>>={contact:{name:'Name',email:'Email',company_name:'Company',job_title:'Job title',contactability:'Contactability',owner_name:'Owner',created_at:'Created',updated_at:'Updated'},company:{name:'Name',primary_domain:'Website domain',owner_name:'Owner',created_at:'Created',updated_at:'Updated'},opportunity:{title:'Title',company_name:'Company',stage_name:'Stage',lifecycle:'Status',value_cents:'Value',band:'Priority',queue_state:'Queue',owner_name:'Owner',expected_close_at:'Expected close date',created_at:'Created',updated_at:'Updated'}};
++export async function savedViewColumns(db:D1Database,kind:RecordKind){return [...Object.entries(builtInColumns[kind]).map(([key,label])=>({key,label,archived:false})),...(await typedFields(db,kind)).map(field=>({key:`custom:${field.field_key}`,label:field.label,archived:Boolean(field.archived)}))];}
++/** Sort only declared fields, with an ascending record identity as the final key. */
++export function sortViewRecords<T extends Record<string,any>>(rows:T[],sort:ViewSort){
++ const value=(row:T)=>sort.column.startsWith('custom:')?JSON.parse(row.custom_fields_json??'{}')[sort.column.slice(7)]:sort.column==='owner_name'?row.ownership?.ownerName??row.owner_name:row[sort.column];
++ return [...rows].sort((a,b)=>{const x=value(a),y=value(b);let order=x==null?(y==null?0:1):y==null?-1:typeof x==='number'&&typeof y==='number'?x-y:String(x)<String(y)?-1:String(x)>String(y)?1:0;return (sort.direction==='desc'?-order:order)||(a.id<b.id?-1:a.id>b.id?1:0);});
++}
++type Stored={id:string;author_id:string;revision:number;definition_json:string};
++const unpack=(row:Stored)=>({id:row.id,authorId:row.author_id,revision:row.revision,...JSON.parse(row.definition_json) as SavedViewDefinition});
++export function savedViewRoutes(db:D1Database,options:{ownership?:boolean}={}){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
++ app.onError((e,c)=>c.json({error:e instanceof RecordError?e.message:e instanceof z.ZodError?'Enter a valid saved view.':'The saved view could not be verified.'},e instanceof RecordError?e.status:e instanceof z.ZodError?400:503));
++ app.use('*',async(c,next)=>{if(options.ownership===false||!await isFullOperator(db,c.get('operator').operatorId))throw new RecordError(403,'Saved workspace views require current full operator access.');await next();});
++ async function available(view:SavedViewDefinition){const columns=await savedViewColumns(db,view.kind),keys=new Set(columns.map(c=>c.key));if([...view.columns,view.sort.column].some(key=>!keys.has(key)))throw new RecordError(400,'Choose an available record column and sort.');if(view.kind!=='opportunity'&&Object.entries(view.filters).some(([key,value])=>key!=='owner_id'&&value))throw new RecordError(400,'Opportunity filters require an opportunity view.');return columns;}
++ async function read(viewId:string,actor:string){const row=await db.prepare("SELECT * FROM record_saved_views WHERE id=? AND (author_id=? OR visibility='workspace')").bind(id.parse(viewId),actor).first<Stored>();if(!row)throw new RecordError(404,'Saved view is unavailable.');return unpack(row);}
++ async function fences(actor:AuthenticatedOperator){const authority=await db.prepare(`SELECT ${version('o')} AS version FROM operators o WHERE id=?`).bind(actor.operatorId).first<{version:number}>();if(!authority)throw new RecordError(403,'Operator access ended.');return [guard(db,actorFence({id:actor.sessionId,operator:{id:actor.operatorId,version:authority.version}},Date.now())),guard(db,{sql:"EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))",args:[actor.operatorId]})];}
++ app.get('/',async c=>{const kind=z.enum(['contact','company','opportunity']).parse(c.req.query('kind')??'contact');return c.json({views:(await db.prepare("SELECT * FROM record_saved_views WHERE kind=? AND (author_id=? OR visibility='workspace') ORDER BY name,id").bind(kind,c.get('operator').operatorId).all<Stored>()).results.map(unpack),columns:await savedViewColumns(db,kind)});});
++ app.get('/:id',async c=>{const view=await read(c.req.param('id'),c.get('operator').operatorId),columns=await available(view);const records=await new RecordsRepository(db).search(view.kind,view.q,{...view.filters},{sort:view.sort});return c.json({view,columns:columns.filter(column=>view.columns.includes(column.key)),records});});
++ app.post('/',async c=>{const input=definition.parse(await c.req.json());await available(input);const actor=c.get('operator'),viewId=createId(),now=new Date().toISOString();await db.batch([...await fences(actor),db.prepare('INSERT INTO record_saved_views VALUES(?,?,?,?,?,1,?,?,?)').bind(viewId,actor.operatorId,input.kind,input.name,input.visibility,JSON.stringify(input),now,now),audit(db,actor.operatorId,'saved-view.created','saved-view',viewId),clearGuards(db)]);return c.json({view:{...input,id:viewId,authorId:actor.operatorId,revision:1}},201);});
++ app.put('/:id',async c=>{const input=z.object({revision:z.number().int().positive(),view:definition}).strict().parse(await c.req.json()),actor=c.get('operator'),current=await read(c.req.param('id'),actor.operatorId);if(current.authorId!==actor.operatorId)throw new RecordError(403,'Only the author changes a saved view.');if(input.view.kind!==current.kind)throw new RecordError(400,'A saved view keeps its record type.');await available(input.view);await change(actor,current.id,input.revision,db.prepare('UPDATE record_saved_views SET name=?,visibility=?,definition_json=?,revision=revision+1,updated_at=? WHERE id=?').bind(input.view.name,input.view.visibility,JSON.stringify(input.view),new Date().toISOString(),current.id),'updated');return c.json({view:{...input.view,id:current.id,authorId:actor.operatorId,revision:input.revision+1}});});
++ app.delete('/:id',async c=>{const input=z.object({revision:z.number().int().positive()}).strict().parse(await c.req.json()),actor=c.get('operator'),current=await read(c.req.param('id'),actor.operatorId);if(current.authorId!==actor.operatorId)throw new RecordError(403,'Only the author deletes a saved view.');await change(actor,current.id,input.revision,db.prepare('DELETE FROM record_saved_views WHERE id=?').bind(current.id),'deleted');return c.json({deleted:true});});
++ async function change(actor:AuthenticatedOperator,viewId:string,revision:number,statement:D1PreparedStatement,action:string){try{await db.batch([...await fences(actor),guard(db,{sql:'EXISTS(SELECT 1 FROM record_saved_views WHERE id=? AND author_id=? AND revision=?)',args:[viewId,actor.operatorId,revision]}),statement,audit(db,actor.operatorId,`saved-view.${action}`,'saved-view',viewId),clearGuards(db)]);}catch(error){if(/identity_guards|CHECK constraint/.test(String(error)))throw new RecordError(409,'The view or your access changed. Reopen it before saving.');throw error;}}
++ return app;
++}
+diff --git a/src/core/features/records/typed-fields.ts b/src/core/features/records/typed-fields.ts
+index a9ffb56..a92bb48 100644
+--- a/src/core/features/records/typed-fields.ts
++++ b/src/core/features/records/typed-fields.ts
+@@ -10,6 +10,7 @@ const kind=z.enum(['contact','company','opportunity']);
+ const definition=z.object({kind,fieldKey:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/).refine(value=>!['constructor','prototype'].includes(value),'Choose a different field key.'),label:z.string().trim().min(1).max(100),valueType:z.enum(['text','number','date','picklist','boolean','user','datetime']),required:z.boolean(),unique:z.boolean(),options:z.array(z.string().trim().min(1).max(100)).max(100),archived:z.boolean()}).strict().refine(d=>d.valueType!=='picklist'||d.options.length>0&&new Set(d.options).size===d.options.length,'Picklists need distinct options.');
+ type Definition=z.infer<typeof definition>;
+ export type TypedField={kind:RecordKind;field_key:string;label:string;value_type:string;required:number;is_unique:number;options_json:string;archived:number;revision:number};
++export async function typedFields(db:D1Database,kind:RecordKind){return (await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? ORDER BY archived,field_key').bind(kind).all<TypedField>()).results;}
+ const empty=(value:unknown)=>value===null||value===undefined||value==='';
+ /** Empty typed inputs keep an existing empty representation, or remain absent. */
+ export function normalizedTypedFields(values:Record<string,unknown>,before:Record<string,unknown>,fields:TypedField[]){
+diff --git a/src/core/shared/archive-lineage.ts b/src/core/shared/archive-lineage.ts
+index b10d9f0..a4be8c8 100644
+--- a/src/core/shared/archive-lineage.ts
++++ b/src/core/shared/archive-lineage.ts
+@@ -12,11 +12,12 @@ export const dashboardArchiveTables=['sales_dashboards','sales_dashboard_version
+ export const reportShareArchiveTables=['analytics_report_shares'] as const;
+ export const callingArchiveTables=['call_events','call_dial_attempts'] as const;
+ export const calendarWritebackArchiveTables=['calendar_writebacks','calendar_writeback_attempts'] as const;
++export const savedViewArchiveTables=['record_saved_views'] as const;
+ export const typedFieldArchiveTables=['record_custom_fields','record_custom_field_history'] as const;
+ export const workflowArchiveTables=['workflow_journal_metadata','workflow_versions','workflow_events','workflow_event_snapshots','workflow_runs','workflow_steps','workflow_approvals','workflow_field_policies','workflow_record_writes','workflow_rotation'] as const;
+ export const selectedFoldTables=['access_workspaces','access_legacy_mapping','access_memberships','access_collaborators','access_role_bundles','original_operator_provisions','graph_records','graph_workspace_epochs','schema_types','analytics_definitions','analytics_snapshots','analytics_snapshot_sources','domain_events','domain_audit','content_entities','content_revisions','publication_operations','publication_targets','form_embed_origins','form_abuse_refusals','form_spam','marketing_form_submissions','consent_events',
+  // Tables added after every legacy generation join this list, as form_embed_origins did: absent from v2 sources, present in v3.
+- 'capture_sources','capture_items','capture_proposals','pipelines','pipeline_stage_rules','sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards','opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships','sending_limits','opt_out_settings','draft_opt_out','outbound_message_opt_out',...forecastArchiveTables,'outbound_opt_out_capabilities','message_library',...slackArchiveTables,...reportShareArchiveTables,...dashboardArchiveTables,...ownershipArchiveTables,...formArchiveTables,...recordMailArchiveTables,...callingArchiveTables,'call_erased_numbers',...calendarWritebackArchiveTables,'entry_privacy',...typedFieldArchiveTables,...workflowArchiveTables,...personalSlackArchiveTables] as const;
++ 'capture_sources','capture_items','capture_proposals','pipelines','pipeline_stage_rules','sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards','opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships','sending_limits','opt_out_settings','draft_opt_out','outbound_message_opt_out',...forecastArchiveTables,'outbound_opt_out_capabilities','message_library',...slackArchiveTables,...reportShareArchiveTables,...dashboardArchiveTables,...ownershipArchiveTables,...formArchiveTables,...recordMailArchiveTables,...callingArchiveTables,'call_erased_numbers',...calendarWritebackArchiveTables,'entry_privacy',...typedFieldArchiveTables,...savedViewArchiveTables,...workflowArchiveTables,...personalSlackArchiveTables] as const;
+ export const knownNativeAdditions=['privacy_matching_contexts','mail_provider_conflicts'] as const;
+ const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+ const hashPattern=/^[a-f0-9]{64}$/;
+@@ -33,7 +34,7 @@ export function validateLineage(value:unknown,target:{name:string;columns:string
+  const contacts=source.tables.find(t=>t.name==='contacts');if(!contacts||contacts.columns.includes('contactability_revision')===missing.includes('privacy_matching_contexts'))return fail();
+  if(new Set(r.baselineSchema.map(t=>t.name)).size!==source.tables.length||r.baselineSchema.length!==source.tables.length)return fail();
+  for(const table of source.tables){const schema=r.baselineSchema.find(t=>t.name===table.name),bound=target.find(t=>t.name===table.name);if(!schema||!bound||!Array.isArray(schema.columns)||!equal(schema.columns.map(c=>c.name),table.columns)||!Array.isArray(schema.objects)||!schema.objects.some(o=>o.type==='table'&&o.name===table.name&&typeof o.sql==='string'))return fail();for(const c of schema.columns)if(typeof c.type!=='string'||![0,1].includes(c.notnull)||!Number.isSafeInteger(c.pk)||c.pk<0||!(c.dflt_value===null||typeof c.dflt_value==='string'))return fail();for(const o of schema.objects)if(!['table','index','trigger'].includes(o.type)||typeof o.name!=='string'||!(o.sql===null||typeof o.sql==='string'))return fail();if(schema.schemaObjects!==undefined&&(!Array.isArray(schema.schemaObjects)||new Set(schema.schemaObjects.map(o=>o.type+':'+o.name)).size!==schema.schemaObjects.length||schema.schemaObjects.some(o=>!['view','trigger'].includes(o.type)||typeof o.name!=='string'||!o.name||typeof o.sql!=='string')))return fail();const expected=table.name==='contacts'&&missing.includes('privacy_matching_contexts')?bound.columns.filter(c=>c!=='contactability_revision'):bound.columns;if(!equal(expected,table.columns))return fail();}
+- const optionalGroups=[personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,[...recordMailArchiveTables],[...formArchiveTables],[...ownershipArchiveTables],[...dashboardArchiveTables],[...reportShareArchiveTables],[...slackArchiveTables],['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];const absent=new Set<string>();for(const group of optionalGroups){const count=target.filter(table=>(group as readonly string[]).includes(table.name)).length;if(count!==0&&count!==group.length)return fail();if(!count)for(const name of group)absent.add(name);}
++ const optionalGroups=[savedViewArchiveTables,personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,[...recordMailArchiveTables],[...formArchiveTables],[...ownershipArchiveTables],[...dashboardArchiveTables],[...reportShareArchiveTables],[...slackArchiveTables],['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];const absent=new Set<string>();for(const group of optionalGroups){const count=target.filter(table=>(group as readonly string[]).includes(table.name)).length;if(count!==0&&count!==group.length)return fail();if(!count)for(const name of group)absent.add(name);}
+  const permitted=new Set([...sourceNames,...missing,...selectedFoldTables.filter(name=>!absent.has(name))]);if(target.length!==permitted.size||target.some(t=>!permitted.has(t.name))||new Set(target.map(t=>t.name)).size!==target.length)return fail();
+  if(r.parts.length!==source.parts)return fail();let rows=0;for(const [index,part] of r.parts.entries()){if(part.index!==index||!hashPattern.test(part.sha256)||!Number.isSafeInteger(part.rows)||part.rows<1||part.rows>1000)return fail();rows+=part.rows;if(!Number.isSafeInteger(rows))return fail();}if(rows!==source.rows)return fail();return r;
+ }
+diff --git a/src/core/shared/archive-transfer-profile.ts b/src/core/shared/archive-transfer-profile.ts
+index edeb8cd..ed6b883 100644
+--- a/src/core/shared/archive-transfer-profile.ts
++++ b/src/core/shared/archive-transfer-profile.ts
+@@ -1,9 +1,9 @@
+-import {personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,calendarWritebackArchiveTables,callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,forecastArchiveTables,selectedFoldTables as selectedTables,knownNativeAdditions as nativeAdditions,validateLineage,type LegacyLineage,type LineageManifest} from './archive-lineage.ts';
++import {savedViewArchiveTables,personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,calendarWritebackArchiveTables,callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,forecastArchiveTables,selectedFoldTables as selectedTables,knownNativeAdditions as nativeAdditions,validateLineage,type LegacyLineage,type LineageManifest} from './archive-lineage.ts';
+ import {validArchiveCounts} from './archive-counts.ts';
+ export interface ArchiveManifest {format:'orbit-export';version:2|3;generation?:'orbit-fold-1';schemaHash?:string;legacyLineage?:LegacyLineage;exportedAt:string;tables:{name:string;columns:string[];rows:number}[];parts:number;rows:number}
+ export interface ArchivePart {index:number;sha256:string;records:{table:string;index:number;row:Record<string,string|number|null>}[]}
+ export type ArchiveEntry={kind:'manifest';manifest:ArchiveManifest}|{kind:'part';part:ArchivePart;raw:string};
+-const optionalGroups=[personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
++const optionalGroups=[savedViewArchiveTables,personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
+ const optionalTables=new Set(optionalGroups.flat());
+ const selectedFoldTables=new Set<string>(selectedTables),knownNativeAdditions=new Set<string>(nativeAdditions);
+ export function validateTransferManifest(value:unknown,validateV2Manifest:(value:unknown)=>LineageManifest):ArchiveManifest{
+diff --git a/tests/core/records-complete.test.ts b/tests/core/records-complete.test.ts
+index 72dc793..bacdb18 100644
+--- a/tests/core/records-complete.test.ts
++++ b/tests/core/records-complete.test.ts
+@@ -1,3 +1,4 @@
++import {savedViewsProof} from '../support/saved-views-proof';
+ import {typedFieldsProof} from '../support/typed-fields-proof';
+ import { testState } from '../support/test-state';
+ import assert from 'node:assert/strict';
+@@ -9,8 +10,9 @@ import { createId } from '../../src/core/shared/ids';
+ const platform=await getPlatformProxy<{DB:D1Database}>({configPath:'wrangler.jsonc',envFiles:['tests/support/no-local-settings.env'],persist:{path:process.env.RECORDS_TEST_STATE??`${testState()}/v3`},remoteBindings:false});after(()=>platform.dispose());
+ const db=platform.env.DB,records=new RecordsRepository(db),data=new DataRepository(db);
+ async function fixture(){const actor=createId(),stage=createId(),now=new Date().toISOString();await db.prepare("INSERT INTO operators(id,email,display_name,status,created_at,updated_at) VALUES(?,?,?,'active',?,?)").bind(actor,`${actor}@test.example`,'Records operator',now,now).run();await db.prepare('INSERT INTO pipeline_stages SELECT ?,?,COALESCE(MAX(position),0)+1,?,? FROM pipeline_stages').bind(stage,'Records stage',now,now).run();return {actor,stage};}
+-test('RECORD-014 typed fields validate edits and preserve paged archived definition meaning through public history and export',async()=>{
++test('RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export',async()=>{
+  await typedFieldsProof();
++ await savedViewsProof();
+ });
+ test('RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal',async()=>{
+  const {actor,stage}=await fixture(),email=`${createId()}@history.test`;
+diff --git a/tests/delegation-browser/records-layout.test.ts b/tests/delegation-browser/records-layout.test.ts
+index 012e8ab..7d107b6 100644
+--- a/tests/delegation-browser/records-layout.test.ts
++++ b/tests/delegation-browser/records-layout.test.ts
+@@ -21,7 +21,7 @@ import { sessionCookieName } from '../support/test-auth';
+ import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
+ import { identityVars } from '../support/worker-identity.mjs';
+ 
+-test('emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
++test('emitted Worker record and NOW lists wrap full valid long names and reopen sorted saved views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
+   const fixture = await isolatedDatabase();
+   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
+    const origin = `https://127.0.0.1:${port}`;
+diff --git a/tests/delegation-browser/saved-deal-value-journey.mjs b/tests/delegation-browser/saved-deal-value-journey.mjs
+new file mode 100644
+index 0000000..d57db71
+--- /dev/null
++++ b/tests/delegation-browser/saved-deal-value-journey.mjs
+@@ -0,0 +1,38 @@
++import {expect} from '@playwright/test';
++import {mkdir} from 'node:fs/promises';
++
++/** A chosen deal value keeps the same monetary meaning after saving and reopening. */
++export async function savedDealValueJourney(page){
++ const origin=new URL(page.url()).origin;
++ const settings=await (await page.request.get('/api/v1/settings')).json();
++ const deals=[['Bluebird Analytics data platform',18000000],['Harbor Logistics fleet tracking',4500000],['Discovery pilot',0],['Implementation workshop',123456]];
++ for(const [title,value_cents] of deals){
++  const response=await page.request.post('/api/v1/records/opportunity',{headers:{Origin:origin},data:{title,stage_id:settings.stages[0].id,value_cents,contact_ids:[]}});
++  expect(response.status(),await response.text()).toBe(201);
++ }
++ await page.setViewportSize({width:1440,height:900});
++ await page.goto('/app/opportunities');
++ const rows=deals.map(([title])=>page.locator('.records-list>li').filter({has:page.getByRole('heading',{name:title,exact:true})}));
++ const amounts=[];
++ for(const row of rows){await expect(row).toBeVisible();amounts.push((await row.locator('p').innerText()).split(' · ').at(-1));}
++ // The default list is already the product's workspace-currency presentation.
++ for(const [index,amount] of amounts.entries()){expect(amount).toMatch(/[A-Z$€£¥]/);expect(amount).not.toBe(String(deals[index][1]));}
++ const views=page.getByRole('region',{name:'Saved record views',exact:true});
++ await views.locator('summary').click();
++ await views.getByRole('checkbox',{name:'Value',exact:true}).check();
++ const value=row=>row.locator('dt').filter({hasText:/^Value$/}).locator('..').locator('dd');
++ for(const [index,row] of rows.entries())await expect(value(row)).toHaveText(amounts[index]);
++ await views.getByLabel('View name',{exact:true}).fill('Deal amounts');
++ await views.getByRole('button',{name:'Save new view',exact:true}).click();
++ await expect(views.getByRole('status')).toHaveText('View saved.');
++ const id=await views.getByLabel('Saved view',{exact:true}).inputValue();expect(id).toBeTruthy();
++ await page.goto('/app/contacts');await page.goto('/app/opportunities');
++ await views.getByLabel('Saved view',{exact:true}).selectOption(id);
++ const evidence='.orbit-viewport-evidence/saved-deal-value';await mkdir(evidence,{recursive:true});
++ for(const width of [1440,390]){
++  await page.setViewportSize({width,height:width===390?844:900});
++  for(const [index,row] of rows.entries())await expect(value(row)).toHaveText(amounts[index]);
++  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
++  await page.screenshot({path:`${evidence}/saved-value-${width}.png`,fullPage:true});
++ }
++}
+diff --git a/tests/delegation-browser/typed-fields-journey.mjs b/tests/delegation-browser/typed-fields-journey.mjs
+index 7148a67..bfb0847 100644
+--- a/tests/delegation-browser/typed-fields-journey.mjs
++++ b/tests/delegation-browser/typed-fields-journey.mjs
+@@ -1,4 +1,5 @@
+ import {expect} from '@playwright/test';
++import {savedDealValueJourney} from './saved-deal-value-journey.mjs';
+ import AxeBuilder from '@axe-core/playwright';
+ import {mkdir} from 'node:fs/promises';
+ import {resolve} from 'node:path';
+@@ -33,7 +34,23 @@ export async function typedFieldsJourney(page,contact){const evidence=resolve('.
+  await fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true}).click();await fields.getByRole('checkbox',{name:'Archive field',exact:true}).check();await fields.getByRole('button',{name:'Preview affected records',exact:true}).click();await preview.getByRole('button',{name:'Apply reviewed definition',exact:true}).click();await expect(fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true})).toHaveCount(0);
+  const renamed=(await definitions()).find(f=>f.label==='Synthetic renamed field');expect(renamed).toMatchObject({archived:1});const history=fields.getByRole('listitem').filter({hasText:'Synthetic renamed field',has:page.locator('details')}).locator('details');await history.locator('summary').click();const revisions=history.getByRole('listitem');await expect(revisions).toHaveCount(3);for(const label of ['Synthetic required field','Synthetic renamed field'])await expect(revisions.filter({hasText:label})).not.toHaveCount(0);const saved=await (await page.request.get(`/api/v1/settings/custom-fields/history?kind=contact&fieldKey=${renamed.field_key}`)).json();for(const [index,revision] of saved.revisions.entries()){expect(revision.changedBy).toBeTruthy();await expect(revisions.nth(index)).toContainText(revision.changedBy);}
+  for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:900});await proof('archived-definition-history',width,fields,'[aria-labelledby="typed-fields"]');}
+- await fields.getByRole('button',{name:'Restore Synthetic renamed field',exact:true}).click();await preview.getByRole('button',{name:'Apply reviewed definition',exact:true}).click();await expect(fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true})).toBeVisible();expect((await definitions()).find(f=>f.label==='Synthetic renamed field')).toMatchObject({archived:0});expect(errors).toEqual([]);
++ // Saved lists reopen their real filters, chosen archived columns and sort in a fresh page.
++ await page.setViewportSize({width:1440,height:900});await page.goto('/app/contacts');
++ await page.getByRole('searchbox',{name:'Search records and timeline'}).fill('Synthetic Calendar Contact');
++ const savedViews=page.getByRole('region',{name:'Saved record views',exact:true});await savedViews.locator('summary').click();
++ await savedViews.getByLabel('View name',{exact:true}).fill('Synthetic contact view');await savedViews.getByLabel('View visibility',{exact:true}).selectOption('workspace');
++ await savedViews.getByLabel('Sort column',{exact:true}).selectOption('name');await savedViews.getByLabel('Sort direction',{exact:true}).selectOption('desc');
++ await savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true}).check();await savedViews.getByRole('checkbox',{name:'Email',exact:true}).uncheck();await savedViews.getByRole('button',{name:'Save new view',exact:true}).click();await expect(savedViews.getByRole('status')).toHaveText('View saved.');
++ const viewId=await savedViews.getByLabel('Saved view',{exact:true}).inputValue();expect(viewId).toBeTruthy();
++ await page.goto('/app/opportunities');await page.goto('/app/contacts');await savedViews.getByLabel('Saved view',{exact:true}).selectOption(viewId);await savedViews.locator('summary').click();
++ await expect(page.getByRole('searchbox',{name:'Search records and timeline'})).toHaveValue('Synthetic Calendar Contact');await expect(savedViews.getByLabel('Sort direction',{exact:true})).toHaveValue('desc');await expect(savedViews.getByLabel('View visibility',{exact:true})).toHaveValue('workspace');await expect(savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true})).toBeChecked();
++ const savedRow=page.locator('.records-list li').filter({has:page.getByRole('heading',{name:'Synthetic Calendar Contact',exact:true})});await expect(savedRow.locator('dt').filter({hasText:'Synthetic renamed field (archived, read-only)'})).toBeVisible();await expect(savedRow).toContainText('Required value');await expect(savedViews.getByRole('checkbox',{name:'Email',exact:true})).not.toBeChecked();await expect(savedRow.locator('dt').filter({hasText:'Email'})).toHaveCount(0);const savedContact=await record();expect(savedContact.record.email).toBeTruthy();await expect(savedRow).not.toContainText(savedContact.record.email);
++ // Reopening in place refreshes definition metadata changed through another native door.
++ for(const archived of [false,true]){const input={kind:'contact',fieldKey:renamed.field_key,label:renamed.label,valueType:renamed.value_type,required:Boolean(renamed.required),unique:Boolean(renamed.is_unique),options:JSON.parse(renamed.options_json),archived};const previewResponse=await page.request.post('/api/v1/settings/custom-fields/preview',{headers:{Origin:new URL(page.url()).origin},data:input});expect(previewResponse.status()).toBe(200);const review=await previewResponse.json();const confirmed=await page.request.post('/api/v1/settings/custom-fields/confirm',{headers:{Origin:new URL(page.url()).origin},data:{input,reviewHash:review.reviewHash,confirmed:true}});expect(confirmed.status()).toBe(200);await savedViews.getByRole('button',{name:'Reopen saved view',exact:true}).click();await expect(savedViews.getByRole('checkbox',{name:archived?'Synthetic renamed field (archived, read-only)':'Synthetic renamed field',exact:true})).toBeChecked();}
++ const currentHeaders={Origin:new URL(page.url()).origin},addedResponse=await page.request.post('/api/v1/records/contact',{headers:currentHeaders,data:{name:'Synthetic Calendar Contact added after opening'}});expect(addedResponse.status()).toBe(201);const added=await addedResponse.json();await savedViews.getByRole('button',{name:'Reopen saved view',exact:true}).click();await expect(page.locator('.records-list>li')).toHaveCount(2);const removed=await page.request.delete(`/api/v1/records/contact/${added.id}`,{headers:currentHeaders,data:{confirmed:true}});expect(removed.status()).toBe(200);await savedViews.getByRole('button',{name:'Reopen saved view',exact:true}).click();await expect(page.locator('.records-list>li')).toHaveCount(1);
++ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('saved-filtered-view',width,page.getByRole('main'),'main');}
++ await page.setViewportSize({width:1440,height:900});await page.goto('/app/settings/pipeline');
++ await fields.getByRole('button',{name:'Restore Synthetic renamed field',exact:true}).click();await preview.getByRole('button',{name:'Apply reviewed definition',exact:true}).click();await expect(fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true})).toBeVisible();expect((await definitions()).find(f=>f.label==='Synthetic renamed field')).toMatchObject({archived:0});await savedDealValueJourney(page);expect(errors).toEqual([]);
+  async function definitions(){return (await (await page.request.get('/api/v1/settings/custom-fields?kind=contact')).json()).fields;}
+  async function proof(name,width,region,selector){expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
+ }
+diff --git a/tests/support/saved-views-proof.ts b/tests/support/saved-views-proof.ts
+new file mode 100644
+index 0000000..1e84561
+--- /dev/null
++++ b/tests/support/saved-views-proof.ts
+@@ -0,0 +1,47 @@
++import assert from 'node:assert/strict';
++import {isolatedDatabase} from './isolated-database';
++import {todayApp} from './today-workspace';
++import {emailLinkSignIn} from './email-link';
++
++/** Populated native routes prove definition custody, current reads and stale edits. */
++export async function savedViewsProof(){const f=await isolatedDatabase();try{let t=await todayApp(f.db);const actor=t.actor,db=f.db,base='/api/v1/records/views';await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(actor).run();
++ let other=await todayApp(db);const otherActor=other.actor,stage=await db.prepare('SELECT id FROM pipeline_stages LIMIT 1').first<string>('id');
++ const definition={kind:'contact',fieldKey:'saved_rank',label:'Saved rank',valueType:'number',required:false,unique:false,options:[],archived:false};
++ async function configure(input:any){const preview=await t.json<any>('/api/v1/settings/custom-fields/preview',{body:input},200);await t.json('/api/v1/settings/custom-fields/confirm',{body:{input,reviewHash:preview.reviewHash,confirmed:true}},200);}
++ const retained:any[]=[];
++ for(const kind of ['contact','company','opportunity']){
++  await configure({...definition,kind});
++  const title=kind==='opportunity'?'title':'name',content=(name:string,rank:number)=>({[title]:name,custom_fields:{saved_rank:rank},...(kind==='opportunity'?{stage_id:stage,value_cents:0,contact_ids:[],owner_id:null}:{})});
++  const a=await t.json<any>(`/api/v1/records/${kind}`,{body:content('Synthetic saved tie',2)},201),b=await t.json<any>(`/api/v1/records/${kind}`,{body:content('Synthetic saved tie',2)},201);
++  await t.json(`/api/v1/records/${kind}`,{body:content('Synthetic excluded',0)},201);
++  const input={name:`Synthetic ${kind} list`,kind,visibility:'private',q:'Synthetic saved',filters:{owner_id:'unassigned',...(kind==='opportunity'?{lifecycle:'open',pipeline_id:(await t.json<any>(`/api/v1/records/opportunity/${a.id}`)).record.pipeline_id,stage_id:stage,band:'low',queue_state:'none'}:{})},columns:[title,'custom:saved_rank'],sort:{column:'custom:saved_rank',direction:'asc'}};
++  let saved=(await t.json<any>(base,{body:input},201)).view;
++  assert.equal((await other.call(`${base}/${saved.id}`)).status,404,'another full operator cannot open a private view');
++  assert.ok(!(await other.json<any>(base+`?kind=${kind}`)).views.some((v:any)=>v.id===saved.id));
++  await f.close();await f.reopen();t=await todayApp(f.db,{operatorId:actor});other=await todayApp(f.db,{operatorId:otherActor});
++  let opened=await t.json<any>(`${base}/${saved.id}`,{},200);assert.deepEqual(opened.view,saved,'fresh session preserves every filter, column and sort');assert.deepEqual(opened.records.map((r:any)=>r.id),[a.id,b.id].sort(),'sort ties use ascending record identity');
++  const stale=saved.revision;saved=(await t.json<any>(`${base}/${saved.id}`,{method:'PUT',body:{revision:stale,view:{...input,name:'Synthetic shared list',visibility:'workspace',sort:{column:'custom:saved_rank',direction:'desc'}}}},200)).view;
++  const current=await t.json<any>(`${base}/${saved.id}`);assert.equal((await t.call(`${base}/${saved.id}`,{method:'PUT',body:{revision:stale,view:input}})).status,409);assert.equal((await t.call(`${base}/${saved.id}`,{method:'DELETE',body:{revision:stale}})).status,409);assert.deepEqual(await t.json(`${base}/${saved.id}`),current,'stale mutations leave the current definition and records unchanged');
++  assert.equal((await other.call(`${base}/${saved.id}`)).status,200,'workspace sharing permits a current full reader');assert.equal((await other.call(`${base}/${saved.id}`,{method:'DELETE',body:{revision:saved.revision}})).status,403);
++  await t.json(`/api/v1/records/${kind}`,{body:content('Synthetic saved new row',3)},201);opened=await t.json<any>(`${base}/${saved.id}`);assert.equal(opened.records.length,3,'open recomputes populated results');assert.equal(JSON.parse(opened.records[0].custom_fields_json).saved_rank,3,'numeric sort is applied to current rows');
++  async function assign(ownerId:string|null){if(kind==='opportunity'){await t.json(`/api/v1/records/opportunity/${a.id}`,{method:'PUT',body:{...content('Synthetic saved tie',2),owner_id:ownerId}},200);}else{const review=await t.json<any>('/api/v1/records/ownership/review',{body:{kind,ids:[a.id],ownerId}},200);const applied=await t.json<any>(`/api/v1/records/ownership/${review.id}/apply`,{body:{}},200);assert.equal(applied.items.filter((item:any)=>item.applied).length,1);}}
++  await assign(actor);const owned=(await t.json<any>(base,{body:{...input,name:'Synthetic owned view',filters:{...input.filters,owner_id:actor}}},201)).view;
++  assert.deepEqual((await t.json<any>(`${base}/${owned.id}`,{},200)).records.map((r:any)=>r.id),[a.id],'a saved owner filter selects the assigned current record');await assign(null);assert.equal((await t.json<any>(`${base}/${owned.id}`,{},200)).records.length,0,'reassignment is recomputed when reopening');await t.json(`${base}/${owned.id}`,{method:'DELETE',body:{revision:owned.revision}},200);
++  await configure({...definition,kind,label:'Archived saved rank'});await configure({...definition,kind,label:'Archived saved rank',archived:true});opened=await t.json<any>(`${base}/${saved.id}`);assert.deepEqual(opened.columns.find((c:any)=>c.key==='custom:saved_rank'),{key:'custom:saved_rank',label:'Archived saved rank',archived:true});assert.equal(JSON.parse(opened.records[0].custom_fields_json).saved_rank,3);
++  let count=3;if(kind==='contact'){await t.json(`/api/v1/records/contact/${a.id}`,{method:'DELETE',body:{confirmed:true}},200);opened=await t.json<any>(`${base}/${saved.id}`,{},200);assert.ok(!opened.records.some((r:any)=>r.id===a.id),'erasure cannot be resurrected by a saved result');count=2;}
++  retained.push({saved,input,count});
++ }
++ const invitation=await t.json<any>('/api/v2/access/workspaces/workspace/invitations',{body:{email:['synthetic-orbit-viewer','example.test'].join('@'),role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()}},200),guest=await emailLinkSignIn(f.db,['synthetic-orbit-viewer','example.test'].join('@'));
++ const request=(path:string,method='GET',body?:unknown)=>t.app.request('https://orbit.test'+path,{method,headers:{cookie:guest.cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
++ assert.equal((await request('/api/v2/access/invitations/accept','POST',{token:invitation.token})).status,200);
++ const before=(await f.db.prepare('SELECT * FROM record_saved_views ORDER BY id').all()).results;
++ for(const row of retained){assert.equal((await request(`${base}/${row.saved.id}`)).status,403,'collaborator cannot open workspace view without full authority');assert.equal((await request(base,'POST',row.input)).status,403,'collaborator cannot save workspace data');}
++ assert.equal((await request(base+'?kind=contact')).status,403);assert.deepEqual((await f.db.prepare('SELECT * FROM record_saved_views ORDER BY id').all()).results,before);
++ const revoked=await todayApp(f.db);await f.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(revoked.actor).run();assert.equal((await revoked.call(`${base}/${retained[0].saved.id}`)).status,401);
++ const target=await isolatedDatabase();try{
++ let exported=await t.json<any>('/api/v1/records/archive/exports',{body:{}},201);for(let step=0;step<300&&exported.state!=='ready';step++)exported=await t.json<any>(`/api/v1/records/archive/exports/${exported.id}/advance`,{body:{}},200);assert.equal(exported.state,'ready');const archive=await t.json<any>(`/api/v1/records/archive/exports/${exported.id}/download`,{},200);assert.deepEqual(archive.parts.flatMap((part:any)=>part.records).filter((record:any)=>record.table==='record_saved_views').map((record:any)=>record.row).sort((a:any,b:any)=>a.id.localeCompare(b.id)),before,'populated public export contains every saved definition');
++ const destination=await todayApp(target.db,{operatorId:actor});await target.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(destination.actor).run();let imported=await destination.json<any>('/api/v1/records/archive/imports',{body:{manifest:archive.manifest,confirmed:true}},201);for(const part of archive.parts)await destination.json(`/api/v1/records/archive/imports/${imported.id}/parts/${part.index}`,{method:'PUT',body:part},200);for(let step=0;step<2000&&imported.state!=='complete';step++)imported=await destination.json<any>(`/api/v1/records/archive/imports/${imported.id}/finalize`,{body:{}},200);assert.equal(imported.state,'complete');assert.equal((await destination.app.request('https://orbit.test/api/v1/records/views',{headers:{cookie:`__Host-orbit_session=${t.session.token}`}})).status,401,'source sessions never travel with saved definitions');
++ assert.deepEqual((await target.db.prepare('SELECT * FROM record_saved_views ORDER BY id').all()).results,before,'populated public export and restore retains definitions and revision');const restored=await todayApp(target.db,{operatorId:actor});for(const row of retained){const opened=await restored.json<any>(`${base}/${row.saved.id}`,{},200);assert.equal(opened.records.length,row.count);assert.equal(opened.columns[1].label,'Archived saved rank');assert.equal(opened.view.revision,row.saved.revision);}}finally{await target.dispose();}
++ for(const row of retained){await t.json(`${base}/${row.saved.id}`,{method:'DELETE',body:{revision:row.saved.revision}},200);assert.equal((await t.call(`${base}/${row.saved.id}`)).status,404);}
++ console.log(JSON.stringify({proof:'saved-record-views',kinds:retained.map(row=>row.saved.kind),viewsRestored:retained.length,privateRead:404,workspaceRead:200,staleEdit:409,staleDelete:409,collaboratorRead:403,collaboratorWrite:403,revokedSession:401,stableTies:true,currentOwners:true,archivedColumns:true,erasure:true}));
++ }finally{await f.dispose();}}

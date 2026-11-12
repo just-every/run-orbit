@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-11-12T16:41:46Z",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f162-rebase-1",
+  "head": "0fe9665a018e3e1d499fefdf14993163674be433",
+  "remote_head": "0fe9665a018e3e1d499fefdf14993163674be433",
+  "push_status": "pushed-and-remote-sha-verified",
+  "main": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+  "old_gate_passed_head": "f15a833113df39d8cbfbf8ac56202d1234b0720b",
+  "parents": [
+    "f15a833113df39d8cbfbf8ac56202d1234b0720b",
+    "e397ddbd66ed9254302f762b7db3e831b5b72de5"
+  ],
+  "new_commits": 1,
+  "candidate_commits_including_side_parents": 7,
+  "worktree_clean": true,
+  "pr_url": null
+}

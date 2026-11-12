@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-11-12T16:30:37Z",
+  "node": "v22.20.0",
+  "pnpm": "10.12.4",
+  "rer_package": "0.2.107",
+  "setup": {
+    "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "exit_code": 0
+  },
+  "build_and_tests_use_cloud_run": true,
+  "test_process_executable_observed": "/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node",
+  "chromium": "/usr/bin/chromium",
+  "browser_args_include": "--no-sandbox"
+}

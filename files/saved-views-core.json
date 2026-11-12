@@ -1,0 +1,18 @@
+{
+  "label": "saved-views-core",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "tests/core/records-complete.test.ts"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+  "started_at": "2026-11-12T16:25:18Z",
+  "finished_at": "2026-11-12T16:33:06Z",
+  "duration_seconds": 467.838,
+  "exit_code": 0,
+  "log": "saved-views-core.log",
+  "log_sha256": "69b37edce407873b393ae6414d636402435912a210f1d995a1844edb38275a20"
+}

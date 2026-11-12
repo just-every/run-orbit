@@ -1,0 +1,16 @@
+{
+  "label": "prepare-state",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "tests/support/prepare-state.ts"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+  "started_at": "2026-11-12T16:24:46Z",
+  "finished_at": "2026-11-12T16:25:18Z",
+  "duration_seconds": 31.444,
+  "exit_code": 0,
+  "log": "prepare-state.log",
+  "log_sha256": "59bd7a7bb9aced7cce22cdb6a9c7a5dbf2fc378ecbfbcb694e39aff89d7cea9a"
+}

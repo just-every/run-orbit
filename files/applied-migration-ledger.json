@@ -1,0 +1,320 @@
+{
+  "timestamp": "2026-11-12T16:27:55Z",
+  "databases": [
+    {
+      "database": "9ba2b04bf514d9facfd57ed57d849e77241a7adc99d1c1545d06688b43d84248.sqlite",
+      "applied": 77,
+      "migrations": [
+        {
+          "id": 1,
+          "name": "0001_orbit_sample_spine.sql"
+        },
+        {
+          "id": 2,
+          "name": "0002_magic_links.sql"
+        },
+        {
+          "id": 3,
+          "name": "0003_outreach.sql"
+        },
+        {
+          "id": 4,
+          "name": "0004_owner_bootstrap.sql"
+        },
+        {
+          "id": 5,
+          "name": "0005_records.sql"
+        },
+        {
+          "id": 6,
+          "name": "0006_signals_outreach.sql"
+        },
+        {
+          "id": 7,
+          "name": "0007_assistance.sql"
+        },
+        {
+          "id": 8,
+          "name": "0008_stopped_schedule_queue.sql"
+        },
+        {
+          "id": 9,
+          "name": "0009_archives.sql"
+        },
+        {
+          "id": 10,
+          "name": "0010_notification_record_scope.sql"
+        },
+        {
+          "id": 11,
+          "name": "0011_provider_event_actor.sql"
+        },
+        {
+          "id": 12,
+          "name": "0012_reviewed_signal_actor.sql"
+        },
+        {
+          "id": 13,
+          "name": "0013_delegation_handoffs.sql"
+        },
+        {
+          "id": 14,
+          "name": "0014_contact_suppression.sql"
+        },
+        {
+          "id": 15,
+          "name": "0015_provider_conflicts.sql"
+        },
+        {
+          "id": 16,
+          "name": "0016_collaborator_access.sql"
+        },
+        {
+          "id": 17,
+          "name": "0017_native_graph.sql"
+        },
+        {
+          "id": 18,
+          "name": "0018_analytics_events.sql"
+        },
+        {
+          "id": 19,
+          "name": "0019_fixed_publication.sql"
+        },
+        {
+          "id": 20,
+          "name": "0020_archive_generation.sql"
+        },
+        {
+          "id": 21,
+          "name": "0021_development_outbox.sql"
+        },
+        {
+          "id": 22,
+          "name": "0022_first_run_setup.sql"
+        },
+        {
+          "id": 23,
+          "name": "0023_portability.sql"
+        },
+        {
+          "id": 24,
+          "name": "0024_form_embedding.sql"
+        },
+        {
+          "id": 25,
+          "name": "0030_crm_import_kit.sql"
+        },
+        {
+          "id": 26,
+          "name": "0031_crm_move_in.sql"
+        },
+        {
+          "id": 27,
+          "name": "0032_base_identity.sql"
+        },
+        {
+          "id": 28,
+          "name": "0033_identity_providers.sql"
+        },
+        {
+          "id": 29,
+          "name": "0034_dependency_links.sql"
+        },
+        {
+          "id": 30,
+          "name": "0035_capture.sql"
+        },
+        {
+          "id": 31,
+          "name": "0036_capture_providers.sql"
+        },
+        {
+          "id": 32,
+          "name": "0037_owner_signin.sql"
+        },
+        {
+          "id": 33,
+          "name": "0038_import_kit_v22.sql"
+        },
+        {
+          "id": 34,
+          "name": "0039_sales_pipelines.sql"
+        },
+        {
+          "id": 35,
+          "name": "0040_sales_tasks.sql"
+        },
+        {
+          "id": 36,
+          "name": "0041_buying_context.sql"
+        },
+        {
+          "id": 37,
+          "name": "0042_record_ownership.sql"
+        },
+        {
+          "id": 38,
+          "name": "0044_archive_content_identity.sql"
+        },
+        {
+          "id": 39,
+          "name": "0045_form_abuse.sql"
+        },
+        {
+          "id": 40,
+          "name": "0046_sending_capacity.sql"
+        },
+        {
+          "id": 41,
+          "name": "0047_opt_out_settings.sql"
+        },
+        {
+          "id": 42,
+          "name": "0048_forecasts.sql"
+        },
+        {
+          "id": 43,
+          "name": "0049_opt_out_capabilities.sql"
+        },
+        {
+          "id": 44,
+          "name": "0050_message_library.sql"
+        },
+        {
+          "id": 45,
+          "name": "0051_slack_notices.sql"
+        },
+        {
+          "id": 46,
+          "name": "0052_report_shares.sql"
+        },
+        {
+          "id": 47,
+          "name": "0053_dashboards.sql"
+        },
+        {
+          "id": 48,
+          "name": "0054_record_ownership.sql"
+        },
+        {
+          "id": 49,
+          "name": "0055_form_assignment.sql"
+        },
+        {
+          "id": 50,
+          "name": "0056_record_mail.sql"
+        },
+        {
+          "id": 51,
+          "name": "0057_capture_mail_rule.sql"
+        },
+        {
+          "id": 52,
+          "name": "0058_twilio_calls.sql"
+        },
+        {
+          "id": 53,
+          "name": "0059_call_erasure.sql"
+        },
+        {
+          "id": 54,
+          "name": "0060_sign_in_domains.sql"
+        },
+        {
+          "id": 55,
+          "name": "0061_calendar_writeback.sql"
+        },
+        {
+          "id": 56,
+          "name": "0062_private_entries.sql"
+        },
+        {
+          "id": 57,
+          "name": "0063_typed_fields.sql"
+        },
+        {
+          "id": 58,
+          "name": "0064_signal_source_removal.sql"
+        },
+        {
+          "id": 59,
+          "name": "0065_api_credentials.sql"
+        },
+        {
+          "id": 60,
+          "name": "0066_record_mail_completion.sql"
+        },
+        {
+          "id": 61,
+          "name": "0067_call_failures.sql"
+        },
+        {
+          "id": 62,
+          "name": "0068_workflows.sql"
+        },
+        {
+          "id": 63,
+          "name": "0069_typed_workflow_values.sql"
+        },
+        {
+          "id": 64,
+          "name": "0070_agent_door.sql"
+        },
+        {
+          "id": 65,
+          "name": "0070_personal_slack_mentions.sql"
+        },
+        {
+          "id": 66,
+          "name": "0071_business_settings.sql"
+        },
+        {
+          "id": 67,
+          "name": "0072_business_people.sql"
+        },
+        {
+          "id": 68,
+          "name": "0073_native_agent_attribution.sql"
+        },
+        {
+          "id": 69,
+          "name": "0074_native_agent_events.sql"
+        },
+        {
+          "id": 70,
+          "name": "0075_agent_door_relay.sql"
+        },
+        {
+          "id": 71,
+          "name": "0076_agent_retired_refs.sql"
+        },
+        {
+          "id": 72,
+          "name": "0077_agent_door_relay_privacy.sql"
+        },
+        {
+          "id": 73,
+          "name": "0078_business_retired.sql"
+        },
+        {
+          "id": 74,
+          "name": "0079_direct_notification_actor.sql"
+        },
+        {
+          "id": 75,
+          "name": "0080_notification_context_fence.sql"
+        },
+        {
+          "id": 76,
+          "name": "0081_graph_proposals.sql"
+        },
+        {
+          "id": 77,
+          "name": "0082_saved_record_views.sql"
+        }
+      ],
+      "exact_checkout_inventory": true
+    }
+  ]
+}

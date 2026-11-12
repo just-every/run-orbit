@@ -1,0 +1,15 @@
+{
+  "label": "source-lock",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "lock"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+  "started_at": "2026-11-12T16:24:45Z",
+  "finished_at": "2026-11-12T16:24:46Z",
+  "duration_seconds": 0.758,
+  "exit_code": 0,
+  "log": "source-lock.log",
+  "log_sha256": "29be137e279b9891e796816735ac58e222c72125955dd221f57adedaffb0a2e1"
+}

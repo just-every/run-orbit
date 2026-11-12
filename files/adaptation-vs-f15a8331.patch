@@ -1,0 +1,825 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index 0eb37e2..1ae988b 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -459,7 +459,13 @@
+     },
+     {
+       "binding": "DB",
+-      "name": "0081_saved_record_views.sql",
++      "name": "0081_graph_proposals.sql",
++      "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
++      "sql": "-- Extend native review with a question that cannot create a contact.\n-- Refuse unexpected owner extensions before replacing the known proposal table.\nSELECT CASE WHEN (SELECT group_concat(name,',') FROM pragma_table_info('capture_proposals'))<>'id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,decided_by,decided_at,decided_value,created_at'\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name<>'capture_proposals' AND lower(sql) LIKE '%references%capture_proposals%')\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='index' AND sql IS NOT NULL AND name NOT IN('capture_proposals_status','capture_proposals_record'))\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='trigger' AND name NOT LIKE 'archive_guard_capture_proposals_%')\n THEN json_extract('ORBIT_GRAPH_PROPOSAL_SCHEMA_REQUIRES_REVIEW','$') ELSE 1 END;\nCREATE TABLE capture_proposals_new (\n id TEXT PRIMARY KEY,\n proposal_key TEXT NOT NULL UNIQUE,\n signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact','question')),\n record_type TEXT CHECK (record_type IN ('contact','company','opportunity')),\n record_id TEXT,\n field TEXT,\n current_value TEXT,\n proposed_value TEXT,\n details_json TEXT NOT NULL,\n status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined','withdrawn')),\n decided_by TEXT,\n decided_at TEXT,\n decided_value TEXT,\n created_at TEXT NOT NULL\n);\nINSERT INTO capture_proposals_new SELECT * FROM capture_proposals;\nDROP TABLE capture_proposals;\nALTER TABLE capture_proposals_new RENAME TO capture_proposals;\nCREATE INDEX capture_proposals_status ON capture_proposals(status,created_at);\nCREATE INDEX capture_proposals_record ON capture_proposals(record_type,record_id);\nCREATE TRIGGER archive_guard_capture_proposals_insert BEFORE INSERT ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_update BEFORE UPDATE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_delete BEFORE DELETE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\n\n-- Source withdrawal is terminal for this proposal, including after reconnection.\nCREATE TRIGGER capture_graph_source_withdrawn AFTER UPDATE ON capture_sources\nWHEN NEW.state='disconnected' OR NEW.connection_id IS NOT OLD.connection_id\nBEGIN\n UPDATE capture_proposals SET status='withdrawn',decided_at=NEW.updated_at,\n  details_json=json_set(details_json,'$.withdrawal','Evidence source revoked')\n WHERE status='pending' AND json_extract(details_json,'$.graphProposal')=1\n AND signal_id IN(SELECT id FROM signals WHERE source_id=NEW.id);\nEND;\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0082_saved_record_views.sql",
+       "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+       "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
+     }
+diff --git a/migrations/core/0081_graph_proposals.sql b/migrations/core/0081_graph_proposals.sql
+new file mode 100644
+index 0000000..380fb82
+--- /dev/null
++++ b/migrations/core/0081_graph_proposals.sql
+@@ -0,0 +1,48 @@
++-- Extend native review with a question that cannot create a contact.
++-- Refuse unexpected owner extensions before replacing the known proposal table.
++SELECT CASE WHEN (SELECT group_concat(name,',') FROM pragma_table_info('capture_proposals'))<>'id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,decided_by,decided_at,decided_value,created_at'
++ OR EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name<>'capture_proposals' AND lower(sql) LIKE '%references%capture_proposals%')
++ OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='index' AND sql IS NOT NULL AND name NOT IN('capture_proposals_status','capture_proposals_record'))
++ OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='trigger' AND name NOT LIKE 'archive_guard_capture_proposals_%')
++ THEN json_extract('ORBIT_GRAPH_PROPOSAL_SCHEMA_REQUIRES_REVIEW','$') ELSE 1 END;
++CREATE TABLE capture_proposals_new (
++ id TEXT PRIMARY KEY,
++ proposal_key TEXT NOT NULL UNIQUE,
++ signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,
++ kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact','question')),
++ record_type TEXT CHECK (record_type IN ('contact','company','opportunity')),
++ record_id TEXT,
++ field TEXT,
++ current_value TEXT,
++ proposed_value TEXT,
++ details_json TEXT NOT NULL,
++ status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined','withdrawn')),
++ decided_by TEXT,
++ decided_at TEXT,
++ decided_value TEXT,
++ created_at TEXT NOT NULL
++);
++INSERT INTO capture_proposals_new SELECT * FROM capture_proposals;
++DROP TABLE capture_proposals;
++ALTER TABLE capture_proposals_new RENAME TO capture_proposals;
++CREATE INDEX capture_proposals_status ON capture_proposals(status,created_at);
++CREATE INDEX capture_proposals_record ON capture_proposals(record_type,record_id);
++CREATE TRIGGER archive_guard_capture_proposals_insert BEFORE INSERT ON capture_proposals
++WHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')
++BEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;
++CREATE TRIGGER archive_guard_capture_proposals_update BEFORE UPDATE ON capture_proposals
++WHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')
++BEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;
++CREATE TRIGGER archive_guard_capture_proposals_delete BEFORE DELETE ON capture_proposals
++WHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')
++BEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;
++
++-- Source withdrawal is terminal for this proposal, including after reconnection.
++CREATE TRIGGER capture_graph_source_withdrawn AFTER UPDATE ON capture_sources
++WHEN NEW.state='disconnected' OR NEW.connection_id IS NOT OLD.connection_id
++BEGIN
++ UPDATE capture_proposals SET status='withdrawn',decided_at=NEW.updated_at,
++  details_json=json_set(details_json,'$.withdrawal','Evidence source revoked')
++ WHERE status='pending' AND json_extract(details_json,'$.graphProposal')=1
++ AND signal_id IN(SELECT id FROM signals WHERE source_id=NEW.id);
++END;
+diff --git a/migrations/core/0081_saved_record_views.sql b/migrations/core/0082_saved_record_views.sql
+similarity index 100%
+rename from migrations/core/0081_saved_record_views.sql
+rename to migrations/core/0082_saved_record_views.sql
+diff --git a/sources.lock.json b/sources.lock.json
+index 49d81fc..2a35713 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -655,11 +655,11 @@
+       "executable": false
+     },
+     "ACCEPTANCE.md": {
+-      "sha256": "4a5fb23ff0b7f36c21cedf4e7e7e7b876c69b2a4565147a8bb565c5615d944fd",
++      "sha256": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41",
+       "executable": false
+     },
+     "agent-surface.json": {
+-      "sha256": "a8a75dcaadd7cf0452ec2831d545f35adb230371ca69421cde69debd605a9d57",
++      "sha256": "f599e13f5a2d2997bf533fb5900870f15a6b9a20bbd04d6ae63f126bc9914699",
+       "executable": false
+     },
+     "AGENTS.md": {
+@@ -679,7 +679,7 @@
+       "executable": false
+     },
+     "CHANGELOG.md": {
+-      "sha256": "3bf2996ddbbc2ca4879ad45aae7e3bd9bfb427ff40095d74daa9c72a5e43f481",
++      "sha256": "475a269de5d4245af1d2e4528a9830b6ca4cea6d5dad578860385098e0fd8aee",
+       "executable": false
+     },
+     "CLAUDE.md": {
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "1b3081d8a331f26419ffb9bb74764b06b62f254cb719a0222c0a85777c94ea3c",
++      "sha256": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -731,7 +731,7 @@
+       "executable": false
+     },
+     "docs/AGENT-DOOR.md": {
+-      "sha256": "741b09ecdf4009360e6eb3b51975a3d6a2303ff25d8053ccf699aa3585a5e95a",
++      "sha256": "f0c41963af3380b2180506d2737cfb63f71faa136fcc749eccc2aa80336d2eab",
+       "executable": false
+     },
+     "docs/API-CREDENTIALS.md": {
+@@ -1911,7 +1911,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "772e4b4e8f77be06164b74d9e7f351d78d0dcd977bc3b81d989f03bd0afb53cc",
++      "sha256": "421ccd5a6a9a516f23b2f9b58f53bea9514a65c9b444cf3016e2ba661c934ef8",
+       "executable": false
+     },
+     "management/integration/profile.json": {
+@@ -2226,7 +2226,11 @@
+       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
+       "executable": false
+     },
+-    "migrations/core/0081_saved_record_views.sql": {
++    "migrations/core/0081_graph_proposals.sql": {
++      "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
++      "executable": false
++    },
++    "migrations/core/0082_saved_record_views.sql": {
+       "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+       "executable": false
+     },
+@@ -2291,7 +2295,7 @@
+       "executable": false
+     },
+     "newtests/t096/browser-dashboard.ts": {
+-      "sha256": "04ecc34621e6b58e8c1b7bc9406030ba212507b15bd44d3c7a9fc3fb06258685",
++      "sha256": "e4fa5b463f5442c1bea4be7ce94e664d66dff9559f4751a9237feeb1c48a4f4e",
+       "executable": false
+     },
+     "newtests/t096/browser-forecast-journey.ts": {
+@@ -2386,6 +2390,10 @@
+       "sha256": "302db4e8a424f9fa43b4c1e60994af4eb211dacc87796736de5debebf5869db8",
+       "executable": false
+     },
++    "newtests/t096/dashboard-truth-journey.ts": {
++      "sha256": "68d49045441567449f33e3ee34f80f210ecd272dedebb73107db9729054a46fb",
++      "executable": false
++    },
+     "newtests/t096/dashboard-upgrade.ts": {
+       "sha256": "58e1914aa3909769d53a73c161df065dd7a646346c6158cd002f29ad5cd4a5fe",
+       "executable": false
+@@ -2447,7 +2455,7 @@
+       "executable": false
+     },
+     "newtests/t096/forms-mapped-journey.ts": {
+-      "sha256": "9f9045988c0bdc12941d05f8f536dbfc3c8c103ed7c27a318667d9be981dccbb",
++      "sha256": "f63ad062c66400ba608b572de7c84550605def1fec0f6bb60499280b0da3e906",
+       "executable": false
+     },
+     "newtests/t096/forms-native.test.ts": {
+@@ -3783,7 +3791,7 @@
+       "executable": false
+     },
+     "package.json": {
+-      "sha256": "79871cddda884ff63e40de4e578273fbec2db31d2f6571c049f5509280c8ade0",
++      "sha256": "82470fc4aa52adf026257b5081e3548a5d0d3c1d43284858128b0e4f4fece56b",
+       "executable": false
+     },
+     "patches/miniflare-5.20260907.0-alpha.patch": {
+@@ -3894,10 +3902,14 @@
+       "sha256": "e9171a11686b07242bfc5266efc3ee6c69ce421054b7d93a0807ea1543681b07",
+       "executable": false
+     },
+-    "RELEASE.json": {
++    "release-history/0.4.6.json": {
+       "sha256": "5c89667651548b211a911e40e6117ec3141e3b0f4a23d3009ac5c40cf02d4ff4",
+       "executable": false
+     },
++    "RELEASE.json": {
++      "sha256": "89371c4ef545c382ecb6ead0e24bd7e181f01de36e5b4cddd783c935cde710cf",
++      "executable": false
++    },
+     "rer-project.json": {
+       "sha256": "66729b3f8b0c2041579a5d68c7854af1b4c43e8fa66a60831e5787f323ac35f6",
+       "executable": false
+@@ -3935,7 +3947,7 @@
+       "executable": false
+     },
+     "scripts/agent-surface.ts": {
+-      "sha256": "4b367f17d323a271a1597eb21646c0c30399b58699de20065d874412d6245396",
++      "sha256": "4e8627c6a1307e8c2e5a9edbe875820a43939637b44c9f32a46482203385ee07",
+       "executable": false
+     },
+     "scripts/browser-results.mjs": {
+@@ -3943,7 +3955,7 @@
+       "executable": false
+     },
+     "scripts/browser-runtime.mjs": {
+-      "sha256": "5b233bd873d0efdc57b543ab108a2a7173433a2c74bf5faa0143b9f07852c135",
++      "sha256": "fc499a356f408123705ce7a69bfcfc8a401593bde158d2de9b615d917e2c49d6",
+       "executable": false
+     },
+     "scripts/browser-server.mjs": {
+@@ -4255,7 +4267,7 @@
+       "executable": false
+     },
+     "seed.json": {
+-      "sha256": "7640b80eff0bff78c46ea584c1d08b720191e37a61d7cd3c9a14866486a641a5",
++      "sha256": "17da9caaba1cb15f16a4854b24fe925fb07f6887834b2105b6ce624d44226ded",
+       "executable": false
+     },
+     "SIGNALS-AND-OUTREACH.md": {
+@@ -5183,7 +5195,7 @@
+       "executable": false
+     },
+     "src/core/features/access/administration.ts": {
+-      "sha256": "1bc5c55ab92fc1b5940f34b1a09ba32b2d318331f903123594ab536ae8c05b77",
++      "sha256": "030335fc2ed83fed430f7f49a322441538519b2f3ad514092e9fd0e072b456c7",
+       "executable": false
+     },
+     "src/core/features/access/app-access.tsx": {
+@@ -5195,7 +5207,7 @@
+       "executable": false
+     },
+     "src/core/features/access/collaborator-console.tsx": {
+-      "sha256": "208f470f050f5da349c12f92cafea645508d9ddd83a239bcdacad05ecae1f543",
++      "sha256": "1facdde46c843c5f65366d81b2d971238f66e4737b7f297fe0e7198ec3d178bc",
+       "executable": false
+     },
+     "src/core/features/access/collaborator-grants.tsx": {
+@@ -5290,6 +5302,10 @@
+       "sha256": "0b3b00405292b78de98c42b015ae590c808336c86d037290deb07c651c2d2c0c",
+       "executable": false
+     },
++    "src/core/features/agent-door/assistance.ts": {
++      "sha256": "0a02cdcf43428581b4a9be7c36a7425b84512375bcd5dc68a1533a98d668ee84",
++      "executable": false
++    },
+     "src/core/features/agent-door/capture-security.ts": {
+       "sha256": "a88114444081ef81c951a06ba0bbc49dc1c96e1a26fe36c26c2fef992ed4e8b8",
+       "executable": false
+@@ -5318,20 +5334,24 @@
+       "sha256": "337db0014345a8c241f08956c6c87b883e4ee620c3511872f6508bf197f4b717",
+       "executable": false
+     },
++    "src/core/features/agent-door/graph.ts": {
++      "sha256": "4301955498d6da0d802fea09e8cc16d2c4c0fc0b22f94db20c3bc3a3e8a29076",
++      "executable": false
++    },
+     "src/core/features/agent-door/handoffs.ts": {
+       "sha256": "076464b5a90ec5748c39b66cc450a1da9f8b0d8aa923ff8b9cdbb0d8af768747",
+       "executable": false
+     },
+     "src/core/features/agent-door/index.ts": {
+-      "sha256": "f1f060f9fa83669b177d21b1b026991749f1d45f7c69758ece7f317d2420b731",
++      "sha256": "16ed3fa5b6196db7a3221c62fced7d87f04e28e61419d1acb773adad16573ad0",
+       "executable": false
+     },
+     "src/core/features/agent-door/local-credentials.ts": {
+-      "sha256": "6ed2fa2dc996f21b2542d45d567151c81a61e242b38bdb6263de3283302d6e29",
++      "sha256": "06d1e2a732c52a696d91135acc00025dcd31f928b349251a4d2b79808d8456ea",
+       "executable": false
+     },
+     "src/core/features/agent-door/native-access.ts": {
+-      "sha256": "1c860f16eb1a6af6caaebcb9190eb935f012bf427e39b35ae81e94a8caf1b137",
++      "sha256": "17dafa1023de456b809849ae4b4eb7461e7dde170f74463da324199f1c68549f",
+       "executable": false
+     },
+     "src/core/features/agent-door/not-tools.ts": {
+@@ -5383,7 +5403,7 @@
+       "executable": false
+     },
+     "src/core/features/analytics/group-labels.ts": {
+-      "sha256": "6cf4307911163f0a3323dc2239dad164e4b386548ca1a8160fe7d175ae9bbd9e",
++      "sha256": "6209593902667d90440d3a072acce2a49156e5a22bf7c67c7cb067249ee8f931",
+       "executable": false
+     },
+     "src/core/features/analytics/group-record-names.ts": {
+@@ -5479,7 +5499,7 @@
+       "executable": false
+     },
+     "src/core/features/analytics/sales-view.ts": {
+-      "sha256": "b7a40c629b5bc5c89dcba6abac667fe6f9acd42be118a944efff23f18c66ad7d",
++      "sha256": "d5c14a54fa1a9fac22dd5ade76ec09436de34cb5b119405fe90736bd715d4ee7",
+       "executable": false
+     },
+     "src/core/features/analytics/sales.css": {
+@@ -5522,6 +5542,10 @@
+       "sha256": "d7ef2d613842f5b8adf5ceb91c7c594f2eb8e64c204a6f579e150903b8133aa7",
+       "executable": false
+     },
++    "src/core/features/assistance/generation.ts": {
++      "sha256": "c7d23a05a96dddac767beeb59554de821cf5c50a135eb19d4e3a1cbb60985a9a",
++      "executable": false
++    },
+     "src/core/features/assistance/preview.ts": {
+       "sha256": "1102138b5ce4d82912b7bb4eea9edcdd1c123a30fa9466d429dbc571e67729ff",
+       "executable": false
+@@ -5535,11 +5559,11 @@
+       "executable": false
+     },
+     "src/core/features/assistance/record-routes.ts": {
+-      "sha256": "4be9dbcb8bef89e538a62211d44106b629c5d2584116b528c2b5b6651f074af0",
++      "sha256": "f85f2148e8d1f6b8004b2a8abacc852ead3b43060f0dd3afa22d4421e94f4075",
+       "executable": false
+     },
+     "src/core/features/assistance/routes.ts": {
+-      "sha256": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef",
++      "sha256": "1a62bafdd3226d502fbccb8b94c91e560b24c5f0b2a81cec8b7558ddff16202e",
+       "executable": false
+     },
+     "src/core/features/audit/index.ts": {
+@@ -5571,7 +5595,7 @@
+       "executable": false
+     },
+     "src/core/features/capture/archive.ts": {
+-      "sha256": "ce22d407a7104ed2a815f56d5e8e8537457228ffa48ea04f8cc97edb0787d4d4",
++      "sha256": "c0d1faa08932e8b17b244a678431977018c95f777f9f89c2401fc1d8eaf47807",
+       "executable": false
+     },
+     "src/core/features/capture/calendar-link/feed.ts": {
+@@ -5671,11 +5695,11 @@
+       "executable": false
+     },
+     "src/core/features/capture/proposal-identity.ts": {
+-      "sha256": "b17b0f3860656aa99e79ea3a8580b3fedfd87d4d5b7c4ab5d3cba5d977b9c521",
++      "sha256": "c933b2eedb44f3f3ce83890cf070ce1e54f03a055f261a3e9a853a924a865724",
+       "executable": false
+     },
+     "src/core/features/capture/proposals.ts": {
+-      "sha256": "236f0f9bdf300f6625e093be138d141380b8346799e09cbdb0d558a7c216b38f",
++      "sha256": "fab65c0c44637c28245a8be1808b607eaab3284387ed3cde45043b4ae4626c01",
+       "executable": false
+     },
+     "src/core/features/capture/provider-evidence.ts": {
+@@ -5739,7 +5763,7 @@
+       "executable": false
+     },
+     "src/core/features/capture/sources.ts": {
+-      "sha256": "08a5d9e7a69e608d31809c7b5060888d7ef9acc0c81f909fcffa51f7620c34dc",
++      "sha256": "45169b7c7b20dd56fb4add8ee020a7aee1094cc9e7688b565f561db2f2855121",
+       "executable": false
+     },
+     "src/core/features/capture/targets.ts": {
+@@ -5795,15 +5819,15 @@
+       "executable": false
+     },
+     "src/core/features/dashboards/export.ts": {
+-      "sha256": "5a0bfa49a6756a0ccc8b25ba69d0e8c7185e9840f0df6d5549b362c2878f4776",
++      "sha256": "5b3171911ddd07a780e8288f6240aa9bfc65e6aa23f572c0fbcaee76f97cc915",
+       "executable": false
+     },
+     "src/core/features/dashboards/filters.tsx": {
+-      "sha256": "843d4f98f2204f1909aaff7395beba4f89c3fb1ae76f320a4d44ae76ec6c80b8",
++      "sha256": "f7c17c4317a1cdb8727624fbe2e5448a7cd15200ef9a39b5031882615d545976",
+       "executable": false
+     },
+     "src/core/features/dashboards/forecast-tile.tsx": {
+-      "sha256": "dbd9a5248b787729676239601f24d1c9d7711072e13d4ce275dffa0f74c34025",
++      "sha256": "a1f2590666a00cf57870c526bd73fc096ad3708e361f9a4cbe18b12fcb165193",
+       "executable": false
+     },
+     "src/core/features/dashboards/icons.tsx": {
+@@ -5835,7 +5859,7 @@
+       "executable": false
+     },
+     "src/core/features/dashboards/repository.ts": {
+-      "sha256": "06ad2dcbb83df5f8bd6e8ea1bdbf9be48d9d61304d0072296ab4ea6d639ccdf5",
++      "sha256": "d6aa05cf8ef6c28148720b9fc42f18ecb123ea86711cc694baa3dfd8acbf182a",
+       "executable": false
+     },
+     "src/core/features/dashboards/routes.ts": {
+@@ -5923,7 +5947,7 @@
+       "executable": false
+     },
+     "src/core/features/delegation/protocol.ts": {
+-      "sha256": "f8e4a7b33af157110455a06bcab70b708fb80e7e3a3515ed36131aa42257d24f",
++      "sha256": "bb80293bbfcc266440927da393d35f8d91994a88c0c5bb9ef5934545a800e580",
+       "executable": false
+     },
+     "src/core/features/delegation/routes.ts": {
+@@ -5931,7 +5955,7 @@
+       "executable": false
+     },
+     "src/core/features/delegation/settings-page.ts": {
+-      "sha256": "922e6f82486ee315411b5349f0a62e5d3b5ff3aa2fb5bfaede005e872ad4bbb9",
++      "sha256": "8872048c7d366924963233587a8569abeb0640bf0d09c94e56eeb85881d4d41e",
+       "executable": false
+     },
+     "src/core/features/delegation/token.ts": {
+@@ -6046,6 +6070,10 @@
+       "sha256": "9f7cd15ff423d467dd7a80c10a7b4e905c229a3a4b6ba358b1e90329f2ce4ec7",
+       "executable": false
+     },
++    "src/core/features/forecast/quota-periods.ts": {
++      "sha256": "d5ef6cb354317dfd4e328a4173c35091e82907560fb29762d786b095d99f3eb8",
++      "executable": false
++    },
+     "src/core/features/forecast/repository.ts": {
+       "sha256": "53f8933e365b8c5220844d3ae29d67c76ee2d97360f7e0b21eb51f371a915dde",
+       "executable": false
+@@ -6599,11 +6627,11 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/capture-proposals.css": {
+-      "sha256": "e33f13ded1c473408768885ae0743c319851f0b9e42365710f9ad5f4413517dd",
++      "sha256": "69a39123257d9bae67db6b3df80c036e19ba5dc7aeed010c92d5205d7a42cb8c",
+       "executable": false
+     },
+     "src/core/features/operator/ui/capture-proposals.tsx": {
+-      "sha256": "e12c9ba119aba7d4e5f2365f15f239d50778e3364b8c265afabc6af43a5c6a74",
++      "sha256": "9f02d58c0382e7b469a5cf820101f9cd13c99598b21c3bb6f6e719ee2ce0cd85",
+       "executable": false
+     },
+     "src/core/features/operator/ui/capture-provider-form.tsx": {
+@@ -6635,7 +6663,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/create-opportunity-page.tsx": {
+-      "sha256": "e22575579d1ed0b7d73ede7bf836cde1931493a372b31cfa354c2ecf400c0e06",
++      "sha256": "e44c820c2ad7ecbd11aab4b7b6b7ddae4be51f7b2376284d14e79d83fa69a6cd",
+       "executable": false
+     },
+     "src/core/features/operator/ui/data-value.tsx": {
+@@ -6811,7 +6839,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/now-page.tsx": {
+-      "sha256": "0160b59462401c0026523efd5534f92604a6822fd40f41cfd7ad3c7532e111a5",
++      "sha256": "19cab848e1b2c9b50470d6c59e00b0aa3dd622e075ab48de12a2840bf193aa77",
+       "executable": false
+     },
+     "src/core/features/operator/ui/operator-api.ts": {
+@@ -6835,7 +6863,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/operator-removal-review.tsx": {
+-      "sha256": "9796ad3a168a64bbb440c92c0ac1b95f4d64235c8ac4ba583584bf802e26ebd2",
++      "sha256": "a0f1b20c4413eabc19850f7cafcc89a4ecb740216188578a48feac65316c3aa8",
+       "executable": false
+     },
+     "src/core/features/operator/ui/operator-settings.tsx": {
+@@ -6867,7 +6895,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/pipeline-board.tsx": {
+-      "sha256": "8c033fc7433864e9a0ac0c6a32352f66b3d1e14495c7604ccc895a754e8e1ce9",
++      "sha256": "5b0262ed5a75813a2638f20fe2b7eea4d4a40df24cc9a0d0434505bfd585f7a7",
+       "executable": false
+     },
+     "src/core/features/operator/ui/pipeline-settings.tsx": {
+@@ -6895,7 +6923,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/record-link-picker.tsx": {
+-      "sha256": "729c24a67581c24c8e56788c1cac106208874f0a73e86d80c712e24db9060c3d",
++      "sha256": "69231fecf4cb0d39933087948e699baec425673819cb62ccbaadc4e68af39385",
+       "executable": false
+     },
+     "src/core/features/operator/ui/record-mail.tsx": {
+@@ -6991,7 +7019,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/opportunity-record.tsx": {
+-      "sha256": "e0bb600adb9a3a27b79c7d5aec7edb45c307d2d223c4281d9de4537355e5d399",
++      "sha256": "f34ad4fdc6ab82ee4867dad6ecbc8d5f9a5fbc79fc1db6fb4fff23d2df37a66c",
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/owner-field.tsx": {
+@@ -7051,7 +7079,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-list.tsx": {
+-      "sha256": "2899313c7d165c924e5b9f4825ec199a9ec493bd1705e385a7780cdb369517cc",
++      "sha256": "63e419cae6b0b57c81543f2128b4114b11de564fc87e479f8b549dee1dc7655e",
+       "executable": false
+     },
+     "src/core/features/operator/ui/records-page.tsx": {
+@@ -7143,7 +7171,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/settings/team.tsx": {
+-      "sha256": "dbc3dd3d6ce881b9bddd5a3ea0050083f7c6e4f53c5c78889932b62568f289ff",
++      "sha256": "ffc2c57f62989eb79d8add205c69d21cca86e14595e912267eb850e7ca90977d",
+       "executable": false
+     },
+     "src/core/features/operator/ui/settings/use-workspace-settings.ts": {
+@@ -7255,11 +7283,11 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-activity.tsx": {
+-      "sha256": "80671aa8232ec9df172a25a30d37e37e41a2aa4fbfb1fb454cab25073eb73aa2",
++      "sha256": "eef11eb35daefc2e3e59df8f20f84ad5a138a8cf18d323183ad03f1fc3ad4e4e",
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-editor.tsx": {
+-      "sha256": "bcfdd6f2994b729a77a225d27e26d771ca101312a55aad6be1c3f3676943dea6",
++      "sha256": "54d24418265f493b10d3467fcabbb1f93be1aecc76e20269a63243a0909537b9",
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-field-policies.tsx": {
+@@ -7267,7 +7295,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-preview.tsx": {
+-      "sha256": "b8b44bb15d4b853951058ce1a2170701d81a5e08f374eb9d3583fbd07310469f",
++      "sha256": "6e691b1b8ecbb2a0e8d9782653de9be48baf4cee2e7f50b1262e20c8cf67bd0c",
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-record-action-fields.tsx": {
+@@ -7279,11 +7307,11 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-settings.tsx": {
+-      "sha256": "d1beacb24c214e881fa3f86d7879f8ced3539eaa0fe37228cd838006a995a8a5",
++      "sha256": "51144445ece736984190b9f3cb8f49873124d1541b8f5f9ddebfe8a7c173dbc6",
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-types.tsx": {
+-      "sha256": "77e7377156ce7bbab2b37d0fd0bf137f4691748b5c5161086fa4025c563a0898",
++      "sha256": "9ba27475c060884406e59d668966f556ab68f7c2d2729d2fd2b7ae706c9a1d12",
+       "executable": false
+     },
+     "src/core/features/operator/ui/workflows-version-undo.tsx": {
+@@ -7482,6 +7510,10 @@
+       "sha256": "1405c4e95922fc699d9f6db8d94d70de426a1fc8152400cb27b4120819df43e7",
+       "executable": false
+     },
++    "src/core/features/ownership/removal.ts": {
++      "sha256": "60a3ba9a0807f286a6df25b3e80904dbb3c2e26e11b6e20a0543bb804b45b001",
++      "executable": false
++    },
+     "src/core/features/ownership/repository.ts": {
+       "sha256": "b6941d7393e1bd160578202c3b528f33307ce0b8cdf33eb71ed8b17b5a5536b0",
+       "executable": false
+@@ -7847,7 +7879,7 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-generations.ts": {
+-      "sha256": "fe1837e92eb2fc1d97726aa7b6bc0c406636c854d016f0b56aa751ee51ee3c72",
++      "sha256": "30c8d2309bffb16ef3a1d19c5d24bb7fcda606ddc82232df95bb589e40d741e9",
+       "executable": false
+     },
+     "src/core/features/records/archive-import-context.ts": {
+@@ -8095,7 +8127,7 @@
+       "executable": false
+     },
+     "src/core/features/reports/forecast-figures.tsx": {
+-      "sha256": "44edf87b6b85c07f800792158aa2a08a3656b567c23e70f3cfdf95a470b2bd9e",
++      "sha256": "835fca7e13d38a1de294542fef10389327953c2b18d3dc47cbbb42f0ad2ad0c4",
+       "executable": false
+     },
+     "src/core/features/reports/forecast-page.tsx": {
+@@ -8175,7 +8207,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/removal-handover.ts": {
+-      "sha256": "9af2842f15acb7f9771739f79437139be8b57b6c9e85e14156f25483bc0651f6",
++      "sha256": "fbb465430f931792a278e61aeff975b50d7fb67c584c4c06d48698d4183c70bd",
+       "executable": false
+     },
+     "src/core/features/settings/repository.ts": {
+@@ -8183,7 +8215,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/routes.ts": {
+-      "sha256": "83c58ddc4e8128fc9a6b1818776a2edacf9c664161a41b7a5cc31c025429cf05",
++      "sha256": "299283a6bf4edde52f75836e2d32bb9f6f34d243c8d39db458ee5441747590fd",
+       "executable": false
+     },
+     "src/core/features/setup/loader.ts": {
+@@ -8443,11 +8475,11 @@
+       "executable": false
+     },
+     "src/core/features/workbench/repository.ts": {
+-      "sha256": "01ae13eae2fa1b9306b344c74675d5dc72f64a92904f1ada30605b7bca4f0dc4",
++      "sha256": "d414a5625e274b77648b61323746e4e883f6c655b9d4be75284cfd464ec6d583",
+       "executable": false
+     },
+     "src/core/features/workbench/routes.ts": {
+-      "sha256": "7decc1ecd49c8be2317482130ddf0f7184f3efcdafba7a43824518e5dbba5cb3",
++      "sha256": "e549fb2cd7a9950f344dca83f1b986aa95e0dde9569943bf5dfaea7c4faf7d46",
+       "executable": false
+     },
+     "src/core/features/workbench/sender-test.ts": {
+@@ -8475,7 +8507,7 @@
+       "executable": false
+     },
+     "src/core/features/workflows/engine.ts": {
+-      "sha256": "6d30fca6fb3dc98a02987f218e2335a7e1cad62c317114206642ddc9b5b4dea1",
++      "sha256": "b28ac4fa90e32f0f92089ba233ebd0ebcf40378baac8f33266adb68c11d49562",
+       "executable": false
+     },
+     "src/core/features/workflows/events.ts": {
+@@ -8527,7 +8559,7 @@
+       "executable": false
+     },
+     "src/core/features/workflows/routes.ts": {
+-      "sha256": "81538be035bc385736d7d85a62b9ea7afa9a30d5000d41e242118f49b50da69a",
++      "sha256": "2c34441a7ad5bc920acc0ca0c24697607fb0e7a1ddda46b42c3bbf0511ae8d26",
+       "executable": false
+     },
+     "src/core/features/workspace/index.ts": {
+@@ -10042,6 +10074,18 @@
+       "sha256": "2b54f956d5cad9ccce77307108e185a2a110923c96015e61fec18e3aed626fa0",
+       "executable": false
+     },
++    "tests/agent-door/ai-binding.mjs": {
++      "sha256": "f86201e336fea9b12cccb0e776311dc503dc11ec9fb2a6aed8b47b85abfc9b62",
++      "executable": false
++    },
++    "tests/agent-door/ai-network.mjs": {
++      "sha256": "34537379e5f886ea81e857cb55b2ce1cdf08e93ac7b43b01c8214d5c0365e523",
++      "executable": false
++    },
++    "tests/agent-door/ai-rate.mjs": {
++      "sha256": "2e6c3bda73c19c8f61364f6277180685549c1b5e779e35102ab34c56ffaa0556",
++      "executable": false
++    },
+     "tests/agent-door/capture-browser-journey.mjs": {
+       "sha256": "7fa9962c4693ec896373100bb936470e7b739722aae3638c411d418a2e98b154",
+       "executable": false
+@@ -10054,8 +10098,16 @@
+       "sha256": "2b9cb2f03913f702008d9948672db4562c8c328b43ec577b4eb2d2596488d660",
+       "executable": false
+     },
++    "tests/agent-door/graph-browser-journey.mjs": {
++      "sha256": "e2c1226c610fd9d368f21826975c0153aff1705cba21e9067737f78f3295cfeb",
++      "executable": false
++    },
++    "tests/agent-door/graph-fixture.mjs": {
++      "sha256": "b3a284c80dc0a45db04c75e02daa222d4893c7a76e41c11167cd1e553f43b953",
++      "executable": false
++    },
+     "tests/agent-door/initialize-owner.mjs": {
+-      "sha256": "0b542c7a733b23587ab8477786a17d7419b194c4a582f770877b2ff0bbf83a28",
++      "sha256": "607b980fb5da1ff6cce9e4b1fe3dc674d4a90a053b77e6fbb86047e572c87f28",
+       "executable": false
+     },
+     "tests/agent-door/initialize-reviewer.mjs": {
+@@ -10063,11 +10115,11 @@
+       "executable": false
+     },
+     "tests/agent-door/native-journey.mjs": {
+-      "sha256": "5b5cb1a7c13510a2a91b96a577c46b9d850730a318f5c9eb9ff687a54a2b3a50",
++      "sha256": "c8d044cf051a64db838a3e7039652a32443eaee2f0cfb09482dc3bf89cfc1b83",
+       "executable": false
+     },
+     "tests/agent-door/workflow-fixture.mjs": {
+-      "sha256": "901437ba74fc9dade06451ac9e61731d96e4fc619fc70e5fa6b7b2911bfc5958",
++      "sha256": "01b77f693e51de51491fa07cdfc7e98d0bab93321a0c731a38875cdf7508dada",
+       "executable": false
+     },
+     "tests/archive/browser.spec.mjs": {
+@@ -10199,7 +10251,7 @@
+       "executable": false
+     },
+     "tests/core/managed-owner.test.ts": {
+-      "sha256": "f71b20c83507bca582dd2d8ed83f0ece5e5276c4adff9a31c57ae350121e1a60",
++      "sha256": "3d421d373ca701abd904d66f25718ae78f4ee42d7fcd8bafb78dd9bfecf4b008",
+       "executable": false
+     },
+     "tests/core/migration-recovery.test.ts": {
+@@ -10375,7 +10427,7 @@
+       "executable": false
+     },
+     "tests/e2e/assistance.spec.mjs": {
+-      "sha256": "301a0f13d9aa5647761320342b87feb256222df4ef22e9d21807fe42053ae04a",
++      "sha256": "9d28cac7a1f2652029b14d600434fedf9a1aa827d6a2b2d37e30a203d097d28a",
+       "executable": false
+     },
+     "tests/e2e/baseline.spec.mjs": {
+@@ -10383,7 +10435,7 @@
+       "executable": false
+     },
+     "tests/e2e/capture.spec.mjs": {
+-      "sha256": "f34bff7228dc6a9c65851be986d12406184bb49c3a2f226d7e66293dfb901932",
++      "sha256": "e649283ad99422011ecd3cc72eb9a6bdb87d14f1c73289de9b40d274e283e330",
+       "executable": false
+     },
+     "tests/e2e/imports-hydration.mjs": {
+@@ -10402,8 +10454,16 @@
+       "sha256": "26b53d8df2f00b1850a1bc83b8caeda17603d1e0ef3894807734085d10a5649a",
+       "executable": false
+     },
++    "tests/e2e/opportunity-defaults.mjs": {
++      "sha256": "88b31a7a3bcef1bb33a85e1bd78115349cd441dadb06946e8e181947d5d40dc9",
++      "executable": false
++    },
+     "tests/e2e/records.spec.mjs": {
+-      "sha256": "0f0ae6ce93925901eb4feec06d25fc6de700b213f6ebe81d82179dcca7647417",
++      "sha256": "7e38a4318824a8ed1d3d5ba17a634e54f76cce3975c2edc376142e7f1e68b8f1",
++      "executable": false
++    },
++    "tests/e2e/removal-handover.mjs": {
++      "sha256": "da715e94fb4f50bb146978c800e05ef6aeec31fec4687a54527dfb9e9742e23f",
+       "executable": false
+     },
+     "tests/e2e/stale-review.spec.mjs": {
+@@ -10411,7 +10471,7 @@
+       "executable": false
+     },
+     "tests/e2e/workbench.spec.mjs": {
+-      "sha256": "9aaa942c77b44b96f17fb6ae16bc18e8cbb33c6c45f1fde4673d403149615676",
++      "sha256": "c6fd29f24b965e5853f030b8108a07f5946bd393a0ae5277541ba5132787f232",
+       "executable": false
+     },
+     "tests/e2e/worker-smoke.spec.mjs": {
+@@ -10911,7 +10971,7 @@
+       "executable": false
+     },
+     "tests/rer/operator-actions-journey.mjs": {
+-      "sha256": "0941c8f1cdebb659e2194631eab6b09e345b3237b9b345aac1e86d2b6557d032",
++      "sha256": "32640844dddd4e6539fa340b42482a591b178da2b02c3090a820d5f3d90861c7",
+       "executable": false
+     },
+     "tests/rer/operator-actions.test.mjs": {
+@@ -10987,7 +11047,11 @@
+       "executable": false
+     },
+     "tests/rer/workflow-journey.mjs": {
+-      "sha256": "62d5adb19f86c3319bddb5a20b9aa2f41af3dc7a7c1f189cab74a1e5c7fca5a1",
++      "sha256": "a8c277c5caec634de0384c45cf75e36f45c2db080e72ab1b92058a7d9b07dbc3",
++      "executable": false
++    },
++    "tests/rer/workflow-outcomes-journey.mjs": {
++      "sha256": "4ce628f8092dc7f0b823d14589cc2058a08b0d98ea3bf14bf084be0ebe2bfc43",
+       "executable": false
+     },
+     "tests/rer/workflow-values-journey.mjs": {
+@@ -10998,8 +11062,16 @@
+       "sha256": "b34ff57091ed6f94b08348e5d592d87d3d6900c240a8c4e1910e83bed47b0f6f",
+       "executable": false
+     },
++    "tests/support/agent-door-ai-browser-source.ts": {
++      "sha256": "25e1428e33809fef824a217bd328b6f534fc1af7854d0957517fb13f1fb23092",
++      "executable": false
++    },
++    "tests/support/agent-door-ai-input-proof.ts": {
++      "sha256": "0d8b193a668bdbc0a451221d5f34d594a07a8cd9f698c4b83ee72d29ec1a0959",
++      "executable": false
++    },
+     "tests/support/agent-door-audit-proof.ts": {
+-      "sha256": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
++      "sha256": "e26efe81a50f76bf6eb341dec2cd857685e345a332858f5b337486bbbbad1317",
+       "executable": false
+     },
+     "tests/support/agent-door-body-limit.ts": {
+@@ -11030,12 +11102,16 @@
+       "sha256": "68ace6286961364dcee898e712d8b52f81c3e6b005a2a7f9dd0b214131838055",
+       "executable": false
+     },
++    "tests/support/agent-door-graph-proof.ts": {
++      "sha256": "cf8e84243c11cfae88f81b177bff36da426b8def935495a61af9aa47d2b42f07",
++      "executable": false
++    },
+     "tests/support/agent-door-local-proof.ts": {
+       "sha256": "40713852bcee73cde6f7396c989b21c1964ae931664892327e88e3067d87bba6",
+       "executable": false
+     },
+     "tests/support/agent-door-proof.ts": {
+-      "sha256": "67bc6b54e071fbdb13254d6c73ccc8e70680a66caf8565e29cadd688da30120f",
++      "sha256": "884883c2b3bfbe1f3dd883237793ee2dee631f9d5b0cbe582e1cfcf56ef393d2",
+       "executable": false
+     },
+     "tests/support/agent-door-stalled-risk-proof.ts": {
+@@ -11291,7 +11367,7 @@
+       "executable": false
+     },
+     "tests/support/opportunity-creation.ts": {
+-      "sha256": "1326e6e55b08ed7183102ca0d35e6fee10bca9bae05c4d52ea701cc597f1b934",
++      "sha256": "61a43e9c854df66ffda14f66aa0d5c22dc3d7f6f752813a5dca2003dd371dd71",
+       "executable": false
+     },
+     "tests/support/opt-out-archive.ts": {
+@@ -11483,7 +11559,7 @@
+       "executable": false
+     },
+     "tests/support/workflow-record-journey.ts": {
+-      "sha256": "0eb87505c3cf51177f8ffdf48aea51f5c47a8ae79f801a13d4739ae10c46231f",
++      "sha256": "716ccc09397d2c9f5336688d977e261906302ee4be57b03a71024a822abcb04c",
+       "executable": false
+     },
+     "tests/support/workflow-safety-journey.ts": {
+diff --git a/src/core/features/records/archive-generations.ts b/src/core/features/records/archive-generations.ts
+index a5a007c..0b234dd 100644
+--- a/src/core/features/records/archive-generations.ts
++++ b/src/core/features/records/archive-generations.ts
+@@ -2,7 +2,7 @@ import {preCallFailureCatalog} from '../calls/archive';
+ import {preTypedWorkflowCatalog} from '../workflows/archive';
+ import {savedViewArchiveTables,personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
+ import type {FoldArchiveTable} from './archive-fold-catalog';
+-import {preCaptureMailRuleCatalog} from '../capture/archive';
++import {preCaptureMailRuleCatalog,preGraphProposalCatalog} from '../capture/archive';
+ import {preRecordMailCatalog} from '../outreach/record-mail-archive';
+ import {preFormAssignmentCatalog} from '../forms/archive';
+ import {preOwnershipCatalog} from '../ownership/archive';
+@@ -24,12 +24,12 @@ export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(
+ export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
+ /** Migration 0079 changes notification insertion only; earlier archives omit later saved views and retain
+  * their exact trigger inventory. Runtime-control fences are never archived. */
+-export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(catalog,savedViewArchiveTables,['notification_skip_direct_actor']);
++export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preGraphProposalCatalog(catalog),savedViewArchiveTables,['notification_skip_direct_actor']);
+ /** Reconstruct only exact native additions; owner tables and objects remain bound. */
+ function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:readonly string[]=[]){return catalog.filter(table=>!tables.includes(table.name)).map(table=>{const objects=(table as FoldArchiveTable).objects;return objects?{...table,objects:objects.filter(object=>!triggers.includes(object.name))}:table;});}
+ const typedTriggers=['contacts','companies','deals'].flatMap(table=>['insert','update','delete'].map(operation=>`custom_field_${table}_${operation}`));
+ const privacyTriggers=['entry_privacy_timeline_delete','entry_privacy_task_delete','entry_privacy_handoff_delete'];
+ /** Complete native source generations in migration order; never arbitrary missing tables. */
+-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const saved=beforeSlice(catalog,savedViewArchiveTables),notifications=preDirectNotificationCatalog(saved),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,saved,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
++export function nativeCatalogGenerations(catalog:ArchiveTable[]){const saved=beforeSlice(catalog,savedViewArchiveTables),graph=preGraphProposalCatalog(saved),notifications=preDirectNotificationCatalog(graph),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,saved,graph,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+ export const preCallingCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).find(generation=>!generation.some(table=>table.name==='call_events'))!;
+ export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;

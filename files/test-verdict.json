@@ -1,0 +1,53 @@
+{
+  "final_passing_cases": 8,
+  "groups": [
+    {
+      "group": "saved-view core",
+      "passing_cases": 2,
+      "exit_code": 0
+    },
+    {
+      "group": "saved-view browser",
+      "passing_cases": 1,
+      "exit_code": 0
+    },
+    {
+      "group": "archive/schema/migration original passing cases",
+      "passing_cases": 4,
+      "exit_code": 0
+    },
+    {
+      "group": "forward-upgrade retry",
+      "passing_cases": 1,
+      "exit_code": 0
+    }
+  ],
+  "initial_failure": {
+    "file": "newtests/t096/forward-upgrade.test.ts",
+    "cause": "v0.3.0 release tag absent from shallow clone",
+    "resolution": "fetch declared Orbit release fixture and rerun only the failed test file",
+    "retry_exit_code": 0
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/saved-filtered-view-1440.png",
+      "bytes": 93679,
+      "sha256": "74f70a325216289369f7d6fb7de1dc7243443ae3cb1c5c0b25ca782853da3327"
+    },
+    {
+      "path": "screenshots/saved-filtered-view-390.png",
+      "bytes": 94572,
+      "sha256": "9998f40fc89c207db45a0d6c6b85200f2335699ae79a83d93e43849b19e5ecf3"
+    },
+    {
+      "path": "screenshots/saved-value-1440.png",
+      "bytes": 234927,
+      "sha256": "946ce8d0a024f32ed31b9ca42dddda15c7c76aca7d744a667a0dfe934cd6863e"
+    },
+    {
+      "path": "screenshots/saved-value-390.png",
+      "bytes": 214708,
+      "sha256": "895954f2c4d2cc5c0cc6de7a244f2e7c162c3f4517aee0b23128749097da4eb5"
+    }
+  ]
+}

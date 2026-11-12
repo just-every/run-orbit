@@ -1,0 +1,15 @@
+{
+  "label": "contract-check-generated",
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "check"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+  "started_at": "2026-11-12T16:24:45Z",
+  "finished_at": "2026-11-12T16:24:45Z",
+  "duration_seconds": 0.107,
+  "exit_code": 0,
+  "log": "contract-check-generated.log",
+  "log_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+}

@@ -1,0 +1,18 @@
+{
+  "label": "migration-ledger-check",
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "cwd": "/home/agent/rer-consolidation/work/sd-orbit-c-f162-rebase-1/run-orbit",
+  "started_at": "2026-11-12T16:24:32Z",
+  "finished_at": "2026-11-12T16:24:33Z",
+  "duration_seconds": 1.438,
+  "exit_code": 0,
+  "log": "migration-ledger-check.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,4 @@
+diff --git a/migrations/core/0081_saved_record_views.sql b/migrations/core/0082_saved_record_views.sql
+similarity index 100%
+rename from migrations/core/0081_saved_record_views.sql
+rename to migrations/core/0082_saved_record_views.sql

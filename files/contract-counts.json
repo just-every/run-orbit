@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-11-12T16:27:02Z",
+  "counts": {
+    "f15a833113df39d8cbfbf8ac56202d1234b0720b": [
+      "| Core | 42 | 112 | 24 | 178 |",
+      "| Agent surface | 0 | 18 | 8 | 26 |",
+      "| Later | 0 | 0 | 0 | 0 |",
+      "| Full target | 42 | 130 | 32 | 204 |"
+    ],
+    "origin/main": [
+      "| Core | 42 | 112 | 24 | 178 |",
+      "| Agent surface | 0 | 18 | 8 | 26 |",
+      "| Later | 0 | 0 | 0 | 0 |",
+      "| Full target | 42 | 130 | 32 | 204 |"
+    ]
+  },
+  "changes_by_this_task": [],
+  "record_014": "partial"
+}
