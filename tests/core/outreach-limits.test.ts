@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {proveSequenceAuthoring} from '../support/sequence-authoring-proof';
 import {test} from 'node:test';
 import {proveRetryAccounting} from '../support/outreach-retry-accounting';
 import {createApp} from '../support/app';
@@ -16,7 +17,7 @@ test('OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within
  for(let i=0;i<6;i++){context.mock.timers.setTime(Date.parse('2030-01-07T10:01:00Z')+i*5*60000);await service.dispatchDue();}assert.equal(calls,5);const failed=await approval.message(message.id);assert.equal(failed.state,'failed');assert.equal(failed.attempt_count,5);assert.match(failed.failure!,/rate limit/);assert.equal((await p.db.prepare("SELECT COUNT(*) n FROM notifications WHERE event_key=?").bind(`message:${message.id}:failed`).first<{n:number}>())!.n,1);
  }finally{context.mock.timers.reset();await p.dispose();}
 });
-test('OUT-010 OUT-018 one user\'s volume never consumes another\'s budget and every deferral names its limit',async context=>{
+test('SEQUENCE-001 private versioned authoring, workspace sharing, independent copies and archive restore; OUT-010 OUT-018 isolated budgets and visible deferrals',async context=>{
  const p=await isolatedDatabase();context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00Z')});try{
   const db=p.db,f=await fixture(db),deps=createDependencies(db),approval=new ApprovalRepository(db),outreach=new OutreachRepository(db);let calls=0;
   await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
@@ -43,6 +44,7 @@ test('OUT-010 OUT-018 one user\'s volume never consumes another\'s budget and ev
   context.mock.timers.setTime(Date.parse('2030-01-09T10:00:00Z'));await service.dispatchDue();assert.equal(calls,10,'A held message is never retried without operator action');
   assert.equal((await api(owner,'settings/sending/shared','PUT',{perMinute:null})).status,200);
   const retried=await api<{state:string}>(lowered,`workbench/messages/${loweredHeld.body.id}/retry`,'POST',{});assert.equal(retried.body.state,'accepted');assert.equal(calls,11);
+  await proveSequenceAuthoring();
   await proveRetryAccounting({db,context,sender:{id:other,token:sessions.get(other)!},other:{id:lowered,token:sessions.get(lowered)!},owner:{id:owner,token:sessions.get(owner)!},opportunityId:f.opportunityId,contactId:f.contactId});
  }finally{context.mock.timers.reset();await p.dispose();}
 });
