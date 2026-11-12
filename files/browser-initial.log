@@ -1,0 +1,46 @@
+
+Running 5 tests using 1 worker
+
+(node:6343) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/capture.spec.mjs:15:1 › CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, reviews the proposals and opens the account at 1440 and 390 (51.2s)
+  ✘  2 tests/e2e/capture.spec.mjs:83:1 › CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history (1.5m)
+(node:7591) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/e2e/records.spec.mjs:5:1 › record creation, edits, manual entries and workspace operator management persist through the interface (1.4m)
+  ✓  4 tests/e2e/records.spec.mjs:27:1 › record editor and workspace settings remain usable at mobile width (18.9s)
+  ✓  5 tests/e2e/records.spec.mjs:28:1 › record list summaries use company, contact and opportunity fields without missing-value text (21.8s)
+
+
+  1) tests/e2e/capture.spec.mjs:83:1 › CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history 
+
+    Error: Offline fixture request timed out.
+
+       at ../../scripts/browser-runtime.mjs:21
+
+      19 |   if (process.env.ORBIT_FIXTURE_OFFLINE === '1' || process.env.ORBIT_FIXTURE_BROKER !== '1') return false;
+      20 |   const socket = createConnection(socketPath());
+    > 21 |   socket.setTimeout(60_000, () => socket.destroy(new Error('Offline fixture request timed out.')));
+         |                                                  ^
+      22 |   try {
+      23 |     await once(socket, 'connect');
+      24 |     socket.end(JSON.stringify({ name, args }));
+        at Socket.<anonymous> (/workspace/run-orbit/scripts/browser-runtime.mjs:21:50)
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/capture-CAPTURE-provider-s-90d0b--preserves-captured-history/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/capture-CAPTURE-provider-s-90d0b--preserves-captured-history/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/capture-CAPTURE-provider-s-90d0b--preserves-captured-history/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace test-results/capture-CAPTURE-provider-s-90d0b--preserves-captured-history/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/capture.spec.mjs:83:1 › CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history 
+  4 passed (7.1m)

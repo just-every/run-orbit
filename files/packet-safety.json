@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-11-12T04:06:48.909434+00:00",
+  "checked_files_before_this_receipt": 25,
+  "symlinks": 0,
+  "injected_secret_value_matches": 0,
+  "credential_pattern_matches": 0,
+  "trace_archives_selected": false,
+  "scope": "Explicit public report/receipt files and synthetic browser screenshots only"
+}

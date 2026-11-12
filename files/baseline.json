@@ -1,0 +1,15 @@
+{
+  "baseline": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "capture": {
+    "id": "01M76XM0ZNF3WQSDZ37KW59GW8",
+    "email": "synthetic-orbit-capture-1794454976601@example.test",
+    "contactability": "contactable"
+  },
+  "erasure": {
+    "id": "01M76XM8C1JRB8C3JAYR2Z965S",
+    "email": "synthetic-orbit-erasure-1794454983292@example.test",
+    "contactability": "contactable"
+  },
+  "observed": "Both contacts unexpectedly started contactable",
+  "width": 1440
+}

@@ -1,0 +1,93 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-consent-1",
+  "head": "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
+  "recorded_at": "2026-11-12T04:05:04.503812+00:00",
+  "local_node": "22.20.0 final typecheck and provider retry; 24.19.0 initial browser and core tests",
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-intake.test.ts tests/core/launch-suppression.test.ts",
+      "exit": 1,
+      "passed": 1,
+      "failed": 3,
+      "failure": "Launch fixture migration startup ETIMEDOUT before assertions",
+      "receipt": "core-initial.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/launch-suppression.test.ts",
+      "exit": 0,
+      "passed": 3,
+      "failed": 0,
+      "receipt": "core-retry.log"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright-config.mjs capture.spec.mjs records.spec.mjs",
+      "exit": 1,
+      "passed": 4,
+      "failed": 1,
+      "failure": "Unchanged provider journey offline fixture socket setup timeout",
+      "receipt": "browser-initial.log"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright-config.mjs capture.spec.mjs --grep 'CAPTURE provider status' --reporter=line,json",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "receipt": "provider-retry.json"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "node": "22.20.0"
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "core_files": 828
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-check.json"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "registrations": 198,
+      "qualifications": 2,
+      "before": 200,
+      "after": 200,
+      "receipt": "test-inventory.json"
+    }
+  ],
+  "proof": {
+    "assertion_width": 1440,
+    "screenshots": [
+      1440,
+      390
+    ],
+    "capture_initial": "contactable",
+    "capture_final": "do_not_contact",
+    "erased_recreation_initial": "contactable",
+    "erased_recreation_final": "do_not_contact",
+    "explicit_clear": "recorded contactability.cleared timeline entry"
+  },
+  "preservation": {
+    "product_push": "success",
+    "heads": [
+      "b98e06f8f12a148592b2b9b935bad3151027d7ee",
+      "6670549f5232991258ee40540788a1b3010e64ed",
+      "bdef459c5b3ed8491de96b8ba36924bbfc544d05"
+    ],
+    "final_skip_ci": false,
+    "public_default_branch_mutation": false,
+    "pr_created": false
+  },
+  "contract": {
+    "edited": false,
+    "generated_views_edited": false,
+    "status_changes": []
+  },
+  "full_publication_scan": "Unavailable in cloud; retained as a required fleet landing gate",
+  "browser_product_head": "6670549f5232991258ee40540788a1b3010e64ed"
+}

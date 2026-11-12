@@ -1,0 +1,48 @@
+{
+  "commits": [
+    {
+      "head": "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": [],
+      "subject": "Protect erased contacts created during new-deal entry"
+    },
+    {
+      "head": "6670549f5232991258ee40540788a1b3010e64ed",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": [],
+      "subject": "Apply contact creation safeguards across capture, records and imports [skip ci]"
+    },
+    {
+      "head": "b98e06f8f12a148592b2b9b935bad3151027d7ee",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": [],
+      "subject": "Keep captured and erased-address contacts blocked on creation [skip ci]"
+    }
+  ],
+  "changed_files": [
+    "README.md",
+    "sources.lock.json",
+    "src/core/features/capture/privacy.ts",
+    "src/core/features/imports/planner.ts",
+    "src/core/features/imports/targets.ts",
+    "src/core/features/ingestion/source-routes.ts",
+    "src/core/features/ingestion/unlinked-contact.ts",
+    "src/core/features/operator/ui/do-not-contact-reason.tsx",
+    "src/core/features/operator/ui/unlinked-review.tsx",
+    "src/core/features/records/repository.ts",
+    "src/core/features/records/suppression.ts",
+    "src/core/features/workbench/repository.ts",
+    "tests/core/capture-intake.test.ts",
+    "tests/core/launch-suppression.test.ts",
+    "tests/e2e/capture.spec.mjs",
+    "tests/e2e/contact-consent.mjs",
+    "tests/e2e/records.spec.mjs",
+    "tests/support/erased-creation-consent.ts"
+  ],
+  "identity_and_trailers": "pass",
+  "new_diff_credential_scan": "pass",
+  "full_publication_scan": "fleet lander; unavailable in cloud"
+}
