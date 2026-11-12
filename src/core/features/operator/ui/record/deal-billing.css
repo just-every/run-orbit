@@ -2,7 +2,8 @@
 .billing-body { display: grid; gap: 12px; min-width: 0; }
 .billing-body p, .billing-body h3 { margin: 0; }
 .billing-body p { line-height: 1.5; }
-.billing-source { display: grid; gap: 4px; }
+.billing-source { display: grid; gap: 4px; min-width: 0; }
+.billing-source > span { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
 .billing-source > span, .billing-meta { color: var(--ob-muted); font-size: 14px; }
 .billing-identity { display: grid; grid-template-columns: minmax(80px, auto) minmax(0, 1fr); gap: 6px 14px; margin: 0; }
 .billing-identity dt { color: var(--ob-muted); font-size: 14px; }

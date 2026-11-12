@@ -24,6 +24,7 @@ test('full related names and contact labels remain readable; deal and company St
   try {
     const deps = createTestDependencies(fixture.db);
     await deps.sampleData.seed();
+    await fixture.db.prepare("UPDATE workspace_settings SET currency='USD' WHERE id='workspace'").run();
     await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
     const billingDeal=sampleData.opportunities.find(deal=>deal.companyId)!;
     const billingCompany=sampleData.companies.find(company=>company.id===billingDeal.companyId)!;
@@ -120,6 +121,8 @@ test('full related names and contact labels remain readable; deal and company St
           await expect(person).toContainText('Primary recipient');
           const more=person.getByRole('button', { name: `More for ${contact}`, exact: true });
           await expect(more).toBeEnabled();
+          await more.scrollIntoViewIfNeeded();
+          await expect(more).toBeInViewport();
           await more.focus();
           await expect(page.getByRole('tooltip',{name:`More for ${contact}`,exact:true})).toBeVisible();
           await more.blur();
@@ -151,6 +154,7 @@ test('full related names and contact labels remain readable; deal and company St
         await expect(panel.locator('.billing-timeline li').filter({hasText:'charge.refunded'})).toContainText('USD 250.00');
         await expect(panel.locator('.billing-source')).toContainText(/Paused/);
         await expect(panel.locator('.billing-source')).toContainText(/Last Stripe event received/);
+        await readable(panel.locator('.billing-source'),'Last Stripe event received');
         await readable(panel.locator('.billing-identity'),billingContact.email!);
         await expect(panel.locator('.billing-identity')).toContainText(billingCompany.primaryDomain!);
         await expect(panel.locator('.billing-identity a')).toHaveAttribute('href',`https://dashboard.stripe.com/test/customers/${customerId}`);
