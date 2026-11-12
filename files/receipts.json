@@ -1,0 +1,217 @@
+{
+  "tag": "sd-orbit-c-f160",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f160",
+  "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+  "main": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "new_product_edits": false,
+  "contract_counts": {
+    "origin/main": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    },
+    "HEAD": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    }
+  },
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email [fleet identity] --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "contract-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 1,
+      "log": "native-http.log",
+      "runtime": "Node 24.19.0",
+      "failure": "Dashboard schedule operation returned 503 after D1 connection closed; subsequent migration setup timed out"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 1,
+      "log": "browser.log",
+      "runtime": "Node 24.19.0",
+      "failure": "Fixture migration spawnSync ETIMEDOUT before browser"
+    },
+    {
+      "command": "isolatedDatabase startup probe under Node 22.20.0",
+      "exit": 1,
+      "log": "fixture-node22.log",
+      "failure": "Migration startup timeout while native run active"
+    },
+    {
+      "command": "isolatedDatabase startup probe with Node 22.20.0 and WRANGLER_SEND_METRICS=false",
+      "exit": 1,
+      "log": "fixture-ci-env.log",
+      "failure": "Migration startup timeout while native run active"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='^NOTIFY-003' --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 1,
+      "log": "native-http-node22.log",
+      "runtime": "Node 22.20.0 with WRANGLER_SEND_METRICS=false",
+      "failure": "Fixture migration startup exceeded 60000 ms while browser registration was active; no product assertion reached"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 0,
+      "log": "browser-node22.log",
+      "runtime": "Node 22.20.0 with WRANGLER_SEND_METRICS=false",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "duration_ms": 388722.863817,
+      "screens": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "final rebase, contract write and check, restore views, source lock and check, clean-tree and identity audit",
+      "exit": 0,
+      "new_head": false
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='^NOTIFY-003' --test-concurrency=1 tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "log": "native-http-serial.log",
+      "runtime": "Node 22.20.0 with WRANGLER_SEND_METRICS=false; no concurrent browser run",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 998837.054706
+    }
+  ],
+  "native_http": "passed",
+  "browser": "passed",
+  "scan": {
+    "status": "not run in cloud; fleet lander owns it",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": "fleet pending",
+  "ci": {
+    "discovery_call": 1,
+    "runs": [
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f156",
+        "head_sha": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119775666",
+        "id": 43119775666,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ],
+    "runs_after_push": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f160",
+        "head_sha": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43127892992",
+        "id": 43127892992,
+        "name": "Verify",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "success",
+        "event": "push",
+        "head_branch": "cloud/sd-orbit-c-f156",
+        "head_sha": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43119775666",
+        "id": 43119775666,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ],
+    "github_calls_used": 6,
+    "named_branch_final_observation": {
+      "conclusion": null,
+      "head_sha": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43127892992",
+      "id": 43127892992,
+      "status": "in_progress"
+    },
+    "observed_at_utc": "2026-11-12T00:44:02.068387+00:00"
+  },
+  "ci_artifact_download": {
+    "command": "gh api repos/just-every/run-orbit/actions/artifacts/13900549560/zip",
+    "exit": 1,
+    "http": "Forbidden at storage redirect",
+    "retried": false,
+    "diagnostic": "ci-download-error.log"
+  },
+  "browser_screens": {
+    "inspected": [
+      "browser/slack-declaration-1440.png",
+      "browser/slack-declaration-390.png"
+    ],
+    "result": "Readable declaration, callback wrapping, empty credential fields, text controls, no horizontal overflow or new icon-only control; preserved existing layout."
+  },
+  "product_push": {
+    "exit": 0,
+    "branch": "cloud/sd-orbit-c-f160",
+    "head": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "attempts": 1,
+    "log": "product-push.log"
+  },
+  "native_test_name": "NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send",
+  "browser_test_name": "emitted Worker record and NOW lists wrap full valid long names; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390",
+  "product_head_after_checks": "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+  "worktree_clean_after_checks": true,
+  "claimed_points": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "clause_status": "PARTIAL",
+  "blockers_for_selected_points": []
+}

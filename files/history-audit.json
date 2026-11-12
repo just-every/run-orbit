@@ -1,0 +1,13 @@
+{
+  "candidate_commits": [
+    "1149556a4235ff098d9386fff9d7a91eab6f50a6",
+    "9ebc8b43779cb67c81652b01904ad5f71ae44971",
+    "44b4259c5e10492b4f51b2cc926d01dafd4651c5",
+    "6cb7ae315980cf33a2c29974eeb3133336b14517"
+  ],
+  "contract_matches_main_at_every_candidate": true,
+  "generated_view_diff": false,
+  "all_authors_and_committers_fleet": true,
+  "coauthor_trailers": 0,
+  "shallow": "false"
+}
