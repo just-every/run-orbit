@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "38f940651983b4cb1cbd0076a3d83a987d4cb5fcb89fc909874bda7415e8bf78",
+      "sha256": "e3de423581bafad823d1dd06da7a00f988eb40f585f24d28e62a7cb57ce24325",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2227,7 +2227,7 @@
       "executable": false
     },
     "migrations/core/0081_sequence_authoring.sql": {
-      "sha256": "ff0803db6a28ce3e64073cfe24a4357147dbd0926a31d308ea11f7fcfa63f1f6",
+      "sha256": "e066acd7f8fd8e2bb7ddacda2066256958b1083bd7f14c032e8015c083ec408b",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -2359,7 +2359,7 @@
       "executable": false
     },
     "newtests/t096/browser-sequence-authoring.ts": {
-      "sha256": "6efb8ff24b86a280b7921dc2e72f9e7964ab8bc22ef9d993e130ab74d4d9af5a",
+      "sha256": "59033cd0354d96b17f00ec285f3fb832c29bf585f0d18b79850d0fa05ebcd9d6",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
@@ -7831,7 +7831,7 @@
       "executable": false
     },
     "src/core/features/records/archive-fold-catalog.ts": {
-      "sha256": "a038726242f79a00c62467459e1afcf6f28847798ca446fcf7650b3376939bb6",
+      "sha256": "b676a8d0c6fcc446759e8278f3a23493717c5a2171868bc273b3b8c633abb001",
       "executable": false
     },
     "src/core/features/records/archive-fold-profile.ts": {
@@ -8155,7 +8155,7 @@
       "executable": false
     },
     "src/core/features/sequences/repository.ts": {
-      "sha256": "bfd9506b4205e4be9368021c471a196b52a03f898fa2b52b6deddac2688a9b3d",
+      "sha256": "a9b1ab739ea85bc93d9462f368611716cdce12c2dcf7bd040e1139040e6ad94d",
       "executable": false
     },
     "src/core/features/sequences/routes.ts": {
@@ -10019,7 +10019,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "99ab0374c985b0215eb0b53ddfdea2741f72cb7b980c67087bd3fb2228766d1a",
+      "sha256": "f2a2d3f2f58cd413d9262266442421a50e60eee743a88b1d68f2702790fbe422",
       "executable": false
     },
     "src/site/pages.tsx": {
@@ -11423,7 +11423,7 @@
       "executable": false
     },
     "tests/support/sequence-authoring-proof.ts": {
-      "sha256": "a393a4b69c34f827429f19db5b9c8ecd65d2e32475a2453f2892e10106f60e69",
+      "sha256": "e353b16000090698ec88197911c466d841a3293908f02b9a2994b00360163577",
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {
