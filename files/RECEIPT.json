@@ -1,0 +1,185 @@
+{
+  "tag": "sd-orbit-c-f176",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f176",
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "recorded_at": "2026-11-12T09:48:30.038429+00:00",
+  "main_parent": "051687beaaabf0e1580767a51aeb202dfa9c071b",
+  "native": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts tests/core/today-brief.test.ts",
+    "exit": 0,
+    "tests": 5,
+    "pass": 5,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 730880.043828
+  },
+  "browser": {
+    "command": [
+      "perl",
+      "-e",
+      "alarm 1200; exec @ARGV",
+      "--",
+      "pnpm",
+      "exec",
+      "tsx",
+      "--test",
+      "tests/delegation-browser/today-brief.test.ts"
+    ],
+    "exit": 0,
+    "viewports": [
+      1440,
+      390
+    ],
+    "inspected": true,
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 119516.31158,
+    "wrapper": "cloud_run",
+    "chromium_executable": "/usr/bin/chromium",
+    "evidence_directory": "/home/agent/rer-consolidation/work/sd-orbit-c-f176/packet/browser"
+  },
+  "build": {
+    "command": "npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "test_budget": {
+    "before": 200,
+    "after": 200,
+    "registrations": 198,
+    "qualifications": 2
+  },
+  "status_counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    }
+  },
+  "contract_preserved": true,
+  "generated_views_restored": true,
+  "source_inputs": [
+    {
+      "path": "src/core/features/risks/embedded-agent.ts",
+      "sha256": "106d62a39fe163ba0f72cce031b836070fb87d53cc3aac95a01f31423f4eecd1"
+    },
+    {
+      "path": "src/core/features/risks/routes.ts",
+      "sha256": "b5aa065ea081acb534d4bfa3b3b26b5c5da96d17168177b013c5158b2f2fd21e"
+    },
+    {
+      "path": "src/core/features/risks/actions.ts",
+      "sha256": "0d5e821b41de4a7ff38ccc8582e16c53a4ddd01346e31d25fd58f6e77deca7be"
+    },
+    {
+      "path": "src/core/features/risks/findings.ts",
+      "sha256": "f1820f7a1a49b1fd4e6729a252d1173e3d56c9f9ee5996f247268591fd0d79c8"
+    },
+    {
+      "path": "src/core/features/agent-door/evidence.ts",
+      "sha256": "94cb3887755949191188f7df28c53cac0cf8ad06dfff2b4c27e5b496cb590aa1"
+    },
+    {
+      "path": "src/core/features/today/promises.ts",
+      "sha256": "fe83c68f977b135064c4758fe7bfe77fd5f4d31eb041f20a4ccc995cd26114c4"
+    },
+    {
+      "path": "src/core/app/app.ts",
+      "sha256": "669a764608bde17670b6fee4437142199c0da156a322c7bb696a2979ae200a0f"
+    },
+    {
+      "path": "src/core/app/worker.ts",
+      "sha256": "e4f1c412ef5177a650945cdf820f05e8a8fe6233eaab8f56f94714f6c2c10f87"
+    },
+    {
+      "path": "src/core/features/operator/ui/deal-risks.tsx",
+      "sha256": "04eb818bb8acf43a910903688e841730f0faf76a63c4a8a984724097421cb186"
+    },
+    {
+      "path": "src/core/features/operator/ui/deal-risk-finding.tsx",
+      "sha256": "42462766b3039bddf7ac9fb5a4caf81386a7bc6cb0615d88a7e9c91785e71f90"
+    },
+    {
+      "path": "tests/support/embedded-risk-agent-proof.ts",
+      "sha256": "e3bfa8c1a5ccf21e38c52b6a06ea6d4ebb0455f673494b99eb2ac6c3511cc6b1"
+    },
+    {
+      "path": "tests/support/agent-door-proof.ts",
+      "sha256": "880c20f892a6b0db16fdeeb45a082ab28ab9e25fc086d387161dc0dfad3b2fad"
+    },
+    {
+      "path": "tests/support/agent-door-stalled-risk-proof.ts",
+      "sha256": "f970e1dd89f865f7386a5bf93258564c4d8b8e998e20ee2a7bbf70e370ee493f"
+    },
+    {
+      "path": "tests/core/managed-owner.test.ts",
+      "sha256": "12d338e7a96347f74cab60dbdc9cb5ac87edf70f3f5443e21a863dc4d3861017"
+    },
+    {
+      "path": "tests/core/today-brief.test.ts",
+      "sha256": "af730715120d29a0f83fdc7961449a6af133a2c1023492056ac7aa385bee5736"
+    },
+    {
+      "path": "tests/delegation-browser/today-brief.test.ts",
+      "sha256": "2286681b32b53bd9d530b50beef9a88b7c3299130759126b4d5c17b2e0014b2f"
+    },
+    {
+      "path": "tests/delegation-browser/risk-journey.mjs",
+      "sha256": "715aae1ab78c4b1bde39eb7886b81d5b5247234d7f13142ad7ff4153c6a28624"
+    },
+    {
+      "path": "agent-surface.json",
+      "sha256": "6249f62af3550282710091335cb81e21deaffa1ddebf512db2b5b325823198ce"
+    },
+    {
+      "path": "docs/AGENT-DOOR.md",
+      "sha256": "0cb439107eb79ec8728b7e798b9c059a94fa80d7a23aee2a812f3ff76c1b2abc"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "6a04d005e1225de7d55d632c86f882282a2ed725084ca63f52e85c72b5356f42"
+    }
+  ],
+  "scan": {
+    "commit": "91a7f46893e7e542206fa684292e6743542bb6bd",
+    "status": "not_run_in_cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "owner": "fleet lander"
+  },
+  "main_ci": {
+    "head": "051687beaaabf0e1580767a51aeb202dfa9c071b",
+    "verify": 43185670499,
+    "verify_conclusion": "success",
+    "run_site": 43192124367,
+    "run_site_conclusion": "success"
+  },
+  "product_push": {
+    "verified": true,
+    "remote_head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+    "run_id": 43194636351,
+    "event": "push",
+    "observed_status": "completed",
+    "verify_conclusion": "failure",
+    "observed_at": "2026-11-12T10:20:01.674963+00:00"
+  },
+  "blocked": {
+    "reason": "Exact-head Verify completed with failure; failed jobs and logs were not retrieved before the ten-call GitHub budget was exhausted.",
+    "run_id": 43194636351,
+    "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+    "github_calls_used": 10,
+    "failed_job_ids": null,
+    "reproduction": "not_run",
+    "repairs": 0
+  }
+}

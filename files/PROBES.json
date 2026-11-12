@@ -1,0 +1,136 @@
+{
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "proofs": [
+    {
+      "proof": "SURFACE-013.stalled-deal",
+      "clock": "2026-11-12T09:35:41.248Z",
+      "expected": {
+        "id": "01M4N52TP0FX690MFWFHE8ZKMD",
+        "evidenceId": "01M4QQFHP0RA75Z53YWYXKFZYT",
+        "quote": "In Synthetic proposal since 2026-10-12",
+        "since": "2026-10-12T09:35:41.248Z",
+        "days": 31,
+        "intervalDays": 14,
+        "nextTask": "Agree a dated next step with Synthetic risk buyer or close the deal"
+      },
+      "policies": [
+        {
+          "mode": "autonomous",
+          "decision": "d9e6ab5c-c58e-45f0-8876-aa3f1fd88071",
+          "disposition": "autonomous",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": null
+        },
+        {
+          "mode": "held",
+          "decision": "09d5c487-9e62-455c-8de8-c6bc13db4f1e",
+          "disposition": "review",
+          "classes": [
+            {
+              "class": "standard",
+              "facts": {
+                "measure": 1
+              }
+            }
+          ],
+          "review": "a906a4d4-4892-45a1-8e92-3b4dcf4c66b2"
+        }
+      ],
+      "nativeMatch": true,
+      "salesMailModelUnchanged": true,
+      "blockedRefused": true,
+      "revokedRefused": true
+    },
+    {
+      "proof": "SURFACE-012.embedded-deal-risk",
+      "policies": [
+        {
+          "mode": "held",
+          "filed": 3,
+          "decisions": [
+            "66dc0faf-7ea2-4141-ad71-0f8964ff63cd",
+            "e28f89ea-0023-4781-b5e4-436058eb0eff",
+            "f1ea5ee0-6ede-4288-a687-021167f47a1f",
+            "c36338a0-ec32-4c2e-8360-fb86f9946838",
+            "d6351b22-a448-4c85-b02f-27cddbccd06d",
+            "ec6b81ac-7f17-4cf3-aaef-11485eb5dac8",
+            "43c11555-9963-4ec4-90f0-672ccda8a563"
+          ],
+          "outside": [
+            "6441f730-ea78-409d-97de-f0dd00fa6de3",
+            "4e9b9dad-11c9-42a5-9d5c-f703bbed1a50",
+            "50537908-95d3-4f44-b893-aa37fe9245c6",
+            "daf4d17b-2b17-4508-8805-9fb43c85a7a4",
+            "d84783a0-b1c3-4f77-bf16-05fb45fa3a8a",
+            "096e131b-de4b-43b2-9b06-f8239c9c86a6",
+            "b283d419-278e-477b-931e-0e95cdb8d645"
+          ]
+        },
+        {
+          "mode": "autonomous",
+          "filed": 3,
+          "decisions": [
+            "59cd97b5-8343-416f-9bbe-4bab9ded8abe",
+            "efbc46ea-982c-4cf5-aa77-718e1d1cbe6b",
+            "6049e2df-0322-4f06-adda-eda135e7154e",
+            "66ce994c-48ba-4e29-8591-03abf1516d3e",
+            "9a878905-3527-401c-97c0-5d02b1b96e64",
+            "f8f9ddd9-0c03-483d-a410-9995e00a9eec",
+            "7ca76ac6-3170-4ca7-990a-890346f781d3"
+          ],
+          "outside": [
+            "14b4718b-62f2-4e1e-abbc-deb3990213db",
+            "129c22a7-01c9-43a7-bc99-c322711399e5",
+            "5fd49db0-3baf-43f5-a30d-2709c4772965",
+            "f7e8bd6d-7577-4739-8e7b-5970cc11020e",
+            "dd4be4f0-e78b-40b7-a11e-1af41e36766f",
+            "574e0454-4275-432d-aa1e-812489b46f7c",
+            "025e451f-81cf-4420-8e66-0668e5b25203"
+          ]
+        }
+      ],
+      "hostileEvidence": true,
+      "nativeTaskParity": true,
+      "blocked": true,
+      "unset": true,
+      "removed": true,
+      "replay": true
+    },
+    {
+      "proof": "SURFACE-013.stalled-browser",
+      "evidenceId": "01M4QQG6G3ZCMNE0KFPF2QYV6Y",
+      "quote": "In Synthetic proposal since 2026-10-12",
+      "nativeMatch": true,
+      "evidenceLinkAuthenticated": true,
+      "reviewMarked": true,
+      "widths": [
+        1440,
+        390
+      ]
+    },
+    {
+      "proof": "SURFACE-012.embedded-risk-browser",
+      "deal": "01M4N53FG3VYJ50HGXNFSBNJHX",
+      "calls": 5,
+      "filed": 2,
+      "decisions": [
+        "d8f6ce24-530d-40d9-86f7-5c942e65f371",
+        "135a9d29-6cbc-4b48-8eee-ad526d96d9a2",
+        "cc4aa0a9-f0f7-4d68-bd7b-607e9f5d2e3f",
+        "459325c8-8184-4310-aad3-f7789cbc10df",
+        "edbd0aa8-db54-48af-b710-ce7fecb02638"
+      ],
+      "widths": [
+        1440,
+        390
+      ]
+    }
+  ]
+}

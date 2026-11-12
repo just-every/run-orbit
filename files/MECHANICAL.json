@@ -1,0 +1,123 @@
+{
+  "checks": [
+    {
+      "name": "views_write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:34.460485+00:00",
+      "finished": "2026-11-12T09:32:34.605894+00:00"
+    },
+    {
+      "name": "views_check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:34.606230+00:00",
+      "finished": "2026-11-12T09:32:34.746185+00:00"
+    },
+    {
+      "name": "restore_views",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:34.746500+00:00",
+      "finished": "2026-11-12T09:32:34.753558+00:00"
+    },
+    {
+      "name": "surface",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "scripts/agent-surface.ts",
+        "--check"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:34.753774+00:00",
+      "finished": "2026-11-12T09:32:36.554250+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:36.554620+00:00",
+      "finished": "2026-11-12T09:32:58.437740+00:00"
+    },
+    {
+      "name": "first_party",
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:58.438281+00:00",
+      "finished": "2026-11-12T09:32:59.909924+00:00"
+    },
+    {
+      "name": "boundaries",
+      "command": [
+        "pnpm",
+        "run",
+        "check:boundaries"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:32:59.910384+00:00",
+      "finished": "2026-11-12T09:33:00.551392+00:00"
+    },
+    {
+      "name": "test_budget",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {checkTestBudget} from './scripts/verification-inventory.mjs';const {files,...counts}=checkTestBudget();console.log(JSON.stringify(counts));"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:33:00.560707+00:00",
+      "finished": "2026-11-12T09:33:01.150471+00:00"
+    },
+    {
+      "name": "lock_write",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:33:01.150832+00:00",
+      "finished": "2026-11-12T09:33:01.681977+00:00"
+    },
+    {
+      "name": "lock_check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "started": "2026-11-12T09:33:01.682512+00:00",
+      "finished": "2026-11-12T09:33:02.149795+00:00"
+    }
+  ]
+}
