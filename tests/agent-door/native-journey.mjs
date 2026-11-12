@@ -30,6 +30,8 @@ export async function agentDocsInventory({html,mcp}) {
   surface.tools.map(({name,scope,readOnly,classes,clauses})=>({name,scope,readOnly,classes,clauses})),
   'discovery preserves the manifest tool scopes, read authority, classes and clause coverage');
  assert.deepEqual(toolRows.map(row=>row[0]).sort(),tools.body.result.tools.map(tool=>tool.name).sort(),'rendered tools exactly match native discovery');
+ assert.deepEqual(toolRows,tools.body.result.tools.map(tool=>[tool.name,tool._meta['com.runeditrun/scope'],tool._meta['com.runeditrun/classes'].join(', ')]).sort((a,b)=>a[0].localeCompare(b[0])),
+  'the rendered guide preserves every discovered tool scope and possible class');
  const resourceRows=tableAfter('current-resource-template-inventory');
  assert.deepEqual(resourceRows.map(([uriTemplate,name])=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),
   resources.body.result.resourceTemplates.map(({uriTemplate,name})=>({uriTemplate,name})).sort((a,b)=>a.uriTemplate.localeCompare(b.uriTemplate)),

@@ -125,6 +125,7 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.events.list` | `events:read` | standard |
 | `orbit.forecasts.read` | `forecasts:read` | standard, sensitive |
 | `orbit.forecasts.update` | `forecasts:write` | standard |
+| `orbit.graph.propose` | `graph:write` | standard |
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
 | `orbit.meetings.read` | `meetings:read` | standard |
@@ -273,3 +274,43 @@ Captured evidence and proposals remain; mail to the old address stops entering.
 Read the new address in Settings → Capture. The address, private tag and forwarding
 confirmation are excluded from tool results, retained summaries, audits and archives.
 Provisioning and other credential changes are outside this adapter.
+
+## Cited account graph proposals
+
+`orbit.graph.propose` needs a native selected credential with both
+`crm.evidence.read` and `crm.graph.propose`. Existing read and handoff grants do
+not acquire this scope. In native consent, select the company, contact, deal and
+captured signal explicitly. All records must belong to that company; the signal
+must already have a native account association or a held capture proposal for it.
+Selected graph credentials can also follow their own value-free `graph.proposed`
+notices; other records, approvals and installation events are withheld.
+The tool uses `graph:write` and computes standard with one internal proposal call.
+Under standard review policy it also enters the Agents review feed; autonomous
+policy creates the same pending native proposals. Neither disposition applies a
+field correction.
+
+Supply `company_id`, `signal_id`, `job_change` and `close_date` (each with `id`,
+`value` and `citation`), and `question`. Each citation contains an exact message
+`quote` line and an `observed` or `inferred` label. Close dates use a complete UTC
+instant. The result retains the captured signal, item and event identities,
+occurred time, source and agent acting for its sponsor. Labels describe the
+proposed interpretation; they confer no authority. The fixed question asks who
+makes the decision and records no new contact or role, even when acknowledged.
+
+Review each proposal under Review or on the company record. A signed-in person
+can accept, edit or decline a field correction; a changed native value refuses
+acceptance with a conflict. Accepted proposals apply once and declined proposals
+remain declined for that evidence. Source disconnection withdraws pending graph
+proposals and refuses new calls and completed replays that would return the
+source. Contact erasure removes captured originals and proposals and prevents
+replaying the original call from recreating them. Message instructions and caller
+class or confirmation claims never change scope, risk or contactability.
+
+`tests/core/managed-owner.test.ts` runs the native-consent MCP and review proof
+through `tests/support/agent-door-graph-proof.ts`, covering both company policies,
+foreign-account refusal, hostile text, conflict, edited acceptance and terminal
+review decisions under each policy. Erasure replay is checked with the source
+still connected, including the original call key, a new key and the original
+captured mail. Source withdrawal and completed-call read refusal are then checked
+under each policy. Scheduled runs, transcripts and licensed enrichment remain
+outside this written-evidence tool.

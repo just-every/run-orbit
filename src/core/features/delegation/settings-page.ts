@@ -2,7 +2,7 @@ import {escapeHtml as esc,nativePage as page} from './native-page';
 import type {ListedRecord} from './listing';
 
 /** What each capability lets an application do, in the words the owner reads before allowing it. */
-export const scopeWords:Record<string,string>={'crm.evidence.read':'Read the chosen records (an opportunity includes its contacts and company)','crm.handoff.write':'Propose handoff tasks on the chosen opportunities, for a person to accept or dismiss'};
+export const scopeWords:Record<string,string>={'crm.graph.propose':'Propose cited job titles, deal close dates and decision-maker questions on the chosen account; a person reviews each change; follow only this application’s own proposal notices','crm.evidence.read':'Read the chosen records (an opportunity includes its contacts and company)','crm.handoff.write':'Propose handoff tasks on the chosen opportunities, for a person to accept or dismiss'};
 export const kindWords:Record<string,string>={'crm.opportunity':'Opportunity','crm.contact':'Contact','crm.company':'Company','crm.signal':'Signal','crm.handoff':'Handoff task'};
 /** Orbit's own callback, for an application with no callback page of its own: Orbit shows the access key instead. */
 export const ownCallback=(origin:string)=>`${origin}/delegation/callback`;
