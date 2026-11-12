@@ -1,0 +1,4 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"saved-record-views","kinds":["contact","company","opportunity"],"viewsRestored":3,"privateRead":404,"workspaceRead":200,"staleEdit":409,"staleDelete":409,"collaboratorRead":403,"collaboratorWrite":403,"revokedSession":401,"stableTies":true,"currentOwners":true,"archivedColumns":true,"erasure":true}

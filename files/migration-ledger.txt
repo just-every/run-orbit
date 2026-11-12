@@ -1,0 +1,3 @@
+{"ledger":"d1_migrations","applied":76,"files":76,"foreignKeyViolations":0,"complete":true}
+(node:45378) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

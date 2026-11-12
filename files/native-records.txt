@@ -1,0 +1,26 @@
+TAP version 13
+# (node:34237) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"saved-record-views","kinds":["contact","company","opportunity"],"viewsRestored":3,"privateRead":404,"workspaceRead":200,"staleEdit":409,"staleDelete":409,"collaboratorRead":403,"collaboratorWrite":403,"revokedSession":401,"stableTies":true,"currentOwners":true,"archivedColumns":true,"erasure":true}
+# Subtest: RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export
+ok 1 - RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export
+  ---
+  duration_ms: 465264.895538
+  type: 'test'
+  ...
+# Subtest: RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal
+ok 2 - RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal
+  ---
+  duration_ms: 12209.932545
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 481278.123997

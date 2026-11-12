@@ -1,0 +1,91 @@
+{
+  "tag": "sd-orbit-c-f162",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f162",
+  "head": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572",
+  "productPushed": true,
+  "fullHistory": true,
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "claim": {
+    "id": "RECORD-014",
+    "status": "PARTIAL",
+    "point": 1,
+    "scope": "saved filtered view limb only"
+  },
+  "before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "tests": [
+    {
+      "command": "pnpm exec tsx --test tests/core/records-complete.test.ts",
+      "exit": 0,
+      "node": "22.20.0",
+      "cases": 2
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/onboarding-archive.test.ts",
+      "exit": 0,
+      "node": "24.19.0",
+      "cases": 1
+    },
+    {
+      "command": "pnpm exec tsx --test newtests/t096/forward-upgrade.test.ts",
+      "exit": 0,
+      "node": "24.19.0",
+      "cases": 1
+    },
+    {
+      "command": "ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 0,
+      "node": "22.20.0",
+      "cases": 1,
+      "widths": [
+        1440,
+        390
+      ]
+    }
+  ],
+  "publicationScan": {
+    "status": "fleet-pending",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "mainEquality": false,
+  "candidateRunSite": "fleet-pending",
+  "sources": {
+    "src/core/features/records/saved-views.ts": "7484a977ea8990fe7c4462c8282cb7a3c808cf6116ceeaaad009f263ae0eddf8",
+    "src/core/features/records/routes.ts": "85727e4c4716c3ff6183e3b50fa18bff93363f7b2729084b032ef32b8e91b79f",
+    "src/core/features/records/repository.ts": "00d7003f80dd931e9f2ea285edb4c5af2a205268833398ea9b3fd864d9f13db3",
+    "src/core/features/operator/ui/saved-record-views.tsx": "ec2902c98114a55247bd57570a010b363cb7d0111de8bb212e55caa9cdb81906",
+    "src/core/features/operator/ui/records-page.tsx": "1bcb611c5d1e1088d997a6cf0a5c6a4a81c5d1ccc62c09306c532179f98a43af",
+    "src/core/features/operator/ui/records-list.tsx": "8274480c2756b612da456010864eb8372c8d3dfcc3a29834bfd126bf6ba59b40",
+    "tests/support/saved-views-proof.ts": "7b47e6092caf5c70a3e59963f0a7c0902f0190a7aefac83e2c4b01450d6b22ac",
+    "tests/core/records-complete.test.ts": "6e0a092b26230654907ab1bdc6295f6ea2df7c080c574e4b508254624f6be2cf",
+    "tests/delegation-browser/typed-fields-journey.mjs": "bf5506fb6712f5997c88250b548cd719676c3d45f6fc7603eefd5d4859af2e85",
+    "tests/delegation-browser/records-layout.test.ts": "6f92811f338ec05c15cb198d66460a6c544a704b63abf160be1ee2aef6558524"
+  },
+  "sourceLockSha256": "7357549d3ff5df785af8ff8441d8ab433a347ad359dd0572d71c11b32733fc33",
+  "committedProofSourcesMatch": true,
+  "generatedViewsChanged": false,
+  "contractChanged": false,
+  "ci": {
+    "runId": 43138188401,
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "head": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572"
+  }
+}

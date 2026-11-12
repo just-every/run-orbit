@@ -1,0 +1,3 @@
+CLAIM RECORD-014 PARTIAL points=1 tests=tests/core/records-complete.test.ts#RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export
+DEFAULT RECORD-014: Only authors change or delete a saved definition; workspace reads require current native full-operator access, and collaborators remain denied.
+GAP RECORD-014: Only acceptance 1's saved-view limb is closed. Custom objects, explicit relationships and layouts, lead qualification and conversion, reviewed bulk field edits, field-value source history and inherited workflow approval remain unclaimed. TEAM-005 and all existing plan holds remain unchanged.

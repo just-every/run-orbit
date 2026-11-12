@@ -1,0 +1,119 @@
+{
+  "steps": [
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "--noEmit"
+      ],
+      "exit": 0,
+      "seconds": 21.536
+    },
+    {
+      "name": "first-party",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "seconds": 1.118
+    },
+    {
+      "name": "boundaries",
+      "command": [
+        "node",
+        "scripts/check-boundaries.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.165
+    },
+    {
+      "name": "deployment-spec",
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.077
+    },
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "seconds": 0.095
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 0.106
+    },
+    {
+      "name": "views-restore",
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "seconds": 0.006
+    },
+    {
+      "name": "migration-ledger",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-c-f162/packet/ledger-check.mjs",
+        "/tmp/orbit-f162-final-state"
+      ],
+      "exit": 0,
+      "seconds": 0.074
+    },
+    {
+      "name": "test-budget",
+      "command": [
+        "node",
+        "scripts/verification-inventory.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.935
+    },
+    {
+      "name": "source-lock",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "seconds": 0.531
+    },
+    {
+      "name": "source-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "seconds": 0.494
+    }
+  ]
+}

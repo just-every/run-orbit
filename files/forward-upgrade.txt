@@ -1,0 +1,15 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":129,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":4230.963547999971,"status":201},{"operation":"GET /exports/01M76NPT02ZP8MPBNMFT78AJFF","milliseconds":147.06637199997203,"status":200},{"operation":"POST /exports/01M76NPT02ZP8MPBNMFT78AJFF/advance","milliseconds":7618.956586999993,"status":200},{"operation":"POST /exports/01M76NPT02ZP8MPBNMFT78AJFF/advance","milliseconds":9736.568071999995,"status":200},{"operation":"POST /exports/01M76NPT02ZP8MPBNMFT78AJFF/advance","milliseconds":10377.492096000002,"status":200},{"operation":"POST /exports/01M76NPT02ZP8MPBNMFT78AJFF/advance","milliseconds":2537.896892000048,"status":200},{"operation":"GET /exports/01M76NPT02ZP8MPBNMFT78AJFF/download","milliseconds":91.64941199996974,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":129,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":4465.004955000011,"status":201},{"operation":"GET /exports/01M76P0JVBC81GSJSAXN7JYSWE","milliseconds":64.37687099992763,"status":200},{"operation":"POST /exports/01M76P0JVBC81GSJSAXN7JYSWE/advance","milliseconds":5342.921411999967,"status":200},{"operation":"POST /exports/01M76P0JVBC81GSJSAXN7JYSWE/advance","milliseconds":3740.6089650000213,"status":200},{"operation":"POST /exports/01M76P0JVBC81GSJSAXN7JYSWE/advance","milliseconds":3777.9057279999834,"status":200},{"operation":"POST /exports/01M76P0JVBC81GSJSAXN7JYSWE/advance","milliseconds":1843.43311299989,"status":200},{"operation":"GET /exports/01M76P0JVBC81GSJSAXN7JYSWE/download","milliseconds":60.32556999998633,"status":200}]}
+OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+✔ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (701405.510863ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 708029.658395
