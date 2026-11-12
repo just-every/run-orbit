@@ -1,0 +1,18 @@
+{
+  "name": "candidate-browser",
+  "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+  "command": [
+    "timeout",
+    "1200",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "tests/delegation-browser/today-brief.test.ts"
+  ],
+  "started": "2026-11-12T12:52:03.746275+00:00",
+  "finished": "2026-11-12T12:54:10.207842+00:00",
+  "exit": 0
+}

@@ -1,0 +1,252 @@
+{
+  "shard": "rer-checkouts",
+  "commit": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "startedAt": "2026-11-12T12:38:34.748Z",
+  "finishedAt": "2026-11-12T12:50:55.546Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "tests/support/prepare-state.ts"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 32344,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/verification-build.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 314,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/rer-checkouts-results.jsonl",
+        "tests/rer/admission.test.mjs",
+        "tests/rer/capture-proof.test.mjs",
+        "tests/rer/identity.test.mjs",
+        "tests/rer/onboarding.test.mjs"
+      ],
+      "env": {},
+      "files": [
+        "tests/rer/admission.test.mjs",
+        "tests/rer/capture-proof.test.mjs",
+        "tests/rer/identity.test.mjs",
+        "tests/rer/onboarding.test.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 708134,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": true,
+          "counts": {
+            "tests": 8,
+            "failed": 0,
+            "passed": 8,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 8,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "admission uses native owner authority, bounds editor framing and preserves local private files and built assets",
+          "file": "tests/rer/admission.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 143440.411449
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "provider proof command observes bounded intake, refuses invented growth, checks replay and disconnect without persisting private response fields",
+          "file": "tests/rer/capture-proof.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 948.562076
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "proof command refuses credential-bearing origins, unsafe cookie files, HTTP redirects, an unfinished page budget and a replay that adds evidence",
+          "file": "tests/rer/capture-proof.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 330.852853
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "callback notices use the resolved lifecycle origin only after successful dev startup and leave setup alone",
+          "file": "tests/rer/capture-proof.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 1.087605
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "AUTH-5 rer dev opens signed in, personas switch role and field access",
+          "file": "tests/rer/identity.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 97864.165757
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "AUTH-5 a store from before the upgrade keeps its people and signs in on Base",
+          "file": "tests/rer/identity.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 64856.500907
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440",
+          "file": "tests/rer/onboarding.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 205642.501833
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 390",
+          "file": "tests/rer/onboarding.test.mjs",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 191226.738859
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "admission uses native owner authority, bounds editor framing and preserves local private files and built assets",
+      "file": "tests/rer/admission.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 143440.411449
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "provider proof command observes bounded intake, refuses invented growth, checks replay and disconnect without persisting private response fields",
+      "file": "tests/rer/capture-proof.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 948.562076
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "proof command refuses credential-bearing origins, unsafe cookie files, HTTP redirects, an unfinished page budget and a replay that adds evidence",
+      "file": "tests/rer/capture-proof.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 330.852853
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "callback notices use the resolved lifecycle origin only after successful dev startup and leave setup alone",
+      "file": "tests/rer/capture-proof.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 1.087605
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "AUTH-5 rer dev opens signed in, personas switch role and field access",
+      "file": "tests/rer/identity.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 97864.165757
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "AUTH-5 a store from before the upgrade keeps its people and signs in on Base",
+      "file": "tests/rer/identity.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 64856.500907
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440",
+      "file": "tests/rer/onboarding.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 205642.501833
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 390",
+      "file": "tests/rer/onboarding.test.mjs",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 191226.738859
+    }
+  ]
+}

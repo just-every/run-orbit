@@ -1,0 +1,21 @@
+{
+  "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "source": "candidate-browser.log",
+  "actualProbe": {
+    "proof": "SURFACE-012.embedded-risk-browser",
+    "deal": "01M4NGDSS9PYGTPRFZZYKFBRKS",
+    "calls": 5,
+    "filed": 2,
+    "decisions": [
+      "9e71274c-b48c-4eff-b854-19510ec614b4",
+      "08baea11-0b2c-41e6-9bee-8599c80d80b1",
+      "ca121531-f06c-47e9-a178-90a5e3daaf74",
+      "0a568720-84eb-4517-ab1b-4bf9b3580546",
+      "32bf47cc-0884-4259-a037-4596c859bf29"
+    ],
+    "widths": [
+      1440,
+      390
+    ]
+  }
+}

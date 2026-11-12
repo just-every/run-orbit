@@ -1,0 +1,6 @@
+{
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "job": 131153066908,
+  "command": "node scripts/verification-batch.mjs '[\"rer-checkouts\",\"runtime-launch\"]'",
+  "exit": 1
+}

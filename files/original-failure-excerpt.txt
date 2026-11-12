@@ -1,0 +1,11 @@
+shards (batch-14)	Verify routine product shard	﻿2026-11-12T11:29:12.8845946Z ##[group]Run node scripts/verification-batch.mjs '[
+shards (batch-14)	Verify routine product shard	2026-11-12T11:29:12.8846571Z   "rer-checkouts",
+shards (batch-14)	Verify routine product shard	2026-11-12T11:29:12.8846789Z   "runtime-launch"
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:40.1923877Z Verification (runtime-launch): pnpm run test:worker
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1179922Z AssertionError [ERR_ASSERTION]: Unconfigured emitted Worker starts on its assigned host
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1180870Z     at verifyUnconfiguredHost (/home/runner/work/run-orbit/run-orbit/scripts/verify-unconfigured-host.ts:10:175)
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1181764Z     at async <anonymous> (/home/runner/work/run-orbit/run-orbit/scripts/verify-worker.ts:26:24) {
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1182978Z   actual: false,
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1183244Z   expected: true,
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.1184284Z Node.js v22.20.0
+shards (batch-14)	Verify routine product shard	2026-11-12T11:41:55.2591000Z ##[error]Process completed with exit code 1.

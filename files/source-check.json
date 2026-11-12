@@ -1,0 +1,13 @@
+{
+  "name": "source-check",
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "indexTree": "09d89088bf74bd5127ead3273cd6edf8154c5d01",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "check"
+  ],
+  "started": "2026-11-12T12:35:57.348287+00:00",
+  "finished": "2026-11-12T12:35:57.871918+00:00",
+  "exit": 0
+}

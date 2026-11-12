@@ -1,0 +1,187 @@
+{
+  "shard": "runtime-launch",
+  "commit": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "startedAt": "2026-11-12T12:50:55.718Z",
+  "finishedAt": "2026-11-12T12:54:30.752Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "tests/support/prepare-state.ts"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 34050,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/verification-build.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 343,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/launch-results.jsonl",
+        "tests/launch-runtime/declared-signin.test.ts",
+        "tests/launch-runtime/mail-body-transport.test.ts",
+        "tests/launch-runtime/mail-ingress.test.ts",
+        "tests/launch-runtime/source-mailbox-stop.test.ts"
+      ],
+      "env": {},
+      "files": [
+        "tests/launch-runtime/declared-signin.test.ts",
+        "tests/launch-runtime/mail-body-transport.test.ts",
+        "tests/launch-runtime/mail-ingress.test.ts",
+        "tests/launch-runtime/source-mailbox-stop.test.ts"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 164712,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": true,
+          "counts": {
+            "tests": 4,
+            "failed": 0,
+            "passed": 4,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 4,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "the declared owner sign-in opens the emitted email form with an editable login hint",
+          "file": "tests/launch-runtime/declared-signin.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 31849.492298
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "emitted Worker preserves bounded mail transport and durable quota isolation after declared and chunked oversize bodies",
+          "file": "tests/launch-runtime/mail-body-transport.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 34617.143098
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "emitted Worker verifies each provider before its separate limit, shows a signed bounce as the message outcome, and supports the reviewed native do-not-contact clear",
+          "file": "tests/launch-runtime/mail-ingress.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 38949.760559
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "emitted Worker: authenticated configured-source opportunity stops suppress native mailboxes atomically with truthful links and exact replay",
+          "file": "tests/launch-runtime/source-mailbox-stop.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 49499.554448
+        }
+      ]
+    },
+    {
+      "args": [
+        "run",
+        "test:worker"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 15922,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "the declared owner sign-in opens the emitted email form with an editable login hint",
+      "file": "tests/launch-runtime/declared-signin.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 31849.492298
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "emitted Worker preserves bounded mail transport and durable quota isolation after declared and chunked oversize bodies",
+      "file": "tests/launch-runtime/mail-body-transport.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 34617.143098
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "emitted Worker verifies each provider before its separate limit, shows a signed bounce as the message outcome, and supports the reviewed native do-not-contact clear",
+      "file": "tests/launch-runtime/mail-ingress.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 38949.760559
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "emitted Worker: authenticated configured-source opportunity stops suppress native mailboxes atomically with truthful links and exact replay",
+      "file": "tests/launch-runtime/source-mailbox-stop.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 49499.554448
+    }
+  ]
+}

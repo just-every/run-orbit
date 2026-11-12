@@ -1,0 +1,59 @@
+{
+  "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "source": "candidate-native.log",
+  "actualProbe": {
+    "proof": "SURFACE-012.embedded-deal-risk",
+    "policies": [
+      {
+        "mode": "held",
+        "filed": 3,
+        "decisions": [
+          "3a13e5f1-2100-4521-af3c-977319773bc3",
+          "a2463574-0805-41fb-83b2-66e776e1b47c",
+          "fc71b5ca-1167-47a6-9c0d-2d5fee97987d",
+          "85ae2cc3-7f25-41b7-ba1d-d50ec7f9166e",
+          "0ff53f87-1c2b-4639-8837-290064f4c180",
+          "7e37502d-905a-486a-952a-c14def383085",
+          "f24ff1a7-06e5-4629-a708-2dec30944052"
+        ],
+        "outside": [
+          "fc2fac5e-b09a-4565-b554-d8a6922db088",
+          "0bfdd1b2-5d1f-4ce7-b20d-4fa202bac71f",
+          "cace0875-fc6f-4077-a52f-e3f75aae89e0",
+          "faf04bac-05b1-479a-b130-7784feab8eea",
+          "bc60f109-212b-4a1d-8043-a572cd17bab0",
+          "6e5664a0-88b4-41ac-a647-e492bc190341",
+          "1c6ad5cd-08ae-48cd-a354-4262f9f99f39"
+        ]
+      },
+      {
+        "mode": "autonomous",
+        "filed": 3,
+        "decisions": [
+          "e40cc42f-ba0b-4405-b9c8-c5961c7e1f76",
+          "2f248258-6568-4b1f-a968-067a7cea3561",
+          "0a0a122b-0ff5-4faa-8a00-27f0bd536246",
+          "598dd3d7-9a94-4242-b96a-afc86e774de5",
+          "ad090ca9-7261-454b-a75e-50e3c80dbb52",
+          "a31bd750-1eb2-4275-bf1d-2b6ced39ca22",
+          "ab900440-6a04-4535-95b4-e3acf863e308"
+        ],
+        "outside": [
+          "f64acd42-d21b-4452-a979-bb7fdd19dfbd",
+          "0fdca2cf-e4e3-43eb-a8eb-10e328fb24ee",
+          "5afeb7c6-bc67-4d96-9613-e174cac03a1f",
+          "4ab28d8e-f74e-4fed-8dd9-574d7d1baa27",
+          "3acdf0a7-b1c1-4442-a211-a3b572df04da",
+          "fe26feb2-fe42-4ea8-b026-82cede0bcede",
+          "73edc780-408b-4f77-839f-f7d9202628e9"
+        ]
+      }
+    ],
+    "hostileEvidence": true,
+    "nativeTaskParity": true,
+    "blocked": true,
+    "unset": true,
+    "removed": true,
+    "replay": true
+  }
+}

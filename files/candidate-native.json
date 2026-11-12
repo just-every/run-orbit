@@ -1,0 +1,20 @@
+{
+  "name": "candidate-native",
+  "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+  "command": [
+    "timeout",
+    "1800",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "tests/core/managed-owner.test.ts",
+    "tests/core/today-brief.test.ts"
+  ],
+  "started": "2026-11-12T12:38:35.320293+00:00",
+  "finished": "2026-11-12T12:52:03.615685+00:00",
+  "exit": 0
+}

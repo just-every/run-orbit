@@ -1,0 +1,10 @@
+{
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "job": 131153066908,
+  "command": "node scripts/verification-batch.mjs '[\"rer-checkouts\",\"runtime-launch\"]'",
+  "exit": 1,
+  "test": "scripts/verify-unconfigured-host.ts:10:175 \u2014 Unconfigured emitted Worker starts on its assigned host",
+  "failure": "AssertionError [ERR_ASSERTION]: Unconfigured emitted Worker starts on its assigned host; actual false, expected true",
+  "node": "22.20.0",
+  "pnpm": "10.12.4"
+}

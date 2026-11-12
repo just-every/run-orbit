@@ -1,0 +1,18 @@
+{
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "door": "GET /health with Host fresh-install.example and empty AUTH_ORIGIN",
+  "diagnosticPort": 15609,
+  "response": {
+    "status": 500,
+    "body": "TypeError: Invalid URL string.\n    at async Object.fetch (file:///home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/run-orbit/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare/dist/src/workers/core/entry.worker.js:5253:22)"
+  },
+  "serverError": [
+    "\u2718 [ERROR] Uncaught TypeError: Invalid URL string. Error",
+    "      at registry$1 (file:///home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/run-orbit/dist/server/assets/agent-door-CbLKw9D3.js:8125:6)",
+    "      at createAgentDoor (file:///home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/run-orbit/dist/server/assets/agent-door-CbLKw9D3.js:12140:10)",
+    "      at orbitAgentDoor (file:///home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/run-orbit/dist/server/assets/agent-door-CbLKw9D3.js:21250:74)",
+    "      at handle (file:///home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/run-orbit/dist/server/index.js:29675:14)",
+    "\u2718 [ERROR] Uncaught TypeError: Invalid URL string. ",
+    "[wrangler:info] GET /health 500 Internal Server Error (584ms)"
+  ]
+}

@@ -1,0 +1,70 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:14769) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-12T12:40:07.992Z","expected":{"id":"01M4NFMJ1RFFTZM9FKM959Z8FW","evidenceId":"01M4R2191RCRWHXHGFZPSAWGD2","quote":"In Synthetic proposal since 2026-10-12","since":"2026-10-12T12:40:07.992Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"7183825c-d888-446e-a417-cf0c47c3a23f","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"a3e38767-d524-4c1b-8f18-beb7904f70af","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"b28ec231-e7a0-46b2-9261-9518d9550161"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"85c39a1b-5d12-4469-9403-61c06b03fc95","revision":12,"summary_sha256":"9e82cede25233d011dfc98531113090b372e9affb51c82ff0f217d83c442f7af","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"f5dd4c0e-505c-46a0-bb5d-406b9ec8ac63","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"fc19da61-a01e-43f2-891d-a96c907438f2"},"approval":{"id":"17ebe02b-d73a-4560-bed0-a326351b1eb9","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"held","decision":"8cd12141-e7e8-4662-b14f-1d5e4e70c55e","disposition":"review","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"autonomous","decision":"82bc4c4f-9667-41b9-bb0f-b3c679ed8109","disposition":"autonomous","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.written-evidence","mode":"held","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"AGENT-001.written-evidence","mode":"autonomous","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":494,"parts":43,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M77WHXFHBJ5K7F1GFAQQBE9V"}
+# {"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+# {"proof":"BASE-AGENT-002.5.manual-draft-parity","modes":["autonomous","held"],"normalized":true,"transportLimitsRetained":true,"nativeCreateDoors":2,"saved":[{"mode":"autonomous","nativeId":"01M77WMHB7ZTZDXMXBXWWZS6ME","agentId":"01M77WMJ1437GB8J1SZCY6NQA6","revision":2,"subject":"Revised synthetic proposal","body":"Revised message.\\n\\n  Keep the indentation."},{"mode":"held","nativeId":"01M77WMNMPWAK5C50081JZZ4PE","agentId":"01M77WMPEGG4D0YF19W2MRQMPT","revision":2,"subject":"Revised synthetic proposal","body":"Revised message.\\n\\n  Keep the indentation."}],"events":["draft.created","draft.updated"],"replayEffects":0,"staleEffects":0,"providerCalls":0}
+# {"proof":"SURFACE-008.draft-save","modes":["autonomous","held"],"savedVersions":2,"activeVersion":1,"classes":[{"class":"standard","facts":{"measure":1}}],"replayAddsVersion":false,"saveEffects":false,"providerCalls":0,"oldDefinitionExecuted":true,"refusals":["stale","company-block","non-owner","insufficient-scope","revoked"]}
+# {"proof":"SURFACE-012.embedded-deal-risk","policies":[{"mode":"held","filed":3,"decisions":["3a13e5f1-2100-4521-af3c-977319773bc3","a2463574-0805-41fb-83b2-66e776e1b47c","fc71b5ca-1167-47a6-9c0d-2d5fee97987d","85ae2cc3-7f25-41b7-ba1d-d50ec7f9166e","0ff53f87-1c2b-4639-8837-290064f4c180","7e37502d-905a-486a-952a-c14def383085","f24ff1a7-06e5-4629-a708-2dec30944052"],"outside":["fc2fac5e-b09a-4565-b554-d8a6922db088","0bfdd1b2-5d1f-4ce7-b20d-4fa202bac71f","cace0875-fc6f-4077-a52f-e3f75aae89e0","faf04bac-05b1-479a-b130-7784feab8eea","bc60f109-212b-4a1d-8043-a572cd17bab0","6e5664a0-88b4-41ac-a647-e492bc190341","1c6ad5cd-08ae-48cd-a354-4262f9f99f39"]},{"mode":"autonomous","filed":3,"decisions":["e40cc42f-ba0b-4405-b9c8-c5961c7e1f76","2f248258-6568-4b1f-a968-067a7cea3561","0a0a122b-0ff5-4faa-8a00-27f0bd536246","598dd3d7-9a94-4242-b96a-afc86e774de5","ad090ca9-7261-454b-a75e-50e3c80dbb52","a31bd750-1eb2-4275-bf1d-2b6ced39ca22","ab900440-6a04-4535-95b4-e3acf863e308"],"outside":["f64acd42-d21b-4452-a979-bb7fdd19dfbd","0fdca2cf-e4e3-43eb-a8eb-10e328fb24ee","5afeb7c6-bc67-4d96-9613-e174cac03a1f","4ab28d8e-f74e-4fed-8dd9-574d7d1baa27","3acdf0a7-b1c1-4442-a211-a3b572df04da","fe26feb2-fe42-4ea8-b026-82cede0bcede","73edc780-408b-4f77-839f-f7d9202628e9"]}],"hostileEvidence":true,"nativeTaskParity":true,"blocked":true,"unset":true,"removed":true,"replay":true}
+# PROBE BASE-AGENT-011 1: raw authenticated MCP under autonomous; discovered capacity=600; admitted native create; overrun=429 Retry-After=50; early retry=429; clock recovery=200 with one native create
+# PROBE BASE-AGENT-011 1: raw authenticated MCP under held; discovered capacity=600; admitted native create; overrun=429 Retry-After=60; early retry=429; clock recovery=200 with one native create
+# {"proof":"orbit.events.cursor-across-contact-erasure","cursor":"at the erased contact's event","events":9,"cursorAdvanced":true}
+# {"proof":"orbit.events.cursor-across-contact-erasure","cursor":"before it","events":9,"cursorAdvanced":true}
+# {"proof":"orbit.events.cursor-across-contact-erasure","cursor":"after it","events":7,"cursorAdvanced":true}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; embedded deal-risk tasks, outside stalled risks and cited graph proposals agree across policy and native doors
+ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; embedded deal-risk tasks, outside stalled risks and cited graph proposals agree across policy and native doors
+  ---
+  duration_ms: 626808.082629
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:23841) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+ok 2 - TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+  ---
+  duration_ms: 75288.272542
+  type: 'test'
+  ...
+# Subtest: BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks
+ok 3 - BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks
+  ---
+  duration_ms: 19117.048958
+  type: 'test'
+  ...
+# Subtest: BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer
+ok 4 - BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer
+  ---
+  duration_ms: 23643.068495
+  type: 'test'
+  ...
+# Subtest: CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts
+ok 5 - CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts
+  ---
+  duration_ms: 26645.344952
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 807792.328765

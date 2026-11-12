@@ -1,0 +1,90 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f176-fix1",
+  "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "tree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+  "originalHead": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "mergedMain": "a33e19079526105b3710f062e0a2b3a750867762",
+  "counts": {
+    "before": {
+      "partial": 130,
+      "done": 42,
+      "missing": 32
+    },
+    "after": {
+      "partial": 130,
+      "done": 42,
+      "missing": 32
+    }
+  },
+  "formalSurface012": "missing (unchanged)",
+  "claim": "PARTIAL, selected AGENT-002 limbs only",
+  "unchangedEmbeddedAgent": true,
+  "contractAndGeneratedViewsEqualMain": true,
+  "productPush": "guard succeeded attempt 1; ls-remote confirmed exact SHA",
+  "pr": null,
+  "localStatus": "passed",
+  "publicationScan": "not run in cloud; fleet lander owns it",
+  "landing": "not performed",
+  "localProofs": {
+    "candidate-batch": {
+      "name": "candidate-batch",
+      "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+      "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+      "command": [
+        "timeout",
+        "1800",
+        "node",
+        "scripts/verification-batch.mjs",
+        "[\"rer-checkouts\",\"runtime-launch\"]"
+      ],
+      "started": "2026-11-12T12:38:33.776164+00:00",
+      "finished": "2026-11-12T12:54:30.764527+00:00",
+      "exit": 0
+    },
+    "candidate-native": {
+      "name": "candidate-native",
+      "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+      "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+      "command": [
+        "timeout",
+        "1800",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "tests/core/managed-owner.test.ts",
+        "tests/core/today-brief.test.ts"
+      ],
+      "started": "2026-11-12T12:38:35.320293+00:00",
+      "finished": "2026-11-12T12:52:03.615685+00:00",
+      "exit": 0
+    },
+    "candidate-browser": {
+      "name": "candidate-browser",
+      "head": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+      "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+      "command": [
+        "timeout",
+        "1200",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "tests/delegation-browser/today-brief.test.ts"
+      ],
+      "started": "2026-11-12T12:52:03.746275+00:00",
+      "finished": "2026-11-12T12:54:10.207842+00:00",
+      "exit": 0
+    }
+  },
+  "repairedUnconfiguredHost": {
+    "publicHost": true,
+    "signIn": 200,
+    "authConfigured": false,
+    "privateApi": 401
+  }
+}

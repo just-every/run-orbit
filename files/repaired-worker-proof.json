@@ -1,0 +1,128 @@
+{
+  "unconfiguredHost": {
+    "publicHost": true,
+    "signIn": 200,
+    "authConfigured": false,
+    "privateApi": 401
+  },
+  "ssr": "Authenticated NOW HTML changes with live D1",
+  "sessionHttp": {
+    "missing": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "expired": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "revoked": {
+      "document": 302,
+      "api": 401,
+      "unknownApi": 401
+    },
+    "valid": {
+      "document": 200,
+      "api": 200,
+      "unknownApi": 404
+    }
+  },
+  "serverFunctions": [
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/7b6af0d434f254352c730e426244f10a1aef0e4cda80d1e81ed3a0eb34260dac",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/8540e17e12e9f76d460a667ffd5a7c09ee76fe242d46aaaa48b6855d5d97c732",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/b2db0da06d90d1d35f7cd3d6ac04cbb112aeb3f81f8f353d1a1679bab094a91b",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/73079a6e6bb0296211ff55f76c451caad25814fa79b3ec6a3cfeb9d7332e4eda",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/73079a6e6bb0296211ff55f76c451caad25814fa79b3ec6a3cfeb9d7332e4eda",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/73079a6e6bb0296211ff55f76c451caad25814fa79b3ec6a3cfeb9d7332e4eda",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "missing",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "expired",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    },
+    {
+      "url": "/_serverFn/c7200e007b9add1c6bd0879192730dae0816913a94f96074e444e59789dfc7ed",
+      "control": "revoked",
+      "status": 200,
+      "body": "{\"href\":\"/signin?returnTo=%2Fapp\",\"statusCode\":302,\"isSerializedRedirect\":true}"
+    }
+  ],
+  "browser": {
+    "stableTimeOrigin": true,
+    "errors": [],
+    "rpcCount": 5
+  }
+}

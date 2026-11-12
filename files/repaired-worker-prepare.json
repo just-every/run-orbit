@@ -1,0 +1,16 @@
+{
+  "name": "repaired-worker-prepare",
+  "head": "91a7f46893e7e542206fa684292e6743542bb6bd",
+  "indexTree": "e53120a7ef664bad29f91310014f3ad0c763e1cd",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "exec",
+    "tsx",
+    "tests/support/prepare-state.ts"
+  ],
+  "started": "2026-11-12T12:36:58.154276+00:00",
+  "finished": "2026-11-12T12:37:26.187392+00:00",
+  "exit": 0
+}

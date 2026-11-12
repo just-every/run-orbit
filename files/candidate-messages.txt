@@ -1,0 +1,15 @@
+3e3d6fe7cd8ae8138a7a29704fa1458209731550
+Repair unconfigured Worker initialization and retain current main
+
+91a7f46893e7e542206fa684292e6743542bb6bd
+Merge current main while retaining graph and embedded risk proofs
+
+a2b31c7d27712f068c6d26049b72264501bb79af
+Retain recorded due times in proposed risk tasks
+
+5ef068528668ca4ad2c12478373c175c744ff52a
+Prove embedded and outside deal-risk task parity [skip ci]
+
+e003ab103084731ca4f8f1b32d1ffcacb4dce64f
+Add on-demand embedded deal-risk task filing [skip ci]
+
