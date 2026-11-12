@@ -10075,7 +10075,7 @@
       "executable": false
     },
     "tests/agent-door/graph-fixture.mjs": {
-      "sha256": "b3a284c80dc0a45db04c75e02daa222d4893c7a76e41c11167cd1e553f43b953",
+      "sha256": "a81db7f0011e175633e4045d07958897ff4cd6ea4fef800485be8742eb4ac1be",
       "executable": false
     },
     "tests/agent-door/initialize-owner.mjs": {
@@ -10099,7 +10099,7 @@
       "executable": false
     },
     "tests/agent-door/workflow-fixture.mjs": {
-      "sha256": "96522a588bd29f06e9fa45d96071ea1aa448bac975a1fed549cf1b0a5ddcac6c",
+      "sha256": "68482f8b427792b3905cd01a2c1c78e0961c61851c4a0b7ca6cbac1ed50a6d98",
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
