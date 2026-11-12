@@ -73,6 +73,18 @@ test('CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox 
     assert.ok(((await unlinked.json()) as { signals: { subject: string }[] }).signals.some(signal => signal.subject === 'Dinner on Saturday?'));
     assert.equal(await count(f.db, "SELECT count(*) n FROM signal_links l JOIN signals s ON s.id=l.signal_id WHERE s.subject='Dinner on Saturday?'"), 0);
 
+    // Creating from unlinked captured evidence never inherits the manual contactable default.
+    const pending=(await (await f.request('/api/v1/sources/unlinked')).json() as {signals:{id:string;subject:string}[]}).signals.find(signal=>signal.subject==='Dinner on Saturday?')!;
+    const createPath=`/api/v1/sources/unlinked/${pending.id}/create-contact`,createBody={method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({contactability:'contactable'})};
+    assert.equal((await f.app.request(`https://orbit.test${createPath}`,createBody)).status,401);
+    const created=await f.request(createPath,createBody);assert.equal(created.status,201,await created.clone().text());
+    const contactId=(await created.json() as {id:string}).id;
+    const detail=await (await f.request(`/api/v1/records/contact/${contactId}`)).json() as {record:{contactability:string;contactability_reason:string};timeline:{kind:string;payload_json:string}[]};
+    assert.equal(detail.record.contactability,'do_not_contact');assert.equal(detail.record.contactability_reason,'captured_evidence');
+    assert.ok(detail.timeline.some(entry=>entry.kind==='contactability.started'&&JSON.parse(entry.payload_json).contactability==='do_not_contact'));
+    assert.equal((await f.request(createPath,createBody)).status,409,'An already linked event cannot create a second contact');
+    assert.equal(await count(f.db,'SELECT count(*) n FROM signal_links WHERE signal_id=? AND record_id=?',pending.id,contactId),1);
+
     // Before hydration the form posts natively and returns to the Capture page with its result.
     const native = await f.upload([{ name: 'personal.eml', text: mail.personal }], false, { cookie: f.cookie, origin: 'https://orbit.test', accept: 'text/html' });
     assert.equal(native.status, 303);
