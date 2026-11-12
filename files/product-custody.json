@@ -1,0 +1,44 @@
+{
+  "assertions_removed_or_weakened": 0,
+  "base_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+  "branch": "cloud/sd-orbit-c-f180",
+  "ci_run_ids": [],
+  "claim": {
+    "clause": "MOBILE-001",
+    "points_closed": [],
+    "status": "PARTIAL",
+    "tests_run": []
+  },
+  "contract_check": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "output": "Contract documents are current."
+  },
+  "contract_counts_after": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130,
+    "total": 204
+  },
+  "contract_counts_before": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130,
+    "total": 204
+  },
+  "evidence_publication": "separate report-only evidence ref; not product READY",
+  "github_api_calls": 0,
+  "new_product_commits": 0,
+  "pr_url": null,
+  "product_diff_files": [],
+  "product_head": "5f92fa76579961950d49c7411f54d5446516a708",
+  "product_pushed": false,
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "source_lock": "unchanged; regeneration not applicable without source or contract edits",
+  "status_row_unchanged": "| `MOBILE-001` | Sales on mobile and desktop | target | partial | `tests/e2e/operator.spec.mjs`; `tests/delegation-browser/viewport.test.ts`; `newtests/t096/report-disclosure.test.ts` | Responsive native web journeys exist; native mobile apps, offline conflict handling, push reminders and phone composing under OUT-017/OUT-019 are missing. |",
+  "tag": "sd-orbit-c-f180",
+  "terminal": "BLOCKED: required local iOS simulator unavailable on Linux",
+  "test_registration_delta": 0,
+  "working_tree": ""
+}

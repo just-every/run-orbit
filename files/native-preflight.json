@@ -1,0 +1,112 @@
+{
+  "architecture": "x86_64",
+  "branch": "cloud/sd-orbit-c-f180",
+  "head": "5f92fa76579961950d49c7411f54d5446516a708",
+  "kvm_device_exists": false,
+  "mobile_directory_exists": false,
+  "observed_at": "2026-11-12T21:07:16.069596+00:00",
+  "platform": "Linux",
+  "probes": [
+    {
+      "command": [
+        "uname",
+        "-s"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "Linux\n"
+    },
+    {
+      "command": [
+        "uname",
+        "-m"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "x86_64\n"
+    },
+    {
+      "command": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exit": 127,
+      "stderr": "xcodebuild: command not found",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "exit": 127,
+      "stderr": "xcrun: command not found",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "adb",
+        "devices",
+        "-l"
+      ],
+      "exit": 127,
+      "stderr": "adb: command not found",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "emulator",
+        "-list-avds"
+      ],
+      "exit": 127,
+      "stderr": "emulator: command not found",
+      "stdout": ""
+    }
+  ],
+  "product_candidate_commits": 0,
+  "product_changes": "",
+  "qualification": {
+    "browser_proof": "NOT RUN",
+    "dependency": "macOS host with Xcode and local iOS simulator; local Android SDK and emulator also absent",
+    "emitted_worker_journey": "NOT RUN",
+    "native_simulator_journeys": "NOT RUN",
+    "product_pushed": false,
+    "ready": false,
+    "status": "BLOCKED",
+    "tests": "NOT RUN: no product changes",
+    "verify_run_ids": []
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "shallow": false,
+  "tag": "sd-orbit-c-f180",
+  "tool_paths": {
+    "adb": null,
+    "emulator": null,
+    "gradle": null,
+    "java": "/usr/bin/java",
+    "kotlinc": null,
+    "sdkmanager": null,
+    "swift": null,
+    "xcodebuild": null,
+    "xcrun": null
+  },
+  "unchanged_files": {
+    "ACCEPTANCE.md": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41",
+    "CONTRACT.md": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
+    "docs/CLAIMS.md": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d",
+    "sources.lock.json": "ef5865f16c28c76c790f2bcbb536705c2c7447ccbe4bf5255320edd03f504408",
+    "src/core/features/identity/auth.ts": "a8c754a5556848cfcbc89a0beca96029fcc9e8a9eeeabe28c7a56b5ce6a94230",
+    "src/core/features/tasks/authority.ts": "6904dfd54729f85957e839e0cfb0e95c9db6356da8930872f3628bc160123ed3",
+    "src/core/features/tasks/mutations.ts": "33fdf518e2f5a0b3d7a8cfce38c505a7d35fe8b3f835ff7a020fcbd6f2e9cf4d",
+    "src/core/features/tasks/routes.ts": "13c4ceebe7065e943747dddf565c0736d8888c51c1cd6c4d30b339a7ae634ba3",
+    "tests/core/today-brief.test.ts": "af730715120d29a0f83fdc7961449a6af133a2c1023492056ac7aa385bee5736",
+    "tests/delegation-browser/viewport-journey.mjs": "19ed2b86dff6969cb5aaa987fd0f4f9899a704457c01f7f2484f4f057e280c11",
+    "tests/delegation-browser/viewport.test.ts": "c415d6a3e1c4950f4ea783dbfc59658c89735e9810e4897044109bd70718b834",
+    "tests/support/sales-tasks.ts": "871265a455855ff43c93cd3bb4ab8d40238518cdfb9da657c231922a26309977"
+  },
+  "xcode_application_exists": false
+}
