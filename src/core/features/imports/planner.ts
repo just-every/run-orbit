@@ -26,15 +26,16 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
  for(const [kind,table] of Object.entries(tables)){const columns=(await db.prepare(`PRAGMA table_info(${table})`).all()).results;shapes[kind]=Object.fromEntries(columns.map(c=>[c.name,c.dflt_value==null?null:c.dflt_value.startsWith("'")?c.dflt_value.slice(1,-1).replaceAll("''", "'"):Number(c.dflt_value)]));}
  const nativeKind=(kind:string)=>['call','meeting'].includes(kind)?'note':kind;
  const identityKey=(row:Row)=>row.error?null:row.kind==='contact'?contactEmailKey(row.data.email):row.kind==='company'?companyDomainKey(row.data.domain,JSON.parse(settings?.free_mail_domains_json??'[]')):null;
- const stopEmails=new Set<string>(),consentHolds=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database);
+ const stopEmails=new Set<string>(),consentHolds=new Set<string>(),matchEmail=await privacyMatcher(db as unknown as D1Database),activeStops=await activeSuppressionTokens(db as unknown as D1Database),creationStops=await activeSuppressionTokens(db as unknown as D1Database,true);
+ const contactKeys=JSON.stringify(rows.filter(row=>row.kind==='contact').flatMap(row=>{const address=email(row.data.email??'');return address?[contactEmailKey(address)]:[];}));
+ const known=new Set((await db.prepare("SELECT email_key AS key FROM contacts WHERE email_key IN(SELECT value FROM json_each(?)) UNION SELECT identity_key AS key FROM record_aliases WHERE record_type='contact' AND identity_key IN(SELECT value FROM json_each(?))").bind(contactKeys,contactKeys).all()).results.map(r=>r.key));
  const emailTokens=new Map<string,string[]>();
  for(const row of rows){if(row.kind==='suppression'){const address=email(row.data.email??'');if(address)stopEmails.add(address);else row.error??='Suppression email is invalid.';}if(row.kind==='contact'){
   const address=email(row.data.email??'');if(row.data.email&&!address)row.error??='Email is invalid; provide one address per row.';
-  if(address){const tokens=await matchEmail(address);emailTokens.set(address,tokens);if(tokens.some(token=>activeStops.has(token)))stopEmails.add(address);}
+  if(address){const tokens=await matchEmail(address);emailTokens.set(address,tokens);if(tokens.some(token=>activeStops.has(token)||!known.has(contactEmailKey(address))&&creationStops.has(token)))stopEmails.add(address);}
   if(address&&(positive(row.data.dnc)||!!row.data.bounce||positive(row.data.quarantined)))stopEmails.add(address);else if(address&&!permission(row))consentHolds.add(address);
  }}
  // A missing permission holds only people new to Orbit: a contact already here keeps the contactability its operators set.
- const known=new Set((await db.prepare("SELECT email_key AS key FROM contacts WHERE email_key IN(SELECT value FROM json_each(?)) UNION SELECT identity_key AS key FROM record_aliases WHERE record_type='contact' AND identity_key IN(SELECT value FROM json_each(?))").bind(JSON.stringify([...consentHolds].map(contactEmailKey)),JSON.stringify([...consentHolds].map(contactEmailKey))).all()).results.map(r=>r.key));
  for(const address of consentHolds)if(!known.has(contactEmailKey(address)))stopEmails.add(address);
  rows.push(...namedCompanies(rows));
  // Resolve only explicit source IDs or unambiguous native identity keys. Existing records are linked, never overwritten.

@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {formatDate} from './formatters';
 
 export interface RiskEvidence {id:string;label:string;text:string;occurredAt:string|null;confidence:'observed'|'inferred';href:string}
-export interface RiskFinding {key:string;kind:string;title:string;citations:{evidenceId:string;quote:string}[];inference:{source:'rule'|'ai';text:string}|null;nextTask:string;dismissed:{reason:string;at:string}|null}
+export interface RiskFinding {key:string;kind:string;title:string;citations:{evidenceId:string;quote:string}[];inference:{source:'rule'|'ai';text:string}|null;nextTask:string;nextTaskDueAt?:string|null;dismissed:{reason:string;at:string}|null}
 export async function riskRequest<T>(path:string,body?:unknown):Promise<T>{const response=await fetch(`/api/v1/risks/${path}`,body===undefined?undefined:{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const result=await response.json() as T&{error?:string};if(!response.ok)throw new Error(result.error??'The deal risk request failed.');return result;}
 
 /** One finding: recorded evidence first, any inference labelled with its source, then the person's choices. */
@@ -18,7 +18,7 @@ export function RiskFindingItem({dealId,finding,evidence,onChanged}:{dealId:stri
    <blockquote className="capture-quote" style={{margin:'4px 0'}}>{citation.quote}</blockquote></li>;})}</ul>
   {finding.inference?<p><strong>{finding.inference.source==='ai'?'AI inference from the cited lines':'Rule inference'}:</strong> {finding.inference.text}</p>:<p>Observation only: nothing here is inferred.</p>}
   {!finding.dismissed&&<>
-   <form className="workbench-form" onSubmit={event=>{event.preventDefault();void act('tasks',{title,dueAt:null,evidenceIds:finding.citations.map(item=>item.evidenceId)},'Task added to this deal. Nothing was sent and the deal is unchanged.');}}>
+   <form className="workbench-form" onSubmit={event=>{event.preventDefault();void act('tasks',{title,dueAt:finding.nextTaskDueAt??null,evidenceIds:finding.citations.map(item=>item.evidenceId)},'Task added to this deal. Nothing was sent and the deal is unchanged.');}}>
     <label>Proposed next task<input value={title} maxLength={300} required onChange={event=>setTitle(event.target.value)}/></label>
     <button className="operator-button" disabled={pending}>Approve task</button>
    </form>

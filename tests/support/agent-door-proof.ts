@@ -1,3 +1,5 @@
+import {agentFollowUpProof} from './agent-follow-up-proof';
+import {embeddedRiskAgentProof} from './embedded-risk-agent-proof';
 import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {agentDoorAIInputProof} from './agent-door-ai-input-proof';
@@ -66,7 +68,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.equal((await identityResponse(post('/auth/owner-claim',{token:bindings.SETUP_TOKEN}),bindings,ownerOptions))!.status,403);
     const claimed=await identityResponse(post('/auth/owner-claim',{token,displayName:'Morgan Lee',returnTo:'/setup'}),bindings,ownerOptions);
     assert.equal(claimed!.status,303);
-    const cookie=claimed!.headers.get('set-cookie')!.split(';')[0]!;
+    let cookie=claimed!.headers.get('set-cookie')!.split(';')[0]!;
     const owner=await operatorFromRequest(new Request(origin+'/app',{headers:{Cookie:cookie}}),bindings);
     assert.ok(owner);
     const settings=orbitBusinessSettings(bindings), people=orbitPeople(bindings);
@@ -261,15 +263,27 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
         assert.equal(sponsor?.id,operatorId);assert.equal(sponsor?.role,'member');
         return sign('at+jwt',{iss:issuer,aud:origin+'/mcp',sub:subject,email,act:{sub:'synthetic-orbit-reader',name:'Synthetic reader'},client_id:'synthetic-orbit-collaborator',business:'door-company',scope:'records:read records:write',consent:'synthetic-orbit-record-consent',jti:crypto.randomUUID(),iat:issued,exp:issued+300});
       }});
+    // This long journey must obtain fresh native authority instead of depending on its original sign-in's age.
+    const freshMail:Array<{text?:string}>=[],freshBindings={...bindings,MAIL_FROM:['synthetic-orbit-auth','sender.test'].join('@')};
+    const freshOptions={...ownerOptions,mailSender:{async send(message:{text?:string}){freshMail.push(message);return {status:'accepted' as const,provider:'test-mail-edge',providerMessageId:'synthetic-orbit-fresh-sign-in'};}}};
+    assert.equal((await identityResponse(post('/auth/magic-link',{email:bindings.OWNER_EMAIL,returnTo:'/delegation/settings'}),freshBindings,freshOptions))!.status,202);
+    const freshLink=freshMail.flatMap(message=>message.text?.match(/https:\/\/[^\s]+/g)??[]).map(link=>new URL(link)).find(link=>link.pathname==='/auth/confirm');
+    assert.ok(freshLink);assert.equal(freshLink.origin,origin);
+    const freshConfirmation=await identityResponse(post('/auth/confirm',{token:freshLink.searchParams.get('token')}),freshBindings,freshOptions);
+    assert.equal(freshConfirmation!.status,303);
+    cookie=freshConfirmation!.headers.get('set-cookie')!.split(';')[0]!;
+    assert.equal((await operatorFromRequest(new Request(origin+'/agents',{headers:{Cookie:cookie}}),bindings))?.operatorId,owner.operatorId);
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
     // Append this flow after the established audit-history fixture.
     await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
+    await agentFollowUpProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
+    await embeddedRiskAgentProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
     assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
     await agentCapacityProof(context,bindings,{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation},sign);

@@ -33,7 +33,7 @@ export function createSalesTaskRoutes(db: D1Database) {
   return c.json({task, history: await taskHistory(db, parsed.data)});
  });
  app.post('/', async c => {
-  const parsed = content.safeParse(await c.req.json().catch(() => null));
+  const parsed = content.extend({obligationId:id.optional()}).safeParse(await c.req.json().catch(() => null));
   if (!parsed.success) return c.json({error: parsed.error.issues[0]?.message ?? 'Enter the task details.'}, 400);
   return c.json(await createTask(db, c.get('operator'), parsed.data), 201);
  });

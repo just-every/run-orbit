@@ -1,3 +1,4 @@
+import {erasedCreationConsent} from '../support/erased-creation-consent';
 import {mailchimpLedgerEdge,proveMailchimpLedger} from '../support/mailchimp-ledger-proof';
 import {reviewedMerge} from '../support/reviewed-merge';
 import assert from 'node:assert/strict';
@@ -18,6 +19,7 @@ import {createSourceSecurity} from '../../src/core/platform/source-security';
 
 test('RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review',async()=>{
  const f=await launchFixture();try{
+  await erasedCreationConsent(f);
   const email=['synthetic-orbit-1','customer.test'].join('@');
   const created=await f.request('records/contact','POST',{name:'Manual contact',email});assert.equal(created.status,201);
   const {id}=await created.json() as {id:string};

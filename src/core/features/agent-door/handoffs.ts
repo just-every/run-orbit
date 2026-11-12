@@ -21,7 +21,7 @@ export function handoffTools(bindings:PlatformBindings) {
     classify:async(args,ctx)=>{await readable(bindings,ctx,handoffTarget(args));return standard();},
     run:async(args,ctx)=>{const target=handoffTarget(args),saved=await readable(bindings,ctx,target);return {result:{target,revision:saved.revision,audienceRevision:saved.audience.audienceRevision,title:saved.title,value:{handoff:saved.value.handoff}},resources:saved.value.handoff?[{uri:`orbit://operations/${encodeURIComponent(target)}`,name:'Native handoff'}]:[]};}}),
     defineTool({name:'orbit.handoffs.upsert',title:'Save a cited internal handoff',description:'Save one real native handoff at current source and audience revisions, with eligible assignee and immutable evidence. It cannot approve or start mail.',scope:'handoffs:write',readOnly:false,
-      inputSchema:objectSchema({target:{type:'string',pattern:'^opportunities/[^/]+/handoffs/[^/]+$'},source_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},audience_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},content:z.toJSONSchema(contentSchema)}),outputSchema,classes:['standard'],clauses:['DELEGATE-001','BRIEF-005'],revisionType:'string',untrusted:true,
+      inputSchema:objectSchema({target:{type:'string',pattern:'^opportunities/[^/]+/handoffs/[^/]+$'},source_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},audience_revision:{type:'string',pattern:'^[a-f0-9]{64}$'},content:z.toJSONSchema(contentSchema),obligation_id:{type:'string',minLength:1,maxLength:100}},['target','source_revision','audience_revision','content']),outputSchema,classes:['standard'],clauses:['DELEGATE-001','BRIEF-005'],revisionType:'string',untrusted:true,
       revision:async(args,ctx)=>(await readable(bindings,ctx,String(args.target),true)).revision,
       // Replay rechecks current authority here; writeHandoff atomically checks source
       // and audience revisions on first execution, after the door's replay lookup.
@@ -31,7 +31,7 @@ export function handoffTools(bindings:PlatformBindings) {
         await readable(bindings,ctx,String(args.target),true);
         const {access,actor}=await nativeRecords(bindings,ctx),db=agentDatabase(bindings.DB,access,actor,ctx),grant=await localGrant(bindings.DB,ctx,String(args.target),'crm.handoff.write');
         const input:Effect={operation:'orbit.handoff.upsert',operationKey:String(args.idempotency_key),target:String(args.target),expectedRevision:String(args.source_revision),expectedAudienceRevision:String(args.audience_revision),content:contentSchema.parse(args.content)};
-        const result=await writeHandoff(db,input,{actor:ctx.person.id,...(grant?{grant}:{}),agent:ctx.agent.id});
+        const result=await writeHandoff(db,input,{actor:ctx.person.id,...(grant?{grant}:{}),agent:ctx.agent.id,...(args.obligation_id?{obligationId:String(args.obligation_id)}:{})});
         const uri=`orbit://operations/${encodeURIComponent(input.target)}`;ctx.emit('handoff.updated',uri);return {result,resources:[{uri,name:'Saved handoff'}]};
       }}),
   ];

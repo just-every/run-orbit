@@ -1,3 +1,4 @@
+import {obligationErasureStatements} from '../obligations/effects';
 import {workflowContactErasure} from '../workflows/privacy';
 import {apiCredentialErasure} from '../api/privacy';
 import {payloadHash} from '../../platform/source-security';
@@ -40,6 +41,7 @@ export class DataRepository {
    statements.push(db.prepare('UPDATE ai_calls SET error=NULL WHERE opportunity_id=?').bind(id),db.prepare("INSERT OR IGNORE INTO timeline_entry_records SELECT r.timeline_entry_id,'contact',oc.contact_id FROM timeline_entry_records r JOIN opportunity_contacts oc ON oc.opportunity_id=r.record_id JOIN timeline_entries t ON t.id=r.timeline_entry_id WHERE r.record_type='opportunity' AND r.record_id=? AND t.kind LIKE '%accepted%'").bind(id),db.prepare('DELETE FROM outbound_messages WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM evaluation_job_runs WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM action_completions WHERE recommendation_id IN(SELECT id FROM recommendations WHERE opportunity_id=?)').bind(id),db.prepare('DELETE FROM ai_previews WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM notifications WHERE opportunity_id=?').bind(id),db.prepare('DELETE FROM opportunities WHERE id=?').bind(id));
   }
   if(kind==='contact'){
+   statements.push(...obligationErasureStatements(db,id,actor));
    const callNumbers=(await db.prepare('SELECT from_number,to_number,direction FROM call_events WHERE contact_id=?').bind(id).all<{from_number:string;to_number:string;direction:string}>()).results.map(call=>call.direction.startsWith('inbound')?call.from_number:call.to_number);
    if(typeof record.phone==='string'&&record.phone.trim())callNumbers.push(record.phone);
    for(const phone of new Set(callNumbers.map(normalizedPhone)))statements.push(db.prepare('INSERT OR IGNORE INTO call_erased_numbers VALUES(?)').bind(await payloadHash(phone)));
@@ -52,7 +54,8 @@ export class DataRepository {
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
    // What the agent door recorded about this contact (held calls, approvals, outcomes, audit, events) goes in the same batch.
-   statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,identities));
+   const retiredIds=(await db.prepare("SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?").bind(id).all<{retired_id:string}>()).results.map(row=>row.retired_id);
+   statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,[...identities,...retiredIds]));
    statements.push(...await workflowContactErasure(db,id,identities));
    statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));
@@ -75,6 +78,9 @@ export class DataRepository {
    for(const value of identities){const patterns=identityPatterns(value);statements.push(db.prepare(`DELETE FROM handoff_tasks WHERE ${identityMatch('title')} OR ${identityMatch('description')}`).bind(...patterns,...patterns),db.prepare(`UPDATE ai_calls SET error=NULL WHERE ${identityMatch('error')}`).bind(...patterns),db.prepare(`DELETE FROM ai_previews WHERE ${identityMatch('content_json')}`).bind(...patterns),db.prepare(`DELETE FROM unlinked_replies WHERE ${identityMatch('sender')}`).bind(...patterns),db.prepare(`DELETE FROM notifications WHERE ${identityMatch('message')}`).bind(...patterns),db.prepare(`UPDATE audit_entries SET details_json='{}' WHERE ${identityMatch('details_json')}`).bind(...patterns),db.prepare(`DELETE FROM timeline_entries WHERE ${identityMatch('payload_json')}`).bind(...patterns));}
    statements.push(db.prepare('DELETE FROM ai_previews WHERE recipient_contact_id=? OR instr(content_json,?)>0').bind(id,id),db.prepare('DELETE FROM notifications WHERE opportunity_id IN (SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?)').bind(id),db.prepare('DELETE FROM outbound_messages WHERE contact_id=? OR draft_id IN (SELECT id FROM drafts WHERE recipient_contact_id=?)').bind(id,id),db.prepare('DELETE FROM drafts WHERE recipient_contact_id=?').bind(id));
    statements.push(db.prepare(`DELETE FROM action_completions WHERE recommendation_id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id));
+   // The additive record-mail store retains a recommendation FK until contact cascade.
+   // Sever erased evidence first and require fresh review for any surviving recipient.
+   statements.push(db.prepare(`UPDATE record_mail_drafts SET recommendation_id=NULL,is_stale=1,stale_reason='Customer evidence erased' WHERE recommendation_id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id));
    statements.push(db.prepare(`DELETE FROM recommendations WHERE id IN(SELECT recommendation_id FROM recommendation_evidence WHERE signal_id IN (${signalIds}))`).bind(id),db.prepare(`DELETE FROM evaluations WHERE id IN(SELECT evaluation_id FROM evaluation_contributions WHERE signal_id IN (${signalIds}))`).bind(id));
    statements.push(db.prepare(`DELETE FROM timeline_entries WHERE id IN(SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?) OR json_extract(payload_json,'$.contactId')=? OR json_extract(payload_json,'$.signalId') IN (${signalIds}) OR EXISTS(SELECT 1 FROM json_each(timeline_entries.payload_json,'$.contactIds') WHERE value=?)`).bind(id,id,id,id));
    statements.push(...captureErasureStatements(db,id,actor));
