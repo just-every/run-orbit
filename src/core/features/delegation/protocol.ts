@@ -11,7 +11,7 @@ export function canonical(value:unknown):string {
 export async function hash(value:string){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),b=>b.toString(16).padStart(2,'0')).join('');}
 export const revision=(value:unknown)=>hash(canonical(value));
 export const random=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
-export const scopes=['crm.evidence.read','crm.handoff.write'] as const;
+export const scopes=['crm.evidence.read','crm.handoff.write','crm.graph.propose'] as const;
 export const targetSchema=z.string().regex(/^(?:opportunities|contacts|companies|signals)\/[A-Za-z0-9_-]{1,100}(?:\/handoffs\/[A-Za-z0-9_-]{1,100})?$/).refine(v=>!v.includes('/handoffs/')||v.startsWith('opportunities/'));
 export const contentSchema=z.object({title:z.string().min(1).max(300).refine(v=>v.trim().length>0),description:z.string().max(20000),assigneeId:z.string().min(1).max(100).nullable(),dueAt:z.iso.datetime().nullable(),status:z.enum(['open','completed','cancelled']),evidence:z.array(z.string().regex(/^[A-Za-z0-9_-]{1,100}$/)).min(1).max(20).optional()}).strict();
 export const effectSchema=z.object({operationKey:z.string().regex(/^[A-Za-z0-9_-]{1,160}$/),operation:z.literal('orbit.handoff.upsert'),target:targetSchema,expectedRevision:z.string().regex(/^[a-f0-9]{64}$/),expectedAudienceRevision:z.string().regex(/^[a-f0-9]{64}$/),content:contentSchema}).strict();

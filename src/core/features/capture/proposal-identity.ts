@@ -33,3 +33,6 @@ export async function existingCalendarProposals(db:D1Database,source:string,iden
  }
  return existing;
 }
+
+/** Graph review binds one decision to its exact quoted evidence, including questions. */
+export function graphProposalIdentity(eventId:string,contactId:string,dealId:string){return JSON.stringify(['graph',eventId,contactId,dealId]);}
