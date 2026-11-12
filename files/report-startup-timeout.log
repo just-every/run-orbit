@@ -1,0 +1,39 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+<ref *1> Error: spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT
+    at Object.spawnSync (node:internal/child_process:1120:20)
+    at spawnSync (node:child_process:902:24)
+    at execFileSync (node:child_process:945:15)
+    at cp.execFileSync (/tmp/orbit-local-runtime.cjs:6:21)
+    at isolatedDatabase (/home/agent/rer-consolidation/work/main-orbit-readable-values-1-pc1/run-orbit/tests/support/isolated-database.ts:11:3)
+    at async fixture (/home/agent/rer-consolidation/work/main-orbit-readable-values-1-pc1/run-orbit/newtests/t096/fixture.ts:23:46)
+    at async main (/tmp/orbit-report-proof.ts:8:10) {
+  errno: -110,
+  code: 'ETIMEDOUT',
+  syscall: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+  path: '/home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node',
+  spawnargs: [
+    'node_modules/wrangler/bin/wrangler.js',
+    'd1',
+    'migrations',
+    'apply',
+    'DB',
+    '--local',
+    '--config',
+    'wrangler.jsonc',
+    '--persist-to',
+    '/tmp/orbit-restore-test-g2qgzb'
+  ],
+  error: [Circular *1],
+  status: 143,
+  signal: null,
+  output: [
+    null,
+    <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 961976 more bytes>,
+    <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+  ],
+  pid: 5312,
+  stdout: <Buffer 0a 20 e2 9b 85 ef b8 8f 20 77 72 61 6e 67 6c 65 72 20 34 2e 31 32 39 2e 31 20 28 75 70 64 61 74 65 20 61 76 61 69 6c 61 62 6c 65 20 34 2e 31 36 30 2e ... 961976 more bytes>,
+  stderr: <Buffer 1b 5b 33 33 6d e2 96 b2 20 1b 5b 34 33 3b 33 33 6d 5b 1b 5b 34 33 3b 33 30 6d 57 41 52 4e 49 4e 47 1b 5b 34 33 3b 33 33 6d 5d 1b 5b 30 6d 20 1b 5b 31 ... 86 more bytes>
+}

@@ -1,0 +1,73 @@
+shards (batch-4)	Verify routine product shard	﻿2026-11-12T05:29:52.1782025Z ##[group]Run node scripts/verification-batch.mjs '[
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1782857Z [36;1mnode scripts/verification-batch.mjs '[[0m
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1783318Z [36;1m  "fold-domain-1"[0m
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1783742Z [36;1m]'[0m
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1797358Z shell: /usr/bin/bash -e {0}
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1797773Z env:
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1798176Z   ORBIT_BROWSER_PORT: 15600
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1798523Z   ORBIT_ARCHIVE_PORT: 15601
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1798966Z   ORBIT_DELEGATION_PORT: 15602
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1799339Z   ORBIT_VIEWPORT_PORT: 15603
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1799807Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1800191Z   ORBIT_RELATED_RECORD_PORT: 15605
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1800622Z   PROOF_PORT: 15606
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1800998Z   ORBIT_LIFECYCLE_PORT: 15608
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1801366Z   ORBIT_INSPECTOR_PORT: 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1801799Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1802170Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1802807Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1803321Z   WRANGLER_SEND_METRICS: false
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1803768Z   ORBIT_VERIFY_PREBUILT: 1
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1804105Z   ORBIT_VERIFY_JOURNEYS: 1
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1804518Z   ORBIT_VERIFY_TIER: push
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1804924Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1805517Z   PLAYWRIGHT_BROWSERS_PATH: /home/runner/work/_temp/ms-playwright
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:52.1805972Z ##[endgroup]
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:53.1510593Z 
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:53.1512442Z Verification (fold-domain-1): pnpm exec node scripts/verification-build.mjs check
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:53.5461386Z 
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:53.5466698Z Verification (fold-domain-1): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-1-results.jsonl newtests/t096/browser-journeys.test.ts newtests/t096/report-time-boundaries.test.ts
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:54.2344424Z (node:2616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-4)	Verify routine product shard	2026-11-12T05:29:54.2346256Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:31:02.3944385Z PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:31:08.6627621Z PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:31:14.5298443Z PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:32:05.8976459Z PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:32:12.0355078Z PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:32:17.8441471Z PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+shards (batch-4)	Verify routine product shard	2026-11-12T05:32:55.2274115Z PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+shards (batch-4)	Verify routine product shard	2026-11-12T05:32:56.7258904Z (node:2616) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+shards (batch-4)	Verify routine product shard	2026-11-12T05:33:25.5532093Z ✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (208025.688096ms)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8092121Z ✔ report periods compare instants across ISO precision and timezone equality boundaries (181789.043417ms)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8527735Z ℹ tests 2
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8530555Z ℹ suites 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8531457Z ℹ pass 1
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8531897Z ℹ fail 1
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8532605Z ℹ cancelled 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8533155Z ℹ skipped 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8533618Z ℹ todo 0
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8534319Z ℹ duration_ms 395951.780807
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8567390Z 
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8568242Z ✖ failing tests:
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8568672Z 
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8569168Z test at newtests/t096/browser-journeys.test.ts:1:1527
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8571750Z ✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (208025.688096ms)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8573529Z   Error: expect(locator).toHaveValue(expected) failed
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8574001Z   
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8574469Z   Locator: getByLabel('Value (in cents)', { exact: true })
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8574917Z   Expected: "3200"
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8575291Z   Timeout: 5000ms
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8575646Z   Error: element(s) not found
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8576041Z   
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8576498Z   Call log:
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8577073Z     - Expect "toHaveValue" getByLabel('Value (in cents)', { exact: true }) with timeout 5000ms
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8578024Z     - waiting for getByLabel('Value (in cents)', { exact: true })
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8578510Z   
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8579312Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8580557Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8581822Z       at Object.toHaveValue (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8583023Z       at authorReport (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-report-authoring.ts:15:1302)
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8584388Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-journeys.test.ts:30:1583) {
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8602408Z     matcherResult: { name: 'toHaveValue', expected: '3200', message: `expect(locator).toHaveValue(expected) failed\n\nLocator: getByLabel('Value (in cents)', { exact: true })\nExpected: "3200"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect "toHaveValue" getByLabel('Value (in cents)', { exact: true }) with timeout 5000ms\n  - waiting for getByLabel('Value (in cents)', { exact: true })\n`, pass: false, actual: undefined, log: [ `  - Expect "toHaveValue" getByLabel('Value (in cents)', { exact: true }) with timeout 5000ms`, "  - waiting for getByLabel('Value (in cents)', { exact: true })" ], timeout: 5000, ariaSnapshot: '- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit\n  - navigation "Main menu":\n    - link "NOW":\n      - /url: /app\n    - link "Brief":\n      - /url: /app/brief\n    - link "Tasks":\n      - /url: /app/tasks\n    - link "Records":\n      - /url: /app/opportunities\n    - link "Reports":\n      - /url: /app/reports\n    - link "Notifications, 2 unread":\n      - /url: /app/notifications\n      - text: Notifications\n  - link "Settings":\n    - /url: /app/settings/workspace\n  - button "Sign out"\n- main:\n  - heading "Shared records" [level=1]\n  - heading "Records currently shared with you" [level=2]\n  - paragraph: Each read and edit checks your current record and field permissions.\n  - text: Record type\n  - combobox "Record type":\n    - option "Contacts"\n    - option "Companies"\n    - option "Opportunities" [selected]\n  - text: Search permitted fields\n  - searchbox "Search permitted fields"\n  - list:\n    - listitem:\n      - button "Browser native deal"\n  - region "Shared record details":\n    - heading "Browser native deal" [level=3]\n    - paragraph: "You may change: Title, Company, Stage, Value, Expected close date, Owner. The other fields here are read-only."\n    - status\n    - text: Title\n    - textbox "Title": Browser native deal\n    - button "Save title"\n    - text: Company\n    - combobox "Company":\n      - option "No company" [selected]\n      - option "Northstar Manufacturing"\n    - button "Save company"\n    - text: Stage\n    - combobox "Stage":\n      - option "Choose stage" [disabled]\n      - option "New" [selected]\n    - button "Save stage"\n    - text: Value (USD)\n    - spinbutton "Value (USD)": "32"\n    - button "Save value"\n    - text: Expected close date\n    - textbox "Expected close date"\n    - button "Save expected close date"\n    - paragraph:\n      - strong: "Status:"\n      - text: Open\n    - text: Owner\n    - combobox "Owner":\n      - option "Unassigned"\n      - option "Jamie Patel"\n      - option "Jordan Reyes"\n      - option "Notification colleague"\n      - option "Owner" [selected]\n      - option "Sam Okafor"\n    - button "Save owner"\n    - paragraph:\n      - strong: "Score:"\n      - text: "0"\n    - paragraph:\n      - strong: "Priority:"\n      - text: Low\n    - paragraph:\n      - strong: "Attention:"\n      - text: No attention needed\n    - paragraph:\n      - strong: "Queue reason:"\n      - text: No value\n    - paragraph:\n      - strong: "Last contributing signal at:"\n      - text: No value\n    - paragraph:\n      - strong: "Created at:"\n      - text: 12/11/2026, 5:32 am\n    - paragraph:\n      - strong: "Updated at:"\n      - text: 12/11/2026, 5:32 am\n    - paragraph:\n      - strong: "Next due at:"\n      - text: No value\n    - paragraph:\n      - strong: "Closed at:"\n      - text: No value\n    - paragraph:\n      - strong: "Closed by:"\n      - text: No value\n    - paragraph:\n      - strong: "Close reason:"\n      - text: No value\n    - group "Custom fields":\n      - text: Custom fields\n      - paragraph: No custom fields.\n  - region "Notes, calls and meetings":\n    - heading "Notes, calls and meetings" [level=3]\n    - paragraph: Shared with you to read; only the team can change them.\n    - paragraph: No notes, calls or meetings yet.' }
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:29.8620131Z   }
+shards (batch-4)	Verify routine product shard	2026-11-12T05:36:30.0203804Z ##[error]Process completed with exit code 1.

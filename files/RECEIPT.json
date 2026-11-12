@@ -1,0 +1,48 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-values-1-pc1",
+  "startingHead": "c902d4c89d7750bbafce59e2ca8d0d22b77690f1",
+  "head": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+  "tree": "730b8b744ae829ff5dbc9aad1274f37d02507a22",
+  "mergeParents": [
+    "c902d4c89d7750bbafce59e2ca8d0d22b77690f1",
+    "bd9c4b5223b28c5c90923b2c8b22bfca2daaf42b"
+  ],
+  "localChecks": {
+    "typecheck": "passed on committed candidate",
+    "build": "passed",
+    "sourceLock": "passed",
+    "sourceCheck": "passed",
+    "contractDocuments": "passed",
+    "testBudget": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "sharedPublicDoorProof": "passed",
+    "reportAuthoringHelper": "passed",
+    "broaderJourneyAttempts": "local form-identity fixture startup timeouts before the report surface; full exact-SHA Verify subsequently passed",
+    "mergeReview": "passed",
+    "archive": "passed"
+  },
+  "push": "PUSH_OK on first attempt",
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+    "id": 43170522083,
+    "status": "completed",
+    "callsUsed": 8,
+    "receiptFile": "ci-8.json"
+  },
+  "contractStatusChanges": [],
+  "publicationScan": "Mac-only; fleet performs independently before landing",
+  "browserProofWidths": [
+    1440,
+    390
+  ],
+  "worktreeClean": true,
+  "productCustody": "READY: named branch pushed; exact-SHA Verify completed/success",
+  "blockers": [],
+  "pr": null
+}

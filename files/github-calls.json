@@ -1,0 +1,99 @@
+[
+  {
+    "call": 1,
+    "kind": "prior completed Verify job discovery",
+    "run": 43161361567
+  },
+  {
+    "call": 2,
+    "kind": "failed job archive via gh run view --log-failed once",
+    "run": 43161361567,
+    "job": 130994144795
+  },
+  {
+    "call": 3,
+    "mode": "discover",
+    "identity": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+    "time": 1794466040,
+    "exit": 0,
+    "result": [
+      {
+        "conclusion": null,
+        "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+        "id": 43170522083,
+        "status": "in_progress"
+      }
+    ]
+  },
+  {
+    "call": 4,
+    "mode": "poll",
+    "identity": "43170522083",
+    "time": 1794466348,
+    "exit": 0,
+    "result": {
+      "conclusion": null,
+      "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+      "id": 43170522083,
+      "status": "in_progress"
+    }
+  },
+  {
+    "call": 5,
+    "mode": "poll",
+    "identity": "43170522083",
+    "time": 1794466663,
+    "exit": 0,
+    "result": {
+      "conclusion": null,
+      "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+      "id": 43170522083,
+      "status": "in_progress"
+    }
+  },
+  {
+    "call": 6,
+    "mode": "poll",
+    "identity": "43170522083",
+    "time": 1794466963,
+    "exit": 0,
+    "result": {
+      "conclusion": null,
+      "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+      "id": 43170522083,
+      "status": "in_progress"
+    }
+  },
+  {
+    "call": 7,
+    "mode": "poll",
+    "identity": "43170522083",
+    "time": 1794467263,
+    "exit": 0,
+    "result": {
+      "conclusion": null,
+      "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+      "id": 43170522083,
+      "status": "in_progress"
+    }
+  },
+  {
+    "call": 8,
+    "mode": "poll",
+    "identity": "43170522083",
+    "time": 1794467563,
+    "exit": 0,
+    "result": {
+      "conclusion": "success",
+      "head_sha": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170522083",
+      "id": 43170522083,
+      "status": "completed"
+    }
+  }
+]

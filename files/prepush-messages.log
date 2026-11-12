@@ -1,0 +1,10 @@
+Verify readable currency units in shared report drilldown
+
+Retain the native 3200-cent report/export assertions while checking the shared drilldown amount in workspace currency units. Merge newer main draft-normalization work without rewriting the saved readable-values candidate.
+
+Merge updated main into readable values candidate
+
+Preserve native API shapes for readable values [skip ci]
+
+Show readable values in shared records, archives and merge review
+
