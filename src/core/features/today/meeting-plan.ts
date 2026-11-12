@@ -1,3 +1,4 @@
+import {currentBooking} from '../ingestion/booking-lifecycle';
 import {companyDomainKey,contactEmailKey} from '../records/identity';
 import type {BriefLine,RecordRef} from './types';
 import {buildBrief,withinGrant} from './brief';
@@ -21,6 +22,8 @@ export async function meetingContext(db:D1Database,signalId:string){
  const links=(await signalLinks(db,[signalId])).get(signalId)??[];
  if(!links.length)throw new TodayError(409,'This meeting is not linked to a record yet. Review it under Sources first.');
  let data:Record<string,unknown>={};try{const payload=JSON.parse(signal.payload??'{}') as {data?:unknown};if(payload.data&&typeof payload.data==='object')data=payload.data as Record<string,unknown>;}catch{/* a signal without a JSON payload carries no meeting details */}
+ const booking=await currentBooking(db,signalId);
+ if(booking){data={participants:[booking.email],start:booking.start,end:booking.end};signal.type=`meeting.${booking.status}`;signal.subject=booking.eventName;}
  const text=(value:unknown)=>typeof value==='string'&&value?value:null;
  const participants=Array.isArray(data.participants)?data.participants.filter((value):value is string=>typeof value==='string'):[];
  const noteTarget=links.find(ref=>ref.type==='opportunity')??links.find(ref=>ref.type==='company')??links[0]!;

@@ -456,6 +456,12 @@
       "name": "0080_notification_context_fence.sql",
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
       "sql": "-- A direct-person notification marker is transaction-local writer context, not\n-- an authority change. Keep real runtime controls fenced, including renames to\n-- or from the marker, without invalidating the write's reviewed epoch ourselves.\nDROP TRIGGER delegation_fence_runtime_controls_insert;\nCREATE TRIGGER delegation_fence_runtime_controls_insert AFTER INSERT ON runtime_controls\nWHEN NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_update;\nCREATE TRIGGER delegation_fence_runtime_controls_update AFTER UPDATE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor' OR NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_delete;\nCREATE TRIGGER delegation_fence_runtime_controls_delete AFTER DELETE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0081_calendly_booking_lifecycle.sql",
+      "sha256": "e1aa6e529745c0687c2a70438574db9c62603f63396ba490e18e5ea1a93aff9c",
+      "sql": "-- Verified receipts retain their original signals; only the activity projection changes.\nCREATE TABLE booking_lifecycle (\n signal_id TEXT PRIMARY KEY NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n activity_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n source_id TEXT NOT NULL REFERENCES signal_sources(id) ON DELETE CASCADE,\n invitee_uri TEXT NOT NULL,\n previous_invitee_uri TEXT,\n next_invitee_uri TEXT,\n event_json TEXT NOT NULL,\n current_json TEXT\n);\nCREATE INDEX booking_lifecycle_identity ON booking_lifecycle(source_id,invitee_uri);\nCREATE INDEX booking_lifecycle_previous ON booking_lifecycle(source_id,previous_invitee_uri);\nCREATE INDEX booking_lifecycle_next ON booking_lifecycle(source_id,next_invitee_uri);\nCREATE INDEX booking_lifecycle_activity ON booking_lifecycle(activity_id);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

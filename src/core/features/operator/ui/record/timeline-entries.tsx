@@ -1,3 +1,5 @@
+import {Link} from '@tanstack/react-router';
+import type {BookingCurrent} from '../../../ingestion/booking-lifecycle';
 import type {ReactNode} from 'react';
 import {AuditValue} from '../audit-value';
 import {EntryPrivacy} from '../entry-privacy';
@@ -25,7 +27,14 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  const payload=line.payload,type=line.signalType??text(payload.type)??'',by=line.actorType==='operator'&&line.actorName?`Recorded by ${line.actorName}`:`From ${sourceLabel(line.actorName??line.sourceName)}`;
  let kindWord=words[line.kind]??(line.kind.includes('.')&&/^(email|meeting|form|page|content)\./.test(line.kind)?signalKind(line.kind):label(line.kind));
  let title:ReactNode=text(payload.subject)||firstLine(text(payload.text))||mailEvidenceTitle(line.kind,type||undefined),rest:ReactNode=null,tools:ReactNode=null;
- if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
+ if(payload.booking&&typeof payload.booking==='object'){
+  const meeting=payload.booking as unknown as BookingCurrent;
+  kindWord=meeting.status==='cancelled'?'Meeting cancelled':meeting.history.some(item=>item.previousInvitee)?'Meeting rescheduled':'Meeting booked';
+  title=meeting.eventName;
+  const location=meeting.location,place=location?[location.location,location.join_url].filter(value=>typeof value==='string').join(' · '):'';
+  rest=<>{meeting.name} · {meeting.email}<br/>{meeting.start?<time dateTime={meeting.start}>{formatDateTime(meeting.start)}</time>:null}{meeting.end?<> – <time dateTime={meeting.end}>{formatDateTime(meeting.end)}</time></>:null}{place?<><br/>{place}</>:null}{meeting.cancellation?<><br/>Cancelled by {meeting.cancellation.canceled_by||meeting.cancellation.canceler_type||'Calendly'}{meeting.cancellation.reason?` · ${meeting.cancellation.reason}`:''}</>:null}<br/><Link to="/app/meetings/$id" params={{id:line.id}}>Meeting plan</Link></>;
+ }
+ else if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
  else if(/^(email|meeting|form|page|content)\./.test(line.kind)){rest=text(payload.body)?quote(text(payload.body)):by;}
  else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider`;}
  else if(line.kind==='action.completed'){const skipped=text(payload.outcome)==='skipped';kindWord=skipped?'Skipped':'Done';title=skipped?'Skipped the next action':'Marked the next action done';rest=text(payload.note)||by;}

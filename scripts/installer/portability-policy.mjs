@@ -1,3 +1,4 @@
+// booking_lifecycle carries signed provider evidence and its current activity; no dispatch authority.
 // Orbit's local archive uses Base portability with Orbit's own data policy:
 // operator sessions, sign-in proofs and provider bindings (identity_*), rate
 // limits, collaborator authority, delegation and mail-capture credentials stay

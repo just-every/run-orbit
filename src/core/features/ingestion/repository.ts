@@ -1,3 +1,4 @@
+import {prepareBooking,bookingTimeline} from './booking-lifecycle';
 import {isNativeSource,signedSourcePredicate} from './source-authority';
 import { contactStopStatements } from '../records/suppression-effects';
 import { weights } from '../workbench/policies';
@@ -78,13 +79,21 @@ export class IngestionRepository {
   }
   async prepare(source:string,event:SignalEvent,hash:string,raw:string){
     const test=isTestEvent(event),target=test?null:await resolveTarget(this.db,event),id=createId(),at=new Date().toISOString();
-    const targets=target?await targetsFor(this.db,target):[];
+    const booking=await prepareBooking(this.db,source,event,id);
+    const targets=target?await targetsFor(this.db,target,{company:!!booking}):[];
+    const root=booking&&booking.activityId!==id;
+    const existingTargets=root?(await this.db.prepare('SELECT record_type AS type,record_id AS id,linking_basis AS basis FROM signal_links WHERE signal_id=?').bind(booking.activityId).all<SignalTarget>()).results:[];
     const statements=[this.db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,source,event.eventId,test?`${source}:test`:event.type,event.subject,event.occurredAt,at,hash,test?'inferred':confidence(event.type),test?'Source connection test':target?.basis??'Unlinked',at,raw),
       this.db.prepare('UPDATE signal_sources SET last_accepted_at=?,updated_at=? WHERE id=?').bind(at,at,source),
       ...(test?[]:await mailboxStopStatements(this.db,event,at)),
-      ...await this.linkStatements(id,event,targets,source,at)];
-    if(!target&&!test)statements.push(this.db.prepare('INSERT INTO unlinked_signals(signal_id,reason) VALUES(?,?)').bind(id,['page.viewed','chat.started','content.downloaded'].includes(event.type)&&!event.identityBasis?'Source visitor identity basis is missing':'No unique record match'));
-    return {id,linked:Boolean(target),statements};
+      ...(!root?await this.linkStatements(id,event,targets,source,at):[]),
+      ...(booking?.statements??[])];
+    if(booking){
+      if(root&&booking.firstBooking)statements.push(...this.bookingStopStatements(existingTargets.filter(t=>t.type==='contact'),at));
+      statements.push(this.db.prepare('UPDATE timeline_entries SET payload_json=? WHERE id=?').bind(JSON.stringify(bookingTimeline(booking.activityId,booking.current)),booking.activityId));
+    }
+    if(!target&&!test&&!root)statements.push(this.db.prepare('INSERT INTO unlinked_signals(signal_id,reason) VALUES(?,?)').bind(id,['page.viewed','chat.started','content.downloaded'].includes(event.type)&&!event.identityBasis?'Source visitor identity basis is missing':'No unique record match'));
+    return {id:booking?.activityId??id,linked:root?existingTargets.length>0:Boolean(target),statements};
   }
   private async existing(source:string,eventId:string){return this.db.prepare('SELECT id,payload_hash FROM signals WHERE source_id=? AND source_event_id=?').bind(source,eventId).first<{id:string;payload_hash:string}>();}
   private replay(row:{id:string;payload_hash:string},hash:string){if(row.payload_hash!==hash)throw new IngestionError(409,'Source event identity already carries different payload.');return {id:row.id,replayed:true};}
@@ -105,6 +114,7 @@ export class IngestionRepository {
     if(notificationEventKey)statements.push(...replyNotificationStatements(this.db,id,notificationEventKey,targets.filter(t=>t.type==='opportunity').map(t=>t.id),at,contacts.map(t=>t.id)));
     return statements;
   }
+  private bookingStopStatements(contacts:SignalTarget[],at:string){return contacts.flatMap(contact=>[this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason('meeting.booked'),at,contact.id),this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason('meeting.booked'),at,contact.id)]);}
   async unlinked(){return (await this.db.prepare(`SELECT s.id,s.source_id,ss.name AS source_name,s.type,s.subject,s.occurred_at,u.reason,json_extract(s.payload_json,'$.email') AS email,json_extract(s.payload_json,'$.domain') AS domain,json_extract(s.payload_json,'$.data.name') AS name FROM unlinked_signals u JOIN signals s ON s.id=u.signal_id LEFT JOIN signal_sources ss ON ss.id=s.source_id WHERE u.resolved_at IS NULL AND ${customerSignalSql()} ORDER BY s.received_at DESC LIMIT 100`).all()).results;}
   async link(id:string,target:SignalTarget,actor:string){
     const signal=await this.db.prepare('SELECT s.payload_json,s.source_event_id,s.type,s.subject,s.occurred_at FROM signals s JOIN unlinked_signals u ON u.signal_id=s.id WHERE s.id=? AND u.resolved_at IS NULL').bind(id).first<{payload_json:string;source_event_id:string;type:string;subject:string;occurred_at:string}>();if(!signal)throw new IngestionError(409,'Signal is already linked or missing.');

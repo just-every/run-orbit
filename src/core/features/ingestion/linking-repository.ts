@@ -12,8 +12,9 @@ export async function resolveTarget(db:D1Database,event:SignalEvent):Promise<Sig
   const result=await db.prepare(`SELECT id FROM ${table} WHERE ${column}=? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=?`).bind(key,type,key).all<{id:string}>();
   if(result.results.length===1)return {type,id:result.results[0]!.id,basis:'Exact normalized identity or retired alias'};
 }
-export async function targetsFor(db:D1Database,target:SignalTarget):Promise<SignalTarget[]> {
+export async function targetsFor(db:D1Database,target:SignalTarget,options:{company?:boolean}={}):Promise<SignalTarget[]> {
   if(target.type==='opportunity')return [target];
   const rows=target.type==='contact'?await db.prepare('SELECT opportunity_id AS id FROM opportunity_contacts WHERE contact_id=?').bind(target.id).all<{id:string}>():await db.prepare('SELECT id FROM opportunities WHERE company_id=?').bind(target.id).all<{id:string}>();
-  return [target,...rows.results.map(row=>({type:'opportunity' as const,id:row.id,basis:target.basis}))];
+  const company=options.company&&target.type==='contact'?await db.prepare('SELECT company_id AS id FROM contacts WHERE id=?').bind(target.id).first<{id:string|null}>():null;
+  return [target,...(company?.id?[{type:'company' as const,id:company.id,basis:target.basis}]:[]),...rows.results.map(row=>({type:'opportunity' as const,id:row.id,basis:target.basis}))];
 }

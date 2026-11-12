@@ -1,3 +1,4 @@
+import {proveCalendlyBookings} from '../support/calendly-booking-proof';
 import {issueNativeCredential} from '../support/api-credentials-proof';
 import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
@@ -140,7 +141,7 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
 
  }finally{globalThis.fetch=nativeFetch;await f.dispose();}
 });
-test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked',async()=>{
+test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures and one Calendly activity survive reschedule, cancellation, replay and reordered delivery while unknown invitees remain unlinked',async()=>{
  const f=await fixture();try{
  const{secret}=await(await f.request('sources/bookings','PUT',{name:'Booking tools',enabled:true})).json() as any;
  await f.request('workbench/opportunities','POST',{title:'Booking customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
@@ -189,5 +190,6 @@ test('SIGNAL-009 source rotation and disabling atomically refuse an already stre
   else{assert.equal((await f.request(sourcePath,'PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request(sourcePath,'PATCH',{enabled:true})).status,200);}
   }finally{release();}assert.equal((await pending).status,403,`${vendor} ${change} revokes the pending request`);assert.deepEqual(await counts(),before,'Revoked delivery leaves no signal, link, timeline or scoring effects');
  }
+ await proveCalendlyBookings(f,secret);
  }finally{await f.dispose();}
 });

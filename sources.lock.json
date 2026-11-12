@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "38f940651983b4cb1cbd0076a3d83a987d4cb5fcb89fc909874bda7415e8bf78",
+      "sha256": "d249d5eb80ac1543878c56b8b05c19f2cc259135a77c9394dc3392f33ba6d246",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -4123,7 +4123,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "cf60bd37d5b707febe4beff41f96f0ef60ef37ddb9b11fefb83fb78f335bf0ce",
+      "sha256": "dc734fabac5502c7209d36ddf1785e5ec1f217b1fe8e32c660100936a83b0245",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -6347,7 +6347,7 @@
       "executable": false
     },
     "src/core/features/ingestion/booking-webhooks.ts": {
-      "sha256": "11fe31cd663985fa4540961412f20519112f6f51413df4884fe9a2b60e76a91d",
+      "sha256": "a74c73e8967705207bfef1bcba56dac5a95407f689a29359026dc8f791c07231",
       "executable": false
     },
     "src/core/features/ingestion/calendly-setup.ts": {
@@ -6367,11 +6367,11 @@
       "executable": false
     },
     "src/core/features/ingestion/linking-repository.ts": {
-      "sha256": "3d28069723a86a5560301cd69a5da91177f00cf6178d9b92d096e10f0597bf0e",
+      "sha256": "2c67b04b09e841ec7947d6ee6526076e299a03e6b21c2eb81ed43a42fca82ce3",
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "bc2072779166cc662da56bc0ee33d39bdea9d0bf7667626977855b46e76301fa",
+      "sha256": "d85c8dd1993a046ace7b3eba8fecacc9923814832eb81cb7f86e4b974fbc1cc6",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
@@ -6943,7 +6943,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
-      "sha256": "ef89806e6d3e0829e573b5e63b20297b877c09d9ab7a29d63a2106ab3164f7eb",
+      "sha256": "0ee104113f549dd39f36028ec94418d79c2beccc724ce8b9c6fd0731c92b4e40",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-context.tsx": {
@@ -7027,7 +7027,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
-      "sha256": "f515614092f820ad1ca05409e1ba3ac21d70d822e687e5158888edd601cdb2bf",
+      "sha256": "d4a5e91c7ec2b47a33c9bc8576abf11a6eed3d6ef4be1bfbd441ec9cf2571ac8",
       "executable": false
     },
     "src/core/features/operator/ui/record/use-refresh.ts": {
@@ -7835,7 +7835,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "8eae54fbf7401e94fbbb9f55b7795ea200c853723ae2e3f0c0f850aced933a86",
+      "sha256": "32dcd9e377d4c0fb05fd6e27e42c9f1718154ae4705fcfb2572a31a9537bb9dd",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -7879,7 +7879,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
-      "sha256": "d43f04dacc009fc101ce322d327619d9a693d9b9f3573c33e5cb45dd91dacd18",
+      "sha256": "c5c97b446d4e3237acbbe70185cb6823782032271b4822080699fcc03d2d14ec",
       "executable": false
     },
     "src/core/features/records/archive-size-plan.ts": {
@@ -8359,7 +8359,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "17e48e2ce01855b675261010d3a43a79824ca11e0b80693e3ea0016078430a23",
+      "sha256": "7616cfb4cd8afefd5479b44c889bbfd64151c9c89e4ddc4dc11cdd117b3b9da0",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {
@@ -8383,7 +8383,7 @@
       "executable": false
     },
     "src/core/features/today/signal-lines.ts": {
-      "sha256": "9ea30ba0def1fab0925ba13db1f23bfe1709bef9ceb732e55e9a8c43d011b395",
+      "sha256": "cfcd9d8bd6edbd169a59350d668a29a3473082e4a86942bf6cdccd1abe710859",
       "executable": false
     },
     "src/core/features/today/summary.ts": {
@@ -8599,7 +8599,7 @@
       "executable": false
     },
     "src/core/shared/archive-lineage.ts": {
-      "sha256": "d0d270d8d46092d29750d4f0b202ab0d1110ee21103074bdc2b83dc50ff49213",
+      "sha256": "496ad84e9fb6aea52c8426451b08df29760ee9e5a13b9e1b95123e7cc1d339b7",
       "executable": false
     },
     "src/core/shared/archive-lines.ts": {
@@ -10247,7 +10247,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "6f29b6e43e066f4c4716254eea5b584f0bf74515602946fa70dff1c8f4447301",
+      "sha256": "7c0b46726d68915269b6fa118dca9a36645b4de9145e7789cc82c80ff2f71a75",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
