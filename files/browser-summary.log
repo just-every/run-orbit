@@ -1,0 +1,39 @@
+TAP version 13
+# (node:4303) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+# (node:4303) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+# PROBE FORM-002 browser: no pre-interaction third-party request or cookie; optional verification follows interaction; withdrawn publication refuses UI release and retains pending payload; erasure disables release
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":935,"parts":71,"observations":[{"operation":"POST /exports","milliseconds":5687.417306000018,"status":201},{"operation":"GET /exports/01M770G3K1FX3VEW2TEDAD8X1Q","milliseconds":93.81039999995846,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":6900.884758000029,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":4197.271576000028,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3704.3140109999804,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3682.756585000083,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3713.9151500000153,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3676.997408000054,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3588.6938839999493,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3667.2287899999646,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":3290.7273490000516,"status":200},{"operation":"POST /exports/01M770G3K1FX3VEW2TEDAD8X1Q/advance","milliseconds":384.92207900003996,"status":200},{"operation":"GET /exports/01M770G3K1FX3VEW2TEDAD8X1Q/download","milliseconds":77.07665500009898,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":910,"parts":70,"observations":[{"operation":"POST /exports","milliseconds":3763.6907140000258,"status":201},{"operation":"GET /exports/01M770XE34QWRT8G8ZG8J6ZD3X","milliseconds":71.041656000074,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":5352.0639329999685,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3424.5309460000135,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3673.0943989998195,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3776.960468000034,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3449.6830349999946,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3486.3654640000314,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3653.3968749998603,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3796.490320999874,"status":200},{"operation":"POST /exports/01M770XE34QWRT8G8ZG8J6ZD3X/advance","milliseconds":3362.1028700000606,"status":200},{"operation":"GET /exports/01M770XE34QWRT8G8ZG8J6ZD3X/download","milliseconds":70.37346399994567,"status":200}]}
+# Owned capture Worker PID 12984
+# Owned capture browser PIDs [
+#   { pid: 13029, type: 'browser' },
+#   { pid: 13070, type: 'GPU' },
+#   { pid: 13073, type: 'network.mojom.NetworkService' },
+#   { pid: 13086, type: 'storage.mojom.StorageService' }
+# ]
+# Subtest: SEQUENCE-001 OUT-032 CAPTURE-010 OUT-017 OUT-023 FORM-001 RECORD-016 FORECAST-001 native operator browser journeys
+ok 1 - SEQUENCE-001 OUT-032 CAPTURE-010 OUT-017 OUT-023 FORM-001 RECORD-016 FORECAST-001 native operator browser journeys
+  ---
+  duration_ms: 1205197.631464
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1213187.643636

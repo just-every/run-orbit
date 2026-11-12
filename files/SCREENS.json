@@ -1,0 +1,103 @@
+{
+  "head": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+  "screens": [
+    {
+      "screen": "private-editor",
+      "width": 1440,
+      "image": "sequences-private-editor-1440.png",
+      "imageSha256": "475845007bf1ac00a23c3bce142663b86e2199548debb013356a068fc95fb950",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "private-editor",
+      "width": 390,
+      "image": "sequences-private-editor-390.png",
+      "imageSha256": "01fd5ab0a3015a3bfd8d62fde50c13d0edda080024485d08e3172eb0494356fe",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "version-history",
+      "width": 1440,
+      "image": "sequences-version-history-1440.png",
+      "imageSha256": "8d4b8bbfdefacfebca5e618394eba0a1722dfb037aacec8c45ffd74fc2148da5",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "version-history",
+      "width": 390,
+      "image": "sequences-version-history-390.png",
+      "imageSha256": "c7a27d919c1729266228c5ab2fe45473ea1f7e9d327569c2ce55ef4eed24d14a",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "populated-list",
+      "width": 1440,
+      "image": "sequences-populated-list-1440.png",
+      "imageSha256": "a0e324e90e4e3707755638a3cf9bf54d5138962969863065f8202e7ee03ca8ac",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "populated-list",
+      "width": 390,
+      "image": "sequences-populated-list-390.png",
+      "imageSha256": "1760b1e32a3f8c75c4f6a613d3647a4cf1f7091c8783cde8b94b0ebac7bbad37",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "independent-copy",
+      "width": 1440,
+      "image": "sequences-independent-copy-1440.png",
+      "imageSha256": "064f7b656da6feac38208da3aa5df533020e148cc91888cc9a9dc78c51613b7c",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    },
+    {
+      "screen": "independent-copy",
+      "width": 390,
+      "image": "sequences-independent-copy-390.png",
+      "imageSha256": "c69479df8557eac62adb504fe0be0c7c1085c1cccaf8f17bcaf97e53735eb310",
+      "axe": {
+        "violations": [],
+        "seriousCritical": 0
+      },
+      "visuallyInspected": true,
+      "overflowAssertion": "passed"
+    }
+  ],
+  "errors": "No page errors or unexpected console errors in any sequence context.",
+  "excluded": "Traces and temporary credentials are not publication files."
+}

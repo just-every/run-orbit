@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f171",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f171",
+  "head": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+  "newProductCommits": 0,
+  "priorVerify": {
+    "id": 43148461566,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+    "scope": "full coverage; source and all twenty runtime shards passed"
+  },
+  "checks": {
+    "typecheck": {
+      "exit": 0,
+      "node": "24.19.0"
+    },
+    "firstParty": {
+      "exit": 0
+    },
+    "deployment": {
+      "exit": 0
+    },
+    "contractWrite": {
+      "exit": 0
+    },
+    "contractCheck": {
+      "exit": 0
+    },
+    "sourceLock": {
+      "exit": 0,
+      "changed": false
+    },
+    "sourceCheck": {
+      "exit": 0
+    },
+    "inventory": {
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "native": {
+      "exit": 0,
+      "cases": 1,
+      "failures": 0,
+      "test": "SEQUENCE-001 authoring and archive restore; OUT-010 OUT-018 isolated budgets and visible deferrals",
+      "command": "cloud_run timeout 900 pnpm exec tsx --test --test-name-pattern 'SEQUENCE-001' tests/core/outreach-limits.test.ts",
+      "durationMs": 438262.100199,
+      "node": "24.19.0"
+    },
+    "browser": {
+      "status": "passed",
+      "node": "22.20.0",
+      "executable": "/usr/bin/chromium",
+      "widths": [
+        1440,
+        390
+      ],
+      "sequenceScreens": {
+        "status": "passed",
+        "count": 8,
+        "widths": [
+          1440,
+          390
+        ],
+        "severeAccessibilityViolations": 0,
+        "horizontalOverflow": false,
+        "visuallyInspected": true,
+        "errors": 0
+      },
+      "exit": 0,
+      "cases": 1,
+      "failures": 0,
+      "durationMs": 1213187.643636,
+      "testDurationMs": 1205197.631464,
+      "command": "cloud_run timeout 1800 node --import /tmp/cloud-chromium.mjs --import tsx --test newtests/t096/browser-journeys.test.ts",
+      "requiredEvidenceDirectorySet": true,
+      "preload": {
+        "executablePath": "/usr/bin/chromium",
+        "addedArgs": [
+          "--no-sandbox"
+        ],
+        "existingArgsPreserved": true
+      },
+      "timeoutOverflowWarningsFiltered": 47022,
+      "rawLogSha256": "2aa1d18cc3837184c0a998fde8455ff73aa33564fd17ebfa8d6f4791c4aede3b",
+      "closure": {
+        "closed": true,
+        "viewports": [
+          1440,
+          390
+        ],
+        "ownedWorkers": 0,
+        "ownedBrowsers": 0
+      },
+      "initialHarnessAttempt": {
+        "exit": 1,
+        "error": "Private browser evidence directory is required.",
+        "correctedWithoutProductEdit": true
+      }
+    }
+  },
+  "publicationScan": {
+    "status": "not-run-in-cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": {
+    "status": "pending-fleet",
+    "mainPushed": false,
+    "pr": null
+  },
+  "productPush": {
+    "exit": 0,
+    "attempt": 1,
+    "branch": "cloud/sd-orbit-c-f171",
+    "head": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+    "guard": "cloud-push.py",
+    "newBranch": true,
+    "remoteVerified": {
+      "head": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+      "ref": "refs/heads/cloud/sd-orbit-c-f171"
+    }
+  },
+  "mainRuns": [
+    {
+      "conclusion": "skipped",
+      "event": "push",
+      "head_sha": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43094710960",
+      "id": 43094710960,
+      "name": "Run demo",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "dynamic",
+      "head_sha": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43094711030",
+      "id": 43094711030,
+      "name": "Push on main",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43094710902",
+      "id": 43094710902,
+      "name": "Run site",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_sha": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43094710689",
+      "id": 43094710689,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43089571350",
+      "id": 43089571350,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "candidateRuns": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f171",
+      "head_sha": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43154797991",
+      "id": 43154797991,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f164",
+      "head_sha": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43148461566",
+      "id": 43148461566,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "githubCalls": 7,
+  "mechanical": {
+    "lock": {
+      "write": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "check": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    "views": {
+      "write": "node src/base/contract-docs.mjs write",
+      "check": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "restoredFrom": "origin/main",
+      "committed": false
+    },
+    "ledger": {
+      "command": null,
+      "reason": "No migration edited this continuation; inherited migration and archive ledger exercised by passing native proof."
+    }
+  },
+  "branchVerifyLatest": {
+    "conclusion": null,
+    "head_sha": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43154797991",
+    "status": "in_progress"
+  },
+  "branchVerifyObservedAt": "2026-11-12T04:38:52.195025+00:00",
+  "completedAt": "2026-11-12T04:43:43.560206+00:00",
+  "productTreeChangesThisRound": [],
+  "countsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "countsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "clause": {
+    "id": "SEQUENCE-001",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "fullAcceptancePointsClosed": [],
+    "selectedAuthoringLimbs": "requalified",
+    "newDefault": false
+  }
+}

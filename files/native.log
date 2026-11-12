@@ -1,0 +1,13 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":130,"rows":36,"parts":20,"observations":[{"operation":"POST /exports","milliseconds":4866.350859000013,"status":201},{"operation":"GET /exports/01Q431VS80R0QK5P6CCM5FQTG0","milliseconds":96.54357499998878,"status":200},{"operation":"POST /exports/01Q431VS80R0QK5P6CCM5FQTG0/advance","milliseconds":6133.211019999988,"status":200},{"operation":"POST /exports/01Q431VS80R0QK5P6CCM5FQTG0/advance","milliseconds":3949.717629999999,"status":200},{"operation":"POST /exports/01Q431VS80R0QK5P6CCM5FQTG0/advance","milliseconds":2793.3049039999896,"status":200},{"operation":"GET /exports/01Q431VS80R0QK5P6CCM5FQTG0/download","milliseconds":85.8653720000002,"status":200}]}
+✔ SEQUENCE-001 authoring and archive restore; OUT-010 OUT-018 isolated budgets and visible deferrals (429176.416514ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 438262.100199

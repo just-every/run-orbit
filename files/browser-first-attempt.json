@@ -1,0 +1,9 @@
+{
+  "exit": 1,
+  "cause": "Private browser evidence directory is required.",
+  "omittedSetting": "ORBIT_FOLD_BROWSER_EVIDENCE",
+  "ownedAttemptStopped": true,
+  "productChanged": false,
+  "testSourceChanged": false,
+  "retryCorrection": "Set the required evidence directory and use pinned Node 22.20.0 with system Chromium."
+}
