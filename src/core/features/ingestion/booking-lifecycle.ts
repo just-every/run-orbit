@@ -7,14 +7,14 @@ export interface CalendlyReceipt {
  eventName:string;start:string|null;end:string|null;location:Record<string,unknown>|null;
  cancellation:{canceled_by?:string|null;reason?:string|null;canceler_type?:string|null}|null;
 }
-export interface BookingCurrent extends CalendlyReceipt {status:'booked'|'cancelled';history:CalendlyReceipt[]}
+export interface BookingCurrent extends CalendlyReceipt {status:'booked'|'cancelled';updatedAt:string;history:CalendlyReceipt[]}
 interface Row {signal_id:string;activity_id:string;event_json:string;current_json:string|null}
 const receipt=(event:SignalEvent)=>event.data?.provider==='calendly'?event.data.calendly as CalendlyReceipt|undefined:undefined;
 const order=(a:CalendlyReceipt,b:CalendlyReceipt)=>a.occurredAt.localeCompare(b.occurredAt)||a.inviteeUri.localeCompare(b.inviteeUri)||a.kind.localeCompare(b.kind);
 
 /** Join the signed invitee chain, including either order of a reschedule's two callbacks.
  * Original signal bytes never change; one root holds the visible, current meeting. */
-export async function prepareBooking(db:D1Database,source:string,event:SignalEvent,id:string){
+export async function prepareBooking(db:D1Database,source:string,event:SignalEvent,id:string,at:string){
  const incoming=receipt(event);if(!incoming)return null;
  const keys=JSON.stringify([incoming.inviteeUri,incoming.previousInvitee,incoming.nextInvitee].filter(Boolean));
  const matched=(await db.prepare(`SELECT DISTINCT activity_id FROM booking_lifecycle WHERE source_id=? AND
@@ -30,8 +30,10 @@ export async function prepareBooking(db:D1Database,source:string,event:SignalEve
  const latest=(heads.length?heads:history).at(-1)!;
  const same=history.filter(item=>item.inviteeUri===latest.inviteeUri),created=same.findLast(item=>item.kind==='invitee.created');
  const cancelled=same.findLast(item=>item.kind==='invitee.canceled'&&!item.rescheduled);
- const current:BookingCurrent={...(created??latest),status:cancelled?'cancelled':'booked',cancellation:cancelled?.cancellation??null,history};
+ const current:BookingCurrent={...(created??latest),status:cancelled?'cancelled':'booked',cancellation:cancelled?.cancellation??null,updatedAt:at,history};
  const root=rows.find(row=>row.signal_id===activityId),prior=root?.current_json?JSON.parse(root.current_json) as BookingCurrent:null;
+ const visible=({history,updatedAt,...value}:BookingCurrent)=>JSON.stringify(value);
+ if(prior&&visible(prior)===visible(current))current.updatedAt=prior.updatedAt??at;
  // The root's first created receipt runs the existing stop once, even when a cancellation arrived first.
  const firstBooking=incoming.kind==='invitee.created'&&!rows.some(row=>(JSON.parse(row.event_json) as CalendlyReceipt).kind==='invitee.created');
  const statements=[
@@ -42,7 +44,7 @@ export async function prepareBooking(db:D1Database,source:string,event:SignalEve
   db.prepare('INSERT INTO booking_lifecycle(signal_id,activity_id,source_id,invitee_uri,previous_invitee_uri,next_invitee_uri,event_json,current_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,activityId,source,incoming.inviteeUri,incoming.previousInvitee,incoming.nextInvitee,JSON.stringify(incoming),activityId===id?JSON.stringify(current):null),
  ];
  if(activityId!==id)statements.push(db.prepare('UPDATE booking_lifecycle SET current_json=? WHERE signal_id=?').bind(JSON.stringify(current),activityId));
- return {activityId,current,prior,firstBooking,statements};
+ return {activityId,current,firstBooking,statements};
 }
 
 export function bookingTimeline(activityId:string,current:BookingCurrent){return {signalId:activityId,subject:current.eventName,booking:current};}

@@ -166,7 +166,7 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("RECORD-005", "the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties", async ({ page }, info) => {
+  contract("RECORD-005", "the opportunity timeline keeps note ordering and one Calendly booking through reschedule and cancellation", async ({ page }, info) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const failures = watchFailures(page);
     await openOpportunity(page);
@@ -232,6 +232,43 @@ test.describe("authenticated operator UI", () => {
       desktopOrder: await noteRows.evaluateAll(rows => rows.map(row => row.id)),
       desktopFits: await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     }, null, 2) });
+    // The same deal activity follows a documented signed Calendly booking.
+    await page.setViewportSize({width:1440,height:900});
+    const bookingKey=randomUUID(), email=[`synthetic-orbit-${bookingKey}`,'example.test'].join('@'),origin=new URL(page.url()).origin;
+    const inventory=await (await page.request.get('/api/v1/workbench')).json();
+    const created=await page.request.post('/api/v1/workbench/opportunities',{headers:{Origin:origin},data:{title:`Calendly activity ${bookingKey}`,companyName:'Synthetic calendar account',contactName:'Calendar attendee',email,stageId:inventory.stages[0].id,valueCents:10000}});
+    expect(created.status()).toBe(201);const bookingDeal=(await created.json()).id,source=randomUUID();
+    const configured=await page.request.put(`/api/v1/sources/${source}`,{headers:{Origin:origin},data:{name:'Synthetic Calendly',enabled:true}});
+    expect(configured.status()).toBe(200);const {secret}=await configured.json();
+    const event=id=>`https://api.calendly.com/scheduled_events/synthetic-orbit-${bookingKey}-${id}`,invitee=id=>`${event(id)}/invitees/synthetic-orbit-${id}`;
+    const callback=(kind,id,extra={})=>({event:kind,created_at:'2026-01-01T10:00:00.000Z',payload:{uri:invitee(id),event:event(id),email,name:'Exact Calendar Attendee',rescheduled:false,scheduled_event:{uri:event(id),name:'Discovery consultation',start_time:id==='old'?'2030-01-09T13:00:00.000Z':'2030-01-10T15:00:00.000Z',end_time:id==='old'?'2030-01-09T13:45:00.000Z':'2030-01-10T16:00:00.000Z',location:{type:'physical',location:'Synthetic meeting room'}},...extra}});
+    const deliver=async payload=>{const raw=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000)),signature=createHmac('sha256',secret).update(`${timestamp}.${raw}`).digest('hex');const response=await page.request.post(`/api/v1/signals/${source}/calendly`,{headers:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${signature}`},data:raw});expect(response.status(),await response.text()).toBe(201);return response.json();};
+    const bookingId=(await deliver(callback('invitee.created','old'))).id;
+    await page.goto(`/app/opportunities/${bookingDeal}`,{waitUntil:'networkidle'});
+    const bookingRow=page.locator(`#entry-${bookingId}`);
+    await expect(bookingRow).toContainText('Meeting booked');await expect(bookingRow).toContainText('Exact Calendar Attendee');await expect(bookingRow).toContainText(email);await expect(bookingRow).toContainText('Synthetic meeting room');
+    await expect(bookingRow.locator('time').first()).toHaveAttribute('datetime','2030-01-09T13:00:00.000Z');
+    expect((await deliver(callback('invitee.created','new',{old_invitee:invitee('old'),rescheduled:true}))).id).toBe(bookingId);
+    expect((await deliver(callback('invitee.canceled','old',{new_invitee:invitee('new'),rescheduled:true,cancellation:{canceled_by:'Exact Calendar Attendee',reason:'Rescheduled',canceler_type:'invitee'}}))).id).toBe(bookingId);
+    await page.reload({waitUntil:'networkidle'});
+    await expect(bookingRow).toContainText('Meeting rescheduled');await expect(bookingRow.locator('time').first()).toHaveAttribute('datetime','2030-01-10T15:00:00.000Z');
+    await expect(page.getByTestId('record-activity').locator('.r-entry-title').filter({hasText:'Discovery consultation'})).toHaveCount(1);
+    expect((await deliver(callback('invitee.canceled','new',{cancellation:{canceled_by:'Synthetic host',reason:'Customer requested cancellation',canceler_type:'host'}}))).id).toBe(bookingId);
+    await page.reload({waitUntil:'networkidle'});
+    await expect(bookingRow).toContainText('Meeting cancelled');await expect(bookingRow).toContainText('Cancelled by Synthetic host · Customer requested cancellation');
+    await expect(bookingRow.getByRole('link',{name:'Meeting plan'})).toHaveAttribute('href',`/app/meetings/${bookingId}`);
+    await bookingRow.getByText('Recorded details',{exact:true}).click();
+    await expect(bookingRow).toContainText(invitee('old'));await expect(bookingRow).toContainText(invitee('new'));
+    await bookingRow.getByText('Recorded details',{exact:true}).click();
+    const peopleMenu=page.getByRole('button',{name:'More for Calendar attendee',exact:true});
+    await peopleMenu.hover();await expect(page.getByRole('tooltip')).toHaveText('More for Calendar attendee');
+    await page.mouse.move(0,0);await peopleMenu.focus();await expect(page.getByRole('tooltip')).toHaveText('More for Calendar attendee');
+    await peopleMenu.evaluate(button=>button.blur());
+    await expectNoHorizontalOverflow(page);
+    await page.screenshot({path:info.outputPath('calendly-1440.png'),fullPage:true});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:info.outputPath('calendly-390.png'),fullPage:true});
+    await info.attach('calendly-activity.json',{contentType:'application/json',body:JSON.stringify({deal:bookingDeal,activity:bookingId,desktop:1440,phone:390},null,2)});
     expect(failures).toEqual([]);
   });
 

@@ -11,6 +11,10 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
   const response=await f.app.request('https://orbit.test/api/v1/signals/bookings/calendly',{method:'POST',headers:{'Calendly-Webhook-Signature':`t=${timestamp},v1=${createHmac('sha256',key).update(timestamp+'.'+body).digest('hex')}`},body});
   return json(response,status);
  };
+ const generic=JSON.stringify({eventId:createId(),type:'meeting.booked',subject:'Generic source data stays generic',occurredAt:'2026-01-01T00:00:00.000Z',data:{provider:'calendly',calendly:{}}}),timestamp=String(Math.floor(Date.now()/1000));
+ const beforeGeneric=await f.db.prepare('SELECT count(*) AS n FROM booking_lifecycle').first('n');
+ await json(await f.app.request('https://orbit.test/api/v1/signals/bookings',{method:'POST',headers:{'X-Orbit-Timestamp':timestamp,'X-Orbit-Signature':createHmac('sha256',secret).update(timestamp+'.'+generic).digest('hex')},body:generic}),201);
+ assert.equal(await f.db.prepare('SELECT count(*) AS n FROM booking_lifecycle').first('n'),beforeGeneric,'Only the verified vendor door interprets provider lifecycle fields');
  const inventory=async()=>({messages:(await f.db.prepare('SELECT * FROM outbound_messages ORDER BY id').all()).results,drafts:(await f.db.prepare('SELECT id,is_stale,stale_reason,updated_at FROM drafts ORDER BY id').all()).results,sends:f.sends()});
  const evidence=async()=>Object.fromEntries(await Promise.all(['signals','signal_links','timeline_entries','timeline_entry_records','booking_lifecycle'].map(async table=>[table,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results])));
  for(const reverse of [false,true]){
@@ -58,11 +62,17 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(stopped).first<any>())?.state,'cancelled');assert.equal(f.sends(),sends);
   // New operator approval after the original stop detects an accidental second stop.
   const later=await schedule('After the first booking'),afterStop=await inventory();
+  const seen=(await json(await f.request('today'))).brief;
+  await json(await f.request('today/seen','POST',{through:seen.generatedAt}));
+  const afterSeen=(await json(await f.request('today'))).brief;
+  assert.equal(afterSeen.accounts.flatMap((account:any)=>account.lines).some((line:any)=>line.evidence?.id===activityId),false,'A seen booking leaves the new activity window');
   const first=reverse?replacement:oldCancel,second=reverse?oldCancel:replacement;
   assert.equal((await post(first)).id,activityId);assert.equal((await post(second)).id,activityId);
   const rescheduled=await read('booked','2030-01-10T15:00:00.000Z',invitee('new'),3);
   assert.ok(rescheduled.history.some((item:any)=>item.inviteeUri===invitee('old')&&item.start==='2030-01-09T13:00:00.000Z'));
   assert.deepEqual(await inventory(),afterStop,'Rescheduling neither repeats nor revives the original outreach stop');
+  const rescheduleSeen=(await json(await f.request('today'))).brief;
+  await json(await f.request('today/seen','POST',{through:rescheduleSeen.generatedAt}));
   const cancel=payload('invitee.canceled','new',{cancellation:{canceled_by:'Synthetic host',canceler_type:'host',reason:'Customer requested cancellation'}});
   assert.equal((await post(cancel)).id,activityId);
   const cancelled=await read('cancelled','2030-01-10T15:00:00.000Z',invitee('new'),4);
@@ -78,6 +88,6 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
   await json(await f.request(`records/contact/${contact.id}`,'DELETE',{confirmed:true}));
   const erased=await json(await f.request(`records/opportunity/${deal.id}`));assert.equal(JSON.stringify(erased).includes(email),false);
   const replay=await post(original);assert.equal(replay.linked,false);const erasedAgain=await json(await f.request(`records/opportunity/${deal.id}`));assert.equal(JSON.stringify(erasedAgain).includes(email),false);
-  assert.equal(await f.db.prepare('SELECT count(*) AS n FROM booking_lifecycle WHERE event_json LIKE ?').bind('%'+email+'%').first('n'),1,'Only the unlinked replay remains, with no customer activity');
+  assert.equal(await f.db.prepare("SELECT count(*) AS n FROM booking_lifecycle WHERE json_extract(event_json,'$.email')=?").bind(email).first('n'),1,'Only the unlinked replay remains, with no customer activity');
  }
 }

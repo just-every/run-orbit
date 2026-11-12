@@ -2226,6 +2226,10 @@
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
       "executable": false
     },
+    "migrations/core/0081_calendly_booking_lifecycle.sql": {
+      "sha256": "e1aa6e529745c0687c2a70438574db9c62603f63396ba490e18e5ea1a93aff9c",
+      "executable": false
+    },
     "migrations/rewrites.json": {
       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
       "executable": false
@@ -6346,6 +6350,10 @@
       "sha256": "6ee8882f0cf79db867e18a908b6a2853a72e519d1a04d0e0f3d06923a0debe5d",
       "executable": false
     },
+    "src/core/features/ingestion/booking-lifecycle.ts": {
+      "sha256": "eae29dd042b73c95004a238391ba5f1de8c20da6d1d1c3bbe0a79989f5bb6c79",
+      "executable": false
+    },
     "src/core/features/ingestion/booking-webhooks.ts": {
       "sha256": "a74c73e8967705207bfef1bcba56dac5a95407f689a29359026dc8f791c07231",
       "executable": false
@@ -6371,11 +6379,11 @@
       "executable": false
     },
     "src/core/features/ingestion/repository.ts": {
-      "sha256": "d85c8dd1993a046ace7b3eba8fecacc9923814832eb81cb7f86e4b974fbc1cc6",
+      "sha256": "3a10c9a71f7596a05c32f51352739cc71cff34c8515b72f5205e7ee2adfca271",
       "executable": false
     },
     "src/core/features/ingestion/routes.ts": {
-      "sha256": "ece7cda5c8e54c002ac61c7b7becef1326646ef1e968de9199a9ebb3aa4a6f88",
+      "sha256": "0b5a129df9de99d3cd909ed9f3f68124b8d83cab9781f3071e9b8531ccbbf051",
       "executable": false
     },
     "src/core/features/ingestion/source-authority.ts": {
@@ -8383,7 +8391,7 @@
       "executable": false
     },
     "src/core/features/today/signal-lines.ts": {
-      "sha256": "cfcd9d8bd6edbd169a59350d668a29a3473082e4a86942bf6cdccd1abe710859",
+      "sha256": "f1f60cf692ad04db9b8d8ac85c9b33eb02918d41795a13b2491b79048f50d0ca",
       "executable": false
     },
     "src/core/features/today/summary.ts": {
@@ -10247,7 +10255,7 @@
       "executable": false
     },
     "tests/core/source-onboarding.test.ts": {
-      "sha256": "7c0b46726d68915269b6fa118dca9a36645b4de9145e7789cc82c80ff2f71a75",
+      "sha256": "0fb8a37ed34c91cafe9411d2dcd2f99daf770ce675e2cfd6ecd75b23ac752993",
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
@@ -10375,7 +10383,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "26b53d8df2f00b1850a1bc83b8caeda17603d1e0ef3894807734085d10a5649a",
+      "sha256": "cc99001f0e946b7fe433c3285da693f72a3bba8562488a52de4aaaa872f5f799",
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
@@ -11064,6 +11072,10 @@
     },
     "tests/support/calendar-writeback.ts": {
       "sha256": "302516631ad1b4dc6cf97adbfef55c06aefdf3be26c6e9816085ff2d2e515e0a",
+      "executable": false
+    },
+    "tests/support/calendly-booking-proof.ts": {
+      "sha256": "377ac412d7b7f244f45b233de26910bab84004d28f6fe3aae4d9da201bd265e6",
       "executable": false
     },
     "tests/support/capture-browser-source.ts": {

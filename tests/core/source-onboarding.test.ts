@@ -168,6 +168,7 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures and one 
  const accepted=await post(raw);assert.equal(accepted.status,201,await accepted.clone().text());const signal=await accepted.json() as any;assert.equal(signal.linked,true);assert.equal((await post(raw)).status,409);assert.equal((await f.db.prepare('SELECT type FROM signals WHERE id=?').bind(signal.id).first<any>()).type,type);
  }
  const unknown=JSON.stringify({triggerEvent:'BOOKING_CREATED',createdAt:new Date().toISOString(),payload:{uid:crypto.randomUUID(),attendees:[{email:'unknown@example.test'}]}});const response=await f.app.request('https://orbit.test/api/v1/signals/bookings/calcom',{method:'POST',headers:{'X-Cal-Signature-256':createHmac('sha256',secret).update(unknown).digest('hex')},body:unknown});const unlinked=await response.json() as any;assert.equal(unlinked.linked,false);assert.match(JSON.stringify(await(await f.request('sources/unlinked')).json()),/No unique record match/);const contact=(await(await f.request('sources/recipe-context')).json() as any).contacts[0];assert.equal((await f.request(`sources/unlinked/${unlinked.id}/link`,'POST',{type:'contact',id:contact.id})).status,200);assert.ok(await f.db.prepare('SELECT signal_id FROM signal_links WHERE signal_id=? AND record_id=?').bind(unlinked.id,contact.id).first());
+ await proveCalendlyBookings(f,secret);
  }finally{await f.dispose();}
 });
 
@@ -190,6 +191,5 @@ test('SIGNAL-009 source rotation and disabling atomically refuse an already stre
   else{assert.equal((await f.request(sourcePath,'PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request(sourcePath,'PATCH',{enabled:true})).status,200);}
   }finally{release();}assert.equal((await pending).status,403,`${vendor} ${change} revokes the pending request`);assert.deepEqual(await counts(),before,'Revoked delivery leaves no signal, link, timeline or scoring effects');
  }
- await proveCalendlyBookings(f,secret);
  }finally{await f.dispose();}
 });

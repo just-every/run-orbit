@@ -63,13 +63,13 @@ export class IngestionRepository {
     try{await this.db.batch([this.sourceFence(source,authority)]);}catch{throw new IngestionError(403,'Source authority changed; use its current signing secret.');}
   }
   private async sourceChanged(source:string,authority:SourceAuthority){const current=await this.source(source);return !current?.enabled||Boolean(current.removed_at)||isNativeSource(source,current.type)||current.secret_ciphertext!==authority.secret_ciphertext;}
-  async ingest(source:string,event:SignalEvent,hash:string,raw:string,authority?:SourceAuthority){
+  async ingest(source:string,event:SignalEvent,hash:string,raw:string,authority?:SourceAuthority,calendly=false){
     const existing=await this.existing(source,event.eventId);
     if(existing){
       if(authority)await this.assertAuthority(source,authority);
       return this.replay(existing,hash);
     }
-    const plan=await this.prepare(source,event,hash,raw);
+    const plan=await this.prepare(source,event,hash,raw,calendly);
     try{await this.db.batch([...(authority?[this.sourceFence(source,authority)]:[]),...plan.statements]);}
     catch(error){
       if(authority&&await this.sourceChanged(source,authority))throw new IngestionError(403,'Source authority changed; use its current signing secret.');
@@ -77,9 +77,9 @@ export class IngestionRepository {
     }
     return {id:plan.id,linked:plan.linked};
   }
-  async prepare(source:string,event:SignalEvent,hash:string,raw:string){
+  async prepare(source:string,event:SignalEvent,hash:string,raw:string,calendly=false){
     const test=isTestEvent(event),target=test?null:await resolveTarget(this.db,event),id=createId(),at=new Date().toISOString();
-    const booking=await prepareBooking(this.db,source,event,id);
+    const booking=calendly?await prepareBooking(this.db,source,event,id,at):null;
     const targets=target?await targetsFor(this.db,target,{company:!!booking}):[];
     const root=booking&&booking.activityId!==id;
     const existingTargets=root?(await this.db.prepare('SELECT record_type AS type,record_id AS id,linking_basis AS basis FROM signal_links WHERE signal_id=?').bind(booking.activityId).all<SignalTarget>()).results:[];

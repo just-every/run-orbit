@@ -1,4 +1,3 @@
-import {currentBooking} from '../ingestion/booking-lifecycle';
 import type {BriefLine,RecordRef} from './types';
 import {planHref} from './links';
 import {customerSignalSql} from '../signals/test-events';
@@ -26,8 +25,7 @@ export async function signalLinks(db:D1Database,signalIds:string[]){
 
 /** Customer signals linked to a record since the window opened: replies, meetings, then observed and inferred activity. */
 export async function newSignalLines(db:D1Database,since:string,limit:number):Promise<{lines:RawLine[];truncated:boolean}>{
- const rows=(await db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,ss.name AS sourceName FROM signals s JOIN signal_sources ss ON ss.id=s.source_id WHERE s.type<>'email.sent' AND ${customerSignalSql()} AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id AND l.linked_at>=?) ORDER BY s.occurred_at DESC,s.id LIMIT ?`).bind(since,limit+1).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';sourceName:string}>()).results;
- for(const row of rows){const booking=await currentBooking(db,row.id);if(booking){row.type=`meeting.${booking.status}`;row.subject=booking.eventName;}}
+ const rows=(await db.prepare(`SELECT s.id,CASE WHEN b.current_json IS NOT NULL THEN 'meeting.'||json_extract(b.current_json,'$.status') ELSE s.type END AS type,COALESCE(json_extract(b.current_json,'$.eventName'),s.subject) AS subject,s.occurred_at AS occurredAt,s.confidence,ss.name AS sourceName FROM signals s JOIN signal_sources ss ON ss.id=s.source_id LEFT JOIN booking_lifecycle b ON b.signal_id=s.id AND b.activity_id=s.id WHERE s.type<>'email.sent' AND ${customerSignalSql()} AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id AND COALESCE(json_extract(b.current_json,'$.updatedAt'),l.linked_at)>=?) ORDER BY s.occurred_at DESC,s.id LIMIT ?`).bind(since,limit+1).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';sourceName:string}>()).results;
  const kept=rows.slice(0,limit),ids=kept.map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,ids),signalEntries(db,ids)]);
  return {truncated:rows.length>limit,lines:kept.map(row=>({
   id:`signal:${row.id}`,kind:row.type==='email.replied'?'reply':meetingTypes.has(row.type)?'meeting':'signal',group:'new',signalType:row.type,confidence:row.confidence,

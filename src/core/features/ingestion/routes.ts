@@ -32,7 +32,7 @@ export function createSignalIngress(db:D1Database,security?:SourceSecurity){
       event=parsed.data;
     }
     if((!standardTypes.has(event.type)&&!event.type.startsWith(`${source.id}:`))||Date.parse(event.occurredAt)>Date.now()){await repository.reject(source.id,event.eventId,'Invalid event type or future occurred time');return c.json({error:'Invalid event type or future occurred time.'},400);}
-    try{const result=await repository.ingest(source.id,event,await payloadHash(raw),raw,source);if((vendor==='calcom'||vendor==='calendly')&&'replayed' in result)return c.json({error:'This booking event was already received.'},409);return c.json(result,201);}
+    try{const result=await repository.ingest(source.id,event,await payloadHash(raw),raw,source,vendor==='calendly');if((vendor==='calcom'||vendor==='calendly')&&'replayed' in result)return c.json({error:'This booking event was already received.'},409);return c.json(result,201);}
     catch(error){if(error instanceof IngestionError){if(error.status!==403)await repository.reject(source.id,event.eventId,error.message);return c.json({error:error.message},error.status);}return c.json({error:'Signal persistence failed; replay the same event identity.'},503);}
   });return app;
 }
