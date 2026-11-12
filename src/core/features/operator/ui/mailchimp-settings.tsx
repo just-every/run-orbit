@@ -1,3 +1,4 @@
+import {MailchimpSetupHelp} from './integration-setup-help';
 import {useEffect,useState} from 'react';
 import {recordsRequest} from './records-api';
 import {OperatorState} from './operator-shell';
@@ -24,7 +25,7 @@ export function MailchimpSettings(){
   {!data||!phase?<OperatorState>Loading Mailchimp…</OperatorState>:<>
    <div className="mailchimp-state" data-state={phase} role="status"><strong>{phases[phase]}</strong><span>{phase==='connected'?`Audience “${data.audience?.name}”.`:data.reason}</span>{phase==='connected'&&data.audience&&<a className="mailchimp-link" href={data.audience.link} target="_blank" rel="noreferrer">Open the audience in Mailchimp</a>}</div>
    {data.held&&data.checkedAt&&<p>Key last checked {formatDateTime(data.checkedAt)}.{data.lastEventAt?` Last Mailchimp event received ${formatDateTime(data.lastEventAt)}.`:''}</p>}
-   {data.owner?<>
+   {data.owner?<><MailchimpSetupHelp/>
     <form className="workbench-form" onSubmit={e=>{e.preventDefault();const key=apiKey;setApiKey('');void run('connect',{apiKey:key},'POST','Mailchimp accepted the key. Choose the audience next.');}}><h3>{data.held?'Replace the API key':'Connect Mailchimp'}</h3><label>Mailchimp API key<input type="password" autoComplete="new-password" required value={apiKey} onChange={e=>setApiKey(e.target.value)}/></label><p>Mailchimp checks the key before Orbit saves it. Orbit encrypts it, never shows it again and never exports it; after a restore, connect again.</p><button className="operator-button" disabled={busy}>Check key and connect</button></form>
     {data.held&&<><h3>Audience</h3><p>Orbit hands contacts to one audience. Choosing it adds the hidden consent field ORBITCONS and registers Orbit’s webhook. Handoffs wait until Mailchimp checks the public HTTPS address.</p>
      <div className="workbench-actions"><button type="button" disabled={busy} onClick={()=>void loadAudiences()}>Load audiences</button></div>
