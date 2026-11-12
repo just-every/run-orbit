@@ -22,14 +22,14 @@ export async function withdrawRelatedImportCopies(db:D1Database,actor:string,id:
  for(const reference of references)await eraseD1ImportTarget('reference',reference.id,targets.remove('workspace','reference',reference.id),context);
  const copies=(await db.prepare("SELECT kind,id,original_json FROM crm_import_targets WHERE kind='note'").all<{kind:string;id:string;original_json:string}>()).results;
  const linked=(await db.prepare("SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?").bind(id).all<{timeline_entry_id:string}>()).results.map(r=>r.timeline_entry_id);
- // Task-created entries share their source with the task and series. The final
- // contact erasure severs that whole source instead of erasing one effect.
+ // Task-created entries belong to the task and series. The final
+ // contact erasure withdraws all projections in its atomic native transaction.
  for(const copy of copies)if(!JSON.parse(copy.original_json).taskId&&(linked.includes(copy.id)||containsMailbox(copy.original_json,emails)))await eraseD1ImportTarget('note',copy.id,[...targets.remove('workspace','note',copy.id)],context);
  const stops=(await db.prepare('SELECT id,value_json FROM crm_import_stops').all<{id:string;value_json:string}>()).results;
  for(const stop of stops)if(emails.some(email=>JSON.parse(stop.value_json).emails.includes(email.toLowerCase())))await eraseD1ImportTarget('suppression',stop.id,[sql('DELETE FROM crm_import_stops WHERE id=?',stop.id)],context);
 }
 /** Other imported rows, rejected rows and original files can also hold the person's mailbox. */
-const relatedCopies=(emails:string[],taskIds:Set<string>)=>({source:(record:{namespace:string;kind:string;sourceId:string;payload:unknown})=>(record.kind==='task'&&taskIds.has(nativeId(record.namespace,'task',record.sourceId)))||containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
+const relatedCopies=(emails:string[],taskIds:Set<string>)=>({source:(record:{namespace:string;kind:string;sourceId:string;payload:unknown})=>(['task','task-series','task-entry'].includes(record.kind)&&taskIds.has(nativeId(record.namespace,'task',record.sourceId)))||containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
 export async function eraseImportedContact(db:D1Database,actor:string,id:string,statements:D1Sql[],sessionId?:string,emails:string[]=[]){
  const taskIds=new Set<string>(),native=await redactImportedNativeCopies(db,id,emails,taskIds);
  return eraseD1ImportTarget('contact',id,[...native,...statements,sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?','contact',id),
