@@ -1,0 +1,11 @@
+{
+  "base": "untouched main",
+  "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "reviewText": "Hand over Jordan Reyes’s work\n\nRemoval revokes their sessions and cancels their scheduled messages. Notes and completed work keep their attribution.\n\nOpen opportunities (0)\n\nNo open work in this set.\n\nOpen sales tasks (0)\n\nNo open work in this set.\n\nOpen handoffs (0)\n\nNo open work in this set.\n\nOpen contact follow-up promises (0)\n\nNo open work in this set.\n\n0 scheduled message(s) will be cancelled.\n\nKeep operator\nConfirm handover and remove",
+  "contactsInReview": 0,
+  "ownedContacts": 5,
+  "companyInReview": false,
+  "ownerAfterRemoval": "01M76XAATDY7SZP9N15CJD2J2W",
+  "removedOwner": "01M76XAATDY7SZP9N15CJD2J2W",
+  "accessSummary": "Jordan Reyes\n\nsynthetic-orbit-peer@people.test · Teammate with full access · Access removed"
+}

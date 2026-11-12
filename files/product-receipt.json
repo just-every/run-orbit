@@ -1,0 +1,53 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-teammate-removal-1",
+  "head": "3044cf16350afc606377aa5354a019707790ea0e",
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "commits": [
+    {
+      "head": "3044cf16350afc606377aa5354a019707790ea0e",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>"
+    },
+    {
+      "head": "7b0b2879338a38da3d697f6463fc35487a1d7bb9",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>"
+    }
+  ],
+  "contractStatusChanges": {
+    "TEAM-004": [
+      "partial",
+      "partial"
+    ],
+    "RECORD-022": [
+      "partial",
+      "partial"
+    ]
+  },
+  "publicationScan": "Fleet Mac gate; unavailable in this cloud as specified by task",
+  "productPush": "success",
+  "pullRequest": null,
+  "pushCommand": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-teammate-removal-1",
+  "pushOutput": [
+    "fleet Git: removed 0 credential-bearing GitHub URL rewrite sections",
+    "PUSH attempt=1/5 command=git push --porcelain origin HEAD:refs/heads/cloud/main-orbit-teammate-removal-1",
+    "fleet Git: removed 0 credential-bearing GitHub URL rewrite sections",
+    "To https://github.com/just-every/run-orbit",
+    " \tHEAD:refs/heads/cloud/main-orbit-teammate-removal-1\t7b0b287..3044cf1",
+    "Done",
+    "remote: ",
+    "remote: GitHub found 33 vulnerabilities on just-every/run-orbit's default branch (11 high, 17 moderate, 5 low). To find out more, visit:        ",
+    "remote:      https://github.com/just-every/run-orbit/security/dependabot        ",
+    "remote: ",
+    "PUSH_OK branch=cloud/main-orbit-teammate-removal-1"
+  ],
+  "verify": {
+    "runId": 43153449604,
+    "conclusion": "success",
+    "head_sha": "3044cf16350afc606377aa5354a019707790ea0e",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153449604",
+    "status": "completed"
+  },
+  "terminalCustody": "READY"
+}

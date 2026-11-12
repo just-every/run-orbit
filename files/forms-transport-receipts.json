@@ -1,0 +1,115 @@
+[
+  {
+    "proof": "native-archive-export-requests",
+    "version": 3,
+    "tables": 128,
+    "rows": 423,
+    "parts": 50,
+    "observations": [
+      {
+        "operation": "POST /exports",
+        "milliseconds": 4090.8857260000077,
+        "status": 201
+      },
+      {
+        "operation": "GET /exports/01M76YSG463B8MF7ZEVR8BZQ3A",
+        "milliseconds": 80.38131900000735,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 6235.989059000014,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 3880.9987170000095,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 3864.8144200000097,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 3858.3739350000105,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 5195.802567999985,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 4644.271163999976,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76YSG463B8MF7ZEVR8BZQ3A/advance",
+        "milliseconds": 2050.9601630000107,
+        "status": 200
+      },
+      {
+        "operation": "GET /exports/01M76YSG463B8MF7ZEVR8BZQ3A/download",
+        "milliseconds": 110.40607699999237,
+        "status": 200
+      }
+    ]
+  },
+  {
+    "proof": "native-archive-export-requests",
+    "version": 3,
+    "tables": 128,
+    "rows": 307,
+    "parts": 44,
+    "observations": [
+      {
+        "operation": "POST /exports",
+        "milliseconds": 8647.143552999943,
+        "status": 201
+      },
+      {
+        "operation": "GET /exports/01M76Z7HWR2FPYE6W065RFT0HF",
+        "milliseconds": 235.7735719999764,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 10499.244675999973,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 5135.737489000079,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 5561.840088000055,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 9047.502657999983,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 5531.615603999933,
+        "status": 200
+      },
+      {
+        "operation": "POST /exports/01M76Z7HWR2FPYE6W065RFT0HF/advance",
+        "milliseconds": 3001.782150999992,
+        "status": 200
+      },
+      {
+        "operation": "GET /exports/01M76Z7HWR2FPYE6W065RFT0HF/download",
+        "milliseconds": 70.80006500007585,
+        "status": 200
+      }
+    ]
+  }
+]

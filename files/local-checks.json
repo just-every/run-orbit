@@ -1,0 +1,85 @@
+{
+  "head": "3044cf16350afc606377aa5354a019707790ea0e",
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0
+  },
+  "sourceLock": {
+    "commands": [
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+    ],
+    "exit": 0
+  },
+  "inventory": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  },
+  "core": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/today-brief.test.ts",
+    "exit": 0,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "headAtStart": "7b0b2879338a38da3d697f6463fc35487a1d7bb9",
+    "note": "Regression run preceded the final browser-only roster-refresh and contact display fallback refinements."
+  },
+  "browser": {
+    "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/records.spec.mjs --grep \"record creation, edits\"",
+    "exit": 0,
+    "viewport": 1440,
+    "stats": {
+      "startTime": "2026-11-12T03:50:28.246Z",
+      "duration": 151291.976,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "temporaryOverrides": {
+      "chromium": "/usr/bin/chromium",
+      "args": [
+        "--no-sandbox"
+      ],
+      "serverStartupAllowanceMs": 180000
+    },
+    "headAtStart": "10bfc7825e82c2f0931b05f29f2ec2ae34f164c5",
+    "note": "The final amendment adds only the dependent form test adaptation and source lock; built product source is identical."
+  },
+  "localIterations": [
+    "Corrected the test helper to read the company returned by ID.",
+    "Preserved the erasure assertions and fixed the discovered summary-refresh defect.",
+    "The temporary cloud runner startup allowance was extended after an isolated-server preparation timeout; the repository browser configuration remains unchanged.",
+    "Parallel pinned-runtime disposable-database setup exceeded the unchanged 60-second fixture startup limit before assertions. Stopped only owned failed runners and retried the affected proof and one form case sequentially using the supplied toolchain runtime."
+  ],
+  "runtimeVersions": {
+    "typecheck": "22.20.0",
+    "browserTest": "22.20.0",
+    "core": "22.20.0",
+    "browserProof": "24.19.0",
+    "formRegression": "24.19.0"
+  },
+  "formRegression": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='^FORM-001 mapped' newtests/t096/forms-native.test.ts",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "durationMs": 802412.342195
+  },
+  "exactShaVerify": {
+    "runId": 43153449604,
+    "conclusion": "success",
+    "head_sha": "3044cf16350afc606377aa5354a019707790ea0e",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153449604",
+    "status": "completed"
+  }
+}

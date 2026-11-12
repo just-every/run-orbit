@@ -1,0 +1,72 @@
+[
+  {
+    "call": 1,
+    "utc": "2026-11-12T04:14:47Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs?head_sha=3044cf16350afc606377aa5354a019707790ea0e&per_page=100",
+      "--jq",
+      "{workflow_runs:[.workflow_runs[]|select(.name==\"Verify\")|{id,name,status,conclusion,head_sha,head_branch,html_url,event}]}"
+    ]
+  },
+  {
+    "call": 2,
+    "utc": "2026-11-12T04:19:48Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 3,
+    "utc": "2026-11-12T04:24:49Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 4,
+    "utc": "2026-11-12T04:29:50Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 5,
+    "utc": "2026-11-12T04:34:51Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 6,
+    "utc": "2026-11-12T04:39:52Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 7,
+    "utc": "2026-11-12T04:44:53Z",
+    "arguments": [
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43153449604",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  }
+]

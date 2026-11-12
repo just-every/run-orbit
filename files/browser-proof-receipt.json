@@ -1,0 +1,110 @@
+{
+  "head": "3044cf16350afc606377aa5354a019707790ea0e",
+  "viewports": [
+    1440,
+    390
+  ],
+  "assertionViewport": 1440,
+  "contactsReviewed": 5,
+  "companiesReviewed": 1,
+  "accessSummary": "Jordan Reyes\n\nsynthetic-orbit-peer@people.test · Former teammate · Access removed",
+  "details": [
+    {
+      "kind": "contact",
+      "id": "01M76YK58A43QDHJJYG2M0XS6F",
+      "owner": "01M76YK2TJKA3F5BM5RQ43122J",
+      "timelineEntry": "01M76YKN7KYVNJTJRACGBJJ3SH",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "reassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": "01M76YK2TJKA3F5BM5RQ43122J",
+        "currentOwnerName": "Owner",
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    },
+    {
+      "kind": "contact",
+      "id": "01M76YK5WA3F8C0Q6A0BDHT6Z1",
+      "owner": "01M76YK2TJKA3F5BM5RQ43122J",
+      "timelineEntry": "01M76YKN7KSF12HAK9A1QFBY1D",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "reassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": "01M76YK2TJKA3F5BM5RQ43122J",
+        "currentOwnerName": "Owner",
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    },
+    {
+      "kind": "contact",
+      "id": "01M76YK6E1CNW1DXV0A8AFHS3K",
+      "owner": "01M76YK2TJKA3F5BM5RQ43122J",
+      "timelineEntry": "01M76YKN7KMAEJQD4HTZNKVJZB",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "reassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": "01M76YK2TJKA3F5BM5RQ43122J",
+        "currentOwnerName": "Owner",
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    },
+    {
+      "kind": "contact",
+      "id": "01M76YK72N6KFPD7TFJKZFY29N",
+      "owner": "01M76YK2TJKA3F5BM5RQ43122J",
+      "timelineEntry": "01M76YKN7M7SVNWD8FMEXYGFWS",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "reassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": "01M76YK2TJKA3F5BM5RQ43122J",
+        "currentOwnerName": "Owner",
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    },
+    {
+      "kind": "contact",
+      "id": "01M76YK7MMB9P3EJJMT9PR31BT",
+      "owner": "01M76YK2TJKA3F5BM5RQ43122J",
+      "timelineEntry": "01M76YKN7MSNV9JM03SNGRVKCG",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "reassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": "01M76YK2TJKA3F5BM5RQ43122J",
+        "currentOwnerName": "Owner",
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    },
+    {
+      "kind": "company",
+      "id": "01M76YK87BSZCWQNSDF3W4C7GA",
+      "owner": null,
+      "timelineEntry": "01M76YKN7M6ATNX7N7KCGJNJ9V",
+      "actor": "01M76YK2TJKA3F5BM5RQ43122J",
+      "payload": {
+        "action": "unassigned",
+        "previous": "01M76YK3F46PBEH29H43N1C070",
+        "previousOwnerName": "Jordan Reyes",
+        "current": null,
+        "currentOwnerName": null,
+        "operation": "01M76YKN7J0HMBE1Y28NYRDDDP",
+        "reason": "Operator removal handover"
+      }
+    }
+  ],
+  "closed": true
+}
