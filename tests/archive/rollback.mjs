@@ -13,7 +13,7 @@ export async function exerciseRollback(page,file,otherSession){
  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Start restore',exact:true}).click();
  expect((await refusal).status()).toBe(409);
  await expect(page.getByRole('alert')).toContainText('HTTP 409');
- const refusedId=await page.getByLabel('Restore transfer ID').inputValue();
+ await expect(page.getByLabel('Restore transfer ID')).toBeHidden();await page.getByText('Restore support details',{exact:true}).click();const refusedId=await page.getByLabel('Restore transfer ID').inputValue();await page.getByText('Restore support details',{exact:true}).click();
  expect((await api(`${base}/${refusedId}`)).state).toBe('uploading');expect(await api(`/api/v1/records/company/${unrelated.id}`)).toEqual(before);
  const aborts=[];const recordAbort=request=>{if(request.method()==='POST'&&new URL(request.url()).pathname.endsWith('/abort'))aborts.push(request.url());};page.on('request',recordAbort);
  try{
@@ -42,11 +42,11 @@ export async function exerciseRollback(page,file,otherSession){
  while(stage.state!=='complete'&&!(stage.phase==='load'&&stage.completedTables>replacedTable))stage=await api(`${base}/${id}/finalize`,'POST',{});
  expect(stage.state).toBe('restoring');expect(stage.phase).toBe('load');
  const protectedRead=await page.request.get('/api/v1/settings');expect(protectedRead.status()).toBe(503);
- await page.getByRole('button',{name:'Find unfinished restores',exact:true}).click();await page.getByRole('button',{name:`Use restore ${id}`,exact:true}).click();
+ await page.getByRole('button',{name:'Find unfinished restores',exact:true}).click();const recovered=page.getByRole('button',{name:/^Use restore /,exact:false});expect(await recovered.innerText()).not.toContain(id);expect(await recovered.innerText()).not.toMatch(/\d{4}-\d{2}-\d{2}T/);await recovered.click();
  await page.getByRole('button',{name:'Cancel and roll back',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Cancel and roll back',exact:true});await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);expect((await api(`${base}/${id}`)).state).toBe('restoring');
  await page.getByRole('button',{name:'Cancel and roll back',exact:true}).click();await dialog.getByRole('button',{name:'Cancel and roll back',exact:true}).click();await expect(page.getByRole('button',{name:'Cancel and roll back',exact:true})).toHaveCount(0,{timeout:90_000});
  expect((await api(`${base}/${id}`)).state).toBe('aborted');expect(await api('/api/v1/settings')).toEqual(targetSettings);expect(await api(`/api/v2/access/workspaces/${workspace}/administration`)).toEqual(targetAuthority);
  expect((await api('/api/v1/records/company')).records).toEqual([]);
  // The existing successful-restore journey continues with this still-valid target session.
- await page.getByLabel('Restore transfer ID').fill('');
+ await expect(page.getByRole('button',{name:'Start restore',exact:true})).toBeVisible();
 }
