@@ -1,3 +1,5 @@
+import {graphFixture} from './graph-fixture.mjs';
+
 /** Fresh source versions for the existing two-policy conformance registration. */
 export default async function workflowFixture({request,origin,cookie}){
  const response=await request(new URL('/api/workflows',origin).href,{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},
@@ -7,5 +9,6 @@ export default async function workflowFixture({request,origin,cookie}){
  const {workflow}=await response.json();
  // Use the native schedule path so conformance is independent of the runner's weekday and hour.
  const messageSchedule=new Date(Date.now()+7*86400000).toISOString();
- return {values:{workflow,messageSchedule}};
+ const graph=await graphFixture({request,origin,cookie});
+ return {...graph,values:{...graph.values,workflow,messageSchedule}};
 }
