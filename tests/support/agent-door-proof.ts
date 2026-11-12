@@ -1,3 +1,4 @@
+import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
@@ -34,7 +35,7 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>,messageProof:(context:TestContext,proof:RejectedReportProofContext)=>Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>,draftParityProof:(context:DraftParityProofContext)=>Promise<void>,messageProof:(context:TestContext,proof:RejectedReportProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -257,6 +258,8 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
+    // Append this flow after the established audit-history fixture.
+    await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await messageProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
