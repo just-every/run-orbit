@@ -1,0 +1,103 @@
+{
+  "candidate": "088146e9bab27f7c093f59a1128273327b9956ab",
+  "checks": [
+    {
+      "check": "native",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/managed-owner.test.ts"
+      ],
+      "exit": 0,
+      "head_at_completion": "088146e9bab27f7c093f59a1128273327b9956ab",
+      "log": "native-run.txt",
+      "log_sha256": "47a7135537e1535113662119f34396d42de961268906b814be86690dba052160",
+      "duration_ms": 692512.004179,
+      "proof": [
+        {
+          "proof": "SURFACE-009.saved-message",
+          "held": "accepted-once",
+          "mergeConflict": "refused",
+          "freshRevision": "accepted-once",
+          "autonomous": "accepted-once",
+          "submissions": 4,
+          "nativeHistory": true,
+          "actor": "agent-for-person",
+          "sender": "agent-for-person",
+          "optOutRevision": "refused",
+          "scheduledAttribution": "preserved",
+          "limits": "native-held",
+          "erasureReplay": "subject-erased",
+          "revoked": "refused",
+          "scope": "refused",
+          "quietHours": "refused",
+          "unsupportedSender": "refused",
+          "suppression": "refused"
+        }
+      ]
+    },
+    {
+      "check": "browser",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "tests/delegation-browser/today-brief.test.ts"
+      ],
+      "exit": 0,
+      "head_at_completion": "088146e9bab27f7c093f59a1128273327b9956ab",
+      "log": "browser-run.txt",
+      "log_sha256": "046599474026695a90cb226f57d874354d2634d1b22aa4ce05c448aa4091e7ce",
+      "duration_ms": 181313.963534,
+      "proof": [
+        {
+          "proof": "SURFACE-009.browser",
+          "widths": [
+            1440,
+            390
+          ],
+          "pending": "e171c74e-1c84-4e41-97fb-0b151bd73d12",
+          "sentDraft": "01M757NBG0XCRM1J01XHPK4X4Y",
+          "submissions": 1
+        }
+      ]
+    },
+    {
+      "check": "conformance",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+        ".",
+        "deploy.json"
+      ],
+      "exit": 0,
+      "head_at_completion": "088146e9bab27f7c093f59a1128273327b9956ab",
+      "log": "conformance-run.txt",
+      "log_sha256": "36b973081d40274e548b6af376403544c3b7fcf6bcb3244db379f4b161a9bf59",
+      "duration_ms": null,
+      "proof": []
+    }
+  ],
+  "local_adaptations": [
+    "Migration setup subprocess timeout extended to 300 seconds with a task-only Node preload; product and assertions unchanged.",
+    "Headless Chromium at /usr/bin/chromium with --no-sandbox; all owned runtimes closed."
+  ],
+  "exact_sha_ci": "See ci-discovery.json and the latest ci-run receipt; local native safety implementation was unchanged by final human-readable approval summary formatting.",
+  "source_binding": {
+    "prior_unpublished_head": "88304e67aefe13a5d3c6e060ad8c4cdace090854",
+    "candidate": "088146e9bab27f7c093f59a1128273327b9956ab",
+    "diff": "final-amend.diff",
+    "changes": "Approval summary formatting and browser runtime lifecycle, plus generated source lock. The saved revision computation, native execution and safety helper did not change in the amend. The complete browser registration and conformance ran against the final source."
+  },
+  "final_native_receipt": "native-exact-receipt.json",
+  "local_toolchain": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "repository_node_pin": "22.20.0",
+    "note": "Supplied cloud toolchain retains a newer installed Node; GitHub Verify uses the repository pin."
+  }
+}

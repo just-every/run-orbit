@@ -1,0 +1,33 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f158",
+  "head": "088146e9bab27f7c093f59a1128273327b9956ab",
+  "main_incorporated": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "shallow": false,
+  "contract_diff": "",
+  "files": [
+    "agent-surface.json",
+    "docs/AGENT-DOOR.md",
+    "scripts/agent-surface.ts",
+    "sources.lock.json",
+    "src/core/features/agent-door/drafts.ts",
+    "src/core/features/agent-door/index.ts",
+    "src/core/features/agent-door/messages.ts",
+    "src/core/features/outreach/approval-repository.ts",
+    "src/core/features/outreach/record-mail-repository.ts",
+    "src/core/features/outreach/service.ts",
+    "src/core/features/outreach/settlement.ts",
+    "src/core/features/workbench/repository.ts",
+    "src/core/platform/outbound-mail.ts",
+    "tests/agent-door/mail-group.mjs",
+    "tests/agent-door/mail-key.mjs",
+    "tests/agent-door/workflow-fixture.mjs",
+    "tests/core/managed-owner.test.ts",
+    "tests/delegation-browser/today-brief.test.ts",
+    "tests/support/agent-door-proof.ts",
+    "tests/support/agent-message-browser.ts",
+    "tests/support/agent-message-proof.ts",
+    "tests/support/stalled-risk-browser.ts"
+  ],
+  "recorded_at": "2026-11-11T23:39:06.269810+00:00"
+}

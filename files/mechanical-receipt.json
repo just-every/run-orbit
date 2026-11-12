@@ -1,0 +1,82 @@
+[
+  {
+    "check": "first-party",
+    "command": [
+      "pnpm",
+      "exec",
+      "rer",
+      "check",
+      "--profile",
+      "first-party"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "registry",
+    "command": [
+      "pnpm",
+      "exec",
+      "tsx",
+      "scripts/agent-surface.ts",
+      "--check"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "boundaries",
+    "command": [
+      "pnpm",
+      "run",
+      "check:boundaries"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "views-write",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "write"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "views-check",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "restore-views",
+    "command": [
+      "git",
+      "checkout",
+      "origin/main",
+      "--",
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "lock",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "lock"
+    ],
+    "exit": 0
+  },
+  {
+    "check": "lock-check",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+      "check"
+    ],
+    "exit": 0
+  }
+]

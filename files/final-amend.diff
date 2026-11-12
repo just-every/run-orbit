@@ -1,0 +1,66 @@
+diff --git a/sources.lock.json b/sources.lock.json
+index 3e74321..1b7247a 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -5327,7 +5327,7 @@
+       "executable": false
+     },
+     "src/core/features/agent-door/messages.ts": {
+-      "sha256": "2ef39eecb0ccefe25a36e5f48a0c4cf1f128f3c8ff92e75142d2ed4a6211ccb9",
++      "sha256": "ad702faf21ee892f1bb8d72efe846065bd38607d67068c8fae38eed28b958a4f",
+       "executable": false
+     },
+     "src/core/features/agent-door/native-access.ts": {
+@@ -10307,7 +10307,7 @@
+       "executable": false
+     },
+     "tests/delegation-browser/today-brief.test.ts": {
+-      "sha256": "07c26e58c9abe99cdf92de7ed51cc6c728ee661c12b3a3c42bbd9681e0661a78",
++      "sha256": "94e78b7004f5f2a96087df2decfc08c3cc058a707c193a4d4a26de14b9882fe6",
+       "executable": false
+     },
+     "tests/delegation-browser/today-journey.mjs": {
+diff --git a/src/core/features/agent-door/messages.ts b/src/core/features/agent-door/messages.ts
+index 1bdf29a..9f3923b 100644
+--- a/src/core/features/agent-door/messages.ts
++++ b/src/core/features/agent-door/messages.ts
+@@ -69,9 +69,9 @@ export function messageTools(bindings:PlatformBindings) {
+    const saved=await current(args,ctx),schedule=args.scheduled_at?await new ApprovalRepository(await draftMailDatabase(bindings.DB,saved.draft.id)).preview(saved.draft.id,new Date(ctx.now()),String(args.scheduled_at)):null;
+    return {target:{id:saved.draft.id,name:saved.rendered.review.subject},recipients:[saved.draft.recipientEmail],
+     items:[saved.rendered.review.subject,saved.rendered.review.body,`Sender: ${agentSenderName(ctx.agent.name,ctx.person.name)}`,
+-     `Saved revision: ${saved.draft.revision}`,`Send revision: ${saved.revision}`,
+-     `Merge review: ${saved.rendered.review.reviewed?'reviewed':'required'} (${saved.rendered.review.reviewHash})`,
+-     `Opt-out: ${JSON.stringify(saved.optOut)}`,...(args.scheduled_at?[`Requested schedule: ${args.scheduled_at}`,`Scheduled time: ${schedule&&'scheduledAt' in schedule?schedule.scheduledAt:''} (${schedule&&'scheduledLocalTime' in schedule?schedule.scheduledLocalTime:''})`]:[])]};
++     `Saved revision: ${saved.draft.revision}`,
++     `Merge review: ${saved.rendered.review.reviewed?'reviewed':'required'}`,
++     `Opt-out: ${saved.optOut.carries?'link included':'no link'}; ${saved.optOut.setting?'on':'off'} by default; removal ${saved.optOut.removalAllowed?'allowed':'forbidden'}; ${saved.optOut.choice??'no exception'}; transport ${saved.optOut.transport?'supports links':'cannot carry links'}; ${saved.optOut.reply?'reply in an existing thread':'new message'}${saved.optOut.refusal?'; '+saved.optOut.refusal:''}`,...(args.scheduled_at?[`Requested schedule: ${args.scheduled_at}`,`Scheduled time: ${schedule&&'scheduledAt' in schedule?schedule.scheduledAt:''} (${schedule&&'scheduledLocalTime' in schedule?schedule.scheduledLocalTime:''})`]:[])]};
+   },
+   run:async(args,ctx)=>nativeMessage(async()=>{
+    const saved=await current(args,ctx);
+diff --git a/tests/delegation-browser/today-brief.test.ts b/tests/delegation-browser/today-brief.test.ts
+index 4ecc818..8ec0b66 100644
+--- a/tests/delegation-browser/today-brief.test.ts
++++ b/tests/delegation-browser/today-brief.test.ts
+@@ -54,7 +54,7 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
+   assert.deepEqual(model.unexpected,[],'Risk review makes no customer mail or other outbound request');
+   await runtime.teardown();await fixture.reopen();
+   assert.deepEqual(await riskBusinessState(fixture.db),before,'Risk review changes no sales state, stakeholders, commitments, drafts or mail');
+-  const riskFixture=await isolatedDatabase(),riskRuntime=new unstable_DevEnv();
++  const riskFixture=await isolatedDatabase(),riskRuntime=new unstable_DevEnv(),messageRuntime=new unstable_DevEnv();
+   try {
+   const stalled=await stalledRiskBrowser(testContext,riskFixture.db,origin);
+   await riskFixture.close();
+@@ -65,11 +65,11 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
+   await riskRuntime.teardown();await riskFixture.reopen();
+   const messages=await savedMessageBrowserFixture(testContext,riskFixture.db,stalled,origin);
+   await riskFixture.close();
+-  const messageWorker=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(messages.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async()=>{throw new Error('Inspecting saved mail must not submit mail');}}});await messageWorker.ready;
++  const messageWorker=await messageRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(messages.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async()=>{throw new Error('Inspecting saved mail must not submit mail');}}});await messageWorker.ready;
+   const mailContext=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
+   await savedMessageScreens(await mailContext.newPage(),messages,resolve(process.env.ORBIT_MESSAGE_EVIDENCE??'verification/ui/messages'));
+   await mailContext.close();
+-  } finally {await riskRuntime.teardown();await riskFixture.dispose();}
++  } finally {await messageRuntime.teardown();await riskRuntime.teardown();await riskFixture.dispose();}
+ 
+  }finally{
+   await browser?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await runtime.teardown();await fixture.dispose();

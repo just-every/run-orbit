@@ -1,0 +1,197 @@
+{
+  "check": "Explicit packet files contain no injected bundle values or GitHub credential-shaped values; all are regular files",
+  "recorded_at": "2026-11-12T00:03:55.023531+00:00",
+  "exit": 0,
+  "files": [
+    {
+      "path": "DEVELOPMENT.md",
+      "bytes": 1632,
+      "sha256": "6a08dd708e1a11ac6cbe67a32263fec4eda5563af254bb8ea00b8f550c6a801e"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 2464,
+      "sha256": "8a1c227352bc8aa0099b7b40ca0faf4539063eef8b4eccaedb596466da9c9abf"
+    },
+    {
+      "path": "PROBES.txt",
+      "bytes": 817,
+      "sha256": "84ce85376dc84ca4120d8a3a5acdc7fc3db8abe9cb90781d2d0f92140d12d003"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 15180,
+      "sha256": "a09b4279ad3a25c58f4763e9fa5eb0c19bcee01d19fdd47662bc2b382477f89c"
+    },
+    {
+      "path": "boundaries.txt",
+      "bytes": 285,
+      "sha256": "3f448dfe20640ccc642a1800b89e9b1c9bfea51feec8310e81447e760ad96c05"
+    },
+    {
+      "path": "browser-run.txt",
+      "bytes": 275400,
+      "sha256": "046599474026695a90cb226f57d874354d2634d1b22aa4ce05c448aa4091e7ce"
+    },
+    {
+      "path": "ci-api-receipt.json",
+      "bytes": 270,
+      "sha256": "804bbff34e005b5eea8fb6ca0bc184242ad31f4eed1f8bbab76cc10f005febdf"
+    },
+    {
+      "path": "ci-discovery.json",
+      "bytes": 261,
+      "sha256": "2b9b690737d4a8dc294b888a4b5c6cd37bd76b1f103883b2b7d74b65937289fd"
+    },
+    {
+      "path": "ci-run-2.json",
+      "bytes": 175,
+      "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
+    },
+    {
+      "path": "ci-run-3.json",
+      "bytes": 175,
+      "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
+    },
+    {
+      "path": "ci-run-4.json",
+      "bytes": 175,
+      "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
+    },
+    {
+      "path": "ci-run-5.json",
+      "bytes": 175,
+      "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
+    },
+    {
+      "path": "ci-run-6.json",
+      "bytes": 175,
+      "sha256": "59fcf3347a2e2d1636ea329ffd4d3a768c12785d89c492d50602ceb97e708eee"
+    },
+    {
+      "path": "conformance-run.txt",
+      "bytes": 223583,
+      "sha256": "36b973081d40274e548b6af376403544c3b7fcf6bcb3244db379f4b161a9bf59"
+    },
+    {
+      "path": "final-amend.diff",
+      "bytes": 5744,
+      "sha256": "6c4c9c47eecb42b5392020403c0ced0108d24461489c2371a6fb1012e13abb68"
+    },
+    {
+      "path": "first-party.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "identity-receipt.json",
+      "bytes": 555,
+      "sha256": "96929eb6b900202d5731864b9e77eece0c1d25364dc84b7a35ec906b816a0cf3"
+    },
+    {
+      "path": "local-migration-timeout.cjs",
+      "bytes": 386,
+      "sha256": "d2057bebae84f73ce044afec3ddee470427184d73c25534fd423c25735da624c"
+    },
+    {
+      "path": "local-receipts.json",
+      "bytes": 3608,
+      "sha256": "a25c1e8edee7083b17a526c0b4009d9735c1d3f954ebae6fb11896be4b4fd258"
+    },
+    {
+      "path": "lock-check-before-push.txt",
+      "bytes": 503897,
+      "sha256": "4ee445b50a41fb86b9aa0add768bdbbb34e3b5726e3bf40f8356e37290783081"
+    },
+    {
+      "path": "lock-check.txt",
+      "bytes": 503897,
+      "sha256": "4ee445b50a41fb86b9aa0add768bdbbb34e3b5726e3bf40f8356e37290783081"
+    },
+    {
+      "path": "lock.txt",
+      "bytes": 503883,
+      "sha256": "b49fc515a90ea0a8f79fcf9da1cd25d6bf9b9108064e04fc4d5551e43e6facf1"
+    },
+    {
+      "path": "mechanical-receipt.json",
+      "bytes": 1252,
+      "sha256": "e876d6519b9c07681e8c95039178c2073e81e002da80eece32bbdb3f568ea9b1"
+    },
+    {
+      "path": "native-exact-receipt.json",
+      "bytes": 1326,
+      "sha256": "d6a5557a48b12b9cfb665ee6bf7c78002490d47774ef3a3d65f5830d4fbf3775"
+    },
+    {
+      "path": "native-exact-run.txt",
+      "bytes": 7306,
+      "sha256": "5395b8910f2abae0d0665a3c9c643cd19c389693b4fec115f19b5d5575b2cdf1"
+    },
+    {
+      "path": "native-run.txt",
+      "bytes": 7306,
+      "sha256": "47a7135537e1535113662119f34396d42de961268906b814be86690dba052160"
+    },
+    {
+      "path": "product-provenance.json",
+      "bytes": 1252,
+      "sha256": "43d65ea5857a6c96e48fd345002cd17e6056d17ced14097ba2850d0ad74bd051"
+    },
+    {
+      "path": "product-push.txt",
+      "bytes": 713,
+      "sha256": "203b33d5f1449e87eaa46b53f24a20d6fd46d97655957fd657a2a58da7e6bc9d"
+    },
+    {
+      "path": "registry.txt",
+      "bytes": 63,
+      "sha256": "3dbfa2d21d6a8a251d99cdea66b76a741508ce2c7ad7822e4f4a3f37b82389d2"
+    },
+    {
+      "path": "restore-views.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "screens/pending-approval-1440.png",
+      "bytes": 77434,
+      "sha256": "acf48612b09f8374c6406b96de364de0ce180f4c59d55d52e28f978ece4d98ca"
+    },
+    {
+      "path": "screens/pending-approval-390.png",
+      "bytes": 67266,
+      "sha256": "c55b029a023376c5073a3d595f4f80e8123f027e7ac8967449aeb5ccf010d2fd"
+    },
+    {
+      "path": "screens/sent-message-1440.png",
+      "bytes": 70323,
+      "sha256": "cd12a16b2905a32b1c0b915a5adee2a8b1f97b7260e693d1f5beea29b9b5aead"
+    },
+    {
+      "path": "screens/sent-message-390.png",
+      "bytes": 56229,
+      "sha256": "97d50b574a18f53ee22c6117cd6d4d6c82d544f23df05f4ba731417be7e1b9bd"
+    },
+    {
+      "path": "test-count.json",
+      "bytes": 58,
+      "sha256": "78c43bd27334f4d742a24d2524180896299018613c2a8df030fceef2deca7a63"
+    },
+    {
+      "path": "typecheck.txt",
+      "bytes": 208,
+      "sha256": "993353d4021cc0e8736734c24cd7d320bd973e7850cb17618600c22527b5feae"
+    },
+    {
+      "path": "views-check.txt",
+      "bytes": 32,
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "path": "views-write.txt",
+      "bytes": 28,
+      "sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+    }
+  ]
+}

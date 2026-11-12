@@ -1,0 +1,47 @@
+{
+  "command": [
+    "cloud_run",
+    "perl",
+    "-e",
+    "alarm 1200; exec @ARGV",
+    "--",
+    "env",
+    "NODE_OPTIONS=--require /tmp/orbit-migration-timeout.cjs",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "tests/core/managed-owner.test.ts"
+  ],
+  "head": "088146e9bab27f7c093f59a1128273327b9956ab",
+  "started_at": "2026-11-11T23:51:00.901179+00:00",
+  "exit": 0,
+  "completed_at": "2026-11-12T00:01:04.089381+00:00",
+  "head_at_completion": "088146e9bab27f7c093f59a1128273327b9956ab",
+  "log": "native-exact-run.txt",
+  "log_sha256": "5395b8910f2abae0d0665a3c9c643cd19c389693b4fec115f19b5d5575b2cdf1",
+  "proof": [
+    {
+      "proof": "SURFACE-009.saved-message",
+      "held": "accepted-once",
+      "mergeConflict": "refused",
+      "freshRevision": "accepted-once",
+      "autonomous": "accepted-once",
+      "submissions": 4,
+      "nativeHistory": true,
+      "actor": "agent-for-person",
+      "sender": "agent-for-person",
+      "optOutRevision": "refused",
+      "scheduledAttribution": "preserved",
+      "limits": "native-held",
+      "erasureReplay": "subject-erased",
+      "revoked": "refused",
+      "scope": "refused",
+      "quietHours": "refused",
+      "unsupportedSender": "refused",
+      "suppression": "refused"
+    }
+  ],
+  "duration_ms": 602178.417596
+}
