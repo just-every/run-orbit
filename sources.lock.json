@@ -10327,7 +10327,7 @@
       "executable": false
     },
     "tests/delegation-browser/risk-journey.mjs": {
-      "sha256": "6d0759b8a1a69c90bcd036378533095a55fd3a16edaf41334fb30ddf240c0475",
+      "sha256": "2604f257d07346f4f18a58dd485eaf4e8d59b8c4279e9ea0c8e3461bc27d9109",
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {

@@ -142,6 +142,7 @@ async function quoteJourney(page,data,model,evidence){
  await expect(panel.locator('p').filter({hasText:'Reviewed setup concession'})).toBeVisible();await expect(panel.locator('p').filter({hasText:'Reviewed setup concession'})).toContainText('Override from USD 250.00: Reviewed setup concession');
  await panel.getByRole('button',{name:'Edit current quote',exact:true}).click();await form.getByLabel('Expires on',{exact:true}).fill('2030-11-17');
  const v2=await save();expect(v2.version).toBe(2);expect(v2.content.totalCents).toBe(43300);
+ await expect(panel.locator(`#quote-${v2.id}`)).toBeVisible();
  const old=panel.locator(`#quote-${v1.id}`);await old.locator(':scope > summary').click();
  await expect(old.getByText('Issued ',{exact:false})).toContainText('2030-11-03');
  await old.getByRole('button',{name:'Review version 1',exact:true}).click();await expect(panel.getByRole('alert')).toContainText('Current quote is version 2');
