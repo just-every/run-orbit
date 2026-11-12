@@ -7451,7 +7451,7 @@
       "executable": false
     },
     "src/core/features/outreach/mailbox/archive.ts": {
-      "sha256": "15b96ff46722e39908bcd5fee27a8e89380de7da0d98bf23639c8f79adc6eeee",
+      "sha256": "05395aa67ec89da5cbfcc186c42a8b0b49f8e71ed4704e94f113512a2400eea5",
       "executable": false
     },
     "src/core/features/outreach/mailbox/binding.ts": {
@@ -7979,7 +7979,7 @@
       "executable": false
     },
     "src/core/features/records/archive-fold-validation.ts": {
-      "sha256": "0f5a94893c0ea4aba7a59e751ef5d37e09663544fdc27c6d6f06537bd65b6604",
+      "sha256": "06caa5d1e41ab5ec919219e1e14ba768b855bbb83f6400337c26075fb4dce48c",
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
@@ -7999,7 +7999,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import.ts": {
-      "sha256": "cd76b2570f4e24f5cb3d42cd44787bdb5910d9f4ecd8eda112826a6998d01991",
+      "sha256": "0d78bafac8d1cbf8ce86faef7454cfc5975392c9dbdb69e23879348461563408",
       "executable": false
     },
     "src/core/features/records/archive-lineage.ts": {
