@@ -26,6 +26,7 @@ export default {
   if(tables.slack_channels)await db.prepare(`UPDATE "${tables.slack_channels.replaceAll('"','""')}" SET enabled=0`).run();
   if(tables.slack_mappings)await db.prepare(`UPDATE "${tables.slack_mappings.replaceAll('"','""')}" SET revoked_at=COALESCE(revoked_at,?)`).bind(new Date().toISOString()).run();
   if(tables.slack_deletions)await db.prepare(`UPDATE "${tables.slack_deletions.replaceAll('"','""')}" SET state='held',error='Restored deletion needs administrator confirmation' WHERE state<>'deleted'`).run();
+  if(tables.follow_up_obligations)await db.prepare(`UPDATE "${tables.follow_up_obligations.replaceAll('"','""')}" SET paused=1 WHERE closed_at IS NULL`).run();
   if(tables.workflow_versions)await db.prepare(`UPDATE "${tables.workflow_versions.replaceAll('"','""')}" SET status='paused',preview_id=NULL,preview_json=NULL WHERE status IN('active','needs_reactivation')`).run();
   if(tables.workflow_runs)await db.prepare(`UPDATE "${tables.workflow_runs.replaceAll('"','""')}" SET status='stopped',reason='Archive restored; fresh activation required' WHERE status NOT IN('completed','undone')`).run();
   if(tables.workflow_approvals)await db.prepare(`UPDATE "${tables.workflow_approvals.replaceAll('"','""')}" SET status='expired' WHERE status='pending'`).run();
@@ -37,6 +38,7 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='follow_up_obligations'&&!row.closed_at)return {...row,paused:1};
   if(table==='workflow_versions')return {...row,status:'paused',preview_id:null,preview_json:null};
   if(table==='workflow_runs'&&!['completed','undone'].includes(row.status))return {...row,status:'stopped',reason:'Archive transfer requires fresh activation'};
   if(table==='workflow_approvals'&&row.status==='pending')return {...row,status:'expired'};

@@ -1,3 +1,4 @@
+import {agentFollowUpProof} from './agent-follow-up-proof';
 import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {notificationDirectProof} from './notification-direct-proof';
@@ -260,6 +261,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
     // Append this flow after the established audit-history fixture.
     await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
+    await agentFollowUpProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});

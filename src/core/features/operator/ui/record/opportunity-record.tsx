@@ -1,3 +1,4 @@
+import {ObligationPanel} from './obligation-panel';
 import {useAppAccess} from '../../../access/app-access';
 import {ReadOnlyRecord} from './read-only-record';
 import {useCallback,useMemo,useState} from 'react';
@@ -64,7 +65,7 @@ function EditableOpportunityRecordPage(){
    waiting={<WorkflowRecordApprovals kind="opportunity" id={id} workspace={workspace} onChanged={reload}/>}
    next={closed?null:<><NextAction opportunity={opportunity} presentation={workspace} aiConfigured={Boolean(data.configuration?.aiConfigured)} reload={reload} composing={composing} onCompose={()=>setComposing(!composing)}/>{composing?<div className="r-composer"><EvidenceActions opportunity={opportunity} reload={reload} mode="draft"/></div>:null}</>}
    activity={<DealActivity opportunity={opportunity} drafts={drafts} messages={messages} handoffs={handoffs} reload={reload}/>}
-   folds={<><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
+   folds={<><ObligationPanel opportunityId={id} presentation={workspace}/><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
    details={<DetailsPanel>
     <DealValues id={id} record={record} settings={settings} scheduled={scheduled} definitions={definitions} context={context}/>
     <DealPeople dealId={id} form={context} titles={titles} closed={closed}/>

@@ -161,6 +161,17 @@
       ]
     },
     {
+      "name": "orbit.obligations.accept",
+      "scope": "handoffs:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-003"
+      ]
+    },
+    {
       "name": "orbit.operations.read",
       "scope": "operations:read",
       "readOnly": true,
@@ -1669,6 +1680,67 @@
         "id": {
           "$fixture": "workflow",
           "pointer": "/id"
+        }
+      }
+    },
+    {
+      "id": "accept_meeting_obligation",
+      "tool": "orbit.obligations.accept",
+      "args": {
+        "meetingId": {
+          "$fixture": "obligation",
+          "pointer": "/meetingId"
+        },
+        "opportunityId": {
+          "$fixture": "obligation",
+          "pointer": "/opportunityId"
+        },
+        "contactId": {
+          "$fixture": "obligation",
+          "pointer": "/contactId"
+        },
+        "ownerId": {
+          "$fixture": "obligation",
+          "pointer": "/ownerId"
+        },
+        "dueAt": {
+          "$fixture": "obligation",
+          "pointer": "/dueAt"
+        },
+        "goalStageId": {
+          "$fixture": "obligation",
+          "pointer": "/goalStageId"
+        },
+        "title": {
+          "$fixture": "obligation",
+          "pointer": "/title"
+        },
+        "stopCondition": {
+          "$fixture": "obligation",
+          "pointer": "/stopCondition"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "target": {
+        "kind": "opportunity",
+        "id": {
+          "$fixture": "obligation",
+          "pointer": "/opportunityId"
         }
       }
     },

@@ -1,3 +1,4 @@
+import {dispatchObligationReminders} from '../obligations/effects';
 import {recordMailDatabase} from './record-mail-storage';
 import {archiveImportActive} from '../../platform/archive-maintenance';
 import { createId } from '../../shared/ids';
@@ -7,6 +8,7 @@ import type { OutboundMail } from '../../platform/outbound-mail';
 export async function runOrbitTimers(db:D1Database,mail?:OutboundMail,now=new Date(),limits={mail:50,evaluations:100,transitions:-1}){
  if(await archiveImportActive(db))return;
  await processEvaluationJobs(db,limits.evaluations);
+ await dispatchObligationReminders(db,now.toISOString());
  const at=now.toISOString();
  const run=createId(),prefix=`${run}:`;
  // Select and publish every due transition in one transaction. The timeline is

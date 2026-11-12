@@ -1,3 +1,4 @@
+import {obligationTools} from './obligations';
 import {createAgentDoor, type Trust, type ToolDefinition, type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
 import {createBusinessSettings} from '../../../base/modules/business-settings/index.ts';
 import type {PlatformBindings} from '../../platform/assets';
@@ -23,7 +24,7 @@ function installationTrust(bindings: PlatformBindings): Trust | null {
   return {issuer,installationId,appOrigin,publicKeys:JSON.parse(publicKeys) as Trust['publicKeys']};
 }
 
-export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...reportTools(bindings),...workflowTools(bindings),...captureSecurityTools(bindings)].map(nativeTool);}
+export function orbitTools(bindings:PlatformBindings) {return [...recordTools(bindings),...handoffTools(bindings),...obligationTools(bindings),...evidenceTools(bindings),...draftTools(bindings),...reportTools(bindings),...workflowTools(bindings),...captureSecurityTools(bindings)].map(nativeTool);}
 export function orbitResources(bindings:PlatformBindings) {return [recordResource(bindings),handoffResource(bindings),...evidenceResources(bindings),draftResource(bindings),...reportResources(bindings),outreachResource(bindings)];}
 export function orbitAgentDoor(bindings: PlatformBindings, tools: ToolDefinition[] = orbitTools(bindings), resources: ResourceDefinition[] = orbitResources(bindings)) {
   return followingErasedEvents(bindings.DB,createAgentDoor({seed:'orbit',name:'Orbit',specialist:'sales rep',db:bindings.DB,

@@ -1,3 +1,4 @@
+import {obligationReplyStatements} from '../obligations/effects';
 import {recordMailReplyStatements} from './record-mail-replies';
 import {createId} from '../../shared/ids';
 import {payloadHash} from '../../platform/source-security';
@@ -31,6 +32,7 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
  const messages=await matchingReplyMessages(db,input.sender,input.references),opportunities=new Set(messages.map(message=>message.opportunity_id)),opportunityId=opportunities.size===1?messages[0]!.opportunity_id:null;
  const source='sendgrid-replies',at=new Date().toISOString(),statements=[db.prepare('INSERT INTO mail_provider_events VALUES(?,?,?)').bind(receiptId,hash,at),db.prepare("INSERT OR IGNORE INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,'SendGrid authenticated replies','mail_provider',1,?,?)").bind(source,at,at)];
  const event=providerReplyEvent(input,opportunityId);
+ if(!input.automatic&&messages.length){const ids=JSON.stringify(messages.map(message=>message.id));const drafts=(await db.prepare('SELECT draft_id FROM outbound_messages WHERE id IN(SELECT value FROM json_each(?1)) UNION SELECT draft_id FROM record_mail_outbound_messages WHERE id IN(SELECT value FROM json_each(?1))').bind(ids).all<{draft_id:string}>()).results;statements.push(...obligationReplyStatements(db,drafts.map(row=>row.draft_id),receiptId,input.occurredAt));}
  if(messages.length&&messages.every(message=>message.record_mail===1)){statements.push(...await recordMailReplyStatements(db,input,messages,hash,at));}
  else if(opportunityId){
   const plan=await new IngestionRepository(db).prepare(source,event,hash,JSON.stringify(event));statements.push(...plan.statements);

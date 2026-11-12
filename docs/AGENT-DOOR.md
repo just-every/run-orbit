@@ -126,6 +126,7 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
 | `orbit.meetings.read` | `meetings:read` | standard |
+| `orbit.obligations.accept` | `handoffs:write` | standard |
 | `orbit.operations.read` | `operations:read` | standard |
 | `orbit.records.create` | `records:write` | standard |
 | `orbit.records.list` | `records:read` | standard, sensitive |
@@ -241,3 +242,32 @@ Captured evidence and proposals remain; mail to the old address stops entering.
 Read the new address in Settings → Capture. The address, private tag and forwarding
 confirmation are excluded from tool results, retained summaries, audits and archives.
 Provisioning and other credential changes are outside this adapter.
+
+## Follow up a completed meeting
+
+`orbit.obligations.accept` is a standard-class call with `handoffs:write` scope.
+The current company policy decides it. A full native operator supplies a completed
+meeting on an open, owned deal, its current recipient, a named full operator,
+a due time, a later stage in the same pipeline and explicit stop conditions.
+Acceptance cites the meeting and creates internal work; it approves no customer mail.
+
+Pass the returned obligation ID as `obligation_id` to `orbit.drafts.create` to bind
+one unsent draft. Use the existing draft read and update calls to prepare exact
+content; a person still approves its current revision natively. Cited
+`orbit.handoffs.upsert` calls can carry the same `obligation_id`; meeting-plan
+next actions accept `obligationId` through the native action door. Native
+nonrecurring follow-up tasks on that deal also accept `obligationId`.
+
+The meeting plan read returns its native obligations to full operators. Message
+state distinguishes an unsent draft, submitted uncertainty, accepted submission,
+definite failure and a verified threaded human response. A provider receipt is
+not a customer response, and a response leaves the advancement goal open.
+Moving to the named goal stage or explicitly stopping the obligation closes its
+remaining work once, with the attributed reason. Pending reminders and approved
+scheduled mail stop with it. Restored open obligations stay paused; their data
+is history, not authority to dispatch. Contact erasure redacts their evidence.
+
+This bounded path authorizes one approved follow-up. Pending quotes, call
+agendas, live consented mailbox connections, broader cadences, agent customer
+message dispatch, deal-less obligations and team ownership retain their existing
+contract holds and provider prerequisites.
