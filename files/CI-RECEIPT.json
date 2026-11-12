@@ -1,8 +1,8 @@
 {
   "repository": "just-every/run-orbit",
   "head": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
-  "observedAt": "2026-11-12T20:55:12.770674+00:00",
-  "taskApiCalls": 4,
+  "observedAt": "2026-11-12T21:10:37.249404+00:00",
+  "taskApiCalls": 7,
   "runs": [
     {
       "id": 43303268310,
@@ -21,5 +21,57 @@
   "mainAtPush": "5f92fa76579961950d49c7411f54d5446516a708",
   "mainEquality": false,
   "publicationScan": "fleet lander required",
-  "runSite": "fleet lander required on resulting main"
+  "runSite": "fleet lander required on resulting main",
+  "handoff": "PUSHED",
+  "handoffReason": "Verify is still in progress on the pushed head. The remaining read allowance is reserved for diagnosing a completed failure rather than further polling.",
+  "launcherAuthStatusCommands": 1,
+  "furtherWorkflowPolling": false,
+  "readyClaimed": false,
+  "baseRunsAtStart": [
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43299089298",
+      "id": 43299089298,
+      "name": "Run site",
+      "status": "completed"
+    },
+    {
+      "conclusion": "skipped",
+      "event": "push",
+      "head_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43299089558",
+      "id": 43299089558,
+      "name": "Run demo",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "dynamic",
+      "head_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43299088481",
+      "id": 43299088481,
+      "name": "Push on main",
+      "status": "completed"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43299089291",
+      "id": 43299089291,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "5f92fa76579961950d49c7411f54d5446516a708",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43293274165",
+      "id": 43293274165,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ]
 }
