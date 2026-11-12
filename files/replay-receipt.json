@@ -1,0 +1,70 @@
+{
+  "base": "eab0faafccd2eb0945dddb7d0f52c30ce573c04c",
+  "source": "d61f2aadce0a80a803ca5cc646f5aef27ee357cc",
+  "changedFiles": [
+    "newtests/t096/browser-report-authoring.ts",
+    "newtests/t096/browser-shared-values.ts",
+    "newtests/t096/team-operator-browser.ts",
+    "sources.lock.json",
+    "src/core/app/mounts/fold.ts",
+    "src/core/features/access/grant-fields.ts",
+    "src/core/features/access/shared-presentation.ts",
+    "src/core/features/access/shared-record-detail.tsx",
+    "src/core/features/access/shared-records.tsx",
+    "src/core/features/access/shared-values.tsx",
+    "src/core/features/drafts/merge-field-labels.ts",
+    "src/core/features/drafts/render.ts",
+    "src/core/features/drafts/ui/render-review.tsx",
+    "src/core/features/operator/ui/WorkspaceArchiveTools.tsx",
+    "src/core/features/operator/ui/archive-transfer-summary.tsx",
+    "src/core/features/operator/ui/workspace-archive.css",
+    "src/core/shared/archive-transfer-error.ts",
+    "tests/archive/browser.spec.mjs",
+    "tests/archive/rollback.mjs",
+    "tests/e2e/operator.spec.mjs",
+    "tests/e2e/readable-merge.mjs"
+  ],
+  "identicalToOriginalReplay": [
+    "newtests/t096/browser-report-authoring.ts",
+    "newtests/t096/browser-shared-values.ts",
+    "newtests/t096/team-operator-browser.ts",
+    "src/core/app/mounts/fold.ts",
+    "src/core/features/access/grant-fields.ts",
+    "src/core/features/access/shared-presentation.ts",
+    "src/core/features/access/shared-record-detail.tsx",
+    "src/core/features/access/shared-records.tsx",
+    "src/core/features/access/shared-values.tsx",
+    "src/core/features/drafts/merge-field-labels.ts",
+    "src/core/features/drafts/render.ts",
+    "src/core/features/drafts/ui/render-review.tsx",
+    "src/core/features/operator/ui/WorkspaceArchiveTools.tsx",
+    "src/core/features/operator/ui/archive-transfer-summary.tsx",
+    "src/core/features/operator/ui/workspace-archive.css",
+    "src/core/shared/archive-transfer-error.ts",
+    "tests/archive/browser.spec.mjs",
+    "tests/archive/rollback.mjs",
+    "tests/e2e/operator.spec.mjs",
+    "tests/e2e/readable-merge.mjs"
+  ],
+  "adaptedForMain": [],
+  "protectedFiles": {
+    "CONTRACT.md": {
+      "identicalToMain": true,
+      "sha256": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f"
+    },
+    "ACCEPTANCE.md": {
+      "identicalToMain": true,
+      "sha256": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41"
+    },
+    "docs/CLAIMS.md": {
+      "identicalToMain": true,
+      "sha256": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d"
+    }
+  },
+  "registrationsBefore": 198,
+  "registrationsAfter": 198,
+  "qualificationFlows": 2,
+  "totalBefore": 200,
+  "totalAfter": 200,
+  "clauseStatusChanges": []
+}

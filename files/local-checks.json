@@ -1,0 +1,15 @@
+{
+  "allPassed": true,
+  "contract": "passed",
+  "source": "passed",
+  "typecheck": "passed",
+  "build": "passed",
+  "operatorCases": 6,
+  "archiveCases": 1,
+  "domainCases": 3,
+  "registeredCasesBefore": 198,
+  "registeredCasesAfter": 198,
+  "qualificationFlows": 2,
+  "totalBefore": 200,
+  "totalAfter": 200
+}

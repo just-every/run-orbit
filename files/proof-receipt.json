@@ -1,0 +1,96 @@
+{
+  "syntheticFixturesOnly": true,
+  "assertionWidthForNewSharedValues": 1440,
+  "proofWidths": [
+    1440,
+    390
+  ],
+  "screenshots": [
+    {
+      "file": "proof/merge-values-1440.png",
+      "viewportWidth": 1440,
+      "imageWidth": 1440,
+      "imageHeight": 2008,
+      "sha256": "1e71de361d2b3873093ef7e84157b9c44429b544fc0f856f21aa70df536c53f6",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/merge-values-390.png",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 2615,
+      "sha256": "1edb21cc03d7ffa7c2f1b5487db06956a8c7cc2e2bbaa15fadbb289150b12b87",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/message-library-1440.png",
+      "viewportWidth": 1440,
+      "imageWidth": 1440,
+      "imageHeight": 1381,
+      "sha256": "32eb4814fda5c714e3b137f5a70b88a36676ce9efdd7d9893229fb0a93a5c640",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/message-library-390.png",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 2033,
+      "sha256": "4e1d386b552d5fcc81788dff27c5060a378b4df9f00450cdce3422e56e833409",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/archive-1440.png",
+      "viewportWidth": 1440,
+      "imageWidth": 960,
+      "imageHeight": 1372,
+      "sha256": "7a272e07ad3952a853960c371806bb7b7b8f371eba42513c0c7e347cc4e61483",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/archive-390.png",
+      "viewportWidth": 390,
+      "imageWidth": 350,
+      "imageHeight": 1860,
+      "sha256": "9edb3db0651ed8beeef9854053b31781a4a5547512c28b254c986ab6024bce57",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/report-drilldown-1440.png",
+      "viewportWidth": 1440,
+      "imageWidth": 1440,
+      "imageHeight": 2579,
+      "sha256": "feb23d24a63ad41505cca5db6508935d1abc838d7d41ab75714ea4ef1d94fa9d",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/report-drilldown-390.png",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 2674,
+      "sha256": "8b774eb80559719ac0f08786a64a6cdc63a900af060e2ebd0dcd8ef6beb9bb92",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/shared-values-1440.png",
+      "viewportWidth": 1440,
+      "imageWidth": 1440,
+      "imageHeight": 1236,
+      "sha256": "f094c0ee79afe52d2c35d936be45505f786d2a12d7f53552d00a460aa39a08b3",
+      "visualReviewed": true
+    },
+    {
+      "file": "proof/shared-values-390.png",
+      "viewportWidth": 390,
+      "imageWidth": 390,
+      "imageHeight": 1357,
+      "sha256": "472f13de65aa5426b8cf9ffd980ed9c657a3b93544490711bceb628d2c56e452",
+      "visualReviewed": true
+    }
+  ],
+  "observations": [
+    "Guest reads stage and person names, USD 10,000 and a New York local close date; no raw record IDs, stored cents or ISO timestamp appears in its detail.",
+    "Report drilldown shows 32 USD while its export remains 3200 native cents.",
+    "Archive controls show readable start/row/part labels, with transfer IDs behind support details and Copy details.",
+    "Merge review shows Company name, Contact name, Deal title and Contact job title with resolved values."
+  ]
+}

@@ -1,0 +1,59 @@
+[
+  {
+    "file": "newtests/t096/browser-report-authoring.ts",
+    "before": 16,
+    "after": 17,
+    "replaced": [
+      "expect(page.getByLabel('Value (in cents)',{exact:true})).toHaveValue('3200')"
+    ],
+    "added": [
+      "expect(amount).toHaveAccessibleName(/USD/)",
+      "expect(amount).toHaveValue(String(result.values.value/100))"
+    ]
+  },
+  {
+    "file": "newtests/t096/team-operator-browser.ts",
+    "before": 48,
+    "after": 48,
+    "replaced": [],
+    "added": []
+  },
+  {
+    "file": "tests/archive/browser.spec.mjs",
+    "before": 20,
+    "after": 31,
+    "replaced": [],
+    "added": [
+      "expect(page.getByLabel('Export transfer ID')).toBeHidden()",
+      "expect(summary).not.toContain(preparedId)",
+      "expect(summary).not.toMatch(/\\d{4}-\\d{2}-\\d{2}T/)",
+      "expect(summary).toMatch(/\\d+ rows/)",
+      "expect(copied.id).toBe(preparedId)",
+      "expect(copied.rows).toBeGreaterThan(0)",
+      "expect(Number.isFinite(Date.parse(copied.startedAt))).toBe(true)",
+      "expect(page.getByLabel('Export transfer ID')).toBeHidden()",
+      "expect(exportSummary).toContainText(summary.split('\\n')[0])",
+      "expect(page.getByRole('button',{name:'Prepare export',exact:true})).toBeVisible()",
+      "expect(await recovered.innerText()).not.toMatch(/[0-9A-HJKMNP-TV-Z]{26}|\\d{4}-\\d{2}-\\d{2}T/)"
+    ]
+  },
+  {
+    "file": "tests/archive/rollback.mjs",
+    "before": 24,
+    "after": 28,
+    "replaced": [],
+    "added": [
+      "expect(page.getByLabel('Restore transfer ID')).toBeHidden()",
+      "expect(await recovered.innerText()).not.toContain(id)",
+      "expect(await recovered.innerText()).not.toMatch(/\\d{4}-\\d{2}-\\d{2}T/)",
+      "expect(page.getByRole('button',{name:'Start restore',exact:true})).toBeVisible()"
+    ]
+  },
+  {
+    "file": "tests/e2e/operator.spec.mjs",
+    "before": 75,
+    "after": 75,
+    "replaced": [],
+    "added": []
+  }
+]

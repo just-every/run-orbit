@@ -1,0 +1,11 @@
+{
+  "explicitFilesReviewed": 47,
+  "regularFilesOnly": true,
+  "injectedMaterialMatches": 0,
+  "credentialPatternMatches": 0,
+  "sessionTracesSelected": false,
+  "privateFixtureStateSelected": false,
+  "heldOutMaterialSelected": false,
+  "completeCIReceiptIncluded": true,
+  "CIObservationCalls": 7
+}

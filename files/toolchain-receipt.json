@@ -1,0 +1,14 @@
+{
+  "node": "v22.20.0",
+  "pnpm": "10.12.4",
+  "rer": "0.2.107",
+  "chromium": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)",
+  "executablePath": "/usr/bin/chromium",
+  "headless": true,
+  "args": [
+    "--no-sandbox"
+  ],
+  "homePreserved": true,
+  "launchAdapter": "/tmp/orbit-browser-launch.mjs",
+  "productSourceModifiedForCloud": false
+}

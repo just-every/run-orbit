@@ -1,0 +1,7 @@
+{
+  "before": 183,
+  "after": 199,
+  "removedBehaviorAssertions": 0,
+  "displayUnitAssertionsAdapted": 1,
+  "details": "The original 3200-cent assertion now compares the displayed amount with the unchanged exported native cents divided by 100, and checks the USD accessible name. Every other original assertion is textually retained. The audit counts direct assertion calls in existing touched helpers; new readable-values and merge helper assertions are additional."
+}

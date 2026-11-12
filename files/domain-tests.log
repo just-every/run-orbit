@@ -1,0 +1,56 @@
+TAP version 13
+# (node:5838) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+# (node:5838) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+# PROBE FORM-002 browser: no pre-interaction third-party request or cookie; optional verification follows interaction; withdrawn publication refuses UI release and retains pending payload; erasure disables release
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":921,"parts":69,"observations":[{"operation":"POST /exports","milliseconds":4703.639392000041,"status":201},{"operation":"GET /exports/01M787DDHNW32JP83XCQ95EYPY","milliseconds":74.68781999999192,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":9688.634155999986,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":4320.619933999958,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3544.312520000036,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3379.616219999967,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3253.0863169999793,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3243.8535130000673,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3122.6853219999466,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":3154.550687000039,"status":200},{"operation":"POST /exports/01M787DDHNW32JP83XCQ95EYPY/advance","milliseconds":2656.7247389999684,"status":200},{"operation":"GET /exports/01M787DDHNW32JP83XCQ95EYPY/download","milliseconds":73.72699300001841,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":896,"parts":68,"observations":[{"operation":"POST /exports","milliseconds":3869.211821999983,"status":201},{"operation":"GET /exports/01M787TTP42VTRJWK6861TXZCA","milliseconds":70.7573309999425,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":5130.330545000033,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3288.012305999873,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3200.3493800000288,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3361.263517000014,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3287.4922190001234,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3378.4984689999837,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3650.540142000187,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":3187.066705000121,"status":200},{"operation":"POST /exports/01M787TTP42VTRJWK6861TXZCA/advance","milliseconds":2372.2009100001305,"status":200},{"operation":"GET /exports/01M787TTP42VTRJWK6861TXZCA/download","milliseconds":89.60905900015496,"status":200}]}
+# Owned capture Worker PID 13875
+# Owned capture browser PIDs [
+#   { pid: 13920, type: 'browser' },
+#   { pid: 13961, type: 'GPU' },
+#   { pid: 13964, type: 'network.mojom.NetworkService' },
+#   { pid: 13977, type: 'storage.mojom.StorageService' }
+# ]
+# Subtest: OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+ok 1 - OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+  ---
+  duration_ms: 1153754.50716
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:14192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+# PROBE TEAM-001 UI: built CRM pages at 1440 and 390 let both full operators read, edit, create and delete; Guest sees only shared fields, forbidden record URLs show refusal, native URLs redirect and revoked-share replay returns 403.
+# Subtest: TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences
+ok 2 - TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences
+  ---
+  duration_ms: 503529.526376
+  type: 'test'
+  ...
+# Subtest: selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive
+ok 3 - selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive
+  ---
+  duration_ms: 42014.359088
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1713741.676684
