@@ -5,7 +5,7 @@ import type {AIProvider} from '../assistance/provider';
 import {TodayError} from '../today/errors';
 import {dealRisks,applyDismissals,type Finding} from './findings';
 
-export const conflictInstructions='Find only contradictions between recorded lines of this deal: two lines that state different dates for the same event, or different prices or amounts for the same thing. For each, quote the exact conflicting words from each line, copied character for character, with that line\'s evidenceId, and propose one concrete next task that would resolve it. Return an empty list when nothing conflicts. Never infer a date, price or commitment that no line states.';
+export const conflictInstructions='Find only contradictions between recorded lines of this deal: two lines that state different dates for the same event, or different prices or amounts for the same thing. For each, quote the exact conflicting words from each line, copied character for character, with that line\'s evidenceId, and propose one concrete next task that would resolve it. Return an empty list when nothing conflicts. Quote versions are historical proposals: a newer version replacing an older version is not itself a contradiction. Compare a logged commitment with the quote version it describes; distinguish expiration from delivery and kickoff dates. Never infer a date, price or commitment that no line states.';
 const citation=z.object({evidenceId:z.string(),quote:z.string().min(1).max(500)}).strict();
 export const conflictSchema=z.object({findings:z.array(z.object({kind:z.enum(['conflicting-date','conflicting-price']),explanation:z.string().min(1).max(600),citations:z.array(citation).min(2).max(6),nextTask:z.string().trim().min(1).max(300)}).strict()).max(10)}).strict();
 

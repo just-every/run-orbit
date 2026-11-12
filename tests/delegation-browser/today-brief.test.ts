@@ -18,7 +18,7 @@ import {unstable_DevEnv} from 'wrangler';
 import {identityVars} from '../support/worker-identity.mjs';
 import assert from 'node:assert/strict';
 
-test('QUOTE-001 an operator maintains the USD book, builds and versions a discounted quote and opens its cited call conflict; BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
+test('QUOTE-001 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller plans from cited evidence, versions a USD quote and reviews its call conflict at 1440 and 390',async testContext=>{
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_TODAY_PORT??8736),origin=`http://127.0.0.1:${port}`;
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  const runtime=new unstable_DevEnv();
