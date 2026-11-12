@@ -14,6 +14,7 @@ import {mailchimpHandoffRoutes,mailchimpSettingsRoutes} from '../features/market
 import {mailchimpWebhookRoutes} from '../features/marketing/webhook';
 import {mailchimpDeletionProcessing} from '../features/marketing/deletions';
 import {createLibraryRoutes} from '../features/drafts/library-routes';
+import {createSequenceRoutes} from '../features/sequences/routes';
 import {createSalesTaskRoutes} from '../features/tasks';
 import {createRelationshipRoutes} from '../features/relationships';
 import type {ProviderFetch} from '../features/capture/providers/config';
@@ -189,6 +190,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route('/api/v1/library',createLibraryRoutes(input.database));
+  app.route('/api/v1/sequences',createSequenceRoutes(input.database));
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));
   app.route("/api/v1/workspace", dependencies.workspaceRoutes);
 
