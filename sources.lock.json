@@ -10343,7 +10343,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "1b617596c5dbe4245a82e158bdcceccb197257d9cf6e1b8a205526f5e9fcbc4c",
+      "sha256": "a6cf3b4a379828e441523bb398f554e3e704a38833a72a16ed2bd4332ace353e",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
@@ -11515,7 +11515,7 @@
       "executable": false
     },
     "tests/support/zoom-meeting-proof.ts": {
-      "sha256": "f91949ae5c2a9096a6fd7913e9aacbfa00acf60dbc9ad0dbbf37607a763eb893",
+      "sha256": "ce6bb88a5da71ca3d44a517a60bc2dfe4f6aa44d4286dbadb1f33209053a5d55",
       "executable": false
     },
     "tests/support/zoom-network.mjs": {
