@@ -72,7 +72,7 @@ export async function agentDoorAIInputProof(context:TestContext,{bindings,door,c
      const exact={revision:approval.revision,summary_sha256:approval.summary_sha256};
      assert.equal((await person(handle.id,'/approve',exact,reviewerCookie)).status,403);
      const waiting=await invoke('generate',args);assert.equal(waiting._meta['com.runeditrun/approval'].id,handle.id);assert.deepEqual(await inventory(),before);
-     const approved=await person(handle.id,'/approve',exact);assert.equal(approved.status,200);assert.equal((await approved.json() as any).approval.state,'executed');
+     const approved=await person(handle.id,'/approve',exact);assert.equal(approved.status,200);const approvalResult=await approved.json() as any;assert.equal(approvalResult.approval.state,'executed',JSON.stringify({feature,mode,approval:approvalResult.approval}));
      result=await invoke('generate',args);assert.deepEqual(result._meta['com.runeditrun/receipt'].approved_by,[ownerId]);
     }
     assert.equal(result.isError,false,JSON.stringify(result));
@@ -87,6 +87,7 @@ export async function agentDoorAIInputProof(context:TestContext,{bindings,door,c
     assert.equal(timeline!.actor_type,'agent');const retained=JSON.parse(timeline!.payload_json);assert.deepEqual(retained.evidenceIds,output.evidenceIds);assert.equal(retained.preparedBy.label,'Ari for Morgan Lee');
     assert.deepEqual((await invoke('generate',args)).structuredContent,result.structuredContent);assert.deepEqual(await inventory(),after,'replay makes no second model request or result');
     proofs.push({feature,mode,classes:classes(result),decision:result._meta['com.runeditrun/decision'].id});
+    console.log(JSON.stringify({proof:'SURFACE-003.ai-generated',feature,mode,requests:after.requests,drafts:after.drafts,calls:after.calls}));
    }
   }
   await adopt(heldPolicy());
@@ -108,7 +109,7 @@ export async function agentDoorAIInputProof(context:TestContext,{bindings,door,c
   await native('records/company/'+company.id,{name:'synthetic-orbit-ai-company'+hostile},'PUT');
   await native('records/contact/'+contact.id,{name:'synthetic-orbit-ai-contact'+hostile,email:['synthetic-orbit-169','example.test'].join('@'),company_id:company.id},'PUT');
   await evidence('Buyer requests a discussion'+hostile);
-  const injected=await invoke('generate',argsFor('explanation',await preview('explanation')));assert.equal(injected.isError,false);assert.deepEqual(classes(injected),classes(baseline));assert.equal(injected._meta['com.runeditrun/decision'].disposition,baseline._meta['com.runeditrun/decision'].disposition);
+  const injected=await invoke('generate',argsFor('explanation',await preview('explanation')));assert.equal(injected.isError,false);assert.deepEqual(classes(injected),classes(baseline));assert.equal(injected._meta['com.runeditrun/decision'].disposition,baseline._meta['com.runeditrun/decision'].disposition);assert.deepEqual(injected._meta['com.runeditrun/decision'].classes,baseline._meta['com.runeditrun/decision'].classes);assert.equal(injected._meta['com.runeditrun/decision'].revision,baseline._meta['com.runeditrun/decision'].revision);
   await adopt(heldPolicy());
   const heldBefore=await inventory(),heldInjected=await invoke('generate',argsFor('draft',await preview('draft')));
   assert.equal(heldInjected.resultType,'input_required');assert.deepEqual(classes(heldInjected),expected);

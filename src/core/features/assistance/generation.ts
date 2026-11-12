@@ -34,7 +34,7 @@ export async function generateAssistance(db:D1Database,provider:AIProvider,actor
     evidenceIds:output.evidenceIds,explanation:output.explanation,...(draftId?{draftId}:{})
    },at));
    await record('success',null);
-   return {output,draftId};
+   return {output,...(draftId?{draftId}:{})};
   } catch(error) {await record('failed',error instanceof Error?error.message:'AI validation failed');throw new AssistanceGenerationError('AI generation failed validation, changed context, or provider delivery. No usable new result was confirmed.');}
   async function record(status:string,error:string|null) {
    await db.prepare('INSERT INTO ai_calls(id,operator_id,opportunity_id,provider,model,feature,input_tokens,output_tokens,cached_input_tokens,estimated_cost,duration_ms,status,error,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(callId,actor,saved!.opportunity_id,provider!.provider,provider!.model,saved!.feature,tokens.inputTokens,tokens.outputTokens,tokens.cachedInputTokens??0,((tokens.inputTokens-(tokens.cachedInputTokens??0))*provider!.inputCostPerMillion+(tokens.cachedInputTokens??0)*(provider!.cachedInputCostPerMillion??provider!.inputCostPerMillion)+tokens.outputTokens*provider!.outputCostPerMillion)/1000000,Date.now()-started,status,error,at).run();
