@@ -1,3 +1,5 @@
+import {graphFixture} from './graph-fixture.mjs';
+
 /** Fresh source versions for the existing two-policy conformance registration. */
 export default async function workflowFixture({request,origin,cookie}){
  const response=await request(new URL('/api/workflows',origin).href,{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},
@@ -11,5 +13,6 @@ export default async function workflowFixture({request,origin,cookie}){
  const deal=await native('/records/opportunity',{title:'Synthetic conformance meeting goal',stage_id:stages[0].id,owner_id:owner.id,value_cents:0,contact_ids:[contact.id],primary_contact_id:contact.id});
  const meeting=await native(`/workbench/opportunities/${deal.id}/events`,{type:'meeting.completed',subject:'Synthetic conformance completed meeting',occurredAt:new Date().toISOString(),eventId:crypto.randomUUID(),contactId:contact.id});
  const obligation={meetingId:meeting.id,opportunityId:deal.id,contactId:contact.id,ownerId:owner.id,dueAt:new Date(Date.now()+86400000).toISOString(),goalStageId:stages[1].id,title:'Synthetic conformance follow-up',stopCondition:'Stop at the goal stage or an explicit human stop'};
- return {values:{workflow,obligation}};
+ const graph=await graphFixture({request,origin,cookie});
+ return {...graph,values:{...graph.values,workflow,obligation}};
 }

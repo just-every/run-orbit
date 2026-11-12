@@ -122,7 +122,7 @@ async function rejectedNativeReportProof(context: RejectedReportProofContext) {
     autonomousControl:{snapshot:snapshot.id,addedSnapshots:1,addedSources:1,addedComputedEffects:1}}));
 }
 
-test('Managed owner and company policy preserve native authority, stalled risks and meeting follow-up outcomes', async context => {
+test('Managed owner and company policy preserve native authority, stalled risks, cited graph proposals and meeting follow-up outcomes', async context => {
   const fixture = await isolatedDatabase();
   try {
     const origin = 'https://orbit.example.test', issuer = 'https://rer.example.test';

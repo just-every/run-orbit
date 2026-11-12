@@ -126,6 +126,17 @@
       ]
     },
     {
+      "name": "orbit.graph.propose",
+      "scope": "graph:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-001"
+      ]
+    },
+    {
       "name": "orbit.handoffs.read",
       "scope": "handoffs:read",
       "readOnly": true,
@@ -1743,6 +1754,49 @@
           "pointer": "/opportunityId"
         }
       }
+    },
+    {
+      "id": "graph_proposals",
+      "tool": "orbit.graph.propose",
+      "args": {
+        "company_id": {
+          "$fixture": "graph",
+          "pointer": "/company_id"
+        },
+        "signal_id": {
+          "$fixture": "graph",
+          "pointer": "/signal_id"
+        },
+        "job_change": {
+          "$fixture": "graph",
+          "pointer": "/job_change"
+        },
+        "close_date": {
+          "$fixture": "graph",
+          "pointer": "/close_date"
+        },
+        "question": {
+          "$fixture": "graph",
+          "pointer": "/question"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      },
+      "client": "graph"
     },
     {
       "id": "witness",

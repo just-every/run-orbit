@@ -60,6 +60,10 @@ step('save_workflow_draft','workflows.save_draft',{id:{$fixture:'workflow',point
 journey.find(item=>item.id==='save_workflow_draft').target={kind:'workflow',id:{$fixture:'workflow',pointer:'/id'}};
 step('accept_meeting_obligation','obligations.accept',Object.fromEntries(['meetingId','opportunityId','contactId','ownerId','dueAt','goalStageId','title','stopCondition'].map(name=>[name,{$fixture:'obligation',pointer:'/'+name}])));
 journey.find(item=>item.id==='accept_meeting_obligation').target={kind:'opportunity',id:{$fixture:'obligation',pointer:'/opportunityId'}};
+
+step('graph_proposals','graph.propose',{$fixture:'graph',pointer:''});
+journey.find(item=>item.id==='graph_proposals').args={company_id:{$fixture:'graph',pointer:'/company_id'},signal_id:{$fixture:'graph',pointer:'/signal_id'},job_change:{$fixture:'graph',pointer:'/job_change'},close_date:{$fixture:'graph',pointer:'/close_date'},question:{$fixture:'graph',pointer:'/question'}};
+journey.find(item=>item.id==='graph_proposals').client='graph';
 step('witness','operations.read',{});
 step('events','events.list',{limit:200});
 const surface={schema:'rer-agent-surface/1',seed:'orbit',specialist:'sales rep',tools,resources:orbitResources(bindings).map(item=>item.uriTemplate).sort(),notTools:orbitNotTools(),witness:{tool:'orbit.operations.read',args:{}},escalations:[],journey,verification:{fixtures:{module:'tests/agent-door/workflow-fixture.mjs'},owner:{bindings:{RER_MANAGEMENT_ORIGIN:'issuer',RER_INSTALLATION_ID:'installationId',MAIL_FROM:'email',ORBIT_ENCRYPTION_KEY:{module:'tests/agent-door/capture-encryption.mjs'},CAPTURE_MAIL_ADDRESS:{module:'tests/agent-door/capture-mailbox.mjs'}},initializer:'tests/agent-door/initialize-owner.mjs'},journey:'tests/agent-door/native-journey.mjs',replayAdmission:{prepare:['public_company','public_read','public_update']},reviewers:[{label:'sales-review',email:'jamie-review@example.test',initializer:'tests/agent-door/initialize-reviewer.mjs'}]}};
