@@ -31,11 +31,11 @@ export async function meetingContext(db:D1Database,signalId:string){
 
 async function attendees(db:D1Database,participants:string[],linked:RecordRef[],exactOnly=false){
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
- const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&!operators.has(key!)))];
+ const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&(exactOnly||!operators.has(key!))))];
  const matched=(await db.prepare(`SELECT c.id,c.email_key AS key FROM contacts c WHERE c.email_key IN (SELECT value FROM json_each(?1))
   UNION SELECT c.id,a.identity_key AS key FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key IN (SELECT value FROM json_each(?1))`).bind(JSON.stringify(keys)).all<{id:string;key:string}>()).results;
  const candidates=new Map(keys.map(key=>[key,[...new Set(matched.filter(row=>row.key===key).map(row=>row.id))]] as const));
- const byKey=new Map([...candidates].filter(([,ids])=>ids.length===1).map(([key,ids])=>[key,ids[0]!]));
+ const byKey=new Map([...candidates].filter(([key,ids])=>ids.length===1&&!operators.has(key)).map(([key,ids])=>[key,ids[0]!]));
  const contactIds=[...new Set([...byKey.values(),...(exactOnly?[]:linked.filter(ref=>ref.type==='contact').map(ref=>ref.id))])];
  const contacts=(await db.prepare('SELECT c.id,c.name,c.email,c.job_title AS jobTitle,c.contactability,c.company_id AS companyId,co.name AS companyName FROM contacts c LEFT JOIN companies co ON co.id=c.company_id WHERE c.id IN (SELECT value FROM json_each(?)) ORDER BY c.name,c.id').bind(JSON.stringify(contactIds)).all<{id:string;name:string|null;email:string|null;jobTitle:string|null;contactability:string;companyId:string|null;companyName:string|null}>()).results;
  const opportunities=(await db.prepare("SELECT oc.contact_id AS contactId,o.id,o.title FROM opportunity_contacts oc JOIN opportunities o ON o.id=oc.opportunity_id WHERE o.lifecycle='open' AND oc.contact_id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id").bind(JSON.stringify(contactIds)).all<{contactId:string;id:string;title:string}>()).results;
@@ -44,9 +44,10 @@ async function attendees(db:D1Database,participants:string[],linked:RecordRef[],
   opportunities:opportunities.filter(row=>row.contactId===contact.id).map(row=>({id:row.id,title:row.title,href:recordHref({type:'opportunity',id:row.id})}))}));
  const settings=await db.prepare("SELECT free_mail_domains_json AS free FROM workspace_settings WHERE id='workspace'").first<{free:string}>(),free=JSON.parse(settings?.free??'[]') as string[];
  const unresolved:UnresolvedAttendee[]=[];
- for(const key of keys.filter(key=>!byKey.has(key))){
+ for(const key of keys.filter(key=>!byKey.has(key)&&(!operators.has(key)||(candidates.get(key)?.length??0)>0))){
   const domain=companyDomainKey(key.split('@')[1],free),company=domain?await db.prepare('SELECT id,name FROM companies WHERE primary_domain_key=?').bind(domain).first<{id:string;name:string}>():null;
-  unresolved.push({email:key,company:(candidates.get(key)?.length??0)>1?null:company??null,...((candidates.get(key)?.length??0)>1?{reason:'Ambiguous exact email: multiple contacts match. Review the contacts; Orbit has chosen nobody.'}:{})});
+  const ambiguous=(candidates.get(key)?.length??0)>1||(operators.has(key)&&(candidates.get(key)?.length??0)>0);
+  unresolved.push({email:key,company:ambiguous?null:company??null,...(ambiguous?{reason:'Ambiguous exact email: more than one identity matches. Review the records; Orbit has chosen nobody.'}:{})});
  }
  return {resolved,unresolved};
 }

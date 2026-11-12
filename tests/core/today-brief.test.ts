@@ -285,7 +285,7 @@ async function agentRisks(t:TodayApp,off:TodayApp){
  assert.equal((await risks(off)).aiConfigured,false);assert.equal((await off.call(`/api/v1/risks/${deal}/conflicts`,{body:{requestHash:'0'.repeat(64)}})).status,503);
 }
 
-test('INTEGRATE-002 Zoom meeting attachment, signed completion, record-backed recap, cancellation, erasure and paused restore; BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer',async()=>{
+test('INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody',async()=>{
  const t=await todayApp(db);
  const opportunity=await t.opportunity('Delta rollout','Delta Freight','Mia Stone','mia@delta.test',1250000);
  const prior=await t.event(opportunity,'form.submitted','Rollout questions',4);

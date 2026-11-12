@@ -5,8 +5,8 @@ export function zoomNetwork(emails=[],start=new Date(Date.now()-3600000).toISOSt
  for(const [index,id] of ['98765432101','98765432102','98765432103'].entries())state.meetings.set(id,{id:Number(id),uuid:'synthetic-orbit-'+(410+index),type:2,topic:index?'Synthetic second Zoom meeting':'Synthetic Zoom deal review',start_time:start,duration:30,host_id:'synthetic-orbit-420',join_url:'https://zoom.us/j/'+id,settings:{auto_recording:'cloud',meeting_invitees:emails.map(email=>({email}))}});
  state.attendance=emails.map(email=>({user_email:email,join_time:start,leave_time:new Date(Date.parse(start)+1800000).toISOString()}));
  state.fetch=async(input,init={})=>{
-  const request=input instanceof Request?input:new Request(String(input),init),url=new URL(request.url);state.requests.push({host:url.hostname,path:url.pathname,method:request.method});
-  if(request.redirect!=='manual')throw new Error('Provider redirects must remain manual.');
+  const isRequest=Boolean(input&&typeof input==='object'&&typeof input.url==='string'),request=isRequest?input:new Request(String(input),init),url=new URL(request.url);state.requests.push({host:url.hostname,path:url.pathname,method:request.method});
+  if(!isRequest&&request.redirect!=='manual')throw new Error('Provider redirects must remain manual.');
   if(url.origin==='https://zoom.us'&&url.pathname==='/oauth/token'&&request.method==='POST'){
    const body=new URLSearchParams(await request.text());
    if(request.headers.get('authorization')!=='Basic '+btoa(credentials.clientId+':'+credentials.clientSecret)||body.get('grant_type')!=='account_credentials'||body.get('account_id')!==credentials.accountId)throw new Error('Incorrect documented OAuth request.');

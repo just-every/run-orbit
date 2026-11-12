@@ -63,7 +63,7 @@ export function zoomWebhookRoutes(db:D1Database,config:ZoomConfig){
   if(!activity)throw new ZoomError(409,'The attached meeting activity is no longer available.');
   // Preserve the immutable attach payload. Current phase and attendance belong to this same attached activity.
   await db.batch([connectionFence(db,saved.ciphertext),fence,...privacy.fences(),receipt,
-   db.prepare("UPDATE zoom_meetings SET state='completed',attendance_json=?,attendance_state=?,completed_at=?,completion_entry_id=?,last_event_at=? WHERE signal_id=?").bind(JSON.stringify(people),attendanceState,object.end_time,activity.id,event.event_ts,row.signal_id),
+   db.prepare("UPDATE zoom_meetings SET state='completed',attendance_json=?,attendance_state=?,completed_at=?,completion_entry_id=?,completion_digest=?,completion_timestamp=?,last_event_at=? WHERE signal_id=?").bind(JSON.stringify(people),attendanceState,object.end_time,activity.id,digest,timestamp,event.event_ts,row.signal_id),
    db.prepare("UPDATE signals SET type='meeting.completed' WHERE id=?").bind(row.signal_id),
    db.prepare("UPDATE timeline_entries SET payload_json=json_set(payload_json,'$.type','meeting.completed','$.text','Zoom meeting completed','$.completedAt',?) WHERE id=?").bind(object.end_time,activity.id),
    ...participants.flatMap(person=>person.contactId?[db.prepare("INSERT OR IGNORE INTO signal_links VALUES(?,'contact',?,'Exact attendance email',?)").bind(row.signal_id,person.contactId,now.toISOString()),db.prepare("INSERT OR IGNORE INTO timeline_entry_records VALUES(?,'contact',?)").bind(activity.id,person.contactId)]:[]),

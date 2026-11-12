@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import {createHmac} from 'node:crypto';
-import {createId} from '../../src/core/shared/ids';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {todayApp,type TodayApp} from './today-workspace';
 import {zoomNetwork} from './zoom-network.mjs';
@@ -17,10 +16,10 @@ export async function exerciseZoom(db:D1Database){
  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();
  const deal=await t.opportunity('Synthetic Zoom buyer deal','Synthetic Zoom company','Synthetic Zoom attendee',address(430));
  const contact=(await t.json<any>(`/api/v1/opportunities/${deal}`)).opportunity.contacts[0].id;
- const duplicate=await t.json<{id:string}>('/api/v1/records/contact',{body:{name:'Synthetic ambiguous alias',email:address(433)}},201);
+ const duplicate=await todayApp(db,{email:address(431)});
  const direct=await t.json<{id:string}>('/api/v1/records/contact',{body:{name:'Synthetic ambiguous contact',email:address(431)}},201);
- // A retained imported alias and a current contact can disagree. Neither may be guessed as the participant.
- await db.prepare("INSERT INTO record_aliases VALUES('contact',?,?,?,?)").bind(address(431),duplicate.id,createId(),new Date().toISOString()).run();
+ // An operator and a customer can share an address. This valid collision is unresolved, never guessed as a customer.
+
  await t.json(`/api/v1/workbench/opportunities/${deal}/drafts`,{body:{contactId:contact,subject:'Synthetic reviewed follow-up',body:'A saved draft stays untouched by Zoom.'}},201);
  const inventory=async()=>Object.fromEntries(await Promise.all(['drafts','outbound_messages','record_mail_drafts','record_mail_outbound_messages'].map(async table=>[table,(await db.prepare(`SELECT * FROM ${table} ORDER BY id`).all()).results])));
  const outreach=await inventory();assert.ok((outreach.drafts as any[]).length>0);
@@ -43,8 +42,9 @@ export async function exerciseZoom(db:D1Database){
  const reviewed=await read(),attachment={...selection,previewDigest:reviewed.digest,confirmed:true};
  const attached=await t.json<any>('/api/v1/zoom/meetings/attach',{body:attachment},201),signalId=attached.signalId;
  assert.equal((await t.json<any>('/api/v1/zoom/meetings/attach',{body:attachment},201)).signalId,signalId,'Repeated explicit attachment keeps the same activity');
+ const activity=(await t.json<any>(`/api/v1/records/opportunity/${deal}`,{},200)).timeline.filter((entry:any)=>entry.source==='zoom');assert.equal(activity.length,1);assert.equal(activity[0].id,signalId);assert.equal(activity[0].signal_type,'meeting.booked');const activityDetails=JSON.parse(activity[0].payload_json);assert.deepEqual([activityDetails.joinUrl,activityDetails.start,activityDetails.duration,activityDetails.hostId],[reviewed.meeting.joinUrl,reviewed.meeting.start,reviewed.meeting.duration,reviewed.meeting.hostId]);
  const linked=(await db.prepare('SELECT record_type,record_id FROM signal_links WHERE signal_id=? ORDER BY record_type,record_id').bind(signalId).all()).results;
- assert.deepEqual(linked,[{record_type:'contact',record_id:contact},{record_type:'opportunity',record_id:deal}]);assert.ok(!linked.some(row=>row.record_id===direct.id||row.record_id===duplicate.id));
+ assert.deepEqual(linked,[{record_type:'contact',record_id:contact},{record_type:'opportunity',record_id:deal}]);assert.ok(!linked.some(row=>row.record_id===direct.id||row.record_id===duplicate.actor));
  const plan=async(id=signalId)=>(await t.json<any>(`/api/v1/today/meetings/${id}`,{},200)).plan;
  const initial=await plan();assert.equal(initial.meeting.status,'booked');assert.equal(initial.zoom.joinUrl,reviewed.meeting.joinUrl);assert.deepEqual([initial.zoom.meetingId,initial.zoom.hostId,initial.zoom.duration],[selection.meetingId,reviewed.meeting.hostId,30]);
  assert.equal(initial.attendees.some((person:any)=>person.contact.id===contact),true);assert.match(initial.unresolved.find((person:any)=>person.email===address(431)).reason,/Ambiguous/);assert.match(initial.zoom.recording,/not granted/);assert.match(initial.zoom.transcript,/missing/);
@@ -60,11 +60,11 @@ export async function exerciseZoom(db:D1Database){
  const beforeForged=await db.prepare('SELECT * FROM zoom_meetings ORDER BY signal_id').all(),requestsBefore=provider.requests.length;
  assert.equal((await delivery(payload('meeting.ended'),{signature:'v0='+'0'.repeat(64)})).status,401);
  assert.equal((await delivery(payload('meeting.ended'),{timestamp:String(Math.floor(Date.now()/1000)-301)})).status,401);
- const exact=JSON.stringify(payload('meeting.ended'));assert.equal((await delivery(payload('meeting.ended'),{raw:exact+' ',signature:'v0='+createHmac('sha256',provider.credentials.webhookSecret).update(`v0:${Math.floor(Date.now()/1000)}:${exact}`).digest('hex')})).status,401,'Even a whitespace change invalidates the exact-body signature');
+ const exactTimestamp=String(Math.floor(Date.now()/1000)),exact=JSON.stringify(payload('meeting.ended'));assert.equal((await delivery(payload('meeting.ended'),{timestamp:exactTimestamp,raw:exact+' ',signature:'v0='+createHmac('sha256',provider.credentials.webhookSecret).update(`v0:${exactTimestamp}:${exact}`).digest('hex')})).status,401,'Even a whitespace change invalidates the exact-body signature');
  assert.equal(provider.requests.length,requestsBefore);assert.deepEqual((await db.prepare('SELECT * FROM zoom_meetings ORDER BY signal_id').all()).results,beforeForged.results);
  const ended=payload('meeting.ended');const done=await delivery(ended);assert.equal(done.status,200,await done.clone().text());
  const completed=await plan();assert.equal(completed.meeting.status,'completed');assert.equal(completed.zoom.attendance.length,3);assert.equal(completed.zoom.attendance.find((person:any)=>person.email===address(430)).match.contactId,contact);assert.equal(completed.zoom.attendance.find((person:any)=>person.email===address(431)).match.state,'ambiguous');
- assert.equal(completed.zoom.completedAt,endTime);assert.match(completed.zoom.recap.summary,/No discussion, decisions or transcript are inferred/);assert.deepEqual(completed.zoom.recap.citations.map((citation:any)=>citation.kind),['plan','attendance','completion']);assert.ok(completed.zoom.recap.citations[0].href.endsWith('#entry-'+saved.entryId));assert.ok(completed.zoom.recap.citations[2].href.endsWith('#entry-'+activityId));
+ assert.equal(completed.zoom.completedAt,endTime);assert.match(completed.zoom.completionDigest,/^[a-f0-9]{64}$/);assert.ok(await db.prepare('SELECT 1 FROM zoom_deliveries WHERE digest=?').bind(completed.zoom.completionDigest).first());assert.match(completed.zoom.recap.summary,/No discussion, decisions or transcript are inferred/);assert.deepEqual(completed.zoom.recap.citations.map((citation:any)=>citation.kind),['plan','attendance','completion']);assert.ok(completed.zoom.recap.citations[0].href.endsWith('#entry-'+saved.entryId));assert.ok(completed.zoom.recap.citations[2].href.endsWith('#entry-'+activityId));
  const completedRows=await db.prepare('SELECT * FROM zoom_meetings ORDER BY signal_id').all(),completionReads=provider.requests.length;
  assert.equal((await delivery(ended)).status,409);assert.equal((await delivery(payload('meeting.ended','98765432101',1))).status,200);assert.equal((await delivery(payload('meeting.deleted','98765432101',-1))).status,200);
  assert.equal(provider.requests.length,completionReads,'Replayed and reordered completions never read attendance again');assert.deepEqual((await db.prepare('SELECT * FROM zoom_meetings ORDER BY signal_id').all()).results,completedRows.results);
@@ -79,6 +79,7 @@ export async function exerciseZoom(db:D1Database){
  // A denied attendance read records only authenticated completion, with the missing metadata clearly unresolved.
  const thirdSelection={meetingId:'98765432103',opportunityId:deal},thirdPreview=await t.json<any>('/api/v1/zoom/meetings/preview',{body:thirdSelection},200),third=await t.json<any>('/api/v1/zoom/meetings/attach',{body:{...thirdSelection,previewDigest:thirdPreview.digest,confirmed:true}},201);
  provider.attendanceStatus=403;assert.equal((await delivery(payload('meeting.ended','98765432103',3))).status,200);assert.equal((await plan(third.signalId)).zoom.attendanceState,'permission-denied');assert.equal((await plan(third.signalId)).zoom.attendance.length,0);provider.attendanceStatus=200;
+ await t.json('/api/v1/settings/zoom/connect',{body:{...provider.credentials,webhookSecret:'synthetic-orbit-406'}},200);assert.equal((await delivery(payload('meeting.ended','98765432101',6))).status,401,'A replaced webhook secret revokes old signatures');await t.json('/api/v1/settings/zoom/connect',{body:provider.credentials},200);
  provider.tokenStatus=403;assert.equal((await t.call('/api/v1/zoom/meetings/preview',{body:selection})).status,403);assert.equal((await products()).state,'unresolved-setup');provider.tokenStatus=200;
  await t.json('/api/v1/settings/zoom/connect',{body:provider.credentials},200);
  await proveZoomArchives(db,t,provider,signalId,second.signalId);

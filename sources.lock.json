@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "8126cdddbbf4b2beb2e99040fe21389bf4c88c6eb594a78bf478039864b77012",
+      "sha256": "9aad1d99791c4ff97f39f7f8247324dfbb584dec4aa55fca6c50f1c6cf2102e3",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2224,6 +2224,10 @@
     },
     "migrations/core/0080_notification_context_fence.sql": {
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
+      "executable": false
+    },
+    "migrations/core/0081_zoom_meetings.sql": {
+      "sha256": "1c3386340ce3c7e9b08a7fca12586d26b05a6d45cf5d47c46e6341ca81f280d5",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -7294,6 +7298,10 @@
       "sha256": "93e33037c559a5a3a7f97307d6ff9e44ba4053a8e440f31747cf1e42dfde1f75",
       "executable": false
     },
+    "src/core/features/operator/ui/zoom-settings.tsx": {
+      "sha256": "20fdebcc5e7b306ff33e946e34129cc28a9211d89b9a41faf71d80eec99ecca6",
+      "executable": false
+    },
     "src/core/features/opportunities/contracts.ts": {
       "sha256": "9c11158929c712e7405f4ebab3e4958db2a4f0af31d8c5639405c6ceb829b87d",
       "executable": false
@@ -8363,7 +8371,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "39da78fe45a4fee275354287eb7897012f97e8fbd04a0b694843bafdec1e4bcc",
+      "sha256": "b14453a3b43cf8537cfdfba9a6b6ed4c583f085293791e8edcaa7dd1fc9c8cd6",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {
@@ -8528,6 +8536,38 @@
     },
     "src/core/features/workspace/service.ts": {
       "sha256": "678b148995af18e9df6dde0d303529ea6129706dbf64001aedc342f80b0d2d13",
+      "executable": false
+    },
+    "src/core/features/zoom/connection.ts": {
+      "sha256": "89785f4ea6f102b0433f65a7c71dca682897d00b17aa63cf28808b2965da56b4",
+      "executable": false
+    },
+    "src/core/features/zoom/contracts.ts": {
+      "sha256": "337e63e47c9a512b374bf98f016a16c3fc2d31a94b491c713a4712c5cdcd6966",
+      "executable": false
+    },
+    "src/core/features/zoom/plan.ts": {
+      "sha256": "5c72762371fb085f37c98e88a66d186c7d014f1dd6b4233b0c637a1e4af16fe2",
+      "executable": false
+    },
+    "src/core/features/zoom/privacy.ts": {
+      "sha256": "610993873add898b0324dbf8396a81b82a384c0011f8782b184c0b63aecdef73",
+      "executable": false
+    },
+    "src/core/features/zoom/provider.ts": {
+      "sha256": "3b80be04639d610e9dded3650b1abc3adb92364304defbd1d1237f50fad2d673",
+      "executable": false
+    },
+    "src/core/features/zoom/repository.ts": {
+      "sha256": "1bd67903aa5cecc9613cb0e1a0ae964673b240dc65f82e467e95e2a677478ef7",
+      "executable": false
+    },
+    "src/core/features/zoom/routes.ts": {
+      "sha256": "12e013da37a9f2800e9731a417832433006a078416e15b02e17b638260722a7c",
+      "executable": false
+    },
+    "src/core/features/zoom/webhook.ts": {
+      "sha256": "5e0dd19c1427502ce6b02a427592cae1ec85c33eb6205ae8701abbd992a597f4",
       "executable": false
     },
     "src/core/platform/archive-maintenance.ts": {
@@ -10255,7 +10295,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "95fbd5478b3e69de67f6e50bda2c80d277f158bf35c437f66381277ba06ed1c5",
+      "sha256": "5a8ddec424aeb29f718993b672c979f8b6b1b40a1ab85ab975a1e843c0c4f310",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -10299,7 +10339,7 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "5afaf778b7fa6996bfd9585f5536b3282ac6a7cc7079d8f24c13e7f91b132150",
+      "sha256": "1b617596c5dbe4245a82e158bdcceccb197257d9cf6e1b8a205526f5e9fcbc4c",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
@@ -11468,6 +11508,14 @@
     },
     "tests/support/workflow-undo-journey.ts": {
       "sha256": "7e484392b736ef273ea0bbc785a078ec71c37cc165bc925a266dc529c4362579",
+      "executable": false
+    },
+    "tests/support/zoom-meeting-proof.ts": {
+      "sha256": "f91949ae5c2a9096a6fd7913e9aacbfa00acf60dbc9ad0dbbf37607a763eb893",
+      "executable": false
+    },
+    "tests/support/zoom-network.mjs": {
+      "sha256": "2705e9951fb9c35e0d2e314c6d426f33a79e998f5dc317a4abd0d9022249ba4e",
       "executable": false
     },
     "tools/seed-schema/business-field-inputs.mjs": {

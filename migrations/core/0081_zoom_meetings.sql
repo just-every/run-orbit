@@ -13,6 +13,8 @@ CREATE TABLE zoom_meetings (
  attendance_state TEXT NOT NULL DEFAULT 'not-read',
  completed_at TEXT,
  completion_entry_id TEXT REFERENCES timeline_entries(id) ON DELETE SET NULL,
+ completion_digest TEXT,
+ completion_timestamp TEXT,
  cancelled_at TEXT,
  last_event_at INTEGER NOT NULL DEFAULT 0
 );
