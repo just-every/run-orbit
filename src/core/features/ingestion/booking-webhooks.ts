@@ -39,7 +39,18 @@ export async function bookingEvent(vendor:'calcom'|'calendly',secret:string,raw:
   identity=`${value.triggerEvent}:${value.payload.uid}:${value.payload.attendees[0]!.email.toLowerCase()}`;email=value.payload.attendees[0]!.email;cancelled=value.triggerEvent==='BOOKING_CANCELLED';
  }else{occurredAt=value.created_at;identity=`${value.event}:${value.payload.uri}`;email=value.payload.email;cancelled=value.event==='invitee.canceled';}
  if(Date.parse(occurredAt)>now)throw new IngestionError(400,'Booking event time is in the future.');
- const details='event' in value?{calendly:{kind:value.event,occurredAt,inviteeUri:value.payload.uri,eventUri:value.payload.event,previousInvitee:value.payload.old_invitee??null,nextInvitee:value.payload.new_invitee??null,rescheduled:value.payload.rescheduled===true,email:value.payload.email,name:value.payload.name??'',eventName:value.payload.scheduled_event?.name??'Meeting',start:value.payload.scheduled_event?.start_time??null,end:value.payload.scheduled_event?.end_time??null,location:value.payload.scheduled_event?.location??null,cancellation:value.payload.cancellation??null}}:{};
- if('event' in value&&value.payload.scheduled_event&&(value.payload.scheduled_event.uri!==value.payload.event||Date.parse(value.payload.scheduled_event.end_time)<=Date.parse(value.payload.scheduled_event.start_time)))throw new IngestionError(400,'Booking event details must identify the same event with an end after its start.');
+ const details='event' in value?{calendly:calendlyDetails(value)}:{};
  return {eventId:`${vendor}:${await payloadHash(identity)}`,type:cancelled?'meeting.cancelled':'meeting.booked',subject:cancelled?'Meeting cancelled':'Meeting booked',email,occurredAt,data:{provider:vendor,...details}};
+}
+
+function calendlyDetails(value:z.infer<typeof calendly>){
+ const p=value.payload,meeting=p.scheduled_event;
+ if(meeting&&(meeting.uri!==p.event||Date.parse(meeting.end_time)<=Date.parse(meeting.start_time)))throw new IngestionError(400,'Booking event details must identify the same event with an end after its start.');
+ return {kind:value.event,occurredAt:value.created_at,inviteeUri:p.uri,eventUri:p.event,previousInvitee:p.old_invitee??null,nextInvitee:p.new_invitee??null,rescheduled:p.rescheduled===true,email:p.email,name:p.name??'',eventName:meeting?.name??'Meeting',start:meeting?.start_time??null,end:meeting?.end_time??null,location:meeting?.location??null,cancellation:p.cancellation??null};
+}
+/** Normalize the immutable original of an already-verified booking during upgrade. */
+export function readStoredCalendlyBooking(raw:string){
+ let body:unknown;try{body=JSON.parse(raw);}catch{throw new IngestionError(409,'The existing booking needs record review.');}
+ const parsed=calendly.safeParse(body);if(!parsed.success)throw new IngestionError(409,'The existing booking needs record review.');
+ return calendlyDetails(parsed.data);
 }

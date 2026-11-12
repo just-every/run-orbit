@@ -89,6 +89,10 @@ export class IngestionRepository {
       ...(!root?await this.linkStatements(id,event,targets,source,at):[]),
       ...(booking?.statements??[])];
     if(booking){
+      if(root&&booking.bootstrap){
+       const companies=(await this.db.prepare("SELECT DISTINCT c.company_id AS id,l.linking_basis AS basis FROM signal_links l JOIN contacts c ON c.id=l.record_id JOIN companies co ON co.id=c.company_id WHERE l.signal_id=? AND l.record_type='contact'").bind(booking.activityId).all<{id:string;basis:string}>()).results;
+       for(const company of companies)statements.push(this.db.prepare("INSERT OR IGNORE INTO signal_links(signal_id,record_type,record_id,linking_basis,linked_at) VALUES(?,'company',?,?,?)").bind(booking.activityId,company.id,company.basis,at),this.db.prepare("INSERT OR IGNORE INTO timeline_entry_records(timeline_entry_id,record_type,record_id) SELECT ?,'company',? WHERE EXISTS(SELECT 1 FROM timeline_entries WHERE id=?)").bind(booking.activityId,company.id,booking.activityId));
+      }
       if(root&&booking.firstBooking)statements.push(...this.bookingStopStatements(existingTargets.filter(t=>t.type==='contact'),at));
       statements.push(this.db.prepare('UPDATE timeline_entries SET payload_json=? WHERE id=?').bind(JSON.stringify(bookingTimeline(booking.activityId,booking.current)),booking.activityId));
     }

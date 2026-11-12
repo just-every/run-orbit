@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createHmac} from 'node:crypto';
+import {createHash,createHmac} from 'node:crypto';
 import {createId} from '../../src/core/shared/ids';
 
 type Fixture={db:D1Database;stage:string;request:(path:string,method?:string,body?:unknown,headers?:Record<string,string>)=>Promise<Response>;app:{request:(url:string,init:RequestInit)=>Promise<Response>};setClock:(now:Date|undefined)=>void;sends:()=>number};
@@ -17,7 +17,8 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
  assert.equal(await f.db.prepare('SELECT count(*) AS n FROM booking_lifecycle').first('n'),beforeGeneric,'Only the verified vendor door interprets provider lifecycle fields');
  const inventory=async()=>({messages:(await f.db.prepare('SELECT * FROM outbound_messages ORDER BY id').all()).results,drafts:(await f.db.prepare('SELECT id,is_stale,stale_reason,updated_at FROM drafts ORDER BY id').all()).results,sends:f.sends()});
  const evidence=async()=>Object.fromEntries(await Promise.all(['signals','signal_links','timeline_entries','timeline_entry_records','booking_lifecycle'].map(async table=>[table,(await f.db.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results])));
- for(const reverse of [false,true]){
+ for(const mode of ['cancel-first','create-first','legacy']){
+  const reverse=mode!=='cancel-first',legacy=mode==='legacy';
   const suffix=createId(),email=[`synthetic-orbit-${suffix.toLowerCase()}`,'example.test'].join('@');
   const deal=await json(await f.request('workbench/opportunities','POST',{title:`Calendly lifecycle ${suffix}`,companyName:`Synthetic calendar ${suffix}`,contactName:'Synthetic attendee',email,stageId:f.stage,valueCents:10000}),201);
   const detail=(await json(await f.request(`opportunities/${deal.id}`))).opportunity,contact=detail.contacts[0],company=detail.companyId??detail.company?.id;
@@ -37,7 +38,13 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
   const invitee=(id:string)=>`${event(id)}/invitees/synthetic-orbit-${id}`;
   const payload=(kind:string,id:string,extra:Record<string,unknown>={})=>({event:kind,created_at:kind==='invitee.created'&&id==='old'?'2026-01-01T09:00:00.000Z':id==='old'?'2026-01-01T10:00:00.000Z':kind==='invitee.created'?'2026-01-01T10:00:01.000Z':'2026-01-01T11:00:00.000Z',payload:{uri:invitee(id),event:event(id),email,name:'Exact Calendly Attendee',rescheduled:false,old_invitee:null,new_invitee:null,scheduled_event:{uri:event(id),name:'Discovery consultation',start_time:id==='old'?'2030-01-09T13:00:00.000Z':'2030-01-10T15:00:00.000Z',end_time:id==='old'?'2030-01-09T13:45:00.000Z':'2030-01-10T16:00:00.000Z',location:{type:'physical',location:'Synthetic meeting room'}},...extra}});
   const original=payload('invitee.created','old'),oldCancel=payload('invitee.canceled','old',{rescheduled:true,new_invitee:invitee('new'),cancellation:{canceled_by:'Exact Calendly Attendee',canceler_type:'invitee',reason:'Rescheduled'}}),replacement=payload('invitee.created','new',{old_invitee:invitee('old'),rescheduled:true});
-  const accepted=await post(original),activityId=accepted.id;assert.equal(accepted.linked,true);
+  let accepted:any;
+  if(legacy){
+   const body=JSON.stringify({...original,eventId:'calendly:'+createHash('sha256').update('invitee.created:'+original.payload.uri).digest('hex'),type:'meeting.booked',subject:'Meeting booked',email,occurredAt:original.created_at,data:{provider:'calendly'}}),t=String(Math.floor(Date.now()/1000));
+   accepted=await json(await f.app.request('https://orbit.test/api/v1/signals/bookings',{method:'POST',headers:{'X-Orbit-Timestamp':t,'X-Orbit-Signature':createHmac('sha256',secret).update(t+'.'+body).digest('hex')},body}),201);
+   assert.equal(await f.db.prepare('SELECT count(*) AS n FROM booking_lifecycle WHERE signal_id=?').bind(accepted.id).first('n'),0,'The retained original starts without a lifecycle projection');
+  }else accepted=await post(original);
+  const activityId=accepted.id;assert.equal(accepted.linked,true);
   const read=async(status:string,start:string,uri:string,history:number)=>{
    let booking:any;
    for(const [kind,id] of [['contact',contact.id],['company',company],['opportunity',deal.id]]){
@@ -58,7 +65,7 @@ export async function proveCalendlyBookings(f:Fixture,secret:string){
    assert.equal(lines.length,1);assert.equal(lines[0].signalType,`meeting.${status}`);assert.equal(lines[0].title,'Discovery consultation');assert.ok(lines[0].href.endsWith(`#entry-${activityId}`));
    return booking;
   };
-  await read('booked','2030-01-09T13:00:00.000Z',invitee('old'),1);
+  if(!legacy)await read('booked','2030-01-09T13:00:00.000Z',invitee('old'),1);
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(stopped).first<any>())?.state,'cancelled');assert.equal(f.sends(),sends);
   // New operator approval after the original stop detects an accidental second stop.
   const later=await schedule('After the first booking'),afterStop=await inventory();
