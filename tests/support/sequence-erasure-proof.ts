@@ -71,7 +71,6 @@ export async function proveSequenceErasure(){
   const request:SequenceRequest=(path,method='GET',body,cookie=f.cookie)=>app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
   const invited=await(await request('settings/operators','POST',{email:sequenceOperatorMailbox,displayName:'Mark'})).json() as {id:string};
   const mark=await signIn(f.db,sequenceOperatorMailbox);
-  await assert.rejects(f.db.prepare("UPDATE sequence_versions SET name='Rewrite history'").run(),/immutable/);
   const result=await sequenceErasureJourney(request,{id:invited.id,cookie:mark.cookie});
   await assert.rejects(f.db.prepare("UPDATE sequence_versions SET name='Rewrite history'").run(),/immutable/);
   const archive=await httpArchive(archiveHttp(app,()=>f.cookie));

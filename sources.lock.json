@@ -11479,7 +11479,7 @@
       "executable": false
     },
     "tests/support/sequence-erasure-proof.ts": {
-      "sha256": "48a17751a1a7f214b4541eb2c21d05017d476da1aa0b8fb648dd1047ef6017c0",
+      "sha256": "03cc6e27bd37b18af47ad9be55c0f59e90a17e30d06a09f8021fb2d67f7600f1",
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {
