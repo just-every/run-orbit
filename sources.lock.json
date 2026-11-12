@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "a8a75dcaadd7cf0452ec2831d545f35adb230371ca69421cde69debd605a9d57",
+      "sha256": "36d952691d57d525498a4347023496ae1afbd553138d323905bd900022097ab7",
       "executable": false
     },
     "AGENTS.md": {
@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "741b09ecdf4009360e6eb3b51975a3d6a2303ff25d8053ccf699aa3585a5e95a",
+      "sha256": "76158ffb0066519963559663b6b1d6059fd5aa637b5112e165dc9396ca7e4a4f",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -3931,7 +3931,7 @@
       "executable": false
     },
     "scripts/agent-surface.ts": {
-      "sha256": "4b367f17d323a271a1597eb21646c0c30399b58699de20065d874412d6245396",
+      "sha256": "f21f269b429464114801860b628126ab56b2f091a56c1537d7955eef2f28eaae",
       "executable": false
     },
     "scripts/browser-results.mjs": {
@@ -3939,7 +3939,7 @@
       "executable": false
     },
     "scripts/browser-runtime.mjs": {
-      "sha256": "5b233bd873d0efdc57b543ab108a2a7173433a2c74bf5faa0143b9f07852c135",
+      "sha256": "fc499a356f408123705ce7a69bfcfc8a401593bde158d2de9b615d917e2c49d6",
       "executable": false
     },
     "scripts/browser-server.mjs": {
@@ -5319,7 +5319,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.ts": {
-      "sha256": "f1f060f9fa83669b177d21b1b026991749f1d45f7c69758ece7f317d2420b731",
+      "sha256": "3382fab4212bd4f13c1b39d526d3c46b17029c0f7d09570dc26ebb93d16f0c41",
       "executable": false
     },
     "src/core/features/agent-door/local-credentials.ts": {
@@ -5327,7 +5327,7 @@
       "executable": false
     },
     "src/core/features/agent-door/native-access.ts": {
-      "sha256": "1c860f16eb1a6af6caaebcb9190eb935f012bf427e39b35ae81e94a8caf1b137",
+      "sha256": "f85ebb70899ff061ec3a1f3bb711d2902e64188705a24ae4d59ad99974a53412",
       "executable": false
     },
     "src/core/features/agent-door/not-tools.ts": {
@@ -5535,7 +5535,7 @@
       "executable": false
     },
     "src/core/features/assistance/routes.ts": {
-      "sha256": "10905da9393d840ab1ed76c849b474d7b5d64a0c3033d398a3deded33d37c2ef",
+      "sha256": "1a62bafdd3226d502fbccb8b94c91e560b24c5f0b2a81cec8b7558ddff16202e",
       "executable": false
     },
     "src/core/features/audit/index.ts": {
@@ -10035,7 +10035,7 @@
       "executable": false
     },
     "tests/agent-door/initialize-owner.mjs": {
-      "sha256": "0b542c7a733b23587ab8477786a17d7419b194c4a582f770877b2ff0bbf83a28",
+      "sha256": "607b980fb5da1ff6cce9e4b1fe3dc674d4a90a053b77e6fbb86047e572c87f28",
       "executable": false
     },
     "tests/agent-door/initialize-reviewer.mjs": {
@@ -10043,7 +10043,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "af5b7cd74aab5ff031a0ee05b20765e070c782bbcbfe1057fdf55c2573eb794f",
+      "sha256": "02049b5a8a848d14b0645a8bcddc8ef5c7b13f53d7870fa8fb4ab1ee40c20709",
       "executable": false
     },
     "tests/agent-door/workflow-fixture.mjs": {
@@ -10179,7 +10179,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "b957e75cca58716d7704a55cfb231d9828be154e165611399bd8cd3c36fb1a31",
+      "sha256": "dd619c02071063f240c139bec516fe4ce805d00556ab65ea0b5d9534eec60647",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10351,7 +10351,7 @@
       "executable": false
     },
     "tests/e2e/assistance.spec.mjs": {
-      "sha256": "301a0f13d9aa5647761320342b87feb256222df4ef22e9d21807fe42053ae04a",
+      "sha256": "9d28cac7a1f2652029b14d600434fedf9a1aa827d6a2b2d37e30a203d097d28a",
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
@@ -11007,7 +11007,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "6e300b706fed804121508456ceb36bb597a670ae354cac8da6fe9cd5794d9a2a",
+      "sha256": "113b6684410c4ad18d7c9e22cd6dd6342685e94b62ebb01e86e1052acae20a3c",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {

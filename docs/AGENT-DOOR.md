@@ -114,6 +114,8 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 
 | Tool | Scope | Possible classes |
 | --- | --- | --- |
+| `orbit.assistance.generate` | `drafts:write` | external, sensitive |
+| `orbit.assistance.preview` | `drafts:read` | standard, sensitive |
 | `orbit.briefs.read` | `briefs:read` | standard |
 | `orbit.capture.address_read` | `capture:read` | standard |
 | `orbit.capture.address_rotate` | `capture:write` | security |
@@ -183,6 +185,36 @@ by this registry. These declarations grant no authority or provider effect.
 | `MIGRATE-003` | import-door | Salesforce migration uses the guided migration and import door with authorization and saved review. |
 
 ## Records and retained outcomes
+
+### Opportunity AI input
+
+`orbit.assistance.preview` reads the exact native opportunity input without
+saving a preview or requesting a model. Its `previewHash` hashes that content;
+`revision` also binds the configured provider and model. Generation requires
+that revision in `source_revision`; clients can additionally supply it as
+`expected_revision`. A changed record, evidence set, provider or model requires
+a fresh preview.
+
+`orbit.assistance.generate` uses the same generation action as the native
+assistance route. Its external facts count one known counterparty: the
+installation's configured AI provider. Customer names and stored instructions
+cannot make that destination internal. Actual regulated identifier values in
+the preview add sensitive facts with a record count; ordinary contact details
+and deal estimates do not. Current identifier recognition covers formatted US
+Social Security numbers and labeled employer or taxpayer identifiers.
+
+Company policy decides whether generation runs, waits for a person, or is
+blocked. The person summary binds feature, provider, model, provider recipient
+count, selected contact, exact input hash and cited evidence identities. Approval
+rechecks input and native authority before a model request. The retained result
+is an unsent draft or current recommendation explanation with cited evidence,
+native agent attribution and usage. It never submits customer mail. Replay
+retains the outcome without another model request.
+
+Other provider requests and broader exposure qualification remain outside these
+tools, including account brief input, record-mail drafting, erasure provider
+requests, spending reservations and live-provider qualification.
+
 
 Resource readers recheck current native visibility and scope. Absent and
 restricted CRM records are refused alike. Protected fields actually returned

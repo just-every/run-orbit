@@ -4,6 +4,34 @@
   "specialist": "sales rep",
   "tools": [
     {
+      "name": "orbit.assistance.generate",
+      "scope": "drafts:write",
+      "readOnly": false,
+      "classes": [
+        "external",
+        "sensitive"
+      ],
+      "clauses": [
+        "SURFACE-003",
+        "AI-001",
+        "ACTION-003"
+      ]
+    },
+    {
+      "name": "orbit.assistance.preview",
+      "scope": "drafts:read",
+      "readOnly": true,
+      "classes": [
+        "standard",
+        "sensitive"
+      ],
+      "clauses": [
+        "SURFACE-003",
+        "AI-001",
+        "ACTION-003"
+      ]
+    },
+    {
       "name": "orbit.briefs.read",
       "scope": "briefs:read",
       "readOnly": true,
@@ -1053,6 +1081,171 @@
       }
     },
     {
+      "id": "ai_preview",
+      "tool": "orbit.assistance.preview",
+      "args": {
+        "opportunity_id": {
+          "$from": "fixture",
+          "pointer": "/items/0/ref/id"
+        },
+        "feature": "draft"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "ai_generate",
+      "tool": "orbit.assistance.generate",
+      "args": {
+        "opportunity_id": {
+          "$from": "fixture",
+          "pointer": "/items/0/ref/id"
+        },
+        "feature": "draft",
+        "source_revision": {
+          "$from": "ai_preview",
+          "pointer": "/revision"
+        },
+        "expected_revision": {
+          "$from": "ai_preview",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "external",
+          "facts": {
+            "measure": 1,
+            "counterparty": "known",
+            "provider": "openai"
+          }
+        }
+      ],
+      "target": {
+        "kind": "opportunity",
+        "id": {
+          "$from": "fixture",
+          "pointer": "/items/0/ref/id"
+        }
+      }
+    },
+    {
+      "id": "regulated_ai_fixture",
+      "tool": "orbit.records.list",
+      "args": {
+        "kind": "opportunity",
+        "query": "Door regulated AI fixture opportunity",
+        "limit": 1
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "regulated_ai_preview",
+      "tool": "orbit.assistance.preview",
+      "args": {
+        "opportunity_id": {
+          "$from": "regulated_ai_fixture",
+          "pointer": "/items/0/ref/id"
+        },
+        "feature": "draft"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "regulated_identifiers",
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirmed": true,
+        "confirmExternal": true,
+        "classes": [
+          "standard"
+        ],
+        "policy": "autonomous"
+      }
+    },
+    {
+      "id": "regulated_ai_generate",
+      "tool": "orbit.assistance.generate",
+      "args": {
+        "opportunity_id": {
+          "$from": "regulated_ai_fixture",
+          "pointer": "/items/0/ref/id"
+        },
+        "feature": "draft",
+        "source_revision": {
+          "$from": "regulated_ai_preview",
+          "pointer": "/revision"
+        },
+        "expected_revision": {
+          "$from": "regulated_ai_preview",
+          "pointer": "/revision"
+        }
+      },
+      "expect": [
+        {
+          "class": "external",
+          "facts": {
+            "measure": 1,
+            "counterparty": "known",
+            "provider": "openai"
+          }
+        },
+        {
+          "class": "sensitive",
+          "facts": {
+            "kind": "regulated_identifiers",
+            "measure": 1
+          }
+        }
+      ],
+      "target": {
+        "kind": "opportunity",
+        "id": {
+          "$from": "regulated_ai_fixture",
+          "pointer": "/items/0/ref/id"
+        }
+      }
+    },
+    {
       "id": "draft",
       "tool": "orbit.drafts.create",
       "args": {
@@ -1718,11 +1911,29 @@
     }
   ],
   "verification": {
+    "network": {
+      "module": "tests/agent-door/ai-network.mjs",
+      "origins": [
+        "https://api.openai.com"
+      ]
+    },
     "fixtures": {
       "module": "tests/agent-door/workflow-fixture.mjs"
     },
     "owner": {
       "bindings": {
+        "OPENAI_API_KEY": {
+          "module": "tests/agent-door/ai-binding.mjs"
+        },
+        "AI_MODEL": {
+          "module": "tests/agent-door/ai-binding.mjs"
+        },
+        "AI_INPUT_COST_PER_MILLION": {
+          "module": "tests/agent-door/ai-rate.mjs"
+        },
+        "AI_OUTPUT_COST_PER_MILLION": {
+          "module": "tests/agent-door/ai-rate.mjs"
+        },
         "RER_MANAGEMENT_ORIGIN": "issuer",
         "RER_INSTALLATION_ID": "installationId",
         "MAIL_FROM": "email",
