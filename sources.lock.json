@@ -7943,7 +7943,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "219e94dcacd0e5195f556b22a791b9421ecf80a70a6422fd72c83adfbf5b3c3b",
+      "sha256": "bd5bc0786a5fe70cc0a7910ac12225f55755d68467f71a77495854713318875a",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -8170,6 +8170,10 @@
       "sha256": "be7f99c2ed0867ca70995bb11d440e1fc702756430428b4e5ea0e673577c72b2",
       "executable": false
     },
+    "src/core/features/sequences/privacy.ts": {
+      "sha256": "5899923697e52b3a2c39e248f783b30a03c3c253b77eeabdbfb32d1245013675",
+      "executable": false
+    },
     "src/core/features/sequences/README.md": {
       "sha256": "7be8bac8814b70bf37d119267743f555b5c193c73e1711fc1a172fa820d9837f",
       "executable": false
@@ -8219,7 +8223,7 @@
       "executable": false
     },
     "src/core/features/settings/erasure.ts": {
-      "sha256": "58fba7f88108e2ffdcbbfa17421093cd58068df87e868c444d2d5907caf8254f",
+      "sha256": "22d7101fdf288c54b9d031729404a5c24cd3e8ff6d244a78943b7d17cbc5ac95",
       "executable": false
     },
     "src/core/features/settings/owner-email.ts": {
@@ -11471,7 +11475,11 @@
       "executable": false
     },
     "tests/support/sequence-authoring-proof.ts": {
-      "sha256": "853f3b6b20b51d6c2d954476d89bb429b6adf7a39f0d30569c696f9f18a56604",
+      "sha256": "ae94a23bd1cf640d7abf0611abf8c68e037e0f7cf2e6a462282ecbc851bea7a3",
+      "executable": false
+    },
+    "tests/support/sequence-erasure-proof.ts": {
+      "sha256": "48a17751a1a7f214b4541eb2c21d05017d476da1aa0b8fb648dd1047ef6017c0",
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {

@@ -9,6 +9,7 @@ import {containsWord,redactJsonText,redactionSql} from './erasure-redaction';
 import {messageReviewOperatorErasure} from '../drafts/privacy';
 import {operatorRetirementStatements} from '../agent-door/operator-erasure';
 import {createId} from '../../shared/ids';
+import {sequenceErasure} from '../sequences/privacy';
 
 /** Retain stable attribution IDs while removing a retired operator's personal details. */
 export async function eraseOperator(db:D1Database,id:string,actor:string,agentErasureSecret?:string){
@@ -31,6 +32,7 @@ export async function eraseOperator(db:D1Database,id:string,actor:string,agentEr
  // Their agent-door records are redacted here too; the tombstone is the `operator.erased` audit entry itself.
  statements.push(...await operatorRetirementStatements(db,id,agentErasureSecret,{erasure_id:erasureId,at:now}));
  statements.push(...await messageReviewOperatorErasure(db,id,name,operator.email));
+ statements.push(...await sequenceErasure(db,[operator.email],{id,name}));
  // JSON replacement uses escaped text so quotes in a display name cannot invalidate stored JSON.
  const contentColumns:Record<string,string[]>={workflow_versions:['name','definition_json','preview_json'],audit_entries:['details_json'],timeline_entries:['payload_json'],ai_previews:['content_json'],ai_calls:['error'],notifications:['message'],drafts:['subject','body'],outbound_messages:['subject','body','failure'],record_mail_drafts:['subject','body'],record_mail_outbound_messages:['subject','body','failure'],message_library:['name','subject','body'],source_event_errors:['reason'],signal_sources:['last_error']};
  const attribution:Record<string,string>={workflow_versions:'created_by=?',audit_entries:"(actor_id=? OR (entity_type='operator' AND entity_id=?))",timeline_entries:'actor_id=?',ai_previews:'operator_id=?',ai_calls:'operator_id=?',notifications:'operator_id=?',drafts:'author_id=?',outbound_messages:'operator_id=?',record_mail_drafts:'author_id=?',record_mail_outbound_messages:'operator_id=?',message_library:'owner_id=?'};

@@ -22,6 +22,7 @@ import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
 import {relationshipContactErasure} from '../relationships/erasure';
 import {messageContactErasure} from '../drafts/privacy';
+import {sequenceErasure} from '../sequences/privacy';
 import {mailchimpErasure} from '../marketing/deletions';
 import {contactAgentErasureStatements} from '../agent-door/contact-erasure';
 export class DataRepository {
@@ -56,6 +57,7 @@ export class DataRepository {
    statements.push(...await workflowContactErasure(db,id,identities));
    statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));
+   statements.push(...await sequenceErasure(db,identities));
    statements.push(...formAbuseErasure(db,identities));
    statements.push(...taskContactErasure(db,id,identities));
    statements.push(...relationshipContactErasure(db,id,identities));

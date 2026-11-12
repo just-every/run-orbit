@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {proveSequenceErasure} from './sequence-erasure-proof';
 import {fixture,signIn} from '../../newtests/t096/fixture';
 import {archiveHttp,httpArchive,httpRestore} from '../../newtests/t096/archive-http-proof';
 import {createApp} from './app';
@@ -51,4 +52,5 @@ export async function proveSequenceAuthoring(){
   const oldSession=second.cookie;await createDependencies(f.db).auth.revoke(second.operator.sessionId);assert.equal((await request(oldSession,`sequences/${current.id}/copy`,'POST',{version:current.version,name:'Revoked copy'})).status,401);
   for(const table of ['outbound_messages','record_mail_outbound_messages','sales_tasks'])assert.equal(await f.db.prepare(`SELECT count(*) n FROM ${table}`).first('n'),0,'Authoring never dispatches, enrolls or creates scheduled human tasks');assert.equal(submissions,0);
  }finally{await f.close();}
+ await proveSequenceErasure();
 }
