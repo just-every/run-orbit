@@ -8,10 +8,10 @@ The primary journey: Bring customer records across, connect sales evidence, work
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 43 | 111 | 24 | 178 |
+| Core | 42 | 112 | 24 | 178 |
 | Agent surface | 0 | 18 | 8 | 26 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 43 | 129 | 32 | 204 |
+| Full target | 42 | 130 | 32 | 204 |
 
 Judged from the code and tests at commit `6f772da4e344a4ed1402048626f69401756d1718` (1 November 2026). AI-001, CAPTURE-007, FORECAST-001, PUBLIC-003, RECORD-002 and SIGNAL-009 were restored to done, and the DATA-001, INTEGRATE-005, INTEGRATE-010 and OPP-009 rows rechecked, from the code and tests at commit `c5fef74276b106cc2660384644a851ed9100d831` (2 November 2026) by ct judge ct-judge-orbit-restore-20261102-0815 against push Verify 41398288087. CAPTURE-001, DATA-003, INTEGRATE-005, INTEGRATE-010, OPP-009, OUT-004, RECORD-011, SIGNAL-001 and SIGNAL-002 were restored to done, and the DATA-001, OPP-004 and OUT-012 rows rechecked, from the code and tests at commit `9ae202f6a3ac267dd595ae6de2415647e29cc990` (2 November 2026) by ct judge ct-judge-orbit-assert-20261102-1840 against push Verify 41491239750. BRIEF-003 and BRIEF-004 were proved through native HTTP journeys and the emitted browser journey from code and tests at commit `a4ada5e8ee73af1dd57154b1e11b03cc5ed5816e` (4 November 2026); the only subsequent changes are these status records and their generated counts and source lock. ACTION-004 was proved through native draft, sign-out and email-link routes and the emitted draft editor from code and tests at commit `df220b90772d27a546f0d58d739c90b1d550179d` (5 November 2026); subsequent changes for that proof are its status record, generated counts and source lock. Field proof register: 12 rows; 0 passed, 0 failed, 12 not run.
 
@@ -1881,7 +1881,7 @@ Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDI
 
 #### AUTO-006 — Undo workflow effects
 
-Core · target · **done** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
+Core · target · **partial** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-001
 
 **Requirement.** Undo. A user with workflow permission undoes one run, or every run of a version over a chosen time range. Undo restores each field written by a run only where the field still holds the value the run wrote. It reverses a stage move the same way, recording the reversal in OPP-009 history. It archives a record the run created only if nobody has edited or associated it since. Orbit archives a created deal by closing it as lost with a reason naming the undone version, which removes it from the queue and keeps its history and associations; edits, added contacts, activities, tasks, drafts, messages, signals and captured changes all count as touching it. Each skipped item is listed with who changed it and when. Undo is attributed and audited, sends nothing, and never reopens or deletes tasks or messages.
 
@@ -1891,7 +1891,7 @@ Core · target · **done** · From AUTO-002 · Cites BASE-ROLE-001, BASE-AUDIT-0
 3. Undo sends nothing and never reopens or deletes tasks or messages.
 
 **Evidence.** `tests/core/capture-review.test.ts` — “CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority”, which runs `tests/support/workflow-record-journey.ts` and `tests/support/workflow-undo-journey.ts` — workflowUndoJourney. Acceptance 1: workflowRecordJourney undoes the closed-won run after a person edited one contact (the other contact is restored, the edited contact is listed as skipped with who changed it) and workflowUndoJourney reverses a stage move into stage history, attributed in the audit trail. Acceptance 2: workflowUndoJourney undoes a version over a time range with three created deals (the untouched deal is archived, the deal a person edited and the deal a person logged a note on are skipped, each naming who and when), refuses an operator without workflow authority, leaves runs outside the range untouched and reverses the stage move. Acceptance 3: workflowUndoJourney counts messages, Slack notices, notifications, tasks and notes before and after undo and replay (unchanged), shows a scheduled message stays scheduled across a stage reversal, and `tests/support/workflow-journey.ts` keeps the task created by a run after its undo. Code: `src/core/features/workflows/controls.ts`; `src/core/features/workflows/record-writes.ts`; `src/core/features/workflows/record-archive.ts`; `src/core/features/operator/ui/workflows-version-undo.tsx`
-**Gap.** None.
+**Gap.** No remaining implementation gap is recorded: the done judgment on this row has not been run through a gate.
 
 #### CALL-001 — Provider-backed click-to-call
 
