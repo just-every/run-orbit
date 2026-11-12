@@ -27,7 +27,7 @@ export class ArchiveImportRepository {
         const totalSteps=phases.length*totalTables+1,completedSteps=complete?totalSteps:Math.max(0,phases.indexOf(progress.phase))*totalTables+completedTables;
         const nextPart=complete?manifest.parts:(await this.db.prepare('SELECT count(*) AS n FROM archive_parts WHERE job_id=?').bind(id).first<{n:number}>())!.n;
         const contentDigest=this.folded?await storedArchiveContentDigest(this.db,id):undefined;
-        return {id,state:job.state,manifest,nextPart,phase:progress.phase,completedTables,totalTables,completedSteps,totalSteps,...(contentDigest?{contentDigest}:{})};
+        return {id,createdAt:job.created_at,state:job.state,manifest,nextPart,phase:progress.phase,completedTables,totalTables,completedSteps,totalSteps,...(contentDigest?{contentDigest}:{})};
     }
     async unfinished(actor:string){return Promise.all((await unfinishedImportIds(this.db,actor)).map(id=>this.status(id,actor)));}
     async create(input: unknown, actor: string,contentDigest?:string) {

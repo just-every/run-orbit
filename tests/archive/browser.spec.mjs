@@ -20,7 +20,15 @@ test('native archive preparation, streamed download, confirmed restore and renew
  const sourceSession=await authenticate(context);await openTools(page);
  await page.getByRole('button',{name:'Prepare export',exact:true}).click();
  await expect(page.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
- const preparedId=await page.getByLabel('Export transfer ID').inputValue();await page.reload();await expect(page.getByLabel('Export transfer ID')).toHaveValue(preparedId);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
+ const exportSummary=page.getByRole('region',{name:'Export transfer',exact:true});
+ const href=await page.getByRole('link',{name:'Download completed archive'}).getAttribute('href'),preparedId=href.split('/').at(-2);
+ await expect(page.getByLabel('Export transfer ID')).toBeHidden();
+ const summary=await exportSummary.innerText();expect(summary).not.toContain(preparedId);expect(summary).not.toMatch(/\d{4}-\d{2}-\d{2}T/);expect(summary).toMatch(/\d+ rows/);
+ await context.grantPermissions(['clipboard-read','clipboard-write']);
+ await exportSummary.getByRole('button',{name:'Copy export details',exact:true}).click();
+ const copied=JSON.parse(await page.evaluate(()=>navigator.clipboard.readText()));expect(copied.id).toBe(preparedId);expect(copied.rows).toBeGreaterThan(0);
+ await exportSummary.getByText('Export support details',{exact:true}).click();await expect(page.getByLabel('Export transfer ID')).toHaveValue(preparedId);await exportSummary.getByText('Export support details',{exact:true}).click();
+ await page.reload();await expect(page.getByLabel('Export transfer ID')).toBeHidden();await expect(exportSummary).toContainText(summary.split('\n')[0]);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
  const downloadPromise=page.waitForEvent('download');await page.getByRole('link',{name:'Download completed archive'}).click();const download=await downloadPromise;const file=await download.path();expect(file).toBeTruthy();
  // Assert browser used a real streamed server response, not a generated object URL.
  expect(download.url()).toContain('/api/v1/records/archive/exports/');
@@ -36,7 +44,7 @@ test('native archive preparation, streamed download, confirmed restore and renew
  const denied=await page.request.get('/api/v1/records/contact');expect(denied.status()).toBe(401);
  await authenticate(context);await openTools(page);
  const restoredSettings=await(await page.request.get('/api/v1/settings')).json();expect(restoredSettings.operators.find(operator=>operator.email==='target-owner@example.test')?.status).toBe('active');expect(restoredSettings.operators.find(operator=>operator.email==='archive-owner@example.test')?.setup_owner).toBe(1);expect(restoredSettings.operators.some(operator=>operator.email==='rollback-guest@example.test')).toBe(false);
- await page.getByLabel('Export transfer ID').fill('');await page.getByRole('button',{name:'Prepare export',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Prepare export',exact:true})).toBeVisible();await page.getByRole('button',{name:'Prepare export',exact:true}).click();
  await expect(page.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
  await expect(page.locator('.workspace-archive__panel').first()).toHaveCSS('border-top-style','solid');
  await page.locator('.workspace-archive').screenshot({path:testInfo.outputPath('orbit-archive-desktop.png')});
@@ -56,7 +64,7 @@ test('native archive preparation, streamed download, confirmed restore and renew
  expect(await records(cliFile)).toEqual(await records(file));
  // Release the real CLI snapshot through the same shipped Settings › Data controls.
  await page.getByRole('button',{name:'Find unfinished exports',exact:true}).click();
- await page.getByRole('button',{name:/^Use export /}).click();
+ const recovered=page.getByRole('button',{name:/^Use export /});expect(await recovered.innerText()).not.toMatch(/[0-9A-HJKMNP-TV-Z]{26}|\d{4}-\d{2}-\d{2}T/);await recovered.click();
  await discardExport(page);
  await runTransfer({operation:'import',origin,file:cliFile},request,()=>{});
  expect((await page.request.get('/api/v1/records/contact')).status()).toBe(401);
