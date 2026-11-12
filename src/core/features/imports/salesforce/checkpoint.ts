@@ -12,7 +12,7 @@ export interface Pull {id:string;connection_id:string;actor_id:string;state:stri
 export class SalesforcePulls {
  constructor(readonly db:D1Database,readonly security:SourceSecurity,readonly actor:AuthenticatedOperator,readonly fetcher:SalesforceFetch){}
  provider(id:string){return new SalesforceProvider(this.db,this.security,this.actor,id,this.fetcher);}
- async start(connectionId:string){const provider=this.provider(connectionId),connection=await provider.connection(),metadata=await describe(provider),id=createId();
+ async start(connectionId:string){const provider=this.provider(connectionId),metadata=await describe(provider),connection=await provider.connection(),id=createId();
   await this.db.batch([fence(this.db,this.actor),provider.guard(connection),this.db.prepare('INSERT INTO crm_import_salesforce_pulls(id,connection_id,actor_id,state,metadata_json,created_at) VALUES(?,?,?,\'reading\',?,?)').bind(id,connectionId,this.actor.operatorId,JSON.stringify(metadata),new Date().toISOString())]);return this.status(id);
  }
  async row(id:string){await authorized(this.db,this.actor);const row=await this.db.prepare('SELECT * FROM crm_import_salesforce_pulls WHERE id=? AND actor_id=?').bind(id,this.actor.operatorId).first<Pull>();if(!row)throw new RecordError(404,'Salesforce pull not found.');return row;}

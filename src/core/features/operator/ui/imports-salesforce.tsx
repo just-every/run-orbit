@@ -19,7 +19,7 @@ export function SalesforceImport({owners,onReview}:{owners:ImportOwner[];onRevie
   {error||callbackError?<p role="alert">{error||callbackError}</p>:null}
   {query?.get('salesforce')==='connected'?<p role="status">Salesforce connected. Start an Account and Contact pull below.</p>:null}
   {config?.available===false?<p role="status">Configure the installation encryption key before connecting Salesforce.</p>:null}
-  <form aria-label="Salesforce connection" onSubmit={event=>{event.preventDefault();void run(async()=>{const result=await recordsRequest<any>('imports/salesforce/oauth/start','POST',{clientId,clientSecret:secret,sandbox});setSecret('');window.location.assign(result.authorizationUrl);});}}>
+  <form aria-label="Salesforce connection" onSubmit={event=>{event.preventDefault();void run(async()=>{const result=await recordsRequest<any>('imports/salesforce/oauth/start','POST',{clientId,clientSecret:secret,sandbox,confirmedReadOnly:true});setSecret('');window.location.assign(result.authorizationUrl);});}}>
    <label>Salesforce client ID<input required autoComplete="off" value={clientId} onChange={event=>setClientId(event.target.value)}/></label>
    <label>Salesforce client secret<input required type="password" autoComplete="new-password" value={secret} onChange={event=>setSecret(event.target.value)}/></label>
    <label><input type="checkbox" checked={sandbox} onChange={event=>setSandbox(event.target.checked)}/>Use a Salesforce sandbox</label>
@@ -28,7 +28,7 @@ export function SalesforceImport({owners,onReview}:{owners:ImportOwner[];onRevie
   </form>
   {config?.connections?.map((connection:any)=><section key={connection.id} aria-label={`Salesforce organization ${connection.org_id}`}><h3>Organization {connection.org_id}</h3><p>{connection.instance}</p>
    <button disabled={busy} onClick={()=>void run(async()=>{const value=await recordsRequest<any>(`imports/salesforce/connections/${connection.id}/pulls`,'POST',{});await open(value.id);await refresh();})}>Read Account and Contact metadata</button>
-   <button disabled={busy} onClick={()=>void run(async()=>{if(!window.confirm('Disconnect Salesforce and withdraw its saved pulls and reviews?'))return;await recordsRequest(`imports/salesforce/connections/${connection.id}/disconnect`,'POST',{confirmed:true});setPull(undefined);await refresh();})}>Disconnect Salesforce</button>
+   <button disabled={busy} onClick={()=>void run(async()=>{if(!window.confirm('Disconnect Salesforce and withdraw its saved pulls and reviews?'))return;await recordsRequest(`imports/salesforce/connections/${connection.id}/disconnect`,'POST',{confirmed:true});setPull(undefined);await refresh();})}>Disconnect Salesforce</button><p>Disconnect clears this installation’s credentials and saved reviews. Revoke the app in Salesforce to remove its provider grant.</p>
   </section>)}
   {config?.pulls?.length?<section aria-label="Saved Salesforce pulls"><h3>Saved pulls</h3>{config.pulls.map((item:any)=><p key={item.id}>{item.state} · {item.page} saved pages <button disabled={busy} onClick={()=>void run(()=>open(item.id))}>Open Salesforce pull {item.id.slice(-6)}</button></p>)}</section>:null}
   {pull?<section aria-label="Salesforce mapping"><h3>Account and Contact mapping</h3><p role="status">Pull state: {pull.state} · {pull.page} saved pages. Accounts read: {pull.read.Account??0} of {pull.counts.Account??'unknown'}. Contacts read: {pull.read.Contact??0} of {pull.counts.Contact??'unknown'}.</p>

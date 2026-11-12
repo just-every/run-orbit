@@ -9,6 +9,8 @@ export async function salesforceBrowserApi(){
  const f=await launchFixture(),network=salesforceNetwork(),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'4a'.repeat(32)})!;
  await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
  const session=await createDependencies(f.db).auth.createSession(f.actor);
- const request=(path:string,method:string,body?:string)=>createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:network.fetcher}).request('https://orbit.test'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...body?{body}:{}});
- return{request,network,actor:f.actor,restart:()=>f.restart(),dispose:()=>f.dispose()};
+ const active=new Set<Promise<Response>>();
+ const request=(path:string,method:string,body?:string)=>{const work=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:network.fetcher}).request('https://orbit.test'+path,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...body?{body}:{}});active.add(work);void work.finally(()=>active.delete(work));return work;};
+ const settle=async()=>{while(active.size)await Promise.allSettled([...active]);};
+ return{request,network,actor:f.actor,async restart(){await settle();await f.restart();},async dispose(){await settle();await f.dispose();}};
 }

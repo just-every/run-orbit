@@ -2,7 +2,7 @@ import type {AuthenticatedOperator} from '../../identity';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {payloadHash} from '../../../platform/source-security';
 import {createId} from '../../../shared/ids';
-import {RecordError} from '../../records/shared';
+import {RecordError,audit} from '../../records/shared';
 import {authorized,fence,random,oauthHost,callbackPath,instanceOrigin,sfId} from './security';
 export type SalesforceFetch=(input:string,init?:RequestInit)=>Promise<Response>;
 export interface Credential {clientId:string;clientSecret:string;accessToken:string;refreshToken:string;host:string}
@@ -41,6 +41,6 @@ export async function finishOAuth(db:D1Database,security:SourceSecurity,actor:Au
   const instance=instanceOrigin(token.instance_url),identity=new URL(token.id),match=/^\/id\/([A-Za-z0-9]+)\/([A-Za-z0-9]+)$/.exec(identity.pathname);
   if(![host,instance].includes(identity.origin)||identity.search||identity.hash||!match||!sfId(match[1])||!sfId(match[2]))throw new RecordError(409,'Salesforce returned no verified organization identity.');
   const credential:Credential={clientId:pending.clientId,clientSecret:pending.clientSecret,accessToken:token.access_token,refreshToken:token.refresh_token,host},id=createId();
-  await db.batch([fence(db,actor),db.prepare('INSERT INTO crm_import_salesforce_connections VALUES(?,?,?,?,?,?)').bind(id,actor.operatorId,match[1],instance,await security.seal(JSON.stringify(credential)),new Date().toISOString()),fence(db,actor)]);return id;
+  await db.batch([fence(db,actor),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'salesforce_oauth',NULL WHERE NOT EXISTS(SELECT 1 FROM crm_import_salesforce_oauth WHERE state_hash=? AND claimed=1 AND ciphertext=? AND expires_at>?)").bind(hash,flow.ciphertext,Date.now()),db.prepare('INSERT INTO crm_import_salesforce_connections VALUES(?,?,?,?,?,?)').bind(id,actor.operatorId,match[1],instance,await security.seal(JSON.stringify(credential)),new Date().toISOString()),audit(db,actor.operatorId,'salesforce.connected','salesforce_connection',id,{organization:match[1],scopes:['api','refresh_token'],readOnly:true}),fence(db,actor)]);return id;
  }finally{await db.prepare('DELETE FROM crm_import_salesforce_oauth WHERE state_hash=?').bind(hash).run();}
 }

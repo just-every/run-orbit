@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "d51a10fb6595641def49d93ef66d4d578daa943484be23ec6f2c92bcb2f5438a",
+      "sha256": "0572771b937586b6416c6dd792b91e24bd9c0f5f7b6f3a3a7c5502ea5f8c67c8",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2232,6 +2232,10 @@
     },
     "migrations/core/0085_meeting_follow_up.sql": {
       "sha256": "164e4b2d44f68fcc3daed21699a2516864bb71e71013f41611eed8b2db7c9296",
+      "executable": false
+    },
+    "migrations/core/0086_salesforce_import.sql": {
+      "sha256": "7bce354fb9cab6ca5d3fec435cc07de320c51460a818c13b2384258544043108",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -6351,7 +6355,7 @@
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
-      "sha256": "ee23851d7bbdf97ba460d6c42ca0b0eddc351a8428bccf594040203835a8a16f",
+      "sha256": "b1ca7535752740f425b642c04bd1b65776290778b784ba457b48333d9ee03de7",
       "executable": false
     },
     "src/core/features/imports/review-erasure.ts": {
@@ -6368,6 +6372,30 @@
     },
     "src/core/features/imports/routes.ts": {
       "sha256": "8931da5f9adfe9a2b1c9d9061537473d64c5c24d99ea50cf3e0937cee1447be9",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/checkpoint.ts": {
+      "sha256": "f79df54212bef8d1dfcea93599799f61e5064db86fb7c4f3b2f14ef295c72890",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/metadata.ts": {
+      "sha256": "9aaf87ee7fb113481f4bc785a5749cda57559f39cb6e1d108255887d55a14ad4",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/oauth.ts": {
+      "sha256": "d155a34859d22d2c0aaf05ebffb08632b6716afc8ac46187d0270d705f3cd6a2",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/provider.ts": {
+      "sha256": "0df3f41eb6a77012c7c085d9700dfa7191c39c71fad16f4f12398da7934c498b",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/routes.ts": {
+      "sha256": "a7ef92d500bcc3da1e4cbf6a8098f1662ded3acbcddffd7e16df52c4ad3110e1",
+      "executable": false
+    },
+    "src/core/features/imports/salesforce/security.ts": {
+      "sha256": "76efafa31cd6246f89e06ec2943a4c592dde8eee1aa4b966aa771caf738ebfed",
       "executable": false
     },
     "src/core/features/imports/source.ts": {
@@ -6823,7 +6851,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
-      "sha256": "ddb76bd79182a772002b7a9479ae9f07ba9f4f55c3cfeca055548033e9b5c789",
+      "sha256": "a33af69d159417b02d2b2ce50c0037d7bd0af924bba1e8cc2fdc9f3ee2c1d4d1",
+      "executable": false
+    },
+    "src/core/features/operator/ui/imports-salesforce.tsx": {
+      "sha256": "3ea5bb0e3c9e1bfe5e538e50af24a9a8fc2c07b577640e2a7c2bade6db53b7b1",
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
@@ -10514,6 +10546,10 @@
       "sha256": "1ca217276df654801d692a99fc377229fd8b3eb2205a3ea739e971ff224efc25",
       "executable": false
     },
+    "tests/e2e/imports-salesforce.mjs": {
+      "sha256": "5d46e5661b8d32e57537b0e42ed488540116f625c02f550d51d970c487660800",
+      "executable": false
+    },
     "tests/e2e/imports.spec.mjs": {
       "sha256": "3fef3933a6b70f86dc77bea8cd8683b720365eae22d70041d4429b2cef1eea7d",
       "executable": false
@@ -11560,6 +11596,18 @@
     },
     "tests/support/sales-tasks.ts": {
       "sha256": "871265a455855ff43c93cd3bb4ab8d40238518cdfb9da657c231922a26309977",
+      "executable": false
+    },
+    "tests/support/salesforce-api-proof.ts": {
+      "sha256": "358429dab9af087d5f63f3e6a6ce89b2a09022b91d899c2c216d32b95074c7b7",
+      "executable": false
+    },
+    "tests/support/salesforce-browser-api.ts": {
+      "sha256": "2547429b4aaa54fcfa491240b754260d4d2b97ef00c496eb3cff09f15ab23681",
+      "executable": false
+    },
+    "tests/support/salesforce-network.ts": {
+      "sha256": "38ccce0cf15e7b8fede0dddc97f5890c05cb8d639c8fd00a9819dc83dec2147e",
       "executable": false
     },
     "tests/support/sdk-worker-fixture.ts": {
