@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "741b09ecdf4009360e6eb3b51975a3d6a2303ff25d8053ccf699aa3585a5e95a",
+      "sha256": "9a1a097a6c533f2b4c39ded9112f045a2cb178e94bed295221df40c2227f66f1",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -5123,7 +5123,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "d98a96b58bab99226d074d0c3e61785b7f272ccc56063288c8528845e98f0875",
+      "sha256": "669a764608bde17670b6fee4437142199c0da156a322c7bb696a2979ae200a0f",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -5175,7 +5175,7 @@
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "8793cf25936415347ab2d587e43f1846e13e54353fc74ca87bd6c43b978609e1",
+      "sha256": "e4f1c412ef5177a650945cdf820f05e8a8fe6233eaab8f56f94714f6c2c10f87",
       "executable": false
     },
     "src/core/features/access/administration.ts": {
@@ -5311,7 +5311,7 @@
       "executable": false
     },
     "src/core/features/agent-door/evidence.ts": {
-      "sha256": "337db0014345a8c241f08956c6c87b883e4ee620c3511872f6508bf197f4b717",
+      "sha256": "4b54b185d658961fd3de1b68bbfad7d7526973bf0e33ecae2c63bf0648920500",
       "executable": false
     },
     "src/core/features/agent-door/handoffs.ts": {
@@ -6639,11 +6639,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/deal-risk-finding.tsx": {
-      "sha256": "b491645c599e84466a760bb764464edf393f2120710e8608634dc961516b34c3",
+      "sha256": "42462766b3039bddf7ac9fb5a4caf81386a7bc6cb0615d88a7e9c91785e71f90",
       "executable": false
     },
     "src/core/features/operator/ui/deal-risks.tsx": {
-      "sha256": "4eef82c2bea479c9a8034f2be7f53396c72f88ca3a9bd864b3f0980626f3a477",
+      "sha256": "04eb818bb8acf43a910903688e841730f0faf76a63c4a8a984724097421cb186",
       "executable": false
     },
     "src/core/features/operator/ui/delete-timeline-entry.tsx": {
@@ -8127,7 +8127,7 @@
       "executable": false
     },
     "src/core/features/risks/actions.ts": {
-      "sha256": "623c659318f9d831e290529d06c88f165cd13c764a86604b3ab3b838b8afd582",
+      "sha256": "ec1e911fc685da2204aa2947d7d7c0b1a437d8bbe9d900895595f0de998a372f",
       "executable": false
     },
     "src/core/features/risks/conflicts.ts": {
@@ -8139,11 +8139,11 @@
       "executable": false
     },
     "src/core/features/risks/findings.ts": {
-      "sha256": "22b77e219f90dbab69fb20f53cbf4bd29887f890083bb9e6c9e4450853358734",
+      "sha256": "b5fc5dbea82d9a3798ffca72ea46e46975503324e1fd7a2f3065968cf578a17f",
       "executable": false
     },
     "src/core/features/risks/routes.ts": {
-      "sha256": "1a5dbaf5670e0d1d544bbda64328ac164e6b3c225d4f82ed3117c687dcefb312",
+      "sha256": "b5aa065ea081acb534d4bfa3b3b26b5c5da96d17168177b013c5158b2f2fd21e",
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
@@ -8375,7 +8375,7 @@
       "executable": false
     },
     "src/core/features/today/promises.ts": {
-      "sha256": "2ba36fbd3b83a3cc9e226764f0085e3cb6a4d87535bd331f775b2e01fd59bcc2",
+      "sha256": "fe83c68f977b135064c4758fe7bfe77fd5f4d31eb041f20a4ccc995cd26114c4",
       "executable": false
     },
     "src/core/features/today/record-mail.ts": {

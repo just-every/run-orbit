@@ -23,12 +23,18 @@ export async function adjustRoleRule(db:D1Database,id:string,input:{role:Stakeho
  return input;
 }
 
+/** Map finding citations to the same current native evidence identities used by person approval. */
+export function riskTaskContent(current:Awaited<ReturnType<typeof dealRisks>>,input:{title:string;dueAt:string|null;evidenceIds:string[]},actor:string){
+ const evidence=new Map(current.evidence.map(item=>[item.id,item.ref]));
+ const refs=input.evidenceIds.map(id=>evidence.get(id));
+ if(!refs.length||refs.some(ref=>!ref))throw new TodayError(400,"A task must cite this deal's current recorded evidence.");
+ return {title:input.title,description:'From a reviewed deal risk',assigneeId:actor,dueAt:input.dueAt,status:'open' as const,evidence:[...new Set(refs as string[])]};
+}
+
 /** A person approves a proposed next task: an internal handoff citing current evidence. It never changes stage, amount, close date, forecast or commitments, and sends nothing. */
 export async function approveTask(db:D1Database,id:string,input:{title:string;dueAt:string|null;evidenceIds:string[]},actor:string){
- const current=new Map((await dealRisks(db,id)).evidence.map(item=>[item.id,item.ref]));
- const refs=input.evidenceIds.map(evidenceId=>current.get(evidenceId));
- if(!refs.length||refs.some(ref=>!ref))throw new TodayError(400,'A task must cite this deal\'s current recorded evidence.');
+ const content=riskTaskContent(await dealRisks(db,id),input,actor);
  const target=`opportunities/${id}/handoffs/${random().slice(0,32)}`,before=await snapshot(db,target,true);
  return writeHandoff(db,{operationKey:random().slice(0,64),operation:'orbit.handoff.upsert',target,expectedRevision:before.revision,expectedAudienceRevision:before.audience.audienceRevision,
-  content:{title:input.title,description:'From a reviewed deal risk',assigneeId:actor,dueAt:input.dueAt,status:'open',evidence:[...new Set(refs as string[])]}},{actor});
+  content},{actor});
 }

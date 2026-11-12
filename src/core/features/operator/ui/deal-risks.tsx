@@ -1,3 +1,4 @@
+import type {RiskAgentRun} from '../../risks/embedded-agent';
 import {useCallback,useState,type FormEvent} from 'react';
 import {useOperatorResource} from './use-operator-resource';
 import {RiskFindingItem,riskRequest,type RiskEvidence,type RiskFinding} from './deal-risk-finding';
@@ -15,6 +16,7 @@ const lower=(text:string)=>text?text[0]!.toLowerCase()+text.slice(1).replace(/\.
 export function DealRisks({dealId}:{dealId:string}){
  const load=useCallback(()=>riskRequest<Risks>(`${dealId}/findings`),[dealId]);
  const resource=useOperatorResource(`risks:${dealId}`,load),data=resource.data;
+ const [agentRun,setAgentRun]=useState<RiskAgentRun|null>(null);
  const [preview,setPreview]=useState<Preview|null>(null),[checked,setChecked]=useState<RiskFinding[]|null>(null),[error,setError]=useState(''),[pending,setPending]=useState(false);
  async function run<T>(work:()=>Promise<T>){setPending(true);setError('');try{return await work();}catch(e){setError((e as Error).message);return null;}finally{setPending(false);}}
  async function saveRule(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,values=new FormData(form);
@@ -27,6 +29,22 @@ export function DealRisks({dealId}:{dealId:string}){
   {resource.loading&&<p>Loading deal risks…</p>}{(resource.error||error)&&<p role="alert">{error||resource.error?.message}</p>}
   {data&&<>
    {open.length?<ul style={{listStyle:'none',padding:0,margin:0,display:'grid',gap:12}}>{open.map(finding=><RiskFindingItem key={finding.key} dealId={dealId} finding={finding} evidence={data.evidence} onChanged={resource.reload}/>)}</ul>:<p>No open risk findings from recorded roles, promises and replies.</p>}
+   <details><summary>Run deal-risk agent</summary>
+    <p>Start the agent for this deal when you choose. It files the current findings as tasks assigned to you, under company policy.</p>
+    <button type="button" disabled={pending} onClick={()=>void run(async()=>{
+     const result=await riskRequest<RiskAgentRun>(`${dealId}/agent-runs`,{});setAgentRun(result);resource.reload();
+    })}>Start agent</button>
+    {agentRun&&<section aria-label="Deal-risk agent run">
+     <p role="status">{agentRun.agent.name}: {agentRun.filed} tasks filed, {agentRun.existing} already filed.</p>
+     <ol>{agentRun.calls.map((call,index)=><li key={index} style={{overflowWrap:'anywhere'}}>
+      <strong>{call.tool}</strong>{call.finding&&<span> · {data.findings.find(item=>item.key===call.finding)?.title??call.finding}</span>}
+      <p>{call.answer.decision?.disposition??call.answer.code??call.answer.outcome} · {call.answer.outcome}{call.answer.code?` · ${call.answer.code}`:''}</p>
+      {call.answer.decision?.classes.map(item=><p key={item.class}>{item.class} · {Object.entries(item.facts).map(([key,value])=>`${key}: ${String(value)}`).join(', ')}</p>)}
+      {call.answer.review&&<a href="/agents">Review {call.answer.review.id}</a>}
+      {call.answer.approval&&<a href={call.answer.approval.url}>Open approval</a>}
+     </li>)}</ol>
+    </section>}
+   </details>
    <h3 style={{margin:'20px 0 6px',fontSize:'1rem',fontWeight:600}}>Conflicting recorded dates and prices</h3>
    {!data.aiConfigured?<p>AI is not configured, so recorded commitments, calls and notes are not checked for conflicting dates or prices. The findings above are complete without it.</p>
    :checked?(checked.length?<ul style={{listStyle:'none',padding:0,margin:0,display:'grid',gap:12}}>{checked.map(finding=><RiskFindingItem key={finding.key} dealId={dealId} finding={finding} evidence={data.evidence} onChanged={resource.reload}/>)}</ul>:<p>No conflicting dates or prices were found in the recorded lines.</p>)
