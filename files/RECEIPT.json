@@ -155,7 +155,7 @@
     "runSiteGreen": 43094710902,
     "equalToCandidate": false
   },
-  "githubApiCalls": 5,
+  "githubApiCalls": 6,
   "selectedBrowserJourney": {
     "passed": true,
     "widths": [
@@ -214,5 +214,12 @@
       2
     ],
     "qualification": "Selected native authoring limbs only; held remainder unchanged"
+  },
+  "terminalCi": {
+    "conclusion": null,
+    "head_sha": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43161583060",
+    "id": 43161583060,
+    "status": "in_progress"
   }
 }

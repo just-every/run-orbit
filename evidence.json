@@ -37,22 +37,28 @@
       "sha256": "5100ede537d36ae01fcbfe196987452312a0b9a6f15602a315cabbebdcd7ba5c"
     },
     {
-      "blob": "c6ba65803cf45a8b27e32d0d521fb7a8348c99ac",
-      "bytes": 6220,
+      "blob": "9d9cc9959d7f9eab61523ed678b63757ef7330e6",
+      "bytes": 6462,
       "path": "RECEIPT.json",
-      "sha256": "17b69044fb585ccca760ec76cd9cb30235129f9ea8a83b0918d3e6af1850b474"
+      "sha256": "cc32d4e4f6607de4ac00b6d482ba8e007ebc27fcc5cb6885516fe49ea0e33ca9"
     },
     {
-      "blob": "7a24475c5f2e017b0d966d9fd98c676c7a98e1be",
-      "bytes": 16484,
+      "blob": "b66c16424bb4df4710abb446b4a8ab30e11810d0",
+      "bytes": 16728,
       "path": "REPORT.md",
-      "sha256": "d2c28f607eede289bc701ec8acde509d42dc72a9a3fba1e92b212664e80be65c"
+      "sha256": "384979dd0e57cb0d48bb4677d93fa2e99889517a5b38bc8c6f712d2051cf0b57"
     },
     {
       "blob": "b0982812258eab1d41236cf153868d76a6a1eeda",
       "bytes": 5090,
       "path": "SOURCE-CONTINUITY.json",
       "sha256": "8e94634d7b513a635823bd1547a81919798b4b235764bd8032953761ed418d02"
+    },
+    {
+      "blob": "1c9537131c445c4557088cd9277a3996f699ad44",
+      "bytes": 192,
+      "path": "TERMINAL-CI.json",
+      "sha256": "2cdcd059f505eb76dca3d6b9c25d5d3a6fe5ee8b1bd96546a5441e2723f4b932"
     },
     {
       "blob": "422a882e43c1ddc5fa2467dda28c0b70ce95d03f",
