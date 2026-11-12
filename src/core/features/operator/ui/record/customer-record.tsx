@@ -16,6 +16,7 @@ import {CompanyDetails} from './company-details';
 import {ContactDetails} from './contact-details';
 import {useFieldDefinitions} from './custom-values';
 import {DetailsPanel} from './details-panel';
+import {DealBilling} from './deal-billing';
 import {contactContextValues,patchRecord,readContext,readRecord,recordValues,saveContactContext,type ContactContextValues} from './record-api';
 import {RecordActivity} from './record-activity';
 import {RecordFoot} from './record-foot';
@@ -58,6 +59,7 @@ function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
      blocked={blocked?<div className="r-blocked"><p className="r-note r-note--danger">{name} is marked do not contact</p><DoNotContactReason record={row}/></div>:undefined}/>
     {writing&&!blocked?<div className="r-composer"><RecordMailComposer kind={kind} id={id} context={mail.context} deal={deal?.id}/></div>:null}</>}
    activity={<RecordActivity kind={kind} id={id} record={row} timeline={detail.timeline} contacts={detail.contacts} mail={mail.history} reloadMail={mail.reload} reload={()=>{reload();void mail.reload();}}/>}
+   folds={kind==='company'?<DealBilling key={id} companyId={id}/>:null}
    details={<DetailsPanel>
     {kind==='contact'?<ContactDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} context={context} onSaved={reload}/>:<CompanyDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} onSaved={reload}/>}
     <RecordFoot kind={kind} id={id} name={name} record={row} onChanged={reload} deleteSentence={kind==='contact'?`Delete ${name} and permanently erase their personal history? This also clears notifications and AI error details for their linked opportunities, including shared opportunities. AI usage totals remain.`:`Delete ${name}?`}/>

@@ -1,0 +1,12 @@
+.stripe-settings { min-width: 0; overflow-wrap: anywhere; font-size: 15px; }
+.stripe-settings :is(button, input) { min-height: 44px; font-size: 15px; }
+.stripe-settings h3 { margin: 0; font-size: 16px; }
+.stripe-connection { display: grid; gap: 4px; padding: 12px 14px; border: 1.5px solid var(--ob-line); border-radius: 12px; }
+.stripe-connection[data-state="disconnected"] { border-style: dashed; }
+.stripe-connection[data-state="paused"] { background: var(--ob-tangerine-soft); }
+.stripe-freshness { color: var(--ob-muted); font-size: 14px; line-height: 1.5; }
+.stripe-settings .stripe-connect-form { padding: 0; }
+.stripe-connect-form button { justify-self: start; }
+.stripe-webhook { display: grid; gap: 8px; }
+.stripe-webhook p { margin: 0; line-height: 1.5; }
+.stripe-webhook code { display: block; padding: 12px; border: 1px solid var(--ob-line); border-radius: 10px; font-size: 14px; overflow-wrap: anywhere; }

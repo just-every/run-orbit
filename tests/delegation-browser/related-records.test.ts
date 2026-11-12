@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 import { chromium, expect } from '@playwright/test';
 import { isolatedDatabase } from '../support/isolated-database';
 import { createTestDependencies } from '../support/test-dependencies';
@@ -12,7 +13,7 @@ import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 import { identityVarArgs } from '../support/worker-identity.mjs';
 
-test('full related names and associated-contact labels remain readable in native record details and editors', async () => {
+test('full related names and contact labels remain readable; deal and company Stripe evidence and paused owner setup work at desktop and mobile widths', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RELATED_RECORD_PORT ?? 8729);
   const origin = `http://127.0.0.1:${port}`;
@@ -23,6 +24,27 @@ test('full related names and associated-contact labels remain readable in native
   try {
     const deps = createTestDependencies(fixture.db);
     await deps.sampleData.seed();
+    await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
+    const billingDeal=sampleData.opportunities.find(deal=>deal.companyId)!;
+    const billingCompany=sampleData.companies.find(company=>company.id===billingDeal.companyId)!;
+    const billingContact=sampleData.contacts.find(contact=>contact.companyId===billingCompany.id&&contact.email)!;
+    const customerId='cus_browserOrbit',customerHash=createHash('sha256').update(customerId).digest('hex');
+    const receivedAt=new Date().toISOString();
+    // Persisted evidence is portable; leaving credentials absent proves its truthful paused state after restore.
+    await fixture.db.batch([
+      fixture.db.prepare("INSERT INTO billing_connection(id,connected_at,checked_at,last_event_at) VALUES('stripe',?,?,?)").bind(receivedAt,receivedAt,receivedAt),
+      fixture.db.prepare('INSERT INTO billing_mappings(customer_id,customer_hash,company_id,opportunity_id,contact_id,name,email,domain,reviewed_at,reviewed_by) VALUES(?,?,?,?,?,?,?,?,?,?)')
+        .bind(customerId,customerHash,billingCompany.id,billingDeal.id,billingContact.id,billingContact.name,billingContact.email,billingCompany.primaryDomain,receivedAt,sampleData.operators[0].id),
+      ...[
+        {id:'evt_browserPastDue',type:'invoice.payment_failed',state:'past-due',amount:125000},
+        {id:'evt_browserPaid',type:'invoice.paid',state:'paid',amount:125000},
+        {id:'evt_browserRefund',type:'charge.refunded',state:'refunded',amount:25000},
+      ].map((event,index)=>{
+        const occurredAt=new Date(Date.parse(receivedAt)-(3-index)*60000).toISOString();
+        return fixture.db.prepare('INSERT INTO billing_events(id,customer_id,customer_hash,object_id,event_type,state,currency,amount_cents,occurred_at,source_created,received_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(event.id,customerId,customerHash,`in_browser${index}`,event.type,event.state,'USD',event.amount,occurredAt,Math.floor(Date.parse(occurredAt)/1000),receivedAt);
+      }),
+    ]);
     const session = await deps.auth.createSession(sampleData.operators[0].id);
     await fixture.close();
     worker = spawn(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'dev', '--config',
@@ -106,6 +128,44 @@ test('full related names and associated-contact labels remain readable in native
         }
       }
     }
+    const beforeBilling=await (await context.request.get(`/api/v1/records/opportunity/${billingDeal.id}`)).json();
+    for(const width of [1440,390]){
+      await page.setViewportSize({width,height:1000});
+      for(const [recordKind,recordId] of [['opportunities',billingDeal.id],['companies',billingCompany.id]] as const){
+        await page.goto(`/app/${recordKind}/${recordId}`);
+        const panel=page.locator('.deal-billing');
+        await expect(panel).toBeVisible();
+        await expect(panel.locator('.billing-timeline li')).toHaveCount(3);
+        for(const eventType of ['invoice.payment_failed','invoice.paid','charge.refunded']){
+          const event=panel.locator('.billing-timeline li').filter({hasText:eventType});
+          await expect(event).toHaveCount(1);
+          await expect(event.locator('.billing-meta')).toContainText(/Occurred .+ · Received .+/);
+          await readable(event,eventType);
+        }
+        await expect(panel.locator('.billing-timeline li').filter({hasText:'invoice.payment_failed'})).toContainText('Past due');
+        await expect(panel.locator('.billing-timeline li').filter({hasText:'invoice.paid'})).toContainText('USD 1,250.00');
+        await expect(panel.locator('.billing-timeline li').filter({hasText:'charge.refunded'})).toContainText('USD 250.00');
+        await expect(panel.locator('.billing-source')).toContainText(/Paused/);
+        await expect(panel.locator('.billing-source')).toContainText(/Last Stripe event received/);
+        await readable(panel.locator('.billing-identity'),billingContact.email!);
+        await expect(panel.locator('.billing-identity')).toContainText(billingCompany.primaryDomain!);
+        await expect(panel.locator('.billing-identity a')).toHaveAttribute('href',`https://dashboard.stripe.com/test/customers/${customerId}`);
+        await expect(panel.getByRole('button',{name:'Confirm customer link',exact:true})).toHaveCount(0);
+        await expect(panel.locator('form')).toHaveCount(0);
+        await page.screenshot({path:`${evidence}/stripe-${recordKind}-${width}.png`,fullPage:true});
+      }
+      await page.goto('/app/settings/integrations#stripe-settings');
+      const settings=page.locator('.stripe-settings');
+      await expect(settings.locator('.stripe-connection')).toHaveAttribute('data-state','paused');
+      await expect(settings.locator('input[type="password"]')).toHaveCount(2);
+      await expect(settings.getByRole('button',{name:'Check and connect Stripe test mode',exact:true})).toBeDisabled();
+      await expect(settings.locator('.stripe-webhook code')).toContainText('/api/v1/billing/stripe/events');
+      await readable(settings.locator('.stripe-webhook'),'/api/v1/billing/stripe/events');
+      await page.screenshot({path:`${evidence}/stripe-settings-${width}.png`,fullPage:true});
+    }
+    const afterBilling=await (await context.request.get(`/api/v1/records/opportunity/${billingDeal.id}`)).json();
+    expect(afterBilling.record.stage_id).toBe(beforeBilling.record.stage_id);
+    expect(afterBilling.record.lifecycle).toBe(beforeBilling.record.lifecycle);
     expect(errors).toEqual([]);
   } finally {
     await browser?.close();

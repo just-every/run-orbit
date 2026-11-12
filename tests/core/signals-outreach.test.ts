@@ -1,4 +1,5 @@
 import {exerciseRecordMail} from '../support/record-mail';
+import {exerciseStripeBilling} from '../support/stripe-billing-proof';
 import assert from 'node:assert/strict';
 import { after,test } from 'node:test';
 import { isolatedDatabase } from '../support/isolated-database';
@@ -227,9 +228,10 @@ test('SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a pers
  assert.deepEqual(await read(`records/opportunity/${f.opportunityId}`),visible);assert.deepEqual(await read('notifications'),notices);
 });
 
-test('SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events',async()=>{
+test('SIGNAL-009 shared provider relay authenticates HMAC; Stripe billing reviews identity, seals authority and preserves replay-safe portable context',async()=>{
  const {createMailEventRoutes}=await import('../../src/core/features/outreach/provider-routes');const {signRelayBody}=await import('../../src/base/sendgrid-event-relay/crypto');const secret='relay-only-secret-'.repeat(3),app=createMailEventRoutes(db,{relaySecret:secret}),timestamp=String(Math.floor(Date.now()/1000));const body=JSON.stringify([{sg_event_id:createId(),event:'delivered',timestamp:Number(timestamp),email:'other@example.test',rer_delivery_id:createId(),rer_product:'orbit'}]);const signature=await signRelayBody(secret,timestamp,body);
  const post=(raw:string,sig:string)=>app.request('https://orbit.test/relay',{method:'POST',headers:{'x-rer-mail-timestamp':timestamp,'x-rer-mail-signature':sig},body:raw});assert.equal((await post(body,signature)).status,200);assert.equal((await post(body+' ',signature)).status,401);assert.equal((await post(body,'v1='+'0'.repeat(64))).status,401);
+ await exerciseStripeBilling();
 });
 
 

@@ -16,6 +16,7 @@ import {WorkflowRecordApprovals} from '../workflows-record-approvals';
 import {FollowUpResults,type Outcomes} from '../follow-up-outcomes';
 import {DealActivity,type DealMessages,type HandoffEntry} from './deal-activity';
 import {DealContext} from './deal-context';
+import {DealBilling} from './deal-billing';
 import {DealOutcome} from './deal-outcome';
 import {DealValues} from './deal-details';
 import {DetailsPanel} from './details-panel';
@@ -64,7 +65,7 @@ function EditableOpportunityRecordPage(){
    waiting={<WorkflowRecordApprovals kind="opportunity" id={id} workspace={workspace} onChanged={reload}/>}
    next={closed?null:<><NextAction opportunity={opportunity} presentation={workspace} aiConfigured={Boolean(data.configuration?.aiConfigured)} reload={reload} composing={composing} onCompose={()=>setComposing(!composing)}/>{composing?<div className="r-composer"><EvidenceActions opportunity={opportunity} reload={reload} mode="draft"/></div>:null}</>}
    activity={<DealActivity opportunity={opportunity} drafts={drafts} messages={messages} handoffs={handoffs} reload={reload}/>}
-   folds={<><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
+   folds={<><DealBilling key={`${id}:${detail.company?.id??''}`} opportunityId={id} companyId={detail.company?.id??null}/><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
    details={<DetailsPanel>
     <DealValues id={id} record={record} settings={settings} scheduled={scheduled} definitions={definitions} context={context}/>
     <DealPeople dealId={id} form={context} titles={titles} closed={closed}/>

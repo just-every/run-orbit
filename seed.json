@@ -233,6 +233,17 @@
         "Event kind, record display name, stage from/to, owner display name, due date and authenticated Orbit link"
       ],
       "adapters": []
+    },
+    {
+      "id": "stripe",
+      "required": false,
+      "requiredWhen": "The installation owner connects Stripe test mode in Settings.",
+      "why": "Read a test customer identity for an explicitly reviewed billing link and receive signed billing status evidence. Stripe owns collection.",
+      "data": [
+        "Restricted test API key used only to read customers",
+        "Explicitly requested customer identity and test billing status fields"
+      ],
+      "adapters": []
     }
   ],
   "env": [
@@ -418,7 +429,8 @@
       "/p/",
       "/api/public/forms/",
       "/api/v1/slack/actions",
-      "/api/v1/slack/events"
+      "/api/v1/slack/events",
+      "/api/v1/billing/stripe/events"
     ],
     "notes": "Public source and mail event paths require configured signatures. Native auth routes validate origin and one-use tokens; operator APIs and private functions require native sessions. Delegation endpoints require explicit native consent, registered callback and PKCE exchange, then scoped expiring bearer authority; ambient cookies grant no delegated authority."
   },
