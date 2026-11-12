@@ -6367,7 +6367,7 @@
       "executable": false
     },
     "src/core/features/imports/planner.ts": {
-      "sha256": "1da7e24545e48cd718f6ae6d1aed9643eb09d677de808ed94cc29fcac15d11d5",
+      "sha256": "c8e442b56d72223d06b9a218e59d31bb84e8cacc31683a3d8f5ecf3bc87297bc",
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
@@ -10311,7 +10311,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "3d421d373ca701abd904d66f25718ae78f4ee42d7fcd8bafb78dd9bfecf4b008",
+      "sha256": "5908c68fa03116bbcac1cef5e36631f4580ccb289870d1cbd75a4e03d9d555f7",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -11170,6 +11170,10 @@
       "sha256": "68ace6286961364dcee898e712d8b52f81c3e6b005a2a7f9dd0b214131838055",
       "executable": false
     },
+    "tests/support/agent-door-forecast-proof.ts": {
+      "sha256": "52d70267257e094c8602cd9605ed307c91e3d7e2ac0183668294f3a362206da9",
+      "executable": false
+    },
     "tests/support/agent-door-graph-proof.ts": {
       "sha256": "cf8e84243c11cfae88f81b177bff36da426b8def935495a61af9aa47d2b42f07",
       "executable": false
@@ -11179,7 +11183,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "884883c2b3bfbe1f3dd883237793ee2dee631f9d5b0cbe582e1cfcf56ef393d2",
+      "sha256": "0863fc5eaa91c99d9a3b5dfae68764ef188a6234325da6d01ed821da281dca88",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {

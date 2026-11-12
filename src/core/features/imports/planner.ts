@@ -127,7 +127,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
  const taskSources:SourceRecord[]=[];
  for(const row of rows){const result=results.get(row.source);if(row.kind!=='task'||!result||result.rejection)continue;
   const projections=result.effects.filter(effect=>effect.targetKind!=='task');result.effects=result.effects.filter(effect=>effect.targetKind==='task');
-  for(const effect of projections){const kind=effect.targetKind==='note'?'task-entry':'task-series',payload={...row.source.payload as Record<string,any>,taskId:references.get(`task:${row.id}`)!},projection:SourceRecord={...row.source,kind,payload,payloadHash:sha256(canonicalJson(payload))};taskSources.push(projection);results.set(projection,{effects:[effect]});}
+  for(const effect of projections){const kind=effect.targetKind==='note'?'task-entry':'task-series',payload={sourceRowId:row.id,taskId:references.get(`task:${row.id}`)!},projection:SourceRecord={...row.source,kind,payload,payloadHash:sha256(canonicalJson(payload))};taskSources.push(projection);results.set(projection,{effects:[effect]});}
  }
  // Ownership has its own source identity, so erasure can withdraw either native target without sharing a reversible effect.
  const ownershipSources:SourceRecord[]=[];
