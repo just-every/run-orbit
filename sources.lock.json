@@ -11003,7 +11003,7 @@
       "executable": false
     },
     "tests/support/agent-door-audit-proof.ts": {
-      "sha256": "f501dac3017aa26817a7e0c52f4d0fd1dec952195ef3f11dd084c804c3db9f0f",
+      "sha256": "fad1cd7e331234a08cedff676a51672278e0f7bf9b9c71ec76b85e117c9da123",
       "executable": false
     },
     "tests/support/agent-door-body-limit.ts": {
