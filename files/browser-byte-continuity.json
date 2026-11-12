@@ -1,0 +1,18 @@
+{
+  "candidate": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+  "browserSourceBase": "328a341c2f536f013c3451500d2cb172c4738977",
+  "unchangedFiles": [
+    "tests/agent-door/graph-browser-journey.mjs",
+    "tests/e2e/capture.spec.mjs",
+    "src/core/features/agent-door/graph.ts",
+    "src/core/features/capture/proposals.ts",
+    "src/core/features/operator/ui/capture-proposals.tsx",
+    "src/core/features/operator/ui/capture-proposals.css"
+  ],
+  "screens": [
+    "screens/graph-review-1440.png",
+    "screens/graph-review-390.png"
+  ],
+  "visuallyInspected": true,
+  "browserExit": 0
+}

@@ -1,0 +1,54 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:7829) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-12T00:54:17.493Z","expected":{"id":"01M4M7844NX70REJV3DV2RQ83C","evidenceId":"01M4PSMV4NHHA72T8YVX56QWM0","quote":"In Synthetic proposal since 2026-10-12","since":"2026-10-12T00:54:17.493Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"dd45ca07-c380-475a-a644-fd078d95313a","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"e348476b-ac7b-4fc3-9a53-562944e4f00e","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"d9d6a033-635f-4448-9ae1-dd07c1abcd42"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"f6256456-7c26-48c7-8c29-18e407001cdb","revision":12,"summary_sha256":"4a8641ad895cbd787b0c5234d70935f83440278767ecd99014c6cc328c0aa036","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"6f89b4e3-140c-423a-b1a3-eed1121bdb68","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"00191281-37cb-4c11-b701-3b07a64bb847"},"approval":{"id":"502cdc56-5c96-43e8-932a-34cee77f03ec","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"held","decision":"1fdfd08a-f5bc-4b82-8992-1787dff986ee","disposition":"review","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"autonomous","decision":"dbb39707-31b7-433b-9c00-247a2f5e6e56","disposition":"autonomous","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.written-evidence","mode":"held","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"AGENT-001.written-evidence","mode":"autonomous","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":494,"parts":43,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M76M7S593VHQB87851B1GYBN"}
+# {"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors
+  ---
+  duration_ms: 579332.85692
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/tests/core/managed-owner.test.ts:1:9189'
+  failureType: 'testCodeFailure'
+  error: |-
+    the admitted agent has real read and write history
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    agentAuditRetentionProof (/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/tests/support/agent-door-audit-proof.ts:59:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async agentDoorProof (/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/tests/support/agent-door-proof.ts:260:5)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/tests/core/managed-owner.test.ts:167:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 588198.55119

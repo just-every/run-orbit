@@ -1,0 +1,19 @@
+{
+  "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+  "exit": 1,
+  "finishedAt": "2026-11-12T01:12:36.159892+00:00",
+  "node": "22.20.0",
+  "files": {
+    "tests/support/agent-door-graph-proof.ts": "cf8e84243c11cfae88f81b177bff36da426b8def935495a61af9aa47d2b42f07",
+    "tests/support/agent-door-proof.ts": "77b61ef652f47258bca0c1213a3a217294dc279564d0cf44090d56c864c2071c",
+    "tests/core/managed-owner.test.ts": "d23dcc5ae56bf678b6b13392f336cc8adb5a4e3b6abb3b43baa366a71889d066",
+    "tests/agent-door/graph-browser-journey.mjs": "e2c1226c610fd9d368f21826975c0153aff1705cba21e9067737f78f3295cfeb",
+    "tests/e2e/capture.spec.mjs": "e649283ad99422011ecd3cc72eb9a6bdb87d14f1c73289de9b40d274e283e330",
+    "src/core/features/agent-door/graph.ts": "4301955498d6da0d802fea09e8cc16d2c4c0fc0b22f94db20c3bc3a3e8a29076",
+    "src/core/features/capture/proposals.ts": "fab65c0c44637c28245a8be1808b607eaab3284387ed3cde45043b4ae4626c01",
+    "src/core/features/capture/proposal-identity.ts": "c933b2eedb44f3f3ce83890cf070ce1e54f03a055f261a3e9a853a924a865724"
+  },
+  "headAtFinish": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+  "head": "d52412ef52069416d4beac212b0568106b89133c",
+  "provenanceNote": "Superseded run started from d52412e and loaded its static test modules before the subsequent audit-helper edit. HEAD and worktree bytes sampled by its completion wrapper were replaced here with the actual execution-source commit and its Git blob hashes; the finish head is retained separately. This is a failed historical run, not proof for the candidate."
+}

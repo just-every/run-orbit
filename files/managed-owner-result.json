@@ -1,0 +1,1 @@
+{"command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts", "exit": 1, "finishedAt": "2026-11-12T01:01:21.901662+00:00", "node": "22.20.0"}

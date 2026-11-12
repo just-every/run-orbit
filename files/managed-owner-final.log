@@ -1,0 +1,48 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:10044) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-12T01:03:30.830Z","expected":{"id":"01M4M7S0GENX0N26ST2XFY83N9","evidenceId":"01M4PT5QGEW3PMG8X7X0TKMMHT","quote":"In Synthetic proposal since 2026-10-12","since":"2026-10-12T01:03:30.830Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"3b875876-7cd0-4411-8482-9d67f3e40e12","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"6e237547-5a08-4e4a-88c4-0f3ae1f67e55","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"00966f0c-e55c-40ce-b2e5-02d99e0c3970"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"270ac8b2-7f5c-43c5-bd4f-d62c6c455f49","revision":12,"summary_sha256":"7fb9795d3fcaa9f2814a539f16e9f2d2aab966d333f9560feb80284747ece785","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"59d76dd5-77d1-4086-8c92-f7682a34e34e","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"a1b70bd1-aef7-4696-b162-36668275be0b"},"approval":{"id":"219ff63f-1354-4e11-a8a4-5702a3d5d216","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"held","decision":"db12a0be-68a5-4602-b8a9-821be784a2f4","disposition":"review","classes":[{"class":"standard","rule":"standard","do":"review","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.proposal-policy","mode":"autonomous","decision":"72920ae9-0fcc-46fe-9919-592558a0058f","disposition":"autonomous","classes":[{"class":"standard","rule":"all","do":"autonomous","facts":{"measure":1}}]}
+# {"proof":"AGENT-001.written-evidence","mode":"held","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"AGENT-001.written-evidence","mode":"autonomous","proposals":3,"conflict":true,"acceptedOnce":true,"edited":true,"declinedStable":true,"questionCreatesNoContact":true,"revokedWithdraws":true,"revokedReadRefused":true,"erasedReplayEmpty":true,"liveSourceErasedReplayEmpty":true,"foreignAccountRefused":true,"hostileTextInert":true}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":494,"parts":43,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M76MV7AM6CN3RV73R9J6SK74"}
+# {"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors
+  ---
+  duration_ms: 679100.304385
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/tests/core/managed-owner.test.ts:1:9189'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    Object.processResponse (/home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/node_modules/.pnpm/undici@7.29.0/node_modules/undici/lib/web/fetch/index.js:237:16)
+    /home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/node_modules/.pnpm/undici@7.29.0/node_modules/undici/lib/web/fetch/index.js:1081:19
+    node:internal/process/task_queues:151:7
+    AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:148:8)
+    /home/agent/rer-consolidation/work/sd-orbit-c-f161/run-orbit/node_modules/.pnpm/undici@7.29.0/node_modules/undici/index.js:157:7
+    async MessagePort.<anonymous> ([worker eval]:32:22)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 685872.604292

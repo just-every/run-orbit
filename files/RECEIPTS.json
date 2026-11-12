@@ -1,0 +1,269 @@
+{
+  "actualGraphProofs": [
+    {
+      "classes": [
+        {
+          "class": "standard",
+          "do": "review",
+          "facts": {
+            "measure": 1
+          },
+          "rule": "standard"
+        }
+      ],
+      "decision": "74068a6e-aa3e-4996-b061-dc44512e8091",
+      "disposition": "review",
+      "mode": "held",
+      "proof": "AGENT-001.proposal-policy"
+    },
+    {
+      "classes": [
+        {
+          "class": "standard",
+          "do": "autonomous",
+          "facts": {
+            "measure": 1
+          },
+          "rule": "all"
+        }
+      ],
+      "decision": "890bc700-d60f-4ed0-a47a-e4368b6870e5",
+      "disposition": "autonomous",
+      "mode": "autonomous",
+      "proof": "AGENT-001.proposal-policy"
+    },
+    {
+      "acceptedOnce": true,
+      "conflict": true,
+      "declinedStable": true,
+      "edited": true,
+      "erasedReplayEmpty": true,
+      "foreignAccountRefused": true,
+      "hostileTextInert": true,
+      "liveSourceErasedReplayEmpty": true,
+      "mode": "held",
+      "proof": "AGENT-001.written-evidence",
+      "proposals": 3,
+      "questionCreatesNoContact": true,
+      "revokedReadRefused": true,
+      "revokedWithdraws": true
+    },
+    {
+      "acceptedOnce": true,
+      "conflict": true,
+      "declinedStable": true,
+      "edited": true,
+      "erasedReplayEmpty": true,
+      "foreignAccountRefused": true,
+      "hostileTextInert": true,
+      "liveSourceErasedReplayEmpty": true,
+      "mode": "autonomous",
+      "proof": "AGENT-001.written-evidence",
+      "proposals": 3,
+      "questionCreatesNoContact": true,
+      "revokedReadRefused": true,
+      "revokedWithdraws": true
+    }
+  ],
+  "branch": "cloud/sd-orbit-c-f161",
+  "browser": {
+    "cases": 1,
+    "command": "cloud_run perl -e alarm 1200, then pinned pnpm exec playwright test --config /tmp/orbit-c-f161-browser.config.mjs capture.spec.mjs --grep CAPTURE provider status --reporter=list",
+    "exit": 0,
+    "log": "browser.log",
+    "screens": {
+      "screens/graph-review-1440.png": {
+        "bytes": 434133,
+        "sha256": "ff2dbd684f088d5e07b748ced31f7560a3a1f4028b7e1ed1ce4d7f9281fdea7e",
+        "visuallyInspected": true
+      },
+      "screens/graph-review-390.png": {
+        "bytes": 390301,
+        "sha256": "cb3574b82a1f10de533418d0b35c4537208b88c59fbe8c04198ceb03447e1a89",
+        "visuallyInspected": true
+      }
+    },
+    "sourceByteContinuity": {
+      "browserExit": 0,
+      "browserSourceBase": "328a341c2f536f013c3451500d2cb172c4738977",
+      "candidate": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+      "screens": [
+        "screens/graph-review-1440.png",
+        "screens/graph-review-390.png"
+      ],
+      "unchangedFiles": [
+        "tests/agent-door/graph-browser-journey.mjs",
+        "tests/e2e/capture.spec.mjs",
+        "src/core/features/agent-door/graph.ts",
+        "src/core/features/capture/proposals.ts",
+        "src/core/features/operator/ui/capture-proposals.tsx",
+        "src/core/features/operator/ui/capture-proposals.css"
+      ],
+      "visuallyInspected": true
+    }
+  },
+  "checks": [
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "exit": 0,
+      "log": "typecheck-pinned.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "log": "boundaries.log"
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0,
+      "log": "surface-check.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build through cloud_run",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write and check, followed by restoration of generated views from origin/main",
+      "exit": 0,
+      "logs": [
+        "views-write.log",
+        "views-check.log"
+      ]
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check",
+      "exit": 0,
+      "files": 2746,
+      "logs": [
+        "lock-write.log",
+        "lock-check.log"
+      ]
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0,
+      "log": "deployment-check.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-review.test.ts",
+      "exit": 0,
+      "log": "capture-review.log"
+    }
+  ],
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43135048902",
+    "id": 43135048902,
+    "status": "in_progress"
+  },
+  "claim": "PARTIAL, acceptance 1 written-evidence limb only",
+  "counts": {
+    "contractUnchanged": true,
+    "counts": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130
+    },
+    "rows": 204
+  },
+  "createdAt": "2026-11-12T01:32:15.978481+00:00",
+  "head": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+  "historicalAttempts": [
+    {
+      "exit": 0,
+      "log": "managed-owner-baseline.log",
+      "node": "24.19.0",
+      "sourceCommit": "328a341c2f536f013c3451500d2cb172c4738977"
+    },
+    {
+      "exit": 1,
+      "log": "managed-owner-attempt1.log",
+      "reason": "Added fixture omitted required numeric opportunity value; corrected fixture, no assertion weakened"
+    },
+    {
+      "exit": 1,
+      "log": "managed-owner.log",
+      "reason": "Existing audit consumer read first page only; now follows native cursor with all original assertions",
+      "receipt": "managed-owner-result.json"
+    },
+    {
+      "exit": 1,
+      "log": "managed-owner-final.log",
+      "reason": "Superseded local undici fetch transport failure",
+      "receipt": "managed-owner-final-result.json"
+    },
+    {
+      "exit": 1,
+      "log": "managed-owner-candidate-transport.log",
+      "reason": "Local D1 proxy SocketError other side closed",
+      "receipt": "managed-owner-candidate-transport-result.json"
+    },
+    {
+      "exit": 1,
+      "log": "managed-owner-candidate-startup.log",
+      "reason": "Node 22 local migration startup ETIMEDOUT before test body; no timeout changed",
+      "receipt": "managed-owner-candidate-startup-result.json"
+    }
+  ],
+  "historyPolicy": {
+    "authorsAndCommitters": "fleet",
+    "candidateCommits": [
+      "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+      "d52412ef52069416d4beac212b0568106b89133c",
+      "2a27db87c88df9bb21cfcbef4f87de9eabdd7a44",
+      "328a341c2f536f013c3451500d2cb172c4738977",
+      "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "4e59880ca53e9d2f8fb63b8ba90f324d9934d2e0"
+    ],
+    "fullMessagesInspected": true,
+    "trailers": "accepted"
+  },
+  "native": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+    "exit": 0,
+    "files": {
+      "src/core/features/agent-door/graph.ts": "4301955498d6da0d802fea09e8cc16d2c4c0fc0b22f94db20c3bc3a3e8a29076",
+      "src/core/features/capture/proposal-identity.ts": "c933b2eedb44f3f3ce83890cf070ce1e54f03a055f261a3e9a853a924a865724",
+      "src/core/features/capture/proposals.ts": "fab65c0c44637c28245a8be1808b607eaab3284387ed3cde45043b4ae4626c01",
+      "tests/agent-door/graph-browser-journey.mjs": "e2c1226c610fd9d368f21826975c0153aff1705cba21e9067737f78f3295cfeb",
+      "tests/core/managed-owner.test.ts": "d23dcc5ae56bf678b6b13392f336cc8adb5a4e3b6abb3b43baa366a71889d066",
+      "tests/e2e/capture.spec.mjs": "e649283ad99422011ecd3cc72eb9a6bdb87d14f1c73289de9b40d274e283e330",
+      "tests/support/agent-door-audit-proof.ts": "e26efe81a50f76bf6eb341dec2cd857685e345a332858f5b337486bbbbad1317",
+      "tests/support/agent-door-graph-proof.ts": "cf8e84243c11cfae88f81b177bff36da426b8def935495a61af9aa47d2b42f07",
+      "tests/support/agent-door-proof.ts": "77b61ef652f47258bca0c1213a3a217294dc279564d0cf44090d56c864c2071c"
+    },
+    "finishedAt": "2026-11-12T01:29:52.076483+00:00",
+    "head": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+    "node": "24.19.0",
+    "toolchain": "provided cloud pnpm shim",
+    "uncontended": true
+  },
+  "pr": null,
+  "productPush": {
+    "exit": 0,
+    "log": "push-candidate.log"
+  },
+  "publicationScan": {
+    "commit": "b9ce629aa41ac5463d7f3ac490b65c60221151f5",
+    "complete": "NOT_RUN",
+    "custodian": "fleet lander",
+    "findings": "NOT_RUN",
+    "historyScanned": "NOT_RUN"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f161",
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  }
+}
