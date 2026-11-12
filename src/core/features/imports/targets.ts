@@ -1,5 +1,5 @@
 import {ownerKinds,readOwnerTarget,matchesOwnerTarget,writeOwnerTarget,removeOwnerTarget} from './owner-targets';
-import {suppressionPredicate} from '../records/suppression';
+import {erasedAddressPredicate,suppressionPredicate} from '../records/suppression';
 import { canonicalJson,sha256,type D1TargetAdapter,type D1Sql,type TargetRow,type D1Database } from '../../../modules/import-kit/d1/index';
 import { stopRead,stopWrite,stopRemove,stopMatches } from './targets-stop';
 export const sql=(sql:string,...params:any[]):D1Sql=>({sql,params});
@@ -32,7 +32,7 @@ export const targets:D1TargetAdapter={
   if(target.targetKind==='suppression')return stopWrite(target);
   const {row,links,suppressionTokens}=target.value as NativeValue,table=tables[target.targetKind];if(!table)throw new Error('Unsupported target.');
   const fields=Object.keys(row);if(fields.some(f=>!/^[_a-z][_a-z0-9]*$/.test(f)))throw new Error('Invalid native field.');
-  const statements=[sql(`INSERT INTO ${table}(${fields.join(',')}) VALUES(${fields.map(field=>field==='contactability'?`CASE WHEN ${suppressionPredicate(suppressionTokens??[])} THEN 'do_not_contact' ELSE ? END`:'?').join(',')}) ON CONFLICT(id) DO UPDATE SET ${fields.filter(k=>k!=='id').map(k=>`${k}=excluded.${k}`).join(',')}`,...fields.map(k=>row[k]))];
+  const statements=[sql(`INSERT INTO ${table}(${fields.join(',')}) VALUES(${fields.map(field=>field==='contactability'?`CASE WHEN ${suppressionPredicate(suppressionTokens??[])} OR (NOT EXISTS(SELECT 1 FROM contacts WHERE id=?) AND ${erasedAddressPredicate(suppressionTokens??[])}) THEN 'do_not_contact' ELSE ? END`:'?').join(',')}) ON CONFLICT(id) DO UPDATE SET ${fields.filter(k=>k!=='id').map(k=>`${k}=excluded.${k}`).join(',')}`,...fields.flatMap(k=>k==='contactability'?[row.id,row[k]]:[row[k]]))];
   if(target.targetKind==='contact'&&suppressionTokens?.length){const contexts=[...new Set(suppressionTokens.map(token=>token.slice(0,32)))];statements.unshift(sql("INSERT INTO runtime_controls(name,value) SELECT 'crm_privacy_fence',NULL WHERE EXISTS(SELECT 1 FROM privacy_matching_contexts WHERE context_id NOT IN(SELECT value FROM json_each(?)))",JSON.stringify(contexts)));}
   if(target.targetKind==='deal'){statements.push(sql('DELETE FROM opportunity_contacts WHERE opportunity_id=?',target.targetId));statements.push(sql("INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) SELECT json_extract(value,'$.opportunity_id'),json_extract(value,'$.contact_id'),json_extract(value,'$.is_primary'),json_extract(value,'$.created_at') FROM json_each(?)",canonicalJson(links)));}
   if(target.targetKind==='note'){statements.push(sql('DELETE FROM timeline_entry_records WHERE timeline_entry_id=?',target.targetId));statements.push(sql("INSERT INTO timeline_entry_records SELECT json_extract(value,'$.timeline_entry_id'),json_extract(value,'$.record_type'),json_extract(value,'$.record_id') FROM json_each(?)",canonicalJson(links)));}
