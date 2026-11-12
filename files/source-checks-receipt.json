@@ -1,0 +1,44 @@
+{
+  "head": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "node": "22.20.0",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run agent:surface",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run deployment:check",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "generatedViewsRestoredFrom": "origin/main",
+  "contractDiffAgainstMain": "empty"
+}

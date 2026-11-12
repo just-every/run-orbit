@@ -1,0 +1,57 @@
+{
+  "browserSource": "e69db6a0f74e0d9d7927bcb6a7095b5d09423781",
+  "candidate": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "files": [
+    {
+      "path": "src/core/features/obligations/repository.ts",
+      "sha256": "a913367e823f1ff9beb75b8de2628bb4ebd63eb52718a16d509b35615c56e033",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/obligations/effects.ts",
+      "sha256": "31f44c9148db6eb94c72eebd718ad05e27d1b725ab6d1149d2c3196d8ae8bea0",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/operator/ui/record/obligation-panel.tsx",
+      "sha256": "835cda8391f0e5bac839c892084dbde32ed87fd4894f7242546990fcc72d8d86",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/operator/ui/record/obligation.css",
+      "sha256": "9a11920f08f4954c912a864aa247e68e8a589171346a94518718125eb0899292",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/operator/ui/meeting-plan-page.tsx",
+      "sha256": "3326342e12c6e3eabd5bb54eb127b0adf262847347b04885a60332c5ca58280a",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "tests/delegation-browser/today-brief.test.ts",
+      "sha256": "f4ed894792dd8f5756c1cd46aab874255354d0f54849d5d2671fda2a3f015529",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "tests/delegation-browser/today-journey.mjs",
+      "sha256": "e1daa7ddb8bbb3f14ea042ab88399e0276e67b59c626ef0bf8d997a486de7d0d",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/today/meeting-plan.ts",
+      "sha256": "17c28ecf56c5b465ed612954a770f9b74dd7c2757c1b7de01daeba7483ff6a76",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/operator/ui/record/opportunity-record.tsx",
+      "sha256": "194b10a6b50bcdd624104f2a393654cab0577b0e5c7ecda1054b85254db05cc5",
+      "unchangedFromBrowserSource": true
+    },
+    {
+      "path": "src/core/features/agent-door/drafts.ts",
+      "sha256": "6bfbddc9739635c3bdc9ae43e331b11dac80428d834f4107143e2896d6bf2a1e",
+      "unchangedFromBrowserSource": true
+    }
+  ],
+  "remainingDiff": "Archive format compatibility, returned MCP acceptance link, runtime assertions and documentation do not alter the captured browser screens or their exercised acceptance and draft paths."
+}

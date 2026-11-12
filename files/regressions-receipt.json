@@ -1,0 +1,1 @@
+{"command": "pnpm exec tsx --test --test-concurrency=1 tests/core/today-brief.test.ts tests/core/signals-outreach.test.ts tests/core/sendgrid-outcomes.test.ts", "exit": 0}

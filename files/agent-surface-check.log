@@ -1,0 +1,5 @@
+
+> orbit@0.4.6 agent:surface /home/agent/rer-consolidation/work/sd-orbit-c-f177/run-orbit
+> tsx scripts/agent-surface.ts --check
+
+Agent surface: 30 tools, 10 resources, 42 native journey steps

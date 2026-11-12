@@ -1,0 +1,32 @@
+[
+  {
+    "head": "97348c587039a6456d3496f58a0b514a462db641",
+    "job": "131110825604",
+    "command": "node scripts/verification-batch.mjs '[\"core-5\"]'",
+    "exit": 1,
+    "test": "tests/core/onboarding-archive.test.ts:83",
+    "failure": "POST records/archive/imports: 400 {\"error\":\"Invalid complete archive lineage.\"}",
+    "environment": {
+      "ORBIT_VERIFY_PREBUILT": "1",
+      "ORBIT_VERIFY_JOURNEYS": "1",
+      "ORBIT_VERIFY_TIER": "push",
+      "node": "22.20.0"
+    },
+    "extraLocalFailure": "Public demo copy encountered a symlink at node_modules in the diagnostic worktree; original CI did not have this error. Product checkout uses a regular node_modules directory. The local Git exclude was corrected without editing product code."
+  },
+  {
+    "head": "97348c587039a6456d3496f58a0b514a462db641",
+    "job": "131110825455",
+    "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+    "exit": 1,
+    "test": "newtests/t096/released-forecast-upgrade.ts:69",
+    "failure": "Archive inventory does not match a complete supported source generation.",
+    "environment": {
+      "ORBIT_VERIFY_PREBUILT": "1",
+      "ORBIT_VERIFY_JOURNEYS": "1",
+      "ORBIT_VERIFY_TIER": "push",
+      "node": "22.20.0"
+    },
+    "extraLocalFailure": "TEAM-001 browser reached a missing default Chromium binary after its native assertions; system Chromium is now available through the expected Playwright path. No product assertion was changed."
+  }
+]

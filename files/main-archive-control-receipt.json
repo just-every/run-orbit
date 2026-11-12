@@ -1,0 +1,1 @@
+{"head": "d783cd54f8207eb989b1650022e3bd1251225ae2", "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/onboarding-archive.test.ts newtests/t096/forward-upgrade.test.ts", "exit": 0}

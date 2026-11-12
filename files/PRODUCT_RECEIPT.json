@@ -1,0 +1,26 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f177",
+  "head": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "remoteRef": "refs/heads/cloud/sd-orbit-c-f177",
+  "remoteHead": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "transport": "cloud-push.py",
+  "pushExit": 0,
+  "identityAndTrailerCheck": "all candidate commits inspected, fleet identities, no co-author trailers",
+  "historyShallow": "false",
+  "contractDiffAgainstMain": "empty",
+  "workingTree": "clean",
+  "mainAtFinalFetch": "d783cd54f8207eb989b1650022e3bd1251225ae2",
+  "verifyRun": 43208983998,
+  "pr": null,
+  "publicationScan": "fleet pending",
+  "landing": "fleet pending",
+  "verifyActual": {
+    "conclusion": null,
+    "head_sha": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43208983998",
+    "status": "in_progress"
+  },
+  "verifyQueriedAt": "2026-11-12T11:36:14.572705+00:00",
+  "githubCallsUsed": 8
+}

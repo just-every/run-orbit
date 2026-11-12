@@ -1,0 +1,5 @@
+
+> orbit@0.4.6 deployment:check /home/agent/rer-consolidation/work/sd-orbit-c-f177/run-orbit
+> node scripts/publish-deployment-spec.mjs --check
+
+Deployment spec matches the build; setup digest matches rer-setup.json.

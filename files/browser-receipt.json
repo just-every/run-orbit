@@ -1,0 +1,1 @@
+{"command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts", "exit": 0}

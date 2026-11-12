@@ -1,0 +1,32 @@
+{
+  "head": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "registeredCase": "tests/core/managed-owner.test.ts#Managed owner and company policy preserve native authority, stalled risks, cited graph proposals and meeting follow-up outcomes",
+  "testExit": 0,
+  "actualRuntimeProof": {
+    "proof": "AGENT-003.meeting-follow-up",
+    "policies": [
+      {
+        "id": "01M77Q86KFT2WR3Q85036ADHN7",
+        "mode": "autonomous",
+        "decision": "b8249256-2ab7-4858-80f8-e7c060cea0d0",
+        "review": null
+      },
+      {
+        "id": "01M77Q8A1R506BNT2KQ536B0K4",
+        "mode": "held",
+        "decision": "830e0380-65cc-4450-8bf2-90b8ea7e590c",
+        "review": "71a38135-6349-450a-b75c-a625f43ca9dc"
+      }
+    ],
+    "submissions": 2,
+    "lookupCount": 1,
+    "uncertainReconciled": true,
+    "replyLeavesGoalOpen": true,
+    "advancedOnce": true,
+    "stoppedOnce": true,
+    "lateDispatchRefused": true,
+    "restorePaused": true,
+    "restart": true,
+    "erasureRedacted": true
+  }
+}

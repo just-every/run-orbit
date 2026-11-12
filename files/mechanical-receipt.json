@@ -1,0 +1,16 @@
+{
+  "head": "9d86b1eac987e4e6e9f85471f5c1d6ded8d19bf4",
+  "lock": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+    "exit": 0
+  },
+  "views": {
+    "command": "node src/base/contract-docs.mjs write then check; restore origin/main views",
+    "exit": 0
+  },
+  "ledger": {
+    "command": "pnpm exec tsx /tmp/orbit-ledger.mts using nativeMigrationPreflight on a fresh migrated D1",
+    "exit": 0
+  },
+  "workingTree": "clean"
+}
