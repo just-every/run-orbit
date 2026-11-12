@@ -2355,7 +2355,7 @@
       "executable": false
     },
     "newtests/t096/browser-shared-values.ts": {
-      "sha256": "7db6ca00159cbd3d43cd42570f09747244f9f7fa49e65d1f14f609b283323738",
+      "sha256": "4783db58fe19bbafa7904584a1adffa02b5cee1ebe9ed90113315464203e1ed1",
       "executable": false
     },
     "newtests/t096/capture-rule-browser-seed.ts": {
@@ -5151,7 +5151,7 @@
       "executable": false
     },
     "src/core/app/mounts/fold.ts": {
-      "sha256": "87af6ab58743fc86cf832368a205eb1bf0eaf463a8a3ed5e6919d746e9873ac5",
+      "sha256": "ab07149dc7a7412d2f48993a9338da714027c83ed1266eb374f1c0cf9a92b2dd",
       "executable": false
     },
     "src/core/app/mounts/public-config.server.ts": {
@@ -5279,7 +5279,7 @@
       "executable": false
     },
     "src/core/features/access/shared-presentation.ts": {
-      "sha256": "60e5bcab81d3537a5bd6c1faa282eb00babc1baf426a896a916cdfbe9ba4c939",
+      "sha256": "36b160b88a3c3b140b5bd336ccb6115e12477fb7f250f32bb34886f3f67c6be5",
       "executable": false
     },
     "src/core/features/access/shared-record-detail.tsx": {
@@ -5287,11 +5287,11 @@
       "executable": false
     },
     "src/core/features/access/shared-records.tsx": {
-      "sha256": "be0753f47c08fb4b9ddc6c38127335007d7593b35035fc6fc15bacf9ce037520",
+      "sha256": "ad091f249522c87a6ea25479da25e6eab253ff8eefb8caf76cb79e559691baf6",
       "executable": false
     },
     "src/core/features/access/shared-values.tsx": {
-      "sha256": "4b61e96b373e806011dbe6eab0310b3dde53c51d036fb39456ce96c904ae128e",
+      "sha256": "0692f372fda17e32f6f7985a753cedc882521f53f1e02d16114283520c9357f3",
       "executable": false
     },
     "src/core/features/access/workspace-reads.ts": {
@@ -6491,11 +6491,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/archive-transfer-summary.tsx": {
-      "sha256": "622d86f53d8105c96031750509999150a9258dbf6644de326a9510fe71ad26a0",
+      "sha256": "a741da72aad998f3aeaef3959839642b1ea2d3faf4060933720aed65c0c9eab7",
       "executable": false
     },
     "src/core/features/operator/ui/archive-transfer.ts": {
-      "sha256": "763d538565c59289d51d74510e08a815c4b324a014c551486ca5bdc9064bdba3",
+      "sha256": "bd20128d9aa6db433a0a8c7dd62e70c9cdf137414fa61d476fb7375322b6db1e",
       "executable": false
     },
     "src/core/features/operator/ui/assistance-page.tsx": {
@@ -7839,7 +7839,7 @@
       "executable": false
     },
     "src/core/features/records/archive-export.ts": {
-      "sha256": "9117e2604c53bc676901850a9fb7f9a79819a595eb1d4297d2a1bc89a592f910",
+      "sha256": "c186b40e167187b624a7462c7f7d05b3842423fd8260c7a6a17aac1c15e0615f",
       "executable": false
     },
     "src/core/features/records/archive-fold-catalog.ts": {
@@ -7863,7 +7863,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "269e0996da2ae99b0544f099c6dd187004afb6ee12663c0f0ffd24fc9324d045",
+      "sha256": "4a7dfbe666e3a33cbb5417e34ee4e9aa908f221db25071277f4d7b35cb48bcfe",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -7871,7 +7871,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import.ts": {
-      "sha256": "7cd952a43c5463601891ee07056f0206b1839a81758799eb89b8775db83e73c2",
+      "sha256": "cd76b2570f4e24f5cb3d42cd44787bdb5910d9f4ecd8eda112826a6998d01991",
       "executable": false
     },
     "src/core/features/records/archive-lineage.ts": {
@@ -10071,7 +10071,7 @@
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
-      "sha256": "cbc69e136131a2e7f34cf41ba22437230dad644692198b9485b434b7d4f2ee98",
+      "sha256": "17d3c8b573f37b67343c2d0d0175d2ac5dcc606bb78a9957f7027130b754407d",
       "executable": false
     },
     "tests/archive/playwright.config.mjs": {

@@ -9,7 +9,6 @@ import { audit, RecordError } from './shared';
 import { archiveCatalog, type ArchiveManifest, type ArchiveTable } from './archive-schema';
 import { stageName, stageTables } from './archive-storage';
 export type ImportJob = {
-    created_at: string;
     id: string;
     kind: string;
     state: string;

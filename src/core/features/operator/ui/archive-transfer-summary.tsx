@@ -1,16 +1,21 @@
+import {decodeTime} from 'ulidx';
 import {useState} from 'react';
 import {formatDateTime} from './formatters';
 import type {ArchiveStatus} from './archive-transfer';
 
+/** Transfer IDs are generated at job creation. Reading their timestamp preserves the native archive wire contract. */
+export function transferStartedAt(status:ArchiveStatus):string|undefined{
+ try{return new Date(decodeTime(status.id)).toISOString();}catch{return undefined;}
+}
 export function transferLabel(status:ArchiveStatus){
- const started=status.createdAt??status.manifest?.exportedAt;
+ const started=transferStartedAt(status);
  return (started?formatDateTime(started):'Saved transfer')+(status.manifest?' · '+status.manifest.rows.toLocaleString()+' rows · '+status.manifest.parts.toLocaleString()+' parts':'');
 }
 /** Everyday controls identify the transfer by its start and size; technical identity is for support. */
 export function ArchiveTransferSummary({kind,id,status,busy,onId}:{kind:'Export'|'Restore';id:string;status?:ArchiveStatus;busy:boolean;onId:(id:string)=>void}){
  const [copied,setCopied]=useState(false),[error,setError]=useState('');
  async function copy(){
-  try{await navigator.clipboard.writeText(JSON.stringify({transfer:kind,id,state:status?.state,startedAt:status?.createdAt,rows:status?.manifest?.rows,parts:status?.manifest?.parts},null,2));setCopied(true);setError('');}
+  try{await navigator.clipboard.writeText(JSON.stringify({transfer:kind,id,state:status?.state,startedAt:status?transferStartedAt(status):undefined,rows:status?.manifest?.rows,parts:status?.manifest?.parts},null,2));setCopied(true);setError('');}
   catch{setError('Open support details to select and copy the transfer ID.');}
  }
  return <section className="archive-transfer-summary" aria-label={kind+' transfer'}>

@@ -22,9 +22,9 @@ export async function sharedPresentation(db:D1Database,record:RecordProjection,e
   const definitions=(await db.prepare('SELECT field_key,label,value_type FROM record_custom_fields WHERE kind=?').bind(record.kind).all<{field_key:string;label:string;value_type:string}>()).results;
   for(const field of definitions)if(Object.hasOwn(values,field.field_key))custom[field.field_key]={label:field.label,type:field.value_type};
  }
- const userFields=[...(Object.hasOwn(record.fields,'owner_id')?['owner_id']:[]),...Object.entries(custom).filter(([,field])=>field.type==='user').map(([key])=>'custom_fields_json.'+key)];
+ const userFields=[...['owner_id','closed_by'].filter(field=>Object.hasOwn(record.fields,field)),...Object.entries(custom).filter(([,field])=>field.type==='user').map(([key])=>'custom_fields_json.'+key)];
  for(const field of userFields){
-  const value=field==='owner_id'?record.fields.owner_id:(values as Record<string,unknown>)[field.slice('custom_fields_json.'.length)];
+  const value=field.startsWith('custom_fields_json.')?(values as Record<string,unknown>)[field.slice('custom_fields_json.'.length)]:record.fields[field];
   // A read-only reference resolves just its current person, including historical attribution.
   references[field]=(await db.prepare('SELECT id,display_name AS name FROM operators WHERE '+(editable.includes(field)?"(id=? OR (status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=operators.id) AND "+operatorListingPredicate('operators')+'))':'id=?')+' ORDER BY display_name,id').bind(value??null).all<{id:string;name:string}>()).results;
  }

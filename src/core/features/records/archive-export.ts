@@ -14,7 +14,7 @@ function snapshotColumns(columns:readonly string[],progress:Progress){
  if(progress.snapshotLayout==='aliased-v1')return columns.map((_,index)=>`c_${index}`);
  throw new RecordError(409,'The stored archive snapshot layout is unsupported.');
 }
-type Job={created_at:string;id:string;state:string;actor_id:string;manifest_json:string;progress_json:string};
+type Job={id:string;state:string;actor_id:string;manifest_json:string;progress_json:string};
 // Catalog columns are nonempty. Balance addition so wide supported tables stay
 // below D1's expression-depth limit while counting every typed cell exactly once.
 function columnByteSum(columns:readonly string[]):string{
@@ -25,7 +25,7 @@ function columnByteSum(columns:readonly string[]):string{
 export class ArchiveExportRepository{
  constructor(readonly db:D1Database,readonly profile?:ArchiveExportProfile){}
  async job(id:string,actor:string){const job=await this.db.prepare("SELECT * FROM archive_jobs WHERE id=? AND kind='export' AND actor_id=?").bind(id,actor).first<Job>();if(!job)throw new RecordError(404,'Archive export not found.');return job;}
- async status(id:string,actor:string){const job=await this.job(id,actor),manifest:TransferManifest=JSON.parse(job.manifest_json),progress:Progress=JSON.parse(job.progress_json);return{id,createdAt:job.created_at,state:job.state==='snapshotting'?'preparing':job.state,completedTables:progress.table,totalTables:manifest.tables.length,...(job.state==='ready'?{manifest}: {})};}
+ async status(id:string,actor:string){const job=await this.job(id,actor),manifest:TransferManifest=JSON.parse(job.manifest_json),progress:Progress=JSON.parse(job.progress_json);return{id,state:job.state==='snapshotting'?'preparing':job.state,completedTables:progress.table,totalTables:manifest.tables.length,...(job.state==='ready'?{manifest}: {})};}
  async unfinished(actor:string){return Promise.all((await unfinishedExportIds(this.db,actor)).map(id=>this.status(id,actor)));}
  async create(actor:string){
   await reconcileLegacyOwnership(this.db);

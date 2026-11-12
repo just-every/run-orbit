@@ -1,7 +1,7 @@
 import {sameArchiveManifest} from '../../../shared/archive-identity.ts';
 import {archiveTransferError} from '../../../shared/archive-transfer-error.ts';
 import {readArchiveFile,validateManifest,type ArchiveManifest} from '../../../shared/archive-transfer-file.ts';
-export interface ArchiveStatus {id:string;state:string;createdAt?:string;phase?:string;completedSteps?:number;totalSteps?:number;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest;contentDigest?:string}
+export interface ArchiveStatus {id:string;state:string;phase?:string;completedSteps?:number;totalSteps?:number;completedTables?:number;totalTables?:number;nextPart?:number;manifest?:ArchiveManifest;contentDigest?:string}
 const base='/api/v1/records/archive';
 export function archiveUrl(kind:'exports'|'imports',id:string,suffix=''){return `${base}/${kind}/${encodeURIComponent(id)}${suffix}`;}
 async function request(path:string,method='GET',body?:unknown):Promise<ArchiveStatus>{
