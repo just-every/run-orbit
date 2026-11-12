@@ -1,0 +1,13 @@
+{
+  "base": "main",
+  "shared": "Synthetic Orbit Readable Deal\n\nYou may see these fields; none of them can be changed.\n\nTitle: Synthetic Orbit Readable Deal\n\nStage: 01M76XHHGQ8YDSEBBD1KZS7MR0\n\nValue (in cents): 1000000\n\nExpected close date: 2027-01-15T16:30:00.000Z",
+  "archive": "Export and restore\n\nYour whole workspace as one private archive; restore only into an empty installation.\n\nExport archive\n\nPrepare an immutable snapshot, then download its streamed JSON archive. If you leave, progress is saved and preparation resumes when you return to this panel.\n\nFind unfinished exports\nExport transfer ID\n\nPreparing\n\nTables in this phase\n73 / 128\nResume export\nPause after current part\nDiscard export\n\nThe snapshot is being prepared in bounded parts. Workspace edits can continue; pause and resume this transfer without changing its snapshot.\n\nRestore archive\n\nIf you leave, progress is saved. Return to this panel to continue: while uploading, choose the same archive and tick the confirmation again; once uploaded, the restore resumes automatically. Previously uploaded parts are checked for an exact match.\n\nFind unfinished restores\nArchive file\nRestore transfer ID\nI confirm this target has no customer data and want to restore the selected archive.\nStart restore\n\nA restore takes published forms (such as your contact form) offline and needs signed sources reconnected, because an archive never carries their public permissions or secrets. You re-publish and reconnect them afterwards; this panel lists the steps when the restore finishes. All restored scheduled messages are cancelled and need new review and approval before sending. Archives contain private customer data.",
+  "merge": "company.name\nSynthetic Orbit Company\ncontact.name\nSynthetic Orbit Contact\ndeal.title\nSynthetic Orbit Readable Deal",
+  "findings": {
+    "stageId": true,
+    "cents": true,
+    "iso": true,
+    "exportId": true,
+    "mergeKeys": true
+  }
+}

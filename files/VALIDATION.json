@@ -1,0 +1,210 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-values-1",
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": "pnpm run typecheck",
+      "result": "passed",
+      "log": "/tmp/orbit-typecheck.log",
+      "log_sha256": "01a4bd8ab9e72a3ab4c0189a6cc9bc1eb52fe9ae9a063276865efbbfec276ae0",
+      "packet_log": "TYPECHECK.log",
+      "packet_log_sha256": "01a4bd8ab9e72a3ab4c0189a6cc9bc1eb52fe9ae9a063276865efbbfec276ae0"
+    },
+    {
+      "name": "merge approval fences",
+      "command": "pnpm exec tsx --test --test-name-pattern='OUT-014' tests/core/signals-outreach.test.ts",
+      "result": "passed",
+      "cases": 1,
+      "log": "/tmp/orbit-merge-core.log",
+      "log_sha256": "4bcab051b6fb14d6c5ea8bcff9bab5eb0ac7f3fb28f1e249b9e09283d1cf873a",
+      "packet_log": "MERGE-CORE.log",
+      "packet_log_sha256": "1561cdf0c619c3ad81c5d3cbbde424e0d969e890a9efd7a6e7f208ac888fb025"
+    },
+    {
+      "name": "draft save/conflict and readable merge review",
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs operator.spec.mjs --grep 'desktop draft editor' --reporter=list",
+      "result": "passed",
+      "cases": 1,
+      "log": "/tmp/orbit-merge-browser.log",
+      "log_sha256": "f70b57933726b0d4c76f566662def1cffc5069a56e660e8a4c81a60a95a97f71",
+      "packet_log": "MERGE-BROWSER.log",
+      "packet_log_sha256": "f70b57933726b0d4c76f566662def1cffc5069a56e660e8a4c81a60a95a97f71"
+    },
+    {
+      "name": "browser and terminal archive, restore, resume and rollback",
+      "command": "pnpm exec playwright test --config /tmp/orbit-archive.config.mjs --reporter=list",
+      "result": "passed",
+      "cases": 1,
+      "log": "/tmp/orbit-archive-browser-fix.log",
+      "log_sha256": "cb18dbf6fef537ad19fb896cd33d8fe2dbd4252bd89d71935bdecb64c8f7b717",
+      "packet_log": "ARCHIVE-BROWSER.log",
+      "packet_log_sha256": "cb18dbf6fef537ad19fb896cd33d8fe2dbd4252bd89d71935bdecb64c8f7b717"
+    },
+    {
+      "name": "shared values public-door assertions",
+      "command": "pnpm exec tsx /tmp/orbit-shared-only.mts (calls committed readableSharedValues)",
+      "result": "passed",
+      "log": "/tmp/orbit-shared-focused-fix.log",
+      "log_sha256": "8a2e62550971b10e8d0bfa084a6d145a37b6dbb2ca7f357345cf1c7ccccc2107",
+      "packet_log": "SHARED-BROWSER.log",
+      "packet_log_sha256": "8a2e62550971b10e8d0bfa084a6d145a37b6dbb2ca7f357345cf1c7ccccc2107"
+    },
+    {
+      "name": "source lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "passed",
+      "log": "/tmp/orbit-source-lock.log",
+      "log_sha256": "4405a47d11721860d09d6b96a1596508e56bd90d80e60b664b1bd0eac74c9b47"
+    },
+    {
+      "name": "application build",
+      "command": "npx -y @runeditrun/rer build",
+      "result": "passed",
+      "log": "/tmp/orbit-final-build.log",
+      "log_sha256": "ea7cda6395d587216a9a986bd9ce87d0a4ac675b7f75524f9f0edcc0aea20fcb"
+    },
+    {
+      "name": "prior-auth upgrade exact API compatibility",
+      "command": "pnpm exec tsx --test tests/core/prior-auth-upgrade.test.ts",
+      "result": "passed",
+      "cases": 1,
+      "packet_log": "PRIOR-AUTH-UPGRADE.log",
+      "packet_log_sha256": "3d68db697274d726c3e53c69246599dfef01b08f9c6a4c6cfc14b8c12c32838e"
+    },
+    {
+      "name": "retained main and released v0.3.0 upgrade and archive compatibility",
+      "command": "pnpm exec tsx --test --test-name-pattern='API-002 credential storage' newtests/t096/forward-upgrade.test.ts",
+      "result": "passed",
+      "cases": 1,
+      "packet_log": "FORWARD-UPGRADE.log",
+      "packet_log_sha256": "e6c2afa67fd5346e47fecc2f8a01d355b0a3357213c445e02699e474f489288c"
+    },
+    {
+      "name": "native archive API wire preservation",
+      "result": "passed",
+      "evidence": "Archive export/import repository, import progress and browser ArchiveStatus source match origin/main exactly."
+    }
+  ],
+  "test_budget_before": 200,
+  "test_budget_after": 200,
+  "registered_cases": 198,
+  "qualification_flows": 2,
+  "assertion_width": 1440,
+  "proof_widths": [
+    1440,
+    390
+  ],
+  "local_adaptations": [
+    "Pinned Node 22.20.0; system Chromium /usr/bin/chromium with --no-sandbox.",
+    "Local migration-only startup allowance increased from 180 to 300 seconds for sequential revalidation; repository CI fixture limits remain unchanged.",
+    "The expanded draft journey now allows 180 seconds."
+  ],
+  "resolved_failures": [
+    "Initial local fixture migration timeouts under Node 24 and Node 22; no application assertion had run.",
+    "The expanded draft journey needed a larger overall allowance; its rerun passed.",
+    "The full collaborator lifecycle attempt passed its existing core permission checks and the other registration, but failed the newly added Stage label locator. Explicit accessible labels fixed this; the final focused invocation of every newly added shared-value assertion passed.",
+    "Final typecheck caught terminal audience spelling in transfer recovery; corrected before publication."
+  ],
+  "not_run": [
+    "Full local rer verify (the brief delegates the full wall to exact-SHA branch Verify).",
+    "Mac publication scan (owned by the fleet at landing)."
+  ],
+  "product_head": "c902d4c89d7750bbafce59e2ca8d0d22b77690f1",
+  "product_push": "passed",
+  "verify_run_id": 43161361567,
+  "verify_status": "in_progress",
+  "screenshots": [
+    {
+      "file": "screens/merge-values-1440.png",
+      "sha256": "1e71de361d2b3873093ef7e84157b9c44429b544fc0f856f21aa70df536c53f6"
+    },
+    {
+      "file": "screens/merge-values-390.png",
+      "sha256": "a971eeb0693e298cc2dfaa354bb53d454dc2e5f62ca7a58de47f2e202796510e"
+    },
+    {
+      "file": "screens/message-library-1440.png",
+      "sha256": "32eb4814fda5c714e3b137f5a70b88a36676ce9efdd7d9893229fb0a93a5c640"
+    },
+    {
+      "file": "screens/message-library-390.png",
+      "sha256": "4e1d386b552d5fcc81788dff27c5060a378b4df9f00450cdce3422e56e833409"
+    },
+    {
+      "file": "screens/orbit-archive-desktop.png",
+      "sha256": "9f196c9f0754c39d789b383c763f0a54ebdc122ec0e613218e01e9799939bba9"
+    },
+    {
+      "file": "screens/orbit-archive-mobile.png",
+      "sha256": "358e44ea4b54dbeae83cec39485d4eb84b1afd890b32e8bb5987611a6c581eaa"
+    },
+    {
+      "file": "screens/shared-values-1440.png",
+      "sha256": "f094c0ee79afe52d2c35d936be45505f786d2a12d7f53552d00a460aa39a08b3"
+    },
+    {
+      "file": "screens/shared-values-390.png",
+      "sha256": "472f13de65aa5426b8cf9ffd980ed9c657a3b93544490711bceb628d2c56e452"
+    }
+  ],
+  "verify_polls": [
+    {
+      "conclusion": null,
+      "head_sha": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153414852",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153414852",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153414852",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43153414852",
+      "status": "in_progress"
+    }
+  ],
+  "github_api_calls": 10,
+  "clause_status_counts_before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_counts_after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "initial_verify": {
+    "id": 43153414852,
+    "head": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+    "status": "completed",
+    "conclusion": "failure",
+    "diagnosed_fields": [
+      "archive status createdAt",
+      "default shared-record presentation"
+    ]
+  },
+  "merged_main": "e98f2c8f81b525ce27573a917b355100c6bf8774",
+  "custody": "PUSHED",
+  "verify_conclusion": null,
+  "github_budget_exhausted": true,
+  "shared_browser_source_sha256": "4783db58fe19bbafa7904584a1adffa02b5cee1ebe9ed90113315464203e1ed1",
+  "shared_browser_assertions": [
+    "Permitted stage, company, owner and closing-actor names",
+    "Workspace money and New York dates, with no raw stored values in read-only detail",
+    "Currency edits save cents; local-time edits save UTC",
+    "Ordinary custom text ending in _at stays text"
+  ],
+  "completed_at": "2026-11-12T05:27:52.335514+00:00"
+}

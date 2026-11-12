@@ -1,0 +1,10 @@
+{"at": "2026-11-12T04:14:03.861266+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:19:04.716571+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:24:05.497769+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:29:06.397387+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:34:07.189758+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:39:07.980622+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"at": "2026-11-12T04:39:28.284984+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43153414852/jobs?per_page=100", "--jq", ".jobs[] | select(.conclusion==\"failure\") | {id,name,conclusion,steps:[.steps[] | select(.conclusion==\"failure\") | {name,number,conclusion}]}"], "exit": 0}
+{"at": "2026-11-12T04:40:12.788894+00:00", "args": ["run", "view", "43153414852", "--repo", "just-every/run-orbit", "--job", "130968716073", "--log-failed"], "exit": 0}
+{"at": "2026-11-12T04:41:24.269864+00:00", "args": ["run", "view", "43153414852", "--repo", "just-every/run-orbit", "--job", "130968716106", "--log-failed"], "exit": 0}
+{"at": "2026-11-12T05:26:51.564570+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=c902d4c89d7750bbafce59e2ca8d0d22b77690f1&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"], "exit": 0}

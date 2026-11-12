@@ -1,0 +1,46 @@
+{
+  "run": 43153414852,
+  "head": "22455b2d4d4ddce5181b8a6a09c5f7b4b0f1dc3e",
+  "diagnostics": [
+    {
+      "batch": 7,
+      "job": 130968716073,
+      "command": "gh run view 43153414852 --repo just-every/run-orbit --job 130968716073 --log-failed",
+      "exit": 0,
+      "actual_failure_excerpts": [
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:23:21.4281363Z \u2714 TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (354515.091824ms)",
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:28:21.8196498Z test at newtests/t096/forward-upgrade.test.ts:1:2550",
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:28:21.8201057Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:28:21.8203941Z   +   createdAt: '2026-11-12T04:27:47.230Z',",
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:28:21.8236828Z     actual: { id: '01M77061MYWHZGPQ0WMRE44NYQ', createdAt: '2026-11-12T04:27:47.230Z', state: 'preparing', completedTables: 0, totalTables: 128 },",
+        "shards (batch-7)\tVerify routine product shard\t2026-11-12T04:28:21.8238528Z     expected: { id: '01M77061MYWHZGPQ0WMRE44NYQ', state: 'preparing', completedTables: 0, totalTables: 128 },"
+      ]
+    },
+    {
+      "batch": 9,
+      "job": 130968716106,
+      "command": "gh run view 43153414852 --repo just-every/run-orbit --job 130968716106 --log-failed",
+      "exit": 0,
+      "actual_failure_excerpts": [
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9827230Z test at tests/core/prior-auth-upgrade.test.ts:1:1749",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9828521Z   AssertionError [ERR_ASSERTION]: owner:opportunity with the prior session",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9847812Z     actual: { status: 200, body: { ref: [Object], kind: 'opportunity', fields: [Object], fieldVersions: [Object], editableFields: [Array], presentation: [Object] } },",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9848424Z     expected: { status: 200, body: { ref: [Object], kind: 'opportunity', fields: [Object], fieldVersions: [Object], editableFields: [Array] } },",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9849835Z test at tests/core/signals-outreach.test.ts:1:36281",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9851428Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9852444Z   +   createdAt: '2026-11-12T04:20:47.907Z',",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9857750Z     actual: { id: '01M76ZS853YEQR0YT4V9GYDKEY', createdAt: '2026-11-12T04:20:47.907Z', state: 'preparing', completedTables: 0, totalTables: 128 },",
+        "shards (batch-9)\tVerify routine product shard\t2026-11-12T04:24:15.9858269Z     expected: { id: '01M76ZS853YEQR0YT4V9GYDKEY', state: 'preparing', completedTables: 0, totalTables: 128 },"
+      ]
+    }
+  ],
+  "diagnosed_causes": [
+    "createdAt added to native archive status response",
+    "presentation added to default shared record response"
+  ],
+  "fixes": [
+    "Native archive repository/status code restored unchanged to main; UI derives start time from the existing ULID timestamp.",
+    "Shared presentation is returned only for presentation=readable, which the Shared records UI requests. Default API shape remains unchanged."
+  ],
+  "budget_note": "Ten failed product shard jobs plus the aggregate failed. Two touched-shard logs were read once each; remaining logs were not read because only one of ten GitHub calls remains. Full failed job list is in CI-FAILED-JOBS.json."
+}

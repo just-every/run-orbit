@@ -1,0 +1,10 @@
+{
+  "readable": true,
+  "storedCents": 1000025,
+  "storedClose": "2027-01-16T16:30:00.000Z",
+  "assertionWidth": 1440,
+  "proofWidths": [
+    1440,
+    390
+  ]
+}
