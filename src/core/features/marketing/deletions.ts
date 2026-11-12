@@ -50,7 +50,7 @@ export async function mailchimpErasure(db:D1Database,contactId:string,actor:stri
 /** Sends every waiting request once. A 204, or a 404 for the member of an audience this account still has, is a verified deletion; the erasure itself never waits for it. */
 export async function processMailchimpDeletions(db:D1Database,config:MailchimpConfig){
  const waiting=(await stored(db,true)).filter(request=>open.includes(request.state));if(!waiting.length)return;
- const status=await connection(db),connectedAt=status.settings?.connectedAt??null;
+ const status=await connection(db,config.origin),connectedAt=status.settings?.connectedAt??null;
  if(status.state!=='connected'){for(const request of waiting)await mark(db,request,'paused',request.state==='paused'&&request.reason?request.reason:notConnected);return;}
  const {apiKey}=await openSealed(db,config);
  for(const request of waiting){

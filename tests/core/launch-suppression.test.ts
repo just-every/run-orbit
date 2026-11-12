@@ -1,3 +1,4 @@
+import {mailchimpLedgerEdge,proveMailchimpLedger} from '../support/mailchimp-ledger-proof';
 import {reviewedMerge} from '../support/reviewed-merge';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
@@ -64,7 +65,7 @@ test('RECORD-012 concurrent stop dominates stale edit; merge preserves both reci
  }finally{await f.dispose();}
 });
 
-test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes stop Orbit outreach and no replay re-subscribes; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore',async()=>{
+test('INTEGRATE-007 verified webhooks, merged consent, changed members, authority, populated restore and scheduled erasure preserve the stricter marketing stop; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore',async()=>{
  const f=await launchFixture(),nativeFetch=globalThis.fetch;try{
   for(const mode of ['manual','source','provider'] as const){const c=await f.customer(),at=new Date().toISOString();
    if(mode==='manual')await f.workbench.recordEvent(c.opportunityId,{eventId:createId(),type:'email.unsubscribed',subject:'Stop',occurredAt:at,contactId:c.contactId},f.actor);
@@ -74,24 +75,13 @@ test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes
   }
   // INTEGRATE-007: Mailchimp is faked only at its network edge; every Orbit step goes through Orbit's own routes.
   await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
-  const api='https://us1.api.mailchimp.com/3.0',members=new Map<string,any>(),calls:{method:string;path:string;body?:any}[]=[],faults=new Map<string,number>(),md5=(email:string)=>createHash('md5').update(email.toLowerCase()).digest('hex');
-  globalThis.fetch=async(input,init)=>{const url=String(input);if(!url.startsWith(api+'/'))return nativeFetch(input,init);const method=init?.method??'GET',path=url.slice(api.length).split('?')[0]!,body=init?.body?JSON.parse(String(init.body)):undefined;calls.push({method,path,body});
-   if(path==='/ping')return Response.json({health_status:'ok'});
-   if(path==='/lists/synthlist1')return Response.json({id:'synthlist1',name:'synthetic-orbit-hk2 audience',web_id:4242});
-   if(path==='/lists/synthlist1/merge-fields')return Response.json(method==='POST'?{tag:'ORBITCONS'}:{merge_fields:[{tag:'FNAME'},{tag:'LNAME'},{tag:'PHONE'}]});
-   // A permanent delete answers 204 while the member exists and 404 after; a queued fault answers once instead (0: no answer).
-   const removed=/^\/lists\/synthlist1\/members\/([a-f0-9]{32})\/actions\/delete-permanent$/.exec(path)?.[1],fault=removed?faults.get(removed):undefined;
-   if(removed&&method==='POST'){faults.delete(removed);if(fault===0)throw new TypeError('Paid edge lost the answer');if(fault)return Response.json({title:'Invalid Resource'},{status:fault});return members.delete(removed)?new Response(null,{status:204}):Response.json({title:'Resource Not Found'},{status:404});}
-   const hash=/^\/lists\/synthlist1\/members\/([a-f0-9]{32})$/.exec(path)?.[1],member=hash?members.get(hash):undefined;
-   if(hash&&method==='PUT'){const next={id:hash,unique_email_id:'u'+hash.slice(0,9),status:body.status??member?.status??body.status_if_new,merge_fields:{...member?.merge_fields,...body.merge_fields}};members.set(hash,next);return Response.json(next);}
-   if(hash&&member&&method==='PATCH'){member.status=body.status;return Response.json(member);}
-   return member?Response.json(member):Response.json({title:'Resource Not Found'},{status:404});};
+  const edge=mailchimpLedgerEdge(nativeFetch),{members,calls,faults,md5}=edge;globalThis.fetch=edge.fetch;
   const client=async(db:D1Database,actor:string)=>{
-   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')})}),session=await createDependencies(db).auth.createSession(actor);
-   const call=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+   const app=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:createSourceSecurity({ORBIT_ENCRYPTION_KEY:randomBytes(32).toString('hex')}),captureOrigin:'https://orbit.example.com'}),session=await createDependencies(db).auth.createSession(actor);
+   const call=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.example.com/api/v1/${path}`,{method,headers:{Cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.example.com','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
    return {app,call,json:async(path:string,method='GET',body?:unknown)=>{const response=await call(path,method,body);assert.equal(response.status,200,await response.clone().text());return response.json() as Promise<any>;}};
   };
-  const {app,call,json}=await client(f.db,f.actor);
+  const {app,call,json}=await client(f.db,f.actor);edge.validate=url=>app.request(url);
   const mailchimpState=async(request:typeof call)=>((await(await request('settings/products')).json()) as any).products.find((p:any)=>p.products.includes('Mailchimp')).state;
   await json('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-hk2-key-us1'});await json('settings/mailchimp/audience','PUT',{audienceId:'synthlist1'});assert.equal(await mailchimpState(call),'connected');
   const consented=await f.customer('synthetic-orbit-hk2-1@example.test'),unknown=await f.customer('synthetic-orbit-hk2-2@example.test'),stopped=await f.customer('synthetic-orbit-hk2-3@example.test'),later=await f.customer('synthetic-orbit-hk2-4@example.test'),long=await f.customer('synthetic-orbit-hk3-5@example.test'),withdrawn=await f.customer('synthetic-orbit-hk3-6@example.test');
@@ -111,12 +101,12 @@ test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes
    assert.equal(put.body.merge_fields.ORBITCONS,consentOf.get(memberId),'The consent field carries exactly the recorded source and basis');assert.equal(members.get(memberId).merge_fields.ORBITCONS,consentOf.get(memberId),'Mailchimp stores the recorded consent');}
   assert.ok(!calls.slice(sent).some(c=>c.method!=='GET'&&[unknown.email,stopped.email,withdrawn.email].some(email=>c.path.endsWith(md5(email)))),'Unknown, stopped and withdrawn contacts are never written');
   const again=await json('marketing/mailchimp/preview?fields=name'),quiet=calls.length;assert.deepEqual([again.counts.send,again.counts.unchanged],[0,3]);
-  await json('marketing/mailchimp/handoffs','POST',{fields:again.fields,previewDigest:again.digest,operationId:crypto.randomUUID()});assert.equal(calls.length,quiet,'An unchanged re-sync makes no provider request');assert.equal(members.size,3,'No duplicate subscriber');
+  await json('marketing/mailchimp/handoffs','POST',{fields:again.fields,previewDigest:again.digest,operationId:crypto.randomUUID()});assert.ok(calls.length>quiet&&calls.slice(quiet).every(call=>call.method==='GET'),'An unchanged re-sync reconciles provider changes without a write');assert.equal(members.size,3,'No duplicate subscriber');
   const pricing={source:'Pricing call notes',basis:'Asked for the monthly product newsletter on 22 October'};await json(`marketing/mailchimp/consents/${consented.contactId}`,'POST',{...pricing,confirmed:true});
   const changed=await json('marketing/mailchimp/preview?fields=name'),edited=calls.length;await json('marketing/mailchimp/handoffs','POST',{fields:changed.fields,previewDigest:changed.digest,operationId:crypto.randomUUID()});
   assert.deepEqual(calls.slice(edited).filter(c=>c.method==='PUT').map(c=>[c.path.split('/').pop(),c.body.merge_fields.ORBITCONS]),[[md5(consented.email),stated(pricing)]],'A consent change sends exactly one update with the new consent');assert.equal(members.get(md5(consented.email)).merge_fields.ORBITCONS,stated(pricing));
-  const hook=new URL((await json('settings/mailchimp')).webhookUrl).pathname;assert.equal((await app.request('https://orbit.test'+hook)).status,200,'Mailchimp’s address check is answered');
-  const deliver=(type:string,email:string,firedAt:string,extra:Record<string,string>={})=>app.request('https://orbit.test'+hook,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({type,fired_at:firedAt,'data[list_id]':'synthlist1','data[email]':email,'data[id]':'u'+md5(email).slice(0,9),...extra}).toString()});
+  const hook=new URL((await json('settings/mailchimp')).webhookUrl).pathname;assert.equal((await app.request('https://orbit.example.com'+hook)).status,200,'Mailchimp’s address check is answered');
+  const deliver=(type:string,email:string,firedAt:string,extra:Record<string,string>={})=>app.request('https://orbit.example.com'+hook,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({type,fired_at:firedAt,'data[list_id]':'synthlist1','data[email]':email,'data[id]':'u'+md5(email).slice(0,9),...extra}).toString()});
   const scheduled=await f.message(later.contactId,later.opportunityId),mailchimpSignals=async()=>(await f.db.prepare("SELECT count(*) AS n FROM signals WHERE source_id='mailchimp'").first<{n:number}>())!.n;
   assert.equal((await deliver('subscribe',later.email,'2026-10-20 09:00:00')).status,200);assert.equal(members.get(md5(later.email)).status,'subscribed','The fake member is still subscribed when the unsubscribe arrives');
   const unsubscribe={'data[action]':'unsub','data[reason]':'manual'},stopAt=calls.length;assert.equal((await deliver('unsubscribe',later.email,'2026-10-21 09:00:00',unsubscribe)).status,200);
@@ -148,7 +138,7 @@ test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes
    const restored=await new TestDataRepository(target.db).export();assert.equal(await payloadHash(JSON.stringify(restored.tables.privacy_matching_contexts)),await payloadHash(JSON.stringify(archive.tables.privacy_matching_contexts)));assert.deepEqual(restored.tables.audit_entries.filter(row=>row.action==='contact.suppressed'),archive.tables.audit_entries.filter(row=>row.action==='contact.suppressed'));
    const fresh=await createDependencies(target.db).auth.createSession(target.actor);assert.equal(await mailchimpState(path=>target.request(path,'GET',undefined,{Cookie:`__Host-orbit_session=${fresh.token}`})),'unresolved-setup','A restored installation asks to reconnect Mailchimp');
    // A restored pending deletion waits for a reconnect, then for the owner's confirmation, before Orbit sends it.
-   await target.db.batch([target.db.prepare('UPDATE operators SET setup_owner=0 WHERE setup_owner=1'),target.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(target.actor)]);const owner=await client(target.db,target.actor),restoredState=async()=>(await deletions(owner.json)).find(item=>item.id===pending.id)?.state;
+   await target.db.batch([target.db.prepare('UPDATE operators SET setup_owner=0 WHERE setup_owner=1'),target.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(target.actor)]);const owner=await client(target.db,target.actor);edge.validate=url=>owner.app.request(url);const restoredState=async()=>(await deletions(owner.json)).find(item=>item.id===pending.id)?.state;
    assert.equal(await restoredState(),'paused','A restored deletion waits for Mailchimp to be connected again');
    await owner.json('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-hk2-key-us1'});await owner.json('settings/mailchimp/audience','PUT',{audienceId:'synthlist1'});
    assert.equal((await owner.call('records/contact','POST',{name:'Restored probe',email:'synthetic-orbit-hk3-7@example.test'})).status,201);assert.deepEqual([await restoredState(),removals(later.email)],['held',1],'A restored deletion is never sent before the owner confirms it');
@@ -163,5 +153,6 @@ test('INTEGRATE-007 Mailchimp receives only consented contacts, its unsubscribes
   for(const [email,from] of [[unknown.email,0],[stopped.email,0],[withdrawn.email,0],[later.email,stopAt],[long.email,pushed],[consented.email,cleanedAt]] as const)assert.ok(!calls.slice(from).some(c=>c.path.endsWith(md5(email))&&(c.method==='PUT'||c.body?.status==='subscribed')),'Unknown, stopped, withdrawn, unsubscribed, cleaned and suppressed addresses never get a subscribing write');
   await json('settings/mailchimp/disconnect','POST',{});assert.equal(await mailchimpState(call),'unresolved-setup');
   assert.equal((await deliver('unsubscribe',unknown.email,'2026-10-23 09:00:00',unsubscribe)).status,404,'Disconnecting stops every ingest');assert.equal((await call('marketing/mailchimp/preview?fields=name')).status,409,'and every sync');
+  await proveMailchimpLedger();
  }finally{globalThis.fetch=nativeFetch;await f.dispose();}
 });
