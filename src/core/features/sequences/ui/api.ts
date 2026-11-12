@@ -1,6 +1,7 @@
+import type {Sequence} from '../schema';
 export type SequenceStep={kind:'email'|'wait'|'call'|'meeting'|'linkedin';condition:'always'|'no_reply'|'no_meeting'|'task_completed';delayBusinessDays:number;subject?:string;body?:string;library?:{id:string;revision:number};title?:string;instructions?:string};
 export type SequenceVersion={version:number;name:string;steps:SequenceStep[];calendar:{timezone:string;days:number[]};createdAt:string;createdBy:string;authorName:string};
-export type SequenceView=Omit<SequenceVersion,'createdAt'|'createdBy'|'authorName'>&{id:string;ownerId:string;visibility:'private'|'workspace';source:{id:string;version:number}|null;history:SequenceVersion[]};
+export type SequenceView=Sequence;
 export type SequenceList={actorId:string;sequences:SequenceView[]};
 export const stepLabels={email:'Email',wait:'Wait',call:'Call task',meeting:'Meeting',linkedin:'Manual LinkedIn'} as const;
 export const conditionLabels={always:'Always',no_reply:'If no reply',no_meeting:'If no meeting',task_completed:'After previous task is completed'} as const;

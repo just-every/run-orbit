@@ -8154,6 +8154,10 @@
       "sha256": "be7f99c2ed0867ca70995bb11d440e1fc702756430428b4e5ea0e673577c72b2",
       "executable": false
     },
+    "src/core/features/sequences/README.md": {
+      "sha256": "7be8bac8814b70bf37d119267743f555b5c193c73e1711fc1a172fa820d9837f",
+      "executable": false
+    },
     "src/core/features/sequences/repository.ts": {
       "sha256": "a9b1ab739ea85bc93d9462f368611716cdce12c2dcf7bd040e1139040e6ad94d",
       "executable": false
@@ -8167,7 +8171,7 @@
       "executable": false
     },
     "src/core/features/sequences/ui/api.ts": {
-      "sha256": "e455650542f4e9308f19f507432792b91c253de7975a721f1fdf7e55dad4d922",
+      "sha256": "01520b8b1041ac25675f6d77e5dc01743c8d44582c466a7e667a7947ff3eb435",
       "executable": false
     },
     "src/core/features/sequences/ui/editor-page.tsx": {
