@@ -88,6 +88,9 @@ export async function proveZendeskSupport(f:Fixture){
   edge.setRevoked(true);panel=await call(path);assert.equal(panel.state,'unavailable');assert.equal((await product()).state,'unresolved-setup');assert.equal(await f.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);assert.equal((await f.request(`${path}/handoff-preview`,'POST',uncertainInput)).status,409);
   edge.setRevoked(false);await call('settings/zendesk/connect','POST',connect);assert.equal((await call(path)).state,'unavailable','Reconnect alone does not reactivate the old mapping');
   const remap=await call(`${path}/mapping-preview`,'POST',{organizationId:'11'});await call(`${path}/mapping`,'PUT',{organizationId:'11',digest:remap.digest,confirmed:true});assert.ok((await call(path)).tickets.length);
+  const renewed=await deps.auth.createSession(other),beforeDisconnect=await inventory();
+  assert.equal((await f.request('settings/zendesk/disconnect','POST',{}, {Cookie:`__Host-orbit_session=${renewed.token}`})).status,403,'A freshly signed-in full operator still cannot disconnect the owner connection');
+  assert.deepEqual(await inventory(),beforeDisconnect);assert.equal((await product()).state,'connected');assert.equal(await f.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),1,'Refused disconnect preserves sealed custody');
   await call('settings/zendesk/disconnect','POST',{});assert.equal((await call(path)).state,'unavailable');assert.equal((await product()).state,'unresolved-setup');assert.equal((await f.request(`${path}/handoffs`,'POST',uncertainOperation)).status,409);assert.equal((await signed()).status,409);assert.equal(await f.db.prepare('SELECT count(*) n FROM support_credentials').first('n'),0);
  console.info('Zendesk proof: erasure, uncertain replay, revoked token and disconnect passed');
  }finally{globalThis.fetch=originalFetch;f.setClock(undefined);}
