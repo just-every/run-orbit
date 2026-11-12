@@ -5,5 +5,19 @@
   "screenshotsMaskPrivateCaptureAddress": true,
   "packetExcludesCredentialsEnvironmentDumpsAndHeldOutMaterial": true,
   "nativeAuthenticationQueriesRedacted": true,
-  "additionalSanitizedLogs": []
+  "additionalSanitizedLogs": [],
+  "captureImageMasksVerified": [
+    {
+      "file": "before/capture-1440.png",
+      "privacyMaskPixels": 33600
+    },
+    {
+      "file": "after/capture-1440.png",
+      "privacyMaskPixels": 33600
+    },
+    {
+      "file": "after/capture-390.png",
+      "privacyMaskPixels": 13570
+    }
+  ]
 }

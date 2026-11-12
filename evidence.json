@@ -19,10 +19,16 @@
       "sha256": "2b6fa39596337920e51094c376bfddf1e831f8e13e13d83dc046f762171c0433"
     },
     {
-      "blob": "ed4cb2b6e8fa87a1d6d9a81d2e66f4696421b129",
-      "bytes": 5054,
+      "blob": "3b15ec2602ae64cbf4108fc5af6ac29e4ee33fd9",
+      "bytes": 440,
+      "path": "QUEUE-ENTRIES.txt",
+      "sha256": "532c12200f57f71fbc7c9e60b1edbfbdbf9dd166b4ceb5e95b869ecc1ee05d27"
+    },
+    {
+      "blob": "4276c926820b8fef9c99d6412368fbae85026b5d",
+      "bytes": 6224,
       "path": "REPORT.md",
-      "sha256": "f1926199cb4b10059bb7d0e5c02b6d6dc37eef60bc5b59db24264662f12c1529"
+      "sha256": "bf32124de3db581b9b3c4ce35db324785f376c3936ac12f4e1b2037899401673"
     },
     {
       "blob": "8b688472c8d51fefc521759979eccd5cefa65d90",
@@ -163,16 +169,46 @@
       "sha256": "f778c25c48fb665dfee644671cd607ea955b4594cba05568adc7e99af4bedce4"
     },
     {
-      "blob": "6b69c8485e5317285ba693139b37801cf09f2d2a",
-      "bytes": 289,
-      "path": "ci-status.json",
-      "sha256": "4c31b18dbacfe12a22e54d2342eb4e8d22ac4105adf958bad3aea8805adc4ced"
+      "blob": "b942c4ae8207fbe7beb12025f83971ea0857711a",
+      "bytes": 233,
+      "path": "ci-api-4.json",
+      "sha256": "f778c25c48fb665dfee644671cd607ea955b4594cba05568adc7e99af4bedce4"
     },
     {
-      "blob": "9f588568cc5ab1c5f0601a73f1738cd4b42b28bf",
-      "bytes": 842,
+      "blob": "b942c4ae8207fbe7beb12025f83971ea0857711a",
+      "bytes": 233,
+      "path": "ci-api-5.json",
+      "sha256": "f778c25c48fb665dfee644671cd607ea955b4594cba05568adc7e99af4bedce4"
+    },
+    {
+      "blob": "b942c4ae8207fbe7beb12025f83971ea0857711a",
+      "bytes": 233,
+      "path": "ci-api-6.json",
+      "sha256": "f778c25c48fb665dfee644671cd607ea955b4594cba05568adc7e99af4bedce4"
+    },
+    {
+      "blob": "8fc8204e9d7679f0a4ba58ac90c5eee6f303ef8f",
+      "bytes": 236,
+      "path": "ci-api-7.json",
+      "sha256": "3b50dfe688327d5c1da7f7ffbc8ee38dd52d870886e7c3ad95e562b763c1303f"
+    },
+    {
+      "blob": "2844790a2868cca81d369ae4930c05027b4e9d4a",
+      "bytes": 401,
+      "path": "ci-receipt.json",
+      "sha256": "c8192e435ea8ebf12712eee0ad6a5e5257db4224a0828b046d0b247c90e3920f"
+    },
+    {
+      "blob": "9f26ad7821ea87c0b9d901d0f12775132d6c39a5",
+      "bytes": 291,
+      "path": "ci-status.json",
+      "sha256": "e57e9e067ad2b3aa60e8a00e3d46ec568ce4d0e2983533907a042e904c05bc2f"
+    },
+    {
+      "blob": "5581586c9f1dbc406b8201f3beee91060fc09997",
+      "bytes": 1967,
       "path": "ci-watch.log",
-      "sha256": "9126428a42da78fc724ae26577e480a81291754c33367cf8278a86e87b114496"
+      "sha256": "07d9a61bff3087f253d8fa4d6a2187ce2ad60305908e265abbe7264739da758d"
     },
     {
       "blob": "42a0c12ba1087148bdcb9a6faae71c95a18e1a88",
@@ -181,16 +217,22 @@
       "sha256": "e1b6929f5418521512d039147ab96367eaf29b3c0eb3a026478edcf13d409f1e"
     },
     {
+      "blob": "3c9879d4851732a06bdd82b941078f94d19f6dec",
+      "bytes": 7720,
+      "path": "evidence-first-publication.log",
+      "sha256": "30c8231cb2777e38654de38b66757151fb853479022d1ac954fc159def3b63d4"
+    },
+    {
       "blob": "dcf14e4d90b968003f2a19c57ce0eff4a73d1e2d",
       "bytes": 739,
       "path": "final-product-push.log",
       "sha256": "66838b5f89fa8ef416ae2f96a66d35e49c608503b421778fe0fd875bb5d4c611"
     },
     {
-      "blob": "df533ec3d987acd127552aab5a46249729da84bb",
-      "bytes": 593,
+      "blob": "8e75dc8d3b32fe7fc49abd44fbd508aa1e7a8dc1",
+      "bytes": 1267,
       "path": "github-calls.jsonl",
-      "sha256": "242b6c1d019a38c02b6efb197aeadaf5e8e039a8624f1e9bf34b48796ffbee5f"
+      "sha256": "d79c9ff000662f8bdb47f1b69e7f6cc484c3820bbbe402a4dc08ad57ae6876ba"
     },
     {
       "blob": "4591317f16b54a0f64ecaf079bdb7c190d338624",
@@ -205,10 +247,10 @@
       "sha256": "77641d9ee8de8295c7579f4129735336824cce4548ace5d1e41f961dc69c6618"
     },
     {
-      "blob": "9649497ac65e7ef991514594142e2d6eb07306a6",
-      "bytes": 293,
+      "blob": "9d4cca456c507903de25a32955a4062d4820247c",
+      "bytes": 588,
       "path": "packet-review.json",
-      "sha256": "c3b5d98fd082fe3acedbe72c84b1785f5b03f3f2ccd48a8a7bba4c88de88d116"
+      "sha256": "5366fd1a8b5c340c607c3dc7b7c6d6fef82e609e3e9726300d36b46c9137365c"
     },
     {
       "blob": "14b21d05a5470ca3c68239e24e73c63db31c77ca",
@@ -217,10 +259,10 @@
       "sha256": "3e70167acc3f38f239ecd50ddfe0805153fba87d2991246b423433e1fba5d306"
     },
     {
-      "blob": "260b75a8ff3dae8365081e244a6db03ab20fa449",
-      "bytes": 1082,
+      "blob": "51e8c7154c31dc15dcf2d7b3c92d2bb755454201",
+      "bytes": 1444,
       "path": "product-receipt.json",
-      "sha256": "ed9edc32c4e28c616eaa5ba5e2c5ef3f5f45f34d266673f3efd80ead73180bcf"
+      "sha256": "836683c377e17999150d61e0da15ade032f027e6dde8e55a5e5988106b72ffac"
     },
     {
       "blob": "5cd1e45f0d00704f9cdf484d9c5f34f24a93adc0",

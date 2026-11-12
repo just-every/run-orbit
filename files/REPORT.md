@@ -31,4 +31,12 @@ Main was fetched and the unpublished work rebased before publication; main staye
 
 12ui improve required account sign-in and produced no approved image; the interface uses the existing Orbit design system. The dev runtime developed a Vite SSR reload error after autostash, so final screenshots use a fresh native dev launch of the unchanged final tree, with the application build checked separately. The preview owner-entry link did not reach Orbit’s Settings UI, so it was not used as proof. Only this task's server PIDs were stopped. Stale local-operation locks were removed only after verifying their recorded owner was this task's zombie process. These runtime/recovery details do not change product source.
 
-Live provider account approval, DNS propagation and actual billing/connection proof remain unverified and outside this round. Product custody and exact-SHA CI status are separate from evidence publication. The pending exact-SHA Verify run is 43151925202; CI status and final custody are updated in the final report and receipts before transfer.
+Live provider account approval, DNS propagation and actual billing/connection proof remain unverified and outside this round. Product custody and exact-SHA CI status are separate from evidence publication. Exact-SHA [Verify 43151925202](https://github.com/just-every/run-orbit/actions/runs/43151925202) completed successfully on 2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63. Seven GitHub calls were used, with at least 300 seconds between polls. Product custody is READY; there are no product blockers. The complete publication scan and landing remain the Mac fleet’s independent gates.
+
+Initial evidence custody: the complete report packet was published while CI was pending to `refs/heads/evidence/main-orbit-setup-guides-1` at `2d0aea699156b3b91ddc08af82e28eea1e2e35dc`. The actual first publication receipt is evidence-first-publication.log. The final terminal EVIDENCE line names the refreshed packet after the last CI observation; neither evidence head is a product acceptance claim.
+
+## Final custody
+
+READY branch=cloud/main-orbit-setup-guides-1 head=2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63
+
+Verify run: 43151925202, completed/success on that exact SHA. No PR was created. All product work is pushed. The clone is disposable and is removed after the final evidence transfer; the report packet remains outside it. Live provider account proof and the unavailable 12ui design account are reported limitations, not claims of connection success. No contract acceptance point or status was promoted by this round.
