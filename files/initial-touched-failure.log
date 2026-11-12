@@ -1,0 +1,53 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ AI-001 AI-002 AI-004 ACTION-003 preview is exact input, cited output creates durable unsent draft and usage (8116.319779ms)
+✔ AI-002 invented evidence fails visibly; AI-003 unconfigured provider generates nothing and handwritten outreach submits once (5697.668989ms)
+✔ AI-001 DATA-002 changed or deleted preview context never leaves deployment (14770.372665ms)
+✔ NOTIFY-001 NOTIFY-002 queue transitions notify once and recipient read state survives a fresh sign-in (2602.389386ms)
+✔ NOTIFY-001 assigned owners override latest actors; unassigned NOW, replies and failures follow the latest actor once (56159.509136ms)
+✔ NOTIFY-001 BASE-OPS-005 an unassigned opportunity without operator history notifies every active operator and leaves a durable feature audit (2698.719662ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"SURFACE-013.stalled-deal","clock":"2026-11-12T03:49:19.062Z","expected":{"id":"01M4MH8KJPSFDHGP6FNWPHD3S0","evidenceId":"01M4Q3NAJP719Z1FNDKDQEE89Y","quote":"In Synthetic proposal since 2026-10-12","since":"2026-10-12T03:49:19.062Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"726b7627-81be-44ea-a54d-c6614687b4b4","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"44cb3de0-8258-4c44-b833-c336f5cfafc3","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"a75ad11d-4dca-42da-8ba2-6472b3896154"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"caa9ecb9-4526-4bd7-8d4c-230532a64503","revision":12,"summary_sha256":"7a44c6393bd5635b061180da6efee16ff1082148b4358de5d31cf7dc63d53952","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"3a448d02-4be7-49b0-b64c-f78792628a2e","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"06a81a88-2b01-4e0c-a26b-768a7c54b993"},"approval":{"id":"2d67a295-5c97-438e-8b90-0954270e3b1d","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; opportunity AI input binds provider exposure and owner approval (533072.522284ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 689407.664326
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:9189
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; opportunity AI input binds provider exposure and owner approval (533072.522284ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'refused'
+  - 'executed'
+  
+      at agentDoorAIInputProof (/workspace/run-orbit/tests/support/agent-door-ai-input-proof.ts:75:103)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorProof (/workspace/run-orbit/tests/support/agent-door-proof.ts:224:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit/tests/core/managed-owner.test.ts:167:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'refused',
+    expected: 'executed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,1504 @@
+[WebServer] (node:16655) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] 
+[WebServer]  ⛅️ wrangler 4.129.1
+[WebServer] ────────────────────
+[WebServer] Your Worker has access to the following bindings:
+[WebServer] Binding                                        Resource                  Mode
+[WebServer] env.DB (orbit-local-db)                        D1 Database               local
+[WebServer] env.ASSETS                                     Assets                    local
+[WebServer] env.MAIL_PROVIDER ("sendgrid")                 Environment Variable      local
+[WebServer] env.MAIL_FROM ("")                             Environment Variable      local
+[WebServer] env.MAIL_RELAY_URL ("")                        Environment Variable      local
+[WebServer] env.AUTH_ORIGIN ("(hidden)")                   Environment Variable      local
+[WebServer] env.AUTH_LOCAL ("(hidden)")                    Environment Variable      local
+[WebServer] env.SESSION_SECRET ("(hidden)")                Environment Variable      local
+[WebServer] env.OWNER_EMAIL ("(hidden)")                   Environment Variable      local
+[WebServer] env.ORBIT_ENCRYPTION_KEY ("(hidden)")          Environment Variable      local
+[WebServer] env.CAPTURE_MAIL_ADDRESS ("(hidden)")          Environment Variable      local
+[WebServer] 
+[WebServer] Attaching additional modules:
+[WebServer] ┌──────────────────────────────────────────────────────────┬──────┬─────────────┐
+[WebServer] │ Name                                                     │ Type │ Size        │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ClientOnly-BNeYPPGG.js                            │ esm  │ 1.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/DocsPage-9YoJ-ORR.js                              │ esm  │ 11.42 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/Match-BkNmErdU.js                                 │ esm  │ 11.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/OrbitMark-d_5d-vTy.js                             │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ScrollRestoration-sU0zrpFz.js                     │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/SiteFooter-DvZfbAE2.js                            │ esm  │ 4.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/__23tanstack-start-server-fn-resolver-CLf1TodQ.js │ esm  │ 1.84 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_tanstack-start-manifest_v-1VXtTBUC.js            │ esm  │ 19.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_virtual_orbit-docs-BzWq8o6e.js                   │ esm  │ 3.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/action-tooltip-RjDxnQNV.js                        │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agent-door-NkLeSo7H.js                            │ esm  │ 1082.99 KiB │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agents-CoD5X6dg.js                                │ esm  │ 27.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/api-credentials-B_Cqxvz7.js                       │ esm  │ 13.46 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-DacOY3Cu.js                                   │ esm  │ 1.17 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-KqJUtME-.js                                   │ esm  │ 25.37 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-access-UevSSqGT.js                            │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.access-DfSw43is.js                            │ esm  │ 3.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-DCuwL75l.js                    │ esm  │ 2.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-sTVFMpXc.js                    │ esm  │ 20.03 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.brief-Dm4x4nGZ.js                             │ esm  │ 14.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies._id-CsYbR5ri.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.index-Dml7bvA_.js                   │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.new-DfNcrAfq.js                     │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts._id-ulpaGp4I.js                      │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.index-CVtNksfv.js                    │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.new-D78D8YR2.js                      │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-BBvAqGeu.js                    │ esm  │ 0.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-Cq3jyEY7.js                    │ esm  │ 89.98 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.drafts._id-A_Jo7-Id.js                        │ esm  │ 37.96 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-B3zUnucP.js                             │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-Bwpi0Kyd.js                             │ esm  │ 9.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.meetings._id-BKat7m12.js                      │ esm  │ 17.57 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.notifications-dZU62AzF.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities._id-BpYcpT43.js                 │ esm  │ 36.61 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.index-HEEOM4ke.js               │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.new-DIGyR0Xu.js                 │ esm  │ 7.33 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-14vYkPAV.js                       │ esm  │ 1.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-IU4KwVDo.js                       │ esm  │ 48.43 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-C6s0Q1PX.js                  │ esm  │ 32.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-H2NHOVgN.js                  │ esm  │ 0.74 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.index-DShCvz0T.js                     │ esm  │ 11.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.review-Sp7hkVAf.js                            │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings-DOM7GCyE.js                          │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.connect._method-BBy9_Ux0.js  │ esm  │ 64.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.index-C-j0uTZY.js            │ esm  │ 67.01 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.import-D453tBV1.js              │ esm  │ 32.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.index-DQ1Ns8PX.js               │ esm  │ 39.18 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.forms-BdMRHtwj.js                    │ esm  │ 6.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.integrations-BMgI27Ya.js             │ esm  │ 57.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.index-CxOvfzDS.js               │ esm  │ 42.25 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.library-4GRVsEaB.js             │ esm  │ 11.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.pipeline-DPPa0PTn.js                 │ esm  │ 114.10 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.team-B1_s91VS.js                     │ esm  │ 21.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.workspace-Cs0rIOz8.js                │ esm  │ 17.20 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.shared-records-DES18p9Z.js                    │ esm  │ 18.32 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks-PTQkCNv8.js                             │ esm  │ 33.29 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks._id-MYoeH4yI.js                         │ esm  │ 0.31 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks.index-km1iAJOl.js                       │ esm  │ 0.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/archive-maintenance-0ptG7VLD.js                   │ esm  │ 0.68 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/area-ByABIaMR.js                                  │ esm  │ 0.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/audit-value-Cmzgl54E.js                           │ esm  │ 2.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/booking-recipe-DriLO5i7.js                        │ esm  │ 14.58 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/bootstrap-nbrjxEdR.js                             │ esm  │ 1.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-copy-field-BPIzE77V.js                    │ esm  │ 2.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-BfosQkGA.js                     │ esm  │ 6.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-ugoM2JBb.js                     │ esm  │ 10.22 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-scope-BZxLId-o.js                         │ esm  │ 16.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-console-pyYIBp-f.js                  │ esm  │ 22.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-home-CJv8zOH5.js                     │ esm  │ 2.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/config-BvZMsKZk.js                                │ esm  │ 1.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-gmail-BJzcarrn.js                         │ esm  │ 14.41 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-outlook-BCS77jZC.js                       │ esm  │ 15.17 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connected-applications-4r0xlPNH.js                │ esm  │ 7.93 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/console-B7bGfpP5.js                               │ esm  │ 39.38 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/contracts-BtCf-B28.js                             │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerFn-LbQwuMn2.js                        │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerRpc-clVF8hjL.js                       │ esm  │ 0.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createSsrRpc-D693fU-4.js                          │ esm  │ 0.65 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/csv-DT5lwxlV.js                                   │ esm  │ 7.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/customer-record-DpNBwmrA.js                       │ esm  │ 27.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dashboard-dialogs-CMJh80nw.js                     │ esm  │ 5.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/data-value-CcFRPSWe.js                            │ esm  │ 3.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/definition-editor-ePC42yz6.js                     │ esm  │ 10.75 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/delegation-protocol-hnxCZcAC.js                   │ esm  │ 12.21 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-BhHswA5L.js                                  │ esm  │ 0.42 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-DKkJa9Qx.js                                  │ esm  │ 10.60 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-djRi2O-j.js                                  │ esm  │ 13.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-story-DB1zjGD4.js                            │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dependencies-BtormY-5.js                          │ esm  │ 455.07 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/deploy-environment-CyJIxpyU.js                    │ esm  │ 1.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/display-BTGvaqAw.js                               │ esm  │ 3.90 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dist-BTbwg1YT.js                                  │ esm  │ 52.24 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-BMslWimc.js                            │ esm  │ 0.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-rG1JVNqt.js                            │ esm  │ 0.66 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-B_c4oBdC.js                            │ esm  │ 0.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-DprG3Hp7.js                            │ esm  │ 0.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/draft-content-fields-BwuhSxUW.js                  │ esm  │ 2.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/effects-MVU-qm28.js                               │ esm  │ 11.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/empty-plugin-adapters-D_0twvAa.js                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/entry-privacy-BjqU5iwC.js                         │ esm  │ 1.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/errors-BFt3LERE.js                                │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/field-BS9JYdJf.js                                 │ esm  │ 5.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/filter-panel-CdUrsZR0.js                          │ esm  │ 3.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/formatters-rVuYxtfg.js                            │ esm  │ 3.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/getting-started-Cwd6-n8X.js                       │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-entries-DJeJ_4B1.js                         │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-fields-BgEVd1ti.js                          │ esm  │ 2.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/group-labels-LYEagHHb.js                          │ esm  │ 15.77 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/hash-target-CAhm8k_U.js                           │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-C_F3I_HS.js                              │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-DyE1ZQtM.js                              │ esm  │ 279.15 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ids-BAIcZZAO.js                                   │ esm  │ 5.67 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/import-provenance-VeYQoJa7.js                     │ esm  │ 1.80 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/inline-confirm-VrNdAKGe.js                        │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/invariant-B8Adqqro.js                             │ esm  │ 8.25 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/jsx-runtime-CE-71699.js                           │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/lazyRouteComponent-C7S7zf_B.js                    │ esm  │ 10.28 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/leaf-Cweyejhj.js                                  │ esm  │ 1.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/legacy-database-5VDg84z_.js                       │ esm  │ 20.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/library-api-DSIVEDki.js                           │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-BzwgC-ej.js                                  │ esm  │ 6.81 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-card-BEVq3gTu.js                             │ esm  │ 1.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/live-edit-runtime-BEEYGG7d.js                     │ esm  │ 15.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-BatU41IJ.js                                  │ esm  │ 1.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-C6L7s_Ur.js                                  │ esm  │ 1.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loader-BtfZeYgf.js                                │ esm  │ 1.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-Bl4sqtVY.js                               │ esm  │ 1.03 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-D7-aRNMT.js                               │ esm  │ 3.43 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/manifest-BL6Vk_kh.js                              │ esm  │ 107.04 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/menu-button-TSwrn_pT.js                           │ esm  │ 2.44 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/moving-in-BnyYZkZi.js                             │ esm  │ 11.66 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/nav-DipCmYqs.js                                   │ esm  │ 10.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-DhdZhR3a.js                             │ esm  │ 0.92 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-Dn4IjaDq.js                             │ esm  │ 20.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operations-CpkrLaB8.js                            │ esm  │ 35.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-api-DxBkyyF6.js                          │ esm  │ 4.39 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-dialog-C3vhMcON.js                       │ esm  │ 4.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-shell-CulCUAir.js                        │ esm  │ 30.78 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-loader-BSVdDl-D.js                          │ esm  │ 1.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-steps-Dp8sLbbn.js                           │ esm  │ 12.88 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/page-DAjpD53F.js                                  │ esm  │ 11.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/path-E273zKfp.js                                  │ esm  │ 4.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/policy-BZip83h2.js                                │ esm  │ 6.96 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/presentation-date-C5JaOceZ.js                     │ esm  │ 4.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/public-config-Bq9SmcRB.js                         │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/query-policy-BaOf1uGz.js                          │ esm  │ 4.75 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-api-Zzt6F7nh.js                            │ esm  │ 16.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-create-BznnU6r7.js                         │ esm  │ 6.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-foot-xyJdT3T5.js                           │ esm  │ 138.64 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-link-picker-BivpH6-3.js                    │ esm  │ 8.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-policies-DtEsMD6y.js                       │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-presentation-CgJQCol_.js                   │ esm  │ 0.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-search-field-v0k2Idck.js                   │ esm  │ 2.69 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-selection-D8VRdzbf.js                      │ esm  │ 2.40 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-api-CvUTuUw8.js                           │ esm  │ 0.62 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-page-CJjWz-cs.js                          │ esm  │ 23.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-query-Dl0Bj-A-.js                         │ esm  │ 1.54 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/redirect-BDbpra0T.js                              │ esm  │ 1.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-format-Dcm94Lsm.js                         │ esm  │ 0.85 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-population-BNDGHvo0.js                     │ esm  │ 5.64 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-BVi4JSCH.js                            │ esm  │ 35.54 KiB   │
+[WebServer] ├────────────────�[WebServer] �─────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-C0zcmiHF.js                            │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-Dv12pOtT.js                            │ esm  │ 26.89 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/request.server-C-aC5z23.js                        │ esm  │ 1.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/results-B417Ewnz.js                               │ esm  │ 18.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/review-line-CnCmW1LW.js                           │ esm  │ 1.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/root-BkKgunb-.js                                  │ esm  │ 0.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/router-DQ2ZwaGs.js                                │ esm  │ 40.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/rows-SEeYyFWB.js                                  │ esm  │ 7.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/run-locally-DSjJAGDo.js                           │ esm  │ 27.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-definition-TzrioCnt.js                      │ esm  │ 7.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-format-Cjp0gL-8.js                          │ esm  │ 0.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-result-BSqxLjx5.js                          │ esm  │ 8.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/save-failure-CgiH83yI.js                          │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/saved-label-BqrWfj8c.js                           │ esm  │ 0.49 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/schemas-BAlMQMkc.js                               │ esm  │ 97.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/scroll-restoration-BqgoNT-J.js                    │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/server-DxHlneGL.js                                │ esm  │ 13.02 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/service-B6yVs117.js                               │ esm  │ 8.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-Bfq78cbL.js                                 │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-BpeDqf-g.js                                 │ esm  │ 5.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-line-Cu8MbAAV.js                            │ esm  │ 1.99 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/signals-and-mail-CohLsW3S.js                      │ esm  │ 12.36 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/start-Bfr6pcKA.js                                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/time-BbdsKiJ1.js                                  │ esm  │ 5.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/today-api-C1y-6LgZ.js                             │ esm  │ 1.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/trial-owner-CQSsSCIq.js                           │ esm  │ 20.11 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/undo-snapshot-Camhubak.js                         │ esm  │ 373.22 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/unit-3F4yLeNA.js                                  │ esm  │ 0.48 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/updating-Z-m0LAz7.js                              │ esm  │ 9.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-operator-resource-D2D8ngHP.js                 │ esm  │ 1.26 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-workspace-settings-BtqJu9dQ.js                │ esm  │ 0.82 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useMatch-UPn4MfhK.js                              │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useParams-BFaT5tXk.js                             │ esm  │ 1.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useRouterState-M73zDL0m.js                        │ esm  │ 1.04 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSearch-rajMEgbd.js                             │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSelector-DTP4DdB8.js                           │ esm  │ 22.99 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/utils-CsV-5Usq.js                                 │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workbench-api-BZI7VJRn.js                         │ esm  │ 0.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workflows-types-B_Azkf1H.js                       │ esm  │ 4.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ Total (200 modules)                                      │      │ 4542.22 KiB │
+[WebServer] └──────────────────────────────────────────────────────────┴──────┴─────────────┘
+[WebServer] ⎔ Starting local server...
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+[WebServer] Wrangler detected this dev session is running in an AI agent.
+[WebServer] The Local Explorer API is available at http://127.0.0.1:8722/cdn-cgi/local/explorer/api
+[WebServer] Useful routes:
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/workers - local Workers and bindings
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/storage/kv/namespaces - KV namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/d1/database - D1 databases
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/r2/buckets - R2 buckets
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workers/durable_objects/namespaces - Durable Object namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workflows - Workflows
+[WebServer]   POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query - run a read-only SQL query (SELECT/WITH only) over captured request traces and console logs. Tables: spans, logs (read attributes via json(attributes)). Example:
+[WebServer]     curl -X POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query -H 'Content-Type: application/json' -d '{"sql":"SELECT service, name, outcome, duration_ms FROM spans WHERE parent_id IS NULL LIMIT 20"}'
+[WebServer] If the routes above don't cover what you need, fetch the full OpenAPI schema (large - use only as a last resort):
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api - OpenAPI schema
+[WebServer] [wrangler:info] Ready on http://127.0.0.1:42965
+[WebServer] [wrangler:info] GET /health 200 OK (1213ms)
+[WebServer] [wrangler:info] GET / 200 OK (618ms)
+
+Running 1 test using 1 worker
+
+(node:16710) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] 
+[WebServer]  ⛅️ wrangler 4.129.1
+[WebServer] ────────────────────
+[WebServer] Your Worker has access to the following bindings:
+[WebServer] Binding                                        Resource                  Mode
+[WebServer] env.DB (orbit-local-db)                        D1 Database               local
+[WebServer] env.ASSETS                                     Assets                    local
+[WebServer] env.MAIL_PROVIDER ("sendgrid")                 Environment Variable      local
+[WebServer] env.MAIL_FROM ("")                             Environment Variable      local
+[WebServer] env.MAIL_RELAY_URL ("")                        Environment Variable      local
+[WebServer] env.AUTH_ORIGIN ("(hidden)")                   Environment Variable      local
+[WebServer] env.AUTH_LOCAL ("(hidden)")                    Environment Variable      local
+[WebServer] env.SESSION_SECRET ("(hidden)")                Environment Variable      local
+[WebServer] env.OWNER_EMAIL ("(hidden)")                   Environment Variable      local
+[WebServer] env.ORBIT_ENCRYPTION_KEY ("(hidden)")          Environment Variable      local
+[WebServer] env.CAPTURE_MAIL_ADDRESS ("(hidden)")          Environment Variable      local
+[WebServer] 
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+[WebServer] Wrangler detected this dev session is running in an AI agent.
+[WebServer] The Local Explorer API is available at http://127.0.0.1:8722/cdn-cgi/local/explorer/api
+[WebServer] Useful routes:
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/workers - local Workers and bindings
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/storage/kv/namespaces - KV namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/d1/database - D1 databases
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/r2/buckets - R2 buckets
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workers/durable_objects/namespaces - Durable Object namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workflows - Workflows
+[WebServer]   POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query - run a read-only SQL query (SELECT/WITH only) over captured request traces and console logs. Tables: spans, logs (read attributes via json(attributes)). Example:
+[WebServer]     curl -X POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query -H 'Content-Type: application/json' -d '{"sql":"SELECT service, name, outcome, duration_ms FROM spans WHERE parent_id IS NULL LIMIT 20"}'
+[WebServer] If the routes above don't cover what you need, fetch the full OpenAPI schema (large - use only as a last resort):
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api - OpenAPI schema
+[WebServer] Attaching additional modules:
+[WebServer] ┌──────────────────────────────────────────────────────────┬──────┬─────────────┐
+[WebServer] │ Name                                                     │ Type │ Size        │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ClientOnly-BNeYPPGG.js                            │ esm  │ 1.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/DocsPage-9YoJ-ORR.js                              │ esm  │ 11.42 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/Match-BkNmErdU.js                                 │ esm  │ 11.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/OrbitMark-d_5d-vTy.js                             │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ScrollRestoration-sU0zrpFz.js                     │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/SiteFooter-DvZfbAE2.js                            │ esm  │ 4.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/__23tanstack-start-server-fn-resolver-CLf1TodQ.js │ esm  │ 1.84 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_tanstack-start-manifest_v-1VXtTBUC.js            │ esm  │ 19.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_virtual_orbit-docs-BzWq8o6e.js                   │ esm  │ 3.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/action-tooltip-RjDxnQNV.js                        │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agent-door-NkLeSo7H.js                            │ esm  │ 1082.99 KiB │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agents-CoD5X6dg.js                                │ esm  │ 27.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/api-credentials-B_Cqxvz7.js                       │ esm  │ 13.46 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-DacOY3Cu.js                                   │ esm  │ 1.17 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-KqJUtME-.js                                   │ esm  │ 25.37 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-access-UevSSqGT.js                            │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.access-DfSw43is.js                            │ esm  │ 3.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-DCuwL75l.js                    │ esm  │ 2.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-sTVFMpXc.js                    │ esm  │ 20.03 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.brief-Dm4x4nGZ.js                             │ esm  │ 14.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies._id-CsYbR5ri.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.index-Dml7bvA_.js                   │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.new-DfNcrAfq.js                     │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts._id-ulpaGp4I.js                      │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.index-CVtNksfv.js                    │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.new-D78D8YR2.js                      │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-BBvAqGeu.js                    │ esm  │ 0.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-Cq3jyEY7.js                    │ esm  │ 89.98 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.drafts._id-A_Jo7-Id.js                        │ esm  │ 37.96 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-B3zUnucP.js                             │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-Bwpi0Kyd.js                             │ esm  │ 9.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.meetings._id-BKat7m12.js                      │ esm  │ 17.57 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.notifications-dZU62AzF.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities._id-BpYcpT43.js                 │ esm  │ 36.61 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.index-HEEOM4ke.js               │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.new-DIGyR0Xu.js                 │ esm  │ 7.33 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-14vYkPAV.js                       │ esm  │ 1.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-IU4KwVDo.js                       │ esm  │ 48.43 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-C6s0Q1PX.js                  │ esm  │ 32.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-H2NHOVgN.js                  │ esm  │ 0.74 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.index-DShCvz0T.js                     │ esm  │ 11.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.review-Sp7hkVAf.js                            │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings-DOM7GCyE.js                          │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.connect._method-BBy9_Ux0.js  │ esm  │ 64.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.index-C-j0uTZY.js            │ esm  │ 67.01 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.import-D453tBV1.js              │ esm  │ 32.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.index-DQ1Ns8PX.js               │ esm  │ 39.18 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.forms-BdMRHtwj.js                    │ esm  │ 6.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.integrations-BMgI27Ya.js             │ esm  │ 57.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.index-CxOvfzDS.js               │ esm  │ 42.25 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.library-4GRVsEaB.js             │ esm  │ 11.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.pipeline-DPPa0PTn.js                 │ esm  │ 114.10 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.team-B1_s91VS.js                     │ esm  │ 21.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.workspace-Cs0rIOz8.js                │ esm  │ 17.20 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.shared-records-DES18p9Z.js                    │ esm  │ 18.32 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks-PTQkCNv8.js                             │ esm  │ 33.29 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks._id-MYoeH4yI.js                         │ esm  │ 0.31 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks.index-km1iAJOl.js                       │ esm  │ 0.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/archive-maintenance-0ptG7VLD.js                   │ esm  │ 0.68 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/area-ByABIaMR.js                                  │ esm  │ 0.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/audit-value-Cmzgl54E.js                           │ esm  │ 2.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/booking-recipe-DriLO5i7.js                        │ esm  │ 14.58 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/bootstrap-nbrjxEdR.js                             │ esm  │ 1.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-copy-field-BPIzE77V.js                    │ esm  │ 2.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-BfosQkGA.js                     │ esm  │ 6.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-ugoM2JBb.js                     │ esm  │ 10.22 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-scope-BZxLId-o.js                         │ esm  │ 16.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-console-pyYIBp-f.js                  │ esm  │ 22.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-home-CJv8zOH5.js                     │ esm  │ 2.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/config-BvZMsKZk.js                                │ esm  │ 1.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-gmail-BJzcarrn.js                         │ esm  │ 14.41 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-outlook-BCS77jZC.js                       │ esm  │ 15.17 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connected-applications-4r0xlPNH.js                │ esm  │ 7.93 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/console-B7bGfpP5.js                               │ esm  │ 39.38 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/contracts-BtCf-B28.js                             │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerFn-LbQwuMn2.js                        │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerRpc-clVF8hjL.js                       │ esm  │ 0.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createSsrRpc-D693fU-4.js                          │ esm  │ 0.65 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/csv-DT5lwxlV.js                                   │ esm  │ 7.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/customer-record-DpNBwmrA.js                       │ esm  │ 27.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dashboard-dialogs-CMJh80nw.js                     │ esm  │ 5.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/data-value-CcFRPSWe.js                            │ esm  │ 3.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/definition-editor-ePC42yz6.js                     │ esm  │ 10.75 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/delegation-protocol-hnxCZcAC.js                   │ esm  │ 12.21 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-BhHswA5L.js                                  │ esm  │ 0.42 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-DKkJa9Qx.js                                  │ esm  │ 10.60 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-djRi2O-j.js                                  │ esm  │ 13.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-story-DB1zjGD4.js                            │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dependencies-BtormY-5.js                          │ esm  │ 455.07 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/deploy-environment-CyJIxpyU.js                    │ esm  │ 1.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/display-BTGvaqAw.js                               │ esm  │ 3.90 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dist-BTbwg1YT.js                                  │ esm  │ 52.24 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-BMslWimc.js                            │ esm  │ 0.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-rG1JVNqt.js                            │ esm  │ 0.66 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-B_c4oBdC.js                            │ esm  │ 0.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-DprG3Hp7.js                            │ esm  │ 0.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/draft-content-fields-BwuhSxUW.js                  │ esm  │ 2.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/effects-MVU-qm28.js                               │ esm  │ 11.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/empty-plugin-adapters-D_0twvAa.js                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/entry-privacy-BjqU5iwC.js                         │ esm  │ 1.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/errors-BFt3LERE.js                                │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/field-BS9JYdJf.js                                 │ esm  │ 5.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/filter-panel-CdUrsZR0.js                          │ esm  │ 3.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/formatters-rVuYxtfg.js                            │ esm  │ 3.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/getting-started-Cwd6-n8X.js                       │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-entries-DJeJ_4B1.js                         │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-fields-BgEVd1ti.js                          │ esm  │ 2.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/group-labels-LYEagHHb.js                          │ esm  │ 15.77 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/hash-target-CAhm8k_U.js                           │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-C_F3I_HS.js                              │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-DyE1ZQtM.js                              │ esm  │ 279.15 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ids-BAIcZZAO.js                                   │ esm  │ 5.67 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/import-provenance-VeYQoJa7.js                     │ esm  │ 1.80 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/inline-confirm-VrNdAKGe.js                        │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/invariant-B8Adqqro.js                             │ esm  │ 8.25 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/jsx-runtime-CE-71699.js                           │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/lazyRouteComponent-C7S7zf_B.js                    │ esm  │ 10.28 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/leaf-Cweyejhj.js                                  │ esm  │ 1.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/legacy-database-5VDg84z_.js                       │ esm  │ 20.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/library-api-DSIVEDki.js                           │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-BzwgC-ej.js                                  │ esm  │ 6.81 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-card-BEVq3gTu.js                             │ esm  │ 1.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/live-edit-runtime-BEEYGG7d.js                     │ esm  │ 15.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-BatU41IJ.js                                  │ esm  │ 1.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-C6L7s_Ur.js                                  │ esm  │ 1.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loader-BtfZeYgf.js                                │ esm  │ 1.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-Bl4sqtVY.js                               │ esm  │ 1.03 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-D7-aRNMT.js                               │ esm  │ 3.43 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/manifest-BL6Vk_kh.js                              │ esm  │ 107.04 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/menu-button-TSwrn_pT.js                           │ esm  │ 2.44 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/moving-in-BnyYZkZi.js                             │ esm  │ 11.66 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/nav-DipCmYqs.js                                   │ esm  │ 10.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-DhdZhR3a.js                             │ esm  │ 0.92 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-Dn4IjaDq.js                             │ esm  │ 20.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operations-CpkrLaB8.js                            │ esm  │ 35.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-api-DxBkyyF6.js                          │ esm  │ 4.39 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-dialog-C3vhMcON.js                       │ esm  │ 4.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-shell-CulCUAir.js                        │ esm  │ 30.78 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-loader-BSVdDl-D.js                          │ esm  │ 1.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-steps-Dp8sLbbn.js                           │ esm  │ 12.88 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/page-DAjpD53F.js                                  │ esm  │ 11.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/path-E273zKfp.js                                  │ esm  │ 4.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/policy-BZip83h2.js                                │ esm  │ 6.96 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/presentation-date-C5JaOceZ.js                     │ esm  │ 4.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/public-config-Bq9SmcRB.js                         │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/query-policy-BaOf1uGz.js                          │ esm  │ 4.75 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-api-Zzt6F7nh.js                            │ esm  │ 16.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-create-BznnU6r7.js                         │ esm  │ 6.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-foot-xyJdT3T5.js                           │ esm  │ 138.64 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-link-picker-BivpH6-3.js                    │ esm  │ 8.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-policies-DtEsMD6y.js                       │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-presentation-CgJQCol_.js                   │ esm  │ 0.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-search-field-v0k2Idck.js                   │ esm  │ 2.69 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-selection-D8VRdzbf.js                      │ esm  │ 2.40 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-api-CvUTuUw8.js                           │ esm  │ 0.62 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-page-CJjWz-cs.js                          │ esm  │ 23.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-query-Dl0Bj-A-.js                         │ esm  │ 1.54 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/redirect-BDbpra0T.js                              │ esm  │ 1.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-format-Dcm94Lsm.js                         │ esm  │ 0.85 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-population-BNDGHvo0.js                     │ esm  │ 5.64 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-BVi4JSCH.js                            │ esm  │ 35.54 KiB   │
+[WebServer] ├────────────────�[WebServer] �─────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-C0zcmiHF.js                            │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-Dv12pOtT.js                            │ esm  │ 26.89 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/request.server-C-aC5z23.js                        │ esm  │ 1.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/results-B417Ewnz.js                               │ esm  │ 18.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/review-line-CnCmW1LW.js                           │ esm  │ 1.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/root-BkKgunb-.js                                  │ esm  │ 0.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/router-DQ2ZwaGs.js                                │ esm  │ 40.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/rows-SEeYyFWB.js                                  │ esm  │ 7.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/run-locally-DSjJAGDo.js                           │ esm  │ 27.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-definition-TzrioCnt.js                      │ esm  │ 7.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-format-Cjp0gL-8.js                          │ esm  │ 0.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-result-BSqxLjx5.js                          │ esm  │ 8.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/save-failure-CgiH83yI.js                          │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/saved-label-BqrWfj8c.js                           │ esm  │ 0.49 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/schemas-BAlMQMkc.js                               │ esm  │ 97.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/scroll-restoration-BqgoNT-J.js                    │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/server-DxHlneGL.js                                │ esm  │ 13.02 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/service-B6yVs117.js                               │ esm  │ 8.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-Bfq78cbL.js                                 │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-BpeDqf-g.js                                 │ esm  │ 5.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-line-Cu8MbAAV.js                            │ esm  │ 1.99 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/signals-and-mail-CohLsW3S.js                      │ esm  │ 12.36 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/start-Bfr6pcKA.js                                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/time-BbdsKiJ1.js                                  │ esm  │ 5.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/today-api-C1y-6LgZ.js                             │ esm  │ 1.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/trial-owner-CQSsSCIq.js                           │ esm  │ 20.11 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/undo-snapshot-Camhubak.js                         │ esm  │ 373.22 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/unit-3F4yLeNA.js                                  │ esm  │ 0.48 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/updating-Z-m0LAz7.js                              │ esm  │ 9.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-operator-resource-D2D8ngHP.js                 │ esm  │ 1.26 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-workspace-settings-BtqJu9dQ.js                │ esm  │ 0.82 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useMatch-UPn4MfhK.js                              │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useParams-BFaT5tXk.js                             │ esm  │ 1.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useRouterState-M73zDL0m.js                        │ esm  │ 1.04 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSearch-rajMEgbd.js                             │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSelector-DTP4DdB8.js                           │ esm  │ 22.99 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/utils-CsV-5Usq.js                                 │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workbench-api-BZI7VJRn.js                         │ esm  │ 0.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workflows-types-B_Azkf1H.js                       │ esm  │ 4.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ Total (200 modules)                                      │      │ 4542.22 KiB │
+[WebServer] └──────────────────────────────────────────────────────────┴──────┴─────────────┘
+[WebServer] ⎔ Starting local server...
+[WebServer] [wrangler:info] Ready on http://127.0.0.1:35159
+[WebServer] [wrangler:info] GET /health 200 OK (1328ms)
+[WebServer] [wrangler:info] GET /app/assistance/01J0000000000000000000000F 200 OK (105ms)
+[WebServer] [wrangler:info] GET /fonts/fonts.css 200 OK (17ms)
+[WebServer] [wrangler:info] GET /assets/styles-Bh8VDcSi.css 200 OK (32ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 200 OK (23ms)
+[WebServer] [wrangler:info] GET /assets/index-fvHalfId.css 200 OK (35ms)
+[WebServer] [wrangler:info] GET /assets/app.assistance-BRb8nvgf.css 200 OK (45ms)
+[WebServer] [wrangler:info] GET /assets/index-DUzTjayy.js 200 OK (44ms)
+[WebServer] [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 200 OK (62ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BiUvmidD.js 200 OK (53ms)
+[WebServer] [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 200 OK (31ms)
+[WebServer] [wrangler:info] GET /assets/not-found-i5RsCZif.js 200 OK (42ms)
+[WebServer] [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 200 OK (10ms)
+[WebServer] [wrangler:info] GET /assets/useMatch-DakL_zVg.js 200 OK (5ms)
+[WebServer] [wrangler:info] GET /assets/link-gEQj_RLU.js 200 OK (7ms)
+[WebServer] [wrangler:info] GET /assets/root-DLTE-HSj.js 200 OK (11ms)
+[WebServer] [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 200 OK (17ms)
+[WebServer] [wrangler:info] GET /assets/leaf-BB-HABpD.js 200 OK (15ms)
+[WebServer] [wrangler:info] GET /assets/unit-9lm_J1zs.js 200 OK (20ms)
+[WebServer] [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 200 OK (18ms)
+[WebServer] [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 200 OK (9ms)
+[WebServer] [wrangler:info] GET /assets/loaders-C2Hia3qs.js 200 OK (22ms)
+[WebServer] [wrangler:info] GET /assets/load-DFXkEZ8q.js 200 OK (20ms)
+[WebServer] [wrangler:info] GET /assets/app-8CpGCf4q.js 200 OK (24ms)
+[WebServer] [wrangler:info] GET /assets/presentation-date-39KTTlQj.js 200 OK (25ms)
+[WebServer] [wrangler:info] GET /assets/app.assistance._id-IpdkTNjv.js 200 OK (17ms)
+[WebServer] [wrangler:info] GET /assets/data-value-DEhKu7lG.js 200 OK (18ms)
+[WebServer] [wrangler:info] GET /assets/operator-api-D0OZogix.js 200 OK (11ms)
+[WebServer] [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 200 OK (6ms)
+[WebServer] [wrangler:info] GET /assets/bricolage-grotesque-latin-opsz-normal-Cre6nC2_.woff2 200 OK (10ms)
+[WebServer] [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 200 OK (36ms)
+[WebServer] [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 200 OK (54ms)
+[WebServer] [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 200 OK (53ms)
+[WebServer] [wrangler:info] GET /assets/import-provenance-CQgpyKHO.js 200 OK (12ms)
+[WebServer] [wrangler:info] GET /favicon.svg 200 OK (11ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (26ms)
+[WebServer] [wrangler:info] GET /api/v1/opportunities/01J0000000000000000000000F 200 OK (50ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (20ms)
+[WebServer] [wrangler:info] GET /api/v1/opportunities/01J0000000000000000000000F 200 OK (54ms)
+[WebServer] [wrangler:info] POST /api/v1/assistance/preview 200 OK (61ms)
+[WebServer] [wrangler:info] GET /assets/assistance-cutout-24-607cce6690f6-DR2ZdPfN.png 200 OK (8ms)
+[WebServer] [wrangler:info] GET /assets/assistance-cutout-36-6a0a4e1e9164-B_CokIyG.png 200 OK (12ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (70ms)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] 
+[WebServer]  ⛅️ wrangler 4.129.1
+[WebServer] ────────────────────
+[WebServer] Your Worker has access to the following bindings:
+[WebServer] Binding                                        Resource                  Mode
+[WebServer] env.DB (orbit-local-db)                        D1 Database               local
+[WebServer] env.ASSETS                                     Assets                    local
+[WebServer] env.MAIL_PROVIDER ("sendgrid")                 Environment Variable      local
+[WebServer] env.MAIL_FROM ("")                             Environment Variable      local
+[WebServer] env.MAIL_RELAY_URL ("")                        Environment Variable      local
+[WebServer] env.AUTH_ORIGIN ("(hidden)")                   Environment Variable      local
+[WebServer] env.AUTH_LOCAL ("(hidden)")                    Environment Variable      local
+[WebServer] env.SESSION_SECRET ("(hidden)")                Environment Variable      local
+[WebServer] env.OWNER_EMAIL ("(hidden)")                   Environment Variable      local
+[WebServer] env.ORBIT_ENCRYPTION_KEY ("(hidden)")          Environment Variable      local
+[WebServer] env.CAPTURE_MAIL_ADDRESS ("(hidden)")          Environment Variable      local
+[WebServer] 
+[WebServer] Attaching additional modules:
+[WebServer] ┌──────────────────────────────────────────────────────────┬──────┬─────────────┐
+[WebServer] │ Name                                                     │ Type │ Size        │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ClientOnly-BNeYPPGG.js                            │ esm  │ 1.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/DocsPage-9YoJ-ORR.js                              │ esm  │ 11.42 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/Match-BkNmErdU.js                                 │ esm  │ 11.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/OrbitMark-d_5d-vTy.js                             │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ScrollRestoration-sU0zrpFz.js                     │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/SiteFooter-DvZfbAE2.js                            │ esm  │ 4.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/__23tanstack-start-server-fn-resolver-CLf1TodQ.js │ esm  │ 1.84 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_tanstack-start-manifest_v-1VXtTBUC.js            │ esm  │ 19.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/_virtual_orbit-docs-BzWq8o6e.js                   │ esm  │ 3.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/action-tooltip-RjDxnQNV.js                        │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agent-door-NkLeSo7H.js                            │ esm  │ 1082.99 KiB │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/agents-CoD5X6dg.js                                │ esm  │ 27.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/api-credentials-B_Cqxvz7.js                       │ esm  │ 13.46 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-DacOY3Cu.js                                   │ esm  │ 1.17 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-KqJUtME-.js                                   │ esm  │ 25.37 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app-access-UevSSqGT.js                            │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.access-DfSw43is.js                            │ esm  │ 3.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-DCuwL75l.js                    │ esm  │ 2.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.assistance._id-sTVFMpXc.js                    │ esm  │ 20.03 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.brief-Dm4x4nGZ.js                             │ esm  │ 14.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies._id-CsYbR5ri.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.index-Dml7bvA_.js                   │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.companies.new-DfNcrAfq.js                     │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts._id-ulpaGp4I.js                      │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.index-CVtNksfv.js                    │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.contacts.new-D78D8YR2.js                      │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-BBvAqGeu.js                    │ esm  │ 0.38 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.dashboards._id-Cq3jyEY7.js                    │ esm  │ 89.98 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.drafts._id-A_Jo7-Id.js                        │ esm  │ 37.96 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-B3zUnucP.js                             │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.index-Bwpi0Kyd.js                             │ esm  │ 9.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.meetings._id-BKat7m12.js                      │ esm  │ 17.57 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.notifications-dZU62AzF.js                     │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities._id-BpYcpT43.js                 │ esm  │ 36.61 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.index-HEEOM4ke.js               │ esm  │ 0.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.opportunities.new-DIGyR0Xu.js                 │ esm  │ 7.33 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-14vYkPAV.js                       │ esm  │ 1.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports._id-IU4KwVDo.js                       │ esm  │ 48.43 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-C6s0Q1PX.js                  │ esm  │ 32.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.forecast-H2NHOVgN.js                  │ esm  │ 0.74 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.reports.index-DShCvz0T.js                     │ esm  │ 11.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.review-Sp7hkVAf.js                            │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings-DOM7GCyE.js                          │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.connect._method-BBy9_Ux0.js  │ esm  │ 64.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.capture.index-C-j0uTZY.js            │ esm  │ 67.01 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.import-D453tBV1.js              │ esm  │ 32.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.data.index-DQ1Ns8PX.js               │ esm  │ 39.18 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.forms-BdMRHtwj.js                    │ esm  │ 6.09 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.integrations-BMgI27Ya.js             │ esm  │ 57.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.index-CxOvfzDS.js               │ esm  │ 42.25 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.mail.library-4GRVsEaB.js             │ esm  │ 11.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.pipeline-DPPa0PTn.js                 │ esm  │ 114.10 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.team-B1_s91VS.js                     │ esm  │ 21.68 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.settings.workspace-Cs0rIOz8.js                │ esm  │ 17.20 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.shared-records-DES18p9Z.js                    │ esm  │ 18.32 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks-PTQkCNv8.js                             │ esm  │ 33.29 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks._id-MYoeH4yI.js                         │ esm  │ 0.31 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/app.tasks.index-km1iAJOl.js                       │ esm  │ 0.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/archive-maintenance-0ptG7VLD.js                   │ esm  │ 0.68 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/area-ByABIaMR.js                                  │ esm  │ 0.70 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/audit-value-Cmzgl54E.js                           │ esm  │ 2.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/booking-recipe-DriLO5i7.js                        │ esm  │ 14.58 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/bootstrap-nbrjxEdR.js                             │ esm  │ 1.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-copy-field-BPIzE77V.js                    │ esm  │ 2.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-BfosQkGA.js                     │ esm  │ 6.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-proposals-ugoM2JBb.js                     │ esm  │ 10.22 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/capture-scope-BZxLId-o.js                         │ esm  │ 16.31 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-console-pyYIBp-f.js                  │ esm  │ 22.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/collaborator-home-CJv8zOH5.js                     │ esm  │ 2.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/config-BvZMsKZk.js                                │ esm  │ 1.55 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-gmail-BJzcarrn.js                         │ esm  │ 14.41 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connect-outlook-BCS77jZC.js                       │ esm  │ 15.17 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/connected-applications-4r0xlPNH.js                │ esm  │ 7.93 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/console-B7bGfpP5.js                               │ esm  │ 39.38 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/contracts-BtCf-B28.js                             │ esm  │ 0.30 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerFn-LbQwuMn2.js                        │ esm  │ 12.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createServerRpc-clVF8hjL.js                       │ esm  │ 0.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/createSsrRpc-D693fU-4.js                          │ esm  │ 0.65 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/csv-DT5lwxlV.js                                   │ esm  │ 7.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/customer-record-DpNBwmrA.js                       │ esm  │ 27.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dashboard-dialogs-CMJh80nw.js                     │ esm  │ 5.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/data-value-CcFRPSWe.js                            │ esm  │ 3.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/definition-editor-ePC42yz6.js                     │ esm  │ 10.75 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/delegation-protocol-hnxCZcAC.js                   │ esm  │ 12.21 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-BhHswA5L.js                                  │ esm  │ 0.42 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-DKkJa9Qx.js                                  │ esm  │ 10.60 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-djRi2O-j.js                                  │ esm  │ 13.70 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/demo-story-DB1zjGD4.js                            │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dependencies-BtormY-5.js                          │ esm  │ 455.07 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/deploy-environment-CyJIxpyU.js                    │ esm  │ 1.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/display-BTGvaqAw.js                               │ esm  │ 3.90 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/dist-BTbwg1YT.js                                  │ esm  │ 52.24 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-BMslWimc.js                            │ esm  │ 0.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs._slug-rG1JVNqt.js                            │ esm  │ 0.66 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-B_c4oBdC.js                            │ esm  │ 0.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/docs.index-DprG3Hp7.js                            │ esm  │ 0.60 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/draft-content-fields-BwuhSxUW.js                  │ esm  │ 2.29 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/effects-MVU-qm28.js                               │ esm  │ 11.00 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/empty-plugin-adapters-D_0twvAa.js                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/entry-privacy-BjqU5iwC.js                         │ esm  │ 1.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/errors-BFt3LERE.js                                │ esm  │ 0.56 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/field-BS9JYdJf.js                                 │ esm  │ 5.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/filter-panel-CdUrsZR0.js                          │ esm  │ 3.21 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/formatters-rVuYxtfg.js                            │ esm  │ 3.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/getting-started-Cwd6-n8X.js                       │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-entries-DJeJ_4B1.js                         │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/grant-fields-BgEVd1ti.js                          │ esm  │ 2.63 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/group-labels-LYEagHHb.js                          │ esm  │ 15.77 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/hash-target-CAhm8k_U.js                           │ esm  │ 2.87 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-C_F3I_HS.js                              │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/identity-DyE1ZQtM.js                              │ esm  │ 279.15 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/ids-BAIcZZAO.js                                   │ esm  │ 5.67 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/import-provenance-VeYQoJa7.js                     │ esm  │ 1.80 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/inline-confirm-VrNdAKGe.js                        │ esm  │ 2.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/invariant-B8Adqqro.js                             │ esm  │ 8.25 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/jsx-runtime-CE-71699.js                           │ esm  │ 2.78 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/lazyRouteComponent-C7S7zf_B.js                    │ esm  │ 10.28 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/leaf-Cweyejhj.js                                  │ esm  │ 1.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/legacy-database-5VDg84z_.js                       │ esm  │ 20.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/library-api-DSIVEDki.js                           │ esm  │ 0.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-BzwgC-ej.js                                  │ esm  │ 6.81 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/link-card-BEVq3gTu.js                             │ esm  │ 1.18 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/live-edit-runtime-BEEYGG7d.js                     │ esm  │ 15.08 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-BatU41IJ.js                                  │ esm  │ 1.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/load-C6L7s_Ur.js                                  │ esm  │ 1.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loader-BtfZeYgf.js                                │ esm  │ 1.88 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-Bl4sqtVY.js                               │ esm  │ 1.03 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/loaders-D7-aRNMT.js                               │ esm  │ 3.43 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/manifest-BL6Vk_kh.js                              │ esm  │ 107.04 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/menu-button-TSwrn_pT.js                           │ esm  │ 2.44 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/moving-in-BnyYZkZi.js                             │ esm  │ 11.66 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/nav-DipCmYqs.js                                   │ esm  │ 10.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-DhdZhR3a.js                             │ esm  │ 0.92 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/not-found-Dn4IjaDq.js                             │ esm  │ 20.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operations-CpkrLaB8.js                            │ esm  │ 35.64 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-api-DxBkyyF6.js                          │ esm  │ 4.39 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-dialog-C3vhMcON.js                       │ esm  │ 4.05 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/operator-shell-CulCUAir.js                        │ esm  │ 30.78 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-loader-BSVdDl-D.js                          │ esm  │ 1.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/owner-steps-Dp8sLbbn.js                           │ esm  │ 12.88 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/page-DAjpD53F.js                                  │ esm  │ 11.65 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/path-E273zKfp.js                                  │ esm  │ 4.76 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/policy-BZip83h2.js                                │ esm  │ 6.96 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/presentation-date-C5JaOceZ.js                     │ esm  │ 4.94 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/public-config-Bq9SmcRB.js                         │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/query-policy-BaOf1uGz.js                          │ esm  │ 4.75 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-api-Zzt6F7nh.js                            │ esm  │ 16.79 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-create-BznnU6r7.js                         │ esm  │ 6.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-foot-xyJdT3T5.js                           │ esm  │ 138.64 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-link-picker-BivpH6-3.js                    │ esm  │ 8.01 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-policies-DtEsMD6y.js                       │ esm  │ 2.71 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-presentation-CgJQCol_.js                   │ esm  │ 0.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-search-field-v0k2Idck.js                   │ esm  │ 2.69 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/record-selection-D8VRdzbf.js                      │ esm  │ 2.40 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-api-CvUTuUw8.js                           │ esm  │ 0.62 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-page-CJjWz-cs.js                          │ esm  │ 23.12 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/records-query-Dl0Bj-A-.js                         │ esm  │ 1.54 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/redirect-BDbpra0T.js                              │ esm  │ 1.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-format-Dcm94Lsm.js                         │ esm  │ 0.85 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/report-population-BNDGHvo0.js                     │ esm  │ 5.64 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-BVi4JSCH.js                            │ esm  │ 35.54 KiB   │
+[WebServer] ├────────────────�[WebServer] �─────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-C0zcmiHF.js                            │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/repository-Dv12pOtT.js                            │ esm  │ 26.89 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/request.server-C-aC5z23.js                        │ esm  │ 1.34 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/results-B417Ewnz.js                               │ esm  │ 18.71 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/review-line-CnCmW1LW.js                           │ esm  │ 1.41 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/root-BkKgunb-.js                                  │ esm  │ 0.24 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/router-DQ2ZwaGs.js                                │ esm  │ 40.09 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/rows-SEeYyFWB.js                                  │ esm  │ 7.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/run-locally-DSjJAGDo.js                           │ esm  │ 27.23 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-definition-TzrioCnt.js                      │ esm  │ 7.50 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-format-Cjp0gL-8.js                          │ esm  │ 0.72 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/sales-result-BSqxLjx5.js                          │ esm  │ 8.32 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/save-failure-CgiH83yI.js                          │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/saved-label-BqrWfj8c.js                           │ esm  │ 0.49 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/schemas-BAlMQMkc.js                               │ esm  │ 97.50 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/scroll-restoration-BqgoNT-J.js                    │ esm  │ 2.22 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/server-DxHlneGL.js                                │ esm  │ 13.02 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/service-B6yVs117.js                               │ esm  │ 8.20 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-Bfq78cbL.js                                 │ esm  │ 2.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-BpeDqf-g.js                                 │ esm  │ 5.98 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/setup-line-Cu8MbAAV.js                            │ esm  │ 1.99 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/signals-and-mail-CohLsW3S.js                      │ esm  │ 12.36 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/start-Bfr6pcKA.js                                 │ esm  │ 0.28 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/time-BbdsKiJ1.js                                  │ esm  │ 5.16 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/today-api-C1y-6LgZ.js                             │ esm  │ 1.47 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/trial-owner-CQSsSCIq.js                           │ esm  │ 20.11 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/undo-snapshot-Camhubak.js                         │ esm  │ 373.22 KiB  │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/unit-3F4yLeNA.js                                  │ esm  │ 0.48 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/updating-Z-m0LAz7.js                              │ esm  │ 9.36 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-operator-resource-D2D8ngHP.js                 │ esm  │ 1.26 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/use-workspace-settings-BtqJu9dQ.js                │ esm  │ 0.82 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useMatch-UPn4MfhK.js                              │ esm  │ 1.45 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useParams-BFaT5tXk.js                             │ esm  │ 1.12 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useRouterState-M73zDL0m.js                        │ esm  │ 1.04 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSearch-rajMEgbd.js                             │ esm  │ 1.07 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/useSelector-DTP4DdB8.js                           │ esm  │ 22.99 KiB   │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/utils-CsV-5Usq.js                                 │ esm  │ 0.61 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workbench-api-BZI7VJRn.js                         │ esm  │ 0.58 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ assets/workflows-types-B_Azkf1H.js                       │ esm  │ 4.19 KiB    │
+[WebServer] ├──────────────────────────────────────────────────────────┼──────┼─────────────┤
+[WebServer] │ Total (200 modules)                                      │      │ 4542.22 KiB │
+[WebServer] └──────────────────────────────────────────────────────────┴──────┴─────────────┘
+[WebServer] ⎔ Starting local server...
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+[WebServer] Wrangler detected this dev session is running in an AI agent.
+[WebServer] The Local Explorer API is available at http://127.0.0.1:8722/cdn-cgi/local/explorer/api
+[WebServer] Useful routes:
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/workers - local Workers and bindings
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/storage/kv/namespaces - KV namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/d1/database - D1 databases
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/r2/buckets - R2 buckets
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workers/durable_objects/namespaces - Durable Object namespaces
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api/workflows - Workflows
+[WebServer]   POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query - run a read-only SQL query (SELECT/WITH only) over captured request traces and console logs. Tables: spans, logs (read attributes via json(attributes)). Example:
+[WebServer]     curl -X POST http://127.0.0.1:8722/cdn-cgi/local/explorer/api/local/observability/query -H 'Content-Type: application/json' -d '{"sql":"SELECT service, name, outcome, duration_ms FROM spans WHERE parent_id IS NULL LIMIT 20"}'
+[WebServer] If the routes above don't cover what you need, fetch the full OpenAPI schema (large - use only as a last resort):
+[WebServer]   GET http://127.0.0.1:8722/cdn-cgi/local/explorer/api - OpenAPI schema
+[WebServer] [wrangler:info] Ready on http://127.0.0.1:39557
+[WebServer] [wrangler:info] GET /health 200 OK (1051ms)
+{"approval":"3085b80b-3f9a-4873-b8f8-e95ad4a9b360","draftId":"01M7723MFTHAYQZ7STED3TS0WH","previewHash":"730f6d3a7dbefefa43e69acc58d91506479e279d042c8e8c67b050de40a4c5e7","modelRequests":1}
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (432ms)
+[WebServer] [wrangler:info] GET /agents/api/approvals 200 OK (40ms)
+[WebServer] [wrangler:info] GET /api/v1/drafts 200 OK (27ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/opportunities/01J0000000000000000000000F/messages 200 OK (18ms)
+[WebServer] [wrangler:info] GET /agents/approvals/3085b80b-3f9a-4873-b8f8-e95ad4a9b360 200 OK (27ms)
+[WebServer] [wrangler:info] GET /rer-theme.css 200 OK (9ms)
+[WebServer] [wrangler:info] GET /favicon.ico 404 Not Found (56ms)
+[WebServer] [wrangler:info] GET /app/drafts/01M7723MFTHAYQZ7STED3TS0WH 200 OK (72ms)
+[WebServer] [wrangler:info] GET /fonts/fonts.css 304 Not Modified (10ms)
+[WebServer] [wrangler:info] GET /assets/library-api-CPrUOZ_u.css 200 OK (14ms)
+[WebServer] [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (14ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (39ms)
+[WebServer] [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (38ms)
+[WebServer] [wrangler:info] GET /assets/index-DUzTjayy.js 304 Not Modified (51ms)
+[WebServer] [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (56ms)
+[WebServer] [wrangler:info] GET /assets/formatters-074aKnkO.js 200 OK (31ms)
+[WebServer] [wrangler:info] GET /assets/records-api-Q8XL51nl.js 200 OK (33ms)
+[WebServer] [wrangler:info] GET /assets/app.drafts._id-CW7cHvHW.js 200 OK (41ms)
+[WebServer] [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 200 OK (28ms)
+[WebServer] [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 200 OK (28ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BiUvmidD.js 304 Not Modified (47ms)
+[WebServer] [wrangler:info] GET /assets/library-api-SfX4C9n4.js 200 OK (15ms)
+[WebServer] [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (17ms)
+[WebServer] [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (28ms)
+[WebServer] [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (27ms)
+[WebServer] [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (27ms)
+[WebServer] [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (27ms)
+[WebServer] [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (18ms)
+[WebServer] [wrangler:info] GET /assets/loaders-C2Hia3qs.js 304 Not Modified (22ms)
+[WebServer] [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (19ms)
+[WebServer] [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (28ms)
+[WebServer] [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (29ms)
+[WebServer] [wrangler:info] GET /assets/app-8CpGCf4q.js 304 Not Modified (17ms)
+[WebServer] [wrangler:info] GET /assets/presentation-date-39KTTlQj.js 304 Not Modified (11ms)
+[WebServer] [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (13ms)
+[WebServer] [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (27ms)
+[WebServer] [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (22ms)
+[WebServer] [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (24ms)
+[WebServer] [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /favicon.svg 304 Not Modified (12ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (69ms)
+[WebServer] [wrangler:info] GET /api/v1/workspace/presentation 200 OK (114ms)
+[WebServer] [wrangler:info] GET /api/v1/settings 200 OK (125ms)
+[WebServer] [wrangler:info] GET /api/v1/drafts/01M7723MFTHAYQZ7STED3TS0WH 200 OK (148ms)
+[WebServer] [wrangler:info] GET /api/v1/opportunities/01J0000000000000000000000F 200 OK (37ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/opportunities/01J0000000000000000000000F/messages 200 OK (32ms)
+[WebServer] [wrangler:info] GET /api/v1/library 200 OK (36ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/drafts/01M7723MFTHAYQZ7STED3TS0WH/approval-preview 200 OK (98ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (97ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/drafts/01M7723MFTHAYQZ7STED3TS0WH/opt-out 200 OK (109ms)
+[WebServer] [wrangler:info] GET /api/v1/library/drafts/01M7723MFTHAYQZ7STED3TS0WH/render 200 OK (113ms)
+[WebServer] [wrangler:info] GET /agents/approvals/3085b80b-3f9a-4873-b8f8-e95ad4a9b360 200 OK (30ms)
+[WebServer] [wrangler:info] GET /rer-theme.css 304 Not Modified (11ms)
+[WebServer] [wrangler:info] GET /app/drafts/01M7723MFTHAYQZ7STED3TS0WH 200 OK (57ms)
+[WebServer] [wrangler:info] GET /fonts/fonts.css 304 Not Modified (48ms)
+[WebServer] [wrangler:info] GET /assets/styles-Bh8VDcSi.css 304 Not Modified (41ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BPwNj5JD.css 304 Not Modified (42ms)
+[WebServer] [wrangler:info] GET /assets/index-fvHalfId.css 304 Not Modified (115ms)
+[WebServer] [wrangler:info] GET /assets/library-api-CPrUOZ_u.css 304 Not Modified (112ms)
+[WebServer] [wrangler:info] GET /assets/index-DUzTjayy.js 304 Not Modified (108ms)
+[WebServer] [wrangler:info] GET /assets/useSelector-C2tv9UCg.js 304 Not Modified (13ms)
+[WebServer] [wrangler:info] GET /assets/operator-shell-BiUvmidD.js 304 Not Modified (22ms)
+[WebServer] [wrangler:info] GET /assets/createServerFn-BlvoW_4I.js 304 Not Modified (24ms)
+[WebServer] [wrangler:info] GET /assets/not-found-i5RsCZif.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/useMatch-DakL_zVg.js 304 Not Modified (22ms)
+[WebServer] [wrangler:info] GET /assets/link-gEQj_RLU.js 304 Not Modified (22ms)
+[WebServer] [wrangler:info] GET /assets/preload-helper-BvQ24aq0.js 304 Not Modified (27ms)
+[WebServer] [wrangler:info] GET /assets/root-DLTE-HSj.js 304 Not Modified (16ms)
+[WebServer] [wrangler:info] GET /assets/live-edit-runtime-B1dpSnB8.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/ClientOnly-BNSM-h0a.js 304 Not Modified (16ms)
+[WebServer] [wrangler:info] GET /assets/leaf-BB-HABpD.js 304 Not Modified (12ms)
+[WebServer] [wrangler:info] GET /assets/unit-9lm_J1zs.js 304 Not Modified (18ms)
+[WebServer] [wrangler:info] GET /assets/OrbitMark-B-MTECXw.js 304 Not Modified (20ms)
+[WebServer] [wrangler:info] GET /assets/app-8CpGCf4q.js 304 Not Modified (13ms)
+[WebServer] [wrangler:info] GET /assets/loaders-C2Hia3qs.js 304 Not Modified (13ms)
+[WebServer] [wrangler:info] GET /assets/load-DFXkEZ8q.js 304 Not Modified (15ms)
+[WebServer] [wrangler:info] GET /assets/presentation-date-39KTTlQj.js 304 Not Modified (20ms)
+[WebServer] [wrangler:info] GET /assets/app.drafts._id-CW7cHvHW.js 304 Not Modified (16ms)
+[WebServer] [wrangler:info] GET /assets/useParams-CMOG7Cpc.js 304 Not Modified (20ms)
+[WebServer] [wrangler:info] GET /assets/formatters-074aKnkO.js 304 Not Modified (15ms)
+[WebServer] [wrangler:info] GET /assets/operator-api-D0OZogix.js 304 Not Modified (17ms)
+[WebServer] [wrangler:info] GET /assets/records-api-Q8XL51nl.js 304 Not Modified (16ms)
+[WebServer] [wrangler:info] GET /assets/use-operator-resource-CiGrAF0C.js 304 Not Modified (16ms)
+[WebServer] [wrangler:info] GET /assets/draft-content-fields-3LFW-mV5.js 304 Not Modified (23ms)
+[WebServer] [wrangler:info] GET /assets/workbench-api-woqQXu9H.js 304 Not Modified (8ms)
+[WebServer] [wrangler:info] GET /assets/library-api-SfX4C9n4.js 304 Not Modified (10ms)
+[WebServer] [wrangler:info] GET /assets/useRouterState-Dq8ZgnT3.js 304 Not Modified (17ms)
+[WebServer] [wrangler:info] GET /assets/useSearch-BiC5Aa1N.js 304 Not Modified (18ms)
+[WebServer] [wrangler:info] GET /favicon.svg 304 Not Modified (17ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (18ms)
+[WebServer] [wrangler:info] GET /api/v1/workspace/presentation 200 OK (87ms)
+[WebServer] [wrangler:info] GET /api/v1/settings 200 OK (87ms)
+[WebServer] [wrangler:info] GET /api/v1/drafts/01M7723MFTHAYQZ7STED3TS0WH 200 OK (96ms)
+[WebServer] [wrangler:info] GET /api/v1/opportunities/01J0000000000000000000000F 200 OK (44ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/opportunities/01J0000000000000000000000F/messages 200 OK (51ms)
+[WebServer] [wrangler:info] GET /api/v1/library 200 OK (58ms)
+[WebServer] [wrangler:info] GET /api/v1/notifications 200 OK (97ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/drafts/01M7723MFTHAYQZ7STED3TS0WH/approval-preview 200 OK (100ms)
+[WebServer] [wrangler:info] GET /api/v1/workbench/drafts/01M7723MFTHAYQZ7STED3TS0WH/opt-out 200 OK (131ms)
+[WebServer] [wrangler:info] GET /api/v1/library/drafts/01M7723MFTHAYQZ7STED3TS0WH/render 200 OK (121ms)
+  ✓  1 tests/e2e/assistance.spec.mjs:7:1 › AI-001 AI-003 exact provider request remains inspectable alongside readable evidence and recipient summaries; provider approval and an unsent agent draft remain inspectable (50.5s)
+
+  1 passed (56.3s)

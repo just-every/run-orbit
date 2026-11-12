@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f169",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f169",
+  "head": "a0f408ae3493c30a4acf9229cf71115beda1d9ff",
+  "local_checks": [
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "receipt": "build.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "receipt": "first-party.log"
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "receipt": "boundaries.log"
+    },
+    {
+      "command": "pnpm exec tsx scripts/agent-surface.ts --check",
+      "exit": 0,
+      "receipt": "surface.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/cli/agent-door.mjs . deploy.json",
+      "exit": 0,
+      "points": 5803,
+      "passed": 5803,
+      "receipt": "agent-conformance.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write then check; restore generated views from origin/main",
+      "exit": 0,
+      "receipt": "contract-views.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check",
+      "exit": 0,
+      "receipt": "source-lock-check.json"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "cases": 1,
+      "receipt": "managed-owner.log",
+      "environment": "Node 22.20.0; VM-only D1 migration startup allowance 180 seconds; committed SQL and assertions unchanged"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/assistance.test.ts",
+      "exit": 0,
+      "cases": 6,
+      "receipt": "assistance.log",
+      "environment": "Node 22.20.0; same VM-only startup allowance"
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/assistance.spec.mjs --config /workspace/orbit-browser.config.mjs --workers=1 --reporter=list",
+      "exit": 0,
+      "cases": 1,
+      "receipt": "browser.log",
+      "viewports": [
+        1440,
+        390
+      ],
+      "assertions_width": 1440,
+      "chromium": "/usr/bin/chromium",
+      "no_sandbox": true,
+      "environment": "prepared isolated D1 and a VM-only 180-second Worker startup allowance"
+    }
+  ],
+  "counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "registered_tests": 198,
+    "qualification_flows": 2,
+    "test_total": 200
+  },
+  "publication_scan": {
+    "status": "NOT_RUN_CLOUD",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "landing": {
+    "status": "not_landed",
+    "main_equals_candidate": false,
+    "run_site_candidate": null
+  },
+  "ci": {
+    "run_id": 43159053734,
+    "event": "push",
+    "head_sha": "a0f408ae3493c30a4acf9229cf71115beda1d9ff",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43159053734",
+    "receipt": "ci-runs.json"
+  },
+  "policy_default": null,
+  "product_push": {
+    "saved": "273d6a03c97b51b72eb58a2b69bc4e6933618d32",
+    "candidate": "a0f408ae3493c30a4acf9229cf71115beda1d9ff",
+    "second_saved": "421b0e7d2d8f2bbb73852b150f5ed5bb3e427c2a",
+    "status": "pushed_and_remote_ref_verified",
+    "third_saved": "34d6c579b45a71c71c146b1d94ada6e0dbc9f945",
+    "receipt": "candidate-push.log"
+  },
+  "observations": [
+    {
+      "stage": "browser startup",
+      "error": "initial 90-second combined preparation timeout; a prepared state then exceeded the built-in 30-second Worker startup deadline",
+      "resolution": "local-only external runtime used 180 seconds for startup; committed runtime timeout unchanged"
+    },
+    {
+      "stage": "parallel touched rerun",
+      "error": "isolatedDatabase migration subprocess ETIMEDOUT at 60 seconds before test bodies",
+      "resolution": "rerun with heavy work serialized; no source guard or assertion change"
+    },
+    {
+      "stage": "initial explanation generation",
+      "error": "output_invalid from an undefined optional draftId after a model request and native save",
+      "resolution": "omit the absent optional field; direct probe returns done for both features"
+    },
+    {
+      "stage": "sensitive refusal proof setup",
+      "error": "preview was correctly policy_blocked after sensitive reads were blocked",
+      "resolution": "obtain reviewed input before blocking; explicitly assert both sensitive preview and generation refusal"
+    },
+    {
+      "stage": "retained audit proof",
+      "error": "first filtered page returned zero rows after earlier activity filled that page",
+      "resolution": "read every cursor page, preserving every original retained-history assertion; full managed-owner registration passed"
+    }
+  ],
+  "vm_only_allowance": {
+    "D1 migration startup milliseconds": 180000,
+    "committed startup timeout changed": false,
+    "assertions changed by allowance": false
+  },
+  "scoped_ai_proof": {
+    "status": "passed",
+    "model_requests": 7,
+    "held_features": [
+      "draft",
+      "explanation"
+    ],
+    "autonomous_features": [
+      "draft",
+      "explanation"
+    ],
+    "stale_conflict": true,
+    "external_block": true,
+    "sensitive_block": true,
+    "unavailable": true,
+    "injected_facts_unchanged": true,
+    "replay_no_extra_effect": true
+  },
+  "screens": [
+    {
+      "path": "1440-ai-provider-approval.png",
+      "width": 1440,
+      "inspected": true
+    },
+    {
+      "path": "1440-ai-unsent-draft.png",
+      "width": 1440,
+      "inspected": true
+    },
+    {
+      "path": "390-ai-provider-approval.png",
+      "width": 390,
+      "inspected": true
+    },
+    {
+      "path": "390-ai-unsent-draft.png",
+      "width": 390,
+      "inspected": true
+    }
+  ],
+  "conformance_source_equivalence": "Production source and conformance inputs are byte-identical to the tested source; later edits are test readers and source locks only."
+}

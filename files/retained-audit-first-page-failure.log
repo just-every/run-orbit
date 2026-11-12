@@ -1,0 +1,55 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+# {"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# {"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+# (node:11959) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"proof":"SURFACE-013.stalled-deal","clock":"2026-11-12T04:25:49.568Z","expected":{"id":"01M4MKBER08G7GC2HFAQ5NPPY0","evidenceId":"01M4Q5R5R0T3MC9Y4R9TQB6AMT","quote":"In Synthetic proposal since 2026-10-12","since":"2026-10-12T04:25:49.568Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"de51eee4-fdb2-4c3d-9518-00643462cb28","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"0a03c7fe-b520-4ca7-8a38-74337ff5e3c9","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"6ad7e24d-be37-4b17-8695-de6851233f06"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":30,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+# {"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"e7dfeee0-7e97-4937-966e-52b1b49092db","revision":12,"summary_sha256":"22fea3340b27a7cc9d204a0df58fdca474c9636b9798d8a08522d562b737411a","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"cd0025e5-8a0c-439d-9059-73a7795dfc86","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+# {"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"7645a821-cead-4a6e-b74c-076072a869e9"},"approval":{"id":"bc469702-afe0-4ff0-9458-b7553318fbdf","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+# {"proof":"SURFACE-003.ai-generated","feature":"draft","mode":"held","requests":1,"drafts":1,"calls":1}
+# {"proof":"SURFACE-003.ai-generated","feature":"draft","mode":"autonomous","requests":2,"drafts":2,"calls":2}
+# {"proof":"SURFACE-003.ai-generated","feature":"explanation","mode":"held","requests":3,"drafts":2,"calls":3}
+# {"proof":"SURFACE-003.ai-generated","feature":"explanation","mode":"autonomous","requests":4,"drafts":2,"calls":4}
+# {"proof":"SURFACE-003.opportunity-ai-input","policies":[{"feature":"draft","mode":"held","classes":[{"class":"external","facts":{"measure":1,"counterparty":"known","provider":"openai"}}],"decision":"183723bb-fb46-40ac-a4e9-8aeb430eeacb"},{"feature":"draft","mode":"autonomous","classes":[{"class":"external","facts":{"measure":1,"counterparty":"known","provider":"openai"}}],"decision":"baab187c-de89-4211-994c-5f1a8f6156e6"},{"feature":"explanation","mode":"held","classes":[{"class":"external","facts":{"measure":1,"counterparty":"known","provider":"openai"}}],"decision":"32f96813-d2bf-4894-9acf-91449d28cf85"},{"feature":"explanation","mode":"autonomous","classes":[{"class":"external","facts":{"measure":1,"counterparty":"known","provider":"openai"}}],"decision":"f668083a-9305-478a-82e0-b43987c7a5d3"}],"modelRequests":7,"staleConflict":true,"externalBlock":true,"unavailable":true,"injectedFactsUnchanged":true,"regulatedOnly":true}
+# {"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":483,"parts":50,"observations":[]}
+# {"proof":"SURFACE-006.private-address-rotation","autonomous":true,"heldNamedPerson":true,"noEarlyMutation":true,"securityBlocked":true,"oneRotationOnReplay":true,"staleRefused":true,"revokedRefused":true,"selectedScopeRefused":true,"transactionFence":true,"oldTagRejected":true,"newTagSignedIntake":true,"evidencePreserved":true,"privateMaterialRetained":false,"contact":"01M770B5YEC84YMKDE7Q7MKSV2"}
+# {"proof":"BASE-AGENT-005.1.collaborator-record-parity","policies":["autonomous","held"],"toolScopes":["records:read","records:write"],"fields":["name","primary_domain"],"nativeRead":200,"nativeWrite":403,"revokedNativeRead":403,"revokedMcpCode":"resource_unavailable","sameBearer":true,"sameNativeSession":true,"unchangedNativeState":true}
+# Subtest: Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; opportunity AI input binds provider exposure and owner approval
+not ok 1 - Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors; opportunity AI input binds provider exposure and owner approval
+  ---
+  duration_ms: 651622.622811
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/managed-owner.test.ts:1:9189'
+  failureType: 'testCodeFailure'
+  error: |-
+    the admitted agent has real read and write history
+    
+    0 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    agentAuditRetentionProof (/workspace/run-orbit/tests/support/agent-door-audit-proof.ts:59:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async agentDoorProof (/workspace/run-orbit/tests/support/agent-door-proof.ts:260:5)
+    async TestContext.<anonymous> (/workspace/run-orbit/tests/core/managed-owner.test.ts:167:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 660508.399513
