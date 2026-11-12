@@ -3,13 +3,13 @@ import {payloadHash} from '../../platform/source-security';
 import {IngestionRepository} from '../ingestion/repository';
 import type {SignalEvent} from '../ingestion/contracts';
 import {consentTag,MailchimpError,mailchimpSource,type ConnectionSettings,type HandoffField,type MailchimpConfig} from './contracts';
-import {markUnresolved} from './connection';
+import {markUnresolved,saveSettings,sourceRow,connectionSettings} from './connection';
 import {consents,linkStatement,memberLinks,withdrawalStatement,type MemberLink} from './ledger';
 import {mailchimpCall,MailchimpProviderError,refusalMessage,subscriberHash} from './provider';
 
 export type Group='subscribed'|'unknown'|'stopped';
 export type Action='send'|'unchanged'|'unsubscribe'|'check'|'none';
-export interface PlanItem {contactId:string;name:string;email:string;company:string|null;group:Group;reason:string;consent:{source:string;basis:string;at:string}|null;memberId:string;member:MemberLink|null;action:Action;body?:{email_address:string;status_if_new:'subscribed';merge_fields:Record<string,string>};hash?:string}
+export interface PlanItem {contactId:string;name:string;email:string;company:string|null;group:Group;reason:string;consent:{source:string;basis:string;at:string}|null;memberId:string;member:MemberLink|null;linkedMembers:MemberLink[];action:Action;body?:{email_address:string;status_if_new:'subscribed';merge_fields:Record<string,string>};hash?:string}
 interface ContactRow {id:string;name:string|null;email:string;phone:string|null;contactability:string;company:string|null;stop_type:string|null;stop_source:string|null}
 const stoppedStatuses=['unsubscribed','cleaned'],requestBudget=100;
 const latestStop=(column:string)=>`(SELECT s.${column} FROM signal_links l JOIN signals s ON s.id=l.signal_id WHERE l.record_type='contact' AND l.record_id=c.id AND s.type IN('email.unsubscribed','email.bounced') ORDER BY s.received_at DESC,s.id DESC LIMIT 1)`;
@@ -25,9 +25,9 @@ export async function plan(db:D1Database,settings:ConnectionSettings,fields:Hand
  const rows=(await db.prepare(`SELECT c.id,c.name,c.email,c.phone,c.contactability,co.name AS company,${latestStop('type')} AS stop_type,${latestStop('source_id')} AS stop_source FROM contacts c LEFT JOIN companies co ON co.id=c.company_id WHERE c.email IS NOT NULL AND trim(c.email)<>'' ORDER BY lower(coalesce(c.name,c.email)),c.id`).all<ContactRow>()).results;
  const given=await consents(db),links=await memberLinks(db),selected=[...new Set(fields)].sort(),items:PlanItem[]=[];
  for(const row of rows){
-  const consent=given.get(row.id)??null,memberId=subscriberHash(row.email),saved=links.get(row.id),member=saved&&saved.listId===audience.id&&saved.memberId===memberId?saved:null;
-  const stopped=row.contactability==='do_not_contact'||consent?.state==='withdrawn'||Boolean(member&&stoppedStatuses.includes(member.status));
-  const base={contactId:row.id,name:row.name??row.email,email:row.email.trim(),company:row.company,memberId,member};
+  const consent=given.get(row.id)??null,memberId=subscriberHash(row.email),linkedMembers=links.get(row.id)??[],member=linkedMembers.find(link=>link.listId===audience.id&&link.memberId===memberId)??null;
+  const stopped=row.contactability==='do_not_contact'||consent?.state==='withdrawn'||linkedMembers.some(link=>!link.retired&&stoppedStatuses.includes(link.status));
+  const base={contactId:row.id,name:row.name??row.email,email:row.email.trim(),company:row.company,memberId,member,linkedMembers};
   if(stopped){items.push({...base,group:'stopped',reason:stopReason(row,consent?.state==='withdrawn',member),consent:null,action:!member||member.reported?'check':['subscribed','pending'].includes(member.status)?'unsubscribe':'none'});continue;}
   if(consent?.state!=='given'){items.push({...base,group:'unknown',reason:'No marketing consent recorded in Orbit',consent:null,action:'none'});continue;}
   const merge:Record<string,string>={},[first='',...rest]=(row.name??'').trim().split(/\s+/).filter(Boolean);
@@ -38,7 +38,7 @@ export async function plan(db:D1Database,settings:ConnectionSettings,fields:Hand
   const body={email_address:row.email.trim(),status_if_new:'subscribed' as const,merge_fields:merge},hash=await payloadHash(JSON.stringify(body));
   items.push({...base,group:'subscribed',reason:`${consent.source}: ${consent.basis}`,consent:{source:consent.source,basis:consent.basis,at:consent.at},action:member?.hash===hash&&member.status==='subscribed'?'unchanged':'send',body,hash});
  }
- const digest=await payloadHash(JSON.stringify([audience.id,selected,items.map(item=>[item.contactId,item.email,item.group,item.action,item.hash??null])]));
+ const digest=await payloadHash(JSON.stringify([audience.id,selected,items.map(item=>[item.contactId,item.email,item.group,item.action,item.hash??null,item.linkedMembers])]));
  return {audience,fields:selected,items,digest};
 }
 function failureMessage(error:MailchimpProviderError){
@@ -57,13 +57,54 @@ async function mailchimpStop(db:D1Database,item:PlanItem,status:string,listId:st
 /** Hands off exactly the previewed plan once per operation; PUT with status_if_new never re-subscribes an existing member. */
 export async function handoff(db:D1Database,config:MailchimpConfig,apiKey:string,settings:ConnectionSettings,actor:string,input:{fields:HandoffField[];previewDigest:string;operationId:string}){
  if(await db.prepare("SELECT 1 FROM audit_entries WHERE action='mailchimp.handoff' AND entity_id=?").bind(input.operationId).first())throw new MailchimpError(409,'This handoff already ran. Preview again to hand off any later changes.');
- const current=await plan(db,settings,input.fields);
+ let current=await plan(db,settings,input.fields);
  if(current.digest!==input.previewDigest)throw new MailchimpError(409,'Contacts or consent changed since your preview. Preview again before handing off.');
  const claimed=await db.prepare("INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) SELECT ?,?,'mailchimp.handoff','mailchimp_handoff',?,?,? WHERE NOT EXISTS(SELECT 1 FROM audit_entries WHERE action='mailchimp.handoff' AND entity_id=?)").bind(createId(),actor,input.operationId,JSON.stringify({audience:current.audience.id,fields:current.fields,digest:current.digest}),new Date().toISOString(),input.operationId).run();
  if(claimed.meta.changes!==1)throw new MailchimpError(409,'This handoff already ran. Preview again to hand off any later changes.');
  const list=current.audience.id,counts={sent:0,unchanged:0,unsubscribed:0,checked:0,stoppedInMailchimp:0,refused:0,uncertain:0,remaining:0},failures:{contactId:string;name:string;message:string}[]=[],links:D1PreparedStatement[]=[],stops:{item:PlanItem;status:string;changedAt?:string}[]=[];
  let requests=0,halted=false;
+ const startedAt=new Date().toISOString();
+ // Read bounded pages before trusting any unchanged link. The cursor advances only after a complete read and handoff.
+ let offset=0,total=1;
+ while(offset<total){
+  if(requests>=requestBudget)throw new MailchimpError(409,'Mailchimp reconciliation is incomplete. Preview again to continue before handing off.');
+  requests++;
+  const changed=await mailchimpCall<{members:{id:string;status:string;unique_email_id?:string;last_changed?:string}[];total_items:number}>(apiKey,'GET',`/lists/${list}/members?count=100&offset=${offset}${settings.lastHandoffAt?`&since_last_changed=${encodeURIComponent(settings.lastHandoffAt)}`:''}&fields=members.id,members.status,members.unique_email_id,members.last_changed,total_items`,undefined,config.fetcher).catch(async(error:unknown)=>{if(error instanceof MailchimpProviderError&&(error.status===401||error.status===403))await markUnresolved(db,refusalMessage(error));throw error;});
+  if(!Array.isArray(changed?.members)||!Number.isSafeInteger(changed.total_items)||changed.total_items<0||changed.members.length>100||changed.members.length===0&&offset<changed.total_items)throw new MailchimpError(502,'Mailchimp did not confirm changed members. No member was treated as unchanged.');
+  total=changed.total_items;offset+=changed.members.length;
+  for(const member of changed.members){
+   for(const item of current.items){
+    const saved=item.linkedMembers.find(link=>link.listId===list&&link.memberId===member.id);
+    if(item.memberId!==member.id&&!saved)continue;
+    if(stoppedStatuses.includes(member.status)&&!saved?.retired){await mailchimpStop(db,{...item,memberId:member.id},member.status,list,member.last_changed);counts.stoppedInMailchimp++;}
+    await linkStatement(db,actor,item.contactId,{listId:list,memberId:member.id,uniqueEmailId:member.unique_email_id??null,status:member.status,hash:saved?.hash??null,...(saved?.retired?{retired:true}:{})}).run();
+   }
+  }
+ }
+ current=await plan(db,settings,input.fields);
  for(const item of current.items){
+  // A merged person retains all external identities, but only the chosen address may remain subscribed.
+  for(const link of item.linkedMembers.filter(link=>(link.listId!==list||link.memberId!==item.memberId)&&(item.group==='stopped'||link.memberId!==item.memberId))){
+   if(halted||requests>=requestBudget){counts.remaining++;halted=true;break;}
+   if(link.retired&&item.group!=='stopped'&&!link.reported&&stoppedStatuses.includes(link.status))continue;
+   try{
+    requests++;
+    const member=await mailchimpCall<{status:string;unique_email_id?:string}>(apiKey,'GET',`/lists/${link.listId}/members/${link.memberId}?fields=status,unique_email_id`,undefined,config.fetcher);
+    let status=member.status;
+    if(['subscribed','pending'].includes(status)){
+     if(requests>=requestBudget){counts.remaining++;halted=true;break;}
+     requests++;const result=await mailchimpCall<{status:string}>(apiKey,'PATCH',`/lists/${link.listId}/members/${link.memberId}`,{status:'unsubscribed'},config.fetcher);status=result.status;counts.unsubscribed++;
+    }
+    links.push(linkStatement(db,actor,item.contactId,{...link,status,retired:true,reported:false,hash:null}));
+   }catch(error){
+    if(!(error instanceof MailchimpProviderError))throw error;
+    if(error.status===404){links.push(linkStatement(db,actor,item.contactId,{...link,status:'absent',retired:true,reported:false,hash:null}));continue;}
+    if(error.status===401||error.status===403){await markUnresolved(db,refusalMessage(error));halted=true;}
+    if(error.refused)counts.refused++;else counts.uncertain++;
+    failures.push({contactId:item.contactId,name:item.name,message:failureMessage(error)});halted=true;
+   }
+  }
+  if(halted){if(item.action!=='none')counts.remaining++;continue;}
   if(item.action==='unchanged'){counts.unchanged++;continue;}
   if(item.action==='none')continue;
   if(halted||requests>=requestBudget){counts.remaining++;continue;}
@@ -94,6 +135,7 @@ export async function handoff(db:D1Database,config:MailchimpConfig,apiKey:string
   }
  }
  if(links.length)await db.batch(links);
+ if(!halted&&!counts.remaining&&!counts.refused&&!counts.uncertain)await saveSettings(db,{...connectionSettings(await sourceRow(db))!,lastHandoffAt:startedAt});
  for(const stop of stops)await mailchimpStop(db,stop.item,stop.status,list,stop.changedAt);
  await db.prepare("UPDATE audit_entries SET details_json=json_set(details_json,'$.counts',json(?)) WHERE action='mailchimp.handoff' AND entity_id=?").bind(JSON.stringify(counts),input.operationId).run();
  return {counts,failures,requests};
