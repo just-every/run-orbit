@@ -45,9 +45,9 @@ BEGIN
  VALUES('obligation-close:'||NEW.id,NEW.closed_by,'obligation.closed','opportunity',NEW.opportunity_id,json_object('obligationId',NEW.id,'reason',NEW.closed_reason),NEW.closed_at);
 END;
 CREATE TRIGGER follow_up_handoff_no_revival BEFORE UPDATE ON handoff_tasks
-WHEN NEW.status='open' AND EXISTS(SELECT 1 FROM follow_up_work w JOIN follow_up_obligations o ON o.id=w.obligation_id WHERE w.kind='handoff' AND w.item_id=NEW.id AND (w.exited_at IS NOT NULL OR o.closed_at IS NOT NULL OR o.paused=1))
+WHEN NEW.status='open' AND EXISTS(SELECT 1 FROM follow_up_work w JOIN follow_up_obligations o ON o.id=w.obligation_id WHERE w.kind='handoff' AND w.item_id=NEW.id AND (w.exited_at IS NOT NULL OR o.closed_at IS NOT NULL))
 BEGIN SELECT RAISE(ABORT,'Follow-up obligation is closed or paused'); END;
 
 CREATE TRIGGER follow_up_task_no_revival BEFORE UPDATE ON sales_tasks
-WHEN NEW.status='open' AND EXISTS(SELECT 1 FROM follow_up_work w JOIN follow_up_obligations o ON o.id=w.obligation_id WHERE w.kind='task' AND w.item_id=NEW.id AND (w.exited_at IS NOT NULL OR o.closed_at IS NOT NULL OR o.paused=1))
+WHEN NEW.status='open' AND EXISTS(SELECT 1 FROM follow_up_work w JOIN follow_up_obligations o ON o.id=w.obligation_id WHERE w.kind='task' AND w.item_id=NEW.id AND (w.exited_at IS NOT NULL OR o.closed_at IS NOT NULL))
 BEGIN SELECT RAISE(ABORT,'Follow-up obligation is closed or paused'); END;

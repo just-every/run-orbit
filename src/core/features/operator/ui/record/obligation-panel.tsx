@@ -11,7 +11,7 @@ export async function obligationRequest<T>(path:string,body?:unknown):Promise<T>
  const response=await fetch('/api/v1/obligations'+path,{method:body?'POST':'GET',credentials:'same-origin',headers:{'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
  const value=await response.json() as {error?:string};if(!response.ok)throw new Error(value.error??'The follow-up could not be saved.');return value as T;
 }
-type FollowUp={id:string;title:string;owner_name:string;due_at:string;meeting_id:string|null;draft_id:string|null;goal_stage_name:string;goalState:string;messageState:string;failure:string|null;stop_condition:string;closed_at:string|null;closed_reason:string|null;paused:number};
+type FollowUp={id:string;title:string;owner_name:string;due_at:string;meeting_id:string|null;draft_id:string|null;response_evidence_id:string|null;goal_stage_name:string;goalState:string;messageState:string;failure:string|null;stop_condition:string;closed_at:string|null;closed_reason:string|null;paused:number};
 function StopFollowUp({item,onChanged}:{item:FollowUp;onChanged:()=>void}){
  const [open,setOpen]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  async function stop(event:FormEvent<HTMLFormElement>){event.preventDefault();setBusy(true);setError('');const form=new FormData(event.currentTarget);try{await obligationRequest('/'+item.id+'/stop',{reason:String(form.get('reason'))});setOpen(false);onChanged();}catch(error){setError((error as Error).message);}finally{setBusy(false);}}
@@ -32,7 +32,7 @@ export function ObligationPanel({opportunityId,presentation,refreshKey=0}:{oppor
    {item.failure&&<OperatorState kind="error">{item.failure} Review the saved message and its provider outcome before taking another action.</OperatorState>}
    {item.paused&&!item.closed_at&&<p>Restored obligation paused. A fresh acceptance and exact-message approval are required before new work.</p>}
    <p>Stop conditions: {item.stop_condition}</p>
-   <div className="obligation-actions">{item.meeting_id&&<a href={'/app/meetings/'+item.meeting_id}>Meeting evidence and plan</a>}{item.draft_id&&<a href={'/app/drafts/'+item.draft_id}>Review exact draft</a>}</div>
+   <div className="obligation-actions">{item.messageState==='responded'&&item.response_evidence_id&&<a href={'/app/opportunities/'+opportunityId+'#entry-'+item.response_evidence_id}>Reply evidence</a>}{item.meeting_id&&<a href={'/app/meetings/'+item.meeting_id}>Meeting evidence and plan</a>}{item.draft_id&&<a href={'/app/drafts/'+item.draft_id}>Review exact draft</a>}</div>
    {item.closed_at?<p>Closed {formatDateTime(item.closed_at,presentation)} · {item.closed_reason}</p>:<StopFollowUp item={item} onChanged={resource.reload}/>}
   </article>)}
  </section>;

@@ -168,8 +168,8 @@ export async function followUpObligationJourney({page,bearer,policy,mailKeys,mai
  const meeting=await native(`/workbench/opportunities/${deal.id}/events`,{type:'meeting.completed',subject:'Synthetic completed buyer meeting',contactId:buyer.id,occurredAt:new Date(Date.now()-3600000).toISOString(),eventId:'synthetic-orbit-browser-obligation'},'POST',201);
  await page.goto('/app/meetings/'+meeting.id);
  await page.getByRole('button',{name:'Accept meeting follow-up',exact:true}).click();
- await page.getByLabel('Follow-up title').fill('Agree the buyer advancement');await page.getByLabel('Human owner',{exact:true}).selectOption(owner.id);await page.getByLabel('Recipient',{exact:true}).selectOption(buyer.id);
- await page.getByLabel(/^Due \(/).fill(new Date(Date.now()+86400000).toISOString().slice(0,16));await page.getByLabel('Advancement goal',{exact:true}).selectOption(stages[1].id);
+ await page.getByLabel('Follow-up title').fill('Agree the buyer advancement');await page.locator('select[name="ownerId"]').selectOption(owner.id);await page.locator('select[name="contactId"]').selectOption(buyer.id);
+ await page.getByLabel(/^Due \(/).fill(new Date(Date.now()+86400000).toISOString().slice(0,16));await page.locator('select[name="goalStageId"]').selectOption(stages[1].id);
  await atWidths(page,evidence,'obligation-meeting-plan',async()=>{await expect(page.getByLabel('Stop conditions',{exact:true})).toBeVisible();});
  await page.getByRole('button',{name:'Accept obligation',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Agree the buyer advancement',exact:true})).toBeVisible();
@@ -198,6 +198,7 @@ export async function followUpObligationJourney({page,bearer,policy,mailKeys,mai
  const request=new Request(origin+'/api/v1/mail/events/reply',{method:'POST',body:replyForm}),replyBytes=new Uint8Array(await request.arrayBuffer());
  const replyResponse=await api.post('/api/v1/mail/events/reply',{headers:{'content-type':request.headers.get('content-type'),...await mailKeys.headers('reply',replyBytes,'192.0.2.83')},data:Buffer.from(replyBytes)});expect(replyResponse.status(),await replyResponse.text()).toBe(200);
  await state('obligation-responded-goal-open','responded','open');
+ await expect(page.locator(`[data-obligation-id="${accepted.id}"]`).getByRole('link',{name:'Reply evidence',exact:true})).toHaveAttribute('href',/^\/app\/opportunities\/[^#]+#entry-/);
  expect((await native('/records/opportunity/'+deal.id)).record.stage_id).toBe(stages[0].id);
  await native(`/records/opportunity/${deal.id}/move`,{stageId:stages[1].id,reviewedStageId:stages[0].id});
  await state('obligation-advanced','responded','closed');

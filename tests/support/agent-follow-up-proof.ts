@@ -80,19 +80,20 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  await native(`/today/meetings/${meeting.id}/actions`,'POST',{title:'Cited plan follow-up',dueAt:input.dueAt,evidenceId:meeting.id,obligationId:main.id},201);
  assert.equal((await read(main.id)).draft_id,main.draft.id);
  assert.equal((await read(main.id)).messageState,'draft');assert.equal((await read(main.id)).goalState,'open');
- const preview=await native(`/workbench/drafts/${main.draft.id}/approval-preview`);
- await native(`/workbench/drafts/${main.draft.id}/approve`,'POST',{revision:main.saved.revision+1,quietHoursConfirmation:preview.localTime},409);
- assert.equal(submissions.length,0,'wrong exact revision refuses without a provider request');
- await native(`/workbench/drafts/${main.draft.id}/approve`,'POST',{revision:main.saved.revision,quietHoursConfirmation:preview.localTime},502);
- assert.equal(submissions.length,1);assert.equal((await read(main.id)).messageState,'submitted-uncertain');assert.equal((await read(main.id)).responded_at,null);
- assert.equal((submissions[0] as any).subject,main.saved.subject);assert.equal((submissions[0] as any).content[0].value,main.saved.body);
- const service=new OutreachService(recordMailDatabase(db),mail);
- await service.dispatchDue(new Date(Date.now()+600000));await service.reconcile(new Date(Date.now()+600000));await service.reconcile(new Date(Date.now()+1200000));
- assert.equal(submissions.length,1);assert.equal(lookups.length,1);assert.equal((await read(main.id)).messageState,'submitted');assert.equal((await read(main.id)).goalState,'open');
  nextStatus=400;
  const failedPreview=await native(`/workbench/drafts/${failed.draft.id}/approval-preview`);
  await native(`/workbench/drafts/${failed.draft.id}/approve`,'POST',{revision:failed.saved.revision,quietHoursConfirmation:failedPreview.localTime},502);
- assert.equal(submissions.length,2);assert.equal((await read(failed.id)).messageState,'failed');assert.ok((await read(failed.id)).failure);assert.equal((await read(failed.id)).goalState,'open');
+ assert.equal(submissions.length,1);assert.equal((await read(failed.id)).messageState,'failed');assert.ok((await read(failed.id)).failure);assert.equal((await read(failed.id)).goalState,'open');
+ nextStatus=408;
+ const preview=await native(`/workbench/drafts/${main.draft.id}/approval-preview`);
+ await native(`/workbench/drafts/${main.draft.id}/approve`,'POST',{revision:main.saved.revision+1,quietHoursConfirmation:preview.localTime},409);
+ assert.equal(submissions.length,1,'wrong exact revision refuses without a provider request');
+ await native(`/workbench/drafts/${main.draft.id}/approve`,'POST',{revision:main.saved.revision,quietHoursConfirmation:preview.localTime},502);
+ assert.equal(submissions.length,2);assert.equal((await read(main.id)).messageState,'submitted-uncertain');assert.equal((await read(main.id)).responded_at,null);
+ assert.equal((submissions[1] as any).subject,main.saved.subject);assert.equal((submissions[1] as any).content[0].value,main.saved.body);
+ const service=new OutreachService(recordMailDatabase(db),mail);
+ await service.dispatchDue(new Date(Date.now()+600000));await service.reconcile(new Date(Date.now()+600000));await service.reconcile(new Date(Date.now()+1200000));
+ assert.equal(submissions.length,2);assert.equal(lookups.length,1);assert.equal((await read(main.id)).messageState,'submitted');assert.equal((await read(main.id)).goalState,'open');
  const message=await db.prepare('SELECT * FROM record_mail_outbound_messages WHERE draft_id=?').bind(main.draft.id).first<any>();
  const replyApp=createMailEventRoutes(db,{parseKey:keys.bindings.SENDGRID_PARSE_PUBLIC_KEY});
  const reply=async(automatic=false,valid=true)=>{
@@ -105,6 +106,8 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  assert.equal((await reply(true)).status,200);assert.equal((await read(main.id)).responded_at,null,'automatic mail is never a human response');
  assert.equal((await reply()).status,200);assert.equal((await reply()).status,200);
  const responded=await read(main.id);assert.equal(responded.messageState,'responded');assert.equal(responded.goalState,'open');assert.ok(responded.response_evidence_id);
+ assert.deepEqual(await db.prepare('SELECT source_id,type FROM signals WHERE id=?').bind(responded.response_evidence_id).first(),{source_id:'sendgrid-replies',type:'email.replied'});
+ const meetingRead=done(await call('orbit.meetings.read',{id:meeting.id},{scope:'meetings:read'})).structuredContent;assert.equal(meetingRead.plan.obligations.find((o:any)=>o.id===main.id).goalState,'open');
  assert.equal((await native('/records/opportunity/'+deal.id)).record.stage_id,stages[0].id,'a genuine reply never moves stage');
  // An independently accepted obligation proves explicit stop and remaining approved scheduled work.
  const stopped=await native('/obligations','POST',{...input,title:'Explicitly stopped meeting follow-up'},201);
@@ -130,12 +133,15 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  // Prepare one still-open obligation for both actual archive doors and a restarted destination.
  await native(`/records/opportunity/${deal.id}/move`,'POST',{stageId:stages[0].id,reviewedStageId:stages[1].id});
  const retained=await native('/obligations','POST',{...input,title:'Restore pauses this obligation'},201);
+ const retainedTask=await native('/tasks','POST',{recordType:'opportunity',recordId:deal.id,obligationId:retained.id,title:'Restored reminder stays paused',ownerId,dueAt:input.dueAt,priority:'normal',type:'follow_up',notes:'No reminder after restore',recurrence:'none',timezone:'UTC',reminderMinutes:0},201);
  const target=await isolatedDatabase();
  try{
   await localArchiveRoundTrip(db,target.db);
+  console.log(JSON.stringify({proof:'AGENT-003.archive',phase:'cli-restored',obligation:retained.id}));
   const restored=await target.db.prepare('SELECT * FROM follow_up_obligations WHERE id=?').bind(retained.id).first<any>();assert.equal(restored.paused,1);assert.equal(restored.closed_at,null);
-  await target.close();await target.reopen();
   await dispatchObligationReminders(target.db,new Date(Date.now()+10*86400000).toISOString());
+  await dispatchSalesTaskReminders(target.db,new Date(Date.now()+10*86400000).toISOString());
+  assert.equal(await target.db.prepare("SELECT count(*) n FROM notifications WHERE kind='task.reminder' AND id IN(SELECT notification_id FROM sales_task_notification_links WHERE task_id=?)").bind(retainedTask.id).first('n'),0);
   assert.equal(await target.db.prepare('SELECT count(*) n FROM notifications WHERE event_key=?').bind('obligation.due:'+retained.id).first('n'),0);
   assert.equal((await target.db.prepare('SELECT * FROM follow_up_obligations WHERE id=?').bind(main.id).first<any>()).closed_at,advanced.closed_at);
   let exported=await native('/records/archive/exports','POST',{},201);
@@ -143,23 +149,34 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   assert.equal(exported.state,'ready');const archive=await native(`/records/archive/exports/${exported.id}/download`);
   const archived=archive.parts.flatMap((part:any)=>part.records).find((record:any)=>record.table==='follow_up_obligations'&&record.row.id===retained.id);
   assert.equal(archived.row.paused,0,'Records export opens the actual live obligation data');
+  console.log(JSON.stringify({proof:'AGENT-003.archive',phase:'native-exported',parts:archive.parts.length,rows:archive.manifest.rows}));
   const restoredBindings={...bindings,DB:target.db},restoredApp=createApp({database:target.db,assets:bindings.ASSETS,authenticate:request=>operatorFromRequest(request,restoredBindings),stepUp:(request,action,returnTo)=>requireStepUp(request,restoredBindings,action,returnTo)});
   const session=await createDependencies(target.db).auth.createSession(ownerId);
   const restoreRequest=async(path:string,method='GET',body?:object,sessionToken=session.token)=>{const response=await restoredApp.request(origin+'/api/v1'+path,{method,headers:{Cookie:'__Host-orbit_session='+sessionToken,Origin:origin,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});assert.ok(response.ok,path+': '+await response.clone().text());return response.json() as Promise<any>;};
   let imported=await restoreRequest('/records/archive/imports','POST',{confirmed:true,manifest:archive.manifest});
   for(const part of archive.parts)await restoreRequest(`/records/archive/imports/${imported.id}/parts/${part.index}`,'PUT',part);
+  console.log(JSON.stringify({proof:'AGENT-003.archive',phase:'native-uploaded',parts:archive.parts.length}));
   for(let n=0;n<1000&&imported.state!=='complete';n++)imported=await restoreRequest(`/records/archive/imports/${imported.id}/finalize`,'POST',{});
   assert.equal(imported.state,'complete');
+  console.log(JSON.stringify({proof:'AGENT-003.archive',phase:'native-restored',steps:imported.completedSteps}));
   const freshSession=await createDependencies(target.db).auth.createSession(ownerId);
   const restoredPanel=(await restoreRequest('/obligations/opportunities/'+deal.id,'GET',undefined,freshSession.token)).obligations;
   assert.equal(restoredPanel.find((o:any)=>o.id===retained.id).goalState,'paused');assert.equal(restoredPanel.find((o:any)=>o.id===main.id).closed_at,advanced.closed_at);
+  await target.close();await target.reopen();
+  assert.equal((await target.db.prepare('SELECT closed_at FROM follow_up_obligations WHERE id=?').bind(main.id).first<any>()).closed_at,advanced.closed_at);
   await dispatchObligationReminders(target.db,new Date(Date.now()+10*86400000).toISOString());
+  await dispatchSalesTaskReminders(target.db,new Date(Date.now()+10*86400000).toISOString());
+  assert.equal(await target.db.prepare("SELECT count(*) n FROM notifications WHERE kind='task.reminder' AND id IN(SELECT notification_id FROM sales_task_notification_links WHERE task_id=?)").bind(retainedTask.id).first('n'),0);
   assert.equal(await target.db.prepare('SELECT count(*) n FROM notifications WHERE event_key=?').bind('obligation.due:'+retained.id).first('n'),0);
 
  }finally{await target.dispose();}
  await native('/records/contact/'+buyer.id,'DELETE',{confirmed:true});
  const redacted=(await native('/obligations/opportunities/'+deal.id)).obligations;
- for(const o of redacted){assert.equal(o.contact_id,null);assert.equal(o.meeting_id,null);assert.equal(o.draft_id,null);assert.equal(o.title,'Erased follow-up');assert.equal(o.goalState,'closed');}
+ for(const o of redacted){assert.equal(o.contact_id,null);assert.equal(o.meeting_id,null);assert.equal(o.draft_id,null);assert.equal(o.title,'Erased follow-up');assert.equal(o.goalState,'closed');assert.equal(o.messageState,'erased');}
+ const erasedState=await inventory();
+ const erasedReplay=await call('orbit.obligations.accept',main.args);assert.equal(erasedReplay.body.result._meta['com.runeditrun/error'].code,'subject_erased');
+ assert.equal((await reply()).status,200);assert.equal(await inventory(),erasedState,'late provider replay and the erased agent call cannot revive an obligation');
+ await service.dispatchDue(new Date(Date.now()+10*86400000));await dispatchObligationReminders(db,new Date(Date.now()+10*86400000).toISOString());
  assert.equal(submissions.length,2);
  const blocked=autonomousPolicy();blocked.rules=[{id:'block',class:'standard',do:'blocked'}];await adopt(blocked);
  const refused=await call('orbit.obligations.accept',{...input,idempotency_key:'synthetic-orbit-blocked'});assert.equal(refused.body.result._meta['com.runeditrun/error'].code,'policy_blocked');

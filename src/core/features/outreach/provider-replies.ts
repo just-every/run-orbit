@@ -32,7 +32,7 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
  const messages=await matchingReplyMessages(db,input.sender,input.references),opportunities=new Set(messages.map(message=>message.opportunity_id)),opportunityId=opportunities.size===1?messages[0]!.opportunity_id:null;
  const source='sendgrid-replies',at=new Date().toISOString(),statements=[db.prepare('INSERT INTO mail_provider_events VALUES(?,?,?)').bind(receiptId,hash,at),db.prepare("INSERT OR IGNORE INTO signal_sources(id,name,type,enabled,created_at,updated_at) VALUES(?,'SendGrid authenticated replies','mail_provider',1,?,?)").bind(source,at,at)];
  const event=providerReplyEvent(input,opportunityId);
- if(!input.automatic&&messages.length){const ids=JSON.stringify(messages.map(message=>message.id));const drafts=(await db.prepare('SELECT draft_id FROM outbound_messages WHERE id IN(SELECT value FROM json_each(?1)) UNION SELECT draft_id FROM record_mail_outbound_messages WHERE id IN(SELECT value FROM json_each(?1))').bind(ids).all<{draft_id:string}>()).results;statements.push(...obligationReplyStatements(db,drafts.map(row=>row.draft_id),receiptId,input.occurredAt));}
+
  if(messages.length&&messages.every(message=>message.record_mail===1)){statements.push(...await recordMailReplyStatements(db,input,messages,hash,at));}
  else if(opportunityId){
   const plan=await new IngestionRepository(db).prepare(source,event,hash,JSON.stringify(event));statements.push(...plan.statements);
@@ -48,5 +48,6 @@ export async function recordProviderReply(db:D1Database,input:ProviderReply,hash
  // The old reply-review door always records human evidence. Automatic mail
  // uses typed signals instead, so later manual linking cannot stop follow-up.
  if(!input.automatic&&(!messages.length||messages.every(message=>message.record_mail===0)&&opportunityId))statements.push(db.prepare('INSERT INTO unlinked_replies(id,provider_event_id,sender,subject,body,message_id,reference_ids,occurred_at,opportunity_id) VALUES(?,?,?,?,?,?,?,?,?)').bind(createId(),input.id,input.sender,input.subject,input.body,input.messageId,input.references,input.occurredAt,opportunityId));
+ if(!input.automatic&&messages.length){const ids=JSON.stringify(messages.map(message=>message.id));const drafts=(await db.prepare('SELECT draft_id FROM outbound_messages WHERE id IN(SELECT value FROM json_each(?1)) UNION SELECT draft_id FROM record_mail_outbound_messages WHERE id IN(SELECT value FROM json_each(?1))').bind(ids).all<{draft_id:string}>()).results;statements.push(...obligationReplyStatements(db,drafts.map(row=>row.draft_id),input.id,input.occurredAt));}
  try{await db.batch(statements);}catch(error){const winner=await prior();if(!winner)throw error;if(winner.payload_hash!==hash)await recordProviderConflict(db,receiptId,winner.payload_hash,hash,'sendgrid-replies');}
 }

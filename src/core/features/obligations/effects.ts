@@ -1,6 +1,6 @@
 /** Verified, threaded human replies change response only; they never close the advancement goal. */
 export function obligationReplyStatements(db:D1Database,draftIds:string[],evidence:string,at:string){return [
- db.prepare('UPDATE follow_up_obligations SET responded_at=?,response_evidence_id=? WHERE draft_id IN(SELECT value FROM json_each(?)) AND responded_at IS NULL AND closed_at IS NULL AND paused=0').bind(at,evidence,JSON.stringify(draftIds)),
+ db.prepare("UPDATE follow_up_obligations SET responded_at=?,response_evidence_id=(SELECT id FROM signals WHERE source_id='sendgrid-replies' AND source_event_id=?) WHERE draft_id IN(SELECT value FROM json_each(?)) AND responded_at IS NULL AND closed_at IS NULL AND paused=0").bind(at,evidence,JSON.stringify(draftIds)),
 ];}
 /** Erase copied evidence while the contact and its attributed links still exist. */
 export function obligationErasureStatements(db:D1Database,contactId:string,actor:string){const at=new Date().toISOString();return [
