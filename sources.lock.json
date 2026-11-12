@@ -8171,7 +8171,7 @@
       "executable": false
     },
     "src/core/features/sequences/ui/editor-page.tsx": {
-      "sha256": "cf6136ed210fe8d1de94cc9fe36b4a375cd1db505d0bb139efd289619062ac79",
+      "sha256": "e7e821f0f2a0592cb614da12f7d5d009e44d4e4c4bd786c5719ddf0718f56f16",
       "executable": false
     },
     "src/core/features/sequences/ui/history.tsx": {
@@ -8187,7 +8187,7 @@
       "executable": false
     },
     "src/core/features/sequences/ui/step-editor.tsx": {
-      "sha256": "9c558bf342be64c31dcaa004c469a422d2056dc8074af92372b44d672585243e",
+      "sha256": "d1101fe04179e6710ab83e1129732d34c200a756c25b0f237bc934f339eb8d06",
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
