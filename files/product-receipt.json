@@ -1,0 +1,26 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f170-fix1",
+  "head": "e02ddbe65a208cef96cb1bfb66f2a02cef80c202",
+  "tree": "abcf7292c65607d476038f96fe70e14c17eff04d",
+  "parents": [
+    "1914f2a25ed651ecb26867cc01ebc7ea72a14c7e",
+    "a1d1e109b7e53e5cd692032258ebdaff0ce40fcf"
+  ],
+  "integrated_main": "a1d1e109b7e53e5cd692032258ebdaff0ce40fcf",
+  "clean": true,
+  "contract_and_views_equal_main": true,
+  "clause_counts": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "test_counts": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "pr": null,
+  "pushed": true,
+  "at": "2026-11-12T15:05:46.398670+00:00"
+}

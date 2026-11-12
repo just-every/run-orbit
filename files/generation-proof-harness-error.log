@@ -1,0 +1,32 @@
+Thu Nov 12 14:43:56 UTC 2026
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Archive inventory does not match a complete supported source generation/. Input:
+
+'Error: Invalid complete archive lineage.'
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/generation-proof.mts:29:2) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: RecordError: Invalid complete archive lineage.
+      at validateFoldManifest (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/src/core/features/records/archive-fold-validation.ts:18:171)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async waitForActual (node:assert:644:5)
+      at async Function.rejects (node:assert:767:25)
+      at async <anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/generation-proof.mts:29:2) {
+    status: 400,
+    recordId: undefined
+  },
+  expected: /Archive inventory does not match a complete supported source generation/,
+  operator: 'rejects',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+EXIT=1

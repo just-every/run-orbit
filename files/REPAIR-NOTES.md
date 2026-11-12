@@ -1,0 +1,9 @@
+# Diagnosis and scope
+
+The original candidate reproduces the gate's only blocking finding. Its supported catalog list strips Zendesk's five portable support tables and the two erasure triggers before constructing the pre-direct-notification generation. The exported preDirectNotificationCatalog helper only strips notification_skip_direct_actor. Calling that helper on the installed candidate therefore retains support schema and cannot match any generation in nativeCatalogGenerations. The unchanged populated forward-upgrade journey exposes that mismatch at released-forecast-upgrade.ts:69.
+
+Current main composes the equivalent graph-proposal compatibility transform into its historical notification helper. Integration must preserve that newer transform as well as both actual source branches. The repair will reconstruct the complete pre-support and pre-graph catalogs independently, include their common predecessor, and derive all older generations from that predecessor. The notification helper itself must strip both later migrations before removing the notification trigger.
+
+The validator, exact schema-hash matching, row validation, authority exclusions and all existing assertions remain unchanged. Compatibility is bounded to complete known native generations; an incomplete support table inventory must still fail. No permanent registration is needed: the existing populated forward-upgrade guard proves the reported regression, and a one-off comparison uses catalogs captured from real migrated databases on the two original source heads.
+
+No live provider qualification, new feature, UI edit, rer upgrade, status promotion, C follow-up, landing, tag or release is in scope. The three prior C follow-ups remain with their own future work. INTEGRATE-004 is claimed PARTIAL with every prior provider, account, sensitive-content, TEAM-005 and buyer-walk hold retained. The actual main contract judgment and every status count must remain unchanged.

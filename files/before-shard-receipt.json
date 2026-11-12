@@ -1,0 +1,198 @@
+{
+  "shard": "fold-domain-3",
+  "commit": "1914f2a25ed651ecb26867cc01ebc7ea72a14c7e",
+  "startedAt": "2026-11-12T14:22:24.694Z",
+  "finishedAt": "2026-11-12T14:34:13.932Z",
+  "status": "failed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/verification-build.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 534,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/fold-domain-3-results.jsonl",
+        "newtests/t096/collaborator-lifecycle.test.ts",
+        "newtests/t096/emitted-restart.test.ts",
+        "newtests/t096/empty-native.test.ts",
+        "newtests/t096/forward-upgrade.test.ts",
+        "newtests/t096/report-population-race.test.ts"
+      ],
+      "env": {},
+      "files": [
+        "newtests/t096/collaborator-lifecycle.test.ts",
+        "newtests/t096/emitted-restart.test.ts",
+        "newtests/t096/empty-native.test.ts",
+        "newtests/t096/forward-upgrade.test.ts",
+        "newtests/t096/report-population-race.test.ts"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 708684,
+      "missingFiles": [],
+      "eventError": "Missing, failed or unexpected test completions.",
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": false,
+          "counts": {
+            "tests": 6,
+            "failed": 1,
+            "passed": 5,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 6,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences",
+          "file": "newtests/t096/collaborator-lifecycle.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 352593.120357
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive",
+          "file": "newtests/t096/collaborator-lifecycle.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 27033.054729
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts",
+          "file": "newtests/t096/emitted-restart.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 39938.570856
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker",
+          "file": "newtests/t096/empty-native.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 32877.986871
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact",
+          "file": "newtests/t096/forward-upgrade.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "failed",
+          "durationMs": 209093.547957
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence",
+          "file": "newtests/t096/report-population-race.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 30906.906636
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences",
+      "file": "newtests/t096/collaborator-lifecycle.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 352593.120357
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive",
+      "file": "newtests/t096/collaborator-lifecycle.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 27033.054729
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts",
+      "file": "newtests/t096/emitted-restart.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 39938.570856
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker",
+      "file": "newtests/t096/empty-native.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 32877.986871
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact",
+      "file": "newtests/t096/forward-upgrade.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "failed",
+      "durationMs": 209093.547957
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence",
+      "file": "newtests/t096/report-population-race.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 30906.906636
+    }
+  ]
+}

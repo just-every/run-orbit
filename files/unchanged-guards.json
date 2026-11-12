@@ -1,0 +1,17 @@
+[
+  {
+    "path": "newtests/t096/released-forecast-upgrade.ts",
+    "unchangedFromFailedHead": true,
+    "sha256": "09190b3c97df90757f91d2606aa635cb86d5617a52ec40e80b9e245ddefb4681"
+  },
+  {
+    "path": "newtests/t096/forward-upgrade.test.ts",
+    "unchangedFromFailedHead": true,
+    "sha256": "a1feb49cb10575ee6e20aeeb2aede10b27ee518e229891c66a2e42891b7aa888"
+  },
+  {
+    "path": "src/core/features/records/archive-fold-validation.ts",
+    "unchangedFromFailedHead": true,
+    "sha256": "0f5a94893c0ea4aba7a59e751ef5d37e09663544fdc27c6d6f06537bd65b6604"
+  }
+]

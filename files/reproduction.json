@@ -1,0 +1,18 @@
+{
+  "head": "1914f2a25ed651ecb26867cc01ebc7ea72a14c7e",
+  "run": 43155978313,
+  "job": 130976890004,
+  "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+  "test": "newtests/t096/forward-upgrade.test.ts#API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact",
+  "exit": 1,
+  "failure": "Archive inventory does not match a complete supported source generation.",
+  "location": "newtests/t096/released-forecast-upgrade.ts:69:21",
+  "environment": {
+    "ORBIT_VERIFY_PREBUILT": "1",
+    "ORBIT_VERIFY_JOURNEYS": "1",
+    "ORBIT_VERIFY_TIER": "push",
+    "node": "22.20.0"
+  },
+  "startedAt": "2026-11-12T14:22:23Z",
+  "finishedAt": "2026-11-12T14:34:13Z"
+}

@@ -1,0 +1,25 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 7 errors:
+/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/capture-current.ts:5:25: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/capture-current.ts:6:44: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/capture-current.ts:7:13: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/capture-current.ts:9:15: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/packet/capture-current.ts:10:1: ERROR: Top-level await is currently not supported with the "cjs" output format
+...
+    at failureErrorWithLog (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1752:15)
+    at /home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1019:50
+    at responseCallbacks.<computed> (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:886:9)
+    at handleIncomingPacket (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:941:12)
+    at Socket.readFromStdout (/home/agent/rer-consolidation/work/sd-orbit-c-f170-fix1/orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:864:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v22.20.0

@@ -1,0 +1,60 @@
+{
+  "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 newtests/t096/forward-upgrade.test.ts newtests/t096/archive-upgrade-preflight.test.ts tests/core/onboarding-archive.test.ts",
+  "summary": {
+    "kind": "summary",
+    "runner": "node:test",
+    "success": true,
+    "counts": {
+      "tests": 3,
+      "failed": 0,
+      "passed": 3,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 3,
+      "suites": 0
+    }
+  },
+  "tests": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "ordinary D1 upgrade refuses active native v2 upload, backup and load before effects, then succeeds after the genuine old abort or finish",
+      "file": "newtests/t096/archive-upgrade-preflight.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 146205.460845
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact",
+      "file": "newtests/t096/forward-upgrade.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 464825.279542
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+      "file": "tests/core/onboarding-archive.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 509978.270599
+    }
+  ],
+  "connectionNote": "The execution connection reset after the first two tests. Processes continued; all three test cases and the Node terminal summary passed. The completed timeout wrapper retained a kernel wait status of zero, recovered from its zombie process stat.",
+  "commandExit": 0,
+  "exitObservation": {
+    "pid": 19835,
+    "process": "timeout",
+    "state": "Z",
+    "kernelWaitStatus": 0,
+    "exitCode": 0,
+    "source": "/proc/19835/stat field 52"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f170-fix1",
+  "head": "e02ddbe65a208cef96cb1bfb66f2a02cef80c202",
+  "tree": "abcf7292c65607d476038f96fe70e14c17eff04d",
+  "local_node_summary": {
+    "kind": "summary",
+    "runner": "node:test",
+    "success": true,
+    "counts": {
+      "tests": 3,
+      "failed": 0,
+      "passed": 3,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "topLevel": 3,
+      "suites": 0
+    }
+  },
+  "local_command_exit": 0,
+  "typecheck_exit": 0,
+  "build_exit": 0,
+  "mechanical_exit": 0,
+  "generation_proof_exit": 0,
+  "registered_tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clause_counts": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "ci": {
+    "at": "2026-11-12T15:35:45.580272+00:00",
+    "calls": 7,
+    "conclusion": "success",
+    "event": "push",
+    "head_branch": "cloud/sd-orbit-c-f170-fix1",
+    "head_sha": "e02ddbe65a208cef96cb1bfb66f2a02cef80c202",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43243939499",
+    "id": 43243939499,
+    "name": "Verify",
+    "status": "completed"
+  },
+  "ci_calls": 7,
+  "custody": "READY",
+  "repair_blockers": [],
+  "publication_scan": "fleet duty; not run in cloud",
+  "landing": "not performed"
+}

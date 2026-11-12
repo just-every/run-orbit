@@ -1,0 +1,29 @@
+Thu Nov 12 14:44:18 UTC 2026
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":2,"tables":35,"rows":3,"parts":3,"observations":[{"operation":"POST /exports","milliseconds":760.7729270000018,"status":201},{"operation":"GET /exports/01M783FEJ46BPRERXZ37XVRCDN","milliseconds":72.17921800000113,"status":200},{"operation":"POST /exports/01M783FEJ46BPRERXZ37XVRCDN/advance","milliseconds":951.3282669999971,"status":200},{"operation":"GET /exports/01M783FEJ46BPRERXZ37XVRCDN/download","milliseconds":62.39017100000274,"status":200}]}
+✔ ordinary D1 upgrade refuses active native v2 upload, backup and load before effects, then succeeds after the genuine old abort or finish (146205.460845ms)
+(node:22926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":133,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3537.3051590000105,"status":201},{"operation":"GET /exports/01M783RNVDGB3NAHY1KS7QAC5X","milliseconds":61.48097699999926,"status":200},{"operation":"POST /exports/01M783RNVDGB3NAHY1KS7QAC5X/advance","milliseconds":4586.865084000019,"status":200},{"operation":"POST /exports/01M783RNVDGB3NAHY1KS7QAC5X/advance","milliseconds":2861.0477580000006,"status":200},{"operation":"POST /exports/01M783RNVDGB3NAHY1KS7QAC5X/advance","milliseconds":2820.1879229999904,"status":200},{"operation":"POST /exports/01M783RNVDGB3NAHY1KS7QAC5X/advance","milliseconds":1362.3017790000013,"status":200},{"operation":"GET /exports/01M783RNVDGB3NAHY1KS7QAC5X/download","milliseconds":57.37007400000584,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":133,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3389.665626000031,"status":201},{"operation":"GET /exports/01M783ZDP6KM796R9J48VMVJDX","milliseconds":59.51433700002963,"status":200},{"operation":"POST /exports/01M783ZDP6KM796R9J48VMVJDX/advance","milliseconds":4777.926823999966,"status":200},{"operation":"POST /exports/01M783ZDP6KM796R9J48VMVJDX/advance","milliseconds":2932.38161099999,"status":200},{"operation":"POST /exports/01M783ZDP6KM796R9J48VMVJDX/advance","milliseconds":3044.9081259999657,"status":200},{"operation":"POST /exports/01M783ZDP6KM796R9J48VMVJDX/advance","milliseconds":1438.1946410000091,"status":200},{"operation":"GET /exports/01M783ZDP6KM796R9J48VMVJDX/download","milliseconds":176.0576379999984,"status":200}]}
+OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+✔ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (464825.279542ms)
+(node:28632) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions (509978.270599ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1131135.569432

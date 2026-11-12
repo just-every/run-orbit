@@ -1,0 +1,6 @@
+Thu Nov 12 14:45:07 UTC 2026
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"results":[{"label":"Zendesk candidate before graph migration","tables":133,"schemaHash":"b10e0c0963792f20bc6abe0fca47611e90db26c1e3de3abd7111867d1d240936","accepted":true},{"label":"Main graph migration before Zendesk","tables":128,"schemaHash":"67dbcde35328af19ce6bcae40c22975f5710c067a41bc9b7df13dded4e04778b","accepted":true},{"label":"Current merged migrations","tables":133,"schemaHash":"b04294db95cb6e5802d6ae1bde31666127e9f8675eff0d72f728ec80e177608d","accepted":true},{"label":"Complete pre-direct-notification generation","tables":128,"schemaHash":"80092d152bc76dc268da98cc83f4748116378864e7b662d1ea45e178e5b04de2","accepted":true}],"incompleteNativeInventoryRejected":true,"validatorUnchanged":true}
+EXIT=0
