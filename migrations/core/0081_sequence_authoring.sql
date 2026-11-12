@@ -18,7 +18,6 @@ CREATE TABLE sequence_versions (
  calendar_json TEXT NOT NULL CHECK(json_valid(calendar_json)),
  created_at TEXT NOT NULL,
  created_by TEXT NOT NULL REFERENCES operators(id),
- author_name TEXT NOT NULL,
  PRIMARY KEY(sequence_id,version)
 );
 CREATE TRIGGER sequence_versions_immutable BEFORE UPDATE ON sequence_versions

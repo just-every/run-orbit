@@ -8,7 +8,7 @@ import type {Sequence,SequenceCalendar,SequenceContent,SequenceHistory,Step} fro
 type SequenceRow={id:string;owner_id:string;visibility:Sequence['visibility'];version:number;source_id:string|null;source_version:number|null;history_json:string};
 const selection=`SELECT s.*,(SELECT json_group_array(json(v.item)) FROM (
  SELECT json_object('version',version,'name',name,'steps',json(steps_json),'calendar',json(calendar_json),
- 'createdAt',created_at,'createdBy',created_by,'authorName',author_name) AS item
+ 'createdAt',created_at,'createdBy',created_by,'authorName',(SELECT display_name FROM operators WHERE id=created_by)) AS item
  FROM sequence_versions WHERE sequence_id=s.id ORDER BY version DESC
 ) v) AS history_json FROM sequences s`;
 
@@ -82,8 +82,8 @@ export class SequenceRepository {
  }
 
  private versionInsert(id:string,version:number,content:SequenceContent,calendar:SequenceCalendar,actor:string){
-  return this.db.prepare(`INSERT INTO sequence_versions(sequence_id,version,name,steps_json,calendar_json,created_at,created_by,author_name)
-   SELECT ?,?,?,?,?,?,id,display_name FROM operators WHERE id=?`)
+  return this.db.prepare(`INSERT INTO sequence_versions(sequence_id,version,name,steps_json,calendar_json,created_at,created_by)
+   SELECT ?,?,?,?,?,?,id FROM operators WHERE id=?`)
    .bind(id,version,content.name,JSON.stringify(content.steps),JSON.stringify(calendar),new Date().toISOString(),actor);
  }
 
