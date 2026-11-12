@@ -7051,7 +7051,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-list.tsx": {
-      "sha256": "8274480c2756b612da456010864eb8372c8d3dfcc3a29834bfd126bf6ba59b40",
+      "sha256": "2899313c7d165c924e5b9f4825ec199a9ec493bd1705e385a7780cdb369517cc",
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
@@ -10314,6 +10314,10 @@
       "sha256": "0770335f978818ab0fce2c72b2c695a7abbad01a3819b3da7e42b77124f57582",
       "executable": false
     },
+    "tests/delegation-browser/saved-deal-value-journey.mjs": {
+      "sha256": "3d1ed36cb16723d576f56d8d5c20efeb5d395863eca816d963e907b5a1173903",
+      "executable": false
+    },
     "tests/delegation-browser/today-brief.test.ts": {
       "sha256": "039d6fb4f231b647dbeb1cf20fd43a7b714ef9193301244cdb2074b685c146e2",
       "executable": false
@@ -10323,7 +10327,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "bf5506fb6712f5997c88250b548cd719676c3d45f6fc7603eefd5d4859af2e85",
+      "sha256": "1ef8d92aea0a7eda4d2f0eda36b1f55665ebb4b5d097a02d0d463091b2b02e20",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
