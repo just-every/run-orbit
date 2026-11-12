@@ -5183,7 +5183,7 @@
       "executable": false
     },
     "src/core/features/access/administration.ts": {
-      "sha256": "1bc5c55ab92fc1b5940f34b1a09ba32b2d318331f903123594ab536ae8c05b77",
+      "sha256": "030335fc2ed83fed430f7f49a322441538519b2f3ad514092e9fd0e072b456c7",
       "executable": false
     },
     "src/core/features/access/app-access.tsx": {
@@ -5195,7 +5195,7 @@
       "executable": false
     },
     "src/core/features/access/collaborator-console.tsx": {
-      "sha256": "208f470f050f5da349c12f92cafea645508d9ddd83a239bcdacad05ecae1f543",
+      "sha256": "1facdde46c843c5f65366d81b2d971238f66e4737b7f297fe0e7198ec3d178bc",
       "executable": false
     },
     "src/core/features/access/collaborator-grants.tsx": {
@@ -5539,7 +5539,7 @@
       "executable": false
     },
     "src/core/features/assistance/record-routes.ts": {
-      "sha256": "4be9dbcb8bef89e538a62211d44106b629c5d2584116b528c2b5b6651f074af0",
+      "sha256": "f85f2148e8d1f6b8004b2a8abacc852ead3b43060f0dd3afa22d4421e94f4075",
       "executable": false
     },
     "src/core/features/assistance/routes.ts": {
@@ -6839,7 +6839,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-removal-review.tsx": {
-      "sha256": "9796ad3a168a64bbb440c92c0ac1b95f4d64235c8ac4ba583584bf802e26ebd2",
+      "sha256": "b13e7a8c14fee53575b13228c728e69cf27dba2a5c17ea81bb008f68cf163500",
       "executable": false
     },
     "src/core/features/operator/ui/operator-settings.tsx": {
@@ -7143,7 +7143,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/settings/team.tsx": {
-      "sha256": "dbc3dd3d6ce881b9bddd5a3ea0050083f7c6e4f53c5c78889932b62568f289ff",
+      "sha256": "13db7969d8a4addd8ed524d94f6ce7300af96d6a80311a293bc73e235443c0af",
       "executable": false
     },
     "src/core/features/operator/ui/settings/use-workspace-settings.ts": {
@@ -7480,6 +7480,10 @@
     },
     "src/core/features/ownership/read.ts": {
       "sha256": "1405c4e95922fc699d9f6db8d94d70de426a1fc8152400cb27b4120819df43e7",
+      "executable": false
+    },
+    "src/core/features/ownership/removal.ts": {
+      "sha256": "a7522916ef6df8e1c579f2a5da86defac6d83f5913949d00a9e5b36f27d6fd82",
       "executable": false
     },
     "src/core/features/ownership/repository.ts": {
@@ -8171,7 +8175,7 @@
       "executable": false
     },
     "src/core/features/settings/removal-handover.ts": {
-      "sha256": "9af2842f15acb7f9771739f79437139be8b57b6c9e85e14156f25483bc0651f6",
+      "sha256": "fbb465430f931792a278e61aeff975b50d7fb67c584c4c06d48698d4183c70bd",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
@@ -8179,7 +8183,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "83c58ddc4e8128fc9a6b1818776a2edacf9c664161a41b7a5cc31c025429cf05",
+      "sha256": "299283a6bf4edde52f75836e2d32bb9f6f34d243c8d39db458ee5441747590fd",
       "executable": false
     },
     "src/core/features/setup/loader.ts": {
@@ -10403,7 +10407,11 @@
       "executable": false
     },
     "tests/e2e/records.spec.mjs": {
-      "sha256": "0f0ae6ce93925901eb4feec06d25fc6de700b213f6ebe81d82179dcca7647417",
+      "sha256": "7e38a4318824a8ed1d3d5ba17a634e54f76cce3975c2edc376142e7f1e68b8f1",
+      "executable": false
+    },
+    "tests/e2e/removal-handover.mjs": {
+      "sha256": "5ecca5312169bca8c593b45a1d0509d922b1b2cf2dde8cfd02dadaba04c532f4",
       "executable": false
     },
     "tests/e2e/stale-review.spec.mjs": {
