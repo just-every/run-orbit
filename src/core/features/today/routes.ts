@@ -46,7 +46,7 @@ export function createTodayRoutes(db:D1Database,provider?:AIProvider){
   return c.json(await savePlan(db,id.data,input.data,c.get('operator').operatorId));
  });
  app.post('/meetings/:id/actions',async c=>{
-  const id=signalId.safeParse(c.req.param('id')),input=z.object({title:z.string().trim().min(1).max(300),dueAt:z.iso.datetime().nullable(),evidenceId:z.string().regex(/^[A-Za-z0-9_-]{1,100}$/)}).strict().safeParse(await c.req.json().catch(()=>null));
+  const id=signalId.safeParse(c.req.param('id')),input=z.object({title:z.string().trim().min(1).max(300),dueAt:z.iso.datetime().nullable(),obligationId:z.string().min(1).max(100).optional(),evidenceId:z.string().regex(/^[A-Za-z0-9_-]{1,100}$/)}).strict().safeParse(await c.req.json().catch(()=>null));
   if(!id.success||!input.success)return c.json({error:'Enter a next action title and an optional due time.'},400);
   return c.json(await planAction(db,id.data,input.data,c.get('operator').operatorId),201);
  });

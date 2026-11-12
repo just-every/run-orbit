@@ -1,5 +1,7 @@
 import {zoomNetwork} from '../support/zoom-network.mjs';
 import {zoomMeetingJourney} from './today-journey.mjs';
+import {mailTransportKeys} from '../support/mail-transport-client';
+import {followUpObligationJourney} from './today-journey.mjs';
 import {draftParityBrowserJourney} from '../support/agent-door-draft-parity-proof';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
@@ -21,7 +23,7 @@ import {unstable_DevEnv} from 'wrangler';
 import {identityVars} from '../support/worker-identity.mjs';
 import assert from 'node:assert/strict';
 
-test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
+test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and follow-up outcomes, and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_TODAY_PORT??8736),origin=`http://127.0.0.1:${port}`;
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  const runtime=new unstable_DevEnv(),zoomRuntime=new unstable_DevEnv();
@@ -41,6 +43,7 @@ test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017
   browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{}),args:['--use-mock-keychain','--password-store=basic','--no-sandbox']});
   const context=(token:string)=>browser!.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:`${sessionCookieName}=${token}`}});
   await todayJourney({first:await context(first.token),second:await context(second.token),colleague:await context(third.token),evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  for(const prior of browser.contexts())await prior.close();
   const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;worker=undefined;
   await fixture.reopen();
    await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(owner).run();
@@ -59,6 +62,7 @@ test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017
    return Response.json({status:'completed',usage:{input_tokens:80,output_tokens:30},output:[{content:[{type:'output_text',text:JSON.stringify(model.output)}]}]});
   }}});await emitted.ready;
   await riskJourney(await(await context(second.token)).newPage(),data,model,resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today'));
+  for(const prior of browser.contexts())await prior.close();
   assert.deepEqual(model.unexpected,[],'Risk review makes no customer mail or other outbound request');
   await runtime.teardown();await fixture.reopen();
   assert.deepEqual(await riskBusinessState(fixture.db),before,'Risk review changes no sales state, stakeholders, commitments, drafts or mail');
@@ -66,11 +70,14 @@ test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017
   try {
   const stalled=await stalledRiskBrowser(testContext,riskFixture.db,origin);
   await riskFixture.close();
-  const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(stalled.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port}}});await riskOnly.ready;
+  const mailKeys=mailTransportKeys(),mailEdge={submissions:[] as any[],status:408};
+  const followUpVars={...stalled.vars,...mailKeys.bindings,SENDGRID_API_KEY:'synthetic-orbit-browser-81',MAIL_FROM:['synthetic-orbit-browser','sender.test'].join('@'),MAIL_REPLY_TO:['synthetic-orbit-browser','reply.test'].join('@'),SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'};
+  const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(followUpVars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{if(request.url==='https://api.sendgrid.com/v3/mail/send'){mailEdge.submissions.push(await request.json());return new Response(null,{status:mailEdge.status});}if(request.url.startsWith('https://api.sendgrid.com/v3/messages?'))return Response.json({messages:[]});return new Response(null,{status:502});}}});await riskOnly.ready;
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await embeddedRiskJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await draftParityBrowserJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  await followUpObligationJourney({page:await signedIn.newPage(),...stalled,mailKeys,mailEdge,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await signedIn.close();
   } finally {await riskRuntime.teardown();await riskFixture.dispose();}
 

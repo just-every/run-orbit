@@ -1,3 +1,4 @@
+import {obligation} from '../obligations/repository';
 import {defineTool,ToolRefusal,type ResourceDefinition} from '../../../base/modules/agent-door/index.ts';
 import {DraftsRepository} from '../drafts/repository';
 import {DraftsService} from '../drafts/service';
@@ -26,10 +27,10 @@ export function draftTools(bindings:PlatformBindings) {
       inputSchema:objectSchema({id:string}),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],untrusted:true,
       classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},run:async(args,ctx)=>{await fullSeller(bindings,ctx);return {result:{draft:await read(String(args.id))}};}}),
     defineTool({name:'orbit.drafts.create',title:'Prepare a customer draft',description:'Create an exact private draft with a current contact and native relationship. This is preparation and supplies no send approval.',scope:'drafts:write',readOnly:false,
-      inputSchema:objectSchema({kind:kindSchema,id:string,contact_id:string,opportunity_id:{type:['string','null']},subject:{type:'string',minLength:1,maxLength:1000},body:text},['kind','id','contact_id','subject','body']),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],
-      classify:async(_args,ctx)=>{await fullSeller(bindings,ctx);return standard();},summary:args=>{const normalized=content('create',args);return {target:{id:String(args.id)},items:[normalized.subject,normalized.body,`Contact: ${args.contact_id}`]};},
+      inputSchema:objectSchema({kind:kindSchema,id:string,contact_id:string,opportunity_id:{type:['string','null']},obligation_id:{type:'string',minLength:1,maxLength:100},subject:{type:'string',minLength:1,maxLength:1000},body:text},['kind','id','contact_id','subject','body']),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],
+      classify:async(args,ctx)=>{await fullSeller(bindings,ctx);if(args.obligation_id){const saved=await obligation(bindings.DB,String(args.obligation_id));if(saved.closed_at||saved.paused||!saved.contact_id)throw new ToolRefusal('resource_unavailable');}return standard();},summary:args=>{const normalized=content('create',args);return {target:{id:String(args.id)},items:[normalized.subject,normalized.body,`Contact: ${args.contact_id}`]};},
       run:async(args,ctx)=>{await fullSeller(bindings,ctx);const {access,actor}=await nativeRecords(bindings,ctx),db=agentDatabase(bindings.DB,access,actor,ctx);
-        const result=await new RecordMailRepository(db).create(args.kind as 'contact'|'company'|'opportunity',String(args.id),{contactId:String(args.contact_id),...content('create',args),...(args.opportunity_id!==undefined?{opportunityId:args.opportunity_id as string|null}:{})},ctx.person.id);
+        const result=await new RecordMailRepository(db).create(args.kind as 'contact'|'company'|'opportunity',String(args.id),{contactId:String(args.contact_id),...content('create',args),...(args.opportunity_id!==undefined?{opportunityId:args.opportunity_id as string|null}:{}),...(args.obligation_id?{obligationId:String(args.obligation_id)}:{})},ctx.person.id);
         const id=String((result as {id:string}).id);ctx.emit('draft.created',`orbit://drafts/${id}`);return {result,resources:[{uri:`orbit://drafts/${id}`,name:'Saved draft'}]};}}),
     defineTool({name:'orbit.drafts.update',title:'Edit an exact saved draft',description:'Save permitted exact recipient/content at the current native revision. Approved or stale content cannot be silently rewritten.',scope:'drafts:write',readOnly:false,
       inputSchema:objectSchema({id:string,recipient_email:{type:'string',format:'email'},subject:{type:'string',minLength:1,maxLength:1000},body:text}),outputSchema,classes:['standard'],clauses:['OUT-001','ACTION-005'],untrusted:true,

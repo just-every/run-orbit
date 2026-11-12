@@ -1,3 +1,4 @@
+import {createContactFromSignal} from './unlinked-contact';
 import {isNativeSource} from './source-authority';
 import {publicRateLimit} from '../../platform/public-rate-limit';
 import {Hono} from 'hono';
@@ -63,6 +64,7 @@ export function createSourceRoutes(db:D1Database,security?:SourceSecurity){
   const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
   app.post('/replies/:id/link',async c=>{const input=z.object({opportunityId:recordId}).strict().safeParse(await c.req.json());if(!recordId.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a valid reply and opportunity.'},400);await new ProviderRepository(db).linkReply(c.req.param('id'),input.data.opportunityId,c.get('operator').operatorId);return c.json({linked:true});});
   app.get('/unlinked',async c=>c.json({signals:await repository.unlinked()}));
+  app.post('/unlinked/:id/create-contact',async c=>{if(!recordId.safeParse(c.req.param('id')).success)return c.json({error:'Select an event.'},400);return c.json(await createContactFromSignal(db,c.req.param('id'),c.get('operator').operatorId),201);});
   app.post('/unlinked/:id/link',async c=>{const input=z.object({type:z.enum(['contact','company','opportunity']),id:recordId}).strict().safeParse(await c.req.json());if(!recordId.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Select a record.'},400);await repository.link(c.req.param('id'),{...input.data,basis:'Operator review'},c.get('operator').operatorId);return c.json({linked:true});});
   return app;
 }

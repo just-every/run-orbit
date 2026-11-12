@@ -7,10 +7,11 @@ import { tasksAvailable } from './authority';
 export async function dispatchSalesTaskReminders(db: D1Database, now = new Date().toISOString()) {
  const available = await db.prepare(`SELECT ${tasksAvailable} AS available`).first<{available: number}>();
  if (!available?.available) return {created: 0, blocked: true};
+ const obligationFence=" AND NOT EXISTS(SELECT 1 FROM follow_up_work w JOIN follow_up_obligations o ON o.id=w.obligation_id WHERE w.kind='task' AND w.item_id=t.id AND (o.paused=1 OR o.closed_at IS NOT NULL OR w.exited_at IS NOT NULL))";
  const due = (await db.prepare(`SELECT t.id,t.reminder_revision,t.owner_id FROM sales_tasks t
  JOIN sales_task_series s ON s.id=t.series_id JOIN operators p ON p.id=t.owner_id
  WHERE t.status='open' AND s.cancelled_at IS NULL AND t.reminder_minutes IS NOT NULL
- AND p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id)
+ AND p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id)${obligationFence}
  AND julianday(t.due_at)-t.reminder_minutes/1440.0<=julianday(?)
  AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.operator_id=t.owner_id AND n.event_key='task.reminder:'||t.id||':'||t.reminder_revision)
  ORDER BY t.due_at,t.id LIMIT 50`).bind(now).all<{id: string; reminder_revision: string; owner_id: string}>()).results;
@@ -22,7 +23,7 @@ export async function dispatchSalesTaskReminders(db: D1Database, now = new Date(
    FROM sales_tasks t JOIN sales_task_series s ON s.id=t.series_id JOIN operators p ON p.id=t.owner_id
    WHERE t.id=? AND t.reminder_revision=? AND t.owner_id=? AND t.status='open' AND s.cancelled_at IS NULL
    AND t.reminder_minutes IS NOT NULL AND julianday(t.due_at)-t.reminder_minutes/1440.0<=julianday(?)
-   AND p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id) AND ${tasksAvailable}`)
+   AND p.status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators x WHERE x.operator_id=p.id)${obligationFence} AND ${tasksAvailable}`)
    .bind(createId(), key, now, task.id, task.reminder_revision, task.owner_id, now),
   db.prepare(`INSERT OR IGNORE INTO sales_task_notification_links(notification_id,task_id,href)
    SELECT n.id,t.id,? FROM notifications n JOIN sales_tasks t ON t.id=? AND t.reminder_revision=? AND t.owner_id=n.operator_id
