@@ -7,6 +7,12 @@ import {createId} from '../../shared/ids';
 import {audit,RecordError,type RecordKind} from './shared';
 import {RecordsRepository} from './repository';
 import {typedFields} from './typed-fields';
+import {identityMatch,identityPatterns} from './erasure-identity';
+
+/** Withdraw mailbox-bearing definitions during contact erasure; clearing a search would widen its rows. */
+export function savedViewContactErasure(db:D1Database,identities:string[]){
+ return identities.map(identity=>db.prepare(`DELETE FROM record_saved_views WHERE ${identityMatch('definition_json')}`).bind(...identityPatterns(identity)));
+}
 
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 export const viewFilters=z.object({lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([id,z.literal('')]).optional(),stage_id:z.union([id,z.literal('')]).optional(),owner_id:z.union([id,z.literal(''),z.literal('unassigned')]).optional()}).strict();

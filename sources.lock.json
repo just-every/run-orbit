@@ -7927,7 +7927,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "219e94dcacd0e5195f556b22a791b9421ecf80a70a6422fd72c83adfbf5b3c3b",
+      "sha256": "2deef526be6fa4084d489fffe293f972c41bee62516cb1e1a41737c60b6dd60b",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -7987,7 +7987,7 @@
       "executable": false
     },
     "src/core/features/records/saved-views.ts": {
-      "sha256": "7484a977ea8990fe7c4462c8282cb7a3c808cf6116ceeaaad009f263ae0eddf8",
+      "sha256": "10e9895879110e828a0ea391ce4508e35eb40a7b5fd6e3a30e0e0200307e4aec",
       "executable": false
     },
     "src/core/features/records/schema.ts": {
@@ -11371,7 +11371,7 @@
       "executable": false
     },
     "tests/support/saved-views-proof.ts": {
-      "sha256": "7b47e6092caf5c70a3e59963f0a7c0902f0190a7aefac83e2c4b01450d6b22ac",
+      "sha256": "31d2c127d2e78fec19982ba42c25011286e96b3f8b54c871b316466a72755868",
       "executable": false
     },
     "tests/support/sdk-worker-fixture.ts": {

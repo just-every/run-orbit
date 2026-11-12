@@ -1,4 +1,5 @@
 import {workflowContactErasure} from '../workflows/privacy';
+import {savedViewContactErasure} from './saved-views';
 import {apiCredentialErasure} from '../api/privacy';
 import {payloadHash} from '../../platform/source-security';
 import {normalizedPhone} from '../calls/provider';
@@ -51,6 +52,7 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   statements.push(...savedViewContactErasure(db,identities));
    // What the agent door recorded about this contact (held calls, approvals, outcomes, audit, events) goes in the same batch.
    statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,identities));
    statements.push(...await workflowContactErasure(db,id,identities));
