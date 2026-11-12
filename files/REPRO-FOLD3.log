@@ -1,0 +1,15 @@
+Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+✖ failing tests:
+
+test at newtests/t096/forward-upgrade.test.ts:1:2550
+✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (180193.918426ms)
+  Error: Archive inventory does not match a complete supported source generation.
+      at validateFoldManifest (/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/src/core/features/records/archive-fold-validation.ts:25:56)
+      at async proveReleasedForecastUpgrade (/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/newtests/t096/released-forecast-upgrade.ts:69:21)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/newtests/t096/forward-upgrade.test.ts:68:35)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    status: 400,
+    recordId: undefined
+  }

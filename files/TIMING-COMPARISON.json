@@ -1,0 +1,19 @@
+{
+  "test": "SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event",
+  "command": "pnpm exec tsx --test --test-name-pattern='source rotation and disabling' tests/core/source-onboarding.test.ts",
+  "candidate_head": "31abb8a36dbfcd4db078e98c7297edffb8a21415",
+  "candidate_exit": 1,
+  "main_head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "main_exit": 1,
+  "failure": "test timed out after 60000ms",
+  "failure_type": "testTimeoutFailure",
+  "node": "22.20.0",
+  "flags": {
+    "ORBIT_VERIFY_PREBUILT": "1",
+    "ORBIT_VERIFY_JOURNEYS": "1",
+    "ORBIT_VERIFY_TIER": "push"
+  },
+  "same_vm": true,
+  "assertion_or_timeout_modified": false,
+  "classification": "Local timing failure also reproduced on main; no product repair."
+}

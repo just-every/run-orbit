@@ -1,0 +1,40 @@
+{
+  "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "flags": {
+    "ORBIT_VERIFY_PREBUILT": "1",
+    "ORBIT_VERIFY_JOURNEYS": "1",
+    "ORBIT_VERIFY_TIER": "push"
+  },
+  "chromium": "/usr/bin/chromium",
+  "chromium_args": [
+    "--no-sandbox"
+  ],
+  "failures": [
+    {
+      "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+      "run": 43135643566,
+      "job": 130911254621,
+      "name": "shards (batch-0)",
+      "command": "node scripts/verification-batch.mjs '[\"core-5\"]'",
+      "test": "tests/core/onboarding-archive.test.ts:83",
+      "failure": "POST records/archive/imports: 400 {\"error\":\"Invalid complete archive lineage.\"}",
+      "exit": 1,
+      "main_head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "main_comparison_exit": 0
+    },
+    {
+      "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+      "run": 43135643566,
+      "job": 130911254760,
+      "name": "shards (batch-7)",
+      "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+      "test": "newtests/t096/released-forecast-upgrade.ts:69",
+      "failure": "Archive inventory does not match a complete supported source generation.",
+      "exit": 1,
+      "main_head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "main_comparison_exit": 0
+    }
+  ]
+}

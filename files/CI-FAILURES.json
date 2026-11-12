@@ -1,0 +1,27 @@
+{
+  "github_core_budget": 10,
+  "github_reads_used": 10,
+  "archive_log_command": "gh run view 43135643566 --repo just-every/run-orbit --log-failed",
+  "log_transport_exit": 0,
+  "note": "One archive invocation retrieved both failed jobs within the ten-call budget. Only assertion sections are published; environment listings are omitted.",
+  "failures": [
+    {
+      "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+      "run": 43135643566,
+      "job": 130911254621,
+      "name": "shards (batch-0)",
+      "command": "node scripts/verification-batch.mjs '[\"core-5\"]'",
+      "test": "tests/core/onboarding-archive.test.ts:83",
+      "failure": "POST records/archive/imports: 400 {\"error\":\"Invalid complete archive lineage.\"}"
+    },
+    {
+      "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+      "run": 43135643566,
+      "job": 130911254760,
+      "name": "shards (batch-7)",
+      "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+      "test": "newtests/t096/released-forecast-upgrade.ts:69",
+      "failure": "Archive inventory does not match a complete supported source generation."
+    }
+  ]
+}

@@ -5,6 +5,21 @@
   "token_shape_matches": 0,
   "files": [
     {
+      "file": "ARCHIVE-ONBOARDING.log",
+      "bytes": 813,
+      "sha256": "16c0afa6c6a86c4a1fd6fc49b171f5e16f4a6b779f3b0e92cf9b16646665f8a2"
+    },
+    {
+      "file": "ARCHIVE-UPGRADE.log",
+      "bytes": 2727,
+      "sha256": "90e25179231d8617d74138d3d755b008853c0108a6ebbcc54e6e591f7ed032fc"
+    },
+    {
+      "file": "BOOKING-REPAIRED.log",
+      "bytes": 895,
+      "sha256": "3b623570587c226243f7e2ff969d54dea5ccc98320c3333ef4737474fa2b969b"
+    },
+    {
       "file": "BOOKING.log",
       "bytes": 469,
       "sha256": "aa4c05e25d05bce12b1c6a1e80eb4216ce09865de0f7299b27a3196e62cc0201"
@@ -13,6 +28,16 @@
       "file": "BOUNDARIES.log",
       "bytes": 49,
       "sha256": "aabe86b7a5d523d232d0d20384394aa63cb0ca09ca3a90221d32ffb67a4a63ee"
+    },
+    {
+      "file": "BROWSER-CONFIG.mjs",
+      "bytes": 417,
+      "sha256": "fde4a1d2914fdf517045a3f4f3ea1829cfa7582123eb95dfdeaefcdc11be9d7d"
+    },
+    {
+      "file": "BROWSER-REPAIRED.log",
+      "bytes": 4560,
+      "sha256": "b075c1c66e964a21d607a7764fb7b2db01626d676cfcebd4d67ef402c6aacec2"
     },
     {
       "file": "BROWSER.log",
@@ -26,13 +51,33 @@
     },
     {
       "file": "CALENDLY-1440.png",
-      "bytes": 187575,
-      "sha256": "f9e6c8da97bc2668c8d430988ab49756b1baab8d31cb3a8bf689302c75e64916"
+      "bytes": 190948,
+      "sha256": "55d0a0f9f6bcdfbd48284317dabede93ef2ecee9d017cd5fa8abf0991b392027"
     },
     {
       "file": "CALENDLY-390.png",
-      "bytes": 156318,
-      "sha256": "0624219f8efac0dd52ae72d74a82d7ecc425edb3bf9415278162b86d37917e97"
+      "bytes": 157583,
+      "sha256": "f021eac0814f7798df18624530592e0c59a3eb20dd025c6ccb42801bfe910037"
+    },
+    {
+      "file": "CHROMIUM-ADAPTER.cjs",
+      "bytes": 344,
+      "sha256": "fb2a53384981ee40d92af92a230bd496341290149673fa0e5c61694b03237311"
+    },
+    {
+      "file": "CI-FAILURES.json",
+      "bytes": 1143,
+      "sha256": "be3c9fe5b17284a1ffaaf57abf5f7b53a65ead5a780d1a1f1450a14d37e96b34"
+    },
+    {
+      "file": "CI-FAILURES.log",
+      "bytes": 4393,
+      "sha256": "dd2222c90180caa1f9bb90a795c20cfff2b720992b6504787c583b2182911cda"
+    },
+    {
+      "file": "CI-JOBS.json",
+      "bytes": 5556,
+      "sha256": "d025b08d927ecbdf9f2e526b8fe7f75d1d89abc117924a35823630a84865de6d"
     },
     {
       "file": "CI-RUNS.json",
@@ -41,8 +86,8 @@
     },
     {
       "file": "CI-STATUS.json",
-      "bytes": 295,
-      "sha256": "dded38561e3d87343fadd5e0bcba42065ef22cb40edf1ee4ebfe2fcbe34eae65"
+      "bytes": 298,
+      "sha256": "ff552f84f90703eff860c29e469aa5536874f80246acf1c60c6fe8f994e7708f"
     },
     {
       "file": "CONTRACT-CHECK.log",
@@ -66,8 +111,13 @@
     },
     {
       "file": "GIT-IDENTITY.log",
-      "bytes": 169,
-      "sha256": "172a24dc43c128168e7dcb3afc2e5564506571792a925856a693b267bc0011b5"
+      "bytes": 254,
+      "sha256": "09f8ba58dac467455ab08d443e49059febc32ad42058b272ebe845abc6c98835"
+    },
+    {
+      "file": "INITIAL-RECEIPT.json",
+      "bytes": 7839,
+      "sha256": "ba4b3f7f4536e404773ecdcfc29ac92a126a79d89dd2ab6b68c55b60b5ab2dc9"
     },
     {
       "file": "INITIAL-SOURCE-ONBOARDING.log",
@@ -75,9 +125,54 @@
       "sha256": "57740562b3575db8592c8595e4d97164be95b576e793617fdd562ac5403cd714"
     },
     {
+      "file": "LEGACY-BOOKING-AFTER.log",
+      "bytes": 326,
+      "sha256": "7876c297f84b4fe35f21aab88123b391aeef6acd2bd40d8c929bc73ef2ab595b"
+    },
+    {
+      "file": "LEGACY-BOOKING-BEFORE.log",
+      "bytes": 840,
+      "sha256": "c9f9b1573d12a070dbd9b3e32eb7b9a8fdb704cad715b19a1efdb3e5d27bbf1e"
+    },
+    {
+      "file": "LEGACY-BOOKING-PROBE.ts",
+      "bytes": 4408,
+      "sha256": "cbc4f61e3b735fbd926870aeea08f4342c3035f2c6c9ee70fb2e458e31fb8dd6"
+    },
+    {
+      "file": "LOCAL-SETUP-TIMEOUTS.log",
+      "bytes": 5346,
+      "sha256": "406092e4b89719368de62f80f5406d799951ce6fa45b9af1d4ece38c26864186"
+    },
+    {
+      "file": "MAIN-AUTHORITY.log",
+      "bytes": 917,
+      "sha256": "446d3c4bd552aa3f0602191cf6ee4f48b8cde16bf93320e43669dc5c022f509a"
+    },
+    {
+      "file": "MAIN-ONBOARDING.log",
+      "bytes": 813,
+      "sha256": "b45d330ccce6333495f34423587708bcd30830eb3717951cd92e0e87ff1f295c"
+    },
+    {
       "file": "MAIN-RUNS.json",
       "bytes": 966,
       "sha256": "ea9473e4f3569f842d8676bf929cb9dfb08914b466509e8f862c309cbcbed2af"
+    },
+    {
+      "file": "MAIN-UPGRADE.log",
+      "bytes": 2726,
+      "sha256": "51537ac03e676e645e8f0b0247f29e90d19c462763852f6ccb8912c901407c8c"
+    },
+    {
+      "file": "MIGRATION-PROBE.ts",
+      "bytes": 4888,
+      "sha256": "4f4267a6b5eedf7e90fe73856ff8db8a34a0c951f4e8e57ecc64528bdcf422e9"
+    },
+    {
+      "file": "MIGRATION-REPAIRED.log",
+      "bytes": 508,
+      "sha256": "891dcf2f233aad039eb68a7fb142e2ae96c7d54793143a15895d6adc396c0d01"
     },
     {
       "file": "MIGRATION.log",
@@ -86,28 +181,53 @@
     },
     {
       "file": "PLAN.md",
-      "bytes": 1826,
-      "sha256": "9b422a918b6079ab14647750b2a866f2edd77db12f414579aea1b3fb5b87071f"
+      "bytes": 2197,
+      "sha256": "2f03ad6244654390f2de7a59ed9938227814521111dd8150d33a4466b1c6799a"
     },
     {
       "file": "RECEIPT.json",
-      "bytes": 7839,
-      "sha256": "ba4b3f7f4536e404773ecdcfc29ac92a126a79d89dd2ab6b68c55b60b5ab2dc9"
+      "bytes": 7347,
+      "sha256": "2020eacb4f0abd4a84262df6350ee5ed67ca58bbf1e9be63d3a364237f0eb46f"
     },
     {
       "file": "REPORT.md",
-      "bytes": 12964,
-      "sha256": "8a0177a0e0fbf51821f8f38de868189ff64f45cda85232b604f1f4d94fb018fa"
+      "bytes": 16414,
+      "sha256": "5b3759e6033cbc7a7a38d70c185c95898bb6effd0af04737884a9ab725b1d1eb"
+    },
+    {
+      "file": "REPRO-CORE5.log",
+      "bytes": 1490,
+      "sha256": "a2e38411168f0eab00a41902220f82856eb0badd8ef943c7b0e92b232e120374"
+    },
+    {
+      "file": "REPRO-FOLD3.log",
+      "bytes": 1552,
+      "sha256": "5a57751c1cd328751427236316c27693f4c9361867d65b0e827a8b7f069a1eab"
+    },
+    {
+      "file": "SOURCE-AUTHORITY-RETRY.log",
+      "bytes": 916,
+      "sha256": "b800d3ddc307af43a05435d922607f170e757f0243078d7d11966be845a4e87e"
     },
     {
       "file": "SOURCE-CHECK.json",
       "bytes": 503607,
-      "sha256": "f6396490c3de04b5664325d163a8d684d0d8b29b4cfdd88bdb4fe01ec9f25b91"
+      "sha256": "92ddf8c1b185734e63aece102fcb5958529e9360474ceb6e2c5a9ddbb7434314"
+    },
+    {
+      "file": "SOURCE-ONBOARDING-REPAIRED.log",
+      "bytes": 2829,
+      "sha256": "b31aa3f606d55b0cf907149030c819883b9d42f12d57d1aea4d00ef5d0d66060"
     },
     {
       "file": "SOURCE-ONBOARDING.log",
       "bytes": 1292,
       "sha256": "18f9d752b96639b619c86da2cb420717f8166c4dcb3796d08b69f97b43f5bcf7"
+    },
+    {
+      "file": "TIMING-COMPARISON.json",
+      "bytes": 772,
+      "sha256": "fa6136154bbfa4a9835d2661a0ff288aae9e6ea7951b99eed424a34029522a37"
     },
     {
       "file": "TODAY.log",
@@ -118,6 +238,11 @@
       "file": "TYPECHECK.log",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "VERIFY-REPRODUCED.json",
+      "bytes": 1324,
+      "sha256": "5395996ed98fa5a6b9543aefaede6eb1cc5a95b4a669e24a586c5e71dc96bff3"
     }
   ]
 }

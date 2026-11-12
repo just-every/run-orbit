@@ -10,3 +10,5 @@ Scope: INTEGRATE-001 acceptance 1, Calendly booking lifecycle only. Keep the exi
 6. Inspect every candidate identity and trailer, push only the named branch using the fleet guard, discover exact-head Verify, and publish the complete non-secret packet on the separate evidence ref. The fleet owns publication scanning and landing.
 
 Remaining external scope: paid Calendly live qualification, Dial receiving deployment, completed appointments, reviewed link sharing, disconnect and signature-failure presentation, the complete buyer walk, sequence prerequisites and owner-consented calendar writeback remain unclaimed.
+
+Final repair addendum: exact failed shard reproduction and same-runner main comparisons preceded one archive-compatibility repair. Preserve old booking identities during upgrade. Re-run unchanged archive cases, actual old-app booking upgrade, full source onboarding and rebuilt browser before final custody. Final product head: 31abb8a36dbfcd4db078e98c7297edffb8a21415.

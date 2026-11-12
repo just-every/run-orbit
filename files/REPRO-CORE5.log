@@ -1,0 +1,19 @@
+Verification (core-5): pnpm exec tsx tests/support/prepare-state.ts
+Verification (core-5): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/core-5-results.jsonl tests/core/capture-boundaries.test.ts tests/core/local-owner.test.ts tests/core/onboarding-archive.test.ts tests/core/public-demo.test.ts tests/core/records-complete.test.ts
+✖ failing tests:
+
+test at tests/core/onboarding-archive.test.ts:1:3144
+✖ API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions (134826.646742ms)
+  AssertionError [ERR_ASSERTION]: POST records/archive/imports: 400 {"error":"Invalid complete archive lineage."}
+      at request (/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/tests/core/onboarding-archive.test.ts:39:205)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/tests/core/onboarding-archive.test.ts:83:23)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

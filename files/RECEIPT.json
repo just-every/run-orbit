@@ -3,22 +3,26 @@
   "checkout_clean": true,
   "ci": {
     "conclusion": null,
-    "event": "push",
-    "head_sha": "374e310cc268609ff27a2f08760e11ff81a7359a",
-    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43135643566",
-    "id": 43135643566,
-    "observed_at": "2026-11-12T01:51:42Z",
-    "status": "in_progress",
-    "watcher_calls": 3
+    "head_sha": "31abb8a36dbfcd4db078e98c7297edffb8a21415",
+    "reason": "Ten-call GitHub read budget exhausted while diagnosing the prior candidate. New push is the existing Verify entry point.",
+    "run_id": null,
+    "status": "UNOBSERVED"
   },
   "clause": {
     "after": "PARTIAL",
     "before": "PARTIAL",
     "id": "INTEGRATE-001",
-    "selected_limb": "Acceptance 1: native Calendly book, reschedule and cancel on one activity; both delivery orders, exact details, outreach stop, Today and meeting plan",
+    "selected_limb": "Acceptance 1 native Calendly lifecycle, including retained bookings from prior main",
     "whole_acceptance_points_closed": []
   },
-  "commit_identity_audit": "GIT-IDENTITY.log",
+  "complete_source_onboarding_head": "31abb8a36dbfcd4db078e98c7297edffb8a21415",
+  "complete_source_onboarding_result": {
+    "cancelled": 1,
+    "exit": 1,
+    "failure": "Existing source-rotation registration timed out after 60000ms. Its isolated retry and the unchanged main comparison also time out at 60000ms. No source, assertion or timeout was changed.",
+    "passed": 2
+  },
+  "contract_judgments_changed": false,
   "counts_after": {
     "done": 42,
     "missing": 32,
@@ -29,128 +33,103 @@
     "missing": 32,
     "partial": 130
   },
-  "created_at": "2026-11-12T01:53:41.822422+00:00",
+  "created_at": "2026-11-12T03:32:31.907710+00:00",
   "evidence_ref": "refs/heads/evidence/sd-orbit-c-f163",
   "full_history": true,
   "generated_views_committed": false,
-  "github_core_calls_used": 5,
-  "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+  "github_read_calls_used": 10,
+  "head": "31abb8a36dbfcd4db078e98c7297edffb8a21415",
   "landing": {
-    "exact_candidate_run_site": null,
+    "candidate_run_site": null,
     "main_equals_candidate": false,
-    "main_run_site_at_base": 43094710902,
-    "main_verify_at_base": [
-      43089571350
-    ],
     "performed": false
   },
+  "live_provider_qualification_claimed": false,
   "local_checks": {
-    "CLI archive round trip": {
-      "exit": 0
-    },
-    "boundaries": {
-      "exit": 0
-    },
-    "contract check": {
-      "exit": 0
-    },
-    "contract write": {
-      "exit": 0
-    },
-    "deployment check": {
-      "exit": 0
-    },
-    "first-party": {
-      "exit": 0
-    },
-    "migration ledger": {
-      "exit": 0
-    },
-    "source lock": {
-      "exit": 0
-    },
-    "test budget": {
-      "exit": 0
-    },
-    "typecheck": {
-      "exit": 0
-    }
+    "boundaries": 0,
+    "contract_write_and_check": 0,
+    "deployment": 0,
+    "first_party": 0,
+    "mechanical_exit": 0,
+    "migration_ledger_and_CLI_round_trip": 0,
+    "source_lock_fresh": true,
+    "typecheck": 0
   },
   "local_tests": [
     {
-      "command": "pnpm exec tsx --test tests/core/source-onboarding.test.ts",
-      "exit": 0,
-      "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
-      "log": "SOURCE-ONBOARDING.log",
-      "registrations": 3
-    },
-    {
-      "command": "pnpm exec tsx --test --test-name-pattern='vendor-native booking' tests/core/source-onboarding.test.ts",
-      "exit": 0,
-      "log": "BOOKING.log",
-      "test_bytes_match_candidate": true
-    },
-    {
-      "command": "pnpm exec tsx --test --test-name-pattern='seller starts each simulated day|booked meeting gets a cited plan' tests/core/today-brief.test.ts",
-      "exit": 0,
-      "log": "TODAY.log",
-      "registrations": 2,
-      "test_bytes_match_candidate": true
-    },
-    {
-      "assertion_width": 1440,
-      "browser_args": [
-        "--no-sandbox"
-      ],
-      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs --grep 'opportunity timeline keeps'",
-      "executable": "/usr/bin/chromium",
-      "exit": 0,
-      "log": "BROWSER.log",
-      "registrations": 1,
-      "runtime_and_test_bytes_match_candidate": true,
-      "screens": [
-        1440,
-        390
-      ]
+      "command": "pnpm exec tsx --test --test-name-pattern='source rotation and disabling' tests/core/source-onboarding.test.ts",
+      "exit": 1,
+      "log": "SOURCE-AUTHORITY-RETRY.log",
+      "log_capture_base": "/tmp/orbit-source-authority-retry",
+      "runtime_and_test_bytes_match_candidate": true
     },
     {
       "command": "pnpm exec tsx /tmp/orbit-migration-check.ts",
       "exit": 0,
-      "log": "MIGRATION.log",
-      "receipt": {
-        "bookingReceipts": 4,
-        "check": "migration ledger and CLI booking archive",
-        "credentialsRestored": false,
-        "deal": "01M76P8D4FT5JMF3VQRDQXBK32",
-        "exit": 0,
-        "migrations": 76,
-        "sameActivity": true,
-        "status": "cancelled"
-      },
-      "runtime_bytes_match_candidate": true
+      "log": "MIGRATION-REPAIRED.log",
+      "log_capture_base": "/tmp/orbit-migration-repaired",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/onboarding-archive.test.ts",
+      "exit": 0,
+      "log": "ARCHIVE-ONBOARDING.log",
+      "log_capture_base": "/tmp/orbit-repair-onboarding-sequential",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec tsx --test newtests/t096/forward-upgrade.test.ts",
+      "exit": 0,
+      "log": "ARCHIVE-UPGRADE.log",
+      "log_capture_base": "/tmp/orbit-repair-upgrade",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-legacy-booking-probe.ts",
+      "exit": 0,
+      "log": "LEGACY-BOOKING-AFTER.log",
+      "log_capture_base": "/tmp/orbit-legacy-after-retry",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='vendor-native booking' tests/core/source-onboarding.test.ts",
+      "exit": 0,
+      "log": "BOOKING-REPAIRED.log",
+      "log_capture_base": "/tmp/orbit-booking-repair",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs --grep 'opportunity timeline keeps'",
+      "exit": 0,
+      "log": "BROWSER-REPAIRED.log",
+      "log_capture_base": "/tmp/orbit-browser-repair",
+      "runtime_and_test_bytes_match_candidate": true
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/source-onboarding.test.ts",
+      "exit": 1,
+      "log": "SOURCE-ONBOARDING-REPAIRED.log",
+      "log_capture_base": "/tmp/orbit-source-onboarding-repaired",
+      "runtime_and_test_bytes_match_candidate": true
     }
   ],
   "origin_main_at_integration": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
-  "product_pushed": true,
-  "product_remote_head": "374e310cc268609ff27a2f08760e11ff81a7359a",
-  "proof_artifact_sha256": {
-    "BOOKING.log": "aa4c05e25d05bce12b1c6a1e80eb4216ce09865de0f7299b27a3196e62cc0201",
-    "BOUNDARIES.log": "aabe86b7a5d523d232d0d20384394aa63cb0ca09ca3a90221d32ffb67a4a63ee",
-    "BROWSER.log": "f081e132475b1caf1997db2872f7c05e89608f8d6dcf730ffc44860e0a65217c",
-    "BUDGET.json": "7c5cf44947352f9650b0d7f671d412965cafe09515fe4990444698db39ebba7b",
-    "CALENDLY-1440.png": "f9e6c8da97bc2668c8d430988ab49756b1baab8d31cb3a8bf689302c75e64916",
-    "CALENDLY-390.png": "0624219f8efac0dd52ae72d74a82d7ecc425edb3bf9415278162b86d37917e97",
-    "CONTRACT-CHECK.log": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab",
-    "CONTRACT-WRITE.log": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2",
-    "DEPLOYMENT-CHECK.log": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053",
-    "FIRST-PARTY.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "MIGRATION.log": "09b33bcb96c34c9d7192c688e61b8da44e35c701e52db279636a8ce6bc042404",
-    "SOURCE-CHECK.json": "f6396490c3de04b5664325d163a8d684d0d8b29b4cfdd88bdb4fe01ec9f25b91",
-    "SOURCE-ONBOARDING.log": "18f9d752b96639b619c86da2cb420717f8166c4dcb3796d08b69f97b43f5bcf7",
-    "TODAY.log": "76d1b597ebbab1d7c3bbbf0cd1c62d554cf6b65bf31e05f3ae544c6c14e1ce89",
-    "TYPECHECK.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  "prior_failed_verify": {
+    "conclusion": "failure",
+    "event": "push",
+    "head": "374e310cc268609ff27a2f08760e11ff81a7359a",
+    "jobs": [
+      130911254621,
+      130911254760
+    ],
+    "local_repaired_cases_exit": 0,
+    "main_comparisons_exit": 0,
+    "repair_rounds": 1,
+    "reproduced": true,
+    "run_id": 43135643566
   },
-  "provider_live_qualification_claimed": false,
+  "product_pushed": true,
+  "product_remote_head": "31abb8a36dbfcd4db078e98c7297edffb8a21415",
   "publication_scan": {
     "complete": null,
     "findings": null,
@@ -164,22 +143,23 @@
     "management/integration/deployment-spec.json": "d249d5eb80ac1543878c56b8b05c19f2cc259135a77c9394dc3392f33ba6d246",
     "migrations/core/0081_calendly_booking_lifecycle.sql": "e1aa6e529745c0687c2a70438574db9c62603f63396ba490e18e5ea1a93aff9c",
     "scripts/installer/portability-policy.mjs": "dc734fabac5502c7209d36ddf1785e5ec1f217b1fe8e32c660100936a83b0245",
-    "sources.lock.json": "1006d19956c2488689a5b3e682c5a229a9b8c05457fada2308150d63cc4e4310",
-    "src/core/features/ingestion/booking-lifecycle.ts": "eae29dd042b73c95004a238391ba5f1de8c20da6d1d1c3bbe0a79989f5bb6c79",
-    "src/core/features/ingestion/booking-webhooks.ts": "a74c73e8967705207bfef1bcba56dac5a95407f689a29359026dc8f791c07231",
+    "sources.lock.json": "5a398331eb0bf4643da06b3907718143e97cd83b2ca9400890c4eac8ca02df92",
+    "src/core/features/ingestion/booking-lifecycle.ts": "e2ff5c20d0695c2742518486e2844add4269caea413cf682f7e09e22913c901d",
+    "src/core/features/ingestion/booking-webhooks.ts": "496488d5401df8308f01e5ea53eab8236be589809395085b3a7cd260036f4355",
     "src/core/features/ingestion/linking-repository.ts": "2c67b04b09e841ec7947d6ee6526076e299a03e6b21c2eb81ed43a42fca82ce3",
-    "src/core/features/ingestion/repository.ts": "3a10c9a71f7596a05c32f51352739cc71cff34c8515b72f5205e7ee2adfca271",
+    "src/core/features/ingestion/repository.ts": "933475a17450498559cb22176d636f57d3882cc95c96a56f08c708cb5ece4d5a",
     "src/core/features/ingestion/routes.ts": "0b5a129df9de99d3cd909ed9f3f68124b8d83cab9781f3071e9b8531ccbbf051",
     "src/core/features/operator/ui/record/deal-activity.tsx": "0ee104113f549dd39f36028ec94418d79c2beccc724ce8b9c6fd0731c92b4e40",
     "src/core/features/operator/ui/record/timeline-entries.tsx": "d4a5e91c7ec2b47a33c9bc8576abf11a6eed3d6ef4be1bfbd441ec9cf2571ac8",
-    "src/core/features/records/archive-generations.ts": "32dcd9e377d4c0fb05fd6e27e42c9f1718154ae4705fcfb2572a31a9537bb9dd",
+    "src/core/features/records/archive-generations.ts": "c63467a0ffa95ad64ab99f967c53d041f25cf371dc964a3ae0da5475acb357a8",
     "src/core/features/records/archive-schema.ts": "c5c97b446d4e3237acbbe70185cb6823782032271b4822080699fcc03d2d14ec",
     "src/core/features/today/meeting-plan.ts": "7616cfb4cd8afefd5479b44c889bbfd64151c9c89e4ddc4dc11cdd117b3b9da0",
     "src/core/features/today/signal-lines.ts": "f1f60cf692ad04db9b8d8ac85c9b33eb02918d41795a13b2491b79048f50d0ca",
     "src/core/shared/archive-lineage.ts": "496ad84e9fb6aea52c8426451b08df29760ee9e5a13b9e1b95123e7cc1d339b7",
+    "src/core/shared/archive-transfer-profile.ts": "ef067dc11523c5d270acdb276a9c43952fbba2baa5ef60270fe2b578c8131f61",
     "tests/core/source-onboarding.test.ts": "0fb8a37ed34c91cafe9411d2dcd2f99daf770ce675e2cfd6ecd75b23ac752993",
     "tests/e2e/operator.spec.mjs": "cc99001f0e946b7fe433c3285da693f72a3bba8562488a52de4aaaa872f5f799",
-    "tests/support/calendly-booking-proof.ts": "377ac412d7b7f244f45b233de26910bab84004d28f6fe3aae4d9da201bd265e6"
+    "tests/support/calendly-booking-proof.ts": "4d334873bacb2aee9f6e42c592acf76deab03b89ba474208756bccaac8d82a73"
   },
   "tag": "sd-orbit-c-f163",
   "test_budget": {
@@ -187,6 +167,5 @@
     "qualifications": 2,
     "total": 200
   },
-  "tree": "eeff87ec29ded204d816e3f3abba802eda4d03b7",
-  "unchanged_contract_judgments": true
+  "tree": "6f7be913067b7c848853de4c78ba93bb7d30607d"
 }

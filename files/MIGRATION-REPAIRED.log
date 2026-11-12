@@ -1,0 +1,6 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:58168) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"check":"migration ledger and CLI booking archive","exit":0,"migrations":76,"bookingReceipts":4,"status":"cancelled","sameActivity":true,"credentialsRestored":false,"deal":"01M76VW2Y0KDCW47VM2SWAMTGC"}

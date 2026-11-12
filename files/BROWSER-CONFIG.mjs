@@ -1,0 +1,2 @@
+import original from '/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/playwright.config.mjs';
+export default {...original,testDir:'/home/agent/rer-consolidation/work/sd-orbit-c-f163/run-orbit/tests/e2e',outputDir:'/tmp/orbit-browser-results',use:{...original.use,launchOptions:{...original.use.launchOptions,executablePath:'/usr/bin/chromium',args:[...original.use.launchOptions.args,'--no-sandbox']}}};
