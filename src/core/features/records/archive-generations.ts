@@ -23,8 +23,9 @@ export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(
 export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
 export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
 /** Migration 0079 changes notification insertion only; earlier archives retain
- * their exact trigger inventory. Runtime-control fences are never archived. */
-export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(catalog,[],['notification_skip_direct_actor']);
+ * their exact trigger inventory. Later sequence tables are absent from that generation.
+ * Runtime-control fences are never archived. */
+export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preSequenceCatalog(catalog),[],['notification_skip_direct_actor']);
 export const preSequenceCatalog=(catalog:ArchiveTable[])=>beforeSlice(catalog,['sequences','sequence_versions']);
 /** Reconstruct only exact native additions; owner tables and objects remain bound. */
 function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:readonly string[]=[]){return catalog.filter(table=>!tables.includes(table.name)).map(table=>{const objects=(table as FoldArchiveTable).objects;return objects?{...table,objects:objects.filter(object=>!triggers.includes(object.name))}:table;});}
