@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "test": "tests/rer/operator-desktop.test.mjs#BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px",
+  "head": "15315a35915b01c626971852f83a93093d01dd29",
+  "assertionWidth": 1440,
+  "proofWidths": [
+    1440,
+    390
+  ],
+  "browser": "Chromium /usr/bin/chromium",
+  "headless": true
+}

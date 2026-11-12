@@ -1,0 +1,7 @@
+{
+  "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "exitCode": 0,
+  "ok": true,
+  "sourceFiles": 2742,
+  "sourceLockSha256": "b307b52ac42b58bd8dd5b481aed51e43cc19ad3ecac638aa3ef1efa46aee0906"
+}

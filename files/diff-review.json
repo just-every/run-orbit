@@ -1,0 +1,18 @@
+{
+  "scope": "staged product diff only; fleet publication scan remains a landing gate",
+  "credentialPatternsFound": false,
+  "files": [
+    "sources.lock.json",
+    "src/core/features/operator/ui/workflows-activity.tsx",
+    "src/core/features/operator/ui/workflows-editor.tsx",
+    "src/core/features/operator/ui/workflows-preview.tsx",
+    "src/core/features/operator/ui/workflows-settings.tsx",
+    "src/core/features/operator/ui/workflows-types.tsx",
+    "src/core/features/workflows/engine.ts",
+    "src/core/features/workflows/routes.ts",
+    "tests/rer/workflow-journey.mjs",
+    "tests/rer/workflow-outcomes-journey.mjs",
+    "tests/support/workflow-record-journey.ts"
+  ],
+  "diffSha256": "042c3295c6c4419937d776ae46547572615f9f48389cab973a6d3b1fc6678d0a"
+}

@@ -1,0 +1,33 @@
+{
+  "workflowId": "01M76XEBFF8NDEZV93QSXG6ACY",
+  "dealId": "01M76XE9TT73AD936CDX1YX74A",
+  "activatedAt": "2026-11-12T03:39:54.202Z",
+  "backdatedAt": "2026-11-12T02:39:54.349Z",
+  "taskUnderExternal": true,
+  "backdatedRuns": [],
+  "currentRuns": [
+    {
+      "id": "01M76XECGCV5ZP64QE14SBJXKC",
+      "workflowId": "01M76XEBFF8NDEZV93QSXG6ACY",
+      "workflowName": "Synthetic meeting follow-up four",
+      "version": 1,
+      "recordId": "01M76XE9TT73AD936CDX1YX74A",
+      "status": "completed",
+      "reason": "Completed",
+      "dueAt": "2026-11-12T03:39:54.669Z",
+      "attempts": 1,
+      "outcome": [
+        {
+          "action": 0,
+          "results": [
+            {
+              "kind": "create_task",
+              "taskId": "01M76XECGDC18HWBFXGCJ6KH4R"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "historyText": "Execution history\nProcess due runs\nSynthetic meeting follow-up four · Version 1\nCompleted · Record 01M76XE9TT73AD936CDX1YX74A\nCompleted\nSynthetic meeting follow-up · Version 1\nCompleted · Record 01M76XE9TT73AD936CDX1YX74A\nCompleted"
+}
