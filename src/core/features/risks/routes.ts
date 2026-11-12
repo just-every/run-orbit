@@ -1,4 +1,6 @@
 import {Hono} from 'hono';
+import type {AgentDoor} from '../../../base/modules/agent-door/index.ts';
+import {runDealRiskAgent} from './embedded-agent';
 import {z} from 'zod';
 import type {AuthenticatedOperator} from '../identity';
 import type {AIProvider} from '../assistance/provider';
@@ -14,7 +16,7 @@ import {adjustRoleRule,approveTask,dismissFinding} from './actions';
 
 const reason=z.string().trim().min(1).max(2000);
 /** AGENT-002 deal risks: cited findings, reviewed conflict checks, reasoned dismissals and rule changes, and person-approved tasks. No route changes a deal or sends anything. */
-export function createRiskRoutes(db:D1Database,provider?:AIProvider){
+export function createRiskRoutes(db:D1Database,provider?:AIProvider,door?:AgentDoor){
  const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
  app.onError((error,c)=>{
   if(error instanceof TodayError||error instanceof RecordError)return c.json({error:error.message},error.status as 400);
@@ -45,6 +47,13 @@ export function createRiskRoutes(db:D1Database,provider?:AIProvider){
   const input=z.object({role:z.enum(stakeholderRoles),required:z.boolean(),reason}).strict().safeParse(await c.req.json().catch(()=>null));
   if(!input.success)return c.json({error:'Choose a role, whether it is required and a reason.'},400);
   return c.json(await adjustRoleRule(db,c.req.param('id'),input.data,operator(c)),201);
+ });
+ app.post('/:id/agent-runs',async c=>{
+  const input=z.object({}).strict().safeParse(await c.req.json().catch(()=>null));
+  if(!input.success)return c.json({error:'Start the agent for this deal without overrides.'},400);
+  if(!door)return c.json({error:'The agent door is unavailable.'},503);
+  // Lifecycle is checked by the risk tool after policy admission, without an extra evidence read.
+  return c.json(await runDealRiskAgent(door,c.req.param('id'),operator(c)));
  });
  app.post('/:id/tasks',async c=>{
   const input=z.object({title:z.string().trim().min(1).max(300),dueAt:z.iso.datetime().nullable(),evidenceIds:z.array(z.string().min(1).max(200)).min(1).max(20)}).strict().safeParse(await c.req.json().catch(()=>null));
