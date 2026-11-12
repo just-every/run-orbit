@@ -48,3 +48,22 @@ export async function proveSlackActions(f:SlackFixture,{deal,posts,call,signed}:
  await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});await f.db.prepare("UPDATE graph_records SET visibility='restricted',owner_id=NULL WHERE kind='opportunity' AND id=?").bind(deal).run();await refused(action('UMAPPED','orbit_ack',{},posts[2]));await f.db.prepare("UPDATE graph_records SET visibility='workspace',owner_id=NULL WHERE kind='opportunity' AND id=?").bind(deal).run();await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});
  assert.ok(Number(await f.db.prepare("SELECT count(*) n FROM audit_entries WHERE action='slack.mapping-changed'").first('n'))>0);assert.ok(Number(await f.db.prepare("SELECT count(*) n FROM audit_entries WHERE action='slack.action-refused'").first('n'))>0);
 }
+
+/** Settings Disconnect must retire all pre-disconnect buttons, even after fresh routing consent. */
+export async function proveSlackDisconnect(f:SlackFixture,{posts,call,signed,secret,token}:any){
+ const unused=(await f.db.prepare("SELECT t.id,t.action,n.message_ts,n.channel_id FROM slack_action_tokens t JOIN slack_notices n ON n.id=t.notice_id WHERE t.consumed_at IS NULL AND n.state='sent' AND n.message_ts IS NOT NULL").all<any>()).results;
+ assert.ok(unused.length>0,'The disconnect has real unused actions to revoke');
+ const before=await call(''),oldNotices=before.notices.map((n:any)=>n.id),postCount=posts.length;
+ await call('disconnect','POST',{});const disconnected=await call('');assert.equal(disconnected.installation.state,'disconnected');assert.deepEqual(disconnected.declaration,before.declaration,'Disabling Slack preserves its setup declaration');
+ assert.equal(await f.db.prepare('SELECT count(*) n FROM slack_credentials').first('n'),0);assert.ok(disconnected.channels.every((c:any)=>!c.enabled));assert.ok(disconnected.mappings.every((m:any)=>m.revoked_at));
+ const products=await(await f.request('settings/products')).json() as any;assert.equal(products.products.find((p:any)=>p.products.includes('Slack')).state,'unresolved-setup');
+ await call('process','POST',{});assert.equal(posts.length,postCount);
+ await call('connect','POST',{token,signingSecret:secret});await call('process','POST',{});assert.equal(posts.length,postCount,'Reconnect after explicit Disconnect sends no old notice');
+ await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});await call('channels','PUT',{id:'CINTERNAL',events:['stage','due','won','handoff'],enabled:true});
+ await call('process','POST',{});assert.equal(posts.length,postCount,'Fresh route consent does not release pre-disconnect notices');
+ assert.deepEqual((await call('')).notices.map((n:any)=>n.id),oldNotices);
+ const effects=async()=>({actions:(await f.db.prepare('SELECT * FROM slack_actions ORDER BY id').all()).results,tasks:(await f.db.prepare('SELECT * FROM sales_tasks ORDER BY id').all()).results});
+ const unchanged=await effects();
+ for(const button of unused){const result=await signed({type:'block_actions',api_app_id:'AORBIT',team:{id:'TWORKSPACE'},enterprise:null,user:{id:'UMAPPED',team_id:'TWORKSPACE'},channel:{id:button.channel_id},container:{channel_id:button.channel_id,message_ts:button.message_ts},message:{ts:button.message_ts,user:'UBOT'},actions:[{action_id:button.action,value:button.id,action_ts:'1800000010.000001'}],response_url:'https://hooks.slack.com/actions/test-only/response'});assert.match(result.text,/Not changed/);assert.deepEqual(await effects(),unchanged);}
+ assert.deepEqual((await call('')).declaration,before.declaration,'The setup declaration remains available after disconnect and reconnect');
+}

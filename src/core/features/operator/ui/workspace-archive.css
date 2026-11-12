@@ -20,3 +20,8 @@
 .workspace-archive>header h2{font:720 26px/1.2 var(--ob-sans);margin:8px 0 12px}
 .workspace-archive .operator-kicker{font-size:13px;letter-spacing:0;text-transform:none;color:var(--ob-muted)}
 .workspace-archive__panel .workspace-archive__confirmation input{width:16px;height:16px;min-height:16px;flex:0 0 16px;margin:4px 0 0;padding:0}
+.archive-transfer-summary{display:grid;gap:12px;min-width:0}
+.archive-transfer-summary p{margin:0;overflow-wrap:anywhere}
+.archive-transfer-summary>button{justify-self:start}
+.archive-transfer-summary summary{cursor:pointer}
+.archive-transfer-summary details[open]{display:grid;gap:12px}

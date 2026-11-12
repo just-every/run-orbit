@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {randomBytes} from 'node:crypto';
 /** Existing Slack stand-in, shared by native transport and emitted-UI fixtures. */
 export function slackNetwork(){
- const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[],deletes:any[]=[],responses:any[]=[];
+ const native=globalThis.fetch,secret=randomBytes(32).toString('hex'),token='test-only-slack-bot',posts:any[]=[],deletes:any[]=[],responses:any[]=[],requests:{method:string;body:Record<string,unknown>}[]=[];
  let lastMethod='',personalUser='';
  let outcome:'sent'|'rate'|'timeout'|'revoked'|'failed'|'denied'|'missing'|'frozen'|'archived'|'auth-unavailable'='sent',attempts=0,safety:Record<string,unknown>={},userSafety:Record<string,unknown>={};
  const channel=(id='CINTERNAL')=>({id,name:id==='CINTERNAL'?'sales-internal':'external',is_channel:true,is_frozen:false,is_member:id!=='CNOTMEMBER',is_archived:false,is_shared:id==='CEXTERNAL',is_ext_shared:id==='CEXTERNAL',is_org_shared:false,is_pending_ext_shared:false,connected_team_ids:[],pending_connected_team_ids:[],context_team_id:'TWORKSPACE',...safety});
@@ -11,6 +11,9 @@ export function slackNetwork(){
   if(!String(input).startsWith('https://slack.com/api/'))return native(input,init);
   assert.equal(init?.redirect,'manual');assert.equal(new Headers(init?.headers).get('authorization'),'Bearer '+token);
   const url=new URL(String(input)),method=url.pathname.split('/').at(-1),body=init?.body?JSON.parse(String(init.body)):Object.fromEntries(url.searchParams);
+  assert.ok(!/email|profile/i.test(String(method)),'No profile or email endpoint may be called');
+  assert.ok(!/email|profile/i.test(JSON.stringify(body)),'Slack requests never select or query profile email');
+  requests.push({method:String(method),body});
   if(outcome==='revoked')return Response.json({ok:false,error:'token_revoked'});
   if(method!=='chat.postMessage')lastMethod=String(method);
   if(method==='auth.test'&&outcome==='auth-unavailable')return Response.json({ok:false,error:'missing_scope'});
@@ -26,5 +29,5 @@ export function slackNetwork(){
   const ts=`1800000000.${String(posts.length+1).padStart(6,'0')}`;posts.push({...body,ts});return Response.json({ok:true,channel:body.channel,ts,message:{user:'UBOT',bot_id:'BBOT',app_id:'AORBIT',text:body.text,blocks:body.blocks}});
  };
  globalThis.fetch=fetcher;
- return {fetcher,posts,deletes,responses,secret,token,get attempts(){return attempts;},get personalUser(){return personalUser;},setOutcome(value:typeof outcome){outcome=value;},setUserSafety(value:Record<string,unknown>){userSafety=value;},setSafety(value:Record<string,unknown>){safety=value;},restore(){globalThis.fetch=native;}};
+ return {fetcher,posts,deletes,responses,requests,secret,token,get attempts(){return attempts;},get personalUser(){return personalUser;},setOutcome(value:typeof outcome){outcome=value;},setUserSafety(value:Record<string,unknown>){userSafety=value;},setSafety(value:Record<string,unknown>){safety=value;},restore(){globalThis.fetch=native;}};
 }

@@ -5,6 +5,7 @@ import {mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {authenticateOperator} from './operator-session.mjs';
 import {fixtureMailbox} from '../support/capture-mail.ts';
+import {graphProposalScreens} from '../agent-door/graph-browser-journey.mjs';
 import {captureRotationApprovalScreens} from '../agent-door/capture-browser-journey.mjs';
 import {requestOfflineFixture} from '../../scripts/browser-runtime.mjs';
 
@@ -168,4 +169,5 @@ test('CAPTURE provider status keeps revoked access clear, reconnects through the
  expect(await overflow(page)).toEqual([]);
  expect(await serious(page)).toEqual([]);
  await captureRotationApprovalScreens({page,screenshots});
+ await graphProposalScreens({page,screenshots});
 });

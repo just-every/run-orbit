@@ -30,6 +30,15 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   const native=await call('records/opportunity','POST',{title:'Native creation default',stage_id:stageId,value_cents:0},201);await owner(native.id);
   const unassigned=await call('records/opportunity','POST',{title:'Explicitly unassigned',stage_id:stageId,value_cents:0,owner_id:null},201);
   assert.equal((await read(unassigned.id)).record.owner_id,null,'Explicit ownership choices remain available');
+  // The hand-made form sends its empty Owner choice explicitly; legacy API callers keep their assignment policy.
+  const beforeIndependent=await counts();
+  const independent=await call('workbench/opportunities','POST',{title:'Independent buyer opportunity',ownerId:null,contactName:'Independent buyer',email:'independent@customer.test',stageId,valueCents:10000},201);
+  const independentDetail=await read(independent.id);
+  assert.equal(independentDetail.record.owner_id,null);assert.equal((await call(`opportunities/${independent.id}`)).opportunity.ownerId,null);
+  assert.equal(independentDetail.record.company_id,null);assert.equal(independentDetail.company,null);assert.equal(independentDetail.contacts.length,1);assert.equal(independentDetail.contacts[0].company_id,null);
+  const independentExisting=await call('workbench/opportunities','POST',{title:'Existing buyer without company',companyName:'  ',contactIds:[contactId],ownerId:actor,stageId,valueCents:20000},201);
+  const existingDetail=await read(independentExisting.id);assert.equal(existingDetail.record.company_id,null);assert.equal(existingDetail.record.owner_id,actor);assert.deepEqual(existingDetail.contacts.map((contact:any)=>contact.id),[contactId]);
+  assert.deepEqual(await counts(),[beforeIndependent[0],beforeIndependent[1]+1],'Company-free creation makes only the requested new contact');
   const second=await call('records/contact','POST',{name:'Second existing buyer',company_id:companyId,email:'create-second@customer.test'},201);
   const mixed=await call('workbench/opportunities','POST',{title:'Selected and new contacts',companyId,contactIds:[contactId,second.id],primaryContactId:second.id,contactName:'Third buyer',email:'create-third@customer.test',stageId,valueCents:5000},201);
   const linked=(await read(mixed.id)).contacts;
@@ -41,6 +50,7 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   const invalidBefore=await counts();
   for(const invalid of [
    {companyId,contactIds:[createId()]},
+   {companyId,contactIds:[contactId],ownerId:createId()},
    {companyId:createId(),contactIds:[contactId]},
    {companyName:'Must not persist',contactIds:[contactId],primaryContactId:second.id},
    {companyName:'Must not persist',contactIds:[contactId,contactId]},

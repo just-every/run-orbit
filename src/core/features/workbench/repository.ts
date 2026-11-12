@@ -26,10 +26,11 @@ export class WorkbenchRepository {
     ]);
     return { companies: companies.results, contacts: contacts.results, stages: stages.results.map(({required_fields_json,...stage})=>({...stage,required_fields:JSON.parse(required_fields_json)})), opportunities: opportunities.results, pipelines:pipelines.results };
   }
-  async createOpportunity(input: { title: string; companyId?:string; companyName?: string; contactIds?:string[]; primaryContactId?:string; contactName?: string; email?: string; stageId: string; valueCents: number }, actor: string) {
-    const email=input.email?.trim().toLowerCase()||null,emailKey=contactEmailKey(email),ownerId=opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:await eligibleOpportunityOwners(this.db)});
-    if(ownerId&&!await this.db.prepare("SELECT id FROM operators WHERE id=? AND status='active'").bind(ownerId).first())throw new WorkbenchError(400,'Assignment policy selected an inactive or unknown operator.');
-    if(!!input.companyId===!!input.companyName)throw new WorkbenchError(400,'Choose an existing company or enter a new company.');
+  async createOpportunity(input: { title: string; ownerId?:string|null; companyId?:string; companyName?: string; contactIds?:string[]; primaryContactId?:string; contactName?: string; email?: string; stageId: string; valueCents: number }, actor: string) {
+    // Manual forms send null for Unassigned; omitted owners retain the installed policy for existing callers.
+    const email=input.email?.trim().toLowerCase()||null,emailKey=contactEmailKey(email),eligibleOwners=await eligibleOpportunityOwners(this.db),ownerId=input.ownerId===undefined?opportunityAssignmentPolicy.ownerForNewOpportunity({actorId:actor,eligibleOperatorIds:eligibleOwners}):input.ownerId;
+    if(ownerId&&!eligibleOwners.includes(ownerId))throw new WorkbenchError(400,'Owner must be an active operator.');
+    if(input.companyId&&input.companyName)throw new WorkbenchError(400,'Choose an existing company or enter a new company, not both.');
     if(!!input.contactName!==!!email||!(input.contactIds?.length||email))throw new WorkbenchError(400,'Choose existing contacts or enter a new contact.');
     if(input.companyId&&!await this.db.prepare('SELECT id FROM companies WHERE id=?').bind(input.companyId).first())throw new WorkbenchError(400,'The selected company is unavailable.');
     const contactIds=[...new Set(input.contactIds??[])];
@@ -39,7 +40,7 @@ export class WorkbenchRepository {
     if (duplicate) throw new WorkbenchError(409, `A contact already uses that email: ${duplicate.id}. Use the existing record.`,duplicate.id);
     const policy=await stagePolicy(this.db,input.stageId).catch(error=>{if(error instanceof RecordError)throw new WorkbenchError(400,error.message);throw error;});
     const emailTokens=email?await suppressionHashes(this.db,email):[];
-    const now = new Date().toISOString(), companyId = input.companyId??createId(), contactId = email?createId():null, id = createId();
+    const now = new Date().toISOString(), companyId = input.companyId??(input.companyName?createId():null), contactId = email?createId():null, id = createId();
     if(contactId)contactIds.push(contactId);
     const primaryContactId=input.primaryContactId??contactIds[0]!;
     try{assertRequiredFields(policy,{title:input.title,stage_id:input.stageId,owner_id:ownerId,company_id:companyId,value_cents:input.valueCents,contact_ids:contactIds,primary_contact_id:primaryContactId,custom_fields:{}});}catch(error){if(error instanceof RecordError)throw new WorkbenchError(409,error.message);throw error;}
@@ -47,7 +48,7 @@ export class WorkbenchRepository {
     try{await this.db.batch([
       ...suppressionContextFence(this.db,emailTokens),
       ...stagePolicyFence(this.db,[policy]),
-      ...(!input.companyId?[this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName!,now,now)]:[]),
+      ...(input.companyName?[this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName!,now,now)]:[]),
       ...(contactId?[this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens,true)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName!,email,emailKey,now,now)]:[]),
       this.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,owner_id,company_id,value_cents,score,band,queue_state,queue_reason,created_at,updated_at) VALUES(?,?,'open',?,?,?,?,0,'low','now','Operator created opportunity',?,?)").bind(id,input.title,input.stageId,ownerId,companyId,input.valueCents,now,now),
       ...contactIds.map(linkedId=>this.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,?,?)').bind(id,linkedId,linkedId===primaryContactId?1:0,now)),
