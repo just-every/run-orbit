@@ -92,10 +92,10 @@ export async function agentDoorStalledRiskProof(context:TestContext,input:Captur
 }
 
 /** Native fixture lifecycle shared with the emitted browser registration. The caller owns its clock. */
-export async function createStalledRiskFixture(context:TestContext,native:(path:string,method?:string,body?:object)=>Promise<any>,current:number) {
+export async function createStalledRiskFixture(context:TestContext,native:(path:string,method?:string,body?:object)=>Promise<any>,current:number,pipelineName='Synthetic stalled sales') {
  const day=86400000,since=new Date(current-31*day).toISOString();
  context.mock.timers.setTime(current-32*day);
-  const pipeline=await native('/api/v1/settings/pipelines','POST',{name:'Synthetic stalled sales',stages:[
+  const pipeline=await native('/api/v1/settings/pipelines','POST',{name:pipelineName,stages:[
    {name:'Synthetic discovery',probability:20,requiredFields:[],staleIntervalDays:14},
    {name:'Synthetic proposal',probability:50,requiredFields:[],staleIntervalDays:14}]});
   const settings=await native('/api/v1/settings'),stages=settings.stages.filter((stage:any)=>stage.pipeline_id===pipeline.id).sort((a:any,b:any)=>a.position-b.position);
@@ -114,3 +114,5 @@ export async function createStalledRiskFixture(context:TestContext,native:(path:
   context.mock.timers.setTime(current);
   return expected;
 }
+
+export {autonomousPolicy,heldPolicy};

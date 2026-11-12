@@ -314,3 +314,33 @@ still connected, including the original call key, a new key and the original
 captured mail. Source withdrawal and completed-call read refusal are then checked
 under each policy. Scheduled runs, transcripts and licensed enrichment remain
 outside this written-evidence tool.
+
+## Run the deal-risk agent
+
+In a deal's risk panel, expand **Run deal-risk agent** and choose **Start agent**.
+A signed-in full operator starts one open deal on request. There is no schedule,
+model request or customer send. The native route is
+`POST /api/v1/risks/:id/agent-runs`, with an empty JSON object; caller-supplied
+scope, policy, identity or task overrides are refused.
+
+The named **Deal-risk agent** invokes `orbit.risks.read` for that deal, then
+`orbit.handoffs.read` and `orbit.handoffs.upsert` for each current undismissed
+rule finding. Proposed task titles, due times and current evidence identities
+match person-approved risk tasks, assigned to the sponsoring operator.
+Overdue promises and tasks retain their recorded due time; a finding with no
+due time files an undated task, rather than treating an event time as a deadline.
+A target and idempotency key derived from the deal, finding and cited current
+evidence prevent reruns from filing the same task again. Existing completed or
+cancelled tasks retain the person's choice. A changed finding or cited evidence
+has a new identity.
+
+Every call passes the same registry and company decision as an authenticated
+outside specialist. Autonomous policy executes immediately; the shipped held
+standard policy executes with a linked review. A block or unset policy refuses
+without a task effect. The panel lists every attempted call's decision, class,
+facts and review or refusal. Audit retains the embedded door, named agent and
+sponsor. Recorded customer text is evidence, never approval or authority.
+
+This implements the deal-risk limb of SURFACE-012 only. Graph maintenance,
+follow-up, research, scheduled runs, generated conflict checks and the complete
+five-agent comparison retain their existing holds.
