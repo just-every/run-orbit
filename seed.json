@@ -272,8 +272,8 @@
       "name": "ORBIT_ENCRYPTION_KEY",
       "secret": true,
       "required": false,
-      "requiredWhen": "Signed sources, Slack or Google/Microsoft capture connections are configured.",
-      "why": "Encrypt signed-source secrets, Slack credentials, provider tokens and OAuth client secrets in D1."
+      "requiredWhen": "Signed sources, Stripe, Slack or Google and Microsoft capture connections are configured.",
+      "why": "Encrypt signed-source secrets, Stripe and Slack credentials, provider tokens and OAuth client secrets in D1."
     },
     {
       "name": "OPENAI_API_KEY",

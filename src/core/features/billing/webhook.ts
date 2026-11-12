@@ -14,7 +14,7 @@ export function stripeWebhookRoutes(db:D1Database,config:BillingConfig){
  app.onError((error,c)=>c.json({error:error instanceof BillingError?error.message:'Stripe billing persistence failed. Replay the same event.'},error instanceof BillingError?error.status:503));
  app.post('/',async c=>{
   const {secrets,sealed}=await billingSecrets(db,config);
-  let raw:string;try{raw=new TextDecoder('utf-8',{fatal:true}).decode(await boundedRequestBody(c.req.raw,262144));}catch(error){throw new BillingError(error instanceof RequestBodyTooLarge?413:400,'Stripe events must be valid UTF-8 and at most 262144 bytes.');}
+  let raw:string;try{raw=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(await boundedRequestBody(c.req.raw,262144));}catch(error){throw new BillingError(error instanceof RequestBodyTooLarge?413:400,'Stripe events must be valid UTF-8 and at most 262144 bytes.');}
   const parts=(c.req.header('Stripe-Signature')??'').split(',').map(part=>part.trim().split('=')),timestamps=parts.filter(part=>part[0]==='t');
   if(timestamps.length!==1)throw new BillingError(401,'Stripe signature is missing, invalid or expired.');
   const timestamp=timestamps[0]![1]??'';let verified=false;

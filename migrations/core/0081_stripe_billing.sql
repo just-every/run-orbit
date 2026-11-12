@@ -27,15 +27,18 @@ CREATE TABLE billing_erased_customers (customer_hash TEXT PRIMARY KEY, erased_at
 CREATE TRIGGER billing_contact_erased BEFORE DELETE ON contacts
 WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
  INSERT OR IGNORE INTO billing_erased_customers SELECT customer_hash,strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM billing_mappings WHERE contact_id=OLD.id;
+ UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='billing' AND entity_id IN(SELECT customer_id FROM billing_mappings WHERE contact_id=OLD.id);
  DELETE FROM billing_events WHERE customer_id IN(SELECT customer_id FROM billing_mappings WHERE contact_id=OLD.id);
 END;
 CREATE TRIGGER billing_company_erased BEFORE DELETE ON companies
 WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
  INSERT OR IGNORE INTO billing_erased_customers SELECT customer_hash,strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM billing_mappings WHERE company_id=OLD.id;
+ UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='billing' AND entity_id IN(SELECT customer_id FROM billing_mappings WHERE company_id=OLD.id);
  DELETE FROM billing_events WHERE customer_id IN(SELECT customer_id FROM billing_mappings WHERE company_id=OLD.id);
 END;
 CREATE TRIGGER billing_opportunity_erased BEFORE DELETE ON opportunities
 WHEN NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='restore') BEGIN
  INSERT OR IGNORE INTO billing_erased_customers SELECT customer_hash,strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM billing_mappings WHERE opportunity_id=OLD.id;
+ UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='billing' AND entity_id IN(SELECT customer_id FROM billing_mappings WHERE opportunity_id=OLD.id);
  DELETE FROM billing_events WHERE customer_id IN(SELECT customer_id FROM billing_mappings WHERE opportunity_id=OLD.id);
 END;

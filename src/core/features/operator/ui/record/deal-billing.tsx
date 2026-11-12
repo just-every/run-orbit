@@ -1,4 +1,4 @@
-import {useCallback,useState} from 'react';
+import {useCallback,useEffect,useState} from 'react';
 import {InlineConfirm} from '../autosave/inline-confirm';
 import {formatDateTime} from '../formatters';
 import {OperatorState} from '../operator-shell';
@@ -30,6 +30,7 @@ export function DealBilling(target:BillingTarget){
  const resource=useOperatorResource(`stripe-billing:${kind}:${id}`,load),data=resource.data;
  const [customerId,setCustomerId]=useState(''),[review,setReview]=useState<IdentityReview|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ useEffect(()=>{setCustomerId('');setReview(null);setError('');setNotice('');},[companyId,opportunityId]);
  async function reviewCustomer(){
   if(busy||!companyId||!opportunityId)return;
   setBusy(true);setError('');setNotice('');setReview(null);
@@ -41,7 +42,7 @@ export function DealBilling(target:BillingTarget){
   if(busy||!review)return;
   setBusy(true);setError('');setNotice('');
   try{
-   await recordsRequest('billing/stripe/link','POST',{...review.review,reviewToken:review.reviewToken});
+   await recordsRequest('billing/stripe/link','POST',{...review.review,companyId,opportunityId,reviewToken:review.reviewToken});
    setReview(null);setCustomerId('');setNotice('The reviewed Stripe customer is linked. Billing events remain evidence; the deal’s stage is unchanged.');resource.reload();
   }catch(cause){setError((cause as Error).message);setReview(null);resource.reload();}
   finally{setBusy(false);}

@@ -8,8 +8,8 @@
 .billing-identity dt { color: var(--ob-muted); font-size: 14px; }
 .billing-identity dd { margin: 0; }
 .billing-identity a { text-decoration: underline; text-underline-offset: 3px; }
-.billing-timeline { display: grid; margin: 0; padding: 0; list-style: none; }
-.billing-timeline li { display: grid; gap: 4px; padding: 12px 0; border-top: 1px solid var(--ob-line); }
+.billing-timeline { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.billing-timeline li { display: grid; gap: 4px; padding: 12px; border: 1px solid var(--ob-line); border-radius: 10px; }
 .billing-event-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; }
 .billing-event-head > span { font-variant-numeric: tabular-nums; }
 .billing-body .billing-link-form { padding: 0; }

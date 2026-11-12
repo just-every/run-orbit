@@ -181,6 +181,7 @@ export async function exerciseStripeBilling(){
   await json(await f.api('records/contact/'+waiting.contact,'DELETE',{confirmed:true}));
   assert.equal((await json<Billing>(await f.api('billing/opportunity/'+waiting.opportunity))).mapping,null);
   assert.ok(!(await rows(f.db,'billing_events')).some(row=>row.customer_id===waiting.customer.id));assert.ok((await rows(f.db,'billing_erased_customers')).length>0);
+  assert.ok(!(await rows(f.db,'audit_entries')).some(row=>row.entity_type==='billing'&&row.entity_id===waiting.customer.id),'Erasure anonymizes billing audit references');
   const erased=await inventory(f.db);await json(await f.deliver(payload));assert.deepEqual(await inventory(f.db),erased,'Erased customer replay cannot resurrect billing context');
   await proveArchive(f,deal);
   await json(await f.api('settings/stripe/disconnect','POST',{}));assert.equal((await json(await f.api('settings/stripe'))).state,'disconnected');

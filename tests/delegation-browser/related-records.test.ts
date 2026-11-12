@@ -28,7 +28,7 @@ test('full related names and contact labels remain readable; deal and company St
     const billingDeal=sampleData.opportunities.find(deal=>deal.companyId)!;
     const billingCompany=sampleData.companies.find(company=>company.id===billingDeal.companyId)!;
     const billingContact=sampleData.contacts.find(contact=>contact.companyId===billingCompany.id&&contact.email)!;
-    const customerId='cus_browserOrbit',customerHash=createHash('sha256').update(customerId).digest('hex');
+    const customerId='synthetic-orbit-browser-1',customerHash=createHash('sha256').update(customerId).digest('hex');
     const receivedAt=new Date().toISOString();
     // Persisted evidence is portable; leaving credentials absent proves its truthful paused state after restore.
     await fixture.db.batch([
@@ -36,13 +36,13 @@ test('full related names and contact labels remain readable; deal and company St
       fixture.db.prepare('INSERT INTO billing_mappings(customer_id,customer_hash,company_id,opportunity_id,contact_id,name,email,domain,reviewed_at,reviewed_by) VALUES(?,?,?,?,?,?,?,?,?,?)')
         .bind(customerId,customerHash,billingCompany.id,billingDeal.id,billingContact.id,billingContact.name,billingContact.email,billingCompany.primaryDomain,receivedAt,sampleData.operators[0].id),
       ...[
-        {id:'evt_browserPastDue',type:'invoice.payment_failed',state:'past-due',amount:125000},
-        {id:'evt_browserPaid',type:'invoice.paid',state:'paid',amount:125000},
-        {id:'evt_browserRefund',type:'charge.refunded',state:'refunded',amount:25000},
+        {id:'synthetic-orbit-browser-2',type:'invoice.payment_failed',state:'past-due',amount:125000},
+        {id:'synthetic-orbit-browser-3',type:'invoice.paid',state:'paid',amount:125000},
+        {id:'synthetic-orbit-browser-4',type:'charge.refunded',state:'refunded',amount:25000},
       ].map((event,index)=>{
         const occurredAt=new Date(Date.parse(receivedAt)-(3-index)*60000).toISOString();
         return fixture.db.prepare('INSERT INTO billing_events(id,customer_id,customer_hash,object_id,event_type,state,currency,amount_cents,occurred_at,source_created,received_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(event.id,customerId,customerHash,`in_browser${index}`,event.type,event.state,'USD',event.amount,occurredAt,Math.floor(Date.parse(occurredAt)/1000),receivedAt);
+          .bind(event.id,customerId,customerHash,`synthetic-orbit-browser-object-${index}`,event.type,event.state,'USD',event.amount,occurredAt,Math.floor(Date.parse(occurredAt)/1000),receivedAt);
       }),
     ]);
     const session = await deps.auth.createSession(sampleData.operators[0].id);
@@ -118,7 +118,11 @@ test('full related names and contact labels remain readable; deal and company St
           await expect(person).toHaveCount(1);
           await readable(person, contact);
           await expect(person).toContainText('Primary recipient');
-          await expect(person.getByRole('button', { name: `More for ${contact}`, exact: true })).toBeEnabled();
+          const more=person.getByRole('button', { name: `More for ${contact}`, exact: true });
+          await expect(more).toBeEnabled();
+          await more.focus();
+          await expect(page.getByRole('tooltip',{name:`More for ${contact}`,exact:true})).toBeVisible();
+          await more.blur();
           await expect(page.getByLabel('Opportunity title', { exact: true })).toHaveValue(title);
           await page.screenshot({ path: `${evidence}/editor-${width}.png`, fullPage: true });
           const saved = await (await context.request.get(`/api/v1/records/opportunity/${opportunity.id}`)).json();
@@ -153,6 +157,7 @@ test('full related names and contact labels remain readable; deal and company St
         await expect(panel.getByRole('button',{name:'Confirm customer link',exact:true})).toHaveCount(0);
         await expect(panel.locator('form')).toHaveCount(0);
         await page.screenshot({path:`${evidence}/stripe-${recordKind}-${width}.png`,fullPage:true});
+        await panel.screenshot({path:`${evidence}/stripe-${recordKind}-panel-${width}.png`});
       }
       await page.goto('/app/settings/integrations#stripe-settings');
       const settings=page.locator('.stripe-settings');
@@ -162,6 +167,7 @@ test('full related names and contact labels remain readable; deal and company St
       await expect(settings.locator('.stripe-webhook code')).toContainText('/api/v1/billing/stripe/events');
       await readable(settings.locator('.stripe-webhook'),'/api/v1/billing/stripe/events');
       await page.screenshot({path:`${evidence}/stripe-settings-${width}.png`,fullPage:true});
+      await settings.screenshot({path:`${evidence}/stripe-settings-card-${width}.png`});
     }
     const afterBilling=await (await context.request.get(`/api/v1/records/opportunity/${billingDeal.id}`)).json();
     expect(afterBilling.record.stage_id).toBe(beforeBilling.record.stage_id);
