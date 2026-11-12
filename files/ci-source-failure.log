@@ -1,0 +1,27 @@
+source and shared build	Verify source, types, boundaries and the single shared app build	﻿2026-11-12T08:25:00.1599965Z ##[group]Run node scripts/verification-shard.mjs source
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:00.1600321Z node scripts/verification-shard.mjs source
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:00.1612057Z shell: /usr/bin/bash -e {0}
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:00.1615626Z ##[endgroup]
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:00.9528391Z 
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:00.9529069Z Verification (source): pnpm exec node src/base/contract-docs.mjs check
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:01.3204241Z ACCEPTANCE.md: generated content differs; run contract-docs write.
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-12T08:25:01.3482918Z ##[error]Process completed with exit code 1.
+source and shared build	Retain authoritative source candidate	﻿2026-11-12T08:25:02.4022106Z ##[group]Run actions/upload-artifact@v4
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4022363Z with:
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4022568Z   name: orbit-authoritative-source
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4022910Z   path: /tmp/orbit-source.bundle
+source and shared build	Retain authoritative source candidate	/tmp/source-check.json
+source and shared build	Retain authoritative source candidate	/tmp/source-release.json
+source and shared build	Retain authoritative source candidate	
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4023257Z   if-no-files-found: error
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4023476Z   compression-level: 6
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4023666Z   overwrite: false
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4023868Z   include-hidden-files: false
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.4027961Z ##[endgroup]
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.5397112Z (node:2404) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.5398134Z (Use `node --trace-deprecation ...` to show where the warning was created)
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.5433332Z Multiple search paths detected. Calculating the least common ancestor of all paths
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.5435028Z The least common ancestor is /tmp. This will be the root directory of the artifact
+source and shared build	Retain authoritative source candidate	2026-11-12T08:25:02.5448692Z ##[error]No files were found with the provided path: /tmp/orbit-source.bundle
+source and shared build	Retain authoritative source candidate	/tmp/source-check.json
+source and shared build	Retain authoritative source candidate	/tmp/source-release.json. No artifacts will be uploaded.

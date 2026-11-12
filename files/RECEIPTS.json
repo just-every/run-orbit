@@ -1,0 +1,327 @@
+{
+  "branch": "cloud/sd-orbit-c-f175",
+  "ci": {
+    "workflow_runs": [
+      {
+        "conclusion": "failure",
+        "event": "push",
+        "head_sha": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43182632225",
+        "id": 43182632225,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ]
+  },
+  "commands": {
+    "browser_integrations": "pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+    "browser_today": "pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts",
+    "build": "npx -y @runeditrun/rer build",
+    "ledger": "pnpm exec wrangler d1 migrations list DB --local --config wrangler.jsonc --persist-to /tmp/orbit-migration-probe",
+    "lock": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "native_today": "pnpm exec tsx --test tests/core/today-brief.test.ts",
+    "native_zoom_candidate": "pnpm exec tsx --test --test-name-pattern=INTEGRATE-002 tests/core/today-brief.test.ts",
+    "source_onboarding": "pnpm exec tsx --test --test-name-pattern='NOTIFY-003 opt-in' tests/core/source-onboarding.test.ts",
+    "typecheck": "pnpm typecheck",
+    "views": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check; git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md"
+  },
+  "execution_notes": [
+    "Node 22.20.0 and pinned pnpm; installed system Chromium, headless and no sandbox.",
+    "Local migration bootstrap used the supplied MIGRATION-ALLOWANCE.cjs: only the disposable Wrangler migrations apply subprocess allowance changed from 60 to 180 seconds; no test assertions or product timeouts changed.",
+    "Browser Today ran on the exact source and test bytes committed as candidate; commit creation occurred while it ran. Build predates only test harness changes. Integrations proof source and test bytes are unchanged from 4f6ab894ae337fb6b1a224a592b643ea2fc03632; subsequent CSS affects only saved meeting-plan notices.",
+    "Logs have ANSI removed and runtime binding rows omitted. The product push log also omits the credential fingerprint metadata row. No credentials or environment dumps are selected."
+  ],
+  "files": [
+    {
+      "bytes": 320,
+      "path": "CI-RUNS.json",
+      "sha256": "6e61028615b40a3cfef4008d1b27d9a3b94e34150a9472e10890272f018c37db"
+    },
+    {
+      "bytes": 492,
+      "path": "MIGRATION-ALLOWANCE.cjs",
+      "sha256": "d28702228f5137f625b25ba3a7925a52e0289681e2c0ae6cb814b3a7674f2067"
+    },
+    {
+      "bytes": 2182,
+      "path": "PLAN.md",
+      "sha256": "4f7eb5cea96530d35cb41ef15877338897ca946990869f8b3577b4f69c5a7030"
+    },
+    {
+      "bytes": 139,
+      "path": "boundaries.log",
+      "sha256": "bd7afe311746e5d687095bd47c028990bd2e44d786ba48045451ba2718f14cd4"
+    },
+    {
+      "bytes": 356811,
+      "path": "browser-integrations.log",
+      "sha256": "6bbd16f9524f8de1ef0397fd51827022bd6716d81ea8c32daeb92fa9054fc333"
+    },
+    {
+      "bytes": 286506,
+      "path": "browser-today.log",
+      "sha256": "9aa1a4430fc832185bc3e7faaafeadb333aaf67f5dec92bd2efad46f1f02f137"
+    },
+    {
+      "bytes": 3788,
+      "path": "build.log",
+      "sha256": "e13d26c05f2f4246f26a320da327711abf41f5c13814b212f03722876b188ec9"
+    },
+    {
+      "bytes": 3664,
+      "path": "ci-aggregate-failure.log",
+      "sha256": "4e8779e76bd6e132cd685158a53f82c7245868cb2b59829b41054b75aa1a2f53"
+    },
+    {
+      "bytes": 4289,
+      "path": "ci-jobs.json",
+      "sha256": "e61d0b4ff2d1fff17f5b490a04c03319760129d5a4644851db349f6296753c12"
+    },
+    {
+      "bytes": 3654,
+      "path": "ci-source-failure.log",
+      "sha256": "091320b682fe7a251759c8759234836a4779f006f14c19a3ee2974a3e1a76dbb"
+    },
+    {
+      "bytes": 139,
+      "path": "ci-source-reproduced.log",
+      "sha256": "2d2e26c190ecd6ac62004d900868f49495dcdbae7a1725502c887d2293be617b"
+    },
+    {
+      "bytes": 60,
+      "path": "contract-generation.log",
+      "sha256": "a0dc3e5a57608862eebb5d81291a8613096d4984f76019b102a0ac55b950fe97"
+    },
+    {
+      "bytes": 177,
+      "path": "deployment-check.log",
+      "sha256": "e8638494e7f795b90d75352576a33806f2e10a3f12aa7ac7e7662818c167bdbd"
+    },
+    {
+      "bytes": 1,
+      "path": "first-party.log",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "bytes": 8524,
+      "path": "inventory.json",
+      "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+    },
+    {
+      "bytes": 182,
+      "path": "manifest-check.log",
+      "sha256": "cf4902b26a48d4a5dd76cc2f12be1058bae642383a6b38c43a03a6ca866dbc2b"
+    },
+    {
+      "bytes": 402,
+      "path": "migration-ledger.log",
+      "sha256": "908d7e6bbecf23c41d5905972f5c938672363ee56761b026d99bf829b1eb95e2"
+    },
+    {
+      "bytes": 2363,
+      "path": "native-today.log",
+      "sha256": "54fff4d8da66fc1d90b722fb47e866db72d76fd7a790a93a73044171fccfef4e"
+    },
+    {
+      "bytes": 726,
+      "path": "native-zoom-candidate.log",
+      "sha256": "9d7e7ff808453ad31402159c8b3aae771a1431f97194d29b3b6c4112a601ba2f"
+    },
+    {
+      "bytes": 617,
+      "path": "product-push.log",
+      "sha256": "9d5b5f27b55d68f3908f8aef80c834639023bdb0da222b99c09cc71b3e691409"
+    },
+    {
+      "bytes": 2248,
+      "path": "proof-registration.json",
+      "sha256": "44b3815eaed4414f0d22be676be42ec2393b6521f9c05faefbbc1a2ebdcbc4bc"
+    },
+    {
+      "bytes": 176211,
+      "path": "screens/meeting-plan-1440.png",
+      "sha256": "7d5c4617afa07d8ed4bfa6e9055fc314704a8280bdd84938b582cbdb27a46e18"
+    },
+    {
+      "bytes": 163739,
+      "path": "screens/meeting-plan-390.png",
+      "sha256": "b088de6a6197e0c8c5f85d07bf6275ca48ba3892389ab42e16f138c72918cf18"
+    },
+    {
+      "bytes": 174947,
+      "path": "screens/zoom-completed-plan-1440.png",
+      "sha256": "edaa0809bff26a1868c6166b9e8669d8e4aaf6ab6699f920824dd4cae91065ed"
+    },
+    {
+      "bytes": 173995,
+      "path": "screens/zoom-completed-plan-390.png",
+      "sha256": "929f5a321e1617e2fb406b4eeee5687750767189f923e097ab88d096bff43eca"
+    },
+    {
+      "bytes": 118664,
+      "path": "screens/zoom-connected-settings-1440.png",
+      "sha256": "9b12cba5fd3c750d519ddde335a6ae87670b00eedc7413d6536245933ccad530"
+    },
+    {
+      "bytes": 116337,
+      "path": "screens/zoom-connected-settings-390.png",
+      "sha256": "4ee90be88fd1f325e050252f7af6cfc0b05bcf31d7f1a15a62ff73ad3220e65f"
+    },
+    {
+      "bytes": 143671,
+      "path": "screens/zoom-scheduled-plan-1440.png",
+      "sha256": "23cc8f1d945c99405ef9072fa13430f3a78ccf62d16217e9c2404e9e8e366765"
+    },
+    {
+      "bytes": 144561,
+      "path": "screens/zoom-scheduled-plan-390.png",
+      "sha256": "25634f414abf372f7c2c0945f375e7b5949f68b3b09b9a913253e51516e84f91"
+    },
+    {
+      "bytes": 84046,
+      "path": "screens/zoom-unconnected-1440.png",
+      "sha256": "8172b1b405c5af127b7ecae6e53a7ad9f70f5967f5ab306c0f50f133c500c70a"
+    },
+    {
+      "bytes": 85093,
+      "path": "screens/zoom-unconnected-390.png",
+      "sha256": "7b94516c26d56e7833c111af2b31384fa06a1c641a179ddeecbaa10150da4dac"
+    },
+    {
+      "bytes": 505529,
+      "path": "source-lock-check.json",
+      "sha256": "958e7fa3bda118d180dd88a680e5edd53cea1c8e378b4829417eba4617752030"
+    },
+    {
+      "bytes": 1840,
+      "path": "source-onboarding.log",
+      "sha256": "34d2d14f75ce19c5e17323d56a9e1caa3d8b67361f97800eb4a40e8c838796d5"
+    },
+    {
+      "bytes": 45,
+      "path": "test-budget.json",
+      "sha256": "7c5cf44947352f9650b0d7f671d412965cafe09515fe4990444698db39ebba7b"
+    },
+    {
+      "bytes": 62,
+      "path": "typecheck.log",
+      "sha256": "01a4bd8ab9e72a3ab4c0189a6cc9bc1eb52fe9ae9a063276865efbbfec276ae0"
+    }
+  ],
+  "github_api_invocations": 7,
+  "head": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+  "landing": {
+    "main_equals_candidate": false,
+    "run_site_exact_candidate": null
+  },
+  "mechanical": {
+    "boundaries_exit": 0,
+    "build_exit": 0,
+    "contract_counts_after": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130
+    },
+    "contract_counts_before": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130
+    },
+    "deployment_exit": 0,
+    "first_party_exit": 0,
+    "generated_views_restored": true,
+    "ledger_exit": 0,
+    "lock_check_exit": 0,
+    "lock_exit": 0,
+    "manifest_exit": 0,
+    "test_inventory": {
+      "qualification": 2,
+      "registered": 198,
+      "total": 200
+    },
+    "typecheck_exit": 0,
+    "views_check_exit": 0,
+    "views_write_exit": 0
+  },
+  "merged_main": "01c15358b1bada090ebe87fe1dd9a72bf22b6082",
+  "pr": null,
+  "publication_scan": {
+    "commit": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+    "complete": null,
+    "findings": null,
+    "historyScanned": null,
+    "owner": "guarded fleet lander",
+    "status": "not-run-in-cloud"
+  },
+  "recorded_at": "2026-11-12T08:36:09.354361+00:00",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f175",
+  "tests": {
+    "browser_integrations": {
+      "counts": {
+        "cancelled": 0,
+        "fail": 0,
+        "pass": 1,
+        "skipped": 0,
+        "tests": 1
+      },
+      "log": "browser-integrations.log",
+      "status": "passed"
+    },
+    "browser_today": {
+      "counts": {
+        "cancelled": 0,
+        "fail": 0,
+        "pass": 1,
+        "skipped": 0,
+        "tests": 1
+      },
+      "log": "browser-today.log",
+      "status": "passed"
+    },
+    "native_today": {
+      "counts": {
+        "cancelled": 0,
+        "fail": 0,
+        "pass": 4,
+        "skipped": 0,
+        "tests": 4
+      },
+      "log": "native-today.log",
+      "status": "passed"
+    },
+    "native_zoom_candidate": {
+      "counts": {
+        "cancelled": 0,
+        "fail": 0,
+        "pass": 1,
+        "skipped": 0,
+        "tests": 1
+      },
+      "log": "native-zoom-candidate.log",
+      "status": "passed"
+    },
+    "source_onboarding": {
+      "counts": {
+        "cancelled": 0,
+        "fail": 0,
+        "pass": 1,
+        "skipped": 0,
+        "tests": 1
+      },
+      "log": "source-onboarding.log",
+      "status": "passed"
+    }
+  },
+  "verify_reproduction": {
+    "classification": "permitted-generated-view-only-failure",
+    "command": "node scripts/verification-shard.mjs source",
+    "exit": 1,
+    "failure": "ACCEPTANCE.md: generated content differs; run contract-docs write.",
+    "head": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+    "job": "source and shared build 131062244357",
+    "repair_rounds": 0,
+    "test": "node src/base/contract-docs.mjs check"
+  }
+}

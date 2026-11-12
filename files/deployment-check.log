@@ -1,0 +1,5 @@
+
+> orbit@0.4.6 deployment:check /workspace/run-orbit
+> node scripts/publish-deployment-spec.mjs --check
+
+Deployment spec matches the build; setup digest matches rer-setup.json.

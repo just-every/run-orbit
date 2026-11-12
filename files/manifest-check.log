@@ -1,0 +1,6 @@
+
+> orbit@0.4.6 check:manifest /workspace/run-orbit
+> node tools/seed-schema/validate.mjs --schema SEED seed.json
+
+ok   seed.json
+1/1 valid against tools/seed-schema/SEED.schema.json

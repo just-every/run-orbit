@@ -1,0 +1,75 @@
+[
+  {
+    "shard": "core-3",
+    "file": "tests/core/source-onboarding.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-3-results.jsonl",
+      "tests/core/launch-provider-conflicts.test.ts",
+      "tests/core/operator-erasure.test.ts",
+      "tests/core/records-search.test.ts",
+      "tests/core/sendgrid-outcomes.test.ts",
+      "tests/core/source-onboarding.test.ts"
+    ]
+  },
+  {
+    "shard": "core-8",
+    "file": "tests/core/today-brief.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/core-8-results.jsonl",
+      "tests/core/archive-transfer.test.ts",
+      "tests/core/capture-erasure.test.ts",
+      "tests/core/identity.test.ts",
+      "tests/core/outreach-limits.test.ts",
+      "tests/core/today-brief.test.ts",
+      "tests/delegation/d1.test.ts"
+    ]
+  },
+  {
+    "shard": "runtime-delegation",
+    "file": "tests/delegation-browser/records-layout.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/delegation-browser-1-results.jsonl",
+      "tests/delegation-browser/records-layout.test.ts"
+    ]
+  },
+  {
+    "shard": "runtime-delegation",
+    "file": "tests/delegation-browser/today-brief.test.ts",
+    "args": [
+      "exec",
+      "tsx",
+      "--test",
+      "--no-test-only",
+      "--test-concurrency=1",
+      "--test-reporter=spec",
+      "--test-reporter-destination=stdout",
+      "--test-reporter=./scripts/core-results.mjs",
+      "--test-reporter-destination=verification/delegation-browser-3-results.jsonl",
+      "tests/delegation-browser/today-brief.test.ts"
+    ]
+  }
+]

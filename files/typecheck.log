@@ -1,0 +1,4 @@
+
+> orbit@0.4.6 typecheck /workspace/run-orbit
+> tsc --noEmit
+
