@@ -17,7 +17,7 @@ for(const width of [390,320]){
 const nativeDialogs=[];page.on('dialog',dialog=>{nativeDialogs.push(dialog.type());void dialog.dismiss();});
 await exerciseManualMeeting({page,fixture,origin,directory,observations});
 for(const width of widths){
- await page.setViewportSize({width,height:900});await page.goto(origin+'/app/opportunities/new');await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();await page.getByRole('button',{name:'Save opportunity'}).click();await expect(page.getByLabel('Company name',{exact:true})).toBeFocused();
+ await page.setViewportSize({width,height:900});await page.goto(origin+'/app/opportunities/new');await expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled();await page.getByRole('button',{name:'Save opportunity'}).click();await expect(page.getByLabel('Contact name',{exact:true})).toBeFocused();
  // OR3: closing asks once in place, under the foot: the reason takes the caret, Escape keeps the deal open and returns focus.
  await page.goto(origin+`/app/opportunities/${fixture.opportunityId}`);const trigger=page.getByRole('button',{name:'Close as won',exact:true});await trigger.click();const confirm=page.getByRole('group',{name:'Confirm change'});
  await expect(confirm.getByLabel('Why it closed')).toBeFocused();await expect(page.getByRole('dialog')).toHaveCount(0);await page.keyboard.press('Escape');await expect(confirm).toHaveCount(0);await expect(trigger).toBeFocused();
