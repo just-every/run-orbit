@@ -276,6 +276,9 @@ class or confirmation claims never change scope, risk or contactability.
 
 `tests/core/managed-owner.test.ts` runs the native-consent MCP and review proof
 through `tests/support/agent-door-graph-proof.ts`, covering both company policies,
-foreign-account refusal, hostile text, conflict, review, source revocation and
-erasure. Scheduled runs, transcripts and licensed enrichment remain outside this
-written-evidence tool.
+foreign-account refusal, hostile text, conflict, edited acceptance and terminal
+review decisions under each policy. Erasure replay is checked with the source
+still connected, including the original call key, a new key and the original
+captured mail. Source withdrawal and completed-call read refusal are then checked
+under each policy. Scheduled runs, transcripts and licensed enrichment remain
+outside this written-evidence tool.
