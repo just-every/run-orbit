@@ -20,9 +20,9 @@ export function mailchimpWebhookRoutes(db:D1Database,config:MailchimpConfig){
   try{return await same((JSON.parse(await config.security.open(row.secret_ciphertext)) as Sealed).webhookToken,token)?settings:null;}catch{return null;}
  }
  // Mailchimp checks a new webhook address with a GET before saving it.
- app.get('/:token',async c=>{const settings=await authorized(c.req.param('token'));if(!settings)return c.json({error:'Unknown webhook address.'},404);await saveSettings(db,{...settings,webhookCheckedAt:new Date().toISOString()});return c.text('Orbit receives this Mailchimp audience’s unsubscribes here.');});
+ app.get('/:token',async c=>{const settings=await authorized(c.req.param('token'));if(!settings?.audience||!settings.webhookOrigin||new URL(c.req.url).origin!==settings.webhookOrigin)return c.json({error:'Unknown webhook address.'},404);await saveSettings(db,{...settings,webhookCheckedAt:new Date().toISOString()});return c.text('Orbit receives this Mailchimp audience’s unsubscribes here.');});
  app.post('/:token',async c=>{
-  const settings=await authorized(c.req.param('token'));if(!settings?.audience)return c.json({error:'Unknown webhook address.'},404);
+  const settings=await authorized(c.req.param('token'));if(!settings?.audience||!settings.webhookId||!settings.webhookCheckedAt||new URL(c.req.url).origin!==settings.webhookOrigin)return c.json({error:'Unknown webhook address.'},404);
   let raw:string;
   try{raw=new TextDecoder('utf-8',{fatal:true}).decode(await boundedRequestBody(c.req.raw,65536));}
   catch(error){return c.json({error:error instanceof RequestBodyTooLarge?'Webhook body exceeds 65536 bytes.':'Webhook body must be UTF-8 form data.'},error instanceof RequestBodyTooLarge?413:400);}

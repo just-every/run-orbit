@@ -24,14 +24,17 @@ function rowViews(rows:SalesRow[],access:ViewerAccess,stages:StageConfig[],timez
  const views:Record<string,RowView>={};
  for(const row of rows){
   const primary=row.dealId?{type:'opportunity',id:row.dealId}:row.refs[0],record=primary?name(primary.type,primary.id)??nouns[primary.type]!:'an unlinked booking',by=author(row.facts.author_id??row.facts.owner_id);
+  const deal=row.dealId?access.deals.get(row.dealId):undefined;
+  const account=deal?.values.company_id===null?'No company':typeof deal?.values.company_id==='string'?name('company',deal.values.company_id):null;
+  const owner=row.facts.owner_id===null&&access.operatorNames?'Unassigned':author(row.facts.owner_id);
   let label='',detail='';
-  if(row.kind==='deal'){label=name('opportunity',row.id)??'A deal';detail=[typeof row.facts.lifecycle==='string'?({open:'Open',won:'Won',lost:'Lost'} as Record<string,string>)[row.facts.lifecycle]??'':'',row.facts.stage_id!==undefined?stage(row.facts.stage_id):'',typeof row.facts.closed_at==='string'?`closed ${date(row.facts.closed_at,timezone)}`:''].filter(Boolean).join(' · ');}
+  if(row.kind==='deal'){label=name('opportunity',row.id)??'A deal';detail=[account,owner,typeof row.facts.lifecycle==='string'?({open:'Open',won:'Won',lost:'Lost'} as Record<string,string>)[row.facts.lifecycle]??'':'',row.facts.stage_id!==undefined?stage(row.facts.stage_id):'',typeof row.facts.closed_at==='string'?`closed ${date(row.facts.closed_at,timezone)}`:''].filter(Boolean).join(' · ');}
   else if(row.kind==='movement'){label=`${record}: ${stage(row.facts.from)} → ${stage(row.facts.to)}`;detail=`Moved ${date(row.at,timezone)}`;}
   else if(row.kind==='activity'){label=`${({note:'Note',call:'Call',meeting:'Meeting'} as Record<string,string>)[String(row.facts.activity)]??'Activity'} on ${record}`;detail=[date(row.at,timezone),by?`by ${by}`:''].filter(Boolean).join(' · ');}
   else if(row.kind==='message'){label=`Reviewed message on ${record}`;detail=[`Accepted ${date(row.at,timezone)}`,by?`approved by ${by}`:'',row.facts.scheduled===true?'scheduled':'sent at approval',...(['delivered','replied','meeting','advanced','won'] as const).filter(fact=>row.facts[fact]===true).map(fact=>({delivered:'delivered',replied:'genuine reply',meeting:'meeting booked',advanced:'stage advanced',won:'deal won'})[fact]),row.facts.inferred_open===true?'reported open (inferred, not success)':'',row.facts.automatic_reply===true?'automatic reply (not a reply)':''].filter(Boolean).join(' · ');}
   else if(row.kind==='task'){label=`Task on ${record}`;detail=[`Due ${date(row.at,timezone)}`,String(row.facts.status??''),by?`assigned to ${by}`:''].filter(Boolean).join(' · ');}
   else {label=`${({calendly:'Calendly',calcom:'Cal.com'} as Record<string,string>)[String(row.facts.provider)]??'Signed'} ${row.facts.cancelled===true?'cancellation':'booking'} for ${record}`;detail=date(row.at,timezone);}
-  views[row.key]={key:row.key,kind:row.kind,label,detail,href:primary?`/app/shared-records?${new URLSearchParams({kind:primary.type,id:primary.id})}`:null,at:row.at,recordedAt:row.recordedAt,facts:row.facts,account:row.dealId?name('company',String(access.deals.get(row.dealId)?.values.company_id??'')):null,owner:author(row.facts.owner_id),expectedClose:row.dealId&&typeof access.deals.get(row.dealId)?.values.expected_close_at==='string'?String(access.deals.get(row.dealId)?.values.expected_close_at):null};
+  views[row.key]={key:row.key,kind:row.kind,label,detail,href:primary?`/app/shared-records?${new URLSearchParams({kind:primary.type,id:primary.id})}`:null,at:row.at,recordedAt:row.recordedAt,facts:row.facts,account,owner,expectedClose:row.dealId&&typeof access.deals.get(row.dealId)?.values.expected_close_at==='string'?String(access.deals.get(row.dealId)?.values.expected_close_at):null};
  }
  return views;
 }

@@ -1,4 +1,5 @@
 import type {ForecastResult,ForecastValues,QuotaAttainment} from '../forecast/types';
+import {forecastQuotaPeriods} from '../forecast/quota-periods';
 import {percent,usd} from '../forecast/results';
 import {formatDate} from '../operator/ui/formatters';
 
@@ -29,7 +30,7 @@ function QuotaPeriod({result,period,rows}:{result:ForecastResult;period:'monthly
  </div>;
 }
 export function QuotaGroup({result}:{result:ForecastResult}){
- const periods=(['monthly','quarterly'] as const).map(period=>({period,rows:result.quotaAttainment.filter(row=>row.quota.period===period)})).filter(item=>item.rows.length);
+ const periods=forecastQuotaPeriods(result);
  return <section className="reports-group" aria-labelledby="forecast-quota-title"><h2 id="forecast-quota-title">Quota attainment</h2>
   {!periods.length?<p>No reviewed quotas overlap this forecast period.</p>:periods.map(item=><QuotaPeriod key={item.period} result={result} period={item.period} rows={item.rows}/>)}
  </section>;

@@ -15,7 +15,7 @@ export function TeamArea(){
   {settings.error?<OperatorState kind="error">{settings.error.message}</OperatorState>:null}
   {settings.data?<><OperatorSettings operators={settings.data.operators} local={settings.data.local} onChanged={settings.changed}/><OwnerSettings owner={settings.data.owner} onSaved={settings.changed}/></>:settings.error?null:<OperatorState>Loading your team…</OperatorState>}
   <SignInPolicy/>
-  <FoldWorkspace embedded title="Collaborators">{workspace=><CollaboratorConsole workspaceId={workspace}/>}</FoldWorkspace>
+  <FoldWorkspace key={JSON.stringify(settings.data?.operators)} embedded title="Collaborators">{workspace=><CollaboratorConsole workspaceId={workspace}/>}</FoldWorkspace>
   <LinkCard title="Shared records" text="The records each collaborator can see or change." href="/app/shared-records"/>
   <LinkCard title="Connected applications" text="Applications that work in Orbit for one of your team." href="/delegation/settings"/>
  </SettingsArea>;

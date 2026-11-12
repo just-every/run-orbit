@@ -39,6 +39,12 @@ export class AgentAccess extends AccessService {
     this.addDependencyFences(actor,fullOperatorFence(actor),'native-class');
     return actor;
   }
+  /** Recheck the native admission immediately before a provider request, as
+   * well as at the later database commit. No context is retained by the guard. */
+  async providerAdmission(c:ActorContext):Promise<void> {
+    await this.refreshContext(c);
+    await this.db.batch(this.fence(c).map(statement=>this.db.prepare(statement.sql).bind(...statement.bindings)));
+  }
   /** Graph proposals require explicit native selections, including their evidence. */
   async selectedGraph(targets:string[]):Promise<ActorContext> {
     if(!this.who.clientId?.startsWith('orbit-delegation:'))deny('Selected native authority required.');

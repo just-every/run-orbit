@@ -59,7 +59,7 @@ function EditableOpportunityRecordPage(){
  const closed=opportunity.lifecycle!=='open';
  const titles=new Map(opportunity.contacts.map(contact=>[contact.id,contact.jobTitle]));
  const scheduled=messages?.messages.filter(message=>message.state==='scheduled').length??0;
- const company=detail.company?<Link className="r-eyebrow-link" to="/app/companies/$id" params={{id:detail.company.id}}>{detail.company.name}</Link>:<span>Opportunity</span>;
+ const company=detail.company?<Link className="r-eyebrow-link" to="/app/companies/$id" params={{id:detail.company.id}}>{detail.company.name}</Link>:<span>No company</span>;
  return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{company}<SavedLabel show={record.saved('title')}/></span>} heading={<><RecordTitle form={record} field="title" label="Opportunity title" required="An opportunity needs a title."/>{closed?<DealOutcome record={detail.record}/>:null}</>}>
   <RecordFrame
    waiting={<WorkflowRecordApprovals kind="opportunity" id={id} workspace={workspace} onChanged={reload}/>}

@@ -76,6 +76,7 @@ export async function serveBrowserRuntime() {
     const noArguments = Array.isArray(request.args) && request.args.length === 0;
     const allowed = (request.name === 'tests/support/issue-operator-session.ts' && (noArguments || (Array.isArray(request.args) && request.args.length === 1 && ['--guide-owner','--notification-colleague'].includes(request.args[0]))))
       || (request.name === 'tests/support/capture-browser-source.ts' && noArguments)
+      || (request.name === 'tests/support/agent-door-ai-browser-source.ts' && noArguments)
       || (request.name === 'tests/archive/session.ts' && Array.isArray(request.args)
         && (noArguments || (request.args.length === 1 && request.args[0] === '--target-owner')));
     if (!allowed) throw new Error('Unknown fixture request.');
