@@ -1,0 +1,55 @@
+{
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "status": "passed"
+  },
+  "source_lock": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "status": "regenerated"
+  },
+  "source_check": {
+    "command": "pnpm run source:check",
+    "status": "passed"
+  },
+  "contract_check": {
+    "command": "node src/base/contract-docs.mjs check",
+    "status": "passed"
+  },
+  "test_inventory": {
+    "command": "node scripts/verification-inventory.mjs",
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200,
+    "cap": 200
+  },
+  "browser": {
+    "command": "cloud_run node /tmp/orbit-proof.mjs",
+    "status": "passed",
+    "assertion_width": 1440,
+    "proof_widths": [
+      1440,
+      390
+    ]
+  },
+  "providers": {
+    "live_account_connections": "not run; outside replay scope",
+    "link_availability": "16/16 returned HTTP 200"
+  },
+  "onboarding": {
+    "command": "cloud_run node --test --test-concurrency=1 tests/rer/onboarding.test.mjs",
+    "exit_code": 0,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "widths": [
+      1440,
+      390
+    ],
+    "source_tree_matches_product_commit": true
+  },
+  "cleanup": {
+    "owned_dev_and_browser_processes": "stopped",
+    "temporary_runtime_logs": "private and excluded from evidence",
+    "disposable_clone": "pending successful evidence publication"
+  }
+}

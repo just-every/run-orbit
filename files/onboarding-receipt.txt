@@ -1,0 +1,17 @@
+Command: cloud_run node --test --test-concurrency=1 tests/rer/onboarding.test.mjs
+Node: 22.20.0
+Browser: /usr/bin/chromium --no-sandbox (external launch override; product files unchanged)
+Exit: 0
+# Subtest: SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440
+ok 1 - SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 1440
+  duration_ms: 220987.302122
+# Subtest: SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 390
+ok 2 - SIGNAL-001 SIGNAL-009 PUBLIC-002 OUT-001 first hour through native rer sign-in and exact rendered recipes at 390
+  duration_ms: 192230.159074
+# tests 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 415243.957003

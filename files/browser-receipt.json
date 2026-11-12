@@ -1,0 +1,144 @@
+{
+  "browser": "/usr/bin/chromium",
+  "assertionWidth": 1440,
+  "screenshotsAt": [
+    1440,
+    390
+  ],
+  "setupGuidance": "passed",
+  "screens": [
+    {
+      "product": "slack",
+      "width": 860,
+      "open": true,
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "links": [
+        "https://api.slack.com/apps",
+        "https://docs.slack.dev/tools/bolt-js/creating-an-app/",
+        "https://docs.slack.dev/apis/web-api/using-the-conversations-api/"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "mailchimp",
+      "width": 860,
+      "open": true,
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "links": [
+        "https://mailchimp.com/help/about-api-keys/"
+      ],
+      "minText": 15
+    },
+    {
+      "product": "twilio",
+      "width": 860,
+      "open": true,
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "links": [
+        "https://console.twilio.com/",
+        "https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account",
+        "https://www.twilio.com/en-us/voice/pricing"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "capture",
+      "width": 860,
+      "open": true,
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "links": [
+        "https://app.sendgrid.com/settings/parse",
+        "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks",
+        "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+        "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/",
+        "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/#subaddressing"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "ai",
+      "width": 860,
+      "open": true,
+      "pageWidth": 1440,
+      "viewport": 1440,
+      "links": [
+        "https://platform.openai.com/api-keys",
+        "https://platform.openai.com/settings/organization/billing/overview",
+        "https://platform.openai.com/docs/models",
+        "https://platform.openai.com/docs/pricing"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "slack",
+      "width": 308,
+      "open": true,
+      "pageWidth": 390,
+      "viewport": 390,
+      "links": [
+        "https://api.slack.com/apps",
+        "https://docs.slack.dev/tools/bolt-js/creating-an-app/",
+        "https://docs.slack.dev/apis/web-api/using-the-conversations-api/"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "mailchimp",
+      "width": 308,
+      "open": true,
+      "pageWidth": 390,
+      "viewport": 390,
+      "links": [
+        "https://mailchimp.com/help/about-api-keys/"
+      ],
+      "minText": 15
+    },
+    {
+      "product": "twilio",
+      "width": 308,
+      "open": true,
+      "pageWidth": 390,
+      "viewport": 390,
+      "links": [
+        "https://console.twilio.com/",
+        "https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account",
+        "https://www.twilio.com/en-us/voice/pricing"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "capture",
+      "width": 350,
+      "open": true,
+      "pageWidth": 390,
+      "viewport": 390,
+      "links": [
+        "https://app.sendgrid.com/settings/parse",
+        "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks",
+        "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+        "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/",
+        "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/#subaddressing"
+      ],
+      "minText": 13.8
+    },
+    {
+      "product": "ai",
+      "width": 308,
+      "open": true,
+      "pageWidth": 390,
+      "viewport": 390,
+      "links": [
+        "https://platform.openai.com/api-keys",
+        "https://platform.openai.com/settings/organization/billing/overview",
+        "https://platform.openai.com/docs/models",
+        "https://platform.openai.com/docs/pricing"
+      ],
+      "minText": 13.8
+    }
+  ],
+  "tested_source_tree": "c55e66df0f26ab26d805eb8cb3e06de19d4970fd"
+}

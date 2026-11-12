@@ -1,0 +1,72 @@
+{
+  "base": "eab0faafccd2eb0945dddb7d0f52c30ce573c04c",
+  "replayed_candidate": "b133314ee4763a909547551cad295cf41d0088c1",
+  "main_behavior_and_assertions_preserved": {
+    "src/core/features/operator/ui/slack-settings.tsx": true,
+    "tests/rer/onboarding.test.mjs": true
+  },
+  "contract_files_identical_to_main_sha256": {
+    "CONTRACT.md": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
+    "ACCEPTANCE.md": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41",
+    "docs/CLAIMS.md": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d"
+  },
+  "new_helpers_identical_to_prior_candidate": [
+    "src/core/features/operator/ui/ai-setup-help.tsx",
+    "src/core/features/operator/ui/capture-hosted-setup.tsx",
+    "src/core/features/operator/ui/integration-setup-help.tsx",
+    "src/core/features/operator/ui/setup-help.css",
+    "src/core/features/operator/ui/setup-help.tsx",
+    "tests/rer/setup-guidance.mjs"
+  ],
+  "test_counts_before": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "test_counts_after": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clause_status_changes": [],
+  "changed_paths": [
+    "sources.lock.json",
+    "src/core/features/operator/ui/ai-setup-help.tsx",
+    "src/core/features/operator/ui/ai-usage.tsx",
+    "src/core/features/operator/ui/calling-settings.tsx",
+    "src/core/features/operator/ui/capture-address-setup.tsx",
+    "src/core/features/operator/ui/capture-hosted-setup.tsx",
+    "src/core/features/operator/ui/integration-setup-help.tsx",
+    "src/core/features/operator/ui/mailchimp-settings.tsx",
+    "src/core/features/operator/ui/setup-help.css",
+    "src/core/features/operator/ui/setup-help.tsx",
+    "src/core/features/operator/ui/slack-settings.tsx",
+    "tests/rer/onboarding.test.mjs",
+    "tests/rer/setup-guidance.mjs"
+  ],
+  "product_head": "64b6464fd1655d57c099a76d40cacbaf1771df2d",
+  "contract_counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "contract_counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "homepage_claim_counts_before": {
+    "done": 3,
+    "partial": 9,
+    "missing": 0,
+    "total": 12
+  },
+  "homepage_claim_counts_after": {
+    "done": 3,
+    "partial": 9,
+    "missing": 0,
+    "total": 12
+  }
+}

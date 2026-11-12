@@ -1,0 +1,98 @@
+[
+  {
+    "url": "https://api.slack.com/apps",
+    "status": 200,
+    "final_url": "https://api.slack.com/apps",
+    "result": "reachable"
+  },
+  {
+    "url": "https://app.sendgrid.com/settings/parse",
+    "status": 200,
+    "final_url": "https://app.sendgrid.com/settings/parse",
+    "result": "reachable"
+  },
+  {
+    "url": "https://console.twilio.com/",
+    "status": 200,
+    "final_url": "https://console.twilio.com/",
+    "result": "reachable"
+  },
+  {
+    "url": "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/",
+    "status": 200,
+    "final_url": "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/",
+    "result": "reachable"
+  },
+  {
+    "url": "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/#subaddressing",
+    "status": 200,
+    "final_url": "https://developers.cloudflare.com/email-service/configuration/email-routing-addresses/#subaddressing",
+    "result": "reachable"
+  },
+  {
+    "url": "https://docs.slack.dev/apis/web-api/using-the-conversations-api/",
+    "status": 200,
+    "final_url": "https://docs.slack.dev/apis/web-api/using-the-conversations-api/",
+    "result": "reachable"
+  },
+  {
+    "url": "https://docs.slack.dev/tools/bolt-js/creating-an-app/",
+    "status": 200,
+    "final_url": "https://docs.slack.dev/tools/bolt-js/creating-an-app/",
+    "result": "reachable"
+  },
+  {
+    "url": "https://mailchimp.com/help/about-api-keys/",
+    "status": 200,
+    "final_url": "https://mailchimp.com/help/about-api-keys/",
+    "result": "reachable"
+  },
+  {
+    "url": "https://platform.openai.com/api-keys",
+    "status": 200,
+    "final_url": "https://platform.openai.com/api-keys",
+    "result": "reachable"
+  },
+  {
+    "url": "https://platform.openai.com/docs/models",
+    "status": 200,
+    "final_url": "https://developers.openai.com/api/docs/models",
+    "result": "reachable"
+  },
+  {
+    "url": "https://platform.openai.com/docs/pricing",
+    "status": 200,
+    "final_url": "https://developers.openai.com/api/docs/pricing",
+    "result": "reachable"
+  },
+  {
+    "url": "https://platform.openai.com/settings/organization/billing/overview",
+    "status": 200,
+    "final_url": "https://platform.openai.com/settings/organization/billing/overview",
+    "result": "reachable"
+  },
+  {
+    "url": "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks",
+    "status": 200,
+    "final_url": "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks",
+    "result": "reachable"
+  },
+  {
+    "url": "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+    "status": 200,
+    "final_url": "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+    "result": "reachable"
+  },
+  {
+    "url": "https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account",
+    "status": 200,
+    "final_url": "https://www.twilio.com/docs/usage/tutorials/how-to-use-your-free-trial-account",
+    "result": "reachable"
+  },
+  {
+    "url": "https://www.twilio.com/en-us/voice/pricing",
+    "status": 200,
+    "final_url": "https://www.twilio.com/en-us/voice/pricing/us",
+    "result": "reachable"
+  }
+]
