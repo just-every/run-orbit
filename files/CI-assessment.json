@@ -1,0 +1,29 @@
+{
+  "head": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+  "runId": 43257990247,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "failure",
+  "rootCause": "ACCEPTANCE.md generated content differs from CONTRACT.md",
+  "rootCommand": "pnpm exec node src/base/contract-docs.mjs check",
+  "sourceJobId": 131321583908,
+  "aggregateJobId": 131321962103,
+  "downstreamEffects": [
+    "Authoritative-source artifact not created",
+    "Runtime shards skipped",
+    "Aggregate gate failed for required source and skipped shards",
+    "Routine verdict artifact not created"
+  ],
+  "runtimeAssertionsExecutedByCI": false,
+  "productAssertionFailureObserved": false,
+  "localRestoredViewsCheckExit": 1,
+  "allowedGeneratedViewsException": true,
+  "readyUnderBriefException": true,
+  "newCIReruns": 0,
+  "newCIDispatches": 0,
+  "logArchiveReadExits": [
+    0,
+    0
+  ],
+  "recordedAt": "2026-11-12T16:29:34.436577+00:00"
+}

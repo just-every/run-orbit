@@ -1,0 +1,59 @@
+{
+  "mode": "after",
+  "results": [
+    {
+      "label": "complete current generation",
+      "accepted": true,
+      "error": null
+    },
+    {
+      "label": "complete prior generation without Zoom",
+      "accepted": true,
+      "error": null
+    },
+    {
+      "label": "incomplete Zoom group 1",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "incomplete Zoom group 2",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "incomplete Zoom group 3",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "incomplete Zoom group 4",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "incomplete Zoom group 5",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "incomplete Zoom group 6",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "duplicate Zoom table",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "missing mandatory table",
+      "accepted": false,
+      "error": "Unsupported finite archive generation."
+    },
+    {
+      "label": "inconsistent row totals",
+      "accepted": false
+    }
+  ]
+}

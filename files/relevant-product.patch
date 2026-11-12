@@ -1,0 +1,337 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index c5e1855..b76a8e4 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -1769,7 +1769,7 @@ The primary journey: Bring customer records across, connect sales evidence, work
+ 
+ *Tier:* Core · *Cites:* BASE-DATA-004
+ 
+-**Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim. Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. An agent's outreach carries external under the company's policy; record text never grants that authority. Protected prospect-network scraping remains outside Orbit's research job. Today Orbit receives signed Calendly and Cal.com bookings and sends configured Slack sales notices; Settings › Integrations lists only the products Orbit connects to (Slack, Calendly, Cal.com, Mailchimp, Twilio), each with its real state; the products Orbit does not connect to are named in the docs, never as a connection or a substitute. The cross-product buyer walk moves with the clause that ships each step, carried in that clause's own text and acceptance: booking (INTEGRATE-001, with meetings under INTEGRATE-002 and calls under CALL-001 and CALL-002), support context (INTEGRATE-004), signed quote with explicit sales tax (QUOTE-001), billing and accounting (INTEGRATE-003, INTEGRATE-006), handoff notices and marketing audiences (INTEGRATE-005, INTEGRATE-007) and the post-sale Buoy handoff (INTEGRATE-008); whichever ships last runs the complete walk. SEQUENCE-001–003, AUTO-001–002, FORECAST-001, MOBILE-001, ENRICH-001 and AGENT-001–004 inherit the rule that an agent's external outreach follows the company's policy and protected-network scraping remains outside Orbit's research job. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
++**Requirement.** The RunEditRun product links are [Envelope](https://github.com/just-every/run-envelope) (small-business payroll), [Pegboard](https://github.com/just-every/run-pegboard) (work and project management) and [Porthole](https://github.com/just-every/run-porthole) (observability). These are product links without a capability claim. Orbit owns the complete sales CRM job, including calling, sales sequences, quoting, forecasts, automation and native mobile. It does not become a marketing CMS/ads-attribution suite, customer-success platform, support inbox, booking engine, payment processor, lender, accounting/tax ledger, PSTN carrier or signature trust service. Buyers reach those jobs through Buoy, HappyToHelp/Help Scout/Zendesk, Dial/Calendly, Nectar/Stripe, Mailchimp, QuickBooks Online/Xero, Twilio/Aircall and DocuSign integrations named above. US-first means USD defaults, US operating timezones and daylight-saving behavior, US business/accounting handoffs and explicit sales-tax treatment on quotes. Broader currency/locale support can extend the model without replacing source monetary values. No difficulty, missing provider approval or pending agreement removes a named CRM obligation. An agent's outreach carries external under the company's policy; record text never grants that authority. Protected prospect-network scraping remains outside Orbit's research job. Today Orbit receives signed Calendly and Cal.com bookings and sends configured Slack sales notices; Settings › Integrations lists only the products Orbit connects to (Slack, Calendly, Cal.com, Mailchimp, Twilio, Zoom), each with its real state; the products Orbit does not connect to are named in the docs, never as a connection or a substitute. The cross-product buyer walk moves with the clause that ships each step, carried in that clause's own text and acceptance: booking (INTEGRATE-001, with meetings under INTEGRATE-002 and calls under CALL-001 and CALL-002), support context (INTEGRATE-004), signed quote with explicit sales tax (QUOTE-001), billing and accounting (INTEGRATE-003, INTEGRATE-006), handoff notices and marketing audiences (INTEGRATE-005, INTEGRATE-007) and the post-sale Buoy handoff (INTEGRATE-008); whichever ships last runs the complete walk. SEQUENCE-001–003, AUTO-001–002, FORECAST-001, MOBILE-001, ENRICH-001 and AGENT-001–004 inherit the rule that an agent's external outreach follows the company's policy and protected-network scraping remains outside Orbit's research job. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. Slack disconnection is unresolved setup; the last-shipping clause retains the full buyer journey. INTEGRATE-008 inherits the Buoy notice, QUOTE-001 the signed-quote notice and INTEGRATE-003 the billing notice. The complete walk from a USD deal through booking, support context, signed quote, billing/accounting and post-sale Buoy handoff is carried by INTEGRATE-001–008, CALL-001/002 and QUOTE-001, each in its own acceptance, and run end to end by whichever ships last.
+ 
+ **Acceptance.**
+ 1. INTEGRATE-005’s existing won-deal and internal handoff notices carry no products, commitments or amounts.
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index e338031..11e80d0 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -462,6 +462,12 @@
+       "name": "0081_graph_proposals.sql",
+       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+       "sql": "-- Extend native review with a question that cannot create a contact.\n-- Refuse unexpected owner extensions before replacing the known proposal table.\nSELECT CASE WHEN (SELECT group_concat(name,',') FROM pragma_table_info('capture_proposals'))<>'id,proposal_key,signal_id,kind,record_type,record_id,field,current_value,proposed_value,details_json,status,decided_by,decided_at,decided_value,created_at'\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name<>'capture_proposals' AND lower(sql) LIKE '%references%capture_proposals%')\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='index' AND sql IS NOT NULL AND name NOT IN('capture_proposals_status','capture_proposals_record'))\n OR EXISTS(SELECT 1 FROM sqlite_master WHERE tbl_name='capture_proposals' AND type='trigger' AND name NOT LIKE 'archive_guard_capture_proposals_%')\n THEN json_extract('ORBIT_GRAPH_PROPOSAL_SCHEMA_REQUIRES_REVIEW','$') ELSE 1 END;\nCREATE TABLE capture_proposals_new (\n id TEXT PRIMARY KEY,\n proposal_key TEXT NOT NULL UNIQUE,\n signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact','question')),\n record_type TEXT CHECK (record_type IN ('contact','company','opportunity')),\n record_id TEXT,\n field TEXT,\n current_value TEXT,\n proposed_value TEXT,\n details_json TEXT NOT NULL,\n status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined','withdrawn')),\n decided_by TEXT,\n decided_at TEXT,\n decided_value TEXT,\n created_at TEXT NOT NULL\n);\nINSERT INTO capture_proposals_new SELECT * FROM capture_proposals;\nDROP TABLE capture_proposals;\nALTER TABLE capture_proposals_new RENAME TO capture_proposals;\nCREATE INDEX capture_proposals_status ON capture_proposals(status,created_at);\nCREATE INDEX capture_proposals_record ON capture_proposals(record_type,record_id);\nCREATE TRIGGER archive_guard_capture_proposals_insert BEFORE INSERT ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_update BEFORE UPDATE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\nCREATE TRIGGER archive_guard_capture_proposals_delete BEFORE DELETE ON capture_proposals\nWHEN EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_import') AND NOT EXISTS(SELECT 1 FROM runtime_controls WHERE name='archive_applying')\nBEGIN SELECT RAISE(ABORT,'Archive restoration is in progress'); END;\n\n-- Source withdrawal is terminal for this proposal, including after reconnection.\nCREATE TRIGGER capture_graph_source_withdrawn AFTER UPDATE ON capture_sources\nWHEN NEW.state='disconnected' OR NEW.connection_id IS NOT OLD.connection_id\nBEGIN\n UPDATE capture_proposals SET status='withdrawn',decided_at=NEW.updated_at,\n  details_json=json_set(details_json,'$.withdrawal','Evidence source revoked')\n WHERE status='pending' AND json_extract(details_json,'$.graphProposal')=1\n AND signal_id IN(SELECT id FROM signals WHERE source_id=NEW.id);\nEND;\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0081_zoom_meetings.sql",
++      "sha256": "1c3386340ce3c7e9b08a7fca12586d26b05a6d45cf5d47c46e6341ca81f280d5",
++      "sql": "-- One reviewed Zoom occurrence per signal. Credentials stay sealed in signal_sources.\nCREATE TABLE zoom_meetings (\n signal_id TEXT PRIMARY KEY REFERENCES signals(id) ON DELETE CASCADE,\n meeting_id TEXT NOT NULL,\n meeting_uuid TEXT NOT NULL UNIQUE,\n opportunity_id TEXT NOT NULL REFERENCES opportunities(id) ON DELETE CASCADE,\n join_url TEXT NOT NULL,\n host_id TEXT NOT NULL,\n duration INTEGER NOT NULL,\n state TEXT NOT NULL CHECK(state IN('scheduled','completed','cancelled')),\n recording TEXT NOT NULL,\n attendance_json TEXT NOT NULL DEFAULT '[]',\n attendance_state TEXT NOT NULL DEFAULT 'not-read',\n completed_at TEXT,\n completion_entry_id TEXT REFERENCES timeline_entries(id) ON DELETE SET NULL,\n completion_digest TEXT,\n completion_timestamp TEXT,\n cancelled_at TEXT,\n last_event_at INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE zoom_deliveries (\n digest TEXT PRIMARY KEY,\n received_at TEXT NOT NULL\n);\nCREATE TABLE zoom_plan_actions (\n signal_id TEXT NOT NULL REFERENCES zoom_meetings(signal_id) ON DELETE CASCADE,\n handoff_id TEXT NOT NULL REFERENCES handoff_tasks(id) ON DELETE CASCADE,\n PRIMARY KEY(signal_id,handoff_id)\n);\n-- A cancellation that arrives while a reviewed handoff is saved still withdraws it.\nCREATE TRIGGER zoom_plan_action_cancelled AFTER INSERT ON zoom_plan_actions\nWHEN EXISTS(SELECT 1 FROM zoom_meetings WHERE signal_id=NEW.signal_id AND state='cancelled')\nBEGIN\n UPDATE handoff_tasks SET status='cancelled',revision=lower(hex(randomblob(16))),updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=NEW.handoff_id AND status='open';\nEND;\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/sources.lock.json b/sources.lock.json
+index f005500..7a2a8a3 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -707,7 +707,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
++      "sha256": "2c7cce58a1437e4b0104046706ee4c79ad96965c233d8a36149a3573f1fe2872",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -819,7 +819,7 @@
+       "executable": false
+     },
+     "docs/overview.md": {
+-      "sha256": "9c94e35411ae190b31e19cb99ce62185bc0c9254fffe3fcfd4bd685a24c65f96",
++      "sha256": "063fc6e0dcfcf6d49197441ead4de4dfc6678df9de6c0824a2a23767cfcdded1",
+       "executable": false
+     },
+     "docs/retained-verification/browser-results.jsonl": {
+@@ -1911,7 +1911,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "730df50b6cc9a02c50fc3669fe87cc27e81edc54663a9cc04069d6d67f3bc19c",
++      "sha256": "70c2a310bf3d6c2042ea58866e290675498c32c38142b524a87b4b0fd159e0cf",
+       "executable": false
+     },
+     "management/integration/profile.json": {
+@@ -2230,6 +2230,10 @@
+       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+       "executable": false
+     },
++    "migrations/core/0081_zoom_meetings.sql": {
++      "sha256": "1c3386340ce3c7e9b08a7fca12586d26b05a6d45cf5d47c46e6341ca81f280d5",
++      "executable": false
++    },
+     "migrations/rewrites.json": {
+       "sha256": "3ef25c0914487226e6d08d3e587a45d09d2f7a823ab72d255c7d78d3d45467d0",
+       "executable": false
+@@ -4135,7 +4139,7 @@
+       "executable": false
+     },
+     "scripts/installer/portability-policy.mjs": {
+-      "sha256": "cf60bd37d5b707febe4beff41f96f0ef60ef37ddb9b11fefb83fb78f335bf0ce",
++      "sha256": "5b46afc7b65ebe48fd0145c092c1ad10b731b9c2d4dbb7d8b8e64d0749ca50b9",
+       "executable": false
+     },
+     "scripts/installer/portability.mjs": {
+@@ -4263,7 +4267,7 @@
+       "executable": false
+     },
+     "seed.json": {
+-      "sha256": "17da9caaba1cb15f16a4854b24fe925fb07f6887834b2105b6ce624d44226ded",
++      "sha256": "b00e2c2aebc4b48c6b3036c84fd0729cd3d58ae49a299bccf493a25a46ce17e2",
+       "executable": false
+     },
+     "SIGNALS-AND-OUTREACH.md": {
+@@ -5135,7 +5139,7 @@
+       "executable": false
+     },
+     "src/core/app/app.ts": {
+-      "sha256": "d98a96b58bab99226d074d0c3e61785b7f272ccc56063288c8528845e98f0875",
++      "sha256": "1293c284151a00d649e52743080683a78caf0e5030c167b41ccb70f50cc5abaf",
+       "executable": false
+     },
+     "src/core/app/demo.css": {
+@@ -6655,7 +6659,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/connected-products.tsx": {
+-      "sha256": "495b3e43f6b2c4297a52e9be39840488dc44af4acfc5a8664d67c7862e99351c",
++      "sha256": "7084c23da960869fbe3bbae2d98836cf4b6404cecf86d4ba213bb0563779d9f3",
+       "executable": false
+     },
+     "src/core/features/operator/ui/create-opportunity-page.tsx": {
+@@ -6799,7 +6803,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/meeting-plan-page.tsx": {
+-      "sha256": "aea4e5828ac6dddd1343185db5bce767ca4aa1610c3a11fa7510d87c275f5aba",
++      "sha256": "3248c2d983e6b705197a5c7e4d5d2d84827edf8bd13ccf9960b94f8151b3b34f",
+       "executable": false
+     },
+     "src/core/features/operator/ui/meeting-writeback.tsx": {
+@@ -7211,7 +7215,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/today.css": {
+-      "sha256": "901d2bdf0d7f887697e098a18d40bbb242e4314aa4eb5f83d26e4e35048c081e",
++      "sha256": "c5b992f416e7e815845c5e419f9136e667279650f494146c38bae84057096fe2",
+       "executable": false
+     },
+     "src/core/features/operator/ui/typed-field-history.css": {
+@@ -7322,6 +7326,10 @@
+       "sha256": "93e33037c559a5a3a7f97307d6ff9e44ba4053a8e440f31747cf1e42dfde1f75",
+       "executable": false
+     },
++    "src/core/features/operator/ui/zoom-settings.tsx": {
++      "sha256": "20fdebcc5e7b306ff33e946e34129cc28a9211d89b9a41faf71d80eec99ecca6",
++      "executable": false
++    },
+     "src/core/features/opportunities/contracts.ts": {
+       "sha256": "9c11158929c712e7405f4ebab3e4958db2a4f0af31d8c5639405c6ceb829b87d",
+       "executable": false
+@@ -7871,11 +7879,11 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-generations.ts": {
+-      "sha256": "5a8c3b1215ab7a41dc17990699f0e92828b78e5eb77d60d3874ff9373d5ead81",
++      "sha256": "471d914c6962260309c113cd929476aad5b81d44bb83c4ec1562804f2aa042c5",
+       "executable": false
+     },
+     "src/core/features/records/archive-import-context.ts": {
+-      "sha256": "07c0cd085a3711a3ed76e71c2c6b98e0a9fcf13886430fe44d2f1d5537ce19c2",
++      "sha256": "f4c1801c150e4172b7053d792ff8ad285600eb8d1a56a021332d25e9fc453984",
+       "executable": false
+     },
+     "src/core/features/records/archive-import-progress.ts": {
+@@ -7915,7 +7923,7 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-schema.ts": {
+-      "sha256": "d43f04dacc009fc101ce322d327619d9a693d9b9f3573c33e5cb45dd91dacd18",
++      "sha256": "bae5e11869010c20e92b58727666208b2b7e97c5e696decdff49e44ccf19c343",
+       "executable": false
+     },
+     "src/core/features/records/archive-size-plan.ts": {
+@@ -7955,7 +7963,7 @@
+       "executable": false
+     },
+     "src/core/features/records/data.ts": {
+-      "sha256": "219e94dcacd0e5195f556b22a791b9421ecf80a70a6422fd72c83adfbf5b3c3b",
++      "sha256": "3bd7b952eb1a4cec89923a39d93c352d6603c8172f623f6fb785527877de66b6",
+       "executable": false
+     },
+     "src/core/features/records/entry-privacy.ts": {
+@@ -8179,7 +8187,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/connected-products.ts": {
+-      "sha256": "d36cb550d2364647ce6007e64a20e013cd61f1ecae8c793b5d8a691040ffd559",
++      "sha256": "38c1455e2082c24820f26ab2c826fed9c64953dea51dbeb75fcddd0f4a296789",
+       "executable": false
+     },
+     "src/core/features/settings/erasure-redaction.ts": {
+@@ -8399,11 +8407,11 @@
+       "executable": false
+     },
+     "src/core/features/today/meeting-plan.ts": {
+-      "sha256": "17e48e2ce01855b675261010d3a43a79824ca11e0b80693e3ea0016078430a23",
++      "sha256": "b14453a3b43cf8537cfdfba9a6b6ed4c583f085293791e8edcaa7dd1fc9c8cd6",
+       "executable": false
+     },
+     "src/core/features/today/plan-actions.ts": {
+-      "sha256": "8d2438df2977e611f5bd3209ef9249fc163a1d8358e729981c5e42e4bcbf7894",
++      "sha256": "1ae8dc564120a4943e507183c9013c58319ed0c6d1da8105fff288652ce98887",
+       "executable": false
+     },
+     "src/core/features/today/promises.ts": {
+@@ -8566,6 +8574,38 @@
+       "sha256": "678b148995af18e9df6dde0d303529ea6129706dbf64001aedc342f80b0d2d13",
+       "executable": false
+     },
++    "src/core/features/zoom/connection.ts": {
++      "sha256": "89785f4ea6f102b0433f65a7c71dca682897d00b17aa63cf28808b2965da56b4",
++      "executable": false
++    },
++    "src/core/features/zoom/contracts.ts": {
++      "sha256": "337e63e47c9a512b374bf98f016a16c3fc2d31a94b491c713a4712c5cdcd6966",
++      "executable": false
++    },
++    "src/core/features/zoom/plan.ts": {
++      "sha256": "5c72762371fb085f37c98e88a66d186c7d014f1dd6b4233b0c637a1e4af16fe2",
++      "executable": false
++    },
++    "src/core/features/zoom/privacy.ts": {
++      "sha256": "610993873add898b0324dbf8396a81b82a384c0011f8782b184c0b63aecdef73",
++      "executable": false
++    },
++    "src/core/features/zoom/provider.ts": {
++      "sha256": "3b80be04639d610e9dded3650b1abc3adb92364304defbd1d1237f50fad2d673",
++      "executable": false
++    },
++    "src/core/features/zoom/repository.ts": {
++      "sha256": "1bd67903aa5cecc9613cb0e1a0ae964673b240dc65f82e467e95e2a677478ef7",
++      "executable": false
++    },
++    "src/core/features/zoom/routes.ts": {
++      "sha256": "12e013da37a9f2800e9731a417832433006a078416e15b02e17b638260722a7c",
++      "executable": false
++    },
++    "src/core/features/zoom/webhook.ts": {
++      "sha256": "5e0dd19c1427502ce6b02a427592cae1ec85c33eb6205ae8701abbd992a597f4",
++      "executable": false
++    },
+     "src/core/platform/archive-maintenance.ts": {
+       "sha256": "b67a4944e20fda7c173fa14c3367398e64304a5b4d6c9f319c12b3c88ab60dca",
+       "executable": false
+@@ -8639,7 +8679,7 @@
+       "executable": false
+     },
+     "src/core/shared/archive-lineage.ts": {
+-      "sha256": "d0d270d8d46092d29750d4f0b202ab0d1110ee21103074bdc2b83dc50ff49213",
++      "sha256": "b84163134b3ca58e3e46eb490724b523710d8d96ec78af48f63e091387547827",
+       "executable": false
+     },
+     "src/core/shared/archive-lines.ts": {
+@@ -8659,7 +8699,7 @@
+       "executable": false
+     },
+     "src/core/shared/archive-transfer-profile.ts": {
+-      "sha256": "7b50453eb050f6b22356273ad4a1b1f41704826bb77747c35890438a42609045",
++      "sha256": "5e5c8273068a9f6a53c9dfdb6aaeb2ab8f084ccdfc364fccf8bc001f0f399308",
+       "executable": false
+     },
+     "src/core/shared/csv.ts": {
+@@ -10307,11 +10347,11 @@
+       "executable": false
+     },
+     "tests/core/source-onboarding.test.ts": {
+-      "sha256": "6f29b6e43e066f4c4716254eea5b584f0bf74515602946fa70dff1c8f4447301",
++      "sha256": "bc43d53f81cf03a405c0ae8801f6cba6e50dd34bba6adcab146463387ee52e26",
+       "executable": false
+     },
+     "tests/core/today-brief.test.ts": {
+-      "sha256": "2d9fc202d8cb9e712385321d432f04bc161e09d0bf0950aa473e609815ba5647",
++      "sha256": "5a8ddec424aeb29f718993b672c979f8b6b1b40a1ab85ab975a1e843c0c4f310",
+       "executable": false
+     },
+     "tests/delegation-browser/calendar-journey.mjs": {
+@@ -10319,7 +10359,7 @@
+       "executable": false
+     },
+     "tests/delegation-browser/calling-journey.mjs": {
+-      "sha256": "00ff1bc398dbb6eb351160de7896954e2119262d9def1893ceb36c8aa08ef506",
++      "sha256": "69fad8d5a833656e1556c6051db2ed1c25a5ad6d8dfa743d75d5bfba8f4ba932",
+       "executable": false
+     },
+     "tests/delegation-browser/journey.mjs": {
+@@ -10355,11 +10395,11 @@
+       "executable": false
+     },
+     "tests/delegation-browser/today-brief.test.ts": {
+-      "sha256": "039d6fb4f231b647dbeb1cf20fd43a7b714ef9193301244cdb2074b685c146e2",
++      "sha256": "a6cf3b4a379828e441523bb398f554e3e704a38833a72a16ed2bd4332ace353e",
+       "executable": false
+     },
+     "tests/delegation-browser/today-journey.mjs": {
+-      "sha256": "eba76fe4fd931b25e610effb41e480773906d31dfc57d06489438eecdc4c888b",
++      "sha256": "2e0a575bb3c5f81316d68282a47e4697e45c008974725e4ff9d395b66cd052f6",
+       "executable": false
+     },
+     "tests/delegation-browser/typed-fields-journey.mjs": {
+@@ -11550,6 +11590,14 @@
+       "sha256": "7e484392b736ef273ea0bbc785a078ec71c37cc165bc925a266dc529c4362579",
+       "executable": false
+     },
++    "tests/support/zoom-meeting-proof.ts": {
++      "sha256": "ce6bb88a5da71ca3d44a517a60bc2dfe4f6aa44d4286dbadb1f33209053a5d55",
++      "executable": false
++    },
++    "tests/support/zoom-network.mjs": {
++      "sha256": "2705e9951fb9c35e0d2e314c6d426f33a79e998f5dc317a4abd0d9022249ba4e",
++      "executable": false
++    },
+     "tools/seed-schema/business-field-inputs.mjs": {
+       "sha256": "b028b576bc85758c4ed400d059d4aae4fdda7a29eeb290fd1032ea15aaf957d1",
+       "executable": false
+diff --git a/src/core/features/records/archive-generations.ts b/src/core/features/records/archive-generations.ts
+index 485e06a..ceced25 100644
+--- a/src/core/features/records/archive-generations.ts
++++ b/src/core/features/records/archive-generations.ts
+@@ -1,6 +1,6 @@
+ import {preCallFailureCatalog} from '../calls/archive';
+ import {preTypedWorkflowCatalog} from '../workflows/archive';
+-import {personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
++import {zoomArchiveTables,personalSlackArchiveTables,callingArchiveTables,calendarWritebackArchiveTables,typedFieldArchiveTables,workflowArchiveTables} from '../../shared/archive-lineage';
+ import type {FoldArchiveTable} from './archive-fold-catalog';
+ import {preCaptureMailRuleCatalog,preGraphProposalCatalog} from '../capture/archive';
+ import {preRecordMailCatalog} from '../outreach/record-mail-archive';
+@@ -30,6 +30,6 @@ function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:re
+ const typedTriggers=['contacts','companies','deals'].flatMap(table=>['insert','update','delete'].map(operation=>`custom_field_${table}_${operation}`));
+ const privacyTriggers=['entry_privacy_timeline_delete','entry_privacy_task_delete','entry_privacy_handoff_delete'];
+ /** Complete native source generations in migration order; never arbitrary missing tables. */
+-export function nativeCatalogGenerations(catalog:ArchiveTable[]){const graph=preGraphProposalCatalog(catalog),notifications=preDirectNotificationCatalog(graph),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,graph,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
++export function nativeCatalogGenerations(catalog:ArchiveTable[]){const graph=preGraphProposalCatalog(catalog),zoom=beforeSlice(catalog,zoomArchiveTables),prior=preGraphProposalCatalog(zoom),notifications=preDirectNotificationCatalog(prior),personal=beforeSlice(notifications,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),door=beforeSlice(notifications,[],['orbit_agent_timeline','orbit_agent_native_audit','orbit_native_record_event']),common=beforeSlice(door,personalSlackArchiveTables,['slack_personal_enqueue','slack_personal_entry_delete','slack_personal_task_delete','slack_personal_handoff_delete']),values=preTypedWorkflowCatalog(common),workflows=beforeSlice(values,workflowArchiveTables,['workflow_activity','workflow_form','workflow_snapshot_event','workflow_snapshot_association',...['contacts','companies','opportunities'].flatMap(t=>['insert','update','erasure'].map(o=>`workflow_${t}_${o}`))]),failures=preCallFailureCatalog(workflows),sources=preSourceRemovalCatalog(failures),typed=beforeSlice(sources,typedFieldArchiveTables,typedTriggers),privacy=beforeSlice(typed,['entry_privacy'],privacyTriggers),calendar=beforeSlice(privacy,calendarWritebackArchiveTables),erasure=beforeSlice(calendar,['call_erased_numbers']),calls=beforeSlice(erasure,callingArchiveTables),mailRule=preCaptureMailRuleCatalog(calls),recordMail=preRecordMailCatalog(mailRule),formAssignment=preFormAssignmentCatalog(recordMail),ownership=preOwnershipCatalog(formAssignment),dashboards=preDashboardCatalog(ownership),shares=preReportShareCatalog(dashboards),slack=preSlackCatalog(shares),library=preLibraryCatalog(slack),capabilities=preOptOutCapabilityCatalog(library),forecast=preForecastCatalog(capabilities),optOut=preOptOutCatalog(forecast),sending=preSendingCapacityCatalog(optOut),forms=preFormAbuseCatalog(sending),tasks=preRelationshipCatalog(forms),pipelines=preTaskCatalog(tasks);return [catalog,graph,zoom,prior,notifications,personal,door,common,values,workflows,failures,sources,typed,privacy,calendar,erasure,calls,mailRule,recordMail,formAssignment,ownership,dashboards,shares,slack,library,capabilities,forecast,optOut,sending,forms,tasks,pipelines,prePipelineCatalog(pipelines)];}
+ export const preCallingCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).find(generation=>!generation.some(table=>table.name==='call_events'))!;
+ export const legacyNativeCatalog=(catalog:ArchiveTable[])=>nativeCatalogGenerations(catalog).at(-1)!;
+diff --git a/src/core/shared/archive-transfer-profile.ts b/src/core/shared/archive-transfer-profile.ts
+index edeb8cd..72595b5 100644
+--- a/src/core/shared/archive-transfer-profile.ts
++++ b/src/core/shared/archive-transfer-profile.ts
+@@ -1,9 +1,9 @@
+-import {personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,calendarWritebackArchiveTables,callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,forecastArchiveTables,selectedFoldTables as selectedTables,knownNativeAdditions as nativeAdditions,validateLineage,type LegacyLineage,type LineageManifest} from './archive-lineage.ts';
++import {zoomArchiveTables,personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,calendarWritebackArchiveTables,callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,forecastArchiveTables,selectedFoldTables as selectedTables,knownNativeAdditions as nativeAdditions,validateLineage,type LegacyLineage,type LineageManifest} from './archive-lineage.ts';
+ import {validArchiveCounts} from './archive-counts.ts';
+ export interface ArchiveManifest {format:'orbit-export';version:2|3;generation?:'orbit-fold-1';schemaHash?:string;legacyLineage?:LegacyLineage;exportedAt:string;tables:{name:string;columns:string[];rows:number}[];parts:number;rows:number}
+ export interface ArchivePart {index:number;sha256:string;records:{table:string;index:number;row:Record<string,string|number|null>}[]}
+ export type ArchiveEntry={kind:'manifest';manifest:ArchiveManifest}|{kind:'part';part:ArchivePart;raw:string};
+-const optionalGroups=[personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
++const optionalGroups=[zoomArchiveTables,personalSlackArchiveTables,workflowArchiveTables,typedFieldArchiveTables,['entry_privacy'],calendarWritebackArchiveTables,['call_erased_numbers'],callingArchiveTables,recordMailArchiveTables,formArchiveTables,ownershipArchiveTables,dashboardArchiveTables,reportShareArchiveTables,slackArchiveTables,['message_library'],['outbound_opt_out_capabilities'],forecastArchiveTables,['sending_limits'],['opt_out_settings','draft_opt_out','outbound_message_opt_out'],['form_abuse_refusals','form_spam'],['pipelines','pipeline_stage_rules'],['sales_task_series','sales_tasks','sales_task_timeline','sales_task_notification_links','sales_task_guards'],['opportunity_stakeholder_roles','opportunity_buying_context','buying_context_contacts','contact_company_relationships']];
+ const optionalTables=new Set(optionalGroups.flat());
+ const selectedFoldTables=new Set<string>(selectedTables),knownNativeAdditions=new Set<string>(nativeAdditions);
+ export function validateTransferManifest(value:unknown,validateV2Manifest:(value:unknown)=>LineageManifest):ArchiveManifest{

@@ -1,0 +1,7 @@
+{
+  "run": 43257990247,
+  "job": 131321962103,
+  "command": "gh run view 43257990247 --repo just-every/run-orbit --job 131321962103 --log-failed",
+  "exit": 0,
+  "sanitization": "Credential-value masking, signed-URL query removal, and GitHub Actions environment-section omission"
+}

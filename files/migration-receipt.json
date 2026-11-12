@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-12T16:13:21.005Z",
+  "migrationCount": 77,
+  "parentHistory": [
+    {
+      "parent": "origin/main",
+      "preserved": 76
+    },
+    {
+      "parent": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+      "preserved": 76
+    }
+  ],
+  "graphAndZoomKept": true,
+  "changesToAppliedSql": 0
+}

@@ -1,0 +1,142 @@
+{
+  "recordedAt": "2026-11-12T16:21:32.332663+00:00",
+  "before": {
+    "head": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+    "job": "frozen gate blocking B; native onboarding archive case",
+    "command": "WRANGLER_SEND_METRICS=false cloud_run node --import tsx --test --test-concurrency=1 --test-name-pattern='API-002 credentials stay local while DATA-001 local archive restores records' tests/core/onboarding-archive.test.ts",
+    "test": "tests/core/onboarding-archive.test.ts#API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+    "exit": 1,
+    "failure": "POST records/archive/imports: 400 {\"error\":\"Invalid complete archive lineage.\"}",
+    "line": 83
+  },
+  "mergedMain": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+  "mechanical": {
+    "viewsWriteExit": 0,
+    "viewsCheckExit": 0,
+    "restoredGeneratedViewsFrom": "origin/main",
+    "sourceLockWriteExit": 0,
+    "sourceLockCheckExit": 0,
+    "typecheckExit": 0,
+    "firstPartyExit": 0,
+    "migrationProbeExit": 0
+  },
+  "structuralProbe": {
+    "beforeExit": 0,
+    "afterExit": 0,
+    "priorGenerationBefore": "refused",
+    "priorGenerationAfter": "accepted",
+    "partialZoomMasksRefused": 6,
+    "duplicateZoomRefused": true,
+    "missingRequiredTableRefused": true,
+    "invalidRowTotalRefused": true
+  },
+  "archiveTransfer": {
+    "command": "WRANGLER_SEND_METRICS=false cloud_run node --import tsx --test --test-concurrency=1 tests/core/archive-transfer.test.ts",
+    "exit": 0,
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "durationMs": 272293.625333,
+    "log": "archive-transfer.log"
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "migrationHistory": {
+    "checkedAt": "2026-11-12T16:13:21.005Z",
+    "migrationCount": 77,
+    "parentHistory": [
+      {
+        "parent": "origin/main",
+        "preserved": 76
+      },
+      {
+        "parent": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+        "preserved": 76
+      }
+    ],
+    "graphAndZoomKept": true,
+    "changesToAppliedSql": 0
+  },
+  "zoomLifecycle": {
+    "command": "WRANGLER_SEND_METRICS=false cloud_run node --import tsx --test --test-concurrency=1 --test-name-pattern='INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody' tests/core/today-brief.test.ts",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "durationMs": 390506.572615,
+    "log": "zoom-meeting.log"
+  },
+  "after": {
+    "command": "WRANGLER_SEND_METRICS=false cloud_run node --import tsx --test --test-concurrency=1 --test-name-pattern='API-002 credentials stay local while DATA-001 local archive restores records' tests/core/onboarding-archive.test.ts",
+    "test": "tests/core/onboarding-archive.test.ts#API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "durationMs": 564041.986877,
+    "log": "after-onboarding.log",
+    "relevantBytesCommit": "0354536c0ef3d86b2679499d8264f17204e2eda6"
+  },
+  "toolchain": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "providedShimSourced": true,
+    "ciNodePin": "22.20.0"
+  },
+  "firstPush": {
+    "head": "0354536c0ef3d86b2679499d8264f17204e2eda6",
+    "exit": 0,
+    "log": "product-push.log",
+    "mainDrift": "Detected before push but shell continued; published history preserved and new main merged"
+  },
+  "finalHead": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+  "branch": "cloud/sd-orbit-c-f175-fix1",
+  "remoteHead": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+  "finalPush": {
+    "exit": 0,
+    "log": "final-product-push.log"
+  },
+  "finalMechanical": {
+    "typecheck": 0,
+    "firstParty": 0,
+    "contractWrite": 0,
+    "contractCheck": 0,
+    "lockWrite": 0,
+    "lockCheck": 0,
+    "migrationProbe": 0,
+    "manifestProbe": 0
+  },
+  "ci": {
+    "head": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+    "runId": 43257990247,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "rootCause": "ACCEPTANCE.md generated content differs from CONTRACT.md",
+    "rootCommand": "pnpm exec node src/base/contract-docs.mjs check",
+    "sourceJobId": 131321583908,
+    "aggregateJobId": 131321962103,
+    "downstreamEffects": [
+      "Authoritative-source artifact not created",
+      "Runtime shards skipped",
+      "Aggregate gate failed for required source and skipped shards",
+      "Routine verdict artifact not created"
+    ],
+    "runtimeAssertionsExecutedByCI": false,
+    "productAssertionFailureObserved": false,
+    "localRestoredViewsCheckExit": 1,
+    "allowedGeneratedViewsException": true,
+    "readyUnderBriefException": true,
+    "newCIReruns": 0,
+    "newCIDispatches": 0,
+    "logArchiveReadExits": [
+      0,
+      0
+    ],
+    "recordedAt": "2026-11-12T16:29:34.436577+00:00"
+  },
+  "githubCallCount": 6
+}

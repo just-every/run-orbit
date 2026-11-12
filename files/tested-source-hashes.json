@@ -1,0 +1,9 @@
+{
+  "src/core/shared/archive-transfer-profile.ts": "5e5c8273068a9f6a53c9dfdb6aaeb2ab8f084ccdfc364fccf8bc001f0f399308",
+  "src/core/features/records/archive-generations.ts": "471d914c6962260309c113cd929476aad5b81d44bb83c4ec1562804f2aa042c5",
+  "management/integration/deployment-spec.json": "70c2a310bf3d6c2042ea58866e290675498c32c38142b524a87b4b0fd159e0cf",
+  "CONTRACT.md": "2c7cce58a1437e4b0104046706ee4c79ad96965c233d8a36149a3573f1fe2872",
+  "ACCEPTANCE.md": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41",
+  "docs/CLAIMS.md": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d",
+  "sources.lock.json": "9a89f882ffc2a9569f7751ef61dc8ed9f2fe4afd44216ce1e2681367af2535a9"
+}

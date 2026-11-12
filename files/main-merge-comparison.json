@@ -1,0 +1,19 @@
+{
+  "newMain": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+  "testedPredecessor": "0354536c0ef3d86b2679499d8264f17204e2eda6",
+  "checkedPaths": [
+    "src/core/shared",
+    "src/core/features/records",
+    "src/core/features/zoom",
+    "src/core/features/today",
+    "tests/core/onboarding-archive.test.ts",
+    "tests/core/archive-transfer.test.ts",
+    "tests/core/today-brief.test.ts",
+    "tests/support/zoom-meeting-proof.ts",
+    "tests/support/capture-privacy-archive.ts",
+    "tests/support/isolated-database.ts",
+    "migrations/core"
+  ],
+  "changedRelevantPaths": [],
+  "allMainJudgmentsPreserved": true
+}

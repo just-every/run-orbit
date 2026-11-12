@@ -1,0 +1,57 @@
+{
+  "recordedAt": "2026-11-12T16:23:41.682139+00:00",
+  "head": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+  "branch": "cloud/sd-orbit-c-f175-fix1",
+  "parents": [
+    "0354536c0ef3d86b2679499d8264f17204e2eda6",
+    "e397ddbd66ed9254302f762b7db3e831b5b72de5"
+  ],
+  "mergedMain": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+  "publishedOriginalAncestor": "974775b13604d9e299858ece3fdeb3dd1a115e9b",
+  "firstPublishedRepair": "0354536c0ef3d86b2679499d8264f17204e2eda6",
+  "remoteHead": "0a994fa3fce9b37137e71a7de2e9208db4dbb1cf",
+  "workingTreeClean": true,
+  "testCodeUnchangedAfterMainDrift": {
+    "newMain": "e397ddbd66ed9254302f762b7db3e831b5b72de5",
+    "testedPredecessor": "0354536c0ef3d86b2679499d8264f17204e2eda6",
+    "checkedPaths": [
+      "src/core/shared",
+      "src/core/features/records",
+      "src/core/features/zoom",
+      "src/core/features/today",
+      "tests/core/onboarding-archive.test.ts",
+      "tests/core/archive-transfer.test.ts",
+      "tests/core/today-brief.test.ts",
+      "tests/support/zoom-meeting-proof.ts",
+      "tests/support/capture-privacy-archive.ts",
+      "tests/support/isolated-database.ts",
+      "migrations/core"
+    ],
+    "changedRelevantPaths": [],
+    "allMainJudgmentsPreserved": true
+  },
+  "relevantFiles": {
+    "src/core/shared/archive-transfer-profile.ts": "5e5c8273068a9f6a53c9dfdb6aaeb2ab8f084ccdfc364fccf8bc001f0f399308",
+    "src/core/shared/archive-lineage.ts": "b84163134b3ca58e3e46eb490724b523710d8d96ec78af48f63e091387547827",
+    "src/core/features/records/archive-generations.ts": "471d914c6962260309c113cd929476aad5b81d44bb83c4ec1562804f2aa042c5",
+    "src/core/features/records/archive-schema.ts": "bae5e11869010c20e92b58727666208b2b7e97c5e696decdff49e44ccf19c343",
+    "tests/core/onboarding-archive.test.ts": "69e0f5994d05ae4927b418247db1819c750d71cd9fa29cf8cb3eca0045d39f53",
+    "tests/core/archive-transfer.test.ts": "67d541ad838fc49b8dd9827244ec83bcf99db70e82f8aef09c745fc50e3268a4",
+    "tests/core/today-brief.test.ts": "5a8ddec424aeb29f718993b672c979f8b6b1b40a1ab85ab975a1e843c0c4f310",
+    "tests/support/zoom-meeting-proof.ts": "ce6bb88a5da71ca3d44a517a60bc2dfe4f6aa44d4286dbadb1f33209053a5d55"
+  },
+  "claim": "INTEGRATE-002 PARTIAL points=1",
+  "countsBeforeAndAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "testBudget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publicationScan": "Fleet-owned; not run in cloud",
+  "landing": "Not performed"
+}
