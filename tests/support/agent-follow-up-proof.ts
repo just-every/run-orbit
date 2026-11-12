@@ -98,7 +98,7 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  const replyApp=createMailEventRoutes(db,{parseKey:keys.bindings.SENDGRID_PARSE_PUBLIC_KEY});
  const reply=async(automatic=false,valid=true)=>{
   const form=new FormData();form.set('from',['synthetic-orbit-81','buyer.test'].join('@'));form.set('subject','Re: Synthetic meeting next step');form.set('text','I replied; we have not advanced.');
-  form.set('headers',[`Message-ID: <synthetic-orbit-${automatic?'automatic':'human'}@buyer.test>`,`Date: ${new Date().toUTCString()}`,`In-Reply-To: ${message.message_id}`,`References: ${message.message_id}`,...(automatic?['Auto-Submitted: auto-replied']:[])].join('\r\n'));
+  form.set('headers',[`Message-ID: <${['synthetic-orbit-'+(automatic?'automatic':'human'),'buyer.test'].join('@')}>`,`Date: ${new Date().toUTCString()}`,`In-Reply-To: ${message.message_id}`,`References: ${message.message_id}`,...(automatic?['Auto-Submitted: auto-replied']:[])].join('\r\n'));
   const request=new Request(origin+'/reply',{method:'POST',body:form}),raw=new Uint8Array(await request.arrayBuffer()),headers=await keys.headers('reply',raw,'192.0.2.81');
   return replyApp.request(origin+'/reply',{method:'POST',headers:{'Content-Type':request.headers.get('content-type')!,...headers,...(!valid?{'X-Twilio-Email-Event-Webhook-Signature':'invalid'}:{})},body:raw});
  };
@@ -134,7 +134,7 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  await native(`/records/opportunity/${deal.id}/move`,'POST',{stageId:stages[0].id,reviewedStageId:stages[1].id});
  const retained=await native('/obligations','POST',{...input,title:'Restore pauses this obligation'},201);
  const retainedTask=await native('/tasks','POST',{recordType:'opportunity',recordId:deal.id,obligationId:retained.id,title:'Restored reminder stays paused',ownerId,dueAt:input.dueAt,priority:'normal',type:'follow_up',notes:'No reminder after restore',recurrence:'none',timezone:'UTC',reminderMinutes:0},201);
- const target=await isolatedDatabase();
+ let target=await isolatedDatabase();
  try{
   await localArchiveRoundTrip(db,target.db);
   console.log(JSON.stringify({proof:'AGENT-003.archive',phase:'cli-restored',obligation:retained.id}));
@@ -144,6 +144,12 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   assert.equal(await target.db.prepare("SELECT count(*) n FROM notifications WHERE kind='task.reminder' AND id IN(SELECT notification_id FROM sales_task_notification_links WHERE task_id=?)").bind(retainedTask.id).first('n'),0);
   assert.equal(await target.db.prepare('SELECT count(*) n FROM notifications WHERE event_key=?').bind('obligation.due:'+retained.id).first('n'),0);
   assert.equal((await target.db.prepare('SELECT * FROM follow_up_obligations WHERE id=?').bind(main.id).first<any>()).closed_at,advanced.closed_at);
+  await target.close();await target.reopen();
+  assert.equal((await target.db.prepare('SELECT closed_at FROM follow_up_obligations WHERE id=?').bind(main.id).first<any>()).closed_at,advanced.closed_at);
+  await target.dispose();target=await isolatedDatabase();
+  const targetDependencies=createDependencies(target.db);
+  await targetDependencies.auth.ensureOperator({id:ownerId,email:bindings.OWNER_EMAIL!,displayName:'Morgan Lee'});
+  await targetDependencies.workspace.ensureWorkspace({name:'Restore destination',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   let exported=await native('/records/archive/exports','POST',{},201);
   for(let n=0;n<500&&exported.state!=='ready';n++)exported=await native(`/records/archive/exports/${exported.id}/advance`,'POST',{});
   assert.equal(exported.state,'ready');const archive=await native(`/records/archive/exports/${exported.id}/download`);
@@ -170,7 +176,11 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   assert.equal(await target.db.prepare('SELECT count(*) n FROM notifications WHERE event_key=?').bind('obligation.due:'+retained.id).first('n'),0);
 
  }finally{await target.dispose();}
- await native('/records/contact/'+buyer.id,'DELETE',{confirmed:true});
+ const survivor=await native('/records/contact','POST',{name:'Synthetic follow-up buyer',email:['synthetic-orbit-survivor','buyer.test'].join('@')},201);
+ const pair=(await native('/records/contact/duplicates')).groups.find((group:any[])=>group.some(record=>record.id===buyer.id));
+ await native('/records/contact/merge','POST',{survivorId:survivor.id,retiredId:buyer.id,choices:{email:'survivor'},reviewed:{survivor:pair.find((record:any)=>record.id===survivor.id).mergeReviewToken,retired:pair.find((record:any)=>record.id===buyer.id).mergeReviewToken},confirmed:true});
+ assert.ok((await native('/obligations/opportunities/'+deal.id)).obligations.every((o:any)=>o.contact_id===survivor.id));
+ await native('/records/contact/'+survivor.id,'DELETE',{confirmed:true});
  const redacted=(await native('/obligations/opportunities/'+deal.id)).obligations;
  for(const o of redacted){assert.equal(o.contact_id,null);assert.equal(o.meeting_id,null);assert.equal(o.draft_id,null);assert.equal(o.title,'Erased follow-up');assert.equal(o.goalState,'closed');assert.equal(o.messageState,'erased');}
  const erasedState=await inventory();

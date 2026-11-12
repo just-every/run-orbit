@@ -54,7 +54,8 @@ export class DataRepository {
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
    // What the agent door recorded about this contact (held calls, approvals, outcomes, audit, events) goes in the same batch.
-   statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,identities));
+   const retiredIds=(await db.prepare("SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?").bind(id).all<{retired_id:string}>()).results.map(row=>row.retired_id);
+   statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,[...identities,...retiredIds]));
    statements.push(...await workflowContactErasure(db,id,identities));
    statements.push(...apiCredentialErasure(db,kind,id,identities));
    statements.push(...messageContactErasure(db,identities));

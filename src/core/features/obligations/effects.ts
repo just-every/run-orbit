@@ -24,3 +24,6 @@ export async function dispatchObligationReminders(db:D1Database,at=new Date().to
  ]);
 }
 export function restoreObligationStatements(db:D1Database){return [db.prepare('UPDATE follow_up_obligations SET paused=1 WHERE closed_at IS NULL')];}
+
+/** Keep the durable obligation on the canonical person through an explicitly reviewed merge. */
+export function obligationContactMergeStatements(db:D1Database,retiredId:string,survivorId:string){return [db.prepare('UPDATE follow_up_obligations SET contact_id=? WHERE contact_id=?').bind(survivorId,retiredId)];}
