@@ -26,7 +26,7 @@ export function RecordsPage({kind}:{kind:RecordKind}){
  const filtersKey=JSON.stringify([kind,query,filters,search.sort,search.direction]),filtered=Boolean(query.trim()||Object.values(filters).some(Boolean)),loading=!error&&loadedFor!==filtersKey;
  // The list's address follows its search, filters and view only while the app is still headed for this list: a record
  // opened meanwhile, its route checks still running, is never replaced by the list.
- function go(next:Partial<RecordsSearch>){if(router.latestLocation.pathname!==listPath[kind])return;void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
+ function go(next:Partial<RecordsSearch>){if(router.latestLocation.pathname.replace(/\/$/,'')!==listPath[kind])return;void navigate({to:listPath[kind],search:previous=>({...previous,...next}),replace:true});}
  // Typing filters the list at once; the address catches up after a pause, and Back or a link changes the box.
  useEffect(()=>{if(query===written.current)return;const timer=setTimeout(()=>{written.current=query;go({q:query||undefined});},300);return()=>clearTimeout(timer);},[query]);
  useEffect(()=>{if((search.q??'')!==written.current){written.current=search.q??'';setQuery(search.q??'');}},[search.q]);

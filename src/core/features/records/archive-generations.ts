@@ -22,9 +22,9 @@ export const optOutArchiveTables=['opt_out_settings','draft_opt_out','outbound_m
 export const preOptOutCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>!(optOutArchiveTables as readonly string[]).includes(table.name));
 export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='sending_limits');
 export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
-/** Migration 0079 changes notification insertion only; earlier archives retain
+/** Migration 0079 changes notification insertion only; earlier archives omit later saved views and retain
  * their exact trigger inventory. Runtime-control fences are never archived. */
-export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(catalog,[],['notification_skip_direct_actor']);
+export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(catalog,savedViewArchiveTables,['notification_skip_direct_actor']);
 /** Reconstruct only exact native additions; owner tables and objects remain bound. */
 function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:readonly string[]=[]){return catalog.filter(table=>!tables.includes(table.name)).map(table=>{const objects=(table as FoldArchiveTable).objects;return objects?{...table,objects:objects.filter(object=>!triggers.includes(object.name))}:table;});}
 const typedTriggers=['contacts','companies','deals'].flatMap(table=>['insert','update','delete'].map(operation=>`custom_field_${table}_${operation}`));
