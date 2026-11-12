@@ -1,3 +1,4 @@
+import {workflowOutcomesBrowserJourney} from './workflow-outcomes-journey.mjs';
 import {workflowValuesBrowserJourney} from './workflow-values-journey.mjs';
 import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
@@ -59,6 +60,7 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await page.goto(origin+`/app/opportunities/${fixture.opportunityId}`);const approval=page.getByRole('region',{name:'Workflow changes needing your approval'});await expect(approval).toBeVisible();await expect(approval).toContainText('Review the account budget');await approval.scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,`workflow-record-approval-${width}.png`)});await approval.getByRole('button',{name:'Accept change',exact:true}).click();await expect(approval.getByRole('status')).toContainText('Accepted');assert.equal((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record.value_cents,625000);await request(page,'/api/workflows/process',{});await request(page,`/api/workflows/${material.workflow.id}/pause`,{});
  await page.goto(origin+'/app/settings/pipeline');
  const presentation=await settings.evaluate(root=>{const visible=Array.from(root.querySelectorAll('*')).filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');return {small:visible.filter(el=>Array.from(el.childNodes).some(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim())&&parseFloat(getComputedStyle(el).fontSize)<13).map(el=>el.tagName),icons:visible.filter(el=>['BUTTON','A'].includes(el.tagName)&&!el.textContent.trim()&&!el.getAttribute('title')&&!el.getAttribute('aria-describedby')).map(el=>el.tagName)};});
+ await workflowOutcomesBrowserJourney({page,fixture,origin,directory},width);
  await workflowValuesBrowserJourney({page,fixture,origin,directory},width);
  assert.deepEqual(presentation.small,[]);assert.deepEqual(presentation.icons,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'workflow view fits viewport');
 }

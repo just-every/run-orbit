@@ -10,7 +10,7 @@ import {CaptureError} from './contracts';
 import {linkTargets} from './targets';
 import {queueReviewSql,queueRevision,readQueueReview,type QueueReview} from './next-action-review';
 
-export type ProposalKind='link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact';
+export type ProposalKind='link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact'|'question';
 export interface ProposalDraft {kind:ProposalKind;recordType:'contact'|'company'|'opportunity';recordId:string;field?:string;value:string|null;current:string|null;details:Record<string,unknown>}
 interface ProposalRow {id:string;signal_id:string;kind:ProposalKind;record_type:'contact'|'company'|'opportunity';record_id:string;field:string|null;current_value:string|null;proposed_value:string|null;details_json:string;status:string}
 
@@ -29,7 +29,7 @@ export async function proposalStatements(db:D1Database,sourceId:string,signalId:
 
 export async function listProposals(db:D1Database,filter:{status:'pending'|'accepted'|'declined';recordType?:'contact'|'company'|'opportunity';recordId?:string}){
  const scope=filter.recordType&&filter.recordId?` AND ((p.record_type=? AND p.record_id=?) OR json_extract(p.details_json,'$.companyId')=? OR EXISTS(SELECT 1 FROM json_each(p.details_json,'$.contactIds') WHERE value=?))`:'';
- const rows=(await db.prepare(`SELECT p.id,p.kind,p.record_type,p.record_id,p.field,p.current_value,p.proposed_value,p.details_json,p.status,p.decided_at,p.decided_value,p.created_at,
+ const rows=(await db.prepare(`SELECT p.id,p.signal_id,p.kind,p.record_type,p.record_id,p.field,p.current_value,p.proposed_value,p.details_json,p.status,p.decided_at,p.decided_value,p.created_at,
    s.type AS signal_type,s.occurred_at,cs.name AS source_name,cs.state AS source_state,
    CASE WHEN p.kind='next_action' AND o.id IS NOT NULL THEN ${queueReviewSql} END AS queue_review
    FROM capture_proposals p JOIN signals s ON s.id=p.signal_id LEFT JOIN capture_sources cs ON cs.id=s.source_id
@@ -59,8 +59,17 @@ export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:
  if(!signal)throw new CaptureError(409,'The captured evidence for this proposal no longer exists.');
  const details=JSON.parse(proposal.details_json) as Record<string,any>,evidence={...details.evidence,proposalId:id},at=new Date().toISOString();
  const statements:D1PreparedStatement[]=[fence(db,'capture_proposal_pending',"EXISTS(SELECT 1 FROM capture_proposals WHERE id=? AND status='pending')",id)];
+ if(details.graphProposal===true){
+  const current=await db.prepare("SELECT c.connection_id FROM capture_sources c JOIN signal_sources s ON s.id=c.id WHERE c.id=? AND c.state<>'disconnected' AND s.enabled=1").bind(signal.source_id).first<{connection_id:string|null}>();
+  if(!current||current.connection_id!==details.connectionId)throw new CaptureError(409,'The evidence source was revoked.');
+  statements.push(fence(db,'capture_graph_source_current',"EXISTS(SELECT 1 FROM capture_sources c JOIN signal_sources s ON s.id=c.id WHERE c.id=? AND c.state<>'disconnected' AND c.connection_id IS ? AND s.enabled=1)",signal.source_id,details.connectionId));
+ }
  let decided:string|null=proposal.proposed_value;
- if(proposal.kind==='link_signal'){
+ if(proposal.kind==='question'){
+  if(details.graphProposal!==true)throw new CaptureError(400,'Unknown question.');
+  // Acknowledgement records the question only; it never resolves a person or role.
+  statements.push(...entry(db,'capture.question_reviewed',actor,signal.source_id,{question:proposal.proposed_value,...evidence,preparedBy:details.preparedBy},[[proposal.record_type,proposal.record_id]],at));
+ }else if(proposal.kind==='link_signal'){
   if(await db.prepare('SELECT 1 FROM signal_links WHERE signal_id=?').bind(signal.id).first())throw new CaptureError(409,'This evidence is already linked.');
   const contacts=[];for(const contact of details.contactIds as string[])if(await db.prepare('SELECT id FROM contacts WHERE id=?').bind(contact).first())contacts.push(contact);
   const company=details.companyId&&await db.prepare('SELECT id FROM companies WHERE id=?').bind(details.companyId).first()?details.companyId as string:null;
@@ -79,7 +88,18 @@ export async function acceptProposal(db:D1Database,id:string,actor:string,edit?:
   statements.push(db.prepare("INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,'do_not_contact',?,?)").bind(contact,company?.id??null,name,email,key,at,at),
    ...entry(db,'capture.contact_created',actor,signal.source_id,{contactId:contact,name,email,contactability:'do_not_contact',...evidence},recordsOf(contact,company?.id??null),at),audit(db,actor,'record.created','contact',contact,{source:'capture',proposalId:id}));
  }else if(proposal.kind==='set_field'){
-  if(details.formField===true){const reviewed=await reviewedFormField(db,proposal,details,actor,edit);decided=reviewed.value;statements.push(...reviewed.statements,...entry(db,'capture.field_set',actor,signal.source_id,{field:proposal.field,previous:proposal.current_value,current:decided,...evidence},[[proposal.record_type,proposal.record_id]],at));}
+  if(details.graphProposal===true){
+   const contact=proposal.record_type==='contact'&&proposal.field==='job_title',deal=proposal.record_type==='opportunity'&&proposal.field==='expected_close_at';
+   if(!contact&&!deal)throw new CaptureError(400,'This field cannot be set from graph evidence.');
+   const table=contact?'contacts':'opportunities',field=proposal.field!;
+   decided=(edit??proposal.proposed_value??'').trim();
+   if(!decided||decided.length>200||deal&&!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(decided)||deal&&!Number.isFinite(Date.parse(decided)))throw new CaptureError(400,'Enter a valid reviewed value.');
+   statements.push(fence(db,'capture_graph_value_current',`EXISTS(SELECT 1 FROM ${table} WHERE id=? AND company_id=? AND ${field} IS ?)`,proposal.record_id,details.companyId,proposal.current_value),
+    db.prepare(`UPDATE ${table} SET ${field}=?,updated_at=? WHERE id=?`).bind(decided,at,proposal.record_id),
+    db.prepare(`UPDATE drafts SET is_stale=1,stale_reason='Record changed',updated_at=? WHERE ${contact?'recipient_contact_id':'opportunity_id'}=?`).bind(at,proposal.record_id),
+    ...entry(db,'capture.field_set',actor,signal.source_id,{field,previous:proposal.current_value,current:decided,...evidence,preparedBy:details.preparedBy},[[proposal.record_type,proposal.record_id],['company',details.companyId]],at),
+    audit(db,actor,'record.updated',proposal.record_type,proposal.record_id,{source:'capture',proposalId:id,field,preparedBy:details.preparedBy}));
+  }else if(details.formField===true){const reviewed=await reviewedFormField(db,proposal,details,actor,edit);decided=reviewed.value;statements.push(...reviewed.statements,...entry(db,'capture.field_set',actor,signal.source_id,{field:proposal.field,previous:proposal.current_value,current:decided,...evidence},[[proposal.record_type,proposal.record_id]],at));}
   else {const field=proposal.field;if(field!=='name'&&field!=='phone')throw new CaptureError(400,'This field cannot be set from captured evidence.');
   decided=(edit??proposal.proposed_value??'').trim();if(!decided||decided.length>(field==='name'?200:64))throw new CaptureError(400,`Enter a ${field} of at most ${field==='name'?200:64} characters.`);
   statements.push(fence(db,'capture_value_current',`EXISTS(SELECT 1 FROM contacts WHERE id=? AND ${field} IS ?)`,proposal.record_id,proposal.current_value),
