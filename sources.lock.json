@@ -7887,7 +7887,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "b47cd3e9cf59481ac86cc5b79bd701e23d24cc335c6be272ee3c53158af784fd",
+      "sha256": "003dd1c9fa97c8f670ab74ef88674aa484d1b232227ad700b55d741052701208",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -8651,7 +8651,7 @@
       "executable": false
     },
     "src/core/shared/archive-lineage.ts": {
-      "sha256": "d0d270d8d46092d29750d4f0b202ab0d1110ee21103074bdc2b83dc50ff49213",
+      "sha256": "c268f2597f213fa7311903ef65ba7ee2b86e38d0112fba0708708938d3d56338",
       "executable": false
     },
     "src/core/shared/archive-lines.ts": {
@@ -8671,7 +8671,7 @@
       "executable": false
     },
     "src/core/shared/archive-transfer-profile.ts": {
-      "sha256": "7b50453eb050f6b22356273ad4a1b1f41704826bb77747c35890438a42609045",
+      "sha256": "db6632b2495d09f0f4b3e5393c03db320485de350bf6a35d2f2443da2da3ed8e",
       "executable": false
     },
     "src/core/shared/csv.ts": {
