@@ -1,0 +1,25 @@
+{
+  "candidate": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "correctionCommit": "3074766c93fc3cdc831b2b924d518d9a90400499",
+  "nativeCommand": "ORBIT_TEST_STATE=/tmp/orbit-f167-fixed-tests cloud_run pnpm exec tsx --test --test-name-pattern=RECORD-014 tests/core/records-complete.test.ts",
+  "exit": 0,
+  "passed": 1,
+  "scope": "The runtime and native proof bytes were unchanged between the focused proof and these two commits. The final commit changes only browser proof and the source lock.",
+  "files": [
+    {
+      "file": "src/core/features/records/data.ts",
+      "sha256": "2deef526be6fa4084d489fffe293f972c41bee62516cb1e1a41737c60b6dd60b",
+      "identicalToSavedCorrection": true
+    },
+    {
+      "file": "src/core/features/records/saved-views.ts",
+      "sha256": "10e9895879110e828a0ea391ce4508e35eb40a7b5fd6e3a30e0e0200307e4aec",
+      "identicalToSavedCorrection": true
+    },
+    {
+      "file": "tests/support/saved-views-proof.ts",
+      "sha256": "31d2c127d2e78fec19982ba42c25011286e96b3f8b54c871b316466a72755868",
+      "identicalToSavedCorrection": true
+    }
+  ]
+}

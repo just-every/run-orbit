@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "recordedAt": "2026-11-12T03:51:42.187610+00:00",
+  "testBudget": {
+    "registered": 198,
+    "qualificationFlows": 2,
+    "total": 200
+  },
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "observed": "Application build completed."
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "observed": "No TypeScript errors."
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "observed": "First-party contract check passed."
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "observed": "Boundary check passed for 829 core source files."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "observed": "Wrote 0 contract documents; generated views restored from origin/main."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "observed": "Contract documents are current."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "observed": "Lock regenerated after final source and proof edits."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "observed": "Source lock passes after the final merge check."
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0,
+      "observed": "Deployment spec matches the emitted build and setup digest."
+    },
+    {
+      "command": "ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium cloud_run perl -e 'alarm 1200; exec @ARGV' -- pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 0,
+      "observed": "One browser registration passed, including actual edit and delete controls and 1440 and 390 screens."
+    },
+    {
+      "command": "ORBIT_TEST_STATE=/tmp/orbit-f167-fixed-tests cloud_run pnpm exec tsx --test --test-name-pattern=RECORD-014 tests/core/records-complete.test.ts",
+      "exit": 0,
+      "observed": "Expanded native case passed; source identity comparison is in native-proof-source.json."
+    }
+  ],
+  "nativeArchive": {
+    "state": "passed",
+    "exit": 0,
+    "tests": 1,
+    "durationMilliseconds": 878613.5968,
+    "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+    "file": "tests/core/onboarding-archive.test.ts"
+  },
+  "forwardUpgrade": {
+    "state": "passed",
+    "exit": 0,
+    "tests": 1,
+    "durationMilliseconds": 839614.273047,
+    "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+    "file": "newtests/t096/forward-upgrade.test.ts"
+  },
+  "migrationLedger": {
+    "applicability": "No migration was added or edited in this continuation.",
+    "inheritedMigration": "0081_saved_record_views.sql",
+    "appliedInSetup": true,
+    "deploymentCheck": 0,
+    "historyCheckExit": 0,
+    "priorMigrationsUnchanged": 75
+  },
+  "ci": {
+    "run": 43150580930,
+    "event": "push",
+    "status": "in_progress"
+  },
+  "publicationScan": {
+    "performedInCloud": false,
+    "custodian": "guarded Mac lander"
+  },
+  "newProductEdits": true
+}

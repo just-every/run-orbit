@@ -1,0 +1,73 @@
+{
+  "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "command": "ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium cloud_run perl -e 'alarm 1200; exec @ARGV' -- pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+  "exit": 0,
+  "tests": 1,
+  "passed": 1,
+  "failed": 0,
+  "durationMilliseconds": 289907.266531,
+  "editRevision": 2,
+  "deletedViewStatus": 404,
+  "files": [
+    {
+      "file": "screens/field-settings-1440.png",
+      "bytes": 31539,
+      "sha256": "26d2ac8ee9afdad7b91cd993d0dec0e7469e7c0c178207de18c9d1f39c9b5b26"
+    },
+    {
+      "file": "screens/field-settings-390.png",
+      "bytes": 28641,
+      "sha256": "eed0440fc7312f68e8aa0a8ac82cdbc4bae17bc11ca481e13fff600be7464e8b"
+    },
+    {
+      "file": "screens/affected-record-preview-1440.png",
+      "bytes": 92143,
+      "sha256": "a28656d6f6a4d728fd42d0a83b0f9da40bb2a3d895273e97369c51ae20b983dd"
+    },
+    {
+      "file": "screens/affected-record-preview-390.png",
+      "bytes": 81642,
+      "sha256": "31bfb7546a77e166f27909f5b734aaaae4ee2f79d10d164937b27106732e517b"
+    },
+    {
+      "file": "screens/refused-save-1440.png",
+      "bytes": 61138,
+      "sha256": "50f169cdf87d48a087b8b64854cd38a1539f22b05fbe70f90279edc64925ae82"
+    },
+    {
+      "file": "screens/refused-save-390.png",
+      "bytes": 58561,
+      "sha256": "29e1f3b9f05263fdb2ca3461c7c9a1792a219d8d8973ec6eda2c611ba584b857"
+    },
+    {
+      "file": "screens/leave-refused-1440.png",
+      "bytes": 191178,
+      "sha256": "14f2deb17a9d627de3479a13017e5fbe8d1bc6a313bf569fa62660dc1ee7a9dd"
+    },
+    {
+      "file": "screens/leave-refused-390.png",
+      "bytes": 175112,
+      "sha256": "408e0ff56c6b66241d1a13387d9999280293184d4437e37908323a13ddb65bf4"
+    },
+    {
+      "file": "screens/archived-definition-history-1440.png",
+      "bytes": 49536,
+      "sha256": "1abd51b27449c8c05f494cb3a7dea1f13db5265210e9f4e75c515faf434c5f0e"
+    },
+    {
+      "file": "screens/archived-definition-history-390.png",
+      "bytes": 48656,
+      "sha256": "cc07c87f7d0ca2a70f3df503682954c045ef4f4cd9a6733ec1ce1e7a10c21380"
+    },
+    {
+      "file": "screens/saved-filtered-view-1440.png",
+      "bytes": 93262,
+      "sha256": "53c09aedd3957446d3463f13728fb9e14f48e63a91bde6660e819e32f06613a7"
+    },
+    {
+      "file": "screens/saved-filtered-view-390.png",
+      "bytes": 94572,
+      "sha256": "9998f40fc89c207db45a0d6c6b85200f2335699ae79a83d93e43849b19e5ecf3"
+    }
+  ]
+}

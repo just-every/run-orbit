@@ -1,0 +1,17 @@
+{
+  "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "branch": "cloud/sd-orbit-c-f167",
+  "main": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "candidateCommits": [
+    "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+    "3074766c93fc3cdc831b2b924d518d9a90400499",
+    "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572",
+    "496a2b12db77f1d95dd7cf73c2d494342bd8ab3b",
+    "91ed9325b58cdc6e63953aac0cd42b0c72601bf7"
+  ],
+  "identity": "fleet author and committer on every candidate including side parents",
+  "trailers": "no disallowed trailer or OpenAI coauthor",
+  "contractDiff": "none",
+  "workingTree": "clean",
+  "checkedAt": "2026-11-12T03:47:52.885821+00:00"
+}

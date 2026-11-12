@@ -1,0 +1,15 @@
+{
+  "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "main": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "priorMigrations": 75,
+  "priorBytesUnchanged": true,
+  "additiveMigrations": [
+    {
+      "path": "migrations/core/0081_saved_record_views.sql",
+      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+      "registered": true
+    }
+  ],
+  "exit": 0,
+  "deploymentSpecCheckExit": 0
+}
