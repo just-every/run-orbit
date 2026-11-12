@@ -6,7 +6,7 @@ interface SourceRow {type:string;enabled:number;secret_ciphertext:string|null;cu
 export const ownership='Mailchimp owns bulk campaigns and marketing automation; Orbit owns individual sales sequences and their outcomes.';
 export async function sourceRow(db:D1Database){return db.prepare('SELECT type,enabled,secret_ciphertext,cursor,last_error,last_accepted_at FROM signal_sources WHERE id=?').bind(mailchimpSource).first<SourceRow>();}
 export function connectionSettings(row:SourceRow|null){if(row?.type!=='mail_provider'||!row.cursor)return null;try{return JSON.parse(row.cursor) as ConnectionSettings;}catch{return null;}}
-/** Connected only after a passing key check with a chosen audience. Anything else is unresolved setup with its reason, including a restored installation, whose sealed key never travels. */
+/** Connected only after a passing key check, an audience and validation of its current webhook address. Anything else is unresolved setup with its reason, including a restored installation, whose sealed key never travels. */
 export async function connection(db:D1Database,origin?:string){
  const row=await sourceRow(db),settings=connectionSettings(row);
  const reason=!row||!settings?'Connect Mailchimp with an API key.':!row.secret_ciphertext?(row.last_error??'Mailchimp credentials are not in this installation. Connect Mailchimp again.'):!row.enabled?(row.last_error??'Check the Mailchimp connection.'):!settings.audience?'Choose the Mailchimp audience that receives consented contacts.':!settings.webhookOrigin||origin!==undefined&&!publicWebhookOrigin(origin)?'Deploy Orbit at a public HTTPS address, then check the connection to register its webhook.':(origin!==undefined&&publicWebhookOrigin(origin)!==settings.webhookOrigin)||!settings.webhookId||!settings.webhookCheckedAt?'Mailchimp has not checked the current webhook address. Check the connection again.':null;
@@ -45,7 +45,7 @@ export async function audiences(db:D1Database,config:MailchimpConfig){
  const result=await checked(db,()=>mailchimpCall<{lists?:{id:string;name:string;web_id:number;stats?:{member_count?:number}}[]}>(apiKey,'GET','/lists?count=100&fields=lists.id,lists.name,lists.web_id,lists.stats.member_count',undefined,config.fetcher));
  return (result.lists??[]).map(list=>({id:list.id,name:list.name,members:list.stats?.member_count??null}));
 }
-/** Choosing an audience adds Orbit's hidden consent field to it when missing; nothing else in the audience changes. */
+/** Choosing an audience adds Orbit's hidden consent field when missing and registers its webhook. */
 export async function chooseAudience(db:D1Database,config:MailchimpConfig,audienceId:string,actor:string){
  if(!/^[a-z0-9]{1,32}$/i.test(audienceId))throw new MailchimpError(400,'Choose a Mailchimp audience.');
  const {apiKey}=await openSealed(db,config),settings=connectionSettings(await sourceRow(db))!;

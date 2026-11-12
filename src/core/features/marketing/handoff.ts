@@ -84,7 +84,7 @@ export async function handoff(db:D1Database,config:MailchimpConfig,apiKey:string
  current=await plan(db,settings,input.fields);
  for(const item of current.items){
   // A merged person retains all external identities, but only the chosen address may remain subscribed.
-  for(const link of item.linkedMembers.filter(link=>link.listId!==list||link.memberId!==item.memberId)){
+  for(const link of item.linkedMembers.filter(link=>(link.listId!==list||link.memberId!==item.memberId)&&(item.group==='stopped'||link.memberId!==item.memberId))){
    if(halted||requests>=requestBudget){counts.remaining++;halted=true;break;}
    if(link.retired&&item.group!=='stopped'&&!link.reported&&stoppedStatuses.includes(link.status))continue;
    try{
@@ -101,7 +101,7 @@ export async function handoff(db:D1Database,config:MailchimpConfig,apiKey:string
     if(error.status===404){links.push(linkStatement(db,actor,item.contactId,{...link,status:'absent',retired:true,reported:false,hash:null}));continue;}
     if(error.status===401||error.status===403){await markUnresolved(db,refusalMessage(error));halted=true;}
     if(error.refused)counts.refused++;else counts.uncertain++;
-    failures.push({contactId:item.contactId,name:item.name,message:failureMessage(error)});
+    failures.push({contactId:item.contactId,name:item.name,message:failureMessage(error)});halted=true;
    }
   }
   if(halted){if(item.action!=='none')counts.remaining++;continue;}

@@ -52,7 +52,7 @@ test('emitted Worker record and NOW lists wrap full valid long names; verified M
     browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-proxy-server','--host-resolver-rules=MAP orbit.127.0.0.1.nip.io 127.0.0.1','--proxy-bypass-list=orbit.127.0.0.1.nip.io;127.0.0.1;localhost','--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only provider network edges are replaced.
-    await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,mailchimp,scheduled:()=>worker.scheduled({cron:'* * * * *',scheduledTime:new Date()}),accountSid:callingAccount,token:callingToken});
+    await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,mailchimp,scheduled:async()=>{const local=(runtime as any).runtimes.find((controller:any)=>controller.mf);const emitted=await local.mf.getWorker(worker.config.name);return emitted.scheduled({cron:'* * * * *',scheduledTime:new Date()});},accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
     const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);

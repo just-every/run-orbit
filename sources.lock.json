@@ -6391,7 +6391,7 @@
       "executable": false
     },
     "src/core/features/marketing/connection.ts": {
-      "sha256": "1903e98884c0a52dee17c98297f07a171598ee89e4a8dbcb07a2c694e081964b",
+      "sha256": "8307d147faa1d78a029a0160fb6ede038417c4593d71c94579d94f35fa112e7a",
       "executable": false
     },
     "src/core/features/marketing/contracts.ts": {
@@ -6403,7 +6403,7 @@
       "executable": false
     },
     "src/core/features/marketing/handoff.ts": {
-      "sha256": "6531f90d5e52fe3843b806a5deabfcd2f9202d99c8846978320b0b9cf6113ce5",
+      "sha256": "1f5c36507882091ed8a3a00b261320bfb218f68aeeb115e8425596ccec9fc26b",
       "executable": false
     },
     "src/core/features/marketing/ledger.ts": {
@@ -6755,7 +6755,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-settings.tsx": {
-      "sha256": "dba7dd2a228246d7ee7748cd3acfe5ba150fb39fee6ca4db8af3f98a522b8ee6",
+      "sha256": "8486a7000ec1422f1ae7ffadf3aef925fcd3f698ae75ebeb67c0bd61c0b5cdc2",
       "executable": false
     },
     "src/core/features/operator/ui/manual-action.tsx": {
@@ -10255,11 +10255,11 @@
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
-      "sha256": "1cd1fea40a8bff490f45bc635352fc3676a932f80ea0d98263c537a7909e0ee2",
+      "sha256": "c884ca9ef5fd1df48b320696578a74a1da22665bd00a1a8356095f2702f3d554",
       "executable": false
     },
     "tests/delegation-browser/calling-journey.mjs": {
-      "sha256": "46ea3d5af0307e38c307d6312530983abd867b0dc0a5b3774ecbaab83bf486a8",
+      "sha256": "7f83ed0e0609993ba1848c9a239cf2646632d6772ce7af62a4bbcaa7ccd768ce",
       "executable": false
     },
     "tests/delegation-browser/journey.mjs": {
@@ -10283,7 +10283,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "dd52c1aae1426dd923ff3fe73583e6056fc07202efd40ab8744af6d76c4e76d1",
+      "sha256": "a154dfdff37187ec7c4a913eea20fcb4918b11b492df39a0863aa976e639d478",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
@@ -11232,6 +11232,10 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/mailchimp-ledger-proof.ts": {
+      "sha256": "75452ad2de60ffb7a0cfa38ca066030bc115d5ce2c4178b66a8f2174b203de4f",
       "executable": false
     },
     "tests/support/manual-meeting.ts": {
