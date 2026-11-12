@@ -251,6 +251,13 @@ meeting on an open, owned deal, its current recipient, a named full operator,
 a due time, a later stage in the same pipeline and explicit stop conditions.
 Acceptance cites the meeting and creates internal work; it approves no customer mail.
 
+The completed meeting's native page offers the same acceptance form. Its full
+operator action posts to `/api/v1/obligations`; the opportunity panel reads
+`/api/v1/obligations/opportunities/<id>`. A separate reasoned human stop posts
+to `/api/v1/obligations/<id>/stop`. These native doors retain the existing
+session, current-role and restore fences. A mail failure remains visible with
+a link to review the exact saved draft; it never closes the advancement goal.
+
 Pass the returned obligation ID as `obligation_id` to `orbit.drafts.create` to bind
 one unsent draft. Use the existing draft read and update calls to prepare exact
 content; a person still approves its current revision natively. Cited
