@@ -19,7 +19,8 @@ export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,di
  assert.ok(savedTile?.status==='ready'&&savedTile.report);
  await call(ownerCookie,ops+'/metrics','POST',{id:savedTile.report.definitionId,version:savedTile.report.definitionVersion+1,definition:{...savedTile.report.definition,name:'Quarterly sales evidence revised',description:'A later definition must not replace a tile’s saved version'}});
  const full=await call<DashboardView>(ownerCookie,base);reconcileDashboard(full);
- assert.ok(full.tiles.some(tile=>tile.status==='ready'&&tile.report&&tile.report.definitionVersion>savedTile.report!.definitionVersion));
+ const versions=(await call<{items:{id:string;version:number}[]}>(ownerCookie,ops+'/metrics')).items.filter(report=>report.id===savedTile.report!.definitionId).map(report=>report.version).sort();
+ assert.deepEqual(versions,[savedTile.report.definitionVersion,savedTile.report.definitionVersion+1],'both original and newer definitions are persisted while the tiles keep their chosen version');
  const definitions=async(page:Page,view:DashboardView,width:number,label:string)=>{
   for(const tile of view.tiles){
    const article=page.locator('.dash-tile').filter({has:page.locator(`#tile-${tile.id}-title`)});
