@@ -1,3 +1,4 @@
+import {CompanySupport} from './company-support';
 import {useAppAccess} from '../../../access/app-access';
 import {ReadOnlyRecord} from './read-only-record';
 import {useCallback,useEffect,useMemo,useState} from 'react';
@@ -57,6 +58,7 @@ function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
    next={<><RecordNextAction name={kind==='contact'?String(row.name??row.email??'them').split(/\s+/)[0]!:name} deal={deal} workspace={settings.workspace} writing={writing} onWrite={()=>setWriting(!writing)} email={kind==='contact'?`Email ${String(row.name??row.email??'them').split(/\s+/)[0]}`:'Write an email'} newDeal={kind==='contact'?{contact:id}:{company:id}}
      blocked={blocked?<div className="r-blocked"><p className="r-note r-note--danger">{name} is marked do not contact</p><DoNotContactReason record={row}/></div>:undefined}/>
     {writing&&!blocked?<div className="r-composer"><RecordMailComposer kind={kind} id={id} context={mail.context} deal={deal?.id}/></div>:null}</>}
+   folds={kind==='company'?<CompanySupport key={id} id={id} contacts={detail.contacts??[]} onChanged={reload}/>:undefined}
    activity={<RecordActivity kind={kind} id={id} record={row} timeline={detail.timeline} contacts={detail.contacts} mail={mail.history} reloadMail={mail.reload} reload={()=>{reload();void mail.reload();}}/>}
    details={<DetailsPanel>
     {kind==='contact'?<ContactDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} context={context} onSaved={reload}/>:<CompanyDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} onSaved={reload}/>}

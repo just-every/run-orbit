@@ -28,6 +28,7 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
  else if(/^(email|meeting|form|page|content)\./.test(line.kind)){rest=text(payload.body)?quote(text(payload.body)):by;}
  else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider`;}
+ else if(line.kind==='support.outcome'){kindWord='Support outcome';title=`Zendesk ticket #${text(payload.ticketId)} · ${text(payload.status)}`;rest=<a href={text(payload.link)} target="_blank" rel="noreferrer">Open in Zendesk</a>;}
  else if(line.kind==='action.completed'){const skipped=text(payload.outcome)==='skipped';kindWord=skipped?'Skipped':'Done';title=skipped?'Skipped the next action':'Marked the next action done';rest=text(payload.note)||by;}
  else if(line.kind==='owner.changed'){const before=text(payload.previousOwnerName),after=text(payload.currentOwnerName);title=before||after?`Owner: ${before||'Unassigned'} → ${after||'Unassigned'}`:'Owner changed';rest=by;}
  else if(line.kind==='stage.changed'){title=`${text(payload.previousStageName)||'A stage'} → ${text(payload.currentStageName)||'a stage'}`;rest=by;}

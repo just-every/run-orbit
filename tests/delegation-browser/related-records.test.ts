@@ -1,8 +1,10 @@
+import {unstable_DevEnv} from 'wrangler';
+import {zendeskNetwork} from '../support/zendesk-network';
+import {zendeskBrowserProof} from '../support/zendesk-browser-proof';
+import {identityVars} from '../support/worker-identity.mjs';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import { test } from 'node:test';
-import { spawn } from 'node:child_process';
-import { once } from 'node:events';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium, expect } from '@playwright/test';
@@ -10,35 +12,26 @@ import { isolatedDatabase } from '../support/isolated-database';
 import { createTestDependencies } from '../support/test-dependencies';
 import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
-import { identityVarArgs } from '../support/worker-identity.mjs';
 
-test('full related names and associated-contact labels remain readable in native record details and editors', async () => {
+test('full related names and associated-contact labels remain readable in native record details and editors; Zendesk settings and reviewed company support remain current at desktop and phone widths', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RELATED_RECORD_PORT ?? 8729);
   const origin = `http://127.0.0.1:${port}`;
   const evidence = resolve(process.env.ORBIT_RELATED_RECORD_EVIDENCE ?? 'verification/ui/related-records');
   await mkdir(evidence, { recursive: true });
-  let worker: ReturnType<typeof spawn> | undefined;
+  const runtime=new unstable_DevEnv(),edge=zendeskNetwork();
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
     const deps = createTestDependencies(fixture.db);
     await deps.sampleData.seed();
+    await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(sampleData.operators[0].id).run();
     const session = await deps.auth.createSession(sampleData.operators[0].id);
     await fixture.close();
-    worker = spawn(process.execPath, ['node_modules/wrangler/bin/wrangler.js', 'dev', '--config',
-      'dist/server/wrangler.json', '--local', '--persist-to', fixture.directory, '--port', String(port),
-      '--inspector-port', process.env.ORBIT_RELATED_RECORD_INSPECTOR_PORT ?? '0', ...identityVarArgs(origin)],
-      { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, CI: '1' } });
-    let output = '';
-    worker.stdout!.on('data', chunk => { output += chunk; });
-    worker.stderr!.on('data', chunk => { output += chunk; });
-    let ready = false;
-    for (let i = 0; i < 300; i++) {
-      try { if ((await fetch(origin + '/health')).ok) { ready = true; break; } } catch {}
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    if (!ready) throw new Error(output || 'Related-record Worker startup failed.');
-    browser = await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
+    const secret=(value:string)=>({type:'secret_text' as const,value});
+    const worker=await runtime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>edge.fetcher(request.url,{method:request.method,headers:request.headers,body:request.method==='POST'?await request.text():undefined,redirect:'manual'})}});
+    await worker.ready;
+    if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Related-record Worker startup failed.');
+    browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic']});
     const context = await browser.newContext({ baseURL: origin, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     const page = await context.newPage(), errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -106,10 +99,11 @@ test('full related names and associated-contact labels remain readable in native
         }
       }
     }
+    await zendeskBrowserProof(page,context,edge,evidence);
     expect(errors).toEqual([]);
   } finally {
     await browser?.close();
-    if (worker && worker.exitCode === null) { const exit = once(worker, 'exit'); worker.kill('SIGTERM'); await exit; }
+    await runtime.teardown();
     await fixture.dispose();
   }
 });

@@ -67,3 +67,41 @@ To remove the hosted installation, first save a private backup, then run `rer de
 2. [Operations](../OPERATIONS.md) shows how to deploy Orbit for your team and keep a backup.
 3. [Signals and customer mail](../SIGNALS-AND-OUTREACH.md) connects your email and other tools, so replies and activity reach your deals.
 4. [Updating and recovery](../MIGRATION-RECOVERY.md) explains how to update a deployed Orbit safely, with a backup first.
+
+
+## Zendesk support on a company
+
+Under Settings, Integrations, the installation owner connects a Zendesk subdomain,
+agent email, API token and webhook signing secret. Zendesk must accept an active
+agent account. Credentials are sealed with the installation encryption key, never
+returned by a read and excluded from both archive transports. Refused credentials
+leave unresolved setup; disconnect removes them. A restore requires reconnection
+and a freshly reviewed company mapping.
+
+On a company record, a full operator previews the Zendesk organization ID and
+confirms its matching name and company domain. An organization already mapped to
+another company is refused without changes. Reconnection requires fresh mapping
+review. Restricted seller audiences remain with TEAM-005; collaborators cannot
+read tickets or create handoffs.
+
+The support panel reads Zendesk's current organization ticket list and checks each
+ticket again. It shows only subject, priority, status, update time and a Zendesk
+link. Descriptions, comments and attachments stay in Zendesk. Deleted, inaccessible
+or unverified tickets show unavailable; a partial list never implies a healthy
+account. Support replies and SLA work remain in Zendesk.
+
+A full operator chooses a title and record context, previews the exact internal
+Zendesk comment and confirms one ticket creation. The saved operation prevents a
+second submission, including an uncertain result. Inspect Zendesk after an
+uncertain result before deciding whether to start another handoff. Contact
+erasure removes its handoff outcome and prevents its ticket being shown again.
+
+In Zendesk Admin Center, create a webhook for the address shown by the Settings
+card, copy its signing secret into the connection and configure a ticket trigger
+for solved or closed handoffs. POST a JSON object with `ticket_id` set to the
+Zendesk ticket ID, for example using Zendesk's `{{ticket.id}}` placeholder. Orbit
+verifies Zendesk's base64 HMAC-SHA256 over the signature timestamp and exact body,
+rejects stale or replayed delivery, reads current ticket authority and returns one
+support outcome to the company timeline. Use a publicly reachable HTTPS origin.
+The documented API edge is covered by the native and browser journeys; live
+Zendesk qualification, Help Scout and HappyToHelp remain unclaimed.

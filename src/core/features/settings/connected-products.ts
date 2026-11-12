@@ -1,3 +1,5 @@
+import {connectionStatus as zendeskStatus} from '../support/connection';
+import {ownership as zendeskOwnership} from '../support/contracts';
 import {slackStatus} from '../slack/installation';
 import {connection as mailchimpConnection,ownership as mailchimpOwnership} from '../marketing/connection';
 /** BOUNDARY-001: the products Orbit connects to, each with its real state. Products Orbit does not connect to are named
@@ -13,5 +15,7 @@ export async function connectedProducts(db:D1Database):Promise<ConnectedProduct[
  const notices={job:'Team notifications',products:['Slack'],owns:'Team channels and messages',clause:'INTEGRATE-005',state:(configured?'connected':'unresolved-setup') as ProductState,lastDeliveryAt:slack.notices.find((n:any)=>n.state==='sent')?.updated_at as string??null,inOrbit:configured?'Allowed-field sales notices and mapped internal actions. Configure channels and inspect notice status below.':`Notices paused. ${slack.installation?.error??'Connect the bot and app signing secret below.'}`};
  const mailchimp=await mailchimpConnection(db),audience=mailchimp.settings?.audience;
  const marketing:ConnectedProduct={job:'Marketing audiences',products:['Mailchimp'],owns:'Bulk campaigns and marketing automation',clause:'INTEGRATE-007',state:mailchimp.state,lastDeliveryAt:mailchimp.lastEventAt,inOrbit:mailchimp.state==='connected'?`${mailchimpOwnership} Orbit hands only contacts with recorded consent to the audience “${audience!.name}” and receives its unsubscribes.`:`Handoff paused. ${mailchimp.reason}`,...(mailchimp.state==='connected'&&mailchimp.link?{link:{href:mailchimp.link,label:'Open the audience in Mailchimp'}}:{})};
- return [notices,...booking,marketing];
+ const zendesk=await zendeskStatus(db);
+ const support:ConnectedProduct={job:'Support context',products:['Zendesk'],owns:'Support replies and SLA work',clause:'INTEGRATE-004',state:zendesk.state,lastDeliveryAt:null,inOrbit:zendesk.state==='connected'?zendeskOwnership:`Support unavailable. ${zendesk.reason}`,...(zendesk.subdomain?{link:{href:`https://${zendesk.subdomain}.zendesk.com/agent/`,label:'Open Zendesk'}}:{})};
+ return [notices,...booking,marketing,support];
 }

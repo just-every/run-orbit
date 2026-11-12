@@ -1,3 +1,4 @@
+import {proveZendeskSupport} from '../support/zendesk-support-proof';
 import {issueNativeCredential} from '../support/api-credentials-proof';
 import {proveSlackNotices} from '../support/slack-notices-proof';
 import {createOutboundMail,type OutboundMail} from '../../src/core/platform/outbound-mail';
@@ -102,7 +103,9 @@ test('NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdr
  assert.equal((await f.request('settings/products','GET',undefined,{Cookie:''})).status,401);
  const unresolved=await products();assert.equal(named(unresolved,'Calendly').state,'awaiting-delivery');
  // BOUNDARY-001: Integrations lists only the products Orbit connects to; the others are named in the docs, never as a connection or a substitute.
- for(const name of ['Dial','Zoom','Aircall','HappyToHelp','Help Scout','Zendesk','DocuSign','Nectar','Stripe','QuickBooks Online','Xero','Buoy'])assert.equal(named(unresolved,name),undefined,`${name} is not listed as a connection`);
+ // Zendesk deliberately joins the real connected products; every other not-listed boundary remains.
+ assert.equal(named(unresolved,'Zendesk').state,'unresolved-setup');
+ for(const name of ['Dial','Zoom','Aircall','HappyToHelp','Help Scout','DocuSign','Nectar','Stripe','QuickBooks Online','Xero','Buoy'])assert.equal(named(unresolved,name),undefined,`${name} is not listed as a connection`);
  assert.deepEqual([named(unresolved,'Mailchimp').state,named(unresolved,'Mailchimp').clause,named(unresolved,'Mailchimp').link],['unresolved-setup','INTEGRATE-007',undefined],'Mailchimp is unresolved setup until a key check passes and an audience is chosen');
  assert.equal((await f.request('settings/products/dial','POST',{})).status,404,'No substituted connector exists for an unbuilt product');
  assert.equal(named(unresolved,'Slack').state,'unresolved-setup');
@@ -170,7 +173,7 @@ test('SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject t
  }finally{await f.dispose();}
 });
 
-test('SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event',{timeout:60000},async()=>{
+test('INTEGRATE-004 Zendesk reviewed support handoff, current visibility, signed outcome, erasure and paused restore; SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event',{timeout:600000},async()=>{
  const f=await fixture();try{
  await f.request('workbench/opportunities','POST',{title:'Source race customer',companyName:'Harbour',contactName:'Maya',email:'maya@harbour.test',stageId:f.stage,valueCents:10000});
  const counts=async()=>{const result=[];for(const table of ['signals','signal_links','timeline_entries','evaluations'])result.push(await f.db.prepare(`SELECT count(*) AS n FROM ${table}`).first());return result;};
@@ -189,5 +192,6 @@ test('SIGNAL-009 source rotation and disabling atomically refuse an already stre
   else{assert.equal((await f.request(sourcePath,'PATCH',{enabled:false})).status,200);if(change==='disable-enable')assert.equal((await f.request(sourcePath,'PATCH',{enabled:true})).status,200);}
   }finally{release();}assert.equal((await pending).status,403,`${vendor} ${change} revokes the pending request`);assert.deepEqual(await counts(),before,'Revoked delivery leaves no signal, link, timeline or scoring effects');
  }
+ await proveZendeskSupport(f);
  }finally{await f.dispose();}
 });

@@ -1,0 +1,44 @@
+import {createHmac} from 'node:crypto';
+import {expect,type BrowserContext,type Page} from '@playwright/test';
+import type {zendeskNetwork} from './zendesk-network';
+export async function zendeskBrowserProof(page:Page,context:BrowserContext,edge:ReturnType<typeof zendeskNetwork>,evidence:string){
+ const origin=new URL(context.pages()[0]!.url()).origin;
+ const post=async(path:string,data:unknown)=>{const r=await context.request.post(`/api/v1/${path}`,{headers:{Origin:origin},data});expect(r.ok(),await r.text()).toBe(true);return r.json();};
+ const company=await post('records/company',{name:'synthetic-orbit-1',primary_domain:'synthetic-orbit-1.test'});
+ await post('records/contact',{name:'synthetic-orbit-person-1',company_id:company.id});
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Connect Zendesk',exact:true}).click();
+ const settings=page.getByTestId('zendesk-settings');await expect(settings).toContainText('Unresolved setup');
+ await settings.getByLabel('Zendesk subdomain',{exact:true}).fill(edge.subdomain);
+ await settings.getByLabel('Zendesk agent email',{exact:true}).fill(edge.email);
+ await settings.getByLabel('Zendesk API token',{exact:true}).fill(edge.token);
+ await settings.getByLabel('Zendesk webhook signing secret',{exact:true}).fill(edge.signingSecret);
+ await settings.getByRole('button',{name:'Verify and connect Zendesk',exact:true}).click();
+ await expect(page.getByRole('region',{name:'Connected to Orbit',exact:true}).locator('[data-product=zendesk]')).toBeVisible();
+ await expect(settings).toContainText('Connected');
+ await expect(settings.getByLabel('Zendesk API token',{exact:true})).toHaveValue('');await expect(settings.getByLabel('Zendesk webhook signing secret',{exact:true})).toHaveValue('');
+ await expect(settings.getByRole('link',{name:'Open Zendesk',exact:true})).toHaveAttribute('href',`https://${edge.subdomain}.zendesk.com/agent/`);
+ await settings.scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/zendesk-settings-1440.png`,fullPage:true});
+ await page.goto(`/app/companies/${company.id}`);
+ const support=page.getByTestId('company-support');await expect(support).toContainText('Support unavailable');
+ await support.getByRole('button',{name:'Review organization mapping',exact:true}).click();await support.getByLabel('Zendesk organization ID',{exact:true}).fill('11');
+ await support.getByRole('button',{name:'Preview organization mapping',exact:true}).click();await expect(support.getByRole('group',{name:'Reviewed organization mapping'})).toContainText('synthetic-orbit-1');
+ await support.getByRole('button',{name:'Confirm organization mapping',exact:true}).click();
+ await expect(support).toContainText('synthetic-orbit-ticket-101');await expect(support).toContainText('Priority: high');await expect(support).toContainText('open');
+ await expect(support.getByRole('link',{name:/#101/})).toHaveAttribute('href',`https://${edge.subdomain}.zendesk.com/agent/tickets/101`);
+ await expect(support).not.toContainText('synthetic-orbit-hidden');
+ await support.getByRole('button',{name:'Prepare support handoff',exact:true}).click();await support.getByLabel('Support ticket title',{exact:true}).fill('synthetic-orbit-browser-handoff');
+ await support.getByRole('checkbox',{name:'Chosen contact name',exact:true}).check();await support.getByLabel('Company contact',{exact:true}).selectOption({label:'synthetic-orbit-person-1'});
+ await support.getByRole('button',{name:'Preview exact handoff',exact:true}).click();await expect(support.getByRole('group',{name:'Reviewed support handoff'})).toContainText('Contact: synthetic-orbit-person-1');expect(edge.creates.length).toBe(0);
+ await support.getByRole('button',{name:'Confirm and create one ticket',exact:true}).click();await expect(support).toContainText('Handoff created in Zendesk');expect(edge.creates.length).toBe(1);
+ const id=201;edge.tickets.get(id)!.status='solved';const raw=JSON.stringify({ticket_id:String(id)}),timestamp=new Date().toISOString();
+ const received=await context.request.post('/api/v1/support/zendesk/webhook',{headers:{'X-Zendesk-Webhook-Signature-Timestamp':timestamp,'X-Zendesk-Webhook-Signature':createHmac('sha256',edge.signingSecret).update(timestamp+raw).digest('base64')},data:raw});expect(received.status(),await received.text()).toBe(201);
+ await page.reload();await expect(page.getByText('Zendesk ticket #201 · solved',{exact:true})).toBeVisible();await expect(support).toContainText('solved');
+ await support.scrollIntoViewIfNeeded();
+ const sizes=await support.locator('button,input,select,p,h2,a,label').evaluateAll(elements=>elements.map(element=>Number.parseFloat(getComputedStyle(element).fontSize)));expect(sizes.every(size=>size>=13)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:`${evidence}/zendesk-support-1440.png`,fullPage:true});
+ // The proof runs at desktop width; the changed populated screens are inspected once on a phone too.
+ await page.setViewportSize({width:390,height:1000});await support.scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/zendesk-support-390.png`,fullPage:true});
+ await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Open Zendesk',exact:true}).click();await settings.scrollIntoViewIfNeeded();await page.screenshot({path:`${evidence}/zendesk-settings-390.png`,fullPage:true});
+}

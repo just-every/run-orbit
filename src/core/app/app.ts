@@ -1,3 +1,5 @@
+import {zendeskSettingsRoutes,zendeskSupportRoutes} from '../features/support/routes';
+import {zendeskWebhookRoutes} from '../features/support/webhook';
 import {workflowRoutes} from '../features/workflows/routes';
 import {directNotificationAction,notificationDatabase} from '../features/notifications/direct-action';
 import {collectWorkflowRuns} from '../features/workflows/engine';
@@ -84,7 +86,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
 
   app.use('*',async(context,next)=>{
     const path=context.req.path;
-    if((path.startsWith('/api/v1/calls/twilio/')||path.startsWith('/api/v1/slack/')||path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
+    if((path.startsWith('/api/v1/calls/twilio/')||path.startsWith('/api/v1/slack/')||path==='/api/v1/support/zendesk/webhook'||path.startsWith('/api/v1/signals/')||path.startsWith('/api/v1/mail/events/')||path==='/api/v1/mail/capture'||path.startsWith('/api/v1/public-demo')||path.startsWith('/api/public/forms/')||path.startsWith('/p/'))&&await archiveImportActive(input.database))return context.json({error:archiveMaintenanceMessage},503,{'Retry-After':'30'});
     await next();
   });
   app.get('/p/:slug',async c=>{try{return c.html(await new FormService(input.database).publicDocument(c.req.param('slug')),200,{'Cache-Control':'no-store'});}catch(error){return error instanceof AccessError&&error.code==='permission'?c.text('This page is not published.',404):c.text('This page could not be verified. Try again later.',503);}});
@@ -100,6 +102,8 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route('/api/v1/slack/actions',createSlackActionRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route('/api/v1/calls/twilio/events',callEventRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/rest/v1',publicApiRoutes(input.database,input.clock));
+  const supportConfig={security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,now:input.clock?()=>input.clock!.now():undefined};
+  app.route('/api/v1/support/zendesk/webhook',zendeskWebhookRoutes(input.database,supportConfig));
   app.use("/api/*", requireApiOperator);
   app.use('/api/*',async(c,next)=>{
     // Imports, capture intake and executing a saved workflow act automatically,
@@ -165,6 +169,8 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
       try { await processEvaluationJobs(input.database); } catch { context.header("X-Orbit-Evaluation","failed; inspect stale evaluation"); }
     }
   });
+  app.route('/api/v1/settings/zendesk',zendeskSettingsRoutes(input.database,supportConfig));
+  app.route('/api/v1/support/zendesk',zendeskSupportRoutes(input.database,supportConfig));
   app.route('/api/v1/settings/api-credentials',apiCredentialRoutes(input.database,input.clock));
   app.route('/api/v1/settings/mailchimp',mailchimpSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/marketing/mailchimp',mailchimpHandoffRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));

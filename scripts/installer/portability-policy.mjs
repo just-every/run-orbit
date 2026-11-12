@@ -4,7 +4,7 @@
 // with an installation, as in the Records archive.
 export default {
  product: 'just-every/sales-orbit',
- excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context', 'api_credentials', 'support_credentials','call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock','workflow_journal_metadata'],
@@ -13,6 +13,10 @@ export default {
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
+  if(tables.support_credentials)await db.prepare('DELETE FROM '+JSON.stringify(tables.support_credentials)).run();
+  if(tables.support_installation)await db.prepare(`UPDATE "${tables.support_installation}" SET state='paused',error='Archive restored; reconnect Zendesk and review mappings.'`).run();
+  if(tables.support_mappings)await db.prepare(`UPDATE "${tables.support_mappings}" SET generation=NULL`).run();
+  if(tables.support_handoffs)await db.prepare(`UPDATE "${tables.support_handoffs}" SET state='uncertain' WHERE state='submitting'`).run();
   if(tables.api_credentials)await db.prepare('DELETE FROM "'+tables.api_credentials.replaceAll('"','""')+'"').run();
   if(tables.call_credentials)await db.prepare('DELETE FROM "'+tables.call_credentials.replaceAll('"','""')+'"').run();
   if(tables.record_mail_outbound_messages)await db.prepare(`UPDATE "${tables.record_mail_outbound_messages.replaceAll('"','""')}" SET state='cancelled',failure='Archive transfer requires fresh review and approval before sending' WHERE state IN('draft','scheduled','queued')`).run();
@@ -37,6 +41,9 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='support_installation')return {...row,state:'paused',error:'Archive restored; reconnect Zendesk and review mappings.'};
+  if(table==='support_mappings')return {...row,generation:null};
+  if(table==='support_handoffs'&&row.state==='submitting')return {...row,state:'uncertain'};
   if(table==='workflow_versions')return {...row,status:'paused',preview_id:null,preview_json:null};
   if(table==='workflow_runs'&&!['completed','undone'].includes(row.status))return {...row,status:'stopped',reason:'Archive transfer requires fresh activation'};
   if(table==='workflow_approvals'&&row.status==='pending')return {...row,status:'expired'};
