@@ -1,4 +1,5 @@
 import {expect} from '@playwright/test';
+import {savedDealValueJourney} from './saved-deal-value-journey.mjs';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -49,7 +50,7 @@ export async function typedFieldsJourney(page,contact){const evidence=resolve('.
  const currentHeaders={Origin:new URL(page.url()).origin},addedResponse=await page.request.post('/api/v1/records/contact',{headers:currentHeaders,data:{name:'Synthetic Calendar Contact added after opening'}});expect(addedResponse.status()).toBe(201);const added=await addedResponse.json();await savedViews.getByRole('button',{name:'Reopen saved view',exact:true}).click();await expect(page.locator('.records-list>li')).toHaveCount(2);const removed=await page.request.delete(`/api/v1/records/contact/${added.id}`,{headers:currentHeaders,data:{confirmed:true}});expect(removed.status()).toBe(200);await savedViews.getByRole('button',{name:'Reopen saved view',exact:true}).click();await expect(page.locator('.records-list>li')).toHaveCount(1);
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('saved-filtered-view',width,page.getByRole('main'),'main');}
  await page.setViewportSize({width:1440,height:900});await page.goto('/app/settings/pipeline');
- await fields.getByRole('button',{name:'Restore Synthetic renamed field',exact:true}).click();await preview.getByRole('button',{name:'Apply reviewed definition',exact:true}).click();await expect(fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true})).toBeVisible();expect((await definitions()).find(f=>f.label==='Synthetic renamed field')).toMatchObject({archived:0});expect(errors).toEqual([]);
+ await fields.getByRole('button',{name:'Restore Synthetic renamed field',exact:true}).click();await preview.getByRole('button',{name:'Apply reviewed definition',exact:true}).click();await expect(fields.getByRole('button',{name:'Change Synthetic renamed field',exact:true})).toBeVisible();expect((await definitions()).find(f=>f.label==='Synthetic renamed field')).toMatchObject({archived:0});await savedDealValueJourney(page);expect(errors).toEqual([]);
  async function definitions(){return (await (await page.request.get('/api/v1/settings/custom-fields?kind=contact')).json()).fields;}
  async function proof(name,width,region,selector){expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).include(selector).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
 }
