@@ -1,3 +1,4 @@
+import {salesforceBrowserFlow} from './imports-salesforce.mjs';
 import {hydrationImportFlow} from './imports-hydration.mjs';
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -14,6 +15,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
  for(const width of [1440]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByLabel('Do not contact list',{exact:true})).toBeAttached();await page.screenshot({path:join(screenshots,`viewport-${width}-upload.png`),fullPage:true});const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(accessibility.violations).toEqual([]);}
  const settingsResponse=await page.request.get('/api/v1/settings');expect(settingsResponse.ok()).toBe(true);const settings=await settingsResponse.json();
  await hydrationImportFlow(page,settings,screenshots);
+ await salesforceBrowserFlow(page,screenshots);
  for(const width of [1440])for(const vendor of ['hubspot','pipedrive','csv']){
   await page.setViewportSize({width,height:900});
   const spreadsheetRows=['csv-0@example.test,Spreadsheet Person,Spreadsheet Company','csv-1@example.test,Spreadsheet Person,Another Company','csv-2@example.test,Spreadsheet Person,',...Array.from({length:6},(_,index)=>`csv-extra-${index}@example.test,Extra Person ${index},Spreadsheet Company`),'invalid-email,Rejected Person,'];

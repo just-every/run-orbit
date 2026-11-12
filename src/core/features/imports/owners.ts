@@ -15,8 +15,9 @@ export function resolveImportOwner(value:string,input:ImportInput,owners:ImportO
 export function mapImportOwners(rows:Row[],input:ImportInput,owners:ImportOwner[]){
  for(const id of Object.values(input.owners??{}))if(id!==null&&!owners.some(owner=>owner.id===id))throw new Error('Choose an active full operator for every owner mapping.');
  for(const row of rows)if(['contact','company'].includes(row.kind)&&row.data.owner){
-  const owner=resolveImportOwner(row.data.owner,input,owners);
-  row.ownerMapping={value:row.data.owner,ownerId:owner?.id??null,ownerName:owner?.display_name??null,explicit:Object.hasOwn(input.owners??{},row.data.owner)};
+  const value=input.vendor==='salesforce'?`${row.kind==='company'?'Account':'Contact'} OwnerId ${row.data.owner}`:row.data.owner;
+  const owner=resolveImportOwner(value,input,owners);
+  row.ownerMapping={value,ownerId:owner?.id??null,ownerName:owner?.display_name??null,explicit:Object.hasOwn(input.owners??{},value)};
  }
  const groups=new Map<string,{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean;count:number}>();
  for(const row of rows){if(!row.ownerMapping)continue;const group=groups.get(row.ownerMapping.value)??{...row.ownerMapping,count:0};group.count++;groups.set(group.value,group);}

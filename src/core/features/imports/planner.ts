@@ -5,6 +5,7 @@ import { readImport,nativeId,email,positive,ids,type Row } from './source';
 import { tables,type NativeValue } from './targets';
 import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
+type ImportPlanDiagnostics=import('../../../modules/import-kit/d1/index').SourceBundle['diagnostics'];
 import type { ImportInput } from './contracts';
 import {plannedOwner,importOwnerSnapshots} from './owner-targets';
 import {mapImportOwners,importOwners} from './owners';
@@ -13,8 +14,9 @@ import {namedCompanies} from './named-companies';
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
 
-export async function prepareImport(input:ImportInput,context:D1ImportContext){
+export async function prepareImport(input:ImportInput,context:D1ImportContext,diagnostics:ImportPlanDiagnostics=[]){
  const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
+ source.diagnostics.push(...diagnostics);
  const ownerMappingTable=mapImportOwners(rows,input,await importOwners(db));
  const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
