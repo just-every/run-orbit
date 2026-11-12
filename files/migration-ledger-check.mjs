@@ -1,0 +1,10 @@
+import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+const root=resolve(process.argv[2]);
+const {mapMigrationLedger}=await import(pathToFileURL(resolve(root,'node_modules/@runeditrun/rer/cli/portability-migrations.mjs')));
+const spec=JSON.parse(await readFile(resolve(root,'management/integration/deployment-spec.json'),'utf8'));
+const entries=spec.migrations.filter(m=>m.binding==='DB').map(({name,sha256})=>({name,sha256}));
+const mapped=await mapMigrationLedger({root,entries});
+if(mapped.length!==entries.length)throw Error('Incomplete migration ledger');
+console.log(JSON.stringify({check:'migration-ledger',mapped:mapped.length,exit:0}));

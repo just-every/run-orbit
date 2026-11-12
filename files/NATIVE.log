@@ -1,0 +1,16 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+Zendesk proof: current reads, unsafe refusals, reviewed handoff and signed outcomes passed; starting populated archives
+Zendesk proof: populated Records restore preserves provenance and pauses authority
+Zendesk proof: populated CLI restore preserves provenance and pauses authority
+Zendesk proof: erasure, uncertain replay, revoked token and disconnect passed
+✔ INTEGRATE-004 Zendesk support preserves current access, reviewed handoff, signed outcomes, erasure and paused restore alongside SIGNAL-009 streaming source rotation (405597.283484ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 411517.363536

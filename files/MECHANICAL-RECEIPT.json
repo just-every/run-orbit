@@ -1,0 +1,95 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "1914f2a25ed651ecb26867cc01ebc7ea72a14c7e",
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "check:boundaries"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "migration-ledger-check.mjs",
+        "/workspace/run-orbit"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "executed": "immediately before the final commit; identical source bytes"
+    }
+  ],
+  "generated_views_changed": false,
+  "contract_judgments_changed": false,
+  "source_lock_sha256": "1fee151f9b854819709b8f5a02e170c5880e5d342699a3c62f16baf1083bd99f",
+  "migration_count": 76,
+  "source_history_shallow": false
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "tests/core/onboarding-archive.test.ts"
+  ],
+  "exit": 0,
+  "tests": 1,
+  "duration_ms": 763101.450929,
+  "exact_head": null,
+  "provenance": "Executed in the working tree before the final commit. All archive implementation bytes are unchanged since that successful run; subsequent changes select and verify the Zendesk requester, add an owner-only disconnect assertion and refresh the source lock. The exact-candidate native receipt independently performs both populated support archive transports."
+}
