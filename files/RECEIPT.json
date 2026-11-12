@@ -1,0 +1,137 @@
+{
+  "head": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
+  "branch": "cloud/sd-orbit-c-f181",
+  "mainIntegrated": "63aa0647cabbd86ae1ee2c489f1dfe8ef31e123b",
+  "productFiles": [
+    "newtests/t096/dashboard-access-proof.ts",
+    "newtests/t096/report-disclosure.test.ts",
+    "sources.lock.json",
+    "src/core/features/dashboards/basis.tsx"
+  ],
+  "statusTableChanged": false,
+  "countsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "tests": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "rerNode": "22.20.0",
+    "browser": "/usr/bin/chromium",
+    "browserArgs": [
+      "--no-sandbox"
+    ],
+    "adapter": "chromium-cloud.cjs"
+  },
+  "localChecks": {
+    "reportTimeBoundaries": {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/report-time-boundaries.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "log": "report-time-boundaries.log",
+      "status": "passed"
+    },
+    "reportDisclosure": {
+      "command": "NODE_OPTIONS=\"--require /tmp/orbit-chromium.cjs\" ORBIT_FOLD_BROWSER_EVIDENCE=<packet>/browser cloud_run perl -e 'alarm 1800; exec @ARGV' -- pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=tap newtests/t096/report-disclosure.test.ts",
+      "status": "passed",
+      "log": "report-disclosure.log",
+      "exit": 0,
+      "tests": 2,
+      "passed": 2,
+      "durationMs": 731181.722916
+    },
+    "typecheck": {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    "firstParty": {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party.log"
+    },
+    "viewsWrite": {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "contract-write.log"
+    },
+    "viewsCheck": {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    "lock": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    "sourceCheck": {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true,
+      "log": "source-check.log"
+    },
+    "build": {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    "identity": {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\" and exhaustive validation",
+      "exit": 0,
+      "log": "identity-check.log"
+    },
+    "statusTable": {
+      "command": "git diff --exit-code origin/main...HEAD -- CONTRACT.md and each candidate compared with main",
+      "exit": 0
+    }
+  },
+  "publicationScan": {
+    "commit": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "status": "NOT RUN, fleet owned"
+  },
+  "independentUipGate": "required before landing",
+  "pr": null,
+  "ci": {
+    "runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43320242997",
+        "id": 43320242997,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "status": "in_progress",
+    "runId": 43320242997,
+    "event": "push",
+    "head": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
+    "conclusion": null,
+    "observedAt": "2026-11-12T22:28:50Z",
+    "githubCallsUsed": 3
+  },
+  "custody": {
+    "productPush": "pushed",
+    "mainPush": false,
+    "evidencePush": "pending",
+    "productRemoteVerified": true,
+    "pushLog": "product-push.log"
+  }
+}

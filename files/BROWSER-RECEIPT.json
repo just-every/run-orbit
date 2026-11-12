@@ -1,0 +1,17 @@
+{
+  "screenshots": 68,
+  "accessibilityObservations": 64,
+  "seriousCritical": 0,
+  "unexpectedPageErrors": 0,
+  "unexpectedConsoleErrors": 0,
+  "widths": [
+    1440,
+    390
+  ],
+  "manualInspection": [
+    "definition-link-owner-1440.png",
+    "definition-owner-1440.png",
+    "definition-link-owner-390.png"
+  ],
+  "independentUipGate": "not run by builder"
+}
