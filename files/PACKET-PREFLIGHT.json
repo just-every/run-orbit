@@ -1,0 +1,123 @@
+{
+  "regular_files_only": true,
+  "injected_value_matches": 0,
+  "credential_url_matches": 0,
+  "token_shape_matches": 0,
+  "files": [
+    {
+      "file": "BOOKING.log",
+      "bytes": 469,
+      "sha256": "aa4c05e25d05bce12b1c6a1e80eb4216ce09865de0f7299b27a3196e62cc0201"
+    },
+    {
+      "file": "BOUNDARIES.log",
+      "bytes": 49,
+      "sha256": "aabe86b7a5d523d232d0d20384394aa63cb0ca09ca3a90221d32ffb67a4a63ee"
+    },
+    {
+      "file": "BROWSER.log",
+      "bytes": 4558,
+      "sha256": "f081e132475b1caf1997db2872f7c05e89608f8d6dcf730ffc44860e0a65217c"
+    },
+    {
+      "file": "BUDGET.json",
+      "bytes": 45,
+      "sha256": "7c5cf44947352f9650b0d7f671d412965cafe09515fe4990444698db39ebba7b"
+    },
+    {
+      "file": "CALENDLY-1440.png",
+      "bytes": 187575,
+      "sha256": "f9e6c8da97bc2668c8d430988ab49756b1baab8d31cb3a8bf689302c75e64916"
+    },
+    {
+      "file": "CALENDLY-390.png",
+      "bytes": 156318,
+      "sha256": "0624219f8efac0dd52ae72d74a82d7ecc425edb3bf9415278162b86d37917e97"
+    },
+    {
+      "file": "CI-RUNS.json",
+      "bytes": 220,
+      "sha256": "796f48f89b7d9a28739bbf24f043a1867a7ea010b60522f928c385cdee56ea0e"
+    },
+    {
+      "file": "CI-STATUS.json",
+      "bytes": 295,
+      "sha256": "dded38561e3d87343fadd5e0bcba42065ef22cb40edf1ee4ebfe2fcbe34eae65"
+    },
+    {
+      "file": "CONTRACT-CHECK.log",
+      "bytes": 32,
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "file": "CONTRACT-WRITE.log",
+      "bytes": 28,
+      "sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+    },
+    {
+      "file": "DEPLOYMENT-CHECK.log",
+      "bytes": 72,
+      "sha256": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053"
+    },
+    {
+      "file": "FIRST-PARTY.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "GIT-IDENTITY.log",
+      "bytes": 169,
+      "sha256": "172a24dc43c128168e7dcb3afc2e5564506571792a925856a693b267bc0011b5"
+    },
+    {
+      "file": "INITIAL-SOURCE-ONBOARDING.log",
+      "bytes": 1892,
+      "sha256": "57740562b3575db8592c8595e4d97164be95b576e793617fdd562ac5403cd714"
+    },
+    {
+      "file": "MAIN-RUNS.json",
+      "bytes": 966,
+      "sha256": "ea9473e4f3569f842d8676bf929cb9dfb08914b466509e8f862c309cbcbed2af"
+    },
+    {
+      "file": "MIGRATION.log",
+      "bytes": 339,
+      "sha256": "09b33bcb96c34c9d7192c688e61b8da44e35c701e52db279636a8ce6bc042404"
+    },
+    {
+      "file": "PLAN.md",
+      "bytes": 1826,
+      "sha256": "9b422a918b6079ab14647750b2a866f2edd77db12f414579aea1b3fb5b87071f"
+    },
+    {
+      "file": "RECEIPT.json",
+      "bytes": 7839,
+      "sha256": "ba4b3f7f4536e404773ecdcfc29ac92a126a79d89dd2ab6b68c55b60b5ab2dc9"
+    },
+    {
+      "file": "REPORT.md",
+      "bytes": 12964,
+      "sha256": "8a0177a0e0fbf51821f8f38de868189ff64f45cda85232b604f1f4d94fb018fa"
+    },
+    {
+      "file": "SOURCE-CHECK.json",
+      "bytes": 503607,
+      "sha256": "f6396490c3de04b5664325d163a8d684d0d8b29b4cfdd88bdb4fe01ec9f25b91"
+    },
+    {
+      "file": "SOURCE-ONBOARDING.log",
+      "bytes": 1292,
+      "sha256": "18f9d752b96639b619c86da2cb420717f8166c4dcb3796d08b69f97b43f5bcf7"
+    },
+    {
+      "file": "TODAY.log",
+      "bytes": 1033,
+      "sha256": "76d1b597ebbab1d7c3bbbf0cd1c62d554cf6b65bf31e05f3ae544c6c14e1ce89"
+    },
+    {
+      "file": "TYPECHECK.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
