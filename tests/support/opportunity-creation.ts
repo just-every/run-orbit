@@ -9,11 +9,11 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
  };
  const read=(id:string)=>call(`records/opportunity/${id}`);
  const owner=async(id:string)=>{
-  assert.equal((await read(id)).record.owner_id,actor);
-  assert.equal((await call(`opportunities/${id}`)).opportunity.ownerId,actor);
+  assert.equal((await read(id)).record.owner_id,null);
+  assert.equal((await call(`opportunities/${id}`)).opportunity.ownerId,null);
  };
  const counts=async()=>{const inventory=await call('workbench');return [inventory.companies.length,inventory.contacts.length];};
- // With one active native operator both creation doors default to that operator.
+ // Manual creation stays unassigned even when only one operator is eligible.
  await db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(other).run();
  try{
   const fresh=await call('workbench/opportunities','POST',{title:'New customer opportunity',companyName:'Create journey company',contactName:'New buyer',email:'create-journey@customer.test',stageId,valueCents:2400},201);
@@ -28,8 +28,15 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   await owner(existing.id);assert.deepEqual(await counts(),before,'Choosing existing records creates no duplicate company or contact');
   assert.deepEqual((await read(existing.id)).contacts.map((contact:any)=>contact.id),[contactId]);
   const native=await call('records/opportunity','POST',{title:'Native creation default',stage_id:stageId,value_cents:0},201);await owner(native.id);
-  const unassigned=await call('records/opportunity','POST',{title:'Explicitly unassigned',stage_id:stageId,value_cents:0,owner_id:null},201);
-  assert.equal((await read(unassigned.id)).record.owner_id,null,'Explicit ownership choices remain available');
+  const assigned=await call('records/opportunity','POST',{title:'Explicitly assigned',stage_id:stageId,value_cents:0,owner_id:actor},201);
+  assert.equal((await read(assigned.id)).record.owner_id,actor,'Explicit ownership choices remain available');
+  const beforeIndependent=await counts();
+  const independent=await call('workbench/opportunities','POST',{title:'Independent buyer opportunity',contactName:'Independent buyer',email:'independent@customer.test',stageId,valueCents:10000},201);
+  await owner(independent.id);
+  const independentDetail=await read(independent.id);assert.equal(independentDetail.record.company_id,null);assert.equal(independentDetail.company,null);assert.equal(independentDetail.contacts.length,1);assert.equal(independentDetail.contacts[0].company_id,null);
+  const independentExisting=await call('workbench/opportunities','POST',{title:'Existing buyer without company',companyName:'  ',contactIds:[contactId],ownerId:actor,stageId,valueCents:20000},201);
+  const existingDetail=await read(independentExisting.id);assert.equal(existingDetail.record.company_id,null);assert.equal(existingDetail.record.owner_id,actor);assert.deepEqual(existingDetail.contacts.map((contact:any)=>contact.id),[contactId]);
+  assert.deepEqual(await counts(),[beforeIndependent[0],beforeIndependent[1]+1],'Company-free creation makes only the requested new contact');
   const second=await call('records/contact','POST',{name:'Second existing buyer',company_id:companyId,email:'create-second@customer.test'},201);
   const mixed=await call('workbench/opportunities','POST',{title:'Selected and new contacts',companyId,contactIds:[contactId,second.id],primaryContactId:second.id,contactName:'Third buyer',email:'create-third@customer.test',stageId,valueCents:5000},201);
   const linked=(await read(mixed.id)).contacts;
@@ -41,6 +48,7 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   const invalidBefore=await counts();
   for(const invalid of [
    {companyId,contactIds:[createId()]},
+   {companyId,contactIds:[contactId],ownerId:createId()},
    {companyId:createId(),contactIds:[contactId]},
    {companyName:'Must not persist',contactIds:[contactId],primaryContactId:second.id},
    {companyName:'Must not persist',contactIds:[contactId,contactId]},
@@ -50,7 +58,7 @@ export async function exerciseOpportunityCreation(request:(path:string,method?:s
   await call('workbench/opportunities','POST',{title:'Duplicate new identity',companyName:'Must roll back',contactName:'Duplicate buyer',email:'CREATE-JOURNEY@customer.test',stageId,valueCents:0},409);
   assert.deepEqual(await counts(),invalidBefore,'Invalid selections and duplicate identities write no customer records');
  }finally{await db.prepare("UPDATE operators SET status='active' WHERE id=?").bind(other).run();}
- // With more than one native operator both creation doors default to the creator.
+ // A larger team does not change the manual default.
  const native=await call('records/opportunity','POST',{title:'Team native creation',stage_id:stageId,value_cents:0},201);await owner(native.id);
  const workbench=await call('workbench/opportunities','POST',{title:'Team form creation',companyName:'Team customer',contactName:'Team buyer',email:'team-create@customer.test',stageId,valueCents:0},201);await owner(workbench.id);
 }
