@@ -1,9 +1,10 @@
+import {erasedContactConsent} from './contact-consent.mjs';
 import { test,expect } from '@playwright/test';
 import {exerciseRemovalHandover} from './removal-handover.mjs';
 import { authenticateOperator } from './operator-session.mjs';
 test.use({timezoneId:'Australia/Brisbane'});
 test('record creation, edits, manual entries and workspace operator management persist through the interface',async({page,context})=>{
- test.setTimeout(90_000);const session=await authenticateOperator(context);const errors=[];page.on('pageerror',e=>errors.push(e.message));const unique=Date.now();
+ test.setTimeout(120_000);const session=await authenticateOperator(context);await erasedContactConsent(page);const errors=[];page.on('pageerror',e=>errors.push(e.message));const unique=Date.now();
  // OR3: each kind is created on its own page and opens at its own address; OR4: its values then save as they change.
  await page.goto('/app/companies');await page.getByRole('link',{name:'New company',exact:true}).click();await page.getByLabel('Name',{exact:true}).fill(`Browser account ${unique}`);await page.getByLabel('Website',{exact:true}).fill(`browser-${unique}.example`);await page.getByRole('button',{name:'Create company',exact:true}).click();await expect(page.getByRole('heading',{name:`Browser account ${unique}`,exact:true})).toBeVisible();await expect(page).toHaveURL(/\/app\/companies\/[0-9A-HJKMNP-TV-Z]{26}$/);
  await page.getByRole('link',{name:'Records',exact:true}).click();await page.getByRole('link',{name:'Contacts',exact:true}).click();await page.getByRole('link',{name:'New contact',exact:true}).click();await page.getByLabel('Name',{exact:true}).fill(`Browser contact ${unique}`);await page.getByLabel('Email',{exact:true}).fill(`browser-${unique}@example.test`);await page.getByRole('searchbox',{name:'Company',exact:true}).fill(`Browser account ${unique}`);await page.getByRole('list',{name:'Company: matches'}).getByRole('button').first().click();await page.getByRole('button',{name:'Create contact',exact:true}).click();await expect(page.getByRole('heading',{name:`Browser contact ${unique}`,exact:true})).toBeVisible();

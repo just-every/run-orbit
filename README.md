@@ -71,6 +71,8 @@ Open the opportunity from NOW, choose **Write follow-up**, save the exact messag
 
 Open **Capture** to import mail/calendar files or connect Gmail and Google Calendar, or Outlook mail and calendars. Each connection uses your own OAuth client and read-only permissions. Choose labels or folders and calendars before intake starts; calendar capture also has a fixed date window. Capture shows evidence and proposals for review, with the existing reply, bounce and stop-condition safeguards.
 
+Contacts created from captured evidence start **Do not contact**: a message is not permission to email its sender. A new contact using a previously erased email address also starts **Do not contact**, whether added by hand, imported or created from capture. Orbit explains the starting state without showing the erased record. To permit future reviewed messages, open the contact, set **Email permission** to **Contactable** and confirm the change; the contact's timeline records it. Existing contactable contacts keep their current permission.
+
 Follow [Google setup](docs/CONNECT-GMAIL.md) or [Microsoft setup](docs/CONNECT-OUTLOOK.md). [OWNER-STEPS.md](OWNER-STEPS.md) contains the remaining live-account proof. Copy each provider's exact callback URI from Capture; a successful `rer deploy` also prints them. `rer dev` does not print callback URIs. Disconnect stops intake and deletes the saved provider credentials.
 
 ### Read scoped deals from an integration
