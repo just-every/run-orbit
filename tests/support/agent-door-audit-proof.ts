@@ -51,9 +51,18 @@ export async function agentAuditRetentionProof(input: {
     assert.equal(await bindings.DB.prepare('SELECT name FROM companies WHERE id=?').bind(companyId).first('name'), update.fields.name);
 
     const audit = async (session: string) => {
-      const response = await orbitAgentDoor(bindings).handle(new Request(origin + '/agents/api/audit?agent=' + encodeURIComponent(agent.id), {headers: {Cookie: session}}));
-      assert.equal(response!.status, 200);
-      return await response!.json() as {rows: AuditRow[]; differs_from_policy: number};
+      const rows: AuditRow[] = [];
+      let after = '', differs = 0;
+      // A filtered page can be empty while its cursor advances over other agents.
+      for (;;) {
+        const response = await orbitAgentDoor(bindings).handle(new Request(origin + '/agents/api/audit?agent=' + encodeURIComponent(agent.id) + (after ? '&after=' + encodeURIComponent(after) : ''), {headers: {Cookie: session}}));
+        assert.equal(response!.status, 200);
+        const page = await response!.json() as {rows: AuditRow[]; cursor: string | null; differs_from_policy: number};
+        rows.push(...page.rows); differs += page.differs_from_policy;
+        if (!page.cursor || page.cursor === after) break;
+        after = page.cursor;
+      }
+      return {rows, differs_from_policy: differs};
     };
     const before = await audit(cookie);
     assert.equal(before.rows.length, 2, 'the admitted agent has real read and write history');
