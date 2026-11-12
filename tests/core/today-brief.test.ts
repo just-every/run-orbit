@@ -60,6 +60,12 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  assert.deepEqual(byKind(first,'signal').map(l=>[l.evidence.id,l.confidence]).sort(),[[form,'observed'],[view,'inferred']].sort());
  assert.deepEqual(byKind(first,'reply-unanswered').map(l=>l.evidence.id),[oldReply]);
  assert.deepEqual(byKind(first,'meeting-no-next-step').map(l=>l.evidence.id),[completed]);
+ const completedRisks=await t.json<any>(`/api/v1/risks/${bright}/findings`,{},200);
+ const undated=completedRisks.findings.find((finding:any)=>finding.citations.some((citation:any)=>citation.evidenceId===`meeting-no-next-step:${completed}`));
+ assert.ok(undated,'The completed meeting remains a cited risk when no next step was logged');
+ assert.equal(undated.nextTaskDueAt,null,'An event timestamp is not a proposed task deadline');
+ const promisedRisks=await t.json<any>(`/api/v1/risks/${cobalt}/findings`,{},200);
+ assert.equal(promisedRisks.findings.find((finding:any)=>finding.citations.some((citation:any)=>citation.evidenceId===`handoff-due:${handoff}`)).nextTaskDueAt,handoffDueAt,'The proposed task retains the recorded promise due time');
  assert.deepEqual(byKind(first,'draft-unsent'),[],'A newly saved draft is not overdue');
  assert.deepEqual(byKind(first,'handoff-due').map(l=>[l.evidence.id,l.href]),[[handoff,`/app/opportunities/${cobalt}#handoff-${handoff}`]]);
  assert.deepEqual(byKind(first,'unlinked-signal').map(l=>[l.evidence.id,l.href]),[[unlinked,`/app/review#unlinked-${unlinked}`]]);

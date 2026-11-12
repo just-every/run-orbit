@@ -5,7 +5,7 @@ import {dealEvidence,type DealEvidence} from './evidence';
 
 export type FindingKind='absent-role'|'missed-promise'|'stalled'|'opens-no-reply'|'conflicting-date'|'conflicting-price';
 /** A cited observation, with any inference labelled by its source and kept apart from what was recorded. */
-export interface Finding {key:string;kind:FindingKind;title:string;citations:{evidenceId:string;quote:string}[];inference:{source:'rule'|'ai';text:string}|null;nextTask:string;dismissed:{reason:string;by:string|null;at:string}|null}
+export interface Finding {key:string;kind:FindingKind;title:string;citations:{evidenceId:string;quote:string}[];inference:{source:'rule'|'ai';text:string}|null;nextTask:string;nextTaskDueAt?:string|null;dismissed:{reason:string;by:string|null;at:string}|null}
 export interface RoleRule {role:StakeholderRole;required:boolean;reason:string|null;by:string|null;at:string|null}
 
 const DEFAULT_REQUIRED:StakeholderRole[]=['decision_maker'];
@@ -26,8 +26,8 @@ function ruleFindings(source:DealEvidence,rules:RoleRule[],promises:Awaited<Retu
  const rolesQuote=source.evidence.find(item=>item.id===`${deal.id}#roles`)!.text;
  for(const rule of rules)if(rule.required&&!context.stakeholders.some(person=>person.roles.includes(rule.role)))
   findings.push({key:`absent-role:${rule.role}`,kind:'absent-role',title:`No contact is recorded as ${roleLabel(rule.role)} on this deal`,citations:[{evidenceId:`${deal.id}#roles`,quote:rolesQuote}],inference:null,nextTask:`Ask ${primary?.name??primary?.email??'your contact'} who acts as ${roleLabel(rule.role)} and record them on the deal`,dismissed:null});
- for(const line of promises)findings.push({key:`missed-promise:${line.id}`,kind:'missed-promise',title:`${line.detail}: ${line.title}`,citations:[{evidenceId:line.id,quote:line.title}],inference:null,nextTask:`Follow up on “${line.title}”`,dismissed:null});
- for(const taskId of source.overdueTasks){const task=source.evidence.find(item=>item.id===taskId)!;findings.push({key:`missed-promise:task:${taskId}`,kind:'missed-promise',title:`Task past its due time: ${task.text}`,citations:[{evidenceId:taskId,quote:task.text}],inference:null,nextTask:`Complete or reschedule “${task.text}”`,dismissed:null});}
+ for(const line of promises)findings.push({key:`missed-promise:${line.id}`,kind:'missed-promise',title:`${line.detail}: ${line.title}`,citations:[{evidenceId:line.id,quote:line.title}],inference:null,nextTask:`Follow up on “${line.title}”`,nextTaskDueAt:line.dueAt,dismissed:null});
+ for(const taskId of source.overdueTasks){const task=source.evidence.find(item=>item.id===taskId)!;findings.push({key:`missed-promise:task:${taskId}`,kind:'missed-promise',title:`Task past its due time: ${task.text}`,citations:[{evidenceId:taskId,quote:task.text}],inference:null,nextTask:`Complete or reschedule “${task.text}”`,nextTaskDueAt:task.occurredAt,dismissed:null});}
  const stageEvidence=source.evidence.find(item=>item.id===source.stage.evidenceId)!,days=Math.floor((now.getTime()-Date.parse(source.stage.since))/86400000);
  const repliedSince=source.evidence.some(item=>item.label==='Customer reply'&&item.occurredAt!==null&&item.occurredAt>=source.stage.since);
  if(days>source.stage.intervalDays&&!repliedSince)findings.push({key:`stalled:${source.stage.evidenceId}`,kind:'stalled',title:`No stage change for ${days} days`,citations:[{evidenceId:source.stage.evidenceId,quote:stageEvidence.text}],
@@ -46,10 +46,10 @@ function ruleFindings(source:DealEvidence,rules:RoleRule[],promises:Awaited<Retu
 export async function dealRisks(db:D1Database,id:string,now=new Date()){
  const [source,policy,state]=await Promise.all([dealEvidence(db,id),briefPolicy(db),decisions(db,id)]);
  // Overdue promises on this deal or its evidence become cited evidence themselves.
- const promises=source.deal.lifecycle==='open'?(await promiseLines(db,now,policy,200)).filter(line=>line.records.some(record=>record.type==='opportunity'&&record.id===id)||source.evidence.some(item=>item.id===line.evidence.id)):[];
+ const promises=source.deal.lifecycle==='open'?(await promiseLines(db,now,policy,200,id)).filter(line=>line.records.some(record=>record.type==='opportunity'&&record.id===id)||source.evidence.some(item=>item.id===line.evidence.id)):[];
  for(const line of promises)source.evidence.push({id:line.id,ref:line.evidence.id,label:'Overdue promise, due',text:line.title,occurredAt:line.dueAt??line.occurredAt,confidence:'observed',href:'fixed' in line.link?line.link.fixed:`/app/opportunities/${id}`});
  const findings=source.deal.lifecycle==='open'?ruleFindings(source,state.rules,promises,now):[];
- return {deal:source.deal,evidence:source.evidence,rules:state.rules,findings:applyDismissals(findings,state.dismissed),dismissed:state.dismissed};
+ return {deal:source.deal,evidence:source.evidence,rules:state.rules,findings:applyDismissals(findings.map(finding=>({...finding,nextTaskDueAt:finding.nextTaskDueAt??null})),state.dismissed),dismissed:state.dismissed};
 }
 export function applyDismissals(findings:Finding[],dismissed:Map<string,NonNullable<Finding['dismissed']>>){return findings.map(finding=>({...finding,dismissed:dismissed.get(finding.key)??null}));}
 export {decisions};

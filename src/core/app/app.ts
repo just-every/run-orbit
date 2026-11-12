@@ -1,5 +1,6 @@
 import {zoomSettingsRoutes,zoomMeetingRoutes} from '../features/zoom/routes';
 import {zoomWebhookRoutes} from '../features/zoom/webhook';
+import type {AgentDoor} from '../../base/modules/agent-door/index.ts';
 import {workflowRoutes} from '../features/workflows/routes';
 import {directNotificationAction,notificationDatabase} from '../features/notifications/direct-action';
 import {collectWorkflowRuns} from '../features/workflows/engine';
@@ -63,7 +64,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   input={...input,database:notificationDatabase(input.database)};
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
@@ -190,7 +191,7 @@ export function createApp(input: { clock?:Clock; assets: AssetStore; database: D
   app.route("/api/v1/assistance", createAssistanceRoutes(input.database,input.aiProvider));
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
   app.route("/api/v1/review", createReviewRoutes(input.database));
-  app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider));
+  app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider,input.agentDoor));
   app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route('/api/v1/library',createLibraryRoutes(input.database));
