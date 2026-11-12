@@ -32,7 +32,7 @@ export function OperatorRemovalReview({operator,operators,onCancel,onRemoved}:{o
      <option value="choose">Choose a handover</option><option value="unassigned">Explicitly leave unassigned</option>
      {operators.filter(o=>o.status==='active'&&!o.collaborator&&o.id!==operator.id).map(o=><option key={o.id} value={o.id}>{o.display_name}</option>)}
     </select>
-   </label>:<p>No open work in this set.</p>}
+   </label>:<p>{key==='contacts'||key==='companies'?'No owned records in this set.':'No open work in this set.'}</p>}
   </section>):<p>Loading owned work…</p>}
   {data?<p>{data.scheduledMessages.length} scheduled message(s) will be cancelled.</p>:null}
   {error?<p role="alert">{error} <button disabled={busy} onClick={()=>void load()}>Reload removal review</button></p>:null}

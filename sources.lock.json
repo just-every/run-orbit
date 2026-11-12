@@ -2447,7 +2447,7 @@
       "executable": false
     },
     "newtests/t096/forms-mapped-journey.ts": {
-      "sha256": "9f9045988c0bdc12941d05f8f536dbfc3c8c103ed7c27a318667d9be981dccbb",
+      "sha256": "f63ad062c66400ba608b572de7c84550605def1fec0f6bb60499280b0da3e906",
       "executable": false
     },
     "newtests/t096/forms-native.test.ts": {
@@ -6839,7 +6839,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/operator-removal-review.tsx": {
-      "sha256": "b13e7a8c14fee53575b13228c728e69cf27dba2a5c17ea81bb008f68cf163500",
+      "sha256": "a0f1b20c4413eabc19850f7cafcc89a4ecb740216188578a48feac65316c3aa8",
       "executable": false
     },
     "src/core/features/operator/ui/operator-settings.tsx": {
@@ -7143,7 +7143,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/settings/team.tsx": {
-      "sha256": "13db7969d8a4addd8ed524d94f6ce7300af96d6a80311a293bc73e235443c0af",
+      "sha256": "ffc2c57f62989eb79d8add205c69d21cca86e14595e912267eb850e7ca90977d",
       "executable": false
     },
     "src/core/features/operator/ui/settings/use-workspace-settings.ts": {
@@ -7483,7 +7483,7 @@
       "executable": false
     },
     "src/core/features/ownership/removal.ts": {
-      "sha256": "a7522916ef6df8e1c579f2a5da86defac6d83f5913949d00a9e5b36f27d6fd82",
+      "sha256": "60a3ba9a0807f286a6df25b3e80904dbb3c2e26e11b6e20a0543bb804b45b001",
       "executable": false
     },
     "src/core/features/ownership/repository.ts": {
@@ -10411,7 +10411,7 @@
       "executable": false
     },
     "tests/e2e/removal-handover.mjs": {
-      "sha256": "5ecca5312169bca8c593b45a1d0509d922b1b2cf2dde8cfd02dadaba04c532f4",
+      "sha256": "da715e94fb4f50bb146978c800e05ef6aeec31fec4687a54527dfb9e9742e23f",
       "executable": false
     },
     "tests/e2e/stale-review.spec.mjs": {
