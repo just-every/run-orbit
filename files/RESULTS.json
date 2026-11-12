@@ -1,0 +1,132 @@
+{
+  "branch": "cloud/main-orbit-record-defaults-1-c1",
+  "checks": {
+    "contractGenerator": {
+      "file": "contract-check-after-rebase.log",
+      "status": "passed"
+    },
+    "coreRegressions": {
+      "cases": 3,
+      "file": "core-fixture-retry.log",
+      "status": "passed"
+    },
+    "manualBrowserProof": {
+      "pageErrors": [],
+      "receipts": [
+        {
+          "assignedDeal": "01M777RS3QFA5TPA3FHYHQ6B1H",
+          "chosenOwner": "01M777M02CM4CRKW6JKZ5KESX2",
+          "contact": "01M777R3FHRP8466JZRHJ6NGWV",
+          "defaultOwner": null,
+          "existingContactCompany": null,
+          "listLabels": [
+            "No company",
+            "Unassigned"
+          ],
+          "newContactCompany": null,
+          "pipelineLabels": [
+            "No company",
+            "Unassigned"
+          ],
+          "reloadPreserves": true,
+          "unassignedDeal": "01M777R3FHYQW6PZNYPA4BJHPB",
+          "width": 1440
+        },
+        {
+          "assignedDeal": "01M777SFE5JVJN012RKC33T73T",
+          "chosenOwner": "01M777M02CM4CRKW6JKZ5KESX2",
+          "contact": "01M777S41JVPNASWW1E6R9N23A",
+          "defaultOwner": null,
+          "existingContactCompany": null,
+          "listLabels": [
+            "No company",
+            "Unassigned"
+          ],
+          "newContactCompany": null,
+          "pipelineLabels": [
+            "No company",
+            "Unassigned"
+          ],
+          "reloadPreserves": true,
+          "unassignedDeal": "01M777S41JS7RV0VEEEN55175P",
+          "width": 390
+        }
+      ],
+      "screens": 12,
+      "status": "passed",
+      "viewports": [
+        1440,
+        390
+      ]
+    },
+    "priorSessionUpgrade": {
+      "file": "core-targeted.log",
+      "note": "Other cases in this initial attempt timed out before assertions; retries retained separately.",
+      "status": "passed"
+    },
+    "rerRegressions": {
+      "completedCases": 5,
+      "file": "rer-regressions.log",
+      "status": "passed"
+    },
+    "slackEnclosingLocalCase": {
+      "changedProductToBypass": false,
+      "file": "slack-regression-retry.log",
+      "laterFailure": "archive export 503 client_ip_unavailable after ten-minute email proof freshness window expired",
+      "originalOwnerFieldAssertion": "passed",
+      "status": "failed"
+    },
+    "sourceLock": {
+      "file": "source-check-after-rebase.json",
+      "regenerationChangedTree": false,
+      "status": "passed"
+    },
+    "touchedRecords": {
+      "file": "records-touched-final.log",
+      "status": "passed"
+    },
+    "typecheck": {
+      "file": "typecheck-node22.log",
+      "node": "22.20.0",
+      "status": "passed"
+    },
+    "workbenchBrowser": {
+      "file": "workbench-browser-final.log",
+      "status": "passed",
+      "vmOnlyTimingAllowance": true
+    }
+  },
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170987177",
+    "id": 43170987177,
+    "name": "Verify",
+    "priorFailedPolls": 1,
+    "status": "completed",
+    "totalBudgetCalls": 9
+  },
+  "claims": {
+    "RECORD-001": "PARTIAL",
+    "RECORD-007": "PARTIAL"
+  },
+  "clauseStatusChanges": [],
+  "contractAndViewsEqualMain": true,
+  "head": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "mergeCommits": 0,
+  "parent": "a8f2deb844acfdefa84bae782f5f4c22299200c6",
+  "pr": null,
+  "productCommits": 1,
+  "publicationScan": "fleet Mac lander; not available in cloud",
+  "push": "passed",
+  "pushReceipt": "product-push.log",
+  "recordedAt": "2026-11-12T07:21:26.493910+00:00",
+  "repository": "just-every/run-orbit",
+  "testBudget": {
+    "after": 200,
+    "before": 200,
+    "cases": 198,
+    "qualifications": 2
+  },
+  "worktreeClean": true
+}

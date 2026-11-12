@@ -1,0 +1,31 @@
+✖ failing tests:
+2026-11-12T04:17:45.7663531Z 
+2026-11-12T04:17:45.7665646Z test at tests/core/source-onboarding.test.ts:1:2178
+2026-11-12T04:17:45.7668358Z ✖ NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (83695.034318ms)
+2026-11-12T04:17:45.7670075Z   AssertionError [ERR_ASSERTION]: won stores only permitted fields and values
+2026-11-12T04:17:45.7670316Z   + actual - expected
+2026-11-12T04:17:45.7670455Z   
+2026-11-12T04:17:45.7670563Z     {
+2026-11-12T04:17:45.7670771Z       dueDate: null,
+2026-11-12T04:17:45.7670964Z       eventKind: 'won',
+2026-11-12T04:17:45.7671247Z       link: 'https://orbit.test/app/opportunities/01M76ZG0WJR5X8GY171TSESFR1',
+2026-11-12T04:17:45.7671487Z   +   ownerDisplayName: null,
+2026-11-12T04:17:45.7671656Z   -   ownerDisplayName: 'Owner',
+2026-11-12T04:17:45.7671837Z       recordDisplayName: 'First customer',
+2026-11-12T04:17:45.7671998Z       stageFrom: null,
+2026-11-12T04:17:45.7672137Z       stageTo: null
+2026-11-12T04:17:45.7672263Z     }
+2026-11-12T04:17:45.7672369Z   
+2026-11-12T04:17:45.7672642Z       at proveSlackNotices (/home/runner/work/run-orbit/run-orbit/tests/support/slack-notices-proof.ts:76:11)
+2026-11-12T04:17:45.7673021Z       at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2026-11-12T04:17:45.7673470Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/core/source-onboarding.test.ts:138:2)
+2026-11-12T04:17:45.7673818Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:17:45.7674114Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:17:45.7674356Z     generatedMessage: false,
+2026-11-12T04:17:45.7674875Z     code: 'ERR_ASSERTION',
+2026-11-12T04:17:45.7675483Z     actual: { eventKind: 'won', link: 'https://orbit.test/app/opportunities/01M76ZG0WJR5X8GY171TSESFR1', recordDisplayName: 'First customer', stageFrom: null, stageTo: null, ownerDisplayName: null, dueDate: null },
+2026-11-12T04:17:45.7676426Z     expected: { eventKind: 'won', link: 'https://orbit.test/app/opportunities/01M76ZG0WJR5X8GY171TSESFR1', recordDisplayName: 'First customer', stageFrom: null, stageTo: null, ownerDisplayName: 'Owner', dueDate: null },
+2026-11-12T04:17:45.7676897Z     operator: 'deepStrictEqual',
+2026-11-12T04:17:45.7677049Z     diff: 'simple'
+2026-11-12T04:17:45.7677174Z   }
+2026-11-12T04:17:45.9191640Z 

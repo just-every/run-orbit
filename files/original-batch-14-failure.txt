@@ -1,0 +1,23 @@
+✖ failing tests:
+2026-11-12T04:20:17.6383519Z 
+2026-11-12T04:20:17.6383766Z test at tests/rer/identity.test.mjs:31:1
+2026-11-12T04:20:17.6384390Z ✖ AUTH-5 rer dev opens signed in, personas switch role and field access (73404.073072ms)
+2026-11-12T04:20:17.6384928Z   AssertionError [ERR_ASSERTION]: a collaborator sees only the owners of deals it reads
+2026-11-12T04:20:17.6385296Z   + actual - expected
+2026-11-12T04:20:17.6385495Z   
+2026-11-12T04:20:17.6385679Z   + []
+2026-11-12T04:20:17.6385848Z   - [
+2026-11-12T04:20:17.6386021Z   -   null
+2026-11-12T04:20:17.6386303Z   - ]
+2026-11-12T04:20:17.6386458Z   
+2026-11-12T04:20:17.6386890Z       at TestContext.<anonymous> (file:///home/runner/work/run-orbit/run-orbit/tests/rer/identity.test.mjs:101:10)
+2026-11-12T04:20:17.6387388Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:20:17.6387824Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:20:17.6388189Z     generatedMessage: false,
+2026-11-12T04:20:17.6388404Z     code: 'ERR_ASSERTION',
+2026-11-12T04:20:17.6388614Z     actual: [],
+2026-11-12T04:20:17.6388800Z     expected: [ null ],
+2026-11-12T04:20:17.6389029Z     operator: 'deepStrictEqual',
+2026-11-12T04:20:17.6389250Z     diff: 'simple'
+2026-11-12T04:20:17.6389431Z   }
+2026-11-12T04:20:17.7469939Z 

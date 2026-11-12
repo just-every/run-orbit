@@ -1,0 +1,8 @@
+d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660
+a8f2deb844acfdefa84bae782f5f4c22299200c6
+Keep manual deal choices explicit without changing assignment policies
+
+Allow manual opportunities with a contact and no company, and submit an explicit null owner when the form's Unassigned choice is retained. Keep chosen ownership and clear missing-association labels across deal views.
+
+Retain main's shared assignment policy for existing creation callers and use the existing settings endpoint for owner choices, preserving the workbench response and prior-session access contract. Extend existing creation checks without adding registrations.
+

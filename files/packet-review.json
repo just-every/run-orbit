@@ -1,0 +1,14 @@
+{
+  "selectedFiles": 59,
+  "regularFilesOnly": true,
+  "injectedSecretMatches": 0,
+  "screenshots": "synthetic local records only",
+  "excluded": [
+    "credentials",
+    "environment dumps",
+    "private gate material",
+    "symlinks",
+    "raw workflow archive"
+  ],
+  "finalSecretValueCheck": "passed"
+}

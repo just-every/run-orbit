@@ -1,0 +1,43 @@
+✖ failing tests:
+2026-11-12T04:29:23.4333958Z 
+2026-11-12T04:29:23.4334295Z test at tests/core/prior-auth-upgrade.test.ts:1:1749
+2026-11-12T04:29:23.4335748Z ✖ AUTH-5 prior-data upgrade keeps operator ids, access rows, invitations, grants and the Slate delegation on Base sign-in (19397.616077ms)
+2026-11-12T04:29:23.4336578Z   AssertionError [ERR_ASSERTION]: owner:workbench with the prior session
+2026-11-12T04:29:23.4336975Z   + actual - expected
+2026-11-12T04:29:23.4337226Z   ... Skipped lines
+2026-11-12T04:29:23.4337458Z   
+2026-11-12T04:29:23.4337660Z     {
+2026-11-12T04:29:23.4337867Z       body: {
+2026-11-12T04:29:23.4338095Z         companies: [
+2026-11-12T04:29:23.4338317Z           {
+2026-11-12T04:29:23.4338582Z             id: '01M4R6V2J06N0NA02GDD2PW0WK',
+2026-11-12T04:29:23.4338864Z   ...
+2026-11-12T04:29:23.4339062Z         ],
+2026-11-12T04:29:23.4339273Z   +     owners: [
+2026-11-12T04:29:23.4339487Z   +       {
+2026-11-12T04:29:23.4339742Z   +         id: '01M4R6RKK5A4YF6J4ZR0P09ZHJ',
+2026-11-12T04:29:23.4340048Z   +         name: 'Prior Owner'
+2026-11-12T04:29:23.4340301Z   +       },
+2026-11-12T04:29:23.4340512Z   +       {
+2026-11-12T04:29:23.4341133Z   +         id: '01M4R6TYDCTSVF8ZHZT4SYPPRN',
+2026-11-12T04:29:23.4341456Z   +         name: 'Prior Seller'
+2026-11-12T04:29:23.4341709Z   +       }
+2026-11-12T04:29:23.4341917Z   +     ],
+2026-11-12T04:29:23.4342149Z         pipelines: [
+2026-11-12T04:29:23.4342384Z           {
+2026-11-12T04:29:23.4342623Z             id: '00000000000000000000000001',
+2026-11-12T04:29:23.4342913Z             is_default: 1,
+2026-11-12T04:29:23.4343634Z             name: 'Sales pipeline'
+2026-11-12T04:29:23.4343925Z   
+2026-11-12T04:29:23.4344463Z       at TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/core/prior-auth-upgrade.test.ts:89:51)
+2026-11-12T04:29:23.4345161Z       at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2026-11-12T04:29:23.4345668Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:29:23.4346175Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:29:23.4346605Z     generatedMessage: false,
+2026-11-12T04:29:23.4346879Z     code: 'ERR_ASSERTION',
+2026-11-12T04:29:23.4347611Z     actual: { status: 200, body: { companies: [Array], contacts: [Array], stages: [Array], opportunities: [Array], pipelines: [Array], owners: [Array], mailConfigured: false } },
+2026-11-12T04:29:23.4348644Z     expected: { status: 200, body: { companies: [Array], contacts: [Array], stages: [Array], opportunities: [Array], mailConfigured: false, pipelines: [Array] } },
+2026-11-12T04:29:23.4349278Z     operator: 'deepStrictEqual',
+2026-11-12T04:29:23.4349631Z     diff: 'simple'
+2026-11-12T04:29:23.4349931Z   }
+2026-11-12T04:29:23.5826472Z 

@@ -1,0 +1,19 @@
+✖ failing tests:
+2026-11-12T04:22:08.2116535Z 
+2026-11-12T04:22:08.2118685Z test at tests/rer/operator-desktop.test.mjs:7:1
+2026-11-12T04:22:08.2119628Z ✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (202515.063063ms)
+2026-11-12T04:22:08.2120262Z   AssertionError [ERR_ASSERTION]: Fixture opportunity has a native operator owner for the user field.
+2026-11-12T04:22:08.2120983Z       at workflowValuesBrowserJourney (file:///home/runner/work/run-orbit/run-orbit/tests/rer/workflow-values-journey.mjs:19:9)
+2026-11-12T04:22:08.2121732Z       at async workflowBrowserJourney (file:///home/runner/work/run-orbit/run-orbit/tests/rer/workflow-journey.mjs:62:2)
+2026-11-12T04:22:08.2122678Z       at async operatorRouteJourney (file:///home/runner/work/run-orbit/run-orbit/tests/rer/operator-route-journey.mjs:16:17)
+2026-11-12T04:22:08.2123385Z       at async withOperatorWorkspace (file:///home/runner/work/run-orbit/run-orbit/tests/rer/operator-workspace.mjs:29:3)
+2026-11-12T04:22:08.2123908Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:22:08.2124372Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:22:08.2124739Z     generatedMessage: false,
+2026-11-12T04:22:08.2124973Z     code: 'ERR_ASSERTION',
+2026-11-12T04:22:08.2125183Z     actual: null,
+2026-11-12T04:22:08.2125376Z     expected: true,
+2026-11-12T04:22:08.2125571Z     operator: '==',
+2026-11-12T04:22:08.2125759Z     diff: 'simple'
+2026-11-12T04:22:08.2125947Z   }
+2026-11-12T04:22:08.3254335Z 

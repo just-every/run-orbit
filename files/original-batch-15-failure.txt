@@ -1,0 +1,24 @@
+✖ failing tests:
+2026-11-12T04:23:39.7771869Z 
+2026-11-12T04:23:39.7772548Z test at tests/core/capture-review.test.ts:1:416
+2026-11-12T04:23:39.7774492Z ✖ CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority (72726.13835ms)
+2026-11-12T04:23:39.7775776Z   AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+2026-11-12T04:23:39.7776187Z   + actual - expected
+2026-11-12T04:23:39.7776433Z   
+2026-11-12T04:23:39.7776652Z   + undefined
+2026-11-12T04:23:39.7776919Z   - '01M76Z8SDHD5K857X1TWV7JYGN'
+2026-11-12T04:23:39.7777199Z   
+2026-11-12T04:23:39.7777727Z       at workflowRecordJourney (/home/runner/work/run-orbit/run-orbit/tests/support/workflow-record-journey.ts:16:299)
+2026-11-12T04:23:39.7778427Z       at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2026-11-12T04:23:39.7779093Z       at async workflowJourney (/home/runner/work/run-orbit/run-orbit/tests/support/workflow-journey.ts:52:2)
+2026-11-12T04:23:39.7779882Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/core/capture-review.test.ts:97:5)
+2026-11-12T04:23:39.7780476Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:23:39.7780986Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:23:39.7781417Z     generatedMessage: true,
+2026-11-12T04:23:39.7781704Z     code: 'ERR_ASSERTION',
+2026-11-12T04:23:39.7781973Z     actual: undefined,
+2026-11-12T04:23:39.7782266Z     expected: '01M76Z8SDHD5K857X1TWV7JYGN',
+2026-11-12T04:23:39.7782580Z     operator: 'strictEqual',
+2026-11-12T04:23:39.7782842Z     diff: 'simple'
+2026-11-12T04:23:39.7783080Z   }
+2026-11-12T04:23:39.9483046Z 

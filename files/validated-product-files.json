@@ -1,0 +1,26 @@
+{
+  "sourceTree": "db9aba21e06f8ec7312c0069f4d6830ec34fc5a6",
+  "files": {
+    "sources.lock.json": "e26b37d5dadfe874c187a2c7e8c98907a841f235a709245e23c2449f53253a63",
+    "src/core/features/analytics/group-labels.ts": "6209593902667d90440d3a072acce2a49156e5a22bf7c67c7cb067249ee8f931",
+    "src/core/features/analytics/sales-view.ts": "d5c14a54fa1a9fac22dd5ade76ec09436de34cb5b119405fe90736bd715d4ee7",
+    "src/core/features/operator/ui/create-opportunity-page.tsx": "e44c820c2ad7ecbd11aab4b7b6b7ddae4be51f7b2376284d14e79d83fa69a6cd",
+    "src/core/features/operator/ui/now-page.tsx": "19cab848e1b2c9b50470d6c59e00b0aa3dd622e075ab48de12a2840bf193aa77",
+    "src/core/features/operator/ui/pipeline-board.tsx": "5b0262ed5a75813a2638f20fe2b7eea4d4a40df24cc9a0d0434505bfd585f7a7",
+    "src/core/features/operator/ui/record-link-picker.tsx": "69231fecf4cb0d39933087948e699baec425673819cb62ccbaadc4e68af39385",
+    "src/core/features/operator/ui/record/opportunity-record.tsx": "f34ad4fdc6ab82ee4867dad6ecbc8d5f9a5fbc79fc1db6fb4fff23d2df37a66c",
+    "src/core/features/operator/ui/records-list.tsx": "6b801dd2433b699b478dc07bf0a1f4224a8e9a425fed41cb97576cf4d6dbd9a6",
+    "src/core/features/workbench/repository.ts": "d414a5625e274b77648b61323746e4e883f6c655b9d4be75284cfd464ec6d583",
+    "src/core/features/workbench/routes.ts": "e549fb2cd7a9950f344dca83f1b986aa95e0dde9569943bf5dfaea7c4faf7d46",
+    "tests/e2e/opportunity-defaults.mjs": "88b31a7a3bcef1bb33a85e1bd78115349cd441dadb06946e8e181947d5d40dc9",
+    "tests/e2e/workbench.spec.mjs": "c6fd29f24b965e5853f030b8108a07f5946bd393a0ae5277541ba5132787f232",
+    "tests/rer/operator-actions-journey.mjs": "32640844dddd4e6539fa340b42482a591b178da2b02c3090a820d5f3d90861c7",
+    "tests/support/opportunity-creation.ts": "61a43e9c854df66ffda14f66aa0d5c22dc3d7f6f752813a5dca2003dd371dd71"
+  },
+  "browserProof": "Executed before commit on these final product sources; VM harness files are separately retained.",
+  "head": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "rebasedMain": "a8f2deb844acfdefa84bae782f5f4c22299200c6",
+  "finalTree": "db9aba21e06f8ec7312c0069f4d6830ec34fc5a6",
+  "rebaseDrift": "Contract documents and source-lock entries only; product/runtime/tests unchanged.",
+  "preRebaseValidatedTree": "7250d625a7af56d73499a36d111faec95f65ee35"
+}

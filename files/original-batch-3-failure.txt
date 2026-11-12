@@ -1,0 +1,22 @@
+✖ failing tests:
+2026-11-12T04:29:01.9438807Z 
+2026-11-12T04:29:01.9439410Z test at tests/core/managed-owner.test.ts:1:9189
+2026-11-12T04:29:01.9442412Z ✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks agree across policy and native doors (62935.365569ms)
+2026-11-12T04:29:01.9444678Z   AssertionError [ERR_ASSERTION]: The other responsible person still receives one notice on replay
+2026-11-12T04:29:01.9445612Z   
+2026-11-12T04:29:01.9445972Z   2 !== 1
+2026-11-12T04:29:01.9446348Z   
+2026-11-12T04:29:01.9447424Z       at notificationDirectProof (/home/runner/work/run-orbit/run-orbit/tests/support/notification-direct-proof.ts:28:9)
+2026-11-12T04:29:01.9448982Z       at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2026-11-12T04:29:01.9450440Z       at async agentDoorProof (/home/runner/work/run-orbit/run-orbit/tests/support/agent-door-proof.ts:181:5)
+2026-11-12T04:29:01.9452543Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/core/managed-owner.test.ts:167:3)
+2026-11-12T04:29:01.9454300Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:29:01.9455390Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:29:01.9456044Z     generatedMessage: false,
+2026-11-12T04:29:01.9456337Z     code: 'ERR_ASSERTION',
+2026-11-12T04:29:01.9456594Z     actual: 2,
+2026-11-12T04:29:01.9456810Z     expected: 1,
+2026-11-12T04:29:01.9457063Z     operator: 'strictEqual',
+2026-11-12T04:29:01.9457329Z     diff: 'simple'
+2026-11-12T04:29:01.9457550Z   }
+2026-11-12T04:29:02.0709288Z 

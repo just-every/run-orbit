@@ -1,0 +1,56 @@
+{
+  "main": "a8f2deb844acfdefa84bae782f5f4c22299200c6",
+  "head": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "files": [
+    {
+      "path": "CONTRACT.md",
+      "equalsOriginMain": true,
+      "sha256": "1b3081d8a331f26419ffb9bb74764b06b62f254cb719a0222c0a85777c94ea3c"
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "equalsOriginMain": true,
+      "sha256": "4a5fb23ff0b7f36c21cedf4e7e7e7b876c69b2a4565147a8bb565c5615d944fd"
+    },
+    {
+      "path": "docs/CLAIMS.md",
+      "equalsOriginMain": true,
+      "sha256": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d"
+    },
+    {
+      "path": "src/ext/records.ts",
+      "equalsOriginMain": true,
+      "sha256": "2444349b7126a0dbe58ecad829c730fc8cf10a9520b1af85b8669b57d0f560b6"
+    },
+    {
+      "path": "tests/support/slack-notices-proof.ts",
+      "equalsOriginMain": true,
+      "sha256": "8ebbd33a1bba7effe1d7d35b3e8d3634d1d445f548b896fbb1a73d51be6fff2b"
+    },
+    {
+      "path": "tests/core/prior-auth-upgrade.test.ts",
+      "equalsOriginMain": true,
+      "sha256": "b7e7c64be7e2ba2b224e85729c413243f546cdec9ab4cb8d74ca1ed5def16ae2"
+    },
+    {
+      "path": "tests/rer/workflow-values-journey.mjs",
+      "equalsOriginMain": true,
+      "sha256": "e794804bd4716f5e112e1d2192fef0472e0a6cbc73db2354f7d89cd58f0e37e2"
+    },
+    {
+      "path": "tests/rer/identity.test.mjs",
+      "equalsOriginMain": true,
+      "sha256": "e0fdd2a719b58cc3ad5a5266cf8bd384807d157b1e1177d0012c6b6a2de82250"
+    },
+    {
+      "path": "tests/support/notification-direct-proof.ts",
+      "equalsOriginMain": true,
+      "sha256": "5aa8b43f29ae37c83c8a8cd4d968c72a4742a1c815c7099bc27b52312233a2c4"
+    },
+    {
+      "path": "tests/support/workflow-record-journey.ts",
+      "equalsOriginMain": true,
+      "sha256": "0eb87505c3cf51177f8ffdf48aea51f5c47a8ae79f801a13d4739ae10c46231f"
+    }
+  ]
+}

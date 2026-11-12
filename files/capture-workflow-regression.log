@@ -1,0 +1,30 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority
+not ok 1 - CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority
+  ---
+  duration_ms: 60193.353958
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/tests/core/capture-review.test.ts:1:416'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/tests/support/isolated-database.ts:11:3)
+    async captureFixture (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/tests/support/capture-fixture.ts:16:20)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/tests/core/capture-review.test.ts:10:13)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 67014.838312

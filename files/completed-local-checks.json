@@ -1,0 +1,61 @@
+{
+  "base": "bd9c4b5223b28c5c90923b2c8b22bfca2daaf42b",
+  "checks": [
+    {
+      "file": "typecheck-node22.log",
+      "command": "pnpm run typecheck",
+      "status": "passed",
+      "sha256": "27ea74ca28fb8f02b9f4c997704075ebb4ae88c3697be0cfa8b7160d02a2d39e"
+    },
+    {
+      "file": "workbench-browser-final.log",
+      "command": "Playwright workbench.spec.mjs via VM runtime configuration",
+      "status": "passed",
+      "sha256": "4345f2f354d475470d84e63301ca89d7bc6a83740bd424753972ba1eef80fe96"
+    },
+    {
+      "file": "contract-check-final.log",
+      "command": "node src/base/contract-docs.mjs check",
+      "status": "passed",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "file": "source-check-final.json",
+      "status": "passed"
+    },
+    {
+      "command": "node ../browser-proof.mjs",
+      "file": "browser-proof.json",
+      "status": "passed",
+      "viewports": [
+        1440,
+        390
+      ],
+      "screens": 12,
+      "pageErrors": []
+    },
+    {
+      "command": "tsx --test tests/core/records-search.test.ts with VM fixture timeout",
+      "file": "records-touched-final.log",
+      "status": "passed"
+    },
+    {
+      "command": "tsx --test capture-review, managed-owner, records-search with VM fixture timeout",
+      "file": "core-fixture-retry.log",
+      "status": "passed",
+      "cases": 3
+    },
+    {
+      "command": "node --test identity, operator-actions, operator-desktop, operator-phone",
+      "file": "rer-regressions.log",
+      "status": "passed",
+      "cases": 5
+    }
+  ],
+  "testCountBefore": 200,
+  "testCountAfter": 200,
+  "candidateCommitted": true,
+  "head": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "finalParent": "a8f2deb844acfdefa84bae782f5f4c22299200c6"
+}

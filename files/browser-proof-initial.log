@@ -1,0 +1,68 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true }) with timeout 5000ms
+  - waiting for getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true })
+
+    at captureRawStack (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    at callMatcherAsStep (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    at Object.toBeVisible (/home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    at /home/agent/rer-consolidation/work/main-orbit-record-defaults-1-c1/browser-proof.mjs:41:67 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('heading', { name: 'Synthetic company-free deal 1440', exact: true })"
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- link "Skip to content":\n' +
+      '  - /url: "#operator-main"\n' +
+      '- banner:\n' +
+      '  - link "Orbit home":\n' +
+      '    - /url: /app\n' +
+      '    - text: Orbit Dev\n' +
+      '  - navigation "Main menu":\n' +
+      '    - link "NOW":\n' +
+      '      - /url: /app\n' +
+      '    - link "Brief":\n' +
+      '      - /url: /app/brief\n' +
+      '    - link "Tasks":\n' +
+      '      - /url: /app/tasks\n' +
+      '    - link "Records":\n' +
+      '      - /url: /app/opportunities\n' +
+      '    - link "Reports":\n' +
+      '      - /url: /app/reports\n' +
+      '    - link "Notifications":\n' +
+      '      - /url: /app/notifications\n' +
+      '  - link "Settings":\n' +
+      '    - /url: /app/settings/workspace\n' +
+      '  - button "Sign out"\n' +
+      '- main:\n' +
+      '  - heading "Opportunity" [level=1]\n' +
+      '  - status: Loading opportunity…'
+  }
+}
+
+Node.js v22.20.0

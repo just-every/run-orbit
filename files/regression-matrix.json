@@ -1,0 +1,50 @@
+{
+  "originalRun": 43152719971,
+  "candidateRun": 43170987177,
+  "candidateHead": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "assertionSourcesUnchanged": true,
+  "rows": [
+    {
+      "originalBatch": "batch-3",
+      "assertion": "The other responsible person still receives one notice on replay",
+      "local": "passed",
+      "receipt": "core-fixture-retry.log"
+    },
+    {
+      "originalBatch": "batch-9",
+      "assertion": "owner:workbench with the prior session",
+      "local": "passed",
+      "receipt": "core-targeted.log"
+    },
+    {
+      "originalBatch": "batch-12",
+      "assertion": "won stores only permitted fields and values",
+      "local": "passed before later archive freshness failure in enclosing case",
+      "receipt": "slack-regression-retry.log"
+    },
+    {
+      "originalBatch": "batch-13",
+      "assertion": "Fixture opportunity has a native operator owner for the user field.",
+      "local": "passed",
+      "receipt": "rer-regressions.log"
+    },
+    {
+      "originalBatch": "batch-14",
+      "assertion": "a collaborator sees only the owners of deals it reads",
+      "local": "passed",
+      "receipt": "rer-regressions.log"
+    },
+    {
+      "originalBatch": "batch-15",
+      "assertion": "workflow copy retains native operator ID in custom user field",
+      "local": "passed",
+      "receipt": "core-fixture-retry.log"
+    }
+  ],
+  "fullCaseCI": {
+    "status": "completed",
+    "conclusion": "success",
+    "run": 43170987177,
+    "head": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660"
+  }
+}

@@ -1,0 +1,6 @@
+CI {"apiCallsInWatcher": 1, "conclusion": null, "head_sha": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170987177", "id": 43170987177, "name": "Verify", "priorApiCalls": 2, "status": "in_progress"}
+CI {"apiCallsInWatcher": 2, "conclusion": null, "head_sha": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170987177", "id": 43170987177, "name": "Verify", "priorApiCalls": 2, "status": "in_progress"}
+CI {"apiCallsInWatcher": 3, "conclusion": null, "head_sha": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170987177", "id": 43170987177, "name": "Verify", "priorApiCalls": 2, "status": "in_progress"}
+CI {"apiCallsInWatcher": 4, "conclusion": null, "head_sha": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43170987177", "id": 43170987177, "name": "Verify", "priorApiCalls": 2, "status": "in_progress"}
+CI_ERROR call=5 exit=1; diagnostic retained privately
+CI_PENDING head=d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660 calls=5

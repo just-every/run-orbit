@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "screens": 12,
+  "viewports": [
+    1440,
+    390
+  ],
+  "receipts": [
+    {
+      "width": 1440,
+      "unassignedDeal": "01M777R3FHYQW6PZNYPA4BJHPB",
+      "assignedDeal": "01M777RS3QFA5TPA3FHYHQ6B1H",
+      "contact": "01M777R3FHRP8466JZRHJ6NGWV",
+      "newContactCompany": null,
+      "existingContactCompany": null,
+      "defaultOwner": null,
+      "chosenOwner": "01M777M02CM4CRKW6JKZ5KESX2",
+      "reloadPreserves": true,
+      "listLabels": [
+        "No company",
+        "Unassigned"
+      ],
+      "pipelineLabels": [
+        "No company",
+        "Unassigned"
+      ]
+    },
+    {
+      "width": 390,
+      "unassignedDeal": "01M777S41JS7RV0VEEEN55175P",
+      "assignedDeal": "01M777SFE5JVJN012RKC33T73T",
+      "contact": "01M777S41JVPNASWW1E6R9N23A",
+      "newContactCompany": null,
+      "existingContactCompany": null,
+      "defaultOwner": null,
+      "chosenOwner": "01M777M02CM4CRKW6JKZ5KESX2",
+      "reloadPreserves": true,
+      "listLabels": [
+        "No company",
+        "Unassigned"
+      ],
+      "pipelineLabels": [
+        "No company",
+        "Unassigned"
+      ]
+    }
+  ],
+  "pageErrors": []
+}
