@@ -1,5 +1,6 @@
 import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
+import {agentDoorAIInputProof} from './agent-door-ai-input-proof';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
@@ -18,6 +19,7 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
+import {agentDoorGraphProof} from './agent-door-graph-proof';
 import type {CaptureSecurityProofContext} from './agent-door-capture-security-proof';
 import {agentDoorStalledRiskProof} from './agent-door-stalled-risk-proof';
 import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
@@ -221,7 +223,9 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
     await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
+    await agentDoorAIInputProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
+    await agentDoorGraphProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await captureSecurityProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});

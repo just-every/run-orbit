@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { exerciseUnassignedOpportunity } from './opportunity-defaults.mjs';
 import { authenticateOperator } from './operator-session.mjs';
 test('a real account, attributed event and durable reviewed draft can be created',async({page,context})=>{
+  test.setTimeout(60_000);
   await authenticateOperator(context);
   const failures=[];page.on('pageerror',error=>failures.push(error.message));
   await page.goto('/app/opportunities');
@@ -18,7 +20,7 @@ test('a real account, attributed event and durable reviewed draft can be created
   expect(await page.evaluate(()=>performance.timeOrigin)).toBe(timeOrigin);
   const opportunityId=new URL(page.url()).pathname.split('/').pop();
   const createdResponse=await page.request.get(`/api/v1/records/opportunity/${opportunityId}`),created=await createdResponse.json();
-  expect(created.record.owner_id).toBeTruthy();
+  expect(created.record.owner_id).toBeNull();
   const companiesBefore=(await (await page.request.get('/api/v1/records/company')).json()).records;
   const contactsBefore=(await (await page.request.get('/api/v1/records/contact')).json()).records;
   await page.goto('/app/opportunities/new');
@@ -27,15 +29,18 @@ test('a real account, attributed event and durable reviewed draft can be created
   await page.getByRole('searchbox',{name:'Find contacts',exact:true}).fill(created.contacts[0].email);
   await page.getByRole('list',{name:'Contact search results',exact:true}).getByRole('button').filter({hasText:created.contacts[0].email}).click();
   await page.getByLabel('Opportunity title',{exact:true}).fill(label+' existing');
+  const ownerId=await page.getByLabel('Owner',{exact:true}).locator('option').nth(1).getAttribute('value');
+  await page.getByLabel('Owner',{exact:true}).selectOption(ownerId);
   await page.getByRole('button',{name:'Save opportunity',exact:true}).click();
   await expect(page.getByRole('heading',{name:label+' existing',exact:true})).toBeVisible();
   const linkedId=new URL(page.url()).pathname.split('/').pop();
   const linked=(await (await page.request.get(`/api/v1/records/opportunity/${linkedId}`)).json());
   expect(linked.record.company_id).toBe(created.record.company_id);
   expect(linked.contacts.map(contact=>contact.id)).toEqual(created.contacts.map(contact=>contact.id));
-  expect(linked.record.owner_id).toBe(created.record.owner_id);
+  expect(linked.record.owner_id).toBe(ownerId);
   expect((await (await page.request.get('/api/v1/records/company')).json()).records.length).toBe(companiesBefore.length);
   expect((await (await page.request.get('/api/v1/records/contact')).json()).records.length).toBe(contactsBefore.length);
+  await exerciseUnassignedOpportunity(page,created.contacts[0],label);
   // OR3+OR4: one page per deal; its value saves when left, with the PATCH carrying the value it replaces.
   await page.goto(`/app/opportunities/${opportunityId}`);
   const value=page.getByTestId('record-details').getByLabel('Value',{exact:true});

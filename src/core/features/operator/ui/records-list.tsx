@@ -4,7 +4,7 @@ import {formatCurrency} from './formatters';
 import {recordPath} from './records-query';
 import type {CustomerRecord,RecordKind} from './records-api';
 
-export function opportunityMeta(record:CustomerRecord,settings:any){return [record.company_name,record.stage_name??settings?.stages.find((stage:any)=>stage.id===record.stage_id)?.name,record.value_cents!==null&&record.value_cents!==undefined&&settings?.workspace?formatCurrency(record.value_cents,settings.workspace):undefined].filter(Boolean).join(' · ');}
+export function opportunityMeta(record:CustomerRecord,settings:any){return [record.company_id===null?'No company':record.company_name,record.owner_id===null?'Unassigned':record.owner_id?settings?.operators?.find((operator:any)=>operator.id===record.owner_id)?.display_name??'Owner unavailable':undefined,record.stage_name??settings?.stages.find((stage:any)=>stage.id===record.stage_id)?.name,record.value_cents!==null&&record.value_cents!==undefined&&settings?.workspace?formatCurrency(record.value_cents,settings.workspace):undefined].filter(Boolean).join(' · ');}
 const closedLabel=(record:CustomerRecord)=>record.lifecycle==='won'?'Won':record.lifecycle==='lost'?'Lost':null;
 export function ClosedDealBadge({record}:{record:CustomerRecord}){const label=closedLabel(record);return label?<b className="r-chip">{label}</b>:null;}
 /** Each row is a link to its record, so a middle click opens it in a new tab and Back returns to the list. */

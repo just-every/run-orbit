@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.7 — 2026-11-12
+
+Orbit 0.4.7 adds cited account-correction proposals for review, makes agent draft content consistent with native drafts, and explains Slack setup and agent capabilities more clearly. Orbit still runs on rer 0.2.107.
+
+- **Review cited account corrections one at a time.** With fresh consent for selected company, contact, deal and captured-mail evidence, an agent can propose a contact's job title, a deal's close date and a question about the missing decision-maker. Each appears in native review with its source quote and who proposed it. Accept, edit or decline each separately; accepting the question acknowledges it without creating a contact or assigning a stakeholder role. Proposing changes never applies them automatically or changes contactability. Disconnecting or replacing the evidence source withdraws its pending proposals; reconnecting does not revive them. A changed field makes related drafts stale.
+- **Agent drafts use the same whitespace handling as native drafts.** Creating or editing a manual draft through the agent door now trims the subject and body, refuses content that is only whitespace, and shows the normalized content in review. The existing limits of each interface still apply. Saving a draft grants no approval to send it.
+- **Slack setup explains what it needs before you connect.** Settings lists required and optional permissions, callback addresses, event subscriptions, permitted notice fields, how credentials are held, and the risk that channel membership can change. This information remains visible after disconnection. Credentials stay out of archives; reconnecting requires confirming channels and mappings and does not replay old notices or actions.
+- **Workflow previews and history explain their effects.** Previews separate internal changes from external webhooks. Execution history shows linked record names, when events occurred and when versions were activated. An activity logged after activation but occurring before it records a skipped outcome without running actions; activities already recorded before activation are not replayed.
+- **The agent guide matches discovery more closely.** Installation facts, person-only screens, device behavior and reviewed import doors have explicit explanations in discovery and the guide. These descriptions add no new actions and do not claim complete agent coverage.
+
+Account proposals remain limited to selected written evidence and these three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. The earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt.
+
+Update from 0.4.6 in place after taking a private backup. One migration preserves the existing capture-proposal rows while adding question proposals and withdrawal handling. It refuses unexpected customizations of that table for review; resolve those before updating. Older native archive generations remain recognized. No new provider setting is required.
+
 ## 0.4.6 — 2026-11-11
 
 Orbit 0.4.6 erases more of what your agents recorded when you erase a person or a contact, explains a missing mail sender before you approve a draft, stops notifying you about your own actions, and carries the fixes found by people trying Orbit for the first time. Orbit still runs on rer 0.2.107.

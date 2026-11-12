@@ -114,6 +114,8 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 
 | Tool | Scope | Possible classes |
 | --- | --- | --- |
+| `orbit.assistance.generate` | `drafts:write` | external, sensitive |
+| `orbit.assistance.preview` | `drafts:read` | standard, sensitive |
 | `orbit.briefs.read` | `briefs:read` | standard |
 | `orbit.capture.address_read` | `capture:read` | standard |
 | `orbit.capture.address_rotate` | `capture:write` | security |
@@ -123,6 +125,7 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.events.list` | `events:read` | standard |
 | `orbit.forecasts.read` | `forecasts:read` | standard, sensitive |
 | `orbit.forecasts.update` | `forecasts:write` | standard |
+| `orbit.graph.propose` | `graph:write` | standard |
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
 | `orbit.meetings.read` | `meetings:read` | standard |
@@ -184,6 +187,36 @@ by this registry. These declarations grant no authority or provider effect.
 
 ## Records and retained outcomes
 
+### Opportunity AI input
+
+`orbit.assistance.preview` reads the exact native opportunity input without
+saving a preview or requesting a model. Its `previewHash` hashes that content;
+`revision` also binds the configured provider and model. Generation requires
+that revision in `source_revision`; clients can additionally supply it as
+`expected_revision`. A changed record, evidence set, provider or model requires
+a fresh preview.
+
+`orbit.assistance.generate` uses the same generation action as the native
+assistance route. Its external facts count one known counterparty: the
+installation's configured AI provider. Customer names and stored instructions
+cannot make that destination internal. Actual regulated identifier values in
+the preview add sensitive facts with a record count; ordinary contact details
+and deal estimates do not. Current identifier recognition covers formatted US
+Social Security numbers and labeled employer or taxpayer identifiers.
+
+Company policy decides whether generation runs, waits for a person, or is
+blocked. The person summary binds feature, provider, model, provider recipient
+count, selected contact, exact input hash and cited evidence identities. Approval
+rechecks input and native authority before a model request. The retained result
+is an unsent draft or current recommendation explanation with cited evidence,
+native agent attribution and usage. It never submits customer mail. Replay
+retains the outcome without another model request.
+
+Other provider requests and broader exposure qualification remain outside these
+tools, including account brief input, record-mail drafting, erasure provider
+requests, spending reservations and live-provider qualification.
+
+
 Resource readers recheck current native visibility and scope. Absent and
 restricted CRM records are refused alike. Protected fields actually returned
 by the CRM projection add the `sensitive` class. Forecasts returning protected
@@ -241,3 +274,43 @@ Captured evidence and proposals remain; mail to the old address stops entering.
 Read the new address in Settings → Capture. The address, private tag and forwarding
 confirmation are excluded from tool results, retained summaries, audits and archives.
 Provisioning and other credential changes are outside this adapter.
+
+## Cited account graph proposals
+
+`orbit.graph.propose` needs a native selected credential with both
+`crm.evidence.read` and `crm.graph.propose`. Existing read and handoff grants do
+not acquire this scope. In native consent, select the company, contact, deal and
+captured signal explicitly. All records must belong to that company; the signal
+must already have a native account association or a held capture proposal for it.
+Selected graph credentials can also follow their own value-free `graph.proposed`
+notices; other records, approvals and installation events are withheld.
+The tool uses `graph:write` and computes standard with one internal proposal call.
+Under standard review policy it also enters the Agents review feed; autonomous
+policy creates the same pending native proposals. Neither disposition applies a
+field correction.
+
+Supply `company_id`, `signal_id`, `job_change` and `close_date` (each with `id`,
+`value` and `citation`), and `question`. Each citation contains an exact message
+`quote` line and an `observed` or `inferred` label. Close dates use a complete UTC
+instant. The result retains the captured signal, item and event identities,
+occurred time, source and agent acting for its sponsor. Labels describe the
+proposed interpretation; they confer no authority. The fixed question asks who
+makes the decision and records no new contact or role, even when acknowledged.
+
+Review each proposal under Review or on the company record. A signed-in person
+can accept, edit or decline a field correction; a changed native value refuses
+acceptance with a conflict. Accepted proposals apply once and declined proposals
+remain declined for that evidence. Source disconnection withdraws pending graph
+proposals and refuses new calls and completed replays that would return the
+source. Contact erasure removes captured originals and proposals and prevents
+replaying the original call from recreating them. Message instructions and caller
+class or confirmation claims never change scope, risk or contactability.
+
+`tests/core/managed-owner.test.ts` runs the native-consent MCP and review proof
+through `tests/support/agent-door-graph-proof.ts`, covering both company policies,
+foreign-account refusal, hostile text, conflict, edited acceptance and terminal
+review decisions under each policy. Erasure replay is checked with the source
+still connected, including the original call key, a new key and the original
+captured mail. Source withdrawal and completed-call read refusal are then checked
+under each policy. Scheduled runs, transcripts and licensed enrichment remain
+outside this written-evidence tool.

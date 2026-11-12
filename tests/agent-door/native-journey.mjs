@@ -170,3 +170,36 @@ export async function afterStep({step,args,result,request,origin,cookie}){
  assert.equal(saved.name,args.name);
  assert.ok(inventory.runs.every(run=>run.workflowId!==args.id),'saving a draft creates no run');
 }
+
+
+/** The existing assistance registration inspects the actual saved native result. */
+export async function assistanceApprovalScreens({page}) {
+ const {expect}=await import('@playwright/test');
+ const approvals=await (await page.request.get('/agents/api/approvals')).json();
+ const pending=approvals.approvals.find(item=>item.tool==='orbit.assistance.generate'&&item.state==='pending');
+ expect(pending).toBeTruthy();
+ const detail=await (await page.request.get('/api/v1/drafts?opportunityId=01J0000000000000000000000F')).json();
+ const messages=await (await page.request.get('/api/v1/workbench/opportunities/01J0000000000000000000000F/messages')).json();
+ const draft=detail.drafts.find(item=>item.subject==='Synthetic buyer next steps');expect(draft).toBeTruthy();
+ for(const width of [1440,390]) {
+  await page.setViewportSize({width,height:1000});
+  await page.goto('/agents/approvals/'+pending.id,{waitUntil:'networkidle'});
+  if(width===1440) {
+   await expect(page.getByRole('heading',{name:'Generate an unsent opportunity result',exact:true})).toBeVisible();
+   await expect(page.locator('[data-approval-summary]')).toContainText('Provider: openai');
+   await expect(page.locator('[data-approval-summary]')).toContainText('Model: synthetic-orbit-model');
+   await expect(page.locator('[data-approval-summary]')).toContainText('Provider recipients: 1 (known)');
+   await expect(page.locator('[data-approval-summary]')).toContainText('Exact input:');
+   await expect(page.locator('[data-approval-summary]')).toContainText('Evidence:');
+   await expect(page.getByRole('button',{name:'Approve',exact:true})).toBeVisible();
+  }
+  await page.screenshot({path:`verification/ui/${width}-ai-provider-approval.png`,fullPage:true});
+  await page.goto('/app/drafts/'+draft.id,{waitUntil:'networkidle'});
+  if(width===1440) {
+   await expect(page.getByTestId('draft-subject')).toHaveValue(draft.subject);
+   await expect(page.getByTestId('draft-body')).toHaveValue(draft.body);
+   expect(messages.messages.some(message=>message.draftId===draft.id)).toBe(false);
+  }
+  await page.screenshot({path:`verification/ui/${width}-ai-unsent-draft.png`,fullPage:true});
+ }
+}
