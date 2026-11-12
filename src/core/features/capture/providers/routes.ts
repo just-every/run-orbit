@@ -22,6 +22,16 @@ export function createProviderRoutes(db:D1Database,config:ProviderConfig){
   return (c.req.header('accept')??'').includes('text/html')?c.redirect(`${page}error=${encodeURIComponent(message)}`,303):c.json({error:message},status);
  });
  app.route('/writeback',calendarWritebackRoutes(db,{...config,fetcher}));
+ app.get('/sources/:id/send-authorization',async c=>{
+  const row=await db.prepare("SELECT a.mailbox_address AS address,a.state,a.retry_at AS retryAt,(a.connection_id=c.connection_id AND c.state IN('connected','syncing') AND EXISTS(SELECT 1 FROM capture_credentials WHERE source_id=c.id)) AS current FROM mailbox_send_authorizations a JOIN capture_sources c ON c.id=a.source_id WHERE a.source_id=? AND a.operator_id=?").bind(c.req.param('id'),c.get('operator').operatorId).first();
+  return c.json({authorization:row??null});
+ });
+ app.post('/sources/:id/revoke-send',async c=>{
+  const actor=c.get('operator').operatorId,id=c.req.param('id'),at=new Date().toISOString();
+  const results=await db.batch([db.prepare("UPDATE mailbox_send_authorizations SET state='paused' WHERE source_id=? AND operator_id=? AND state='authorized'").bind(id,actor),db.prepare("DELETE FROM capture_oauth WHERE source_id=? AND operator_id=?").bind(id,actor),db.prepare("INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at) VALUES(?,?,'mailbox.send.revoked','capture_source',?,'{}',?)").bind(crypto.randomUUID(),actor,id,at)]);
+  if(!results[0]!.meta.changes)throw new CaptureError(409,'No active send authorization belongs to you on this source.');
+  return c.json({revoked:true});
+ });
  app.get('/providers',c=>{
   const origin=trustedOrigin(config.origin,c.req.url);
   return c.json({available:Boolean(config.security),providers:([{id:'google',name:'Google Gmail and Calendar'},{id:'microsoft',name:'Microsoft mail and calendar'}] as const).map(provider=>({...provider,redirectUri:redirectUri(origin,provider.id)}))});

@@ -1,3 +1,4 @@
+import {mailboxSendProof} from '../support/mailbox-send-proof';
 import {calendarWritebackProof} from '../support/calendar-writeback';
 import {providerFixture as fixture,captureFixtureSecurity as security} from '../support/capture-provider-fixture';
 import {oversizedMessageProof,deletedEventProof} from '../support/capture-provider-items';
@@ -62,6 +63,6 @@ test('CAPTURE-006 oversized mail skips once while both providers finish other me
  for(const provider of ['google','microsoft'] as const)await oversizedMessageProof(provider);
 });
 
-test('CAPTURE-006 provider deletion respects occurrence and erasure; CAPTURE-011 read-only and writeback consent request and store distinct scopes',async()=>{
- for(const provider of ['google','microsoft'] as const){await deletedEventProof(provider);await calendarWritebackProof(provider);}
+test('CAPTURE-006 provider deletion and distinct calendar consent; OUT-013 separately authorized mailbox sending preserves review, Sent, uncertainty and revocation',async()=>{
+ for(const provider of ['google','microsoft'] as const){await deletedEventProof(provider);await calendarWritebackProof(provider);await mailboxSendProof(provider);}
 });

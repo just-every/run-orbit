@@ -3,7 +3,7 @@ import {eml} from './capture-mail';
 import {scopes,type Provider,type ProviderFetch} from '../../src/core/features/capture/providers/config';
 /** Only the external HTTP edge is replaced. Orbit auth, D1, normalizers and intake run unchanged. */
 export function captureProviderNetwork(provider:Provider){
- const state={fixedWindow:false,writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
+ const state={mailboxAddress:['synthetic-orbit-1','example.test'].join(String.fromCharCode(64)),mailAccounts:new Map<string,string>(),sentMail:new Map<string,{raw:string;address:string;threadId:string}>(),mailSubmissions:[] as {address:string;raw:string}[],sendTimeout:false,send429:false,sentRead429:false,sentHidden:false,fixedWindow:false,writeEvents:new Map<string,any>(),writes:[] as {method:string;body:any;url:string}[],conflictNext:false,uncertainWrite:false,reads:[] as string[],tokens:0,total:25,incremental:false,incrementalIds:['new'],mailHeaders:{} as Record<string,Record<string,string>>,outage:false,revoked:false,expireHistory:false,scope:scopes[provider].join(' '),unsafeLink:'',malformed:false,redirect:false,early401:false,tombstones:false,recurring:false,challenge:'',pause:undefined as undefined|((url:string)=>Promise<void>),calendarRound:0,writeEventsInFeed:false};
  const calendarWindows=new Map<string,{start:string;end:string}>();
  const windowEvents=[{id:'synthetic-orbit-401',start:'2025-12-15',end:'2025-12-16'},{id:'synthetic-orbit-402',start:'2027-03-15',end:'2027-03-16'}];
  const mail=(id:string)=>eml({From:id==='unknown'?'other@unknown.test':'Ana <ana@acme.example>',To:'seller@orbit.test',Subject:`Provider ${id}`,Date:'Mon, 05 Oct 2026 10:00:00 +0000','Message-ID':`<${provider}-${id}@acme.example>`,...state.mailHeaders[id]},`Evidence ${id}`);
@@ -34,7 +34,27 @@ export function captureProviderNetwork(provider:Provider){
   if(url.pathname.endsWith('/token')){
    assert.equal(init.method,'POST');const body=new URLSearchParams(init.body as string);assert.ok(body.get('client_secret'));
    if(body.get('grant_type')==='authorization_code'){assert.ok(body.get('code_verifier'));const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body.get('code_verifier')!));assert.equal(Buffer.from(digest).toString('base64url'),state.challenge,'PKCE verifier binds this initiating authorization');}
-   state.tokens++;return json({access_token:`access-${state.tokens}`,refresh_token:`refresh-${state.tokens}`,expires_in:3600,scope:state.scope});
+   state.tokens++;const account=state.mailAccounts.get(body.get('refresh_token')??'')??state.mailboxAddress;state.mailAccounts.set('access-'+state.tokens,account);state.mailAccounts.set('refresh-'+state.tokens,account);return json({access_token:`access-${state.tokens}`,refresh_token:`refresh-${state.tokens}`,expires_in:3600,scope:state.scope});
+  }
+  const bearer=new Headers(init.headers).get('authorization')?.replace(/^Bearer /,''),account=state.mailAccounts.get(bearer??'')??state.mailboxAddress;
+  if(provider==='google'&&url.pathname.endsWith('/messages/send')){
+   assert.equal(init.method,'POST');assert.ok(state.scope.split(/\s+/).includes('https://www.googleapis.com/auth/gmail.send'));
+   const body=JSON.parse(String(init.body)),raw=Buffer.from(body.raw,'base64url').toString();
+   state.mailSubmissions.push({address:account,raw});
+   if(state.send429){state.send429=false;return new Response('{}',{status:429,headers:{'Retry-After':'120'}});}
+   const id='synthetic-orbit-sent-'+state.sentMail.size,threadId=body.threadId??'synthetic-orbit-thread-'+id;state.sentMail.set(id,{raw,address:account,threadId});
+   if(state.sendTimeout){state.sendTimeout=false;throw new Error('Synthetic mailbox timeout after acceptance');}
+   return json({id,threadId,labelIds:['SENT']});
+  }
+  if(provider==='google'&&url.pathname.endsWith('/messages')&&url.searchParams.get('q')?.startsWith('rfc822msgid:')){
+   const messageId=url.searchParams.get('q')!.slice('rfc822msgid:'.length);
+   return json({messages:state.sentHidden?[]:[...state.sentMail].filter(([,row])=>row.address===account&&row.raw.includes('Message-ID: '+messageId+'\r\n')).map(([id])=>({id}))});
+  }
+  if(provider==='google'&&url.pathname.includes('/messages/synthetic-orbit-sent-')){
+   const id=url.pathname.split('/').at(-1)!,row=state.sentMail.get(id);if(!row||row.address!==account||state.sentHidden)return json({},404);
+   if(state.sentRead429){state.sentRead429=false;return new Response('{}',{status:429,headers:{'Retry-After':'120'}});}
+   if(url.searchParams.get('format')==='raw')return json({raw:Buffer.from(row.raw).toString('base64url'),labelIds:['SENT'],id,threadId:row.threadId});
+   return json({id,threadId:row.threadId,labelIds:['SENT'],payload:{headers:[{name:'Message-ID',value:/Message-ID: (.+)\r\n/.exec(row.raw)![1]}]}});
   }
   if(/\/events(?:\/[^/]+)?(?:\/cancel)?$/.test(url.pathname)&&(init.method!=='GET'||/\/events\/[^/]+$/.test(url.pathname))){
    assert.ok(new Headers(init.headers).get('authorization'));
@@ -52,7 +72,7 @@ export function captureProviderNetwork(provider:Provider){
   assert.equal(init.method,'GET','capture never writes provider data');assert.ok(new Headers(init.headers).get('authorization'));state.reads.push(raw);
   if(state.outage)return json({},503);if(state.malformed)return json({});if(state.redirect)return new Response(null,{status:302,headers:{location:'https://evil.test/stolen'}});if(state.early401){state.early401=false;return json({},401);}if(state.revoked)return json({},401);
   if(provider==='google'){
-   if(url.pathname.endsWith('/profile'))return json({historyId:'900719925474099312345'});
+   if(url.pathname.endsWith('/profile'))return json({historyId:'900719925474099312345',emailAddress:account});
    if(url.pathname.endsWith('/labels'))return json({labels:[{id:'INBOX',name:'Inbox'},{id:'SENT',name:'Sent'}]});
    if(url.pathname.endsWith('/users/me/calendarList'))return json(url.searchParams.has('pageToken')?{items:[]}:{items:[{id:'calendar',summary:'Calendar'}],nextPageToken:'metadata-next'});
    if(url.pathname.endsWith('/calendarList/calendar'))return json({id:'calendar'});

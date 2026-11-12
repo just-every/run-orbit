@@ -53,7 +53,8 @@ export function selectScope(db:D1Database,id:string,scope:CaptureScope,security:
  if(source.adapter==='google')await validateGoogleScope(session,scope);else await validateMicrosoftScope(session,scope);
  await session.check();
  const fence=[...access.fence(context).map(statement=>db.prepare(statement.sql).bind(...statement.bindings)),db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'capture_scope_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing'))").bind(id,source.connection_id)];
- const results=await db.batch([...fence,db.prepare(`UPDATE capture_sources SET scope_json=?,cursor=NULL,connection_id=?,last_error=NULL,last_error_at=NULL,updated_at=? WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')`).bind(JSON.stringify(scope),createId(),new Date().toISOString(),id,source.connection_id),db.prepare('DELETE FROM capture_oauth WHERE source_id=?').bind(id),audit(db,actor.operatorId,'capture.scope_changed','capture_source',id,{scope})]);
+ const nextConnection=createId();
+ const results=await db.batch([...fence,db.prepare(`UPDATE capture_sources SET scope_json=?,cursor=NULL,connection_id=?,last_error=NULL,last_error_at=NULL,updated_at=? WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')`).bind(JSON.stringify(scope),nextConnection,new Date().toISOString(),id,source.connection_id),db.prepare('UPDATE mailbox_send_authorizations SET connection_id=? WHERE source_id=? AND connection_id=?').bind(nextConnection,id,source.connection_id),db.prepare('DELETE FROM capture_oauth WHERE source_id=?').bind(id),audit(db,actor.operatorId,'capture.scope_changed','capture_source',id,{scope})]);
  if(results[fence.length]!.meta.changes!==1)throw new CaptureError(409,'The provider connection changed. Choose its scope again.');
  return {saved:true,scope};
  });}

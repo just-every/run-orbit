@@ -39,6 +39,7 @@ import { createSetupRoutes } from "../features/setup/routes";
 import {createSignalIngress,createSourceRoutes} from "../features/ingestion/routes";
 import type {SourceSecurity} from "../platform/source-security";
 import type { CustomerMailStatus, OutboundMail } from "../platform/outbound-mail";
+import {mailboxTransportResolver} from '../features/outreach/mailbox/transport';
 import { createWorkbenchRoutes } from "../features/workbench/routes";
 import { Hono, type MiddlewareHandler } from "hono";
 import {runRequestTimers} from '../features/outreach/scheduler';
@@ -64,6 +65,7 @@ type AppEnvironment = {
 
 export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   input={...input,database:notificationDatabase(input.database)};
+  const mail=mailboxTransportResolver(input.database,input.outboundMail,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch});
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
   app.all('/unsubscribe/:token',c=>optOutResponse(c.req.raw,input.database));
@@ -118,7 +120,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.use('/api/v1/*',async(context,next)=>{
     await next();
     if(input.hosted&&context.req.method==='GET'&&context.res.status<400)
-      context.executionCtx.waitUntil(runRequestTimers(input.database,input.outboundMail));
+      context.executionCtx.waitUntil(runRequestTimers(input.database,mail));
   });
   app.use("/api/*", async (context,next) => {
     if ((context.req.path.startsWith("/api/v1/records/archive/") || context.req.path.startsWith("/api/v1/imports/") || context.req.path.startsWith("/api/v1/capture/")) && !["GET","HEAD","OPTIONS"].includes(context.req.method)) {
@@ -187,7 +189,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route("/api/v1/today", createTodayRoutes(input.database,input.aiProvider));
   app.route("/api/v1/review", createReviewRoutes(input.database));
   app.route("/api/v1/risks", createRiskRoutes(input.database,input.aiProvider,input.agentDoor));
-  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, input.outboundMail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
+  app.route("/api/v1/workbench", createWorkbenchRoutes(input.database, mail,Boolean(input.aiProvider),input.hosted,input.mailEventKeys??{},input.captureOrigin,input.mailSettings));
   app.route("/api/v1/opportunities", dependencies.opportunityRoutes);
   app.route('/api/v1/library',createLibraryRoutes(input.database));
   app.route("/api/v1/drafts", createDraftRoutes(dependencies.drafts));

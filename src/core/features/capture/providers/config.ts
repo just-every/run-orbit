@@ -22,7 +22,9 @@ export function trustedOrigin(origin:string|undefined,request?:string){
  return origin;
 }
 export const writeScopes={google:'https://www.googleapis.com/auth/calendar.events',microsoft:'Calendars.ReadWrite'};
-export interface Credential{writebackConsent?:boolean;clientId:string;clientSecret:string;tenant:string;accessToken:string;refreshToken:string;expiresAt:number;scope:string}
+export const sendScopes={google:'https://www.googleapis.com/auth/gmail.send',microsoft:'Mail.Send'};
+export function hasSendScope(provider:Provider,scope:string){return scope.split(/\s+/).some(value=>value===sendScopes[provider]||provider==='microsoft'&&value==='https://graph.microsoft.com/Mail.Send');}
+export interface Credential{sendConsent?:boolean;writebackConsent?:boolean;clientId:string;clientSecret:string;tenant:string;accessToken:string;refreshToken:string;expiresAt:number;scope:string}
 export function checkedScopes(provider:Provider,value:unknown){
  if(typeof value!=='string'||!scopes[provider].every(scope=>value.split(/\s+/).some(granted=>granted===scope||(provider==='microsoft'&&granted===`https://graph.microsoft.com/${scope}`))))throw new CaptureProviderError('revoked','The required read permissions were not granted.');
  return value;
