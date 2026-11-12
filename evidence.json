@@ -73,6 +73,12 @@
       "sha256": "77a90bddf8b61675af321972cc386cde46e2fbb6caadcd0deabd505c6da4cf27"
     },
     {
+      "blob": "67ee77927dce4173a1d7753a4ff882c435f4e5e1",
+      "bytes": 373,
+      "path": "TERMINAL-CUSTODY.json",
+      "sha256": "6c4240da4655605933b41b98a3816d03146cc55039a5004f18a7ba0ef260a0f0"
+    },
+    {
       "blob": "1f023a144123fa6ff16769c681f347a7e70b1296",
       "bytes": 178,
       "path": "VERIFY-REPAIR-forward.json",
