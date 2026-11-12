@@ -21,3 +21,6 @@ ALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_address TEXT;
 ALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_provider TEXT;
 ALTER TABLE record_mail_outbound_messages ADD COLUMN provider_thread_id TEXT;
 ALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_submission_claimed INTEGER NOT NULL DEFAULT 0;
+CREATE VIEW outbound_installation_delivery_budget AS
+ SELECT id,operator_id,claimed_at FROM outbound_messages WHERE mailbox_source_id IS NULL
+ UNION ALL SELECT id,operator_id,claimed_at FROM record_mail_outbound_messages WHERE mailbox_source_id IS NULL;

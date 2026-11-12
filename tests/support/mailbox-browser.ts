@@ -14,6 +14,8 @@ export async function mailboxBrowserSeed(db:D1Database,cookie:string,contactId:s
   assert.equal(response.status,303);const url=new URL(response.headers.get('location')!,origin);assert.ok(!url.searchParams.has('error'),url.searchParams.get('error')??'');return url.searchParams.get('connected')!;
  }
  const source=await connect();await call('capture/sources/'+source+'/scope',{mail:{folders:['INBOX','SENT']}});edge.state.scope+=' '+sendScopes.google;await connect(source);
- const draft=await call('workbench/records/contact/'+contactId+'/drafts',{contactId,opportunityId:null,subject:'Reviewed Gmail consultation',body:'Exact Gmail review.\nSynthetic signature.'});
+ const draft=await call('workbench/records/contact/'+contactId+'/drafts',{contactId,opportunityId:null,subject:'Reviewed Gmail consultation',body:'Exact Gmail review.'});
+ const signature=await call('library',{kind:'signature',name:'Sales Gmail signature',body:'Synthetic signature.',visibility:'private'});
+ const rendered=await call('library/drafts/'+draft.id+'/apply',{revision:1,signatureId:signature.id});await call('library/drafts/'+draft.id+'/render',{revision:rendered.revision,reviewHash:rendered.reviewHash});
  return {mailboxSource:source,mailboxDraft:draft.id as string,mailboxAddress:edge.state.mailboxAddress};
 }

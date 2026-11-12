@@ -4,7 +4,9 @@ export function mailboxMime(input:{recipient_email:string;subject:string;body:st
  const clean=(value:string)=>{if(/[\r\n\x00]/.test(value))throw new MailboxSendError('Mail headers contain an invalid line break.','failed');return value;};
  const address=(value:string)=>{if(!/^[^\s<>@,;]+@[^\s<>@,;]+$/.test(value))throw new MailboxSendError('Choose exactly one mailbox address.','failed');return clean(value);};
  if(!input.message_id||!/^<[^\s<>]+@[^\s<>]+>$/.test(input.message_id))throw new MailboxSendError('The reviewed message has no durable Message-ID.','failed');
- const subject=clean(input.subject),encoded=base64(subject).match(/.{1,60}/g)!.map(part=>'=?UTF-8?B?'+part+'?=').join('\r\n ');
+ const subject=clean(input.subject),words:string[]=[];let word='',bytes=0;
+ for(const character of subject){const size=new TextEncoder().encode(character).length;if(bytes+size>42){words.push(word);word='';bytes=0;}word+=character;bytes+=size;}if(word)words.push(word);
+ const encoded=words.map(part=>'=?UTF-8?B?'+base64(part)+'?=').join('\r\n ');
  const headers=['From: '+address(from),'To: '+address(input.recipient_email),'Subject: '+encoded,'Message-ID: '+clean(input.message_id),'MIME-Version: 1.0','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64'];
  if(input.reference_ids)headers.push('References: '+clean(input.reference_ids),'In-Reply-To: '+clean(input.reference_ids));
  if(input.opt_out){

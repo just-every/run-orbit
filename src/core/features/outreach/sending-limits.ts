@@ -5,7 +5,7 @@ export const declaredUsers=25,perUserPerMinute=4,defaultSharedPerMinute=declared
 export const sharedLimitSql=`COALESCE((SELECT value FROM sending_limits WHERE id='shared'),${defaultSharedPerMinute})`;
 /** The one-to-one budget of the sender named by a SQL expression (a column or a bound parameter). */
 export const oneToOneLimitSql=(operator:string)=>`COALESCE((SELECT value FROM sending_limits WHERE id='one-to-one:'||${operator}),${defaultOneToOnePerDay})`;
-export const installationBudgetPredicate="id IN(SELECT id FROM outbound_messages WHERE mailbox_source_id IS NULL UNION ALL SELECT id FROM record_mail_outbound_messages WHERE mailbox_source_id IS NULL)";
+export const installationBudgetPredicate="id IN(SELECT id FROM outbound_installation_delivery_budget)";
 const windows=(now:Date)=>({minute:new Date(now.getTime()-60000).toISOString(),day:new Date(now.getTime()-86400000).toISOString()});
 async function freedAt(db:D1Database,where:string,binds:unknown[],over:number,period:number){
  const row=await db.prepare(`SELECT claimed_at FROM outbound_delivery_budget WHERE ${where} ORDER BY claimed_at LIMIT 1 OFFSET ?`).bind(...binds,over).first<{claimed_at:string}>();

@@ -5,7 +5,7 @@ import {createId} from '../../../shared/ids';
 import {payloadHash,type SourceSecurity} from '../../../platform/source-security';
 import {CaptureError} from '../contracts';
 import {connectSource} from '../sources';
-import {checkedScopes,redirectUri,scopes,writeScopes,sendScopes,hasSendScope,tenantId,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
+import {checkedScopes,redirectUri,scopes,writeScopes,sendScopes,hasSendScope,hasBroaderMailGrant,tenantId,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
 const random=()=>btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 interface Pending{sendConsent:boolean;writebackConsent:boolean;clientId:string;clientSecret:string;name:string;tenant:string;verifier:string}
 interface Flow{state_hash:string;provider:Provider;operator_id:string;session_id:string;origin:string;source_id:string;connection_id:string|null;ciphertext:string;expires_at:number}
@@ -45,6 +45,7 @@ export async function finishOAuth(db:D1Database,security:SourceSecurity,provider
   const writeGranted=scope.split(/\s+/).some(value=>value===writeScopes[provider]||provider==='microsoft'&&value==='https://graph.microsoft.com/'+writeScopes.microsoft);
   if(pending.writebackConsent&&!writeGranted)throw new CaptureError(400,'Calendar writeback permission was not granted. Connect again without writeback or consent to its separate permission.');
   if(!pending.writebackConsent&&writeGranted)throw new CaptureError(400,'The provider granted calendar write access without separate writeback consent. Remove that permission at the provider and reconnect for read-only access.');
+  if(hasBroaderMailGrant(provider,scope))throw new CaptureError(400,'The provider granted broader mailbox write permissions than this connection requested. Remove them and reconnect.');
   const sendGranted=hasSendScope(provider,scope);
   if(pending.sendConsent&&!sendGranted)throw new CaptureError(400,'Send permission was not granted. Reconnect with separate send consent.');
   if(!pending.sendConsent&&sendGranted)throw new CaptureError(400,'The provider granted send permission without separate send consent. Remove it at the provider and reconnect.');

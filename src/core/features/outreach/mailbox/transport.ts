@@ -8,7 +8,7 @@ import {gmailLookup,gmailSend} from './gmail';
 export interface MailboxConfig{security?:SourceSecurity;origin?:string;fetcher?:ProviderFetch}
 /** Every send resolves its immutable approval binding, including after a restart. */
 export function mailboxTransportResolver(db:D1Database,installation:OutboundMail|undefined,config:MailboxConfig):OutboundMail|undefined{
- if(!config.security)return installation;
+ if(!config.security&&!installation)return undefined;
  const security=config.security,fetcher=config.fetcher??defaultProviderFetch;
  const facade:OutboundMail={...installation,send:installation?.send??(async()=>{throw new MailboxSendError('Configure an installation sender or choose an authorized mailbox.','failed');}),async resolve(message){
   if(!message.mailbox_source_id){if(!installation)throw new MailboxSendError('The installation sender is unavailable. Choose a mailbox in a new review.','failed');return installation;}
@@ -26,6 +26,7 @@ export function mailboxTransportResolver(db:D1Database,installation:OutboundMail
   });},async lookup(){return operate(message,async(request,scoped)=>{const result=await gmailLookup(request,message.message_id);if(result)await scoped.prepare('UPDATE outbound_messages SET provider_thread_id=? WHERE id=?').bind(result.providerThreadId,message.id).run();return result;},true);}};
  }
  async function operate<T>(message:OutboundMailBinding,run:(request:(url:string,init?:RequestInit)=>Promise<Response>,scoped:D1Database)=>Promise<T>,reconciling=false){
+  if(!security)throw new MailboxSendError('Mailbox credentials are unavailable. No installation sender was used.','failed');
   const scoped=await messageMailDatabase(db,message.id);
   const source=await db.prepare("SELECT id,name,adapter,scope_json,state,connection_id,cursor FROM capture_sources WHERE id=?").bind(message.mailbox_source_id).first<ProviderSource>();
   const auth=await db.prepare("SELECT * FROM mailbox_send_authorizations WHERE source_id=? AND connection_id=? AND mailbox_address=? AND operator_id=? AND state='authorized'").bind(message.mailbox_source_id,message.mailbox_connection_id,message.mailbox_address,message.operator_id).first<{retry_at:string|null}>();

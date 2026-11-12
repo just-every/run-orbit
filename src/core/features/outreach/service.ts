@@ -21,7 +21,7 @@ export class OutreachService {
    AND (d.opportunity_id IS NULL OR (o.lifecycle='open' AND oc.contact_id IS NOT NULL)) AND (d.recommendation_id IS NULL OR EXISTS(SELECT 1 FROM recommendations WHERE id=d.recommendation_id AND is_current=1))
    ${recordMailRecipientScope(this.db)} AND NOT EXISTS(SELECT 1 FROM crm_import_reviews WHERE safety_pending=1)`).bind(message.id).first();
   if(!eligible){await this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure='Recipient permission changed before submission' WHERE id=? AND state='queued'").bind(message.id).run();return{id:message.id,state:'cancelled'};}
-  let mail:OutboundMail;try{mail=this.mail.resolve?await this.mail.resolve(message):this.mail;}catch(error){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'failed',null,error instanceof Error?error.message:'Mailbox unavailable');return {id:message.id,state:'failed'};}
+  let mail:OutboundMail;try{mail=this.mail.resolve?await this.mail.resolve(message):message.mailbox_source_id?(()=>{throw new MailboxSendError('The bound mailbox transport is unavailable; no alternate sender was used.','failed');})():this.mail;}catch(error){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'failed',null,error instanceof Error?error.message:'Mailbox unavailable');return {id:message.id,state:'failed'};}
   if(mail.provider==='rer'&&await relayRefusedAtDispatch(this.db,message.id,Boolean(mail.optOutOrigin))){
    const at=new Date().toISOString();
    await this.db.batch([this.db.prepare("UPDATE outbound_messages SET state='failed',failure=?,updated_at=? WHERE id=? AND state='queued'").bind(relayRefusal,at,message.id),this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(relayRefusal,at,message.opportunity_id),relayRefusalAudit(this.db,message.operator_id,'outbound_message',message.id)]);
@@ -50,7 +50,7 @@ export class OutreachService {
   const rows=await this.db.prepare("SELECT id FROM outbound_messages WHERE state='scheduled' AND COALESCE(next_attempt_at,scheduled_at)<=? ORDER BY COALESCE(next_attempt_at,scheduled_at) LIMIT ?").bind(now.toISOString(),limit).all<{id:string}>();
   const approval=new ApprovalRepository(this.db);
   for(const row of rows.results){const message=await approval.message(row.id);
-   if(message.first_attempt_at&&(message.attempt_count>=5||now.getTime()-Date.parse(message.first_attempt_at)>=3600000)){
+   if(!message.mailbox_source_id&&message.first_attempt_at&&(message.attempt_count>=5||now.getTime()-Date.parse(message.first_attempt_at)>=3600000)){
     await this.db.batch([this.db.prepare("UPDATE outbound_messages SET state='failed',failure='Provider retry window expired; operator review is required',updated_at=? WHERE id=? AND state='scheduled'").bind(now.toISOString(),message.id),this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason='Provider retry window expired',next_due_at=NULL,updated_at=? WHERE id=? AND lifecycle='open'").bind(now.toISOString(),message.opportunity_id)]);continue;
    }
    const preview=await approval.preview(message.draft_id,now);
@@ -67,7 +67,7 @@ export class OutreachService {
   await this.db.prepare("UPDATE outbound_messages SET state='delivery-unknown',failure='Submission was interrupted without a receipt',next_attempt_at=?,updated_at=? WHERE state='queued' AND claimed_at<?").bind(now.toISOString(),now.toISOString(),new Date(now.getTime()-120000).toISOString()).run();
   const messages=await this.db.prepare("SELECT * FROM outbound_messages WHERE state IN('reconciling','delivery-unknown') AND (next_attempt_at IS NULL OR next_attempt_at<=?) ORDER BY created_at LIMIT ?").bind(now.toISOString(),limit).all<OutboundMessage>();
   for(const message of messages.results){
-   let mail:OutboundMail;try{mail=this.mail.resolve?await this.mail.resolve(message):this.mail;}catch(error){await this.db.prepare('UPDATE outbound_messages SET failure=? WHERE id=?').bind(error instanceof Error?error.message:'Mailbox unavailable',message.id).run();continue;}
+   let mail:OutboundMail;try{mail=this.mail.resolve?await this.mail.resolve(message):message.mailbox_source_id?(()=>{throw new MailboxSendError('The bound mailbox transport is unavailable; no alternate sender was used.','failed');})():this.mail;}catch(error){await this.db.prepare('UPDATE outbound_messages SET failure=? WHERE id=?').bind(error instanceof Error?error.message:'Mailbox unavailable',message.id).run();continue;}
    // A saved receipt proves acceptance even when the original settlement transaction failed.
    if(message.provider_message_id){await new OutreachRepository(this.db).settle(message.id,message.operator_id,'accepted',message.provider_message_id,null);continue;}
    if(mail.provider==='rer'&&!mail.lookup){

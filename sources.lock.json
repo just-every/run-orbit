@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "44c53b81c68ec73612c5fd93b0cf9a2ed80cf2963ad393732e807cf2c7e2df6c",
+      "sha256": "7ae4cf5bce40851f8bdf65dd00c74109806bcb90fbe9ac9e5fc77bb8b4d206aa",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2228,6 +2228,10 @@
     },
     "migrations/core/0081_graph_proposals.sql": {
       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
+      "executable": false
+    },
+    "migrations/core/0082_mailbox_send.sql": {
+      "sha256": "4b61de63625dcc3a2d4e2c5157a96a517b1388db42770ed92591562382edf268",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -5671,7 +5675,7 @@
       "executable": false
     },
     "src/core/features/capture/intake.ts": {
-      "sha256": "be030cf03bee5d6f2989742a8e6ca15bafe6f25e07e7f0985c5b6c498f757666",
+      "sha256": "0e9f828fdeb5fafbbc5ff15d9fe21ea2b4c330e88c64af1dc1f70082f8d7fe1c",
       "executable": false
     },
     "src/core/features/capture/mail-association.ts": {
@@ -5719,7 +5723,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/config.ts": {
-      "sha256": "6f2f64358019cde163e8ed4ab1e020024ce86c0241b9dc8c6ed76b54aa289647",
+      "sha256": "0dde6189a1ea6fe567e7003a0e7917f186b11d6b92031cbdf905e7aacbddecf0",
       "executable": false
     },
     "src/core/features/capture/providers/google.ts": {
@@ -5731,7 +5735,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/oauth.ts": {
-      "sha256": "1e9ec5e464641df2e9902eaa5d1bf988978e0f19fe0115a1833aaa8da73c2435",
+      "sha256": "bbdf35b33e8dbb3a6a368edc035613f63ee7c530341c55c77ebea44b3bad88b1",
       "executable": false
     },
     "src/core/features/capture/providers/response.ts": {
@@ -5747,7 +5751,7 @@
       "executable": false
     },
     "src/core/features/capture/providers/session.ts": {
-      "sha256": "0d00c08f819fb052418f891db3509fef62860e14eed941bcc8b58bbc169d705f",
+      "sha256": "7b30172d049c23ac21390276fb1be55fbf4846796cfc39173028076b33daa749",
       "executable": false
     },
     "src/core/features/capture/providers/token-errors.ts": {
@@ -7410,6 +7414,26 @@
       "sha256": "c1517ac28d4b5bda733847e5ba79d4424690a1254a6dbb13b9ef4c4b0fd10094",
       "executable": false
     },
+    "src/core/features/outreach/mailbox/binding.ts": {
+      "sha256": "f70e08950eab9071aff8cc19c1b815e2e244a5a13e39e0830122045c8ded324d",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/errors.ts": {
+      "sha256": "19552f598c2963fb489917ba0c6db238642bdb49dba4c4715e35cd99c5303f63",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/gmail.ts": {
+      "sha256": "b6ed658eb46a15d260c9e04446a765b3fe007dd37531f169f7fe47c9f3940fec",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/mime.ts": {
+      "sha256": "480e77f0f4d32e62f87ec2bd8a0b1ace0130c779ced2e82b50937e7232814b2e",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/transport.ts": {
+      "sha256": "96627080344252b320d255afb1b1998549628aaa9630310fb0a803d75cfced29",
+      "executable": false
+    },
     "src/core/features/outreach/opt-out-capability.ts": {
       "sha256": "c54b8cad681313bfa61f37436ca87fca9adc81079b10dcd6254618fe04ca3f96",
       "executable": false
@@ -7495,11 +7519,11 @@
       "executable": false
     },
     "src/core/features/outreach/sending-limits.ts": {
-      "sha256": "fd3503702b4d13ed0c46131884436fecce7b1246636c1c7cca28ac286cb779a4",
+      "sha256": "071b2b554124ef96bcd7a53d4e5c485acc5407565a06bb1fd87f5d6265457edb",
       "executable": false
     },
     "src/core/features/outreach/service.ts": {
-      "sha256": "4fa037333f56662ae5c8e26fe6f0c2eb83020f9029498064c8a2408e1a8356b8",
+      "sha256": "b3a3384e38564190d471bd6bde32ae559c18022070fa862270f34cad7859b35e",
       "executable": false
     },
     "src/core/features/outreach/settlement.ts": {
@@ -7911,7 +7935,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "240d7041825377627032e6fb0727cc35cc58d956b841b3db5865425533c47443",
+      "sha256": "4d96b20e7d82744e962cfc57b2d60c13b243da8e0a98045bcdeee16acc9e403a",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -8231,7 +8255,7 @@
       "executable": false
     },
     "src/core/features/settings/erasure.ts": {
-      "sha256": "58fba7f88108e2ffdcbbfa17421093cd58068df87e868c444d2d5907caf8254f",
+      "sha256": "c34da018d45ef18ef6fc958393a68afb35742232f155b6939dc05649c26ef17d",
       "executable": false
     },
     "src/core/features/settings/owner-email.ts": {
@@ -10295,7 +10319,7 @@
       "executable": false
     },
     "tests/core/operator-erasure.test.ts": {
-      "sha256": "48b9ce7cbb697cb56e7f82c4d03fa9ed0b28255f3062887b1af9b4e8f54e1dfd",
+      "sha256": "cfc4d605010351d865597ae6f67732321167602375e6a62c8ab761bebc6e277b",
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
@@ -11380,6 +11404,14 @@
     },
     "tests/support/mail-transport-client.ts": {
       "sha256": "5aedd823c1b5c5ac7f2951d004d430380f4cba704155b389e51e766671680077",
+      "executable": false
+    },
+    "tests/support/mailbox-browser.ts": {
+      "sha256": "243f8663fa5bd8765fc33bea04b06b6a065afa09b88b26f1619c4770aa5e1bd5",
+      "executable": false
+    },
+    "tests/support/mailbox-send-proof.ts": {
+      "sha256": "4a6713b9402ca68d2db084bc43f6799f91953d9b8dbb7d4734d7a5e5a079606d",
       "executable": false
     },
     "tests/support/mailchimp-ledger-proof.ts": {
