@@ -84,8 +84,10 @@
   "ci": {
     "runId": 43138188401,
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
-    "head": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572"
-  }
+    "conclusion": "success",
+    "head_sha": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43138188401",
+    "status": "completed"
+  },
+  "terminalCustody": "READY"
 }

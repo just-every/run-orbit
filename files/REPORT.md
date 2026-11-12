@@ -46,3 +46,9 @@ PROBE RECORD-014 1: authenticated native saved-view routes for all three record 
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check exit=0, generated files restored from origin/main; ledger=node packet/ledger-check.mjs /tmp/orbit-f162-final-state exit=0, 76 applied migrations and zero foreign-key violations.
 
 Exact-candidate Verify was discovered through REST: run 43138188401, push event, status in_progress on 7ba57f6aaa8efebf0b0493417fe6c1f8aa706572. No duplicate workflow was dispatched. Committed hashes match all recorded proof-source files; the product checkout is clean. Contract and both generated views are byte-for-byte unchanged against origin/main. Final CI disposition will be recorded below.
+
+## Final CI and handoff
+
+Verify 43138188401 completed SUCCESS on the exact full candidate 7ba57f6aaa8efebf0b0493417fe6c1f8aa706572, push event. Eight manual GitHub calls were used, including baseline discovery, with one watcher and at least five minutes between run polls. No workflow was dispatched or rerun. The current Verify plan includes the native RECORD-014 registration and the emitted Records layout registration without a new flag or skipped assertion. DONE-RIDERS row 3 is met for the scoped saved-view proof. Row 1 remains partial for the held acceptance limbs, and row 11 remains the fleet lander's complete scan, main equality and exact-main Run site duty.
+
+No product blocker remains for this scoped limb. RECORD-014 remains PARTIAL, with no DONE or count award. All existing plan holds and prerequisites remain unchanged. Product custody is ready for the fleet on the exact pushed SHA; evidence publication is a separate report-only transport and does not signal landing. The complete plan, actual test logs, source map, viewport images, mechanical receipts and CI observations are included in this packet.

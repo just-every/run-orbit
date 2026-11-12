@@ -115,5 +115,7 @@
       "exit": 0,
       "seconds": 0.494
     }
-  ]
+  ],
+  "head": "7ba57f6aaa8efebf0b0493417fe6c1f8aa706572",
+  "sourceLockSha256": "7357549d3ff5df785af8ff8441d8ab433a347ad359dd0572d71c11b32733fc33"
 }
