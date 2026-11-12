@@ -3863,7 +3863,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "3d0e7ae842a3f1236e44097860817a2f44eca2ce5c594088865609b963f4f744",
+      "sha256": "20ef6d3a4cdc967de48720ecb9b20e7801981fde88dc92b5129b3e38ca763f99",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -8427,7 +8427,7 @@
       "executable": false
     },
     "src/core/features/workbench/repository.ts": {
-      "sha256": "01ae13eae2fa1b9306b344c74675d5dc72f64a92904f1ada30605b7bca4f0dc4",
+      "sha256": "565b5e3d3c94781ed0fe6ee2e5d62f8373b71539ee056cede8e48d42480ca0f9",
       "executable": false
     },
     "src/core/features/workbench/routes.ts": {
@@ -11203,7 +11203,7 @@
       "executable": false
     },
     "tests/support/erased-creation-consent.ts": {
-      "sha256": "2d10cdcc1bf040688e907424c3268c98020496ab523bb6a0f79ddd9bced4efe3",
+      "sha256": "efa13344d798ed199ddc07dca16b54b3215cab0b3eaa1d05c5626365f4515e19",
       "executable": false
     },
     "tests/support/fake-mail-provider.ts": {
