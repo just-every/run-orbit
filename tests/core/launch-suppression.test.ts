@@ -65,7 +65,7 @@ test('RECORD-012 concurrent stop dominates stale edit; merge preserves both reci
  }finally{await f.dispose();}
 });
 
-test('INTEGRATE-007 verified webhooks, merged consent, changed members, authority, populated restore and scheduled erasure preserve the stricter marketing stop; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore',async()=>{
+test('INTEGRATE-007 RECORD-012 DATA-001 verified audience handoffs preserve consent and anonymous stops through merge, reconciliation, refusal, restore and erasure',async()=>{
  const f=await launchFixture(),nativeFetch=globalThis.fetch;try{
   for(const mode of ['manual','source','provider'] as const){const c=await f.customer(),at=new Date().toISOString();
    if(mode==='manual')await f.workbench.recordEvent(c.opportunityId,{eventId:createId(),type:'email.unsubscribed',subject:'Stop',occurredAt:at,contactId:c.contactId},f.actor);

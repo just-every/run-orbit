@@ -22,7 +22,7 @@ import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
-test('emitted Worker record and NOW lists wrap full valid long names; verified Mailchimp settings and scheduled erasure preserve stops; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
+test('emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside native record layouts and collaborator revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
    const origin = `https://orbit.127.0.0.1.nip.io:${port}`;
