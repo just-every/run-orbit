@@ -4,12 +4,12 @@ import { z } from "zod";
 import type { AuthenticatedOperator } from "../identity";
 
 import { DraftRevisionConflict, DraftsService } from "./service";
+import {manualDraftEditContent} from './input';
 
 const updateDraftSchema = z.object({
   revision: z.number().int().positive(),
   recipientEmail: z.string().email(),
-  subject: z.string().trim().min(1),
-  body: z.string().trim().min(1)
+  ...manualDraftEditContent
 });
 const draftIdSchema = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const draftListQuerySchema = z.object({ opportunityId: draftIdSchema });

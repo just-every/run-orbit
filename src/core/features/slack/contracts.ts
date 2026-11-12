@@ -1,5 +1,7 @@
 import type {Clock} from '../../platform/clock';
 import type {SourceSecurity} from '../../platform/source-security';
+/** The account fields permitted in channel delivery and declared before activation. */
+export const noticeFields={eventKind:'Event kind',link:'Authenticated Orbit link',recordDisplayName:'Deal or company display name',stageFrom:'Previous stage',stageTo:'New stage',ownerDisplayName:'Owner display name',dueDate:'Due date',taskType:'Task type',taskPriority:'Task priority'} as const;
 export const eventKinds=['stage','won','due','handoff','dashboard'] as const;
 export type EventKind=typeof eventKinds[number];
 export interface SlackConfig {clock?:Clock;security?:SourceSecurity;origin?:string;fetcher?:typeof fetch}

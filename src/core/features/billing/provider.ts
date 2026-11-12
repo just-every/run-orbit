@@ -5,8 +5,9 @@ import {BillingError,type BillingConfig,type CustomerIdentity} from './contracts
 /** Only the customer identity endpoint is read; no payment instrument is requested or persisted. */
 export async function stripeRead(config:BillingConfig,apiKey:string,path:string){
  let response:Response;
- try{response=await(config.fetcher??fetch)(`https://api.stripe.com/v1/${path}`,{method:'GET',redirect:'error',headers:{Authorization:`Bearer ${apiKey}`,'Stripe-Version':'2024-06-20'},signal:AbortSignal.timeout(15000)});}
+ try{response=await(config.fetcher??fetch)(`https://api.stripe.com/v1/${path}`,{method:'GET',redirect:'manual',headers:{Authorization:`Bearer ${apiKey}`,'Stripe-Version':'2024-06-20'},signal:AbortSignal.timeout(15000)});}
  catch{throw new BillingError(502,'Stripe could not be reached. Try again after checking the connection.');}
+ if(response.status>=300&&response.status<400){await response.body?.cancel();throw new BillingError(502,'Stripe redirected the customer read; the request stopped.');}
  if(!response.ok){await response.body?.cancel();throw new BillingError(response.status===401||response.status===403?409:502,'Stripe refused the customer read. Check the restricted test key and its Customers read permission.');}
  try{return await(await boundedResponse(response,262144)).json() as unknown;}
  catch{throw new BillingError(502,'Stripe returned an unreadable customer response.');}
