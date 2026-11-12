@@ -21,7 +21,7 @@ import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
-test('emitted Worker record and NOW lists wrap full valid long names and reopen sorted saved views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
+test('emitted Worker record and NOW lists wrap full valid long names and save, edit, reopen and delete sorted views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
    const origin = `https://127.0.0.1:${port}`;

@@ -10295,7 +10295,7 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "6f92811f338ec05c15cb198d66460a6c544a704b63abf160be1ee2aef6558524",
+      "sha256": "dfb7acfc6eb17549d668be2db99378e36803dee1f84fed5c12508d5a792ace26",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
@@ -10315,7 +10315,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "bf5506fb6712f5997c88250b548cd719676c3d45f6fc7603eefd5d4859af2e85",
+      "sha256": "10b5ff5cf8aff90b8fc8695dbbfd5cc2096cb6f541b7949637ffce96f16991fe",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
