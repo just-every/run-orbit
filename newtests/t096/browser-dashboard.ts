@@ -8,6 +8,7 @@ import type {seedSalesReport} from './sales-report-fixture';
 import type {DashboardView} from '../../src/core/features/dashboards/repository';
 import {salesMeasures} from '../../src/core/features/analytics/sales-definition';
 import {cellValue} from '../../src/core/features/analytics/sales-format';
+import {dashboardTruthJourney} from './dashboard-truth-journey';
 import {dashboardAccessProof} from './dashboard-access-proof';
 type Worker={origin:string;certificate:{cert:string}};
 const root='/api/v2/workspaces/workspace',ops=root+'/operations';
@@ -31,6 +32,7 @@ export async function dashboardJourney({browser,worker,ownerCookie,seller,seed,d
  const quarterDeals=[];for(const [title,stage,amount,state,reason] of [['New business rollout',seed.stages.proposal,1_200_000,'won','Strong champion'],['Renewal decision',seed.stages.review,700_000,'lost','Price']] as const){const deal=await call(ownerCookie,'/api/v1/records/opportunity','POST',{title,stage_id:stage,value_cents:amount,owner_id:seed.ownerId,custom_fields:{Region:'Northeast'}});quarterDeals.push(deal.id);await call(ownerCookie,`/api/v1/records/opportunity/${deal.id}/entries`,'POST',{kind:'call',text:'Quarterly buying review',occurredAt:new Date().toISOString(),durationMinutes:20});await call(seed.rileyCookie,`/api/v1/records/opportunity/${deal.id}/entries`,'POST',{kind:'note',text:'Decision recorded with the buyer',occurredAt:new Date().toISOString()});await call(ownerCookie,`/api/v1/records/opportunity/${deal.id}/lifecycle`,'POST',{state,reason});}
  const periods={version:1,from:quarterFirst,through:quarterLast},preview=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/preview','POST',periods),saved=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/snapshots','POST',{...periods,reviewHash:preview.reviewHash});
  const quarter=Number(seed.months.current.slice(5,7)),start=`${seed.months.current.slice(0,4)}-${String(Math.floor((quarter-1)/3)*3+1).padStart(2,'0')}-01`,from=new Date(start+'T00:00:00Z'),through=new Date(from);through.setUTCMonth(through.getUTCMonth()+3);const forecastPeriod={from:start,through:through.toISOString().slice(0,10)};
+ await dashboardTruthJourney({seed,ownerCookie,call,open,shot});
  for(const stageId of [seed.stages.proposal,seed.stages.negotiation,seed.stages.review])await call(ownerCookie,root+'/forecast/stages','POST',{stageId,probability:50,category:'pipeline',reason:'Reviewed for quarterly planning'});
  await call(ownerCookie,root+'/forecast/quotas','POST',{operatorId:seed.ownerId,period:'quarterly',startDate:start,amountCents:10_000_000,reason:'Quarterly goal'});
  const forecastPreview=await call(ownerCookie,root+'/forecast/preview','POST',forecastPeriod),forecast=await call(ownerCookie,root+'/forecast/snapshots','POST',{...forecastPeriod,reviewHash:forecastPreview.reviewHash});

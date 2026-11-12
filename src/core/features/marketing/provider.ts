@@ -10,7 +10,7 @@ export function dataCenter(key:string){const match=/^[A-Za-z0-9-]{8,96}-(us[0-9]
 export const subscriberHash=(email:string)=>md5(email.trim().toLowerCase());
 export const audienceLink=(dc:string,webId:number)=>`https://${dc}.admin.mailchimp.com/lists/members?id=${webId}`;
 /** Only fixed Mailchimp Marketing API paths. Neither the key nor a provider body is logged or returned. */
-export async function mailchimpCall<T=any>(key:string,method:'GET'|'PUT'|'PATCH'|'POST',path:string,body?:unknown,fetcher:ProviderFetch=fetch):Promise<T>{
+export async function mailchimpCall<T=any>(key:string,method:'GET'|'PUT'|'PATCH'|'POST'|'DELETE',path:string,body?:unknown,fetcher:ProviderFetch=fetch):Promise<T>{
  let response:Response;
  try{response=await fetcher(`https://${dataCenter(key)}.api.mailchimp.com/3.0${path}`,{method,redirect:'manual',headers:{Authorization:'Basic '+btoa('orbit:'+key.trim()),...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(12000)});}
  catch(error){if(error instanceof MailchimpError)throw error;throw new MailchimpProviderError(0,'unreachable');}

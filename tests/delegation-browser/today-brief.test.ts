@@ -1,3 +1,4 @@
+import {draftParityBrowserJourney} from '../support/agent-door-draft-parity-proof';
 import {isolateBrowserTemp} from '../support/browser-temp.mjs';
 isolateBrowserTemp();
 import {test} from 'node:test';
@@ -60,6 +61,7 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(stalled.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port}}});await riskOnly.ready;
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  await draftParityBrowserJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await signedIn.close();
   } finally {await riskRuntime.teardown();await riskFixture.dispose();}
 

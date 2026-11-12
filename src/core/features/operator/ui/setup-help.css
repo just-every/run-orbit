@@ -1,0 +1,14 @@
+.setup-help { min-width: 0; max-width: 860px; margin: 12px 0; border: 1px solid var(--ob-line-strong); border-radius: 10px; background: var(--ob-card); color: var(--ob-body); font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.setup-help > summary { min-height: 44px; padding: 10px 16px; color: var(--ob-ink); cursor: pointer; font-weight: 650; }
+.setup-help > summary:focus-visible { outline: 3px solid var(--ob-tangerine); outline-offset: 3px; border-radius: 10px; }
+.setup-help__body { min-width: 0; padding: 0 16px 16px; }
+.setup-help__body > :first-child { margin-top: 0; }
+.setup-help__body > :last-child { margin-bottom: 0; }
+.setup-help__body ol, .setup-help__body ul { display: grid; gap: 10px; padding-left: 22px; }
+.setup-help__body p { margin: 12px 0; }
+.setup-help__body code { font-family: var(--ob-mono); font-size: max(13px, .92em); overflow-wrap: anywhere; }
+.setup-help__body h3 { margin: 20px 0 8px; font-size: 17px; }
+.setup-help__body ol { list-style: decimal outside; }
+.setup-help__body ul { list-style: disc outside; }
+.setup-help__body a { color: var(--ob-ink); text-decoration: underline; text-underline-offset: 3px; }
+.setup-help__new-tab { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }

@@ -5,7 +5,7 @@ import type {ActorContext, SqlStatement} from '../../shared/expansion-contracts'
 import type {ResourceContext, ToolContext} from '../../../base/modules/agent-door/index.ts';
 import {orbitPeople,nativePersonAdmission} from './people';
 import {currentGrant,grantMatchPredicate,grantBindings} from '../delegation/authority';
-import type {Grant} from '../delegation/protocol';
+import {scoped,type Grant} from '../delegation/protocol';
 import type {PlatformBindings} from '../../platform/assets';
 
 /** An explicit native agent admission, without issuing or borrowing a session.
@@ -37,6 +37,23 @@ export class AgentAccess extends AccessService {
     const actor=await this.context();
     if(actor.principal.kind!=='operator'||!await isFullOperator(this.db,actor.principal.operatorId))deny();
     this.addDependencyFences(actor,fullOperatorFence(actor),'native-class');
+    return actor;
+  }
+  /** Recheck the native admission immediately before a provider request, as
+   * well as at the later database commit. No context is retained by the guard. */
+  async providerAdmission(c:ActorContext):Promise<void> {
+    await this.refreshContext(c);
+    await this.db.batch(this.fence(c).map(statement=>this.db.prepare(statement.sql).bind(...statement.bindings)));
+  }
+  /** Graph proposals require explicit native selections, including their evidence. */
+  async selectedGraph(targets:string[]):Promise<ActorContext> {
+    if(!this.who.clientId?.startsWith('orbit-delegation:'))deny('Selected native authority required.');
+    const actor=await this.context(),grant=this.grantsAtAdmission.get(actor);
+    if(!grant)deny();
+    for(const target of targets) {
+      scoped(grant,target,'crm.evidence.read');
+      scoped(grant,target,'crm.graph.propose');
+    }
     return actor;
   }
   override async refreshContext(c: ActorContext) {
