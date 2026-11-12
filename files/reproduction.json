@@ -1,0 +1,15 @@
+{
+  "reproducedMonthlyQuotaLoss": true,
+  "liveMonthlyQuotaCents": 5000000,
+  "dashboardForecastMonthlyQuotaCents": 5000000,
+  "tile": "Quota\n$0.00\nWeighted expected value\n$0.00\nClosed-won bookings\n$0.00\nNo quota set\nOpen unweighted value\n$10,000.00",
+  "offeredFields": [
+    {
+      "name": "import_source",
+      "values": [
+        "{\"vendor\":\"csv\",\"account\":\"Synthetic dashboard spreadsheet\",\"sourceId\":\"synthetic-orbit-1\",\"owner\":null,\"stage\":\"New\",\"description\":null}"
+      ]
+    }
+  ],
+  "reproducedImportProvenance": true
+}

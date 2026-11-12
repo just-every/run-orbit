@@ -1,0 +1,94 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-dashboard-truth-1",
+  "head": "d9e00933665a7f860930cc4fd778ec69eef9c9f7",
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "recorded_at": "2026-11-12T03:57:48.236074+00:00",
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run node --import /tmp/orbit-browser-launch.mjs --import tsx --test newtests/t096/report-disclosure.test.ts",
+      "exit": 0,
+      "summary": [
+        "\u2714 REPORT-002 REPORT-003 REPORT-004 a manager\u2019s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (744194.494858ms)",
+        "\u2714 Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (3505.241389ms)",
+        "\u2139 tests 2",
+        "\u2139 suites 0",
+        "\u2139 pass 2",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 756097.142987"
+      ],
+      "browser": "/usr/bin/chromium --no-sandbox",
+      "assertion_width": 1440,
+      "proof_widths": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "new_sources_tracked_before_generation": true
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "test_counts": {
+    "before": 200,
+    "after": 200,
+    "registrations": 198,
+    "qualifications": 2
+  },
+  "clause_status_counts": {
+    "before": {
+      "done": 41,
+      "partial": 126,
+      "missing": 32
+    },
+    "after": {
+      "done": 41,
+      "partial": 126,
+      "missing": 32
+    }
+  },
+  "clause_status_changes": [],
+  "screens": {
+    "quota-live-390.png": {
+      "sha256": "612f3a64f6f3dda152a4810cddf302dc186e67e395d05e1e48bb43d6bcc73cf0",
+      "serious_critical_axe": 0
+    },
+    "quota-dashboard-1440.png": {
+      "sha256": "3a84ab82b622b83f8577145be622ec8b788c66144113d26eb9ed6a12e5e750f9",
+      "serious_critical_axe": 0
+    },
+    "quota-live-1440.png": {
+      "sha256": "b4356a8a60c12727b57123ab8e461681744637eaeb5930c1b6bad43a3805b7da",
+      "serious_critical_axe": 0
+    },
+    "quota-dashboard-390.png": {
+      "sha256": "17496d5a3b21f0e02d1beca41e91ea6ef4803fa1a97147a5b6d3654cff8c6c22",
+      "serious_critical_axe": 0
+    }
+  },
+  "working_tree_clean": true
+}
