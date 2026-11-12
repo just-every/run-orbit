@@ -196,7 +196,7 @@
       "status": "completed"
     }
   ],
-  "githubCalls": 7,
+  "githubCalls": 8,
   "mechanical": {
     "lock": {
       "write": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
@@ -221,7 +221,7 @@
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43154797991",
     "status": "in_progress"
   },
-  "branchVerifyObservedAt": "2026-11-12T04:38:52.195025+00:00",
+  "branchVerifyObservedAt": "2026-11-12T04:44:54Z",
   "completedAt": "2026-11-12T04:43:43.560206+00:00",
   "productTreeChangesThisRound": [],
   "countsBefore": {
