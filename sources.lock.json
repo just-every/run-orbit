@@ -7051,7 +7051,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-page.tsx": {
-      "sha256": "859138e0262797722ad6d655b1d098246b12a56edc22673622e46d70a77606fb",
+      "sha256": "1bcb611c5d1e1088d997a6cf0a5c6a4a81c5d1ccc62c09306c532179f98a43af",
       "executable": false
     },
     "src/core/features/operator/ui/records-query.ts": {
@@ -7087,7 +7087,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/saved-record-views.tsx": {
-      "sha256": "f5da334d065241bd3d31a3ece18833cb786373600248e21594c9296f697cb28f",
+      "sha256": "ec2902c98114a55247bd57570a010b363cb7d0111de8bb212e55caa9cdb81906",
       "executable": false
     },
     "src/core/features/operator/ui/sender-status.tsx": {
@@ -10315,7 +10315,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "f6a06a15bed9047c385d72f599348eafb0502a6b89bd50165a4a945693996d35",
+      "sha256": "bf5506fb6712f5997c88250b548cd719676c3d45f6fc7603eefd5d4859af2e85",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
