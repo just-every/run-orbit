@@ -2,12 +2,12 @@
   "originalHead": "91a7f46893e7e542206fa684292e6743542bb6bd",
   "runId": 43194636351,
   "jobId": 131153066908,
-  "ghCallsUsed": 6,
+  "ghCallsUsed": 8,
   "ghCallBudget": 10,
   "logCommand": "gh run view 43194636351 --repo just-every/run-orbit --job 131153066908 --log-failed",
   "logResult": "success",
   "originalRerun": "not requested or dispatched",
-  "repairEdited": false,
+  "repairEdited": true,
   "discoveryAt": "2026-11-12T12:38:32.601620+00:00",
   "candidateHead": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
   "candidateRuns": [
@@ -52,14 +52,34 @@
       "status": "in_progress",
       "at": "2026-11-12T12:58:37.236844+00:00",
       "runId": 43219714316
+    },
+    {
+      "conclusion": null,
+      "head_sha": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43219714316",
+      "status": "in_progress",
+      "at": "2026-11-12T13:03:38.250807+00:00",
+      "runId": 43219714316
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43219714316",
+      "status": "completed",
+      "at": "2026-11-12T13:08:39.308246+00:00",
+      "runId": 43219714316
     }
   ],
   "latest": {
-    "conclusion": null,
+    "conclusion": "success",
     "head_sha": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43219714316",
-    "status": "in_progress",
-    "at": "2026-11-12T12:58:37.236844+00:00",
+    "status": "completed",
+    "at": "2026-11-12T13:08:39.308246+00:00",
     "runId": 43219714316
-  }
+  },
+  "repairCommit": "3e3d6fe7cd8ae8138a7a29704fa1458209731550",
+  "candidateEvent": "push",
+  "watcherCompleted": true,
+  "terminalConclusion": "success"
 }

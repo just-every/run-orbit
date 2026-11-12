@@ -85,3 +85,14 @@ DONE-RIDERS and handoff boundaries:
 
 CLAIM SURFACE-012 PARTIAL points=1,2 tests=tests/support/embedded-risk-agent-proof.ts#embeddedRiskAgentProof; tests/delegation-browser/risk-journey.mjs#embeddedRiskJourney
 GAP SURFACE-012: Only the AGENT-002 deal-risk limbs are requalified. Embedded graph maintenance, follow-up, research, scheduled runs, transcript and generated-conflict qualification, provider authority and spending, Pause and limits, integration calls and the complete five-agent comparison retain every supplied hold and release prerequisite. The formal source judgment and all counts remain unchanged.
+
+Evidence preservation before terminal CI:
+- The complete selected local packet was published to refs/heads/evidence/sd-orbit-c-f176-fix1 at 24b84822c1ec73df5502133a8e19e08087fd0dfe while Verify was still in progress. The terminal publication will append an updated report-only commit on that same ref; no product ref or checkout state is changed by this transport.
+
+Terminal exact-SHA CI receipt:
+- Verify 43219714316, event push, completed successfully on 3e3d6fe7cd8ae8138a7a29704fa1458209731550. Observed at 2026-11-12T13:08:39.308246+00:00. URL: https://github.com/just-every/run-orbit/actions/runs/43219714316.
+- CI diagnostic calls used: 8 of 10. One watcher made six exact-run status reads at least 300 seconds apart after discovery; no workflow rerun or dispatch was used. No candidate failed-job retrieval was needed.
+- Product custody is READY for the existing fleet gates. The original cloud/sd-orbit-c-f176 branch remains BLOCKED and is not a landing candidate; only this repair branch and exact SHA are handed off.
+- No product blocker remains in this repair. Publication scanning, guarded landing, main equality and Run site remain the fleet lander’s work; evidence publication grants none of those outcomes.
+- The disposable product clone and its dependencies will be removed after final evidence publication. Actual packet files remain under /home/agent/rer-consolidation/work/sd-orbit-c-f176-fix1/packet/.
+- Plan relay: retain SURFACE-012’s existing held remainder and PARTIAL claim, record the emitted-Worker regression as repaired and qualified on this head, award no DONE and release no other lease or hold. Counts remain 42 DONE, 130 PARTIAL and 32 MISSING; tests remain 200.
