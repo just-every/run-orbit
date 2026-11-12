@@ -8,7 +8,7 @@ export async function exerciseRemovalHandover({page,operatorId,operatorName,rece
   expect(response.status(),await response.text()).toBe(status);return response.json();
  };
  const contacts=[contactId];
- for(let n=1;n<5;n++)contacts.push((await call('records/contact','POST',{name:'Synthetic removal contact '+n,email:'synthetic-orbit-removal-'+operatorId.toLowerCase()+'-'+n+'@example.test'},201)).id);
+ for(let n=1;n<5;n++)contacts.push((await call('records/contact','POST',{...(n<4?{name:'Synthetic removal contact '+n}:{}),email:'synthetic-orbit-removal-'+operatorId.toLowerCase()+'-'+n+'@example.test'},201)).id);
  const company=await call('records/company','POST',{name:'Synthetic removal company'},201);
  const assign=async(kind,ids,ownerId)=>{
   const review=await call('records/ownership/review','POST',{kind,ids,ownerId});
@@ -29,6 +29,8 @@ export async function exerciseRemovalHandover({page,operatorId,operatorName,rece
  await call(removePath,'DELETE',{confirmed:true,handover:missingContacts},409);
  const {companies:omittedCompany,...missingCompanies}=plan;
  await call(removePath,'DELETE',{confirmed:true,handover:missingCompanies},409);
+ await call(removePath,'DELETE',{confirmed:true,handover:{...plan,contacts:operatorId}},409);
+ await call(removePath,'DELETE',{confirmed:true,handover:{...plan,companies:operatorId}},409);
  // Both independent owner kinds invalidate a saved removal review.
  for(const [kind,id]of [['contact',contacts[0]],['company',company.id]]){
   const before=await call(reviewPath);
@@ -45,9 +47,10 @@ export async function exerciseRemovalHandover({page,operatorId,operatorName,rece
  await expect(contactsChoice).toBeVisible();
  for(const id of contacts){
   const detail=await call('records/contact/'+id);
-  await expect(review.getByText(detail.record.name,{exact:true})).toBeVisible();
+  await expect(review.getByText(detail.record.name||detail.record.email,{exact:true})).toBeVisible();
  }
- await expect(review.getByText(company.name,{exact:true})).toBeVisible();
+ const companyDetail=await call('records/company/'+company.id);
+ await expect(review.getByText(companyDetail.record.name,{exact:true})).toBeVisible();
  const confirm=review.getByRole('button',{name:'Confirm handover and remove',exact:true});
  await contactsChoice.selectOption(receiverId);
  await review.getByLabel('Receiving operator for opportunities',{exact:true}).selectOption(receiverId);
@@ -56,6 +59,7 @@ export async function exerciseRemovalHandover({page,operatorId,operatorName,rece
  await review.getByLabel('Receiving operator for companies',{exact:true}).selectOption('unassigned');
  await expect(confirm).toBeEnabled();
  await confirm.click();await expect(review).toHaveCount(0);
+ await call(removePath,'DELETE',{confirmed:true,handover:plan},409);
  await assertRemovedSummary(page,operatorName);
  for(const [kind,ids,target]of [['contact',contacts,receiverId],['company',[company.id],null]]){
   for(const id of ids){

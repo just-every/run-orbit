@@ -9,7 +9,8 @@ type Guard=(condition:string,...values:unknown[])=>D1PreparedStatement;
 /** Use the same independent owners as record pages and bulk assignment. */
 export async function ownedRecordInventory(db:D1Database,ownerId:string){
  await reconcileLegacyOwnership(db);
- const read=async(kind:OwnershipKind)=>(await db.prepare(`SELECT r.id,COALESCE(r.name,'Unnamed record') AS title,x.revision,r.updated_at,COALESCE(g.revision,0) AS record_revision
+ const title=(kind:OwnershipKind)=>kind==='contact'?"COALESCE(r.name,r.email,'Unnamed contact')":"r.name";
+ const read=async(kind:OwnershipKind)=>(await db.prepare(`SELECT r.id,${title(kind)} AS title,x.revision,r.updated_at,COALESCE(g.revision,0) AS record_revision
   FROM record_ownership x JOIN ${tables[kind]} r ON r.id=x.record_id
   LEFT JOIN graph_records g ON g.workspace_id='workspace' AND g.kind=x.record_type AND g.id=r.id AND g.retired_into_id IS NULL
   WHERE x.record_type=? AND x.owner_id=? ORDER BY r.id`).bind(kind,ownerId).all<OwnedRecord>()).results;
