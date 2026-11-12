@@ -1,3 +1,4 @@
+import {proveSlackDisconnect} from './slack-actions-proof';
 import {localArchiveRoundTrip} from './capture-privacy-archive';
 import assert from 'node:assert/strict';
 import {randomBytes} from 'node:crypto';
@@ -54,6 +55,7 @@ export async function proveSlackArchive(f:SlackFixture,{contact,secret,token,del
 
  }finally{await target.dispose();}
  const live=(await f.db.prepare("SELECT t.id token,t.action action,n.message_ts ts FROM slack_action_tokens t JOIN slack_notices n ON n.id=t.notice_id WHERE t.consumed_at IS NULL AND n.state='sent' AND n.record_type='opportunity' AND n.message_ts IS NOT NULL").all<{token:string;action:string;ts:string}>()).results;
+ await proveSlackDisconnect(f,{posts,call,signed,secret,token});
  const postCount=posts.length;await call('connect','POST',{token,signingSecret:secret});await call('process','POST',{});assert.equal(posts.length,postCount,'reconnect never replays notices or old actions');assert.ok((await call('')).channels.every((c:any)=>!c.enabled));assert.ok((await call('')).mappings.every((m:any)=>m.revoked_at));
  // INTEGRATE-010: after the reconnect the mapping and route are re-confirmed, yet an action signed from a message posted before it changes nothing.
  await call('mappings','PUT',{slackUserId:'UMAPPED',operatorId:f.actor,revoked:false});await call('channels','PUT',{id:'CINTERNAL',events:['stage','due','won','handoff'],enabled:true});

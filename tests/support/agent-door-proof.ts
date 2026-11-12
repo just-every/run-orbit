@@ -1,4 +1,6 @@
+import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
+import {agentDoorAIInputProof} from './agent-door-ai-input-proof';
 import {notificationDirectProof} from './notification-direct-proof';
 import type {TestContext} from 'node:test';
 import {isolatedDatabase} from './isolated-database';
@@ -17,8 +19,10 @@ import portabilityPolicy from '../../scripts/installer/portability-policy.mjs';
 import {orbitPeople} from '../../src/core/features/agent-door/people';
 import {autonomousPolicy,heldPolicy,policyEnvelope} from '../../src/base/modules/agent-door/conformance/crypto.mjs';
 import type {PlatformBindings} from '../../src/core/platform/assets';
+import {agentDoorGraphProof} from './agent-door-graph-proof';
 import type {CaptureSecurityProofContext} from './agent-door-capture-security-proof';
 import {agentDoorStalledRiskProof} from './agent-door-stalled-risk-proof';
+import {agentDoorForecastProof} from './agent-door-forecast-proof';
 import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
@@ -34,7 +38,7 @@ export interface RejectedReportProofContext {
   businessCall: (name: string, args: Record<string, unknown>, overrides?: Record<string, unknown>, method?: string, rpcId?: number) => Promise<{status: number; body: any}>;
 }
 
-export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>) {
+export async function agentDoorProof(context:TestContext,rejectedReportProof: (context: RejectedReportProofContext) => Promise<void>,collaboratorProof:(context:CollaboratorProofContext)=>Promise<void>,workflowProof:(context:RejectedReportProofContext)=>Promise<void>,captureSecurityProof:(context:CaptureSecurityProofContext)=>Promise<void>,draftParityProof:(context:DraftParityProofContext)=>Promise<void>) {
   const fixture = await isolatedDatabase();
   try {
     await checkAgentArtifacts(fixture.db,contactAgentArtifacts);
@@ -206,6 +210,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await call('orbit.sources.read',{});
     await call('orbit.forecasts.read',{});
     await call('orbit.forecasts.update',{id:opportunity.id,forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'},idempotency_key:'native-forecast'});
+    await agentDoorForecastProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall},opportunity.id);
     const definition=await call('orbit.reports.update',{definition:{name:'Opportunity count',description:'Current native opportunity count',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30},idempotency_key:'native-report-definition'});
     const period={id:definition.id,version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'};
     const preview=await call('orbit.reports.preview',period);
@@ -220,7 +225,9 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     assert.equal(privatePreview.values.value,1);assert.ok(JSON.stringify(privatePreview.values.groups).includes('private_amount'));
     const privateReport=await call('orbit.reports.compute',{...privatePeriod,review_hash:privatePreview.reviewHash,idempotency_key:'private-report'});
     await rejectedReportProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
+    await agentDoorAIInputProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await agentDoorClassificationProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
+    await agentDoorGraphProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await captureSecurityProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await call('orbit.forecasts.read',{opportunity_id:privateOpportunity.id});
     const sensitiveBlocked=autonomousPolicy();sensitiveBlocked.rules.push({id:'protected',class:'sensitive',do:'blocked'});
@@ -257,6 +264,8 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await localAgentCredentialProof(bindings,cookie,opportunity.id,companyId,mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy()));
     await agentAuditRetentionProof({bindings,cookie,companyId,issuer,sign,sponsor:{id:owner.operatorId,name:owner.displayName},
       setPolicy:mode=>adopt(mode==='held'?heldPolicy():autonomousPolicy())});
+    // Append this flow after the established audit-history fixture.
+    await draftParityProof({bindings,door,cookie,ownerId:owner.operatorId,opportunityId:opportunity.id,contactId:contact.id,adopt,businessCall});
     await workflowProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,sourceId:privateOpportunity.id,period:privatePeriod,reviewerEmail:mappedTeammate!.email,adopt,businessCall});
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});

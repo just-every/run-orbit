@@ -1,6 +1,7 @@
 import {isRecordMailDatabase} from '../outreach/record-mail-storage';
 import {LibraryRepository,type LibraryKind} from './library-repository';
 import {WorkbenchError} from '../workbench/repository';
+import {mergeFieldLabel} from './merge-field-labels';
 import {payloadHash} from '../../platform/source-security';
 export type LibrarySelection=Partial<Record<LibraryKind,{id:string;revision:number}>>;
 interface RenderDraft {id:string;revision:number;subject:string;body:string;recipient_email:string;library_selection_json:string;merge_review_json:string|null}
@@ -30,4 +31,4 @@ export async function renderDraft(db:D1Database,id:string,actor:string){
  const guards=[library.permissionFence(actor),db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'merge_review_changed',NULL WHERE COALESCE((${contextSql(db)}),'')<>? OR NOT EXISTS(SELECT 1 FROM drafts WHERE id=? AND revision=? AND subject=? AND body=? AND recipient_email=? AND library_selection_json=?)`).bind(id,context.value,id,draft.revision,draft.subject,draft.body,draft.recipient_email,draft.library_selection_json),...selectionGuards];
  return {draft,review,guards};
 }
-export function requireRendered(review:RenderReview){if(review.missing.length||review.stale.length)throw new WorkbenchError(409,`Resolve merge fields before approval: ${[...review.missing,...review.stale].join('; ')}`);if(!review.reviewed)throw new WorkbenchError(409,'Merge variables changed or have not been reviewed. Review the exact rendered message again.');}
+export function requireRendered(review:RenderReview){if(review.missing.length||review.stale.length)throw new WorkbenchError(409,`Resolve merge fields before approval: ${[...review.missing.map(mergeFieldLabel),...review.stale].join('; ')}`);if(!review.reviewed)throw new WorkbenchError(409,'Merge variables changed or have not been reviewed. Review the exact rendered message again.');}

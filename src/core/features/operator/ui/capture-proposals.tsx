@@ -7,11 +7,11 @@ import {formatDate} from './formatters';
 /** Calendar quotes store exact instants ("Starts 2026-10-20T00:00:00.000Z"); show them as dates. */
 const quoteLine=(line:string)=>line.replace(/^(Starts|Ends) (\d{4}-\d{2}-\d{2}T[\d:.]+Z)$/,(_,word:string,at:string)=>`${word} ${formatDate(at)}`);
 
-interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[]}
+interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[];signalId?:string;itemId?:string;capturedAt?:string}
 export interface CaptureProposal {
- id:string;kind:'link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact';record_type:string;record_id:string;field:string|null;
+ id:string;kind:'link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact'|'question';record_type:string;record_id:string;field:string|null;
  current_value:string|null;proposed_value:string|null;revision?:string;signal_type:string;occurred_at:string;source_name:string|null;source_state:string|null;
- details:{evidence:Evidence;names?:string[];name?:string|null;companyName?:string;title?:string;contactIds?:string[]};
+ details:{evidence:Evidence;label?:string;preparedBy?:{label:string};names?:string[];name?:string|null;companyName?:string;title?:string;contactIds?:string[]};
 }
 async function post(path:string,body:unknown){
  const response=await fetch(path,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
@@ -20,22 +20,25 @@ async function post(path:string,body:unknown){
 const queue=(value:string|null)=>{if(!value)return 'Not set';const parsed=JSON.parse(value) as {state:string;reason:string|null;dueAt?:string|null};return `${parsed.state==='none'?'Not in NOW or NEXT':parsed.state.toUpperCase()}${parsed.reason?` · ${parsed.reason}`:''}${parsed.dueAt?` · until ${formatDate(parsed.dueAt)}`:''}`;};
 const kinds:Record<string,string>={'email.replied':'reply','email.sent':'sent message','email.bounced':'delivery report','meeting.booked':'booked meeting','meeting.completed':'completed meeting','meeting.cancelled':'cancelled meeting'};
 const evidenceKind=(type:string)=>type.endsWith(':email.auto_replied')?'automatic reply':type.endsWith(':email.forwarded')?'forwarded message':kinds[type]??'evidence';
+const fieldWord=(field:string|null)=>field==='job_title'?'job title':field==='expected_close_at'?'close date':field;
 function title(proposal:CaptureProposal){
  const d=proposal.details;
  switch(proposal.kind){
+  case 'question':return proposal.proposed_value??'Missing decision-maker';
   case 'link_signal':return `Link this ${evidenceKind(proposal.signal_type)} to ${(d.names??[]).join(', ')}`;
   case 'create_contact':return `Create contact ${proposal.proposed_value} at ${d.companyName}`;
-  case 'set_field':return `Set ${proposal.field} from this message`;
+  case 'set_field':return `Set ${fieldWord(proposal.field)} from this message`;
   case 'next_action':return `Change the next action for ${d.title}`;
   default:return 'Set do-not-contact';
  }
 }
 /** Old and new side by side for every proposal that touches an existing value. */
 function Change({proposal}:{proposal:CaptureProposal}){
+ if(proposal.kind==='question')return <p>This remains an unanswered question. Accepting acknowledges it; no contact or stakeholder role is created.</p>;
  if(proposal.kind==='link_signal')return <p>Accepting appends this evidence to each named contact, their company and their opportunities, once.</p>;
  if(proposal.kind==='create_contact')return <p>New contact, created as do-not-contact: Orbit never makes a captured contact contactable. Name from the message: {proposal.details.name||'none given'}.</p>;
- const current=proposal.kind==='next_action'?queue(proposal.current_value):proposal.kind==='do_not_contact'?'Contactable':proposal.current_value??'Empty';
- const proposed=proposal.kind==='next_action'?queue(proposal.proposed_value):proposal.kind==='do_not_contact'?'Do not contact':proposal.proposed_value??'';
+ const current=proposal.kind==='next_action'?queue(proposal.current_value):proposal.kind==='do_not_contact'?'Contactable':proposal.field==='expected_close_at'&&proposal.current_value?formatDate(proposal.current_value):proposal.current_value??'Empty';
+ const proposed=proposal.kind==='next_action'?queue(proposal.proposed_value):proposal.kind==='do_not_contact'?'Do not contact':proposal.field==='expected_close_at'&&proposal.proposed_value?formatDate(proposal.proposed_value):proposal.proposed_value??'';
  return <table className="capture-change"><caption className="sr-only">Current and proposed value</caption><thead><tr><th scope="col">Current</th><th scope="col">Proposed</th></tr></thead><tbody><tr><td>{current}</td><td>{proposed}</td></tr></tbody></table>;
 }
 /** Proposed changes waiting for a person; on a record's page (whenWaiting) the card shows only while any wait. */
@@ -59,8 +62,10 @@ export function CaptureProposals({recordType,recordId,onChanged,whenWaiting=fals
    <h3>{title(proposal)}</h3>
    <p>From {e.sender??'unknown sender'} · {formatDate(e.date)} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
    {e.quote.length>0&&<blockquote className="capture-quote">{e.quote.map((line,index)=><p key={index}>{quoteLine(line)}</p>)}</blockquote>}
+   {proposal.details.preparedBy&&<p>Proposed by {proposal.details.preparedBy.label} · {proposal.details.label} · Evidence {e.signalId} · Captured item {e.itemId}</p>}
+   {proposal.details.preparedBy&&<p>Occurred <time dateTime={e.date}>{e.date}</time>{e.capturedAt&&<> · Captured <time dateTime={e.capturedAt}>{e.capturedAt}</time></>}</p>}
    <Change proposal={proposal}/>
-   {editing===proposal.id?<form className="workbench-form" onSubmit={event=>{event.preventDefault();void review(proposal,'accept',value);}}><label>{proposal.kind==='create_contact'?'Contact name':`New ${proposal.field}`}<input value={value} onChange={event=>setValue(event.target.value)} maxLength={200}/></label><div className="workbench-actions"><button className="orbit-button orbit-button--primary" disabled={busy===proposal.id}>Accept edited value</button><button type="button" className="orbit-button orbit-button--quiet" onClick={()=>setEditing('')}>Cancel editing</button></div></form>
+   {editing===proposal.id?<form className="workbench-form" onSubmit={event=>{event.preventDefault();void review(proposal,'accept',value);}}><label>{proposal.kind==='create_contact'?'Contact name':`New ${fieldWord(proposal.field)}`}<input value={value} onChange={event=>setValue(event.target.value)} maxLength={200}/></label><div className="workbench-actions"><button className="orbit-button orbit-button--primary" disabled={busy===proposal.id}>Accept edited value</button><button type="button" className="orbit-button orbit-button--quiet" onClick={()=>setEditing('')}>Cancel editing</button></div></form>
    :<div className="workbench-actions"><button className="orbit-button orbit-button--primary" disabled={busy===proposal.id} onClick={()=>void review(proposal,'accept')}>Accept</button>{editable&&<button className="orbit-button orbit-button--secondary" disabled={busy===proposal.id} onClick={()=>{setEditing(proposal.id);setValue(proposal.kind==='create_contact'?proposal.details.name??'':proposal.proposed_value??'');}}>Edit</button>}<button className="orbit-button orbit-button--quiet" disabled={busy===proposal.id} onClick={()=>void review(proposal,'decline')}>Decline</button></div>}
   </article>;})}
  </section>;

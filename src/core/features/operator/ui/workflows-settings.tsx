@@ -4,7 +4,7 @@ import {WorkflowsEditor} from './workflows-editor';
 import {WorkflowsApprovals,WorkflowsRuns} from './workflows-activity';
 import {WorkflowFieldPolicies} from './workflows-field-policies';
 import {WorkflowsVersionUndo} from './workflows-version-undo';
-import {Workflow,WorkflowData,WorkflowMetadata,workflowLabel,workflowRequest} from './workflows-types';
+import {Workflow,WorkflowData,WorkflowMetadata,workflowLabel,workflowRequest,workflowTime} from './workflows-types';
 import './workflows.css';
 
 export function WorkflowsSettings() {
@@ -36,7 +36,7 @@ export function WorkflowsSettings() {
   {manage===true&&data&&<div className="workflows-stack" hidden={tab!=='workflows'}><div className="workflows-heading"><label>Choose workflow<select value={selected} onChange={event=>{setSelected(event.target.value);setNotice('');}}><option value="">Choose a workflow</option>{data.workflows.map(item=><option value={item.id} key={item.id}>{item.name} · v{item.version} · {workflowLabel(item.status)}{item.needsReactivation?' · Needs reactivation':''}</option>)}<option value="new">New workflow</option></select></label><button type="button" onClick={()=>{setSelected('new');setNewKey(key=>key+1);}}>New workflow</button></div>
    {metadataError&&<p className="operator-state operator-state--error" role="alert">Could not load operator and pipeline choices: {metadataError}</p>}
    {workflow?.needsReactivation&&<p className="operator-state">This workflow needs reactivation. Check its actions and current permissions, then preview it again.</p>}
-   {workflow&&(workflow.activeVersion||workflow.status==='active')&&<div className="workflows-buttons"><span className="workflows-meta">Version {workflow.activeVersion??workflow.version} is active</span><button type="button" disabled={busy} onClick={()=>void run(`/${encodeURIComponent(workflow.id)}/pause`)}>Pause active version</button></div>}
+   {workflow&&(workflow.activeVersion||workflow.status==='active')&&<div className="workflows-buttons"><span className="workflows-meta">Version {workflow.activeVersion??workflow.version} is active{workflow.activatedAt?` · Activated ${workflowTime(workflow.activatedAt)}`:''}</span><button type="button" disabled={busy} onClick={()=>void run(`/${encodeURIComponent(workflow.id)}/pause`)}>Pause active version</button></div>}
    {(selected==='new'||workflow)&&<WorkflowsEditor key={selected==='new'?`new-${newKey}`:selected} initial={workflow} metadata={metadata} onSaved={onSaved} onAction={async()=>{await load();}}/>}
    {workflow&&<WorkflowsVersionUndo key={workflow.id} workflow={workflow} onChanged={load}/>}
    <WorkflowFieldPolicies/>
