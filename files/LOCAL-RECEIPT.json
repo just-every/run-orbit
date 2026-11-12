@@ -1,0 +1,112 @@
+{
+  "head": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
+  "testName": "REPORT-002 REPORT-003 REPORT-004 an owner’s tile board links viewer-fenced saved definitions at their versions and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence",
+  "mainAtLastFetch": "5f92fa76579961950d49c7411f54d5446516a708",
+  "isShallow": "false",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "result": "Wrote 0 contract documents."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "result": "Contract documents are current."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  ],
+  "migrationLedger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No migration added or changed"
+  },
+  "registeredCaseChanges": {
+    "added": 0,
+    "removed": 0,
+    "retitled": 1
+  },
+  "initialLocalFailure": {
+    "head": "ce84b8002889d1b8db7907771f57cd1d55dceac3",
+    "test": "dashboardAccessProof",
+    "failure": "assert.ok(full.tiles.some(tile=>tile.status==='ready'&&tile.report&&tile.report.definitionVersion>savedTile.report!.definitionVersion))",
+    "cause": "New proof incorrectly expected pinned tiles to advance to a later source version.",
+    "correction": "Read the saved definition inventory to prove both versions exist, then follow every tile at its chosen version. No existing assertion changed."
+  },
+  "touchedRuntimeStatus": "PASSED",
+  "runtimeExecutions": [
+    {
+      "command": "NODE_OPTIONS='--import=/tmp/orbit-chromium.mjs' ORBIT_FOLD_BROWSER_EVIDENCE=<task proof directory> cloud_run timeout 1800 pnpm exec tsx --test --test-reporter=tap --test-concurrency=1 newtests/t096/report-disclosure.test.ts",
+      "exit": 0,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0,
+      "durationMs": 645815.553916,
+      "candidateBytesMatch": true,
+      "headAtCompletion": "1d07561f208078d5536c5d5ad058abc7c63c04f6"
+    },
+    {
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test --test-reporter=tap newtests/t096/report-time-boundaries.test.ts",
+      "exit": 0,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "durationMs": 194030.730476,
+      "headAtStart": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
+      "headAtCompletion": "1d07561f208078d5536c5d5ad058abc7c63c04f6"
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "headless": true,
+    "extraArgument": "--no-sandbox",
+    "widths": [
+      1440,
+      390
+    ],
+    "proofOverrideOutsideRepository": true,
+    "realHomeUsed": true,
+    "selectedScreens": 10,
+    "seriousCriticalAxeFindings": 0,
+    "pageOverflowAssertions": "passed"
+  },
+  "recordedAt": "2026-11-12T20:47:18.989028+00:00",
+  "productPush": {
+    "branch": "cloud/sd-orbit-c-f178",
+    "head": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
+    "guardExit": 0,
+    "remoteRefVerified": true,
+    "candidateSkipCi": false,
+    "allCandidateAuthorsAndCommitters": "Run Edit Run fleet",
+    "allCandidateAddresses": "fleet@runeditrun.com",
+    "trailers": "absent",
+    "sideParentsInspected": true
+  }
+}

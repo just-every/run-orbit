@@ -1,0 +1,40 @@
+{
+  "head": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
+  "files": [
+    {
+      "path": "src/core/features/dashboards/basis.tsx",
+      "sha256": "14b62def222fea221dc70edfbb8ff59994655e923d196fcc237ba7d1e49ce83b",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/dashboard-access-proof.ts",
+      "sha256": "9486242f85c60f78c5ec069c2af17dc69e29f7919becf8a036d1f01e519e0d61",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/report-disclosure.test.ts",
+      "sha256": "c265efec4065fd3226e02054f3530d9c5720265524b22e745eb5ce0cab7de6c3",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/report-time-boundaries.test.ts",
+      "sha256": "2c8c5eb70ac48154141402e059dce11d179be721915dbd46909fd5aa36b078af",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/browser-dashboard.ts",
+      "sha256": "e4fa5b463f5442c1bea4be7ce94e664d66dff9559f4751a9237feeb1c48a4f4e",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/dashboard-backend-proof.ts",
+      "sha256": "2f24b258f237b4da080509a9a1e87aa787dfb6da3aa39215bc5eb80064ab5658",
+      "matchesHead": true
+    },
+    {
+      "path": "newtests/t096/browser-observations.ts",
+      "sha256": "a101a8c86fe2b68e095c974c0ae95fdeef8fc38499d491d4271c745f238f2699",
+      "matchesHead": true
+    }
+  ]
+}

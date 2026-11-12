@@ -1,0 +1,18 @@
+{
+  "head": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
+  "addedEmailShapedStrings": 0,
+  "contractDiffEmpty": true,
+  "generatedViewDiffsEmpty": true,
+  "existingAssertionsRemovedOrNarrowed": false,
+  "testRegistrationsBefore": 198,
+  "testRegistrationsAfter": 198,
+  "qualificationFlowsBefore": 2,
+  "qualificationFlowsAfter": 2,
+  "publicationScan": {
+    "status": "NOT RUN IN CLOUD",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet lander"
+  }
+}

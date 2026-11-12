@@ -1,0 +1,9 @@
+# REPORT-002 execution plan
+
+1. Read the fresh source clause, Status gap, inherited TEAM-006 duties, repository landing commands and the supplied DONE riders. Map acceptance 1 to 4 to the existing native and browser journeys. Do not edit any Status row or generated view.
+2. Add the missing text link in a ready report tile's Basis using the existing report route, exact definition version and disclosed period. Rely on the existing source availability and share fences; add no new authority.
+3. Extend dashboardAccessProof within the existing report-disclosure registration. Follow every ready report tile at both widths, including an older saved definition beside a newer source version. Assert disclosures, keyboard access, unavailable-source absence, restricted-viewer behavior and refusal of an already visible link after source-share revocation. Preserve all original assertions and the time-boundary backend proof.
+4. Run touched tests, typecheck, first-party checks and source mechanics. Inspect the changed dashboard and report at 1440 and 390 and take the required fresh UI gate. Push saves with fleet identity and the push guard. Merge fresh main after a published save, regenerate views for checking and restore them, then regenerate source lock last.
+5. Push the final candidate without a CI skip marker. Discover exact-SHA Verify using the bounded REST budget, preserving run provenance. The fleet performs publication scan, acceptance judgment and landing. Publish explicitly selected non-secret report and receipt files on the separate evidence ref and relay the requested lane lines.
+
+Scope: just-every/run-orbit only. No new policy default. Team filter and roles remain inherited and held under TEAM-006 and TEAM-005. Email delivery remains REPORT-004 and NOTIFY-003. No additional campaign clause is authorized by the extract in these files.
