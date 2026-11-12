@@ -160,6 +160,11 @@ async function proveArchive(f:Installation,deal:Awaited<ReturnType<Installation[
   const status=await json(await api('settings/stripe'));assert.equal(status.state,'paused');assert.ok(status.reason,'Restore explains fresh credentials are required');
   const billing=await json<Billing>(await api('billing/opportunity/'+deal.opportunity));assert.equal(billing.mapping?.customerId,deal.customer.id);assert.equal(billing.timeline.length,3);
   assert.equal((await api('billing/stripe/review','POST',{customerId:deal.customer.id,companyId:deal.company,opportunityId:deal.opportunity})).status,409);
+  const paused=await inventory(target.db),timestamp=String(Math.floor(Date.now()/1000)),raw=JSON.stringify(f.event(deal.customer.id,900,'invoice.paid',Number(timestamp)));
+  const signature=createHmac('sha256',f.webhookSecret).update(timestamp+'.'+raw).digest('hex');
+  const webhook=await app.request('https://orbit.test/api/v1/billing/stripe/events',{method:'POST',headers:{'Content-Type':'application/json','Stripe-Signature':`t=${timestamp},v1=${signature}`},body:raw});
+  assert.equal(webhook.status,409,'Restored history refuses a correctly signed webhook until fresh installation authority');
+  assert.deepEqual(await inventory(target.db),paused,'Old installation authority cannot add billing evidence after restore');
   assert.equal(providerCalls,0,'Restored billing history confers no provider authority');
  }finally{await target.dispose();}
  await json(await f.api(`records/archive/exports/${job.id}/abort`,'POST',{}));

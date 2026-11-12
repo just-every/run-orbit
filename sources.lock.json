@@ -11455,7 +11455,7 @@
       "executable": false
     },
     "tests/support/stripe-billing-proof.ts": {
-      "sha256": "89f5b95b9d63e70c5aad479160ad5f828b02fa5a56c5d2826deda1f69d5798bc",
+      "sha256": "04dfca10c7e14896874dd5a7b341884a6bfbedac6895adc71e83ddbf7af8e91b",
       "executable": false
     },
     "tests/support/test-auth.ts": {
