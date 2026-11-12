@@ -1,3 +1,4 @@
+import {audit} from '../../records/shared';
 import type {AuthenticatedOperator} from '../../identity';
 import {importAuthority} from '../repository';
 import {createId} from '../../../shared/ids';
@@ -15,6 +16,7 @@ export async function connect(db:D1Database,config:HubSpotConfig,actor:Authentic
   const portal=String(info.hubId??'');if(!/^\d{1,30}$/.test(portal))throw new HubSpotError(409,'HubSpot did not identify its account. Check the private app token.');
   await owner(db,actor);const p=importAuthority(actor);
   await db.prepare(`INSERT INTO crm_import_hubspot_connection(singleton,id,portal_id,secret_ciphertext,state,reason) SELECT 1,?,?,?,'connected',NULL WHERE (${p.sql}) AND EXISTS(SELECT 1 FROM operators WHERE id=? AND setup_owner=1)`).bind(createId(),portal,await config.security.seal(token),...p.params!,actor.operatorId).run();
+  await audit(db,actor.operatorId,'hubspot.connected','hubspot',portal,{scopes}).run();
  }catch(error){if(error instanceof HubSpotError){await db.prepare("INSERT INTO crm_import_hubspot_connection(singleton,id,portal_id,state,reason) VALUES(1,?,'','unresolved-setup',?)").bind(createId(),error.message).run();}throw error;}
  return connectionView(db);
 }

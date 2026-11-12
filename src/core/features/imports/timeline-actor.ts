@@ -15,13 +15,15 @@ export function importTimelineActor(entry: {
   source: string;
   payloadJson: string;
 }): string | null {
-  if (entry.kind !== 'import.note' || !Object.hasOwn(vendors, entry.source)) return null;
-  if (entry.actorType !== 'import' && !(entry.actorType === 'source' && entry.actorId === null)) return null;
+  const sourceKind:Record<string,string>={'import.note':'note','manual.call':'call','manual.meeting':'meeting','task.created':'task-entry'};
+  const kind=sourceKind[entry.kind];
+  if (!kind || !Object.hasOwn(vendors, entry.source)) return null;
+  if (entry.actorType !== 'import' && !(kind==='note' && entry.actorType === 'source' && entry.actorId === null)) return null;
   const provenance = JSON.parse(entry.payloadJson)?.importSource;
   if (!provenance || provenance.vendor !== entry.source || typeof provenance.account !== 'string' ||
       !provenance.account.trim() || typeof provenance.sourceId !== 'string' || !provenance.sourceId) return null;
   const namespace = `orbit:${entry.source}:${provenance.account}`;
-  if (entry.id !== nativeId(namespace, 'note', provenance.sourceId)) return null;
+  if (entry.id !== nativeId(namespace, kind, provenance.sourceId)) return null;
   if (entry.actorType === 'import' && entry.actorId !== namespace) return null;
   return `${provenance.account} (${vendors[entry.source]} import)`;
 }

@@ -1,3 +1,4 @@
+import {audit} from '../../records/shared';
 import {sha256} from '../../../../modules/import-kit/d1/index';
 import {Hono} from 'hono';
 import {z} from 'zod';
@@ -13,7 +14,7 @@ export function hubspotRoutes(db:D1Database,config:HubSpotConfig){const app=new 
  app.use('*',async(c,next)=>{await owner(db,c.get('operator'));await next();});
  app.get('/connection',async c=>c.json(await connectionView(db)));
  app.post('/connection',async c=>{const parsed=z.object({token:z.string().trim().min(1).max(1000)}).strict().safeParse(await c.req.json());if(!parsed.success)throw new HubSpotError(400,'Enter the read-only HubSpot private-app token.');return c.json(await connect(db,config,c.get('operator'),parsed.data.token));});
- app.post('/disconnect',async c=>{await db.batch([db.prepare('DELETE FROM crm_import_hubspot_connection'),db.prepare("UPDATE crm_import_hubspot_pulls SET state='withdrawn',queue_json='[]',error='HubSpot disconnected'"),db.prepare('DELETE FROM crm_import_hubspot_pages')]);return c.json(await connectionView(db));});
+ app.post('/disconnect',async c=>{await db.batch([db.prepare('DELETE FROM crm_import_hubspot_connection'),db.prepare("UPDATE crm_import_hubspot_pulls SET state='withdrawn',queue_json='[]',error='HubSpot disconnected'"),db.prepare('DELETE FROM crm_import_hubspot_pages'),audit(db,c.get('operator').operatorId,'hubspot.disconnected','hubspot','connection')]);return c.json(await connectionView(db));});
  app.get('/pulls',async c=>{const rows=(await db.prepare('SELECT * FROM crm_import_hubspot_pulls WHERE actor_id=? ORDER BY created_at DESC LIMIT 1').bind(c.get('operator').operatorId).all<any>()).results;return c.json({pull:rows.length?pullView(rows[0]):null});});
  app.post('/pulls',async c=>c.json(pullView(await startPull(db,config,c.get('operator')))));
  app.get('/pulls/:id',async c=>{const pull=await readPull(db,c.get('operator'),c.req.param('id'));return c.json({...pullView(pull),...pull.state==='reviewable'?{source:bundle(pull.portal_id,await pages(db,pull.id),{stages:{},contactability:'mapped_permission'}).source}:{}});});

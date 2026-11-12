@@ -815,7 +815,7 @@
       "executable": false
     },
     "docs/imports/MOVING.md": {
-      "sha256": "19feb4544d6a907029519b79217b8a86944fe26ea756553ca7497e3ff5701370",
+      "sha256": "3362516a996291357d87c03c2c9189aa7785a5d412c33b72431236331072b345",
       "executable": false
     },
     "docs/overview.md": {
@@ -2228,6 +2228,10 @@
     },
     "migrations/core/0081_hubspot_import.sql": {
       "sha256": "639a5eba10fe855306f1e431f35c41547a97f4bc922c64920f950166f943846a",
+      "executable": false
+    },
+    "migrations/core/0082_hubspot_explicit_erasure.sql": {
+      "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3847,7 +3851,7 @@
       "executable": false
     },
     "public/moving-guide.html": {
-      "sha256": "64323c84781051b5e02cba1087e4f5c4781f2f574394aa75f4af00306b4fd7cf",
+      "sha256": "75889fa4032e40afcc89c9a1d84a8e4440aa6b340240e53bf428ceb0a1378f8c",
       "executable": false
     },
     "public/operator-native.css": {
@@ -4127,7 +4131,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "33bb34735c292779900d638a93082a5fac3663bb27952be6921b6ef7f8105f0f",
+      "sha256": "88d39d8d3eb018559fdfe3208e6a9748f79f1f12095314f9edb237c05643ecef",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -6271,7 +6275,7 @@
       "executable": false
     },
     "src/core/features/imports/hubspot/connection.ts": {
-      "sha256": "ebfed66a8ee6894b3e29a6d3b07a4a2d034d9afcea710fad02424fdfc531d159",
+      "sha256": "d44e9b23ff422f2be20533d8b56079fd5c86b424952ef1c9a544af83715301ca",
       "executable": false
     },
     "src/core/features/imports/hubspot/inventory.ts": {
@@ -6283,7 +6287,7 @@
       "executable": false
     },
     "src/core/features/imports/hubspot/routes.ts": {
-      "sha256": "e8c6554da51bbcffb677157db99c8af354076112f15640e885806ea4365cfc71",
+      "sha256": "a26643eba3981a01c1597b4163102f17a780b8bc27a4fb502cf7bbe384a0806e",
       "executable": false
     },
     "src/core/features/imports/mailboxes.ts": {
@@ -6327,7 +6331,7 @@
       "executable": false
     },
     "src/core/features/imports/review-erasure.ts": {
-      "sha256": "5c8e1b366f13db73e39fdd7a759ff78874d9bdf110eda95d55fcb0a27353febc",
+      "sha256": "39825464d407d0a02bd60fd795b4f114c8a21b9a91f8c0075f516b279d80ac70",
       "executable": false
     },
     "src/core/features/imports/review-labels.ts": {
@@ -6355,7 +6359,7 @@
       "executable": false
     },
     "src/core/features/imports/timeline-actor.ts": {
-      "sha256": "0ea78aa515864c416921fcdd1767775905e49a537d5fdd354c1f35f064c9ab65",
+      "sha256": "b8bfe06275d869d5e617198eefc4bc6b9318d20fb0d59c6e9eb9741a2bf65cc3",
       "executable": false
     },
     "src/core/features/imports/undo-targets.ts": {
@@ -6748,6 +6752,10 @@
     },
     "src/core/features/operator/ui/import-provenance.ts": {
       "sha256": "a58dbc93d5b04adb39748d955c798b3bb0ec1009e68e299ad4ee14096a35310f",
+      "executable": false
+    },
+    "src/core/features/operator/ui/imports-hubspot.tsx": {
+      "sha256": "aed304c759361b9663022681d2735b5825b5de38e5963c0b30de8fab69cc09c3",
       "executable": false
     },
     "src/core/features/operator/ui/imports-mapping.tsx": {
@@ -7871,7 +7879,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "4a7dfbe666e3a33cbb5417e34ee4e9aa908f221db25071277f4d7b35cb48bcfe",
+      "sha256": "280573389a8c63f13f63196e09f070503e3b47eacdaae08f3d8d61f3a2efa9de",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -8327,7 +8335,7 @@
       "executable": false
     },
     "src/core/features/tasks/repository.ts": {
-      "sha256": "f3a407909251bf4c6640a767c888c244541eb4fa2fc9a3b243452308675d6125",
+      "sha256": "8a2cef73ab3359a9f101e705fde366b0e3f03e7c37157a4200d5b3ef687c5d1e",
       "executable": false
     },
     "src/core/features/tasks/routes.ts": {
@@ -10394,6 +10402,10 @@
       "sha256": "f34bff7228dc6a9c65851be986d12406184bb49c3a2f226d7e66293dfb901932",
       "executable": false
     },
+    "tests/e2e/imports-hubspot.mjs": {
+      "sha256": "4afcad5b57d5e2ce20e58ad98e598ba359ea63975564467b7b0e7b9421720233",
+      "executable": false
+    },
     "tests/e2e/imports-hydration.mjs": {
       "sha256": "1ca217276df654801d692a99fc377229fd8b3eb2205a3ea739e971ff224efc25",
       "executable": false
@@ -11239,11 +11251,15 @@
       "executable": false
     },
     "tests/support/hubspot-api-proof.ts": {
-      "sha256": "7ba263ff95769546bd67f45c2f4517007afbef129dedcf96b47f5924ceef44b9",
+      "sha256": "ee2f9f6528f7a2ae78d5cdbfe6d160f5e44fe555201d6c85d5d992c2973f5927",
       "executable": false
     },
     "tests/support/hubspot-export.ts": {
       "sha256": "52a172725d45a7a0041b861ba6763e2a5f7fbdd8c1a4b9d6fe16de94b51cbe41",
+      "executable": false
+    },
+    "tests/support/hubspot-restore-proof.ts": {
+      "sha256": "65fe766a95c16b6a6247cf8b2d2a8a0a563f25ffdf9fec2f835e5c002a6fe14c",
       "executable": false
     },
     "tests/support/import-owners.ts": {
