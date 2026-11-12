@@ -5143,7 +5143,7 @@
       "executable": false
     },
     "src/core/app/app.ts": {
-      "sha256": "6cfd72a61f810693324783da3985316d1e0bf20f5092afcc94aedbc5d12cd55f",
+      "sha256": "6a0402d01f3f983184743b83e9a70efcbda3ae8eac0b7eb0b3dc25c1a7cabf02",
       "executable": false
     },
     "src/core/app/demo.css": {
@@ -6347,15 +6347,15 @@
       "executable": false
     },
     "src/core/features/imports/planner.ts": {
-      "sha256": "7af2beb7a37b5539d5097d50250d97899e0f419cd3c64813b05f61b76d7e2e00",
+      "sha256": "d983d8d39c2e64ce269405014a2ca5d8e0cdf10141f33ab699615ac4852b89ae",
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
-      "sha256": "96a54b801d4509abc201b85cd79781cf52371d757b0031bd05486c00c9a2c225",
+      "sha256": "83764e8d961a4ba40433e2f0ece8bcdfb9fe9ee59d969edf7c1654b8184c3882",
       "executable": false
     },
     "src/core/features/imports/review-erasure.ts": {
-      "sha256": "6382050b35669398d1585ab7f8ddb1cb956b8bb7c88d93f493ad71882484c212",
+      "sha256": "c976aa781ed903910efd93df9e957bb874f53bebe7d16dfbcfa58265e3b01855",
       "executable": false
     },
     "src/core/features/imports/review-labels.ts": {
@@ -6371,7 +6371,7 @@
       "executable": false
     },
     "src/core/features/imports/source.ts": {
-      "sha256": "618d720477dd90cdc3f7df2a990c4d9887e5f09c7770f0ea37dd304733410f79",
+      "sha256": "1e27a4e9edbb3c0a7cb76d06c6a7ac6ed7eb1164f54d739d6d88ba659917adc2",
       "executable": false
     },
     "src/core/features/imports/targets-stop.ts": {
@@ -6823,11 +6823,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
-      "sha256": "36000bf333408407feed7e1ac6bd00058cd7a8b85008e92c60a95841698359b7",
+      "sha256": "f253ab8a3464f322d92e6f7ebbb3a82cfe20e7f523fcf8a2a16dd0150f423de0",
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
-      "sha256": "b75ec0df8ed78d0c45f7fb2fcc65205ed67a03f8f0a7710d8f63c072fdcd1872",
+      "sha256": "226f2110376a702368d6d355514c488b21f566c6f3a4e394428d60b290f20de7",
       "executable": false
     },
     "src/core/features/operator/ui/integration-setup-help.tsx": {
@@ -10283,7 +10283,7 @@
       "executable": false
     },
     "tests/core/crm-import.test.ts": {
-      "sha256": "cfc987478713efed65d4b1711b8310ff82fccd07b24f2fe5e9803e3ea6e2abfb",
+      "sha256": "cb240f9545119a36a8da11f00cd2ad7c79a97be78bbe333c9578997505932e60",
       "executable": false
     },
     "tests/core/identity.test.ts": {
@@ -10515,7 +10515,7 @@
       "executable": false
     },
     "tests/e2e/imports.spec.mjs": {
-      "sha256": "d7a639955b6c41f7a792ba9d11d1e6478d1832c0e837cda285874db2949733fe",
+      "sha256": "03cd6757c3e507c8fd0b9ba4e1454685c3491cd0604931f5383e4ab9b465eb03",
       "executable": false
     },
     "tests/e2e/operator-session.mjs": {

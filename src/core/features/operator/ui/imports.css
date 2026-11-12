@@ -50,3 +50,5 @@
 .crm-import .crm-panel p,.crm-import .crm-mapping p{margin:6px 0 14px;line-height:1.5}.crm-import .crm-other-columns{margin-top:12px}
 
 @media(max-width:599px){.crm-import .crm-panel select,.crm-import .operator-main button,.crm-import .crm-panel a,.crm-import .crm-history a,.crm-import .crm-panel summary,.crm-import .crm-choose{min-height:44px}.crm-import .crm-panel a{display:inline-flex;align-items:center}.crm-import .crm-source-option span{min-height:44px}.crm-import .crm-panel label:has(input[type=checkbox]){min-height:44px}}
+
+.crm-import .crm-connected-source{margin:0 0 24px;font-size:15px}.crm-import .crm-connected-source>summary{cursor:pointer;padding:12px 0;font-weight:650}.crm-import .crm-pipedrive{margin-top:12px;overflow-wrap:anywhere}.crm-import .crm-pipedrive h2{margin-top:0}.crm-import .crm-pipedrive button{margin:8px 8px 8px 0}.crm-import .crm-pipedrive fieldset{margin-top:20px}.crm-import .crm-pipedrive input[type=password]{font:inherit;min-height:44px}

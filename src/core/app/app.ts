@@ -1,3 +1,4 @@
+import {createPipedriveRoutes} from '../features/imports/pipedrive/routes';
 import {obligationRoutes} from '../features/obligations/routes';
 import type {AgentDoor} from '../../base/modules/agent-door/index.ts';
 import {workflowRoutes} from '../features/workflows/routes';
@@ -63,7 +64,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; pipedriveFetch?:ProviderFetch; pipedriveNow?:()=>number; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   input={...input,database:notificationDatabase(input.database)};
   const app = new Hono<AppEnvironment>();
   const dependencies = createDependencies(input.database);
@@ -175,6 +176,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.use('/api/v1/*',async(c,next)=>{await next();if(!['GET','HEAD','OPTIONS'].includes(c.req.method)&&c.res.status<400&&!c.req.path.startsWith('/api/v1/settings/slack')&&!c.req.path.includes('/archive/')){try{await processSlack(input.database,{clock:input.clock,security:input.sourceSecurity,origin:input.captureOrigin});}catch{c.header('X-Orbit-Slack','Processing failed; inspect Slack setup');}};});
   app.route('/api/v1/entries/visibility',entryPrivacyRoutes(input.database));
   app.route('/api/v1/calls',callRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/imports/pipedrive',createPipedriveRoutes(input.database,{security:input.sourceSecurity,fetcher:input.pipedriveFetch,now:input.pipedriveNow}));
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));
