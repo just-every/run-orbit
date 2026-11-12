@@ -21,6 +21,7 @@ export async function callingJourney(page,calling){
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('calling-connected',width,settings);}
+ await mailchimpJourney();
  const origin=new URL(page.url()).origin;
  const response=await page.request.post('/api/v1/records/contact',{headers:{Origin:origin},data:{name:'Synthetic Orbit Caller',email:['synthetic-orbit-302','example.test'].join(String.fromCharCode(64)),phone:'+12025550103'}});
  expect(response.status(),await response.text()).toBe(201);const contact=await response.json();
@@ -85,6 +86,49 @@ export async function callingJourney(page,calling){
  await page.goto('/signin?notice=oidc_admission_denied');await expect(page.getByRole('alert')).toContainText('Provider sign-in was refused.');
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const axe=await new AxeBuilder({page}).analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await page.screenshot({path:`${evidence}/refused-sign-in-${width}.png`,fullPage:true});}
  expect(calling.provider.submissions).toBe(2);expect(errors).toEqual(expectedConsoleErrors);
+ async function mailchimpJourney(){
+  const edge=calling.mailchimp;if(!edge)return;
+  await page.getByRole('button',{name:'Connect Mailchimp',exact:true}).click();
+  const card=page.getByRole('region',{name:'Mailchimp audience handoff',exact:true});
+  await page.setViewportSize({width:1440,height:900});
+  await card.getByLabel('Mailchimp API key',{exact:true}).fill('synthetic-orbit-browser-us1');await card.getByRole('button',{name:'Check key and connect',exact:true}).click();
+  await card.getByRole('button',{name:'Load audiences',exact:true}).click();await card.getByRole('button',{name:'Use this audience',exact:true}).click();
+  await expect(card.getByRole('status').filter({hasText:'Unresolved setup'})).toContainText('Mailchimp has not checked');
+  await expect(card.getByRole('button',{name:'Preview handoff',exact:true})).toHaveCount(0);
+  await mailchimpScreens('mailchimp-unverified');
+  await page.setViewportSize({width:1440,height:900});edge.validationEnabled=true;
+  await card.getByRole('button',{name:'Check connection',exact:true}).click();await expect(page.getByRole('button',{name:'Open Mailchimp',exact:true})).toBeVisible();await expect(card.getByRole('status').filter({hasText:'Connected'})).toBeVisible();
+  await expect(card.getByRole('link',{name:'Open the audience in Mailchimp',exact:true})).toHaveAttribute('href','https://us1.admin.mailchimp.com/lists/members?id=4242');
+  await mailchimpScreens('mailchimp-connected');
+  await page.setViewportSize({width:1440,height:900});edge.pingStatus=401;
+  const failedConsole=page.waitForEvent('console',{predicate:message=>message.type()==='error'&&message.location().url===calling.origin+'/api/v1/settings/mailchimp/check'&&/^Failed to load resource:.*\b409\b/.test(message.text())});
+  await card.getByRole('button',{name:'Check connection',exact:true}).click();
+  {const message=await failedConsole;expectedConsoleErrors.push({text:message.text(),url:message.location().url});}
+  await expect(page.getByRole('button',{name:'Connect Mailchimp',exact:true})).toBeVisible();await expect(card.getByRole('status').filter({hasText:'Unresolved setup'})).toContainText('Mailchimp refused the API key');
+  await mailchimpScreens('mailchimp-refused');
+  await page.setViewportSize({width:1440,height:900});edge.pingStatus=200;
+  const api=async(path,method='GET',body)=>{const response=await page.request.fetch('/api/v1/'+path,{method,headers:{Origin:calling.origin},...(body===undefined?{}:{data:body})});expect(response.status(),await response.text()).toBe(200);return response.json();};
+  await api('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-browser-us1'});await api('settings/mailchimp/audience','PUT',{audienceId:'synthlist1'});
+  const contacts=[];
+  for(const label of ['queued','uncertain','paused']){
+   const email=[`synthetic-orbit-scheduled-${label}`,'example.test'].join(String.fromCharCode(64)),response=await page.request.post('/api/v1/records/contact',{headers:{Origin:calling.origin},data:{name:`Synthetic scheduled ${label}`,email}});expect(response.status()).toBe(201);const contact=await response.json();contacts.push({...contact,email});
+   await api(`marketing/mailchimp/consents/${contact.id}`,'POST',{source:'Synthetic explicit signup',basis:'Product news agreed at signup',confirmed:true});
+  }
+  const preview=await api('marketing/mailchimp/preview?fields=name');await api('marketing/mailchimp/handoffs','POST',{fields:preview.fields,previewDigest:preview.digest,operationId:crypto.randomUUID()});
+  const removals=()=>edge.calls.filter(call=>call.path.endsWith('/actions/delete-permanent')).length;
+  edge.faults.set(edge.md5(contacts[1].email),0);await api(`records/contact/${contacts[1].id}`,'DELETE',{confirmed:true});
+  edge.faults.set(edge.md5(contacts[1].email),0);edge.faults.set(edge.md5(contacts[0].email),429);await api(`records/contact/${contacts[0].id}`,'DELETE',{confirmed:true});
+  const waiting=(await api('settings/mailchimp')).deletions;expect(waiting.map(item=>item.state).sort()).toEqual(['queued','uncertain']);const before=removals();
+  const tick=await calling.scheduled();expect(tick.outcome).toBe('ok');
+  expect(removals()).toBe(before+2);expect((await api('settings/mailchimp')).deletions.every(item=>item.state==='deleted')).toBe(true);
+  edge.faults.set(edge.md5(contacts[2].email),0);await api(`records/contact/${contacts[2].id}`,'DELETE',{confirmed:true});await api('settings/mailchimp/disconnect','POST',{});
+  const paused=removals();expect((await calling.scheduled()).outcome).toBe('ok');expect(removals()).toBe(paused);expect((await api('settings/mailchimp')).deletions.some(item=>item.state==='paused')).toBe(true);
+  await api('settings/mailchimp/connect','POST',{apiKey:'synthetic-orbit-browser-us1'});await api('settings/mailchimp/audience','PUT',{audienceId:'synthlist1'});
+  expect((await calling.scheduled()).outcome).toBe('ok');expect(removals()).toBe(paused);const held=(await api('settings/mailchimp')).deletions.find(item=>item.state==='held');expect(held).toBeTruthy();
+  await api(`settings/mailchimp/deletions/${held.id}/retry`,'POST',{});expect(removals()).toBe(paused+1);expect((await api('settings/mailchimp')).deletions.every(item=>item.state==='deleted')).toBe(true);
+  await page.goto('/app/settings/integrations');await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
+  async function mailchimpScreens(name){for(const width of [1440,390]){await page.setViewportSize({width,height:900});await card.screenshot({path:`${evidence}/${name}-${width}.png`,style:'.mailchimp-webhook { visibility: hidden !important; }'});}const axe=await new AxeBuilder({page}).include('[aria-labelledby="mailchimp-settings"]').analyze();expect(axe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);}
+ }
  async function callback(sid,sequence,status){const url=calling.origin+'/api/v1/calls/twilio/events',form=new URLSearchParams({AccountSid:calling.accountSid,CallSid:sid,SequenceNumber:String(sequence),Direction:'outbound-dial',From:'+12025550101',To:'+12025550103',CallStatus:status,CallDuration:'0'}),key=await crypto.subtle.importKey('raw',new TextEncoder().encode(calling.token),{name:'HMAC',hash:'SHA-1'},false,['sign']),raw=url+[...form.keys()].sort().map(name=>name+form.get(name)).join(''),signature=Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64'),response=await calling.fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Twilio-Signature':signature},body:form});expect(response.status,await response.clone().text()).toBe(200);return response.json();}
  async function proof(name,width,region){await expect(region).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const result=await new AxeBuilder({page}).include((name.startsWith('contact')||name.startsWith('deal'))?'[aria-label="Call with Twilio"]':'[aria-labelledby="calling-settings"]').analyze();expect(result.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await region.screenshot({path:`${evidence}/${name}-${width}.png`});}
 }
