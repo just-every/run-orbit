@@ -1,0 +1,9 @@
+{
+  "regularFilesOnly": true,
+  "knownInjectedValuesRedacted": true,
+  "rewrittenFiles": [],
+  "screenshotsMaskPrivateCaptureAddress": true,
+  "packetExcludesCredentialsEnvironmentDumpsAndHeldOutMaterial": true,
+  "nativeAuthenticationQueriesRedacted": true,
+  "additionalSanitizedLogs": []
+}

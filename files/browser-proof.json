@@ -1,0 +1,88 @@
+{
+  "status": "passed",
+  "head": "2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63",
+  "viewportProof": [
+    {
+      "name": "slack",
+      "width": 1440,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 5
+    },
+    {
+      "name": "mailchimp",
+      "width": 1440,
+      "overflow": false,
+      "minFont": 15,
+      "accessibilityViolations": 0,
+      "steps": 3
+    },
+    {
+      "name": "twilio",
+      "width": 1440,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 4
+    },
+    {
+      "name": "capture",
+      "width": 1440,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 8
+    },
+    {
+      "name": "ai",
+      "width": 1440,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 4
+    },
+    {
+      "name": "slack",
+      "width": 390,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 5
+    },
+    {
+      "name": "mailchimp",
+      "width": 390,
+      "overflow": false,
+      "minFont": 15,
+      "accessibilityViolations": 0,
+      "steps": 3
+    },
+    {
+      "name": "twilio",
+      "width": 390,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 4
+    },
+    {
+      "name": "capture",
+      "width": 390,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 8
+    },
+    {
+      "name": "ai",
+      "width": 390,
+      "overflow": false,
+      "minFont": 13.8,
+      "accessibilityViolations": 0,
+      "steps": 4
+    }
+  ],
+  "pageErrors": [],
+  "providerConnectionsAttempted": false
+}

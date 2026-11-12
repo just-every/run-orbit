@@ -1,0 +1,11 @@
+Checking setup screen slack 1440
+Checking setup screen mailchimp 1440
+Checking setup screen twilio 1440
+Checking setup screen capture 1440
+Checking setup screen ai 1440
+Checking setup screen slack 390
+Checking setup screen mailchimp 390
+Checking setup screen twilio 390
+Checking setup screen capture 390
+Checking setup screen ai 390
+[{"name":"slack","width":1440,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":5},{"name":"mailchimp","width":1440,"overflow":false,"minFont":15,"accessibilityViolations":0,"steps":3},{"name":"twilio","width":1440,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":4},{"name":"capture","width":1440,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":8},{"name":"ai","width":1440,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":4},{"name":"slack","width":390,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":5},{"name":"mailchimp","width":390,"overflow":false,"minFont":15,"accessibilityViolations":0,"steps":3},{"name":"twilio","width":390,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":4},{"name":"capture","width":390,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":8},{"name":"ai","width":390,"overflow":false,"minFont":13.8,"accessibilityViolations":0,"steps":4}]

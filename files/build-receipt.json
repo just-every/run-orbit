@@ -1,0 +1,9 @@
+{
+  "command": "cloud_run npx -y @runeditrun/rer build",
+  "exit": 0,
+  "sourceBytesMatchFinalHead": true,
+  "candidateHead": "2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63",
+  "executionHead": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "workingTreeHadCandidateEdits": true,
+  "provenance": "Build ran before committing; source bytes match the final candidate. Exact-SHA Verify is a separate gate."
+}

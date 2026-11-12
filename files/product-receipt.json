@@ -1,0 +1,41 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-setup-guides-1",
+  "head": "2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63",
+  "base": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "commits": [
+    "2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63 Wire setup guidance into provider forms and native onboarding",
+    "8c794cf3dee631623bc8d6272387703ac1572f29 Guide newcomers through provider and installation setup"
+  ],
+  "productPush": "succeeded",
+  "PR": null,
+  "sourceCheck": true,
+  "typecheckExit": 0,
+  "buildExit": 0,
+  "testBudgetBefore": 200,
+  "testBudgetAfter": 200,
+  "clauseStatusBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clauseStatusAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "newSetupDisclosures": 5,
+  "nativeOnboardingPassed": 1,
+  "nativeOnboardingFailed": 0,
+  "browserProof": {
+    "head": "2fcbf5e499bbafeaf33da00cff0dc3c25cdbeb63",
+    "screens": 10,
+    "widths": [
+      1440,
+      390
+    ],
+    "pageErrors": 0,
+    "accessibilityViolations": 0,
+    "horizontalOverflow": false
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "command": "cloud_run node --import /tmp/chromium-system.mjs --test --test-name-pattern='at 1440' tests/rer/onboarding.test.mjs",
+  "exit": 0,
+  "registeredExecuted": 1,
+  "passed": 1,
+  "failed": 0,
+  "durationMs": 622050.262787,
+  "browser": "/usr/bin/chromium --no-sandbox",
+  "newSetupGuidanceCheck": "tests/rer/setup-guidance.mjs#setupGuidance",
+  "publicDoor": "native rer setup and local owner sign-in; Settings and Capture UI",
+  "providerBoundary": "existing test fakes only; no live provider calls",
+  "testBudgetBefore": 200,
+  "testBudgetAfter": 200
+}

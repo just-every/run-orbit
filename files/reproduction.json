@@ -1,0 +1,42 @@
+{
+  "baseHead": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "findings": [
+    {
+      "page": "slack",
+      "fields": [
+        "Bot token",
+        "Slack app signing secret",
+        "Slack user ID",
+        "Orbit operatorChoose an operatorFleet Builder"
+      ],
+      "setupDisclosures": 0
+    },
+    {
+      "page": "mailchimp",
+      "fields": [
+        "Mailchimp API key"
+      ],
+      "setupDisclosures": 0
+    },
+    {
+      "page": "twilio",
+      "fields": [
+        "Account SID",
+        "Auth token",
+        "Twilio phone",
+        "Your phone"
+      ],
+      "setupDisclosures": 0
+    },
+    {
+      "page": "capture",
+      "localOnlyAddress": true,
+      "misleadingDeploymentPromise": true
+    },
+    {
+      "page": "ai",
+      "setupDisclosures": 0,
+      "guides": 0
+    }
+  ]
+}
