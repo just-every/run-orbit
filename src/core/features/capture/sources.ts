@@ -58,7 +58,7 @@ export async function disconnectSource(db:D1Database,id:string,actor:string,fenc
   db.prepare("UPDATE signal_sources SET enabled=0,updated_at=? WHERE id=? AND type='capture'").bind(at,id),
   audit(db,actor,'capture.disconnected','capture_source',id),
  ]);
- if(results[fences.length]!.meta.changes!==1)throw new CaptureError(409,'This source is already disconnected or does not exist.');
+ if(results[fences.length]!.meta.changes<1)throw new CaptureError(409,'This source is already disconnected or does not exist.');
  return {disconnected:true};
 }
 export async function listSources(db:D1Database){

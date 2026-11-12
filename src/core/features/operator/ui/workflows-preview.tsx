@@ -1,4 +1,4 @@
-import {WorkflowAction,WorkflowMetadata,WorkflowPreview,WorkflowPreviewRecord,WorkflowHistoryCoverage,workflowLabel,workflowTime,workflowValue} from './workflows-types';
+import {WorkflowAction,WorkflowMetadata,WorkflowPreview,WorkflowPreviewRecord,WorkflowHistoryCoverage,workflowLabel,workflowTime,workflowValue,WorkflowActivityRule} from './workflows-types';
 
 function EffectPreview({value,metadata}:{value:unknown;metadata:WorkflowMetadata}) {
  if(!value||typeof value!=='object'||!('kind' in value))return <pre>{workflowValue(value)}</pre>;
@@ -11,8 +11,14 @@ function PreviewCounts({counts}:{counts:Record<string,unknown>}) {
  return <dl className="workflows-counts">{Object.entries(counts).map(([key,value])=><div key={key}><dt>{workflowLabel(key)}</dt><dd>{workflowValue(value)}</dd></div>)}</dl>;
 }
 
+function EffectGroups({effects,metadata}:{effects:unknown[];metadata:WorkflowMetadata}) {
+ const external=(value:unknown)=>!!value&&typeof value==='object'&&'kind' in value&&value.kind==='webhook';
+ const groups=[{label:'Internal effects',effects:effects.filter(effect=>!external(effect))},{label:'External effects',effects:effects.filter(external)}];
+ return <>{groups.filter(group=>group.effects.length>0).map(group=><section className="workflows-stack" aria-label={group.label} key={group.label}><h4>{group.label}</h4>{group.effects.map((effect,index)=><EffectPreview key={index} value={effect} metadata={metadata}/>)}</section>)}</>;
+}
+
 function RecordPreviewBody({record,metadata,historical=false}:{record:WorkflowPreviewRecord;metadata:WorkflowMetadata;historical?:boolean}) {
- return <>{record.errors?.map((message,index)=><p className="operator-state operator-state--error" role="alert" key={index}>{message}</p>)}{record.changes.map((item,index)=><div className="workflows-change" key={index}><strong>{item.field}{item.needsApproval?' · Needs approval':''}</strong>{item.recordId&&item.recordId!==record.recordId&&<p className="workflows-meta">Target record: {item.recordId}</p>}<div><span>{historical?'Previous value':'Current'}</span><pre>{workflowValue(item.before)}</pre></div><div><span>{historical?'Dry-run result':'Proposed'}</span><pre>{workflowValue(item.after)}</pre></div></div>)}{record.effects.length>0&&<><h4>External effects</h4>{record.effects.map((effect,index)=><EffectPreview key={index} value={effect} metadata={metadata}/>)}</>}</>;
+ return <>{record.errors?.map((message,index)=><p className="operator-state operator-state--error" role="alert" key={index}>{message}</p>)}{record.changes.map((item,index)=><div className="workflows-change" key={index}><strong>{item.field}{item.needsApproval?' · Needs approval':''}</strong>{item.recordId&&item.recordId!==record.recordId&&<p className="workflows-meta">Target record: {item.recordId}</p>}<div><span>{historical?'Previous value':'Current'}</span><pre>{workflowValue(item.before)}</pre></div><div><span>{historical?'Dry-run result':'Proposed'}</span><pre>{workflowValue(item.after)}</pre></div></div>)}<EffectGroups effects={record.effects} metadata={metadata}/></>;
 }
 
 function HistoryCoverage({coverage}:{coverage?:WorkflowHistoryCoverage}) {
@@ -25,6 +31,7 @@ export function WorkflowsPreview({preview,version,metadata,disabled,onActivate}:
  const hasErrors=[...preview.records,...historical].some(record=>!!record.errors?.length);
  return <section className="workflows-stack" aria-label="Workflow activation preview">
   <h3>Review version {version}</h3><p className="workflows-note">Activation authorizes this version’s internal changes. Changes marked “Needs approval” wait for a decision on each record.</p>
+  <WorkflowActivityRule/>
   {preview.asOf&&<p className="workflows-meta">Previewed {workflowTime(preview.asOf)}</p>}
   <PreviewCounts counts={preview.counts}/>
   {!preview.records.length&&<p>No records currently match this preview.</p>}
