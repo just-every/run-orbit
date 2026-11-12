@@ -1,0 +1,31 @@
+{
+  "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+  "base": "5f92fa76579961950d49c7411f54d5446516a708",
+  "method": "TypeScript AST multiset comparison of assertion calls; whitespace ignored",
+  "files": [
+    {
+      "file": "tests/core/capture-intake.test.ts",
+      "before": 66,
+      "after": 73,
+      "baseline_assertions_preserved": true
+    },
+    {
+      "file": "tests/core/launch-suppression.test.ts",
+      "before": 108,
+      "after": 108,
+      "baseline_assertions_preserved": true
+    },
+    {
+      "file": "tests/e2e/capture.spec.mjs",
+      "before": 65,
+      "after": 65,
+      "baseline_assertions_preserved": true
+    },
+    {
+      "file": "tests/e2e/records.spec.mjs",
+      "before": 54,
+      "after": 54,
+      "baseline_assertions_preserved": true
+    }
+  ]
+}

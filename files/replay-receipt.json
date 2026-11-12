@@ -1,0 +1,43 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-consent-1-c1",
+  "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+  "base": "5f92fa76579961950d49c7411f54d5446516a708",
+  "replay_from": "3683e99971bdf47cfc5f82c345a45c366c1856ac",
+  "round_parent": "87880539d4245e6ee047aa6efa91dd7257ab95c3",
+  "commits_ahead": 1,
+  "merge_commits": [],
+  "net_product_and_test_edits_equal_prior_round": true,
+  "contract": {
+    "CONTRACT.md": {
+      "matches_main": true,
+      "sha256": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f"
+    },
+    "ACCEPTANCE.md": {
+      "matches_main": true,
+      "sha256": "c94b6686c2eb1bde851ccff96e77e3d1b029d66be614e591745a281ef60ece41"
+    },
+    "docs/CLAIMS.md": {
+      "matches_main": true,
+      "sha256": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d"
+    }
+  },
+  "status_counts_before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "status_counts_after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "test_cases_before": 198,
+  "test_cases_after": 198,
+  "qualification_flows": 2,
+  "test_cap": 200,
+  "test_registration_changes": 0,
+  "source_lock_generated_and_checked": true,
+  "contract_docs_check": "passed",
+  "clean_worktree": true
+}

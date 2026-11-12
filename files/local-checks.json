@@ -1,0 +1,103 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+  "checks": [
+    {
+      "command": "pnpm run source:check",
+      "result": "passed",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "result": "passed",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "passed",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+      "runtime": "Node 22.20.0"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "result": "passed",
+      "head": "c2b29e49f7ee4026bc206416a31cf15e34558753"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012|RECORD-012 DATA-002 manual contacts' tests/core/capture-intake.test.ts tests/core/launch-suppression.test.ts",
+      "result": "passed",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+      "runtime": "Node 22.20.0",
+      "duration_ms": 286762.349854
+    },
+    {
+      "command": "pnpm exec playwright test --config=/tmp/orbit-cloud-playwright.config.mjs tests/e2e/capture.spec.mjs tests/e2e/records.spec.mjs --grep 'CAPTURE-001 CAPTURE-004 an operator adds|record creation, edits, manual entries'",
+      "result": "passed",
+      "passed": 2,
+      "failed": 0,
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+      "runtime": "Node 22.20.0; /usr/bin/chromium --no-sandbox",
+      "duration": "1.6 minutes",
+      "assertion_width": 1440,
+      "proof_widths": [
+        1440,
+        390
+      ],
+      "note": "The existing capture journey retains main's assertions at both widths; the added creation checks assert at 1440 and only take screenshots at 390. The browser server builds the final candidate before serving it."
+    },
+    {
+      "command": "pnpm run build:app (browser-server preparation)",
+      "result": "passed",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+      "runtime": "Node 22.20.0"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "screenshots/capture-create-review-1440.png",
+      "bytes": 72487,
+      "sha256": "bc3767e29c1ee0c99080926bcce3340e566d44c46d7f56ccc1845e940376bc71",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "path": "screenshots/capture-create-review-390.png",
+      "bytes": 58498,
+      "sha256": "913032ff1542d677fc45bc969f7341642e7a8ca2ccc00c911de72ce508db52c2",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "path": "screenshots/capture-created-1440.png",
+      "bytes": 203562,
+      "sha256": "e5aa91923399d1643bcb727615798bf11e0b6613a65a9ff30187b2d5eb6c0694",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "path": "screenshots/capture-created-390.png",
+      "bytes": 172915,
+      "sha256": "4ed35652f4097eea8cb2b2356b5a6bbe00bec34a3f6aa060034712fcbcdb16f6",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "path": "screenshots/erased-address-recreated-1440.png",
+      "bytes": 173664,
+      "sha256": "c7fc35d60a8d5c72adff26733b883b49a1c79689a77022e206c9efdb1c477567",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    },
+    {
+      "path": "screenshots/erased-address-recreated-390.png",
+      "bytes": 143344,
+      "sha256": "617d2be18ae30efeb5d4a90ad58ca559a4bd90c22d68781d595a29c37ac17171",
+      "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408"
+    }
+  ],
+  "additional_native_run": {
+    "result": "passed",
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "receipt": "native-results.json"
+  }
+}

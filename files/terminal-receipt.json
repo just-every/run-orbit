@@ -1,0 +1,54 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-consent-1-c1",
+  "head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+  "base": "5f92fa76579961950d49c7411f54d5446516a708",
+  "terminal_outcome": "READY",
+  "product_commits": 1,
+  "merge_commits": 0,
+  "product_pushed": true,
+  "remote_head": "14cfd039dcc8aac11aca99eafec5c8e7a943e408",
+  "verify_run_id": 43301100881,
+  "verify_url": "https://github.com/just-every/run-orbit/actions/runs/43301100881",
+  "verify_status": "completed",
+  "verify_conclusion": "success",
+  "github_ci_api_calls": 8,
+  "github_api_budget": 10,
+  "core_creation_checks_on_final_sha": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser_journeys_on_final_sha": {
+    "passed": 2,
+    "failed": 0,
+    "proof_widths": [
+      1440,
+      390
+    ]
+  },
+  "supplemental_native_checks": {
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "provenance": "See native-results.json; this run crossed the unpublished rebase."
+  },
+  "test_count_before": 200,
+  "test_count_after": 200,
+  "clause_counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clause_counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clause_status_changes": [],
+  "remaining_product_blockers": [],
+  "remaining_prerequisites": [],
+  "pr_url": null,
+  "publication_scan": "Fleet lander owns the full publication scan; not run in this cloud task.",
+  "report_transport": "Separate evidence ref; publication follows packet finalization."
+}

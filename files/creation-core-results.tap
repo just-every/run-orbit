@@ -1,0 +1,26 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says
+ok 1 - CAPTURE-001 CAPTURE-002 CAPTURE-003 SIGNAL-003 OUT-004 RECORD-012 an mbox and calendar files become signals with their evidence; replay, threading, delivery reports and private mail behave as the contract says
+  ---
+  duration_ms: 184050.007046
+  type: 'test'
+  ...
+# (node:8857) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review
+ok 2 - RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review
+  ---
+  duration_ms: 96360.229534
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 286762.349854
