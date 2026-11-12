@@ -103,6 +103,12 @@
       "sha256": "8ff4ff3a255a4f42a2de4cb707f87576eea3cba62676343cc681232e5f338f5b"
     },
     {
+      "blob": "577e34615072a027a1b4011a21cc6f53333bc2b3",
+      "bytes": 290,
+      "path": "evidence-transfer-verification.json",
+      "sha256": "2a77fabc5a7e4f80477341d902d6e84baf0a7519ba7c6a112e2fe31188e0313d"
+    },
+    {
       "blob": "a7d420012dc4dad885b5b216fc5fe938e6f95a28",
       "bytes": 1287,
       "path": "local-timing-limitation.md",
@@ -151,10 +157,10 @@
       "sha256": "77b6fac2d1f9e474a677a3f50ab4dda71fb8fa495f8ea2f7a9f25800dc85b2e8"
     },
     {
-      "blob": "9f66a3503aa3427f36c2ffa4a41fe0d4c886ce59",
+      "blob": "b48ae4a3475def45848d9f75babd7842f21aebae",
       "bytes": 307,
       "path": "packet-review.json",
-      "sha256": "7313b65d761c25f48b15e8f6afcd91e4f004c10ca3c090c4bcc316de37f84a64"
+      "sha256": "30938034bdcb3386a77a1ad7f6f671fce1f717e518a0e2550a35d7fba34af695"
     },
     {
       "blob": "d4753a0fa8ed29f11ab3a00c516ade365d15d35f",

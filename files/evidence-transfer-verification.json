@@ -1,0 +1,9 @@
+{
+  "status": "verified",
+  "ref": "refs/heads/evidence/main-orbit-record-defaults-1-c1",
+  "evidenceHead": "d2c32bbbe9d4dd2922e504eb274dc8c79da0782b",
+  "productHead": "d3abcfc8e5cfc04936e8a0bd6f6481cdf8999660",
+  "files": 59,
+  "hashesVerified": true,
+  "fleetIdentitiesVerified": true
+}
