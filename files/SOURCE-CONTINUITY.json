@@ -1,0 +1,138 @@
+{
+  "proofStartedAtHead": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+  "candidateHead": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+  "integratedMain": "e98f2c8f81b525ce27573a917b355100c6bf8774",
+  "changesSinceProofStart": [
+    "sources.lock.json",
+    "tests/agent-door/native-journey.mjs"
+  ],
+  "allProductSourceAndFocusedProofBytesIdentical": true,
+  "focusFiles": [
+    {
+      "path": "management/integration/deployment-spec.json",
+      "sha256": "e3de423581bafad823d1dd06da7a00f988eb40f585f24d28e62a7cb57ce24325",
+      "identical": true
+    },
+    {
+      "path": "migrations/core/0081_sequence_authoring.sql",
+      "sha256": "e066acd7f8fd8e2bb7ddacda2066256958b1083bd7f14c032e8015c083ec408b",
+      "identical": true
+    },
+    {
+      "path": "newtests/t096/browser-journeys.test.ts",
+      "sha256": "18200a9a29189640ae3b17eba50e2f3bd0271d2b8732201a81c3e3b624855c38",
+      "identical": true
+    },
+    {
+      "path": "newtests/t096/browser-sequence-authoring.ts",
+      "sha256": "59033cd0354d96b17f00ec285f3fb832c29bf585f0d18b79850d0fa05ebcd9d6",
+      "identical": true
+    },
+    {
+      "path": "scripts/installer/portability-policy.mjs",
+      "sha256": "95bca044acd537865a2b7d4f56f8886b439389d85ce51d50f1f213dc5e752285",
+      "identical": true
+    },
+    {
+      "path": "src/core/app/app.ts",
+      "sha256": "b30067ec8fcbc038ea43e7791796f3b3f14cd1a2ffcb39ecbbbcb5874e6208d1",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/records/archive-generations.ts",
+      "sha256": "a160654ee714fae2bbbb31b5e7cc4a78b8639a3c123264ef1cbe5f9ad17b7ded",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/README.md",
+      "sha256": "7be8bac8814b70bf37d119267743f555b5c193c73e1711fc1a172fa820d9837f",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/calendar.ts",
+      "sha256": "be7f99c2ed0867ca70995bb11d440e1fc702756430428b4e5ea0e673577c72b2",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/repository.ts",
+      "sha256": "a9b1ab739ea85bc93d9462f368611716cdce12c2dcf7bd040e1139040e6ad94d",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/routes.ts",
+      "sha256": "a5d3f5edd960715f98cc9daca4b1f883b9ea9b05cd499d2064bc4b9a6afc81ec",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/schema.ts",
+      "sha256": "42d0e5eec78e786bed115fdae21c96116792529b88ae6b9996ad067bfdccd986",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/api.ts",
+      "sha256": "01520b8b1041ac25675f6d77e5dc01743c8d44582c466a7e667a7947ff3eb435",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/editor-page.tsx",
+      "sha256": "e7e821f0f2a0592cb614da12f7d5d009e44d4e4c4bd786c5719ddf0718f56f16",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/history.tsx",
+      "sha256": "a7d5279e9c29d69e6637811c8a14aff55e0d321b3ef61cb0e61c625cb5e84710",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/index-page.tsx",
+      "sha256": "aec4fd63b4b5dbbcca45565d7a9ce13b33cc05ece7e44477b649c328ae229850",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/sequences.css",
+      "sha256": "6e8db027a0a2cae150bad7d5ee8a678ef4839673d73268db96abc662d22a43b5",
+      "identical": true
+    },
+    {
+      "path": "src/core/features/sequences/ui/step-editor.tsx",
+      "sha256": "d1101fe04179e6710ab83e1129732d34c200a756c25b0f237bc934f339eb8d06",
+      "identical": true
+    },
+    {
+      "path": "src/core/shared/archive-lineage.ts",
+      "sha256": "ff9f38c4aa58bc93d4040c619c7b129d9b15bfe8109c05022425c5234931e1ca",
+      "identical": true
+    },
+    {
+      "path": "src/core/shared/archive-transfer-profile.ts",
+      "sha256": "11651f8c6991fb47cf8807129d852751b37c2b8a048a68cb64ace1b664bf6396",
+      "identical": true
+    },
+    {
+      "path": "src/routeTree.gen.ts",
+      "sha256": "f2a2d3f2f58cd413d9262266442421a50e60eee743a88b1d68f2702790fbe422",
+      "identical": true
+    },
+    {
+      "path": "src/routes/app.sequences.$id.tsx",
+      "sha256": "8ecdff56471bef5103f8f02d44d1959a69d304ffd88eb5fb509fd4aa6f1a03aa",
+      "identical": true
+    },
+    {
+      "path": "src/routes/app.sequences.index.tsx",
+      "sha256": "adc703f91a1d267c6d53a182ff99229186785ec5fa3b0b63a4517932323d41ec",
+      "identical": true
+    },
+    {
+      "path": "tests/core/outreach-limits.test.ts",
+      "sha256": "f3f1dc28a029390fa973dfa639978a9a2e2e88d50702feeb2a77db33e63248c3",
+      "identical": true
+    },
+    {
+      "path": "tests/support/sequence-authoring-proof.ts",
+      "sha256": "853f3b6b20b51d6c2d954476d89bb429b6adf7a39f0d30569c696f9f18a56604",
+      "identical": true
+    }
+  ],
+  "reason": "Fresh main adds two assertions to a separate agent-door browser journey. All product source, sequence migration, archive adapters, sequence HTTP proof and combined browser registration are unchanged. Source lock regenerated last after the six-commit rebase."
+}

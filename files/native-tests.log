@@ -1,0 +1,15 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once (37075.095366ms)
+{"proof":"native-archive-export-requests","version":3,"tables":130,"rows":36,"parts":20,"observations":[{"operation":"POST /exports","milliseconds":3739.826476999995,"status":201},{"operation":"GET /exports/01Q431VS808VJNZ5YNZ6Q4BEB7","milliseconds":64.24403899998288,"status":200},{"operation":"POST /exports/01Q431VS808VJNZ5YNZ6Q4BEB7/advance","milliseconds":5141.797954000009,"status":200},{"operation":"POST /exports/01Q431VS808VJNZ5YNZ6Q4BEB7/advance","milliseconds":3376.6716289999895,"status":200},{"operation":"POST /exports/01Q431VS808VJNZ5YNZ6Q4BEB7/advance","milliseconds":2216.818689000007,"status":200},{"operation":"GET /exports/01Q431VS808VJNZ5YNZ6Q4BEB7/download","milliseconds":66.82104700000491,"status":200}]}
+✔ SEQUENCE-001 authoring and archive restore; OUT-010 OUT-018 isolated budgets and visible deferrals (379334.39265ms)
+✔ OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once (42755.65474ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 465182.467909

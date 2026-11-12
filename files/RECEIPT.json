@@ -1,0 +1,218 @@
+{
+  "tag": "sd-orbit-c-f172",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f172",
+  "head": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+  "newProductCommits": 0,
+  "trackedEdits": 0,
+  "countsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "countsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "testInventory": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "commands": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "changedDocuments": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec wrangler d1 migrations list DB --local --config wrangler.jsonc --persist-to .wrangler/state",
+      "exit": 0,
+      "result": "No migrations to apply"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "trackedChanges": false
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/outreach-limits.test.ts",
+      "exit": 0,
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "durationMs": 465182.467909,
+      "sequenceRegistrationDurationMs": 379334.39265,
+      "node": "24.19.0"
+    },
+    {
+      "command": "git fetch origin main; git rebase origin/main; contract write and check; restore generated views; source lock and check",
+      "exit": 0,
+      "main": "e98f2c8f81b525ce27573a917b355100c6bf8774",
+      "head": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+      "changedProductSource": false
+    }
+  ],
+  "priorExactShaVerify": [
+    {
+      "id": 43154797991,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 43148461566,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "publicationScan": {
+    "performed": false,
+    "owner": "maintained fleet lander",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "head": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+    "publicBase": "https://github.com/just-every/run-orbit#main",
+    "repository": "https://github.com/just-every/run-orbit",
+    "project": "just-every/orbit"
+  },
+  "landing": {
+    "performed": false,
+    "mainPushed": false,
+    "owner": "maintained fleet lander"
+  },
+  "browserAttempts": [
+    {
+      "attempt": 1,
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/browser-journeys.test.ts",
+      "exit": 1,
+      "reachedProductPage": false,
+      "failure": "isolatedDatabase fixture migration spawnSync Node ETIMEDOUT at existing 60000ms ceiling",
+      "environment": "Node 22.20.0; concurrent native migration and typecheck; system Chromium selected through task-only preload"
+    },
+    {
+      "attempt": 2,
+      "command": "perl -e 'alarm 1800; exec @ARGV' -- pnpm exec tsx --test --test-concurrency=1 newtests/t096/browser-journeys.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "durationMs": 1074238.991756,
+      "environment": "Node 22.20.0; system Chromium; no-sandbox; sequential after native test completion",
+      "closure": {
+        "closed": true,
+        "viewports": [
+          1440,
+          390
+        ],
+        "ownedWorkers": 0,
+        "ownedBrowsers": 0
+      },
+      "sourceContinuity": "SOURCE-CONTINUITY.json"
+    }
+  ],
+  "main": {
+    "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+    "verifyGreen": 43089571350,
+    "laterVerifyRed": 43094710689,
+    "laterVerifyAttempt": 1,
+    "failedJobsReturned": 0,
+    "runSiteGreen": 43094710902,
+    "equalToCandidate": false
+  },
+  "githubApiCalls": 5,
+  "selectedBrowserJourney": {
+    "passed": true,
+    "widths": [
+      1440,
+      390
+    ],
+    "screens": 8,
+    "seriousCritical": 0,
+    "overflow": false,
+    "pageErrors": 0,
+    "unexpectedConsoleErrors": 0,
+    "receipt": "BROWSER-RECEIPT.json"
+  },
+  "replayedContinuationCommits": 6,
+  "integratedMain": "e98f2c8f81b525ce27573a917b355100c6bf8774",
+  "sourceContinuity": "SOURCE-CONTINUITY.json",
+  "nativeProofHead": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+  "productPush": {
+    "status": "success",
+    "attempts": 1,
+    "remote": "origin",
+    "ref": "refs/heads/cloud/sd-orbit-c-f172",
+    "head": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f172",
+    "receipt": "PRODUCT-PUSH.log"
+  },
+  "candidateAudit": {
+    "commits": 6,
+    "invalidIdentities": 0,
+    "openAiCoauthors": 0,
+    "contractChanges": 0,
+    "generatedViewChanges": 0,
+    "receipt": "CANDIDATE-AUDIT.log"
+  },
+  "candidateCi": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43161583060",
+      "id": 43161583060,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "finalGateResponsibility": {
+    "builder": "local selected proof, mechanics, identity audit, branch and evidence publication",
+    "fleet": "exact-final Verify, complete full-history publication scan, main equality and exact-main Run site"
+  },
+  "workCompleted": true,
+  "claim": {
+    "clause": "SEQUENCE-001",
+    "status": "PARTIAL",
+    "points": [
+      1,
+      2
+    ],
+    "qualification": "Selected native authoring limbs only; held remainder unchanged"
+  }
+}

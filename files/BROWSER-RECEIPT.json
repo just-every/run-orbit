@@ -1,0 +1,92 @@
+{
+  "head": "9fac192a6a8a59d57e472ca242de6053f0777cdb",
+  "helper": "newtests/t096/browser-sequence-authoring.ts",
+  "registration": "newtests/t096/browser-journeys.test.ts",
+  "browser": "/usr/bin/chromium",
+  "node": "22.20.0",
+  "argsAdded": [
+    "--no-sandbox"
+  ],
+  "selectedJourneyCompleted": true,
+  "visualInspection": "Populated list, editor and expanded original version history inspected at both widths; visible text controls and complete field borders; no displayed overflow. Workspace is UTC in the browser fixture; America/New_York and nonstandard working days are asserted in the native HTTP proof.",
+  "screens": [
+    {
+      "screen": "private-editor",
+      "width": 1440,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-private-editor-1440.png",
+      "sha256": "475845007bf1ac00a23c3bce142663b86e2199548debb013356a068fc95fb950"
+    },
+    {
+      "screen": "version-history",
+      "width": 1440,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-version-history-1440.png",
+      "sha256": "e6d3493202c3448c58cf3842e6b8a30b37a4a6b0c144dabb2cef64ea02230a37"
+    },
+    {
+      "screen": "populated-list",
+      "width": 1440,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-populated-list-1440.png",
+      "sha256": "a0e324e90e4e3707755638a3cf9bf54d5138962969863065f8202e7ee03ca8ac"
+    },
+    {
+      "screen": "independent-copy",
+      "width": 1440,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-independent-copy-1440.png",
+      "sha256": "3cab867dbb544c657f41941ec846ab22e63c37013c7be505aa0110531483966b"
+    },
+    {
+      "screen": "private-editor",
+      "width": 390,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-private-editor-390.png",
+      "sha256": "01fd5ab0a3015a3bfd8d62fde50c13d0edda080024485d08e3172eb0494356fe"
+    },
+    {
+      "screen": "version-history",
+      "width": 390,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-version-history-390.png",
+      "sha256": "16ab475937ab81cf0aadd6a955b52270515b7b0cc4c5cecafefccbc4a96fb3b5"
+    },
+    {
+      "screen": "populated-list",
+      "width": 390,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-populated-list-390.png",
+      "sha256": "1760b1e32a3f8c75c4f6a613d3647a4cf1f7091c8783cde8b94b0ebac7bbad37"
+    },
+    {
+      "screen": "independent-copy",
+      "width": 390,
+      "seriousCritical": 0,
+      "overflow": false,
+      "screenshot": "screens/sequences-independent-copy-390.png",
+      "sha256": "cafc87912df9f047b26521385dd81753deba29efdf83859ed3abcb8ddd6a2805"
+    }
+  ],
+  "tracesPublished": false,
+  "cookiesPublished": false,
+  "fullRegistration": {
+    "exit": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 1074238.991756,
+    "registeredTestDurationMs": 1067896.944414,
+    "closure": "BROWSER-CLOSURE.json"
+  },
+  "proofStartedAtHead": "34171c0c784ef3271537ed7adba7b92d8d7484e6",
+  "sourceContinuity": "SOURCE-CONTINUITY.json"
+}
