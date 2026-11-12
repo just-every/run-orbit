@@ -1,3 +1,4 @@
+import {quoteEvidence} from '../quotes/versions';
 import {readOpportunityContext} from '../relationships/opportunity';
 import {customerSignalSql} from '../signals/test-events';
 import {RecordError} from '../records/shared';
@@ -31,6 +32,7 @@ export async function dealEvidence(db:D1Database,id:string):Promise<DealEvidence
   db.prepare("SELECT t.id AS entryId,m.id AS messageId,m.subject,m.approved_at AS approvedAt,c.name AS contact FROM outbound_messages m JOIN timeline_entry_records r ON r.record_type='opportunity' AND r.record_id=m.opportunity_id JOIN timeline_entries t ON t.id=r.timeline_entry_id AND t.kind='message.accepted' AND json_extract(t.payload_json,'$.messageId')=m.id LEFT JOIN contacts c ON c.id=m.contact_id WHERE m.opportunity_id=? AND m.approved_at IS NOT NULL ORDER BY m.approved_at DESC,m.id LIMIT 1").bind(id).first<{entryId:string;messageId:string;subject:string;approvedAt:string;contact:string|null}>(),
   db.prepare("SELECT t.id,t.occurred_at AS occurredAt FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE r.record_type='opportunity' AND r.record_id=? AND t.kind='stage.changed' ORDER BY t.occurred_at DESC,t.id LIMIT 1").bind(id).first<{id:string;occurredAt:string}>(),
   db.prepare("SELECT id,title,due_at AS dueAt FROM sales_tasks WHERE opportunity_id=? AND status='open' AND due_at<? ORDER BY due_at LIMIT 50").bind(id,new Date().toISOString()).all<{id:string;title:string;dueAt:string}>()]);
+ evidence.push(...await quoteEvidence(db,id));
  const kinds={'manual.call':'Logged call','manual.meeting':'Logged meeting','manual.note':'Note'} as Record<string,string>;
  for(const row of entries.results)if(row.text)evidence.push({id:row.id,ref:row.id,label:kinds[row.kind]!,text:row.text,occurredAt:row.occurredAt,confidence:'observed',href:`${href}#entry-${row.id}`});
  for(const row of replies.results)evidence.push({id:row.id,ref:row.id,label:'Customer reply',text:row.subject??'Customer reply',occurredAt:row.occurredAt,confidence:'observed',href});

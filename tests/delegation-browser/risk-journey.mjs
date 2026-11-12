@@ -97,6 +97,7 @@ export async function riskJourney(page,data,model,evidence){
  const task=page.getByRole('form',{name:'Confirm the recorded kickoff date with Ana',exact:true});
  await expect(task.getByLabel('Title',{exact:true})).toHaveValue('Confirm the recorded kickoff date with Ana');
  await expect(task.getByRole('combobox',{name:/^Assignee/})).toHaveValue(data.owner);
+ await quoteJourney(page,data,model,evidence);
  expect(errors).toEqual([]);
 }
 
@@ -109,4 +110,50 @@ async function capture(page,risks,evidence,name){
   await page.screenshot({path:`${evidence}/${name}-${width}.png`,fullPage:true});
  }
  await page.setViewportSize({width:1440,height:900});
+}
+
+/** Build the native USD proposal in the browser, then inspect the model's cited quote-call conflict. */
+async function quoteJourney(page,data,model,evidence){
+ await page.goto('/app/settings/workspace#quote-products');
+ const book=page.getByRole('region',{name:'Products and USD price book',exact:true});
+ await book.getByText('Add product',{exact:true}).click();
+ const create=book.getByRole('form',{name:'New product',exact:true});
+ for(const [name,price] of [['Synthetic quote licence','100.01'],['Synthetic quote setup','250.00']]){
+  await create.getByLabel('Product name',{exact:true}).fill(name);await create.getByLabel('USD unit price',{exact:true}).fill(price);
+  await create.getByRole('button',{name:'Create product',exact:true}).click();
+  await expect(book.getByRole('form',{name:`Product ${name}`,exact:true})).toBeVisible();
+ }
+ await capture(page,book,evidence,'quote-price-book');
+ await page.goto(`/app/opportunities/${data.deal}`);
+ const panel=page.getByTestId('deal-quotes');await panel.getByRole('button',{name:'Create quote',exact:true}).click();
+ const form=panel.getByRole('form',{name:'Quote version',exact:true});
+ const first=form.getByRole('group',{name:'Line 1',exact:true}),second=form.getByRole('group',{name:'Line 2',exact:true});
+ await first.getByLabel('Product',{exact:true}).selectOption({label:'Synthetic quote licence'});await first.getByLabel('Quantity',{exact:true}).fill('2');await first.getByLabel('Line discount (USD)',{exact:true}).fill('10.02');
+ await second.getByLabel('Product',{exact:true}).selectOption({label:'Synthetic quote setup'});
+ await second.getByText('Override unit price',{exact:true}).click();await second.getByLabel('Override price (USD)',{exact:true}).fill('240.00');await second.getByLabel('Override reason',{exact:true}).fill('Reviewed setup concession');
+ await form.getByLabel('Quote discount (USD)',{exact:true}).fill('30.00');await form.getByLabel('Expires on',{exact:true}).fill('2030-11-03');
+ await form.getByLabel('US sales-tax treatment',{exact:true}).selectOption('added');await form.getByLabel('Tax rate (percent)',{exact:true}).fill('8.25');
+ const disclosure='US sales tax added at 8.25 percent for the reviewed destination; no automated tax determination.';
+ await form.getByLabel('US sales-tax disclosure',{exact:true}).fill(disclosure);
+ const save=async()=>{const response=page.waitForResponse(r=>r.url().endsWith(`/api/v1/quotes/deals/${data.deal}`)&&r.request().method()==='POST');await form.getByRole('button',{name:'Save new version',exact:true}).click();const saved=await response;expect(saved.status(),await saved.text()).toBe(201);return saved.json();};
+ const v1=await save();expect(v1.content.totalCents).toBe(43300);
+ await expect(panel.getByText('USD 433.00',{exact:true})).toBeVisible();await expect(panel.getByText(disclosure,{exact:true})).toBeVisible();
+ await expect(panel.getByText('Override from USD 250.00: Reviewed setup concession',{exact:true})).toBeVisible();
+ await panel.getByRole('button',{name:'Edit current quote',exact:true}).click();await form.getByLabel('Expires on',{exact:true}).fill('2030-11-17');
+ const v2=await save();expect(v2.version).toBe(2);expect(v2.content.totalCents).toBe(43300);
+ const old=panel.locator(`#quote-${v1.id}`);await old.locator(':scope > summary').click();
+ await expect(old.getByText('Issued ',{exact:false})).toContainText('2030-11-03');
+ await old.getByRole('button',{name:'Review version 1',exact:true}).click();await expect(panel.getByRole('alert')).toContainText('Current quote is version 2');
+ await expect(panel.locator(`#quote-${v2.id}`)).toContainText('2030-11-17');
+ const risks=page.getByTestId('deal-risks');await risks.locator(':scope > summary').click();
+ const endpoint=`/api/v1/risks/${data.deal}/conflicts`;
+ const previewResponse=page.waitForResponse(r=>r.url().endsWith(endpoint+'/preview'));await risks.getByRole('button',{name:'Preview conflict check',exact:true}).click();const preview=await(await previewResponse).json();
+ expect(preview.request.lines).toContainEqual(expect.objectContaining({evidenceId:v1.id,label:'Quote version 1'}));expect(preview.request.lines).toContainEqual(expect.objectContaining({evidenceId:v2.id,label:'Quote version 2'}));
+ const conflict={kind:'conflicting-date',explanation:'The current quote and the logged call give different quote expiration dates.',citations:[{evidenceId:v2.id,quote:'2030-11-17'},{evidenceId:data.call,quote:'2030-12-01'}],nextTask:'Confirm the quote expiration with Ana before sending'};
+ model.output={findings:[conflict]};await risks.getByRole('button',{name:'Send this check',exact:true}).click();
+ const finding=risks.locator('.deal-risk[data-kind="conflicting-date"]');await expect(finding.locator('blockquote')).toHaveText(['2030-11-17','2030-12-01']);await expect(finding.getByLabel('Proposed next task')).toHaveValue(conflict.nextTask);
+ expect(model.requests.at(-1)).toEqual(preview.request);
+ const citation=finding.getByRole('link',{name:'Quote version 2',exact:true});await expect(citation).toHaveAttribute('href',`/app/opportunities/${data.deal}#quote-${v2.id}`);
+ await capture(page,risks,evidence,'quote-call-conflict');
+ await citation.click();await expect(panel.locator(`#quote-${v2.id}`)).toBeVisible();
 }

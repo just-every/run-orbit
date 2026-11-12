@@ -1,3 +1,4 @@
+import {DealQuotePanel} from './quote-panel';
 import {useCallback,useMemo,useState} from 'react';
 import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
 import {InlineConfirm} from '../autosave/inline-confirm';
@@ -16,14 +17,14 @@ const dayParse:Parse=text=>{try{return {value:text.trim()?workspaceInstant(`${pa
 /** Details › Deal: Stage, Value, Owner, Expected close and Company, then the deal's own fields. */
 export function DealValues({id,record,settings,scheduled,definitions,context}:{id:string;record:AutosaveForm;settings:any;scheduled:number;definitions:FieldDefinition[];context:AutosaveForm}){
  const workspace=settings.workspace,owners=(settings.operators??[]).filter((operator:any)=>operator.status==='active'&&!operator.collaborator);
- return <DetailsGroup label="Deal">
+ return <><DetailsGroup label="Deal">
   <StageField id={id} record={record} settings={settings} scheduled={scheduled}/>
   <AutosaveField form={record} field="value_cents" label="Value" quiet describe={value=>formatCurrency(Number(value??0),workspace)}><input inputMode="decimal" {...textProps(record,'value_cents',{show:value=>formatCurrency(Number(value??0),workspace),editText:value=>String(Number(value??0)/100),parse:money(workspace)})}/></AutosaveField>
   <AutosaveField form={record} field="owner_id" label="Owner" quiet describe={value=>owners.find((operator:any)=>operator.id===value)?.display_name??'Unassigned'}><select {...choiceProps(record,'owner_id',value=>value||null)}><option value="">Unassigned</option>{owners.map((operator:any)=><option key={operator.id} value={operator.id}>{operator.display_name}</option>)}</select></AutosaveField>
   <AutosaveField form={record} field="expected_close_at" label="Expected close" quiet describe={value=>typeof value==='string'&&value?formatDay(value):'nothing'}><input type="text" placeholder={dateInputPlaceholder()} {...textProps(record,'expected_close_at',{show:day,parse:dayParse})}/></AutosaveField>
   <CompanyField form={context} field="company" name={String(context.copy?.companyName??'')}/>
   <CustomValues form={record} definitions={definitions} operators={settings.operators??[]}/>
- </DetailsGroup>;
+ </DetailsGroup><DealQuotePanel id={id}/></>;
 }
 
 /** Stage: the deal's pipeline's stages; a choice moves the deal at once, asking first only when the move cancels

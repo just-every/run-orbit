@@ -1,3 +1,4 @@
+import {exerciseQuotes} from '../support/quotes-proof';
 import {exerciseTwilio} from '../support/twilio-calls';
 import {exerciseSalesTasks} from '../support/sales-tasks';
 import {exerciseManualMeeting} from '../support/manual-meeting';
@@ -188,7 +189,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  assert.equal(submissions,0,'Stop and old-reply checks send no customer mail');
 });
 
-test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{
+test('QUOTE-001 products and immutable discounted USD quotes retain history, refuse stale versions, erase and restore, and yield a cited quote-call conflict; BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{
  context.mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-05T12:00:00Z')});
  const config={OPENAI_API_KEY:'test-only',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'};
  const operator=createId(),t=await todayApp(db,{provider:createAIProvider(config),operatorId:operator}),off=await todayApp(db,{operatorId:operator});
@@ -235,6 +236,7 @@ test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as p
  assert.equal((await off.call('/api/v1/today/summary',{body:{account:account.key,requestHash:'0'.repeat(64)}})).status,503);
  context.mock.timers.reset();
  await agentRisks(t,off);
+ await exerciseQuotes();
 });
 
 /** AGENT-002 on current sources: recorded roles, commitments and calls; observation apart from inference; nothing moves the deal. */

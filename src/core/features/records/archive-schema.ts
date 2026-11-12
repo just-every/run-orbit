@@ -75,6 +75,7 @@ export function jsonRowExpression(columns: readonly {
         expression = `json_set(${expression},${columns.slice(i, i + 15).flatMap(c => [`'$.${c.name}'`, `${prefix}${c.name}`]).join(',')})`;
     return expression;
 }
+// Quote catalogs and the complete pre-quote generation are registered in nativeCatalogGenerations.
 // Accept only complete, explicitly supported native schema generations. Never infer
 // arbitrary missing tables/columns as an old archive: that would hide corruption.
 export async function validateManifest(db: D1Database, input: unknown) {

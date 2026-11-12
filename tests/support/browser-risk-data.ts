@@ -10,7 +10,7 @@ export async function browserRiskData(db:D1Database,owner:string){
  const deal=await t.opportunity('Northwind renewal','Northwind','Ana Ruiz',email,1800000);
  const context=await t.json<any>(`/api/v1/relationships/opportunity/${deal}`,{},200),ana=context.stakeholders[0].contactId;
  const commitments='Kickoff on 2026-11-03 at USD 18,000 per year once legal signs.';
- const callText='Ana said kickoff is 2026-11-17 and the price she approved is USD 21,000 per year.';
+ const callText='Ana said kickoff is 2026-11-17 and the price she approved is USD 21,000 per year. The quote expires 2030-12-01.';
  await t.json(`/api/v1/relationships/opportunity/${deal}`,{method:'PUT',body:{revision:context.revision,companyId:context.company?.id??null,primaryContactId:ana,stakeholders:[{contactId:ana,roles:['champion'],verified:true}],products:['Annual licence'],nextStep:'Send the order form',mutualCommitments:commitments}},200);
  const call=await t.json<{id:string}>(`/api/v1/records/opportunity/${deal}/entries`,{body:{kind:'call',text:callText,occurredAt:'2020-01-03T12:00:00.000Z',durationMinutes:15}},200);
  const promiseTitle='Send the security questionnaire',taskTitle='Send the pricing sheet';

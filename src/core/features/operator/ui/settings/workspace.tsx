@@ -1,3 +1,4 @@
+import {QuoteProducts} from '../quote-products';
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {AIUsage} from '../ai-usage';
 import {AutosaveField,choiceProps,labelId,textProps} from '../autosave/field';
@@ -47,6 +48,7 @@ export function WorkspaceArea(){
    <section className="operator-surface settings-card" aria-labelledby="workspace-free-mail"><h2 id="workspace-free-mail">Free-mail domains</h2>
     <AutosaveField form={form} field="freeMailDomains" label="Mail from these domains never makes a company"><textarea rows={3} placeholder="gmail.com" {...textProps(form,'freeMailDomains',{multiline:true,parse:text=>{const bad=text.split(/[\s,]+/).filter(Boolean).find(domain=>!/^[a-zA-Z0-9.-]+$/.test(domain));return bad?{error:`${bad} is not a domain. Enter domains such as gmail.com, one per line or separated by commas.`}:{value:text};}})}/></AutosaveField>
    </section></>:settings.error?null:<OperatorState>Loading workspace…</OperatorState>}
+  <QuoteProducts/>
   <AIUsage/>
  </SettingsArea>;
 }

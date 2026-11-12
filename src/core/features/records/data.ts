@@ -45,6 +45,7 @@ export class DataRepository {
    for(const phone of new Set(callNumbers.map(normalizedPhone)))statements.push(db.prepare('INSERT OR IGNORE INTO call_erased_numbers VALUES(?)').bind(await payloadHash(phone)));
 
    statements.push(...recordMailContactErasure(db,id));
+   statements.push(db.prepare('DELETE FROM quote_versions WHERE opportunity_id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?)').bind(id));
    const affected=(await db.prepare('SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?').bind(id).all<{opportunity_id:string}>()).results;
    // Remove every signal carrying this contact, including copies linked to other records.
    const signalIds="SELECT signal_id FROM record_erasure_signals WHERE contact_id=?";
