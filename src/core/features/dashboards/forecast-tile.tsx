@@ -1,13 +1,17 @@
 import type {CSSProperties} from 'react';
+import {forecastQuotaPeriods} from '../forecast/quota-periods';
 import {usd,percent} from '../forecast/results';
 import type {ForecastResult,ForecastSnapshot} from '../forecast/types';
 import {dashboardLocal,dashboardZone,forecastPeriod} from './display';
-/** FORECAST-001's measures kept separate: four figures, per-rep attainment against each rep's own quota, and its definition. */
+/** FORECAST-001's measures and quota periods stay separate, with attainment against each rep's own target. */
 export function ForecastTile({result,onOpen}:{result:ForecastResult;onOpen:()=>void}){
- const quota=result.quotaTotals.quarterly,reps=result.quotaAttainment.filter(q=>q.quota.period==='quarterly'),each=reps.length>0&&reps.every(q=>q.quota.amountCents===reps[0]!.quota.amountCents);
+ const periods=forecastQuotaPeriods(result);
  const figure=(text:string,label:string)=><button type="button" className="sales-cell" aria-label={`${text} ${label}: show the forecast deals behind it`} onClick={onOpen}>{text}</button>;
- return <><dl className="dash-forecast"><div><dt>Quota</dt><dd>{figure(usd(quota.amountCents),'Quota')}</dd></div><div><dt>Weighted expected value</dt><dd>{figure(usd(result.totals.weightedExpectedCents),'Weighted expected value')}</dd></div><div><dt>Closed-won bookings</dt><dd>{figure(usd(result.totals.wonBookingsCents),'Closed-won bookings')}</dd><dd className="dash-forecast__note">{quota.attainmentPercent==null?'No quota set':`${percent(quota.attainmentPercent)} attainment`}</dd></div><div><dt>Open unweighted value</dt><dd>{figure(usd(result.totals.openUnweightedCents),'Open unweighted value')}</dd></div></dl>
-  {reps.length>0&&<><h3 className="dash-forecast__reps">Per rep (quarterly quota{each?` ${usd(reps[0]!.quota.amountCents)} each`:''})</h3><ul className="dash-reps">{reps.map(q=><li className="dash-rep" key={q.quota.id}><span>{result.inputs.operators.find(p=>p.id===q.quota.operatorId)?.name??'Former operator'}</span><span className="dash-bar"><span style={{width:`${Math.max(0,Math.min(100,q.attainmentPercent??0))}%`,'--pipeline-color':'var(--ob-tangerine)'} as CSSProperties}/></span><span>{percent(q.attainmentPercent)}</span></li>)}</ul></>}
+ return <><dl className="dash-forecast">
+  {!periods.length&&<div><dt>Quota</dt><dd>{figure(usd(0),'Quota')}</dd><dd className="dash-forecast__note">No quota set</dd></div>}
+  {periods.map(({period,totals})=><div key={period}><dt>{period==='monthly'?'Monthly quota':'Quarterly quota'}</dt><dd>{figure(usd(totals.amountCents),`${period} quota`)}</dd><dd className="dash-forecast__note">{totals.attainmentPercent===null?'No quota amount':`${percent(totals.attainmentPercent)} attainment`}</dd></div>)}
+  <div><dt>Weighted expected value</dt><dd>{figure(usd(result.totals.weightedExpectedCents),'Weighted expected value')}</dd></div><div><dt>Closed-won bookings</dt><dd>{figure(usd(result.totals.wonBookingsCents),'Closed-won bookings')}</dd></div><div><dt>Open unweighted value</dt><dd>{figure(usd(result.totals.openUnweightedCents),'Open unweighted value')}</dd></div></dl>
+  {periods.map(({period,rows})=>{const each=rows.every(row=>row.quota.amountCents===rows[0]!.quota.amountCents);return <section key={period}><h3 className="dash-forecast__reps">Per rep ({period} quota{each?` ${usd(rows[0]!.quota.amountCents)} each`:''})</h3><ul className="dash-reps">{rows.map(q=><li className="dash-rep" key={q.quota.id}><span>{result.inputs.operators.find(p=>p.id===q.quota.operatorId)?.name??'Former operator'}{rows.filter(row=>row.quota.operatorId===q.quota.operatorId).length>1?` · from ${q.quota.startDate}`:''}{!each?` · ${usd(q.quota.amountCents)} quota`:''}</span><span className="dash-bar" aria-hidden="true"><span style={{width:`${Math.max(0,Math.min(100,q.attainmentPercent??0))}%`,'--pipeline-color':'var(--ob-tangerine)'} as CSSProperties}/></span><span>{percent(q.attainmentPercent)}</span></li>)}</ul></section>;})}
   <p className="dash-meta">Weighted expected value = open deal amount × reviewed probability. Engagement scores do not affect it.</p></>;
 }
 export function ForecastBasis({forecast,live,notes,access,timezone}:{forecast:ForecastSnapshot;live:boolean;notes:string[];access:string;timezone:string}){
