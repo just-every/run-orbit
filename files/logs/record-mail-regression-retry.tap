@@ -1,0 +1,37 @@
+TAP version 13
+# (node:57737) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded
+# (node:57737) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":135,"parts":40,"observations":[{"operation":"POST /exports","milliseconds":3731.712845000002,"status":201},{"operation":"GET /exports/01M78W5JKBKAXFKE4E0HFTFD7Y","milliseconds":73.71763299999293,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":5699.191785999981,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":3261.0200170000026,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":3117.546399999992,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":3262.3177769999893,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":3123.0445590000018,"status":200},{"operation":"POST /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/advance","milliseconds":1014.4406780000136,"status":200},{"operation":"GET /exports/01M78W5JKBKAXFKE4E0HFTFD7Y/download","milliseconds":87.43573800000013,"status":200}]}
+# Subtest: OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+not ok 1 - OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+  ---
+  duration_ms: 408139.691452
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/signals-outreach.test.ts:1:36281'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+    async recordMailCustody (/workspace/run-orbit/tests/support/record-mail-custody.ts:14:15)
+    async recordMailHeldReplies (/workspace/run-orbit/tests/support/record-mail-held-replies.ts:28:461)
+    async exerciseRecordMail (/workspace/run-orbit/tests/support/record-mail.ts:16:57)
+    async TestContext.<anonymous> (/workspace/run-orbit/tests/core/signals-outreach.test.ts:256:253)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 448348.543553

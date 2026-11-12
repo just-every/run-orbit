@@ -1,0 +1,7 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"probe":"concurrent open fixtures, serial startup","index":0,"exit":0,"milliseconds":51909}
+{"probe":"concurrent open fixtures, serial startup","index":1,"exit":0,"milliseconds":41357}
+{"probe":"concurrent open fixtures, serial startup","index":2,"exit":0,"milliseconds":48794}
+{"probe":"concurrent open fixtures, serial startup","index":3,"exit":0,"milliseconds":42070}

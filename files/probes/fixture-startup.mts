@@ -1,0 +1,3 @@
+import {isolatedDatabase} from '/workspace/run-orbit/tests/support/isolated-database.ts';
+const fixtures:Awaited<ReturnType<typeof isolatedDatabase>>[]=[];
+try {for(let index=0;index<4;index++){const start=Date.now();try{fixtures.push(await isolatedDatabase());console.log(JSON.stringify({probe:'concurrent open fixtures, serial startup',index,exit:0,milliseconds:Date.now()-start}));}catch(error:any){console.log(JSON.stringify({probe:'concurrent open fixtures, serial startup',index,milliseconds:Date.now()-start,error:error.message,status:error.status,signal:error.signal,stderr:String(error.stderr??'').slice(-3500),stdout:String(error.stdout??'').slice(-1800)}));process.exitCode=1;break;}}}finally{for(const fixture of fixtures.reverse())await fixture.dispose();}

@@ -1,0 +1,19 @@
+{
+  "candidate": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+  "record_browser_proof_head": "ae91bb500222adab251858960883d64368ee3bd7",
+  "relevant_source_files_unchanged": [
+    "src/core/features/operator/ui/capture-provider-form.tsx",
+    "src/core/features/operator/ui/capture-source.tsx",
+    "src/core/features/operator/ui/draft-approval.tsx",
+    "src/core/features/operator/ui/draft-opt-out.tsx",
+    "src/core/features/operator/ui/draft-page.tsx",
+    "newtests/t096/browser-record-mail.ts",
+    "tests/delegation-browser/calendar-journey.mjs"
+  ],
+  "proof_command": "cloud_run timeout 1200 pnpm exec tsx /tmp/orbit-record-mail-browser-probe.mts",
+  "exit": 0,
+  "viewports": [
+    1440,
+    390
+  ]
+}

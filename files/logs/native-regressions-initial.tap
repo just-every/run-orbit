@@ -1,0 +1,196 @@
+TAP version 13
+# node:internal/modules/run_main:123
+#     triggerUncaughtException(
+#     ^
+# Error [TransformError]: Transform failed with 1 error:
+# /workspace/run-orbit/tests/support/mailbox-send-proof.ts:48:73: ERROR: The symbol "id" has already been declared
+#     at failureErrorWithLog (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1752:15)
+#     at /workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1019:50
+#     at responseCallbacks.<computed> (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:886:9)
+#     at handleIncomingPacket (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:941:12)
+#     at Socket.readFromStdout (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:864:7)
+#     at Socket.emit (node:events:519:28)
+#     at addChunk (node:internal/streams/readable:561:12)
+#     at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+#     at Readable.push (node:internal/streams/readable:392:5)
+#     at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+# Node.js v22.20.0
+# Subtest: tests/core/capture-providers.test.ts
+not ok 1 - tests/core/capture-providers.test.ts
+  ---
+  duration_ms: 305.072271
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/capture-providers.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator's own whole name and mailbox; another person's text never changes
+ok 2 - OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator's own whole name and mailbox; another person's text never changes
+  ---
+  duration_ms: 58512.656736
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:20806) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once
+ok 3 - OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once
+  ---
+  duration_ms: 47444.108335
+  type: 'test'
+  ...
+# Subtest: OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit
+ok 4 - OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit
+  ---
+  duration_ms: 83767.456768
+  type: 'test'
+  ...
+# Subtest: OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once
+ok 5 - OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once
+  ---
+  duration_ms: 46458.262583
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: SendGrid 202 persists honest outcome, never resubmits, and reconciles real evidence
+ok 6 - SendGrid 202 persists honest outcome, never resubmits, and reconciles real evidence
+  ---
+  duration_ms: 47881.78289
+  type: 'test'
+  ...
+# Subtest: SendGrid 408 persists honest outcome, never resubmits, and reconciles real evidence
+ok 7 - SendGrid 408 persists honest outcome, never resubmits, and reconciles real evidence
+  ---
+  duration_ms: 43979.338675
+  type: 'test'
+  ...
+# (node:26181) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:26181) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+ok 8 - SIGNAL-001 SIGNAL-003 SIGNAL-004 SIGNAL-007 SIGNAL-008 signed replay-safe ingestion links exact identity; unauthorized and anonymous tracking write nothing
+  ---
+  duration_ms: 3530.449161
+  type: 'test'
+  ...
+# Subtest: OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send
+ok 9 - OUT-008 recipient clocks respect weekdays, DST and time to review an out-of-hours send
+  ---
+  duration_ms: 2770.50869
+  type: 'test'
+  ...
+# Subtest: OUT-014 missing merge fields block; template revisions never rewrite approved content
+ok 10 - OUT-014 missing merge fields block; template revisions never rewrite approved content
+  ---
+  duration_ms: 19830.345619
+  type: 'test'
+  ...
+# Subtest: OUT-011 unknown delivery reconciles by durable provider key and never submits again
+ok 11 - OUT-011 unknown delivery reconciles by durable provider key and never submits again
+  ---
+  duration_ms: 924.223136
+  type: 'test'
+  ...
+# Subtest: OPP-008 completion removes an exhausted recommendation; new observed evidence produces another
+ok 12 - OPP-008 completion removes an exhausted recommendation; new observed evidence produces another
+  ---
+  duration_ms: 3650.599379
+  type: 'test'
+  ...
+# Subtest: OUT-010 over-limit approval remains durably unsent with retry time
+ok 13 - OUT-010 over-limit approval remains durably unsent with retry time
+  ---
+  duration_ms: 1680.457345
+  type: 'test'
+  ...
+# Subtest: BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent
+ok 14 - BASE-OPS-003 OUT-002 OUT-005 signed provider delivery is verified and idempotent
+  ---
+  duration_ms: 1065.566708
+  type: 'test'
+  ...
+# Subtest: SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects
+ok 15 - SIGNAL-004 SIGNAL-005 SIGNAL-008 unlinked review evaluates once and a persistence failure rolls back all signal effects
+  ---
+  duration_ms: 4115.024481
+  type: 'test'
+  ...
+# Subtest: SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events
+ok 16 - SIGNAL-009 shared provider relay authenticates destination HMAC and refuses modified events
+  ---
+  duration_ms: 157.010213
+  type: 'test'
+  ...
+# Subtest: BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends
+ok 17 - BASE-OPS-004 OUT-006 provider retry expiry fails before quiet-hours deferral and never resends
+  ---
+  duration_ms: 674.874818
+  type: 'test'
+  ...
+# OUT-017 AI: contact/company exact preview -> editable unsent draft; stale/refused/erased no call; foreign/long/provider/off fail; usage recorded
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":131,"parts":40,"observations":[{"operation":"POST /exports","milliseconds":5342.639679999964,"status":201},{"operation":"GET /exports/01M78SC6WF6RDKQY37AVNMB7ZF","milliseconds":98.57753799995407,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":8417.761092,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":4397.891922000039,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":4422.159678000025,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":4320.700490000017,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":4718.249944999989,"status":200},{"operation":"POST /exports/01M78SC6WF6RDKQY37AVNMB7ZF/advance","milliseconds":1061.569342999952,"status":200},{"operation":"GET /exports/01M78SC6WF6RDKQY37AVNMB7ZF/download","milliseconds":108.0494029999827,"status":200}]}
+# Subtest: OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+not ok 18 - OUT-017 record mail preserves exact approval, sender promises, custody and OUT-004 header-only reply matching
+  ---
+  duration_ms: 522760.445709
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/signals-outreach.test.ts:1:36281'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+    async recordMailCustody (/workspace/run-orbit/tests/support/record-mail-custody.ts:14:15)
+    async recordMailHeldReplies (/workspace/run-orbit/tests/support/record-mail-held-replies.ts:28:461)
+    async exerciseRecordMail (/workspace/run-orbit/tests/support/record-mail.ts:16:57)
+    async TestContext.<anonymous> (/workspace/run-orbit/tests/core/signals-outreach.test.ts:256:253)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh
+ok 19 - BASE-OPS-004 OPP-005 evaluation failure preserves readable prior evidence and clears on a successful refresh
+  ---
+  duration_ms: 2660.713502
+  type: 'test'
+  ...
+# Subtest: SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action
+ok 20 - SIGNAL-002 SIGNAL-006 standard and source-namespaced types are isolated; inferred evidence cannot create a deal, high band or action
+  ---
+  duration_ms: 18750.608484
+  type: 'test'
+  ...
+# Subtest: OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+ok 21 - OUT-007 OUT-009 SEQUENCE-002 stage move, close and genuine reply end scheduled follow-up atomically; automatic reply and open report do not
+  ---
+  duration_ms: 20768.371605
+  type: 'test'
+  ...
+# Subtest: OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming
+ok 22 - OUT-009 dispatch rechecks unchanged content, active operator, lifecycle, current recipient and association before claiming
+  ---
+  duration_ms: 4559.471322
+  type: 'test'
+  ...
+# Subtest: OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+ok 23 - OUT-002 OUT-007 temporary provider blocks do not permanently suppress a contact; permanent bounces do
+  ---
+  duration_ms: 2087.393788
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 21
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1001998.255781

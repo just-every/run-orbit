@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f179",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f179",
+  "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+  "generated_at": "2026-11-12T22:50:25.109389+00:00",
+  "product_pushed": true,
+  "pr": null,
+  "main_at_merge": "63aa0647cabbd86ae1ee2c489f1dfe8ef31e123b",
+  "registered_tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "claim": {
+    "clause": "OUT-013",
+    "status": "PARTIAL",
+    "points": [],
+    "source_judgment_cells_changed": false
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": "pnpm exec tsc --noEmit",
+      "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+      "exit": 0
+    },
+    {
+      "name": "build, deployment, boundaries, first-party, contract generation and source integrity",
+      "command": "merged candidate pipeline retained in separate actual logs",
+      "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+      "exit": 0,
+      "source_check_ok": true
+    },
+    {
+      "name": "full registered capture proof before archive correction",
+      "command": "cloud_run timeout 1800 pnpm exec tsx --test --test-name-pattern='OUT-013' tests/core/capture-providers.test.ts",
+      "head": "ae91bb500222adab251858960883d64368ee3bd7",
+      "exit": 0,
+      "test": "CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation"
+    },
+    {
+      "name": "final native mailbox runtime proof for both providers",
+      "command": "cloud_run timeout 1200 pnpm exec tsx /tmp/orbit-mailbox-only.mts",
+      "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+      "exit": 0,
+      "source": "tests/support/mailbox-send-proof.ts",
+      "function": "mailboxSendProof",
+      "google": "supported native proof",
+      "microsoft": "refused unsupported permission combination"
+    },
+    {
+      "name": "historical upgrade, before correction",
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test newtests/t096/forward-upgrade.test.ts",
+      "head": "ae91bb500222adab251858960883d64368ee3bd7",
+      "exit": 1,
+      "failure": "Archive inventory does not match a complete supported source generation.",
+      "location": "newtests/t096/released-forecast-upgrade.ts:69"
+    },
+    {
+      "name": "historical upgrade after precise reconstruction correction before merging fresh main",
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test newtests/t096/forward-upgrade.test.ts",
+      "source_tree_same_as": "6366ddd",
+      "exit": 0
+    },
+    {
+      "name": "final historical upgrade including fresh main follow-up tables",
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test newtests/t096/forward-upgrade.test.ts",
+      "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+      "exit": -9,
+      "tap": {
+        "pass": 1,
+        "fail": 0,
+        "duration_ms": 600834.558527
+      },
+      "terminal_limitation": "Assertions completed; enclosing session disappeared and subreaper wait status was SIGKILL. Not a zero-exit process receipt."
+    },
+    {
+      "name": "record-mail browser focused helper with completion seed",
+      "command": "cloud_run timeout 1200 pnpm exec tsx /tmp/orbit-record-mail-browser-probe.mts",
+      "head": "ae91bb500222adab251858960883d64368ee3bd7",
+      "exit": 0,
+      "viewports": [
+        1440,
+        390
+      ],
+      "relevant_files_unchanged_on_final_head": true
+    },
+    {
+      "name": "full calendar and records-layout browser registration",
+      "command": "cloud_run timeout 1800 pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 0,
+      "viewports": [
+        1440,
+        390
+      ],
+      "relevant_ui_files_unchanged_on_final_head": true
+    },
+    {
+      "name": "initial native regressions",
+      "exit": 1,
+      "pass": 21,
+      "fail": 2,
+      "limitations": [
+        "Duplicate temporary test variable later corrected and covered by final capture proof",
+        "Fixture migration ETIMEDOUT in record-mail custody"
+      ]
+    },
+    {
+      "name": "record-mail regression serial retry",
+      "command": "cloud_run timeout 1200 pnpm exec tsx --test --test-name-pattern='OUT-017 record mail' tests/core/signals-outreach.test.ts",
+      "head": "ae91bb500222adab251858960883d64368ee3bd7",
+      "exit": 1,
+      "failure": "spawnSync Node ETIMEDOUT at isolated-database.ts:11, before record-mail-custody.ts:14 local restore assertions"
+    },
+    {
+      "name": "four open fixtures, serial startup diagnostic",
+      "command": "cloud_run timeout 360 pnpm exec tsx /tmp/orbit-fixture-startup-probe.mts",
+      "exit": 0,
+      "milliseconds": [
+        51909,
+        41357,
+        48794,
+        42070
+      ],
+      "conclusion": "All starts passed; did not reproduce the timeout. No fixture timeout or assertion was changed."
+    },
+    {
+      "name": "direct migration application",
+      "command": "wrangler d1 migrations apply DB --local --config wrangler.jsonc",
+      "exit": 0,
+      "seconds": 32,
+      "phase": "Before fresh-main merge; final runtime fixture also applies the full final migration stack."
+    }
+  ],
+  "ci": {
+    "conclusion": null,
+    "head_sha": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43320028360",
+    "status": "in_progress",
+    "run_id": 43320028360,
+    "event": "push"
+  },
+  "github_calls": 8,
+  "publication_scan": {
+    "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+    "status": "not run in cloud; guarded Mac lander owns it",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "main_equality": "pending guarded landing",
+  "run_site": "pending guarded landing; no main push from cloud",
+  "full_history": true,
+  "source_lock_sha256": "18022b2d81c79e9b9f3c64bd44da2c25420a1bd817c2c153d555f4da55f8de82",
+  "product_worktree_clean": true,
+  "limitations": [
+    "No live provider account consent or real recipient receipt",
+    "Microsoft create-then-send requires Mail.ReadWrite, outside the mandated scope grant",
+    "All existing held remainder remains unchanged",
+    "Earlier fixture startup failures are retained and not called green",
+    "Final historical upgrade TAP passed, but enclosing subreaper was killed after the terminal session disappeared; actual wrapper exit is -9."
+  ],
+  "custody": "PUSHED"
+}

@@ -1,0 +1,2 @@
+Deployment spec published from the build; setup digest matches rer-setup.json.
+Deployment spec matches the build; setup digest matches rer-setup.json.

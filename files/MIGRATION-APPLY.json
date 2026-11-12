@@ -1,0 +1,1 @@
+{"command":"wrangler d1 migrations apply DB --local --config wrangler.jsonc","exit":0,"seconds":32}

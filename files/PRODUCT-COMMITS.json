@@ -1,0 +1,64 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f179",
+  "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+  "main_at_candidate": "63aa0647cabbd86ae1ee2c489f1dfe8ef31e123b",
+  "commits": [
+    {
+      "head": "8dcdb857e3821546b75979cec123dfb8153ba30c",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Add separately authorized Gmail mailbox transport and bound review [skip ci]",
+      "trailers": ""
+    },
+    {
+      "head": "4d5501334c5df7bd290045297542e73195724e62",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Preserve mailbox isolation, Sent provenance and restored authority [skip ci]",
+      "trailers": ""
+    },
+    {
+      "head": "5f89b8ec9bfbbf0cbc7bd80422220bd7c06ceeb6",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Refuse unavailable mailbox authority and verify rendered mailbox delivery [skip ci]",
+      "trailers": ""
+    },
+    {
+      "head": "ae91bb500222adab251858960883d64368ee3bd7",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Report actual sender readiness and explicit transport unavailability",
+      "trailers": ""
+    },
+    {
+      "head": "6366ddd968f9455af4bfe0cee8218c5bf66e3ae6",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Preserve historical notification archive reconstruction [skip ci]",
+      "trailers": ""
+    },
+    {
+      "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+      "author_name": "Run Edit Run fleet",
+      "author_email": "fleet@runeditrun.com",
+      "committer_name": "Run Edit Run fleet",
+      "committer_email": "fleet@runeditrun.com",
+      "subject": "Merge current main while retaining bound mailbox delivery and archive generations",
+      "trailers": ""
+    }
+  ],
+  "contract_and_generated_views_changed": false,
+  "source_lock_fresh": true
+}

@@ -1,0 +1,19 @@
+TAP version 13
+# (node:52192) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation
+ok 1 - CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation
+  ---
+  duration_ms: 845178.934814
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 848433.006508

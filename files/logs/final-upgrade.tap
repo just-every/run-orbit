@@ -1,0 +1,22 @@
+TAP version 13
+# (node:78294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3873.742363999976,"status":201},{"operation":"GET /exports/01M78YSNBJ2NGG5XVVMMPDRF8E","milliseconds":80.51343300001463,"status":200},{"operation":"POST /exports/01M78YSNBJ2NGG5XVVMMPDRF8E/advance","milliseconds":5256.799407999992,"status":200},{"operation":"POST /exports/01M78YSNBJ2NGG5XVVMMPDRF8E/advance","milliseconds":3284.087516999978,"status":200},{"operation":"POST /exports/01M78YSNBJ2NGG5XVVMMPDRF8E/advance","milliseconds":3398.858329999988,"status":200},{"operation":"POST /exports/01M78YSNBJ2NGG5XVVMMPDRF8E/advance","milliseconds":1607.2507039999764,"status":200},{"operation":"GET /exports/01M78YSNBJ2NGG5XVVMMPDRF8E/download","milliseconds":74.06061899999622,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":4072.1318559999927,"status":201},{"operation":"GET /exports/01M78Z1QFV1D3FSHGK04X6FT83","milliseconds":83.49625299999025,"status":200},{"operation":"POST /exports/01M78Z1QFV1D3FSHGK04X6FT83/advance","milliseconds":5071.078990000009,"status":200},{"operation":"POST /exports/01M78Z1QFV1D3FSHGK04X6FT83/advance","milliseconds":3463.2317280000425,"status":200},{"operation":"POST /exports/01M78Z1QFV1D3FSHGK04X6FT83/advance","milliseconds":3760.228279999981,"status":200},{"operation":"POST /exports/01M78Z1QFV1D3FSHGK04X6FT83/advance","milliseconds":1564.7061450000037,"status":200},{"operation":"GET /exports/01M78Z1QFV1D3FSHGK04X6FT83/download","milliseconds":68.47826300002635,"status":200}]}
+# OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+# Subtest: API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+ok 1 - API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+  ---
+  duration_ms: 596055.138042
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 600834.558527

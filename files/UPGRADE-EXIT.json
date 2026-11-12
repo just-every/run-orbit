@@ -1,0 +1,10 @@
+{
+  "process": 78259,
+  "role": "final forward-upgrade cloud_run subreaper",
+  "state": "Z",
+  "wait_status": 9,
+  "exit": -9,
+  "source": "Linux proc stat field 52 after terminal session record expired",
+  "tap_pass": 1,
+  "tap_fail": 0
+}

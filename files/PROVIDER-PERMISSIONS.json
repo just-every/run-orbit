@@ -1,0 +1,25 @@
+{
+  "retrieved_at": "2026-11-12T21:49:54.239299+00:00",
+  "official_documentation": [
+    {
+      "url": "https://learn.microsoft.com/en-us/graph/api/user-post-messages?view=graph-rest-1.0",
+      "http_status": 200,
+      "permissions_table": "Permission type Permissions (from least to most privileged) Delegated (work or school account) Mail.ReadWrite Delegated (personal Microsoft account) Mail.ReadWrite Application Mail.ReadWrite"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/graph/api/message-send?view=graph-rest-1.0",
+      "http_status": 200,
+      "permissions_table": "Permission type Least privileged permissions Higher privileged permissions Delegated (work or school account) Mail.Send Not available. Delegated (personal Microsoft account) Mail.Send Not available. Application Mail.Send Not available."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0",
+      "http_status": 200,
+      "permissions_table": "Permission type Least privileged permissions Higher privileged permissions Delegated (work or school account) Mail.Send Not available. Delegated (personal Microsoft account) Mail.Send Not available. Application Mail.Send Not available."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0",
+      "http_status": 200,
+      "permissions_table": "Permission type Least privileged permissions Higher privileged permissions Delegated (work or school account) User.Read User.ReadWrite, User.ReadBasic.All, User.Read.All, User.ReadWrite.All, Directory.Read.All, Directory.ReadWrite.All Delegated (personal Microsoft account) User.Read User.ReadWrite Application User.Read.All User.ReadWrite.All, Directory.Read.All, Directory.ReadWrite.All"
+    }
+  ]
+}

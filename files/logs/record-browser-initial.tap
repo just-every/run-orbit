@@ -1,0 +1,44 @@
+TAP version 13
+# (node:37373) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+# (node:37373) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+# PROBE FORM-002 browser: no pre-interaction third-party request or cookie; optional verification follows interaction; withdrawn publication refuses UI release and retains pending payload; erasure disables release
+# {"proof":"native-archive-export-requests","version":3,"tables":128,"rows":934,"parts":71,"observations":[{"operation":"POST /exports","milliseconds":5602.579931000015,"status":201},{"operation":"GET /exports/01M78TJ01T4CJXXNY5Y5V4PBCD","milliseconds":84.95854500005953,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":7162.5457670000615,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":5586.185932999942,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":4240.315281999996,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":4255.983009999967,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":4236.33773499995,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":3720.197964999941,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":3634.551888999995,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":3571.320122000063,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":4102.881007999997,"status":200},{"operation":"POST /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/advance","milliseconds":549.2175259999931,"status":200},{"operation":"GET /exports/01M78TJ01T4CJXXNY5Y5V4PBCD/download","milliseconds":83.03585999994539,"status":200}]}
+# Subtest: OUT-013 bound Gmail review, OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+not ok 1 - OUT-013 bound Gmail review, OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+  ---
+  duration_ms: 761471.210755
+  type: 'test'
+  location: '/workspace/run-orbit/newtests/t096/browser-journeys.test.ts:1:1527'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/workspace/run-orbit/tests/support/isolated-database.ts:11:3)
+    async forecastArchiveJourney (/workspace/run-orbit/newtests/t096/forecast-archive-journey.ts:17:14)
+    async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/browser-journeys.test.ts:40:785)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 766758.345132
