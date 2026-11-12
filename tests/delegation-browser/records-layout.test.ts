@@ -1,3 +1,4 @@
+import {mailchimpLedgerEdge} from '../support/mailchimp-ledger-proof';
 import {typedFieldsJourney} from './typed-fields-journey.mjs';
 import {browserPrivateData} from '../support/browser-private-data';
 import {privateEntriesJourney} from './private-entries-journey.mjs';
@@ -21,11 +22,11 @@ import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
-test('emitted Worker record and NOW lists wrap full valid long names and reopen sorted saved views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390', async () => {
+test('emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
-   const origin = `https://127.0.0.1:${port}`;
-  const runtime=new unstable_DevEnv();
+   const origin = `https://orbit.127.0.0.1.nip.io:${port}`;
+  const runtime=new unstable_DevEnv(),mailchimp=mailchimpLedgerEdge(fetch);mailchimp.validationEnabled=false;
   let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
   try {
     const deps = createTestDependencies(fixture.db);
@@ -43,15 +44,15 @@ test('emitted Worker record and NOW lists wrap full valid long names and reopen 
     const privateData=await browserPrivateData(fixture.db,sampleData.operators[0].id);
     const certificate=await customCertificate(fixture.directory);await fixture.close();
     const secret=(value:string)=>({type:'secret_text' as const,value});
-    const worker=await runtime.startWorker({config:join(process.cwd(),'dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true,httpsKeyPath:certificate.keyPath,httpsCertPath:certificate.certPath},origin:{secure:true},outboundService:async request=>{
-      const url=new URL(request.url);if(['www.googleapis.com','gmail.googleapis.com','graph.microsoft.com'].includes(url.hostname))return calendarData.providerFetch(request);if(url.origin!=='https://api.twilio.com'||url.pathname!==`/2010-04-01/Accounts/${callingAccount}/Calls.json`||request.method!=='POST'){calendarData.unexpectedRequests.push(url.origin+url.pathname);throw new Error('Unexpected provider request.');}
+    const worker=await runtime.startWorker({config:join(process.cwd(),'dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port,secure:true,httpsKeyPath:certificate.keyPath,httpsCertPath:certificate.certPath},origin:{secure:true,hostname:new URL(origin).host},outboundService:async request=>{
+      const url=new URL(request.url);if(url.hostname==='us1.api.mailchimp.com')return mailchimp.fetch(request.url,{method:request.method,headers:request.headers,body:['GET','HEAD'].includes(request.method)?undefined:await request.text()});if(['www.googleapis.com','gmail.googleapis.com','graph.microsoft.com'].includes(url.hostname))return calendarData.providerFetch(request);if(url.origin!=='https://api.twilio.com'||url.pathname!==`/2010-04-01/Accounts/${callingAccount}/Calls.json`||request.method!=='POST'){calendarData.unexpectedRequests.push(url.origin+url.pathname);throw new Error('Unexpected provider request.');}
       callingProvider.submissions++;return Response.json({status:callingProvider.status,code:callingProvider.code},{status:callingProvider.status});
-    }}});await worker.ready;
+    }}});await worker.ready;mailchimp.validate=url=>worker.fetch(url);
     if((await worker.fetch(origin+'/health')).status!==200)throw new Error('Emitted Worker did not become healthy.');
-    browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
+    browser = await chromium.launch({headless:true,executablePath:process.env.ORBIT_CHROMIUM_EXECUTABLE,args:['--no-proxy-server','--host-resolver-rules=MAP orbit.127.0.0.1.nip.io 127.0.0.1','--proxy-bypass-list=orbit.127.0.0.1.nip.io;127.0.0.1;localhost','--no-sandbox','--use-mock-keychain','--password-store=basic',...certificateTrust(certificate.cert)]});
     const context = await browser.newContext({ baseURL: origin, ignoreHTTPSErrors:true, extraHTTPHeaders: { Cookie: `${sessionCookieName}=${session.token}` } });
     // Emitted documents and HTTP routes share one Worker; only provider network edges are replaced.
-    await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,accountSid:callingAccount,token:callingToken});
+    await callingJourney(await context.newPage(),{fetch:worker.fetch.bind(worker),origin,provider:callingProvider,mailchimp,scheduled:async()=>{const local=(runtime as any).runtimes.find((controller:any)=>controller.mf);const emitted=await local.mf.getWorker(worker.config.name);return emitted.scheduled({cron:'* * * * *',scheduledTime:new Date()});},accountSid:callingAccount,token:callingToken});
     await calendarJourney(await context.newPage(),calendarData);
     const collaboratorContext=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:privateData.cookie}});
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);

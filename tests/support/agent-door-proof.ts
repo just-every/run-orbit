@@ -22,6 +22,7 @@ import type {PlatformBindings} from '../../src/core/platform/assets';
 import {agentDoorGraphProof} from './agent-door-graph-proof';
 import type {CaptureSecurityProofContext} from './agent-door-capture-security-proof';
 import {agentDoorStalledRiskProof} from './agent-door-stalled-risk-proof';
+import {agentDoorForecastProof} from './agent-door-forecast-proof';
 import type {CollaboratorProofContext} from './agent-door-collaborator-proof';
 
 export interface RejectedReportProofContext {
@@ -209,6 +210,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await call('orbit.sources.read',{});
     await call('orbit.forecasts.read',{});
     await call('orbit.forecasts.update',{id:opportunity.id,forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'},idempotency_key:'native-forecast'});
+    await agentDoorForecastProof({bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall},opportunity.id);
     const definition=await call('orbit.reports.update',{definition:{name:'Opportunity count',description:'Current native opportunity count',aggregation:'count',unit:'opportunities',sourceTypes:['opportunity'],sourceOperation:'graph.read',sourceFields:[],currency:null,missingPolicy:'incomplete',lateArrival:'recompute',attributionModel:'none',attributionWindowDays:30},idempotency_key:'native-report-definition'});
     const period={id:definition.id,version:1,from:'2026-01-01T00:00:00Z',through:'2027-01-01T00:00:00Z'};
     const preview=await call('orbit.reports.preview',period);

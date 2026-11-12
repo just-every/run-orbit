@@ -9,7 +9,7 @@ export async function calendarJourney(page,data){
  const edge=await page.context().newCDPSession(page);
  edge.on('Fetch.requestPaused',async event=>{
   authorization=new URL(event.request.url);
-  await edge.send('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html'}],body:Buffer.from('<!doctype html><html lang="en"><title>Provider edge</title><h1>Provider authorization received</h1></html>').toString('base64')});
+  await edge.send('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html'}],body:Buffer.from('<!doctype html><html lang="en"><title>Provider edge</title><link rel="icon" href="data:,"><h1>Provider authorization received</h1></html>').toString('base64')});
  });
  await edge.send('Fetch.enable',{patterns:[{urlPattern:'https://accounts.google.com/o/oauth2/v2/auth*',requestStage:'Request'},{urlPattern:'https://login.microsoftonline.com/*/oauth2/v2.0/authorize*',requestStage:'Request'}]});
  try{
