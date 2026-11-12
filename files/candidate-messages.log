@@ -1,0 +1,27 @@
+e46f833f71dab90530a18e7e1d92da93c7678f5f
+Merge current main and finalize HubSpot import erasure fixes
+
+0971c145eba1cafed0ad11edda510ffbbc6e794d
+Separate task import effects for erasure-safe undo [skip ci]
+
+b0c9cae3657c998c666e8db2a21a883c0980f6c4
+Preserve task import erasure and accept textless HubSpot calls [skip ci]
+
+f28766f71e53ebb6f02d7cc0ef77959773cd7706
+Regenerate deployment specification for renumbered HubSpot migrations
+
+a79bd2df315b37f1f94c6d57a45e5053fb14e362
+Merge main and move HubSpot import migrations to 0083 and 0084
+
+11f4a8bf2a061c3547a3c158acc1642a45f95ff0
+Complete reviewed read-only HubSpot import and recovery guidance
+
+4577eb229c3fa5546a0c35c5e9cba4b703c33404
+Merge current main before HubSpot qualification [skip ci]
+
+a6e9ecefa9ecbaca9c1b37af4fbf9ef8f4f7eaa6
+Save HubSpot connection controls and resumed import proof [skip ci]
+
+df5060f619d1f92fd59f12feca664d3c8222146f
+Save connected HubSpot source review and native import adapters [skip ci]
+

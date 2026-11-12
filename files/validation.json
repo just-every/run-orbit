@@ -1,0 +1,97 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f174-fix1",
+  "head": "e46f833f71dab90530a18e7e1d92da93c7678f5f",
+  "main_merged": "c3065f3b5be9b169501be552ae6a6e65c02fe57d",
+  "original_scored_source": "f28766f71e53ebb6f02d7cc0ef77959773cd7706",
+  "checks": [
+    {
+      "name": "baseline public probes",
+      "exit": 1,
+      "result": "three expected failures on scored source",
+      "receipt": "baseline.log"
+    },
+    {
+      "name": "fixed public probes",
+      "exit": 0,
+      "receipt": "final-probes.log",
+      "note": "Before minimal auxiliary-payload adjustment; final erasure and import tests cover the final bytes."
+    },
+    {
+      "name": "crm import erasure",
+      "exit": 0,
+      "tests": 3,
+      "receipt": "erasure-tests-final.log"
+    },
+    {
+      "name": "large connected and vendor import registration",
+      "exit": 0,
+      "tests": 1,
+      "receipt": "import-tests-final.log"
+    },
+    {
+      "name": "other focused import registrations",
+      "exit": 0,
+      "tests": 3,
+      "receipt": "import-other-tests.log"
+    },
+    {
+      "name": "operator erasure compatibility",
+      "exit": 0,
+      "tests": 1,
+      "receipt": "operator-erasure-tests.log"
+    },
+    {
+      "name": "typecheck",
+      "exit": 0,
+      "receipt": "typecheck-final.log"
+    },
+    {
+      "name": "first-party",
+      "exit": 0,
+      "receipt": "first-party-final.log"
+    },
+    {
+      "name": "boundaries",
+      "exit": 0,
+      "receipt": "boundaries.log"
+    },
+    {
+      "name": "deployment, contract views, source lock and test budget",
+      "exit": 0,
+      "receipt": "mechanical-final.log"
+    },
+    {
+      "name": "exact candidate build",
+      "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+      "exit": 0,
+      "receipt": "build.log"
+    },
+    {
+      "name": "post-build deployment specification and source lock",
+      "exit": 0,
+      "receipt": "post-build-mechanical.log",
+      "committed_tree_unchanged": true
+    }
+  ],
+  "source_footprint_matches_head": true,
+  "migration_ledger": "not applicable: no migration added or edited in this fix",
+  "ui_proof": "not applicable: no UI files edited in this fix",
+  "publication_scan": "fleet-owned, not run in this cloud",
+  "landing": "not performed",
+  "ci": {
+    "head": "e46f833f71dab90530a18e7e1d92da93c7678f5f",
+    "run_id": 43291121347,
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43291121347",
+    "watcher_calls": 8,
+    "observed_at": 1794514044.3028004
+  },
+  "terminal_custody": "PUSHED",
+  "verification_status": "local checks passed; full exact-SHA Verify pending",
+  "workflow_dispatches": 0,
+  "workflow_reruns": 0,
+  "ci_reads": 8,
+  "blockers": []
+}

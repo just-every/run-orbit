@@ -1,0 +1,253 @@
+diff --git a/src/core/features/imports/erasure.ts b/src/core/features/imports/erasure.ts
+index ef56289..eced0ab 100644
+--- a/src/core/features/imports/erasure.ts
++++ b/src/core/features/imports/erasure.ts
+@@ -1,6 +1,7 @@
+ import {eraseImportOwnerNotices} from './owner-notices';
+ import { eraseD1ImportTarget,type D1Sql,type D1ImportContext } from '../../../modules/import-kit/d1/index';
+ import {targets,sql} from './targets';
++import {nativeId} from './source';
+ import {containsMailbox,withdrawImportReviews} from './review-erasure';
+ import {redactImportedNativeCopies} from './native-erasure';
+ /** Keep native erasure and the Kit's source withdrawal in the same final D1 transaction. */
+@@ -21,13 +22,16 @@ export async function withdrawRelatedImportCopies(db:D1Database,actor:string,id:
+  for(const reference of references)await eraseD1ImportTarget('reference',reference.id,targets.remove('workspace','reference',reference.id),context);
+  const copies=(await db.prepare("SELECT kind,id,original_json FROM crm_import_targets WHERE kind='note'").all<{kind:string;id:string;original_json:string}>()).results;
+  const linked=(await db.prepare("SELECT timeline_entry_id FROM timeline_entry_records WHERE record_type='contact' AND record_id=?").bind(id).all<{timeline_entry_id:string}>()).results.map(r=>r.timeline_entry_id);
+- for(const copy of copies)if(linked.includes(copy.id)||containsMailbox(copy.original_json,emails))await eraseD1ImportTarget('note',copy.id,[...targets.remove('workspace','note',copy.id)],context);
++ // Task-created entries belong to the task and series. The final
++ // contact erasure withdraws all projections in its atomic native transaction.
++ for(const copy of copies)if(!JSON.parse(copy.original_json).taskId&&(linked.includes(copy.id)||containsMailbox(copy.original_json,emails)))await eraseD1ImportTarget('note',copy.id,[...targets.remove('workspace','note',copy.id)],context);
+  const stops=(await db.prepare('SELECT id,value_json FROM crm_import_stops').all<{id:string;value_json:string}>()).results;
+  for(const stop of stops)if(emails.some(email=>JSON.parse(stop.value_json).emails.includes(email.toLowerCase())))await eraseD1ImportTarget('suppression',stop.id,[sql('DELETE FROM crm_import_stops WHERE id=?',stop.id)],context);
+ }
+ /** Other imported rows, rejected rows and original files can also hold the person's mailbox. */
+-const relatedCopies=(emails:string[])=>({source:(record:{payload:unknown})=>containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
++const relatedCopies=(emails:string[],taskIds:Set<string>)=>({source:(record:{namespace:string;kind:string;sourceId:string;payload:unknown})=>(['task','task-series','task-entry'].includes(record.kind)&&taskIds.has(nativeId(record.namespace,'task',record.sourceId)))||containsMailbox(JSON.stringify(record.payload),emails),original:(bytes:Uint8Array)=>containsMailbox(Buffer.from(bytes).toString('utf8'),emails)});
+ export async function eraseImportedContact(db:D1Database,actor:string,id:string,statements:D1Sql[],sessionId?:string,emails:string[]=[]){
+- return eraseD1ImportTarget('contact',id,[...await redactImportedNativeCopies(db,id,emails),...statements,sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?','contact',id),
+- ...await withdrawImportReviews(db,id,emails)],erasureContext(db,actor,sessionId),emails.length?relatedCopies(emails):undefined);
++ const taskIds=new Set<string>(),native=await redactImportedNativeCopies(db,id,emails,taskIds);
++ return eraseD1ImportTarget('contact',id,[...native,...statements,sql('DELETE FROM crm_import_targets WHERE kind=? AND id=?','contact',id),
++ ...await withdrawImportReviews(db,id,emails)],erasureContext(db,actor,sessionId),emails.length||taskIds.size?relatedCopies(emails,taskIds):undefined);
+ }
+diff --git a/src/core/features/imports/hubspot/bundle.ts b/src/core/features/imports/hubspot/bundle.ts
+index fe261a7..9984a0a 100644
+--- a/src/core/features/imports/hubspot/bundle.ts
++++ b/src/core/features/imports/hubspot/bundle.ts
+@@ -18,7 +18,7 @@ export function bundle(portal:string,pages:Page[],options:Pick<ImportInput,'owne
+   const rows=items.map((item:any)=>{const p=item.properties??{},row:Record<string,string>={id:item.id};for(const [field,name] of Object.entries(base))row[field]=String(p[name]??'');
+    if(kind==='contact'&&Object.entries(p).some(([name,value])=>/^hs_email_optout_/.test(name)&&String(value).toLowerCase()==='true'))row.dnc='true';
+    if(row.owner){const value=`${kind}:${row.owner}`,person=owners.find(owner=>String(owner.id)===row.owner);sourceOwners.set(value,{value,name:[person?.firstName,person?.lastName].filter(Boolean).join(' ')||`HubSpot owner ${row.owner}`,kind});row.owner=value;}
+-   if(kind==='call'){row.text=row.text||String(p.hs_call_title??'');row.duration=String(Math.ceil(Number(row.duration||0)/60000));}
++   if(kind==='call'){const direction=String(p.hs_call_direction??'').toLowerCase(),status=String(p.hs_call_status??'').toLowerCase().replaceAll('_',' ');row.text=row.text.trim()||String(p.hs_call_title??'').trim()||[direction==='inbound'?'Inbound call':direction==='outbound'?'Outbound call':'Call',status||null,row.occurred_at||null].filter(Boolean).join(' · ');row.duration=String(Math.ceil(Number(row.duration||0)/60000));}
+    if(kind==='meeting'){row.text=row.text||String(p.hs_meeting_title??'');const start=Date.parse(row.occurred_at),end=Date.parse(row.duration);row.duration=String(Number.isFinite(end)&&Number.isFinite(start)?Math.max(0,Math.round((end-start)/60000)):0);}
+    if(kind==='deal'){row.stage=`${p.pipeline??''}:${p.dealstage??''}`;if(!stageNames.has(row.stage))throw new HubSpotError(409,`HubSpot deal ${item.id} has an unavailable pipeline or stage. Export its pipeline and stage IDs explicitly.`);}
+    for(const [target,field] of [['companies','company_ids'],['contacts','contact_ids'],['deals','deal_ids']]){const linked=decoded.filter(page=>page.job.kind==='associations'&&page.job.object===object&&page.job.sourceId===item.id&&page.job.target===target).flatMap(page=>page.data.results.map((link:any)=>String(link.toObjectId)));row[field]=[...new Set(linked)].join(';');associationCount+=new Set(linked).size;}
+diff --git a/src/core/features/imports/hubspot/inventory.ts b/src/core/features/imports/hubspot/inventory.ts
+index d56a2e8..0f7550c 100644
+--- a/src/core/features/imports/hubspot/inventory.ts
++++ b/src/core/features/imports/hubspot/inventory.ts
+@@ -29,7 +29,7 @@ export async function nextPage(db:D1Database,config:HubSpotConfig,actor:Authenti
+  const allPages=await pages(db,id);
+  if(job.kind==='objects'&&data.results.length+allPages.filter(page=>{const p=JSON.parse(page.page_json);return p.job.kind==='objects'&&p.job.object===job.object;}).reduce((n,page)=>n+JSON.parse(page.page_json).data.results.length,0)>1000)throw new HubSpotError(409,`HubSpot ${job.object} exceeds 1,000 rows in this reviewed bundle. Export smaller CSV batches with stable IDs; no rows were discarded.`);
+  if(job.kind==='properties'){
+-  const included=new Set([...Object.values(sourceFields[job.object!]),...job.object==='deals'?['pipeline','dealstage']:[],...job.object==='calls'?['hs_call_title']:[],...job.object==='meetings'?['hs_meeting_title']:[]]);const names=data.results.filter((property:any)=>included.has(property.name)||!property.hubspotDefined||/^hs_email_optout_/.test(property.name)).map((property:any)=>property.name);if(names.some((name:any)=>typeof name!=='string'||!/^[_a-zA-Z0-9]+$/.test(name)))throw new HubSpotError(409,`HubSpot ${job.object} has unsupported property names. Export those fields explicitly.`);
++  const included=new Set([...Object.values(sourceFields[job.object!]),...job.object==='deals'?['pipeline','dealstage']:[],...job.object==='calls'?['hs_call_title','hs_call_direction','hs_call_status']:[],...job.object==='meetings'?['hs_meeting_title']:[]]);const names=data.results.filter((property:any)=>included.has(property.name)||!property.hubspotDefined||/^hs_email_optout_/.test(property.name)).map((property:any)=>property.name);if(names.some((name:any)=>typeof name!=='string'||!/^[_a-zA-Z0-9]+$/.test(name)))throw new HubSpotError(409,`HubSpot ${job.object} has unsupported property names. Export those fields explicitly.`);
+   queue.push({kind:'objects',object:job.object,path:`/crm/v3/objects/${job.object}?limit=100&properties=${encodeURIComponent(names.join(','))}`});
+  }
+  if(job.kind==='objects')for(const item of data.results){if(typeof item.id!=='string'||!item.id||item.id.length>100)throw new HubSpotError(409,'HubSpot returned an invalid stable object ID. Export this object explicitly.');for(const target of associations[job.object!])queue.push({kind:'associations',object:job.object,sourceId:item.id,target,path:`/crm/v4/objects/${job.object}/${encodeURIComponent(item.id)}/associations/${target}?limit=500`});}
+diff --git a/src/core/features/imports/native-erasure.ts b/src/core/features/imports/native-erasure.ts
+index 0a41c6e..f3b749e 100644
+--- a/src/core/features/imports/native-erasure.ts
++++ b/src/core/features/imports/native-erasure.ts
+@@ -2,12 +2,13 @@ import type {D1Sql} from '../../../modules/import-kit/d1/index';
+ import {mailboxPattern,containsMailbox} from './review-erasure';
+ import {sql} from './targets';
+ 
+-/** Decode the two JSON string representations owned by the native importer.
++/** Decode JSON string representations owned by the native importer.
+  * Leave unrelated values intact; a mailbox-bearing key attributes that whole
+  * field to the erased identity, so remove it without colliding with another key. */
+ function redact(value:any,emails:string[],field?:string):any{
++ if(!mailboxPattern(emails))return value;
+  if(typeof value==='string'){
+-  if(field==='custom_fields_json'||field==='import_source'){
++  if(field==='custom_fields_json'||field==='import_source'||field==='payload_json'){
+    let original:any;
+    // The native custom-field document is JSON; owners may replace the
+    // import_source custom-field value with ordinary text through Records.
+@@ -26,8 +27,7 @@ function redact(value:any,emails:string[],field?:string):any{
+ /** Native projections and Orbit's own target snapshots join the final contact
+  * erasure transaction. Complete ordered snapshots fence concurrent edits and
+  * newly imported rows. Kit custody is deliberately left to its public API. */
+-export async function redactImportedNativeCopies(db:D1Database,contactId:string,emails:string[]):Promise<D1Sql[]>{
+- if(!mailboxPattern(emails))return [];
++export async function redactImportedNativeCopies(db:D1Database,contactId:string,emails:string[],taskIds:Set<string>=new Set()):Promise<D1Sql[]>{
+  const statements:D1Sql[]=[];
+  const definitions=[
+   {kind:'company',table:'companies',fields:['name','custom_fields_json']},
+@@ -42,10 +42,21 @@ export async function redactImportedNativeCopies(db:D1Database,contactId:string,
+   statements.push(sql(`INSERT INTO runtime_controls(name,value) SELECT 'crm_native_erasure_fence',NULL WHERE (SELECT json_group_array(json_array(${columns.join(',')})) FROM (${query}))<>?`,excluded,excluded,kind,JSON.stringify(rows.map(row=>columns.map(column=>row[column])))));
+   if(changes.length)statements.push(sql(`UPDATE ${table} SET ${fields.map(field=>`${field}=json_extract(change.value,'$.${field}')`).join(',')} FROM json_each(?) change WHERE ${table}.id=json_extract(change.value,'$.id')`,JSON.stringify(changes)));
+  }
+- const query="SELECT kind,id,original_json FROM crm_import_targets WHERE kind IN('company','contact','deal') AND NOT(kind='contact' AND id=?) ORDER BY kind,id";
++ const query="SELECT kind,id,original_json FROM crm_import_targets WHERE NOT(kind='contact' AND id=?) ORDER BY kind,id";
+  const markers=(await db.prepare(query).bind(contactId).all<{kind:string;id:string;original_json:string}>()).results;
+- const changes=markers.flatMap(marker=>{const before=JSON.parse(marker.original_json),after=redact(before,emails);return JSON.stringify(before)===JSON.stringify(after)?[]:[{...marker,original_json:JSON.stringify(after)}];});
++ // Attribute the whole imported task snapshot through its original task or
++ // timeline associations, even after native edits or conflict-preserving undo.
++ const deals=new Set((await db.prepare('SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?').bind(contactId).all<{opportunity_id:string}>()).results.map(row=>row.opportunity_id));
++ const seriesIds=new Set<string>();
++ for(const marker of markers){const value=JSON.parse(marker.original_json);if(marker.kind==='task'&&(value.row.contact_id===contactId||deals.has(value.row.opportunity_id)||JSON.stringify(value)!==JSON.stringify(redact(value,emails))))taskIds.add(marker.id);
++  if(marker.kind==='note'&&value.taskId&&(value.links.some((link:any)=>link.record_type==='contact'&&link.record_id===contactId)||JSON.stringify(value)!==JSON.stringify(redact(value,emails))))taskIds.add(value.taskId);
++ }
++ for(const marker of markers)if(marker.kind==='task'&&taskIds.has(marker.id))seriesIds.add(JSON.parse(marker.original_json).row.series_id);
++ const removed=markers.filter(marker=>{const value=JSON.parse(marker.original_json);return marker.kind==='task'&&taskIds.has(marker.id)||marker.kind==='task-series'&&seriesIds.has(marker.id)||marker.kind==='note'&&taskIds.has(value.taskId);});
++ const removedKeys=new Set(removed.map(marker=>`${marker.kind}:${marker.id}`));
++ const changes=markers.flatMap(marker=>{if(removedKeys.has(`${marker.kind}:${marker.id}`))return [];const before=JSON.parse(marker.original_json),after=redact(before,emails);return JSON.stringify(before)===JSON.stringify(after)?[]:[{...marker,original_json:JSON.stringify(after)}];});
+  statements.push(sql(`INSERT INTO runtime_controls(name,value) SELECT 'crm_target_erasure_fence',NULL WHERE (SELECT json_group_array(json_array(kind,id,original_json)) FROM (${query}))<>?`,contactId,JSON.stringify(markers.map(marker=>[marker.kind,marker.id,marker.original_json]))));
+  if(changes.length)statements.push(sql("UPDATE crm_import_targets SET original_json=json_extract(change.value,'$.original_json') FROM json_each(?) change WHERE crm_import_targets.kind=json_extract(change.value,'$.kind') AND crm_import_targets.id=json_extract(change.value,'$.id')",JSON.stringify(changes)));
++ if(removed.length)statements.push(sql("DELETE FROM crm_import_targets WHERE EXISTS(SELECT 1 FROM json_each(?) erased WHERE crm_import_targets.kind=json_extract(erased.value,'$.kind') AND crm_import_targets.id=json_extract(erased.value,'$.id'))",JSON.stringify(removed.map(({kind,id})=>({kind,id})))));
+  return statements;
+ }
+diff --git a/src/core/features/imports/planner.ts b/src/core/features/imports/planner.ts
+index dcbc2bc..5ec54dc 100644
+--- a/src/core/features/imports/planner.ts
++++ b/src/core/features/imports/planner.ts
+@@ -122,6 +122,13 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
+   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
+   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
+  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}
++ // Each task projection has its own source identity. Erasure and preserved
++ // undo receipts address one native target per source, just like owner effects.
++ const taskSources:SourceRecord[]=[];
++ for(const row of rows){const result=results.get(row.source);if(row.kind!=='task'||!result||result.rejection)continue;
++  const projections=result.effects.filter(effect=>effect.targetKind!=='task');result.effects=result.effects.filter(effect=>effect.targetKind==='task');
++  for(const effect of projections){const kind=effect.targetKind==='note'?'task-entry':'task-series',payload={sourceRowId:row.id,taskId:references.get(`task:${row.id}`)!},projection:SourceRecord={...row.source,kind,payload,payloadHash:sha256(canonicalJson(payload))};taskSources.push(projection);results.set(projection,{effects:[effect]});}
++ }
+  // Ownership has its own source identity, so erasure can withdraw either native target without sharing a reversible effect.
+  const ownershipSources:SourceRecord[]=[];
+  const referenceKinds=new Map((await db.prepare("SELECT target_id,json_extract(record_json,'$.sourceKind') AS source_kind FROM ik_provenance WHERE target_kind='reference' AND reversed=0 AND target_id IN(SELECT value FROM json_each(?))").bind(JSON.stringify(rows.flatMap(row=>results.get(row.source)?.effects.filter(effect=>effect.targetKind==='reference').map(effect=>effect.targetId)??[]))).all<{target_id:string;source_kind:string}>()).results.map(row=>[row.target_id,row.source_kind]));
+@@ -136,7 +143,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
+  const contacts=(await db.prepare(`SELECT c.id,c.contactability,c.contactability_revision,${mailboxListSql('c')} AS mailboxes_json FROM contacts c WHERE lower(trim(c.email)) IN(SELECT value FROM json_each(?)) OR c.id IN(SELECT survivor_id FROM record_aliases WHERE record_type='contact' AND lower(trim(identity_key)) IN(SELECT value FROM json_each(?))) ORDER BY c.id`).bind(JSON.stringify(emails),JSON.stringify(emails)).all()).results;
+  value.contacts=await Promise.all(contacts.map(async c=>{const mailboxes=JSON.parse(c.mailboxes_json) as string[],mailboxDigests=[...new Set((await Promise.all(mailboxes.map(address=>match(address)))).flat())].sort();return{id:c.id,contactability:'do_not_contact',contactability_revision:c.contactability_revision+1,prior:c.contactability,priorRevision:c.contactability_revision,mailboxes,mailboxDigests};}));}
+  const payload={emails},safety:SourceRecord={namespace,kind:'safety',sourceId:stopId,payload,payloadHash:sha256(canonicalJson(payload)),artifactHash:source.artifacts[0].sha256,location:{artifact:source.artifacts[0].name,pointer:'/suppression-first'}};
+- const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source),...ownershipSources];results.set(safety,{effects:emails.length?[effect]:[]});
+- const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>{const original=record.kind==='safety'?safety:[...rows.map(row=>row.source),...ownershipSources].find(other=>other.kind===record.kind&&other.location.artifact===record.location.artifact&&other.location.row===record.location.row),result=original?results.get(original):undefined;if(!result)throw new Error('Import source mapping is unavailable.');return result;}},{...context,namespace});
++ const effect:TargetEffect={targetKind:'suppression',targetId:stopId,value:value as any};source.records=[safety,...taskSources.filter(record=>record.kind==='task-series'),...rows.map((r,i)=>duplicates.has(`${r.kind}:${r.id}`)?{...r.source,sourceId:`duplicate-row-${i}:${sha256(r.id)}`} :r.source),...ownershipSources,...taskSources.filter(record=>record.kind==='task-entry')];results.set(safety,{effects:emails.length?[effect]:[]});
++ const plan=await planD1Import(source,{version:'orbit-csv-v1',map:record=>{const original=record.kind==='safety'?safety:[...rows.map(row=>row.source),...ownershipSources,...taskSources].find(other=>other.kind===record.kind&&other.location.artifact===record.location.artifact&&other.location.row===record.location.row),result=original?results.get(original):undefined;if(!result)throw new Error('Import source mapping is unavailable.');return result;}},{...context,namespace});
+  return plan;
+ }
+diff --git a/src/core/features/imports/repository.ts b/src/core/features/imports/repository.ts
+index 1d079c3..9a3b373 100644
+--- a/src/core/features/imports/repository.ts
++++ b/src/core/features/imports/repository.ts
+@@ -40,4 +40,4 @@ export class ImportRepository {
+  return{id,job,undo:await this.undoReport(row.job_id,context)};
+  }
+ }
+-export function summary(plan:ImportPlan){const contactLabel=contactReviewLabels(plan);return{fingerprint:plan.fingerprint,owners:importOwnerSummary(plan),counts:{...plan.counts,input:plan.counts.input-1-plan.entries.filter(e=>e.source.kind.endsWith('-owner')||e.source.kind==='owner-mapping').length},rows:plan.entries.filter(e=>e.source.kind!=='safety'&&e.source.kind!=='owner-mapping'&&!e.source.kind.endsWith('-owner')).map(e=>{const kind=e.source.kind.replace(/-reference$/,''),reference=e.effects.find(effect=>effect.targetKind==='reference'),record=(reference?.value as any)?.row,company=e.effects.find(effect=>effect.targetKind==='company'),displayName=contactLabel({...e.source,kind})??(kind==='company'&&e.source.sourceId.startsWith('company-name:')?(company?.value as any)?.row?.name:undefined);const owner=plan.entries.find(item=>item.source.kind===`${kind}-owner`&&(item.source.payload as any).sourceRowId===e.source.sourceId)?.effects[0],ownerChange=(owner?.value as any)?.history;return{...ownerChange?{ownerChange}:{},kind,sourceId:e.source.sourceId,...displayName?{displayName}:{},location:e.source.location,status:e.rejection?'rejected':reference&&record?.record_kind!=='suppression'?'linked':e.effects.length?'ready':'linked',reason:e.rejection??e.unmapped.map(m=>m.reason).join(' '),...record&&['contact','company','deal'].includes(record.record_kind)?{recordKind:record.record_kind==='deal'?'opportunity':record.record_kind,recordId:record.record_id}:{}};}),diagnostics:plan.diagnostics,suppressed:(plan.entries[0].source.payload as any).emails.length};}
++export function summary(plan:ImportPlan){const contactLabel=contactReviewLabels(plan);return{fingerprint:plan.fingerprint,owners:importOwnerSummary(plan),counts:{...plan.counts,input:plan.counts.input-1-plan.entries.filter(e=>e.source.kind.endsWith('-owner')||e.source.kind==='owner-mapping'||['task-series','task-entry'].includes(e.source.kind)).length},rows:plan.entries.filter(e=>e.source.kind!=='safety'&&e.source.kind!=='owner-mapping'&&!['task-series','task-entry'].includes(e.source.kind)&&!e.source.kind.endsWith('-owner')).map(e=>{const kind=e.source.kind.replace(/-reference$/,''),reference=e.effects.find(effect=>effect.targetKind==='reference'),record=(reference?.value as any)?.row,company=e.effects.find(effect=>effect.targetKind==='company'),displayName=contactLabel({...e.source,kind})??(kind==='company'&&e.source.sourceId.startsWith('company-name:')?(company?.value as any)?.row?.name:undefined);const owner=plan.entries.find(item=>item.source.kind===`${kind}-owner`&&(item.source.payload as any).sourceRowId===e.source.sourceId)?.effects[0],ownerChange=(owner?.value as any)?.history;return{...ownerChange?{ownerChange}:{},kind,sourceId:e.source.sourceId,...displayName?{displayName}:{},location:e.source.location,status:e.rejection?'rejected':reference&&record?.record_kind!=='suppression'?'linked':e.effects.length?'ready':'linked',reason:e.rejection??e.unmapped.map(m=>m.reason).join(' '),...record&&['contact','company','deal'].includes(record.record_kind)?{recordKind:record.record_kind==='deal'?'opportunity':record.record_kind,recordId:record.record_id}:{}};}),diagnostics:plan.diagnostics,suppressed:(plan.entries[0].source.payload as any).emails.length};}
+diff --git a/tests/core/crm-import-erasure.test.ts b/tests/core/crm-import-erasure.test.ts
+index 95c5cad..e759277 100644
+--- a/tests/core/crm-import-erasure.test.ts
++++ b/tests/core/crm-import-erasure.test.ts
+@@ -1,3 +1,4 @@
++import {hubspotRegressionFlow} from '../support/hubspot-api-proof';
+ import assert from 'node:assert/strict';
+ import {test} from 'node:test';
+ import {launchFixture} from '../support/launch-fixture';
+@@ -7,6 +8,7 @@ import {importCopies,publicArchive} from '../support/crm-import-privacy';
+ import {nativeId} from '../../src/core/features/imports/source';
+ 
+ test('RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits',async()=>{
++ for(const sequence of ['before-undo','edited-undo'] as const){const fixture=await launchFixture();try{await hubspotRegressionFlow(fixture,sequence);}finally{await fixture.dispose();}}
+  const f=await launchFixture();try{
+   const source=crmFixture('hubspot',f.stage,3),mailbox='hubspot-0@example.test',companyFile=source.files.find(file=>file.kind==='company')!;
+   companyFile.csv=`Record ID,Name,Company domain name,Description,Associated contact email\r\norg-1,Synthetic Company,synthetic.example.test,"Account contact <${mailbox}>",${mailbox}`;
+diff --git a/tests/core/crm-import.test.ts b/tests/core/crm-import.test.ts
+index 746f4e4..297b4a9 100644
+--- a/tests/core/crm-import.test.ts
++++ b/tests/core/crm-import.test.ts
+@@ -1,4 +1,4 @@
+-import {hubspotApiFlow} from '../support/hubspot-api-proof';
++import {hubspotApiFlow,hubspotRegressionFlow} from '../support/hubspot-api-proof';
+ import {hubspotExportFlow} from '../support/hubspot-export';
+ import {importOwnerFlow} from '../support/import-owners';
+ import {reviewTokens} from '../support/reviewed-merge';
+@@ -15,6 +15,7 @@ import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
+ import {json,finish,genericCsvFlow,resumeImportFlow,sourceConflictFlow,malformedSuppressionFlow} from '../support/crm-import-flow';
+ import {parseCsv} from '../../src/core/shared/csv';
+ test('RECORD-008 connected HubSpot, vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
++ const callFixture=await launchFixture();try{await hubspotRegressionFlow(callFixture,'textless-call');}finally{await callFixture.dispose();}
+  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
+   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
+   await json(await f.request(`records/contact/${independentlyStopped.contactId}`,'PUT',{name:'Independently stopped customer',email:independentlyStopped.email,contactability:'do_not_contact'}));
+diff --git a/tests/support/hubspot-api-proof.ts b/tests/support/hubspot-api-proof.ts
+index b19e708..3bb641e 100644
+--- a/tests/support/hubspot-api-proof.ts
++++ b/tests/support/hubspot-api-proof.ts
+@@ -17,7 +17,7 @@ export function hubspotEdge(){
+   notes:[{id:'n1',properties:{hs_note_body:'Synthetic connected note',hs_timestamp:'2026-09-01T12:00:00Z'}}],
+   calls:[{id:'a1',properties:{hs_call_body:'Synthetic connected call',hs_call_duration:'120000',hs_timestamp:'2026-09-01T13:00:00Z'}}],
+   meetings:[{id:'m1',properties:{hs_meeting_body:'Synthetic connected meeting',hs_meeting_start_time:'2026-09-01T14:00:00Z',hs_meeting_end_time:'2026-09-01T14:30:00Z',hs_timestamp:'2026-09-01T14:00:00Z'}}],
+-  tasks:[{id:'t1',properties:{hs_task_subject:'Synthetic connected task',hs_task_body:'Follow up internally',hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED',hs_task_priority:'HIGH',hs_task_type:'CALL',hubspot_owner_id:'owner1'}},{id:'t2',properties:{hs_task_subject:'Unchanged connected task',hs_task_body:'Imported task to undo',hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'COMPLETED'}}]
++  tasks:[{id:'t1',properties:{hs_task_subject:'Synthetic connected task',hs_task_body:`Follow up internally with ${mailbox('synthetic-orbit-api')}`,hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED',hs_task_priority:'HIGH',hs_task_type:'CALL',hubspot_owner_id:'owner1'}},{id:'t2',properties:{hs_task_subject:'Unchanged connected task',hs_task_body:'Imported task to undo',hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'COMPLETED'}}]
+  };let rateLimit=false,refuse:string|null=null,scopeMissing=false,revoked=false;
+  const fetcher=async(input:any,init:any)=>{const url=new URL(String(input));assert.equal(url.origin,'https://api.hubapi.com');requests.push(url.pathname+url.search);assert.equal(init.redirect,'manual');const out=(data:unknown,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json',...headers}});
+   if(url.pathname==='/oauth/v2/private-apps/get/access-token-info'){if(revoked)return out({message:init.headers.Authorization},401);assert.equal(init.method,'POST');return out({hubId:12345,scopes:scopeMissing?readScopes.slice(0,-1):readScopes});}
+@@ -28,7 +28,7 @@ export function hubspotEdge(){
+   if(url.pathname==='/crm/v3/pipelines/deals')return out({results:[{id:'pipeline1',label:'First pipeline',stages:[{id:'stage1',label:'Qualified'}]},{id:'pipeline2',label:'Second pipeline',stages:[{id:'stage2',label:'Proposal'}]}]});
+   const property=url.pathname.match(/^\/crm\/v3\/properties\/(\w+)$/);if(property){const names=[...new Set(objects[property[1]].flatMap(item=>Object.keys(item.properties)))];return out({results:names.map(name=>({name,hubspotDefined:!name.startsWith('custom_'),type:name==='custom_blob'?'object':'string'}))});}
+   const object=url.pathname.match(/^\/crm\/v3\/objects\/(\w+)$/);if(object){const rows=objects[object[1]],index=Number(url.searchParams.get('after')??0);return out({results:rows.slice(index,index+1),...index+1<rows.length?{paging:{next:{after:String(index+1),link:'https://attacker.test/never-follow'}}}:{}});}
+-  const assoc=url.pathname.match(/^\/crm\/v4\/objects\/(\w+)\/([^/]+)\/associations\/(\w+)$/);if(assoc){const [,from,id,to]=assoc;const linked=to==='companies'?(from==='contacts'?[id==='p2'?'c2':'c1']:from==='deals'?[id==='d2'?'c2':'c1']:['c1']):to==='contacts'?(from==='companies'?[id==='c2'?'p2':'p1']:['p1']):to==='deals'?['d1']:[];return out({results:linked.map(toObjectId=>({toObjectId,associationTypes:[{typeId:1,label:null}]}))});}
++  const assoc=url.pathname.match(/^\/crm\/v4\/objects\/(\w+)\/([^/]+)\/associations\/(\w+)$/);if(assoc){const [,from,id,to]=assoc;const linked=to==='companies'?(from==='contacts'?[id==='p2'?'c2':'c1']:from==='deals'?[id==='d2'?'c2':'c1']:['c1']):to==='contacts'?(from==='companies'?[id==='c2'?'p2':'p1']:['p1']):to==='deals'?['d1']:[];return out({results:linked.filter(toObjectId=>objects[to].some(item=>item.id===toObjectId)).map(toObjectId=>({toObjectId,associationTypes:[{typeId:1,label:null}]}))});}
+   throw new Error(`Unexpected HubSpot edge ${url.pathname}`);
+  };
+  return {fetcher,requests,objects,rateLimit:()=>{rateLimit=true;},refuse:(value:string|null)=>{refuse=value;},scopeMissing:(value:boolean)=>{scopeMissing=value;},revoked:(value:boolean)=>{revoked=value;}};
+@@ -71,3 +71,44 @@ export async function hubspotApiFlow(f:any){
+  await hubspotRestoreFlow({security,fetcher:edge.fetcher});
+  await f.db.prepare('UPDATE operators SET setup_owner=0 WHERE id=?').bind(f.actor).run();
+ }
++
++/** Small connected imports exercise privacy before and after conflict-preserving undo. */
++export async function hubspotRegressionFlow(f:any,sequence:'before-undo'|'edited-undo'|'textless-call'){
++ const edge=hubspotEdge(),address=mailbox(`synthetic-orbit-${sequence}`),namespace='orbit:hubspot:HubSpot 12345';
++ for(const kind of Object.keys(edge.objects))edge.objects[kind]=[];
++ edge.objects.contacts=[{id:'p1',properties:{firstname:'Synthetic private person',email:address}}];
++ if(sequence==='textless-call')edge.objects.calls=[{id:'a1',properties:{hs_timestamp:'2026-09-01T13:00:00Z',hs_call_duration:'120000',hs_call_direction:'INBOUND',hs_call_status:'COMPLETED'}}];
++ else edge.objects.tasks=[{id:'t1',properties:{hs_task_subject:'Synthetic private task',hs_task_body:sequence==='before-undo'?'Follow up internally':`Follow up with ${address.toUpperCase()}.`,hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED'}},...sequence==='before-undo'?[{id:'t2',properties:{hs_task_subject:'Mailbox-bearing private task',hs_task_body:`Follow up with ${address}.`,hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'NOT_STARTED'}}]:[]];
++ const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'31'.repeat(32)})!,session=await createDependencies(f.db).auth.createSession(f.actor),app=createApp({database:f.db,sourceSecurity:security,captureFetch:edge.fetcher,assets:{fetch:async()=>new Response(null,{status:404})}});
++ const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
++ await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
++ await json(await request('imports/hubspot/connection','POST',{token:'synthetic-orbit-fix1'}));
++ let pull=await json(await request('imports/hubspot/pulls','POST'));
++ for(let i=0;i<100&&pull.state==='pulling';i++)pull=await json(await request(`imports/hubspot/pulls/${pull.id}/next`,'POST'));
++ assert.equal(pull.state,'reviewable');
++ const dry=await json(await request(`imports/hubspot/pulls/${pull.id}/review`,'POST',{owners:{},stages:{},contactability:'confirmed_contactable'}));
++ assert.equal(dry.counts.rejected,0,`${sequence}: ${JSON.stringify(dry.rows)}`);
++ await finish({request},dry);
++ const person=nativeId(namespace,'contact','p1'),task=nativeId(namespace,'task','t1');
++ if(sequence==='textless-call'){
++  const detail=await json(await request(`records/contact/${person}`)),entry=detail.timeline.find((entry:any)=>entry.kind==='manual.call');
++  assert.ok(entry,'A call without descriptive text imports as a native call entry');
++  const payload=JSON.parse(entry.payload_json);assert.equal(payload.durationMinutes,2);assert.match(payload.text,/call/i);assert.match(payload.text,/inbound/i);
++  await finish({request},dry,'undo');assert.equal((await request(`records/contact/${person}`)).status,404);await f.db.prepare('UPDATE operators SET setup_owner=0 WHERE id=?').bind(f.actor).run();return;
++ }
++ const imported=await json(await request(`tasks/${task}`));if(sequence==='edited-undo')assert.ok(imported.task.notes.toLowerCase().includes(address));
++ if(sequence==='edited-undo'){
++  const value=imported.task;
++  await json(await request(`tasks/${task}`,'PUT',{title:'Native task edit kept',recordType:value.recordType,recordId:value.recordId,ownerId:value.ownerId,dueAt:value.dueAt,priority:value.priority,type:value.type,notes:'Native task notes',recurrence:'none',timezone:value.timezone,reminderMinutes:null,revision:value.revision,status:'open'}));
++  await json(await request(`records/contact/${person}`,'PUT',{name:'Native person edit kept',contactability:'do_not_contact'}));
++  await finish({request},dry,'undo');
++  const retained=await json(await request(`tasks/${task}`));assert.equal(retained.task.title,'Native task edit kept');assert.equal(retained.task.notes,'Native task notes');
++ }
++ await json(await request(`records/contact/${person}`,'DELETE',{confirmed:true}));
++ assert.equal((await request(`records/contact/${person}`)).status,404);
++ const tasks=await json(await request('tasks?view=all&owner=all'));assert.ok(!tasks.tasks.some((entry:any)=>entry.recordId===person));
++ assert.ok(!(await importCopies(f.db)).toLowerCase().includes(address),`${sequence}: no decoded import copy retains the erased mailbox`);
++ const tables=(await f.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*'").all<{name:string}>()).results;
++ for(const {name} of tables){assert.match(name,/^[a-zA-Z_][a-zA-Z0-9_]*$/);assert.ok(!JSON.stringify((await f.db.prepare(`SELECT * FROM "${name}"`).all()).results).toLowerCase().includes(address),`${sequence}: ${name} retains the erased mailbox`);}
++ await finish({request},dry,'undo');assert.equal((await request(`records/contact/${person}`)).status,404,'Undo after erasure cannot resurrect the contact');
++}

@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/core/features/imports/erasure.ts",
+    "sha256": "436c59c9efd31bc4304aa4923cc9a244ea1845fbc733ea85943beec675770ad4"
+  },
+  {
+    "file": "src/core/features/imports/native-erasure.ts",
+    "sha256": "f89d2bba7903a51f817338a302dccd06fca7da9a1e82f15f20faf596d70374af"
+  },
+  {
+    "file": "src/core/features/imports/planner.ts",
+    "sha256": "c8e442b56d72223d06b9a218e59d31bb84e8cacc31683a3d8f5ecf3bc87297bc"
+  },
+  {
+    "file": "src/core/features/imports/repository.ts",
+    "sha256": "992279f53e8fc1d24a1ce88c12d820d136738febea702e5edb4fb4660a4c6731"
+  },
+  {
+    "file": "src/core/features/imports/hubspot/bundle.ts",
+    "sha256": "cc29c63c5f06dc9c86366d414366088830560884508c06685dcbccc182ef4409"
+  },
+  {
+    "file": "src/core/features/imports/hubspot/inventory.ts",
+    "sha256": "daf4ecc39825ee36e6546383cac1f2054640806d65ba56f1249733dab71528e8"
+  },
+  {
+    "file": "tests/core/crm-import-erasure.test.ts",
+    "sha256": "0b6d6e92f80c0f0bedbe5d16c17f60452c4eb6d03c9de82ce00cb25507a054eb"
+  },
+  {
+    "file": "tests/core/crm-import.test.ts",
+    "sha256": "4d37250959d398af27f04b46c25826b22c39ce90d79310a80798e0b7b7f8601e"
+  },
+  {
+    "file": "tests/support/hubspot-api-proof.ts",
+    "sha256": "ab18c177b7bf3ca4ac76c801bc3f15902c80166e6a3d840023b3f6fe73cee324"
+  }
+]

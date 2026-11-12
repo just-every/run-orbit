@@ -1,0 +1,23 @@
+2026-11-12T19:10:10Z
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.7 deployment:spec /workspace/run-orbit
+> node scripts/publish-deployment-spec.mjs
+
+Deployment spec published from the build; setup digest matches rer-setup.json.
+deployment_write_exit=0
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.7 deployment:check /workspace/run-orbit
+> node scripts/publish-deployment-spec.mjs --check
+
+Deployment spec matches the build; setup digest matches rer-setup.json.
+deployment_check_exit=0
+Wrote 0 contract documents.
+views_write_exit=0
+Contract documents are current.
+views_check_exit=0
+{"cases":198,"qualifications":2,"total":200}
+test_budget_exit=0
+lock_write_exit=0
+lock_check_exit=0

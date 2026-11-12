@@ -1,0 +1,23 @@
+{
+  "before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "registrations": 198,
+    "qualifications": 2
+  },
+  "after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "registrations": 198,
+    "qualifications": 2
+  },
+  "clause": "MIGRATE-001",
+  "status_change": "PARTIAL -> PARTIAL",
+  "acceptance_points_awarded": [],
+  "migration_change": false,
+  "highest_inherited_migration": "0084_hubspot_explicit_erasure.sql",
+  "ui_change": false,
+  "pr": null
+}
