@@ -1,3 +1,4 @@
+import {readObligations} from '../obligations/repository';
 import {companyDomainKey,contactEmailKey} from '../records/identity';
 import type {BriefLine,RecordRef} from './types';
 import {buildBrief,withinGrant} from './brief';
@@ -49,7 +50,7 @@ async function attendees(db:D1Database,participants:string[],linked:RecordRef[])
 }
 
 async function opportunitiesFor(db:D1Database,ids:string[]){
- return (await db.prepare('SELECT o.id,o.title,o.lifecycle,o.value_cents AS valueCents,p.name AS stage,op.display_name AS owner FROM opportunities o JOIN pipeline_stages p ON p.id=o.stage_id LEFT JOIN operators op ON op.id=o.owner_id WHERE o.id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id').bind(JSON.stringify(ids)).all<{id:string;title:string;lifecycle:string;valueCents:number;stage:string;owner:string|null}>()).results.map(row=>({...row,href:recordHref({type:'opportunity',id:row.id})}));
+ return (await db.prepare('SELECT o.id,o.title,o.lifecycle,o.value_cents AS valueCents,o.stage_id AS stageId,o.owner_id AS ownerId,p.name AS stage,op.display_name AS owner FROM opportunities o JOIN pipeline_stages p ON p.id=o.stage_id LEFT JOIN operators op ON op.id=o.owner_id WHERE o.id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id').bind(JSON.stringify(ids)).all<{id:string;title:string;lifecycle:string;valueCents:number;stageId:string;ownerId:string|null;stage:string;owner:string|null}>()).results.map(row=>({...row,href:recordHref({type:'opportunity',id:row.id})}));
 }
 
 async function interactions(db:D1Database,refs:RecordRef[],allowed:(ref:RecordRef)=>boolean):Promise<PlanLine[]>{
@@ -92,6 +93,7 @@ export async function buildMeetingPlan(db:D1Database,signalId:string,input:{oper
    href:noteTarget?recordHref(noteTarget):planHref(signal.id)},
   attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:links.find(ref=>ref.type==='opportunity')?.id??null,
   openValueCents:opportunities.filter(row=>row.lifecycle==='open').reduce((sum,row)=>sum+row.valueCents,0),
+  obligations:!input.allowed&&links.some(ref=>ref.type==='opportunity')?(await readObligations(db,links.find(ref=>ref.type==='opportunity')!.id)).filter(item=>item.meeting_id===signalId):[],
   interactions:await interactions(db,refs,allowed),promises,noteTarget,note:noteTarget?await planNote(db,signalId,noteTarget):null,
  };
 }

@@ -129,6 +129,7 @@ operation is added by these tools; broader SURFACE-007 remains unqualified.
 | `orbit.handoffs.read` | `handoffs:read` | standard |
 | `orbit.handoffs.upsert` | `handoffs:write` | standard |
 | `orbit.meetings.read` | `meetings:read` | standard |
+| `orbit.obligations.accept` | `handoffs:write` | standard |
 | `orbit.operations.read` | `operations:read` | standard |
 | `orbit.records.create` | `records:write` | standard |
 | `orbit.records.list` | `records:read` | standard, sensitive |
@@ -275,6 +276,42 @@ Read the new address in Settings → Capture. The address, private tag and forwa
 confirmation are excluded from tool results, retained summaries, audits and archives.
 Provisioning and other credential changes are outside this adapter.
 
+## Follow up a completed meeting
+
+`orbit.obligations.accept` is a standard-class call with `handoffs:write` scope.
+The current company policy decides it. A full native operator supplies a completed
+meeting on an open, owned deal, its current recipient, a named full operator,
+a due time, a later stage in the same pipeline and explicit stop conditions.
+Acceptance cites the meeting and creates internal work; it approves no customer mail.
+
+The completed meeting's native page offers the same acceptance form. Its full
+operator action posts to `/api/v1/obligations`; the opportunity panel reads
+`/api/v1/obligations/opportunities/<id>`. A separate reasoned human stop posts
+to `/api/v1/obligations/<id>/stop`. These native doors retain the existing
+session, current-role and restore fences. A mail failure remains visible with
+a link to review the exact saved draft; it never closes the advancement goal.
+
+Pass the returned obligation ID as `obligation_id` to `orbit.drafts.create` to bind
+one unsent draft. Use the existing draft read and update calls to prepare exact
+content; a person still approves its current revision natively. Cited
+`orbit.handoffs.upsert` calls can carry the same `obligation_id`; meeting-plan
+next actions accept `obligationId` through the native action door. Native
+nonrecurring follow-up tasks on that deal also accept `obligationId`.
+
+The meeting plan read returns its native obligations to full operators. Message
+state distinguishes an unsent draft, submitted uncertainty, accepted submission,
+definite failure and a verified threaded human response. A provider receipt is
+not a customer response, and a response leaves the advancement goal open.
+Moving to the named goal stage or explicitly stopping the obligation closes its
+remaining work once, with the attributed reason. Pending reminders and approved
+scheduled mail stop with it. Restored open obligations stay paused; their data
+is history, not authority to dispatch. Contact erasure redacts their evidence.
+
+This bounded path authorizes one approved follow-up. Pending quotes, call
+agendas, live consented mailbox connections, broader cadences, agent customer
+message dispatch, deal-less obligations and team ownership retain their existing
+contract holds and provider prerequisites.
+
 ## Cited account graph proposals
 
 `orbit.graph.propose` needs a native selected credential with both
@@ -314,3 +351,33 @@ still connected, including the original call key, a new key and the original
 captured mail. Source withdrawal and completed-call read refusal are then checked
 under each policy. Scheduled runs, transcripts and licensed enrichment remain
 outside this written-evidence tool.
+
+## Run the deal-risk agent
+
+In a deal's risk panel, expand **Run deal-risk agent** and choose **Start agent**.
+A signed-in full operator starts one open deal on request. There is no schedule,
+model request or customer send. The native route is
+`POST /api/v1/risks/:id/agent-runs`, with an empty JSON object; caller-supplied
+scope, policy, identity or task overrides are refused.
+
+The named **Deal-risk agent** invokes `orbit.risks.read` for that deal, then
+`orbit.handoffs.read` and `orbit.handoffs.upsert` for each current undismissed
+rule finding. Proposed task titles, due times and current evidence identities
+match person-approved risk tasks, assigned to the sponsoring operator.
+Overdue promises and tasks retain their recorded due time; a finding with no
+due time files an undated task, rather than treating an event time as a deadline.
+A target and idempotency key derived from the deal, finding and cited current
+evidence prevent reruns from filing the same task again. Existing completed or
+cancelled tasks retain the person's choice. A changed finding or cited evidence
+has a new identity.
+
+Every call passes the same registry and company decision as an authenticated
+outside specialist. Autonomous policy executes immediately; the shipped held
+standard policy executes with a linked review. A block or unset policy refuses
+without a task effect. The panel lists every attempted call's decision, class,
+facts and review or refusal. Audit retains the embedded door, named agent and
+sponsor. Recorded customer text is evidence, never approval or authority.
+
+This implements the deal-risk limb of SURFACE-012 only. Graph maintenance,
+follow-up, research, scheduled runs, generated conflict checks and the complete
+five-agent comparison retain their existing holds.

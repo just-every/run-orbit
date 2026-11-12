@@ -68,6 +68,9 @@ step('protected_report','reports.read',{id:from('protected_snapshot','/id')},sen
 step('forecast_update','forecasts.update',{id:from('opportunity','/id'),forecast:{probability:40,category:'pipeline',closeDate:null,schedules:[],reason:'CRM estimate from current buyer evidence'}});
 step('save_workflow_draft','workflows.save_draft',{id:{$fixture:'workflow',pointer:'/id'},source_version:{$fixture:'workflow',pointer:'/version'},name:'synthetic-orbit-conformance-draft',definition:{trigger:{kind:'record_changed',recordType:'opportunity'},conditions:[{field:'title',operator:'equals',value:'synthetic-orbit-no-trigger'}],actions:[{kind:'set',field:'title',value:'synthetic-orbit-draft-only'}]}});
 journey.find(item=>item.id==='save_workflow_draft').target={kind:'workflow',id:{$fixture:'workflow',pointer:'/id'}};
+step('accept_meeting_obligation','obligations.accept',Object.fromEntries(['meetingId','opportunityId','contactId','ownerId','dueAt','goalStageId','title','stopCondition'].map(name=>[name,{$fixture:'obligation',pointer:'/'+name}])));
+journey.find(item=>item.id==='accept_meeting_obligation').target={kind:'opportunity',id:{$fixture:'obligation',pointer:'/opportunityId'}};
+
 step('graph_proposals','graph.propose',{$fixture:'graph',pointer:''});
 journey.find(item=>item.id==='graph_proposals').args={company_id:{$fixture:'graph',pointer:'/company_id'},signal_id:{$fixture:'graph',pointer:'/signal_id'},job_change:{$fixture:'graph',pointer:'/job_change'},close_date:{$fixture:'graph',pointer:'/close_date'},question:{$fixture:'graph',pointer:'/question'}};
 journey.find(item=>item.id==='graph_proposals').client='graph';

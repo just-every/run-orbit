@@ -1,3 +1,4 @@
+import {bindWorkStatements} from '../obligations/repository';
 import type { AuthenticatedOperator } from '../identity';
 import { createId } from '../../shared/ids';
 import { activeTaskOwner, commitTasks, taskAuthority, taskGuard } from './authority';
@@ -25,9 +26,10 @@ export function newTask(input: TaskInput, actorId: string, now: string): TaskRow
  status: 'open', revision, assignment_revision: revision, reminder_revision: revision,
  created_by: actorId, updated_by: actorId, created_at: now, updated_at: now};
 }
-export async function createTask(db: D1Database, actor: AuthenticatedOperator, input: TaskInput) {
+export async function createTask(db: D1Database, actor: AuthenticatedOperator, input: TaskInput & {obligationId?:string}) {
+ if(input.obligationId&&(input.recordType!=='opportunity'||input.type!=='follow_up'||input.recurrence!=='none'))throw new TaskError(400,'An obligation supports one nonrecurring follow-up task on its deal.');
  const authority = await taskAuthority(db, actor), now = new Date().toISOString(), task = newTask(input, actor.operatorId, now);
- await commitTasks(db, authority, [inputGuard(db, input),
+ await commitTasks(db, authority, [inputGuard(db, input),...(input.obligationId?bindWorkStatements(db,input.obligationId,'task',task.id,input.recordId):[]),
  db.prepare('INSERT INTO sales_task_series(id,created_at) VALUES(?,?)').bind(task.series_id, now),
  insertTask(db, task), ...taskEffects(db, task, actor.operatorId, 'task.created'), ...taskAssignment(db, task, actor.operatorId), ...(await noteMentions(db, task, actor.operatorId)).statements]);
  return {id: task.id, revision: task.revision};
@@ -49,6 +51,7 @@ function updateStatement(db: D1Database, task: TaskRow) {
 }
 export async function updateTask(db: D1Database, actor: AuthenticatedOperator, id: string, input: TaskInput & {revision: string; status: TaskStatus}) {
  const authority = await taskAuthority(db, actor), previous = await rawTask(db, id);
+ if(input.recurrence!=='none'&&await db.prepare("SELECT 1 FROM follow_up_work WHERE kind='task' AND item_id=?").bind(id).first())throw new TaskError(409,'A meeting follow-up obligation does not authorize a recurring cadence.');
  if (previous.revision !== input.revision) throw new TaskError(409, 'The task changed. Reload before saving.');
  if (previous.status !== 'open') throw new TaskError(409, 'This occurrence has finished. Edit the next open occurrence instead.');
  if (input.recordType !== previous.record_type || input.recordId !== (previous.contact_id ?? previous.company_id ?? previous.opportunity_id)) throw new TaskError(400, 'A task keeps its original linked record. Create another task to change the link.');

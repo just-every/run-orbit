@@ -1,3 +1,4 @@
+import {capturedContactConsent} from './contact-consent.mjs';
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {mkdirSync} from 'node:fs';
@@ -14,6 +15,7 @@ const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=inn
 
 test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, reviews the proposals and opens the account at 1440 and 390',async({page,context},info)=>{
  test.setTimeout(240_000);await authenticateOperator(context);const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await capturedContactConsent(page);
  const screenshots=process.env.CAPTURE_SCREENSHOT_DIR??join('verification','ui','capture');mkdirSync(screenshots,{recursive:true});
  await page.goto('/app/settings/capture');const origin=new URL(page.url()).origin;
  const create=async(kind,body)=>{const response=await page.request.post(`/api/v1/records/${kind}`,{headers:{Origin:origin},data:body});expect(response.status()).toBe(201);return (await response.json()).id;};

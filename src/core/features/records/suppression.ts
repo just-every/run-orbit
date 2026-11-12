@@ -30,12 +30,13 @@ export async function privacyMatcher(db:D1Database,staged?:D1PreparedStatement[]
  };
 }
 export async function suppressionHashes(db:D1Database,email:string|null|undefined){if(!email?.trim())return [];return (await privacyMatcher(db))(email);}
-export async function activeSuppressionTokens(db:D1Database){return new Set((await db.prepare(`SELECT DISTINCT entity_id FROM audit_entries proof WHERE ${activeProof}`).all<{entity_id:string}>()).results.map(row=>row.entity_id));}
+export async function activeSuppressionTokens(db:D1Database,includeErased=false){return new Set((await db.prepare(`SELECT DISTINCT entity_id FROM audit_entries proof WHERE (${activeProof})${includeErased?` OR proof.action='${erasedMailboxAction}'`:''}`).all<{entity_id:string}>()).results.map(row=>row.entity_id));}
 /** Only locally derived hexadecimal tokens may be embedded in this SQL fragment. */
+export const erasedMailboxAction='capture.erased_mailbox';
 const activeProof="proof.action='contact.suppressed' AND NOT EXISTS(SELECT 1 FROM audit_entries cleared,json_each(cleared.details_json,'$.proofs') item WHERE cleared.action='contact.suppression_cleared' AND cleared.entity_id=proof.entity_id AND item.value=proof.id)";
-export function suppressionPredicate(tokens:readonly string[]){
+export function suppressionPredicate(tokens:readonly string[],includeErased=false){
  if(tokens.some(token=>! /^[a-f0-9]{32}:[a-f0-9]{64}$/.test(token)))throw new Error('Invalid privacy matching token.');
- return `EXISTS(SELECT 1 FROM audit_entries proof WHERE ${activeProof} AND proof.entity_id IN(${(tokens.length?tokens:['']).map(token=>`'${token}'`).join(',')}))`;
+ return `EXISTS(SELECT 1 FROM audit_entries proof WHERE ((${activeProof})${includeErased?` OR proof.action='${erasedMailboxAction}'`:''}) AND proof.entity_id IN(${(tokens.length?tokens:['']).map(token=>`'${token}'`).join(',')}))`;
 }
 /** Fail closed if a concurrent first stop added a context after mailbox hashing. */
 export function suppressionContextFence(db:D1Database,tokens:readonly string[]){
@@ -70,4 +71,10 @@ export async function clearContactSuppression(db:D1Database,id:string,actor:stri
  statements.push(db.prepare("UPDATE contacts SET contactability='contactable',updated_at=? WHERE id=?").bind(at,id),...timeline(db,actor,'contact',id,'contactability.cleared',{}),audit(db,actor,'contactability.cleared','contact',id),db.prepare("DELETE FROM runtime_controls WHERE name='contact_clear'"));
  try{await db.batch(statements);}catch(error){if(String(error).includes('runtime_controls.value'))throw new RecordError(409,'Contact changed; review it again.');throw error;}
  return {id};
+}
+
+/** Reuse the capture replay fence, without retaining a second erased-address list. */
+export function erasedAddressPredicate(tokens:readonly string[]){
+ suppressionPredicate(tokens);
+ return `EXISTS(SELECT 1 FROM audit_entries proof WHERE proof.action='${erasedMailboxAction}' AND proof.entity_id IN(${(tokens.length?tokens:['']).map(token=>`'${token}'`).join(',')}))`;
 }
