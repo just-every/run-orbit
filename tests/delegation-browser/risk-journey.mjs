@@ -110,3 +110,42 @@ async function capture(page,risks,evidence,name){
  }
  await page.setViewportSize({width:1440,height:900});
 }
+
+/** The operator explicitly starts a populated embedded run and sees each company decision. */
+export async function embeddedRiskJourney({page,expected,policy,evidence}){
+ await page.setViewportSize({width:1440,height:900});
+ const origin=new URL((await page.request.get('/health')).url()).origin;
+ const adoption=await page.request.post('/api/rer/agent-policy',{headers:{Origin:origin},data:{policy:await policy('held')}});
+ expect(adoption.status(),await adoption.text()).toBe(200);
+ const api=`/api/v1/risks/${expected.id}`;
+ const before=await page.request.get(`${api}/findings`);expect(before.status()).toBe(200);
+ const findings=(await before.json()).findings.filter(item=>!item.dismissed);
+ await page.goto(`/app/opportunities/${expected.id}`);
+ const risks=page.getByTestId('deal-risks');await risks.locator(':scope > summary').click();
+ await risks.getByText('Run deal-risk agent',{exact:true}).click();
+ const completed=page.waitForResponse(response=>response.url().endsWith(`${api}/agent-runs`)&&response.request().method()==='POST');
+ await risks.getByRole('button',{name:'Start agent',exact:true}).click();
+ const response=await completed;expect(response.status()).toBe(200);const run=await response.json();
+ expect(run.filed).toBe(findings.length);expect(run.existing).toBe(0);
+ expect(run.calls.map(call=>call.tool)).toEqual(['orbit.risks.read',...findings.flatMap(()=>['orbit.handoffs.read','orbit.handoffs.upsert'])]);
+ const result=risks.getByRole('region',{name:'Deal-risk agent run'});
+ await expect(result.getByRole('status')).toContainText(`${findings.length} tasks filed, 0 already filed.`);
+ await expect(result.locator('ol > li')).toHaveCount(run.calls.length);
+ for(const item of await result.locator('ol > li').all()){
+  await expect(item).toContainText('review · done');
+  await expect(item).toContainText('standard · measure: 1');
+  await expect(item.getByRole('link',{name:/^Review /})).toHaveAttribute('href','/agents');
+ }
+ const saved=await page.request.get('/delegation/handoffs/'+expected.id);expect(saved.status()).toBe(200);
+ const tasks=(await saved.json()).tasks;
+ expect(tasks).toHaveLength(findings.length);
+ for(const finding of findings)expect(tasks.some(item=>item.task.title===finding.nextTask&&item.task.status==='open')).toBe(true);
+ await capture(page,risks,evidence,'embedded-risk-run');
+ const repeat=page.waitForResponse(response=>response.url().endsWith(`${api}/agent-runs`));
+ await risks.getByRole('button',{name:'Start agent',exact:true}).click();
+ const replay=await(await repeat).json();expect(replay.filed).toBe(0);expect(replay.existing).toBe(findings.length);
+ await expect(result.getByRole('status')).toContainText(`0 tasks filed, ${findings.length} already filed.`);
+ expect((await(await page.request.get('/delegation/handoffs/'+expected.id)).json()).tasks).toEqual(tasks);
+ console.log(JSON.stringify({proof:'SURFACE-012.embedded-risk-browser',deal:expected.id,calls:run.calls.length,filed:run.filed,decisions:run.calls.map(call=>call.answer.decision.id),widths:[1440,390]}));
+ await page.close();
+}

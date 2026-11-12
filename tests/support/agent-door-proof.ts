@@ -1,3 +1,4 @@
+import {embeddedRiskAgentProof} from './embedded-risk-agent-proof';
 import type {DraftParityProofContext} from './agent-door-draft-parity-proof';
 import assert from 'node:assert/strict';
 import {notificationDirectProof} from './notification-direct-proof';
@@ -264,6 +265,7 @@ export async function agentDoorProof(context:TestContext,rejectedReportProof: (c
     await adopt(sensitiveBlocked);
     const witness=await call('orbit.operations.read',{});
     assert.ok(witness.record_mail_drafts.rows>0);
+    await embeddedRiskAgentProof(context,{bindings,door,cookie,reviewerCookie,ownerId:owner.operatorId,adopt,businessCall});
     await settingsRepository.remove(teammate.id,owner.operatorId,undefined,owner.sessionId);
     assert.equal((await businessCall('orbit.records.read',{kind:'company',id:companyId},{sub:'business-jamie',email:mappedTeammate!.email,act:{sub:'jamie-assistant',name:'Jules'}})).status,401,'native teammate removal overrides a still-applied Business mapping');
     await agentCapacityProof(context,bindings,{privateKey:keys.privateKey,kid:'test',issuer,installationId:installation},sign);

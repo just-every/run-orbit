@@ -659,7 +659,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "a8a75dcaadd7cf0452ec2831d545f35adb230371ca69421cde69debd605a9d57",
+      "sha256": "49c05f296c18a46ce1ee20a3ab161acfdf3b8e55ce7c100887b92f4eb348fb43",
       "executable": false
     },
     "AGENTS.md": {
@@ -5311,7 +5311,7 @@
       "executable": false
     },
     "src/core/features/agent-door/evidence.ts": {
-      "sha256": "4b54b185d658961fd3de1b68bbfad7d7526973bf0e33ecae2c63bf0648920500",
+      "sha256": "94cb3887755949191188f7df28c53cac0cf8ad06dfff2b4c27e5b496cb590aa1",
       "executable": false
     },
     "src/core/features/agent-door/handoffs.ts": {
@@ -8127,11 +8127,15 @@
       "executable": false
     },
     "src/core/features/risks/actions.ts": {
-      "sha256": "ec1e911fc685da2204aa2947d7d7c0b1a437d8bbe9d900895595f0de998a372f",
+      "sha256": "0d5e821b41de4a7ff38ccc8582e16c53a4ddd01346e31d25fd58f6e77deca7be",
       "executable": false
     },
     "src/core/features/risks/conflicts.ts": {
       "sha256": "5ef46bfe938db9b267e91c52e29fc6eea4dfc7415b18fb94e22876f4f1d401e1",
+      "executable": false
+    },
+    "src/core/features/risks/embedded-agent.ts": {
+      "sha256": "106d62a39fe163ba0f72cce031b836070fb87d53cc3aac95a01f31423f4eecd1",
       "executable": false
     },
     "src/core/features/risks/evidence.ts": {
@@ -10187,7 +10191,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "f71b20c83507bca582dd2d8ed83f0ece5e5276c4adff9a31c57ae350121e1a60",
+      "sha256": "55bb36fa643eec4292c2fbb5a265992daea8b4605724ca037d3ce1bd97f4bcd5",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10299,11 +10303,11 @@
       "executable": false
     },
     "tests/delegation-browser/risk-journey.mjs": {
-      "sha256": "0770335f978818ab0fce2c72b2c695a7abbad01a3819b3da7e42b77124f57582",
+      "sha256": "715aae1ab78c4b1bde39eb7886b81d5b5247234d7f13142ad7ff4153c6a28624",
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "039d6fb4f231b647dbeb1cf20fd43a7b714ef9193301244cdb2074b685c146e2",
+      "sha256": "2286681b32b53bd9d530b50beef9a88b7c3299130759126b4d5c17b2e0014b2f",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
@@ -11019,11 +11023,11 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "67bc6b54e071fbdb13254d6c73ccc8e70680a66caf8565e29cadd688da30120f",
+      "sha256": "eec20c1cb73a968fb179d2918c8dcdd8076c22ce33bd1d8943534b10aa9b714b",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {
-      "sha256": "96348f6d5cda64ddc58bc49fecc917928d3f5f474ba0425f7f4368e54c1c3ada",
+      "sha256": "f970e1dd89f865f7386a5bf93258564c4d8b8e998e20ee2a7bbf70e370ee493f",
       "executable": false
     },
     "tests/support/agent-erasure-matcher-proof.ts": {

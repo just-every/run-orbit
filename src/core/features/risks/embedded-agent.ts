@@ -14,7 +14,7 @@ export async function riskAgentTask(risks:Risks,finding:Finding,sponsor:string){
  const input={title:finding.nextTask,dueAt:finding.nextTaskDueAt??null,evidenceIds:finding.citations.map(item=>item.evidenceId)};
  const digest=await hash(JSON.stringify({deal:risks.deal.id,finding:finding.key,task:input,evidence}));
  return {target:`opportunities/${risks.deal.id}/handoffs/risk-${digest.slice(0,32)}`,key:`risk-${digest}`,
-  content:riskTaskContent(risks as Awaited<ReturnType<typeof dealRisks>>,input,sponsor)};
+  content:riskTaskContent(risks,input,sponsor)};
 }
 
 /** Explicit single-deal run only. Every read and effect goes through the registry and its company decision. */

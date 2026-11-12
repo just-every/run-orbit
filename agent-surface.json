@@ -300,7 +300,9 @@
         "standard"
       ],
       "clauses": [
-        "AGENT-001"
+        "AGENT-001",
+        "AGENT-002",
+        "SURFACE-012"
       ]
     },
     {

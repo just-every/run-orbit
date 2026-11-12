@@ -13,13 +13,13 @@ import {identityVarArgs} from '../support/worker-identity.mjs';
 import {stalledRiskBrowser} from '../support/stalled-risk-browser';
 import {stalledRiskPolicyJourney} from './today-journey.mjs';
 import {todayJourney} from './today-journey.mjs';
-import {riskJourney} from './risk-journey.mjs';
+import {riskJourney,embeddedRiskJourney} from './risk-journey.mjs';
 import {browserRiskData,riskBusinessState} from '../support/browser-risk-data';
 import {unstable_DevEnv} from 'wrangler';
 import {identityVars} from '../support/worker-identity.mjs';
 import assert from 'node:assert/strict';
 
-test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
+test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_TODAY_PORT??8736),origin=`http://127.0.0.1:${port}`;
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  const runtime=new unstable_DevEnv();
@@ -61,6 +61,7 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(stalled.vars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port}}});await riskOnly.ready;
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  await embeddedRiskJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await draftParityBrowserJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await signedIn.close();
   } finally {await riskRuntime.teardown();await riskFixture.dispose();}

@@ -24,7 +24,7 @@ export async function adjustRoleRule(db:D1Database,id:string,input:{role:Stakeho
 }
 
 /** Map finding citations to the same current native evidence identities used by person approval. */
-export function riskTaskContent(current:Awaited<ReturnType<typeof dealRisks>>,input:{title:string;dueAt:string|null;evidenceIds:string[]},actor:string){
+export function riskTaskContent(current:Pick<Awaited<ReturnType<typeof dealRisks>>,'evidence'>,input:{title:string;dueAt:string|null;evidenceIds:string[]},actor:string){
  const evidence=new Map(current.evidence.map(item=>[item.id,item.ref]));
  const refs=input.evidenceIds.map(id=>evidence.get(id));
  if(!refs.length||refs.some(ref=>!ref))throw new TodayError(400,"A task must cite this deal's current recorded evidence.");
