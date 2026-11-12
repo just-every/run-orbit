@@ -1,3 +1,4 @@
+import {sortViewRecords,type ViewSort} from './saved-views';
 import {workflowAssociationEvent} from '../workflows/events';
 import {normalizedTypedFields,typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
 import {fieldLabel,valueText} from '../operator/ui/data-value';
@@ -140,7 +141,7 @@ export class RecordsRepository extends RecordSeedRepository {
  const company=record.company_id?await this.db.prepare('SELECT * FROM companies WHERE id=?').bind(record.company_id).first():null;
  const ownership=kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)?(await reconcileLegacyOwnership(this.db),await readOwnership(this.db,kind,id)):undefined;
  return {record,company,...(ownership?{ownership}:{}),timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
- async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean}={}){
+ async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean;sort?:ViewSort}={}){
   if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db))await reconcileLegacyOwnership(this.db);
   const clauses=['1=1'],values:string[]=[];if(query.trim()){
    const match=query.trim().split(/\s+/).map(token=>`"${token.replaceAll('"','""')}"*`).join(' AND ');
@@ -150,10 +151,10 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='opportunity'&&filters.owner_id==='unassigned'){clauses.push('owner_id IS NULL');delete filters.owner_id;}
   if(kind==='opportunity')for(const field of ['lifecycle','stage_id','owner_id','band','queue_state'])if(filters[field]){clauses.push(`${field}=?`);values.push(filters[field]);}
   if(kind==='opportunity'&&filters.pipeline_id){clauses.push('stage_id IN(SELECT stage_id FROM pipeline_stage_rules WHERE pipeline_id=?)');values.push(filters.pipeline_id);}
-  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id,(SELECT name FROM companies WHERE id=opportunities.company_id) AS company_name,(SELECT name FROM pipeline_stages WHERE id=opportunities.stage_id) AS stage_name':kind==='contact'?'*,(SELECT name FROM companies WHERE id=contacts.company_id) AS company_name':'*';
-  const records=(await this.db.prepare(`SELECT ${selection} FROM ${tables[kind]} WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC,id LIMIT 50`).bind(...values).all()).results;
-  if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)){const owners=await ownershipForRecords(this.db,kind,records.map(record=>String(record.id)));return records.map(record=>({...record,ownership:owners.get(String(record.id))??{ownerId:null,ownerName:null,revision:0}}));}
-  return records;
+  const selection=kind==='opportunity'?'*,(SELECT pipeline_id FROM pipeline_stage_rules WHERE stage_id=opportunities.stage_id) AS pipeline_id,(SELECT name FROM companies WHERE id=opportunities.company_id) AS company_name,(SELECT name FROM pipeline_stages WHERE id=opportunities.stage_id) AS stage_name,(SELECT display_name FROM operators WHERE id=opportunities.owner_id) AS owner_name':kind==='contact'?'*,(SELECT name FROM companies WHERE id=contacts.company_id) AS company_name':'*';
+  const records=(await this.db.prepare(`SELECT ${selection} FROM ${tables[kind]} WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC,id ${options.sort?'':'LIMIT 50'}`).bind(...values).all()).results;
+  if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)){const owners=await ownershipForRecords(this.db,kind,records.map(record=>String(record.id)));const enriched=records.map(record=>({...record,ownership:owners.get(String(record.id))??{ownerId:null,ownerName:null,revision:0}}));return options.sort?sortViewRecords(enriched,options.sort):enriched;}
+  return options.sort?sortViewRecords(records,options.sort):records;
  }
  async lifecycle(id:string,state:'open'|'won'|'lost',reason:string,actor:string){await requireRecord(this.db,'opportunity',id);if(state!=='open'&&!reason.trim())throw new RecordError(400,'Give a closing reason.');const now=new Date().toISOString();await this.db.batch([this.db.prepare("UPDATE opportunities SET lifecycle=?,closed_at=?,closed_by=?,close_reason=?,queue_state='none',queue_reason=?,next_due_at=NULL,updated_at=? WHERE id=?").bind(state,state==='open'?null:now,state==='open'?null:actor,state==='open'?null:reason,state==='open'?'Operator reopened':'Operator closed',now,id),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity lifecycle changed' WHERE opportunity_id=?").bind(id),...(state==='open'?[]:[this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(closedReason(state),now,id)]),...(state==='open'?[mutationJob(this.db,id,actor,'Operator reopened')]:[]),...timeline(this.db,actor,'opportunity',id,'lifecycle.changed',{state,reason}),audit(this.db,actor,'lifecycle.changed','opportunity',id,{state,reason})]);return {id,state};}
 }

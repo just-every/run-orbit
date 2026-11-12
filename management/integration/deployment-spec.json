@@ -456,6 +456,12 @@
       "name": "0080_notification_context_fence.sql",
       "sha256": "394ac85931a20abd69964a8b3ff95a983d4891d7f92c69e644fcb996a07ca1f1",
       "sql": "-- A direct-person notification marker is transaction-local writer context, not\n-- an authority change. Keep real runtime controls fenced, including renames to\n-- or from the marker, without invalidating the write's reviewed epoch ourselves.\nDROP TRIGGER delegation_fence_runtime_controls_insert;\nCREATE TRIGGER delegation_fence_runtime_controls_insert AFTER INSERT ON runtime_controls\nWHEN NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_update;\nCREATE TRIGGER delegation_fence_runtime_controls_update AFTER UPDATE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor' OR NEW.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n\nDROP TRIGGER delegation_fence_runtime_controls_delete;\nCREATE TRIGGER delegation_fence_runtime_controls_delete AFTER DELETE ON runtime_controls\nWHEN OLD.name<>'direct_notification_actor'\nBEGIN UPDATE delegation_installation SET epoch=epoch+1; END;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0081_saved_record_views.sql",
+      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+      "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
