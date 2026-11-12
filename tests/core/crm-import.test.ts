@@ -1,4 +1,4 @@
-import {hubspotApiFlow} from '../support/hubspot-api-proof';
+import {hubspotApiFlow,hubspotRegressionFlow} from '../support/hubspot-api-proof';
 import {hubspotExportFlow} from '../support/hubspot-export';
 import {importOwnerFlow} from '../support/import-owners';
 import {reviewTokens} from '../support/reviewed-merge';
@@ -15,6 +15,7 @@ import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {json,finish,genericCsvFlow,resumeImportFlow,sourceConflictFlow,malformedSuppressionFlow} from '../support/crm-import-flow';
 import {parseCsv} from '../../src/core/shared/csv';
 test('RECORD-008 connected HubSpot, vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
+ const callFixture=await launchFixture();try{await hubspotRegressionFlow(callFixture,'textless-call');}finally{await callFixture.dispose();}
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
   await json(await f.request(`records/contact/${independentlyStopped.contactId}`,'PUT',{name:'Independently stopped customer',email:independentlyStopped.email,contactability:'do_not_contact'}));

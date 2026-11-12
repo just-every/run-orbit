@@ -50,7 +50,7 @@ export async function mailchimpErasure(db:D1Database,contactId:string,actor:stri
 /** Sends every waiting request once. A 204, or a 404 for the member of an audience this account still has, is a verified deletion; the erasure itself never waits for it. */
 export async function processMailchimpDeletions(db:D1Database,config:MailchimpConfig){
  const waiting=(await stored(db,true)).filter(request=>open.includes(request.state));if(!waiting.length)return;
- const status=await connection(db),connectedAt=status.settings?.connectedAt??null;
+ const status=await connection(db,config.origin),connectedAt=status.settings?.connectedAt??null;
  if(status.state!=='connected'){for(const request of waiting)await mark(db,request,'paused',request.state==='paused'&&request.reason?request.reason:notConnected);return;}
  const {apiKey}=await openSealed(db,config);
  for(const request of waiting){
@@ -61,16 +61,16 @@ export async function processMailchimpDeletions(db:D1Database,config:MailchimpCo
    if(error.status===404){
     // Mailchimp answers 404 both for an absent member and for an audience this account does not hold; only the first is a deletion.
     try{await mailchimpCall(apiKey,'GET',`/lists/${request.listId}?fields=id`,undefined,config.fetcher);await deleted(db,request.id);}
-    catch(read){if(!(read instanceof MailchimpProviderError))throw read;await mark(db,request,read.status===404?'failed':'uncertain',read.status===404?'The connected Mailchimp account has no audience with this ID, so Orbit cannot confirm the deletion. Connect the account that holds it, then confirm the deletion.':'Mailchimp did not confirm the deletion. Orbit asks again after the next change.');}
+    catch(read){if(!(read instanceof MailchimpProviderError))throw read;await mark(db,request,read.status===404?'failed':'uncertain',read.status===404?'The connected Mailchimp account has no audience with this ID, so Orbit cannot confirm the deletion. Connect the account that holds it, then confirm the deletion.':'Mailchimp did not confirm the deletion. Orbit asks again on its scheduled run.');}
     continue;
    }
    if(error.status===401||error.status===403){await markUnresolved(db,refusalMessage(error));await mark(db,request,'paused',refusalMessage(error));return;}
    if(error.status===429){await mark(db,request,'queued',refusalMessage(error));return;}
-   await mark(db,request,error.refused?'failed':'uncertain',error.refused?`Mailchimp refused the deletion (${error.status} ${error.title}). Check the member in Mailchimp, then confirm the deletion.`:'Mailchimp did not answer, so the deletion is not confirmed. Orbit asks again after the next change.');
+   await mark(db,request,error.refused?'failed':'uncertain',error.refused?`Mailchimp refused the deletion (${error.status} ${error.title}). Check the member in Mailchimp, then confirm the deletion.`:'Mailchimp did not answer, so the deletion is not confirmed. Orbit asks again on its scheduled run.');
   }
  }
 }
-/** Orbit's processor path: after each accepted change, an erasure among them, waiting deletions are sent. */
+/** The hosted timer and accepted changes retry queued and unconfirmed requests; reconnect still needs owner confirmation. */
 export function mailchimpDeletionProcessing(db:D1Database,config:MailchimpConfig):MiddlewareHandler{
  return async(c,next)=>{await next();if(['GET','HEAD','OPTIONS'].includes(c.req.method)||c.res.status>=400||c.req.path.startsWith('/api/v1/settings/mailchimp')||c.req.path.includes('/archive/'))return;try{await processMailchimpDeletions(db,config);}catch{c.header('X-Orbit-Mailchimp','Deletion processing failed; inspect the Mailchimp settings');}};
 }

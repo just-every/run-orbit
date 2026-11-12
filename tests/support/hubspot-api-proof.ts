@@ -17,7 +17,7 @@ export function hubspotEdge(){
   notes:[{id:'n1',properties:{hs_note_body:'Synthetic connected note',hs_timestamp:'2026-09-01T12:00:00Z'}}],
   calls:[{id:'a1',properties:{hs_call_body:'Synthetic connected call',hs_call_duration:'120000',hs_timestamp:'2026-09-01T13:00:00Z'}}],
   meetings:[{id:'m1',properties:{hs_meeting_body:'Synthetic connected meeting',hs_meeting_start_time:'2026-09-01T14:00:00Z',hs_meeting_end_time:'2026-09-01T14:30:00Z',hs_timestamp:'2026-09-01T14:00:00Z'}}],
-  tasks:[{id:'t1',properties:{hs_task_subject:'Synthetic connected task',hs_task_body:'Follow up internally',hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED',hs_task_priority:'HIGH',hs_task_type:'CALL',hubspot_owner_id:'owner1'}},{id:'t2',properties:{hs_task_subject:'Unchanged connected task',hs_task_body:'Imported task to undo',hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'COMPLETED'}}]
+  tasks:[{id:'t1',properties:{hs_task_subject:'Synthetic connected task',hs_task_body:`Follow up internally with ${mailbox('synthetic-orbit-api')}`,hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED',hs_task_priority:'HIGH',hs_task_type:'CALL',hubspot_owner_id:'owner1'}},{id:'t2',properties:{hs_task_subject:'Unchanged connected task',hs_task_body:'Imported task to undo',hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'COMPLETED'}}]
  };let rateLimit=false,refuse:string|null=null,scopeMissing=false,revoked=false;
  const fetcher=async(input:any,init:any)=>{const url=new URL(String(input));assert.equal(url.origin,'https://api.hubapi.com');requests.push(url.pathname+url.search);assert.equal(init.redirect,'manual');const out=(data:unknown,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json',...headers}});
   if(url.pathname==='/oauth/v2/private-apps/get/access-token-info'){if(revoked)return out({message:init.headers.Authorization},401);assert.equal(init.method,'POST');return out({hubId:12345,scopes:scopeMissing?readScopes.slice(0,-1):readScopes});}
@@ -28,7 +28,7 @@ export function hubspotEdge(){
   if(url.pathname==='/crm/v3/pipelines/deals')return out({results:[{id:'pipeline1',label:'First pipeline',stages:[{id:'stage1',label:'Qualified'}]},{id:'pipeline2',label:'Second pipeline',stages:[{id:'stage2',label:'Proposal'}]}]});
   const property=url.pathname.match(/^\/crm\/v3\/properties\/(\w+)$/);if(property){const names=[...new Set(objects[property[1]].flatMap(item=>Object.keys(item.properties)))];return out({results:names.map(name=>({name,hubspotDefined:!name.startsWith('custom_'),type:name==='custom_blob'?'object':'string'}))});}
   const object=url.pathname.match(/^\/crm\/v3\/objects\/(\w+)$/);if(object){const rows=objects[object[1]],index=Number(url.searchParams.get('after')??0);return out({results:rows.slice(index,index+1),...index+1<rows.length?{paging:{next:{after:String(index+1),link:'https://attacker.test/never-follow'}}}:{}});}
-  const assoc=url.pathname.match(/^\/crm\/v4\/objects\/(\w+)\/([^/]+)\/associations\/(\w+)$/);if(assoc){const [,from,id,to]=assoc;const linked=to==='companies'?(from==='contacts'?[id==='p2'?'c2':'c1']:from==='deals'?[id==='d2'?'c2':'c1']:['c1']):to==='contacts'?(from==='companies'?[id==='c2'?'p2':'p1']:['p1']):to==='deals'?['d1']:[];return out({results:linked.map(toObjectId=>({toObjectId,associationTypes:[{typeId:1,label:null}]}))});}
+  const assoc=url.pathname.match(/^\/crm\/v4\/objects\/(\w+)\/([^/]+)\/associations\/(\w+)$/);if(assoc){const [,from,id,to]=assoc;const linked=to==='companies'?(from==='contacts'?[id==='p2'?'c2':'c1']:from==='deals'?[id==='d2'?'c2':'c1']:['c1']):to==='contacts'?(from==='companies'?[id==='c2'?'p2':'p1']:['p1']):to==='deals'?['d1']:[];return out({results:linked.filter(toObjectId=>objects[to].some(item=>item.id===toObjectId)).map(toObjectId=>({toObjectId,associationTypes:[{typeId:1,label:null}]}))});}
   throw new Error(`Unexpected HubSpot edge ${url.pathname}`);
  };
  return {fetcher,requests,objects,rateLimit:()=>{rateLimit=true;},refuse:(value:string|null)=>{refuse=value;},scopeMissing:(value:boolean)=>{scopeMissing=value;},revoked:(value:boolean)=>{revoked=value;}};
@@ -70,4 +70,45 @@ export async function hubspotApiFlow(f:any){
  await json(await request('imports/hubspot/disconnect','POST'));assert.equal((await json(await request('imports/hubspot/connection'))).state,'unresolved-setup');assert.equal((await f.db.prepare('SELECT count(*) n FROM crm_import_hubspot_pages').first<any>()).n,0);
  await hubspotRestoreFlow({security,fetcher:edge.fetcher});
  await f.db.prepare('UPDATE operators SET setup_owner=0 WHERE id=?').bind(f.actor).run();
+}
+
+/** Small connected imports exercise privacy before and after conflict-preserving undo. */
+export async function hubspotRegressionFlow(f:any,sequence:'before-undo'|'edited-undo'|'textless-call'){
+ const edge=hubspotEdge(),address=mailbox(`synthetic-orbit-${sequence}`),namespace='orbit:hubspot:HubSpot 12345';
+ for(const kind of Object.keys(edge.objects))edge.objects[kind]=[];
+ edge.objects.contacts=[{id:'p1',properties:{firstname:'Synthetic private person',email:address}}];
+ if(sequence==='textless-call')edge.objects.calls=[{id:'a1',properties:{hs_timestamp:'2026-09-01T13:00:00Z',hs_call_duration:'120000',hs_call_direction:'INBOUND',hs_call_status:'COMPLETED'}}];
+ else edge.objects.tasks=[{id:'t1',properties:{hs_task_subject:'Synthetic private task',hs_task_body:sequence==='before-undo'?'Follow up internally':`Follow up with ${address.toUpperCase()}.`,hs_timestamp:'2026-09-02T12:00:00Z',hs_task_status:'NOT_STARTED'}},...sequence==='before-undo'?[{id:'t2',properties:{hs_task_subject:'Mailbox-bearing private task',hs_task_body:`Follow up with ${address}.`,hs_timestamp:'2026-09-03T12:00:00Z',hs_task_status:'NOT_STARTED'}}]:[]];
+ const security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'31'.repeat(32)})!,session=await createDependencies(f.db).auth.createSession(f.actor),app=createApp({database:f.db,sourceSecurity:security,captureFetch:edge.fetcher,assets:{fetch:async()=>new Response(null,{status:404})}});
+ const request=(path:string,method='GET',body?:unknown)=>app.request(`https://orbit.test/api/v1/${path}`,{method,headers:{cookie:`__Host-orbit_session=${session.token}`,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+ await f.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(f.actor).run();
+ await json(await request('imports/hubspot/connection','POST',{token:'synthetic-orbit-fix1'}));
+ let pull=await json(await request('imports/hubspot/pulls','POST'));
+ for(let i=0;i<100&&pull.state==='pulling';i++)pull=await json(await request(`imports/hubspot/pulls/${pull.id}/next`,'POST'));
+ assert.equal(pull.state,'reviewable');
+ const dry=await json(await request(`imports/hubspot/pulls/${pull.id}/review`,'POST',{owners:{},stages:{},contactability:'confirmed_contactable'}));
+ assert.equal(dry.counts.rejected,0,`${sequence}: ${JSON.stringify(dry.rows)}`);
+ await finish({request},dry);
+ const person=nativeId(namespace,'contact','p1'),task=nativeId(namespace,'task','t1');
+ if(sequence==='textless-call'){
+  const detail=await json(await request(`records/contact/${person}`)),entry=detail.timeline.find((entry:any)=>entry.kind==='manual.call');
+  assert.ok(entry,'A call without descriptive text imports as a native call entry');
+  const payload=JSON.parse(entry.payload_json);assert.equal(payload.durationMinutes,2);assert.match(payload.text,/call/i);assert.match(payload.text,/inbound/i);
+  await finish({request},dry,'undo');assert.equal((await request(`records/contact/${person}`)).status,404);await f.db.prepare('UPDATE operators SET setup_owner=0 WHERE id=?').bind(f.actor).run();return;
+ }
+ const imported=await json(await request(`tasks/${task}`));if(sequence==='edited-undo')assert.ok(imported.task.notes.toLowerCase().includes(address));
+ if(sequence==='edited-undo'){
+  const value=imported.task;
+  await json(await request(`tasks/${task}`,'PUT',{title:'Native task edit kept',recordType:value.recordType,recordId:value.recordId,ownerId:value.ownerId,dueAt:value.dueAt,priority:value.priority,type:value.type,notes:'Native task notes',recurrence:'none',timezone:value.timezone,reminderMinutes:null,revision:value.revision,status:'open'}));
+  await json(await request(`records/contact/${person}`,'PUT',{name:'Native person edit kept',contactability:'do_not_contact'}));
+  await finish({request},dry,'undo');
+  const retained=await json(await request(`tasks/${task}`));assert.equal(retained.task.title,'Native task edit kept');assert.equal(retained.task.notes,'Native task notes');
+ }
+ await json(await request(`records/contact/${person}`,'DELETE',{confirmed:true}));
+ assert.equal((await request(`records/contact/${person}`)).status,404);
+ const tasks=await json(await request('tasks?view=all&owner=all'));assert.ok(!tasks.tasks.some((entry:any)=>entry.recordId===person));
+ assert.ok(!(await importCopies(f.db)).toLowerCase().includes(address),`${sequence}: no decoded import copy retains the erased mailbox`);
+ const tables=(await f.db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*'").all<{name:string}>()).results;
+ for(const {name} of tables){assert.match(name,/^[a-zA-Z_][a-zA-Z0-9_]*$/);assert.ok(!JSON.stringify((await f.db.prepare(`SELECT * FROM "${name}"`).all()).results).toLowerCase().includes(address),`${sequence}: ${name} retains the erased mailbox`);}
+ await finish({request},dry,'undo');assert.equal((await request(`records/contact/${person}`)).status,404,'Undo after erasure cannot resurrect the contact');
 }
