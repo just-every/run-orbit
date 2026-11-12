@@ -1,0 +1,26 @@
+diff --git a/sources.lock.json b/sources.lock.json
+index 5fd1214..bb5da86 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -7919,7 +7919,7 @@
+       "executable": false
+     },
+     "src/core/features/records/archive-generations.ts": {
+-      "sha256": "471d914c6962260309c113cd929476aad5b81d44bb83c4ec1562804f2aa042c5",
++      "sha256": "94ea6fcdf62ba2a43ee7ba9d8290521878a09fbe1f8884b01265adfaef43d122",
+       "executable": false
+     },
+     "src/core/features/records/archive-import-context.ts": {
+diff --git a/src/core/features/records/archive-generations.ts b/src/core/features/records/archive-generations.ts
+index ceced25..4910bb0 100644
+--- a/src/core/features/records/archive-generations.ts
++++ b/src/core/features/records/archive-generations.ts
+@@ -24,7 +24,7 @@ export const preSendingCapacityCatalog=(catalog:ArchiveTable[])=>catalog.filter(
+ export const preOptOutCapabilityCatalog=(catalog:ArchiveTable[])=>catalog.filter(table=>table.name!=='outbound_opt_out_capabilities');
+ /** Migration 0079 changes notification insertion only; earlier archives retain
+  * their exact trigger inventory. Runtime-control fences are never archived. */
+-export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preGraphProposalCatalog(catalog),[],['notification_skip_direct_actor']);
++export const preDirectNotificationCatalog=(catalog:ArchiveTable[])=>beforeSlice(preGraphProposalCatalog(catalog),zoomArchiveTables,['notification_skip_direct_actor']);
+ /** Reconstruct only exact native additions; owner tables and objects remain bound. */
+ function beforeSlice(catalog:ArchiveTable[],tables:readonly string[],triggers:readonly string[]=[]){return catalog.filter(table=>!tables.includes(table.name)).map(table=>{const objects=(table as FoldArchiveTable).objects;return objects?{...table,objects:objects.filter(object=>!triggers.includes(object.name))}:table;});}
+ const typedTriggers=['contacts','companies','deals'].flatMap(table=>['insert','update','delete'].map(operation=>`custom_field_${table}_${operation}`));

@@ -1,0 +1,11 @@
+commit 41a18039f0841ecd87c174c9a6123f8908b01a0f
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Thu Nov 12 21:28:28 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Thu Nov 12 21:28:28 2026 +0000
+
+    Drop optional Zoom slice from pre-notification archive generation
+
+ sources.lock.json                                | 2 +-
+ src/core/features/records/archive-generations.ts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)

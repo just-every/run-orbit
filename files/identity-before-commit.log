@@ -1,0 +1,30 @@
+James Peter <github@zemaj.com>
+James Peter <github@zemaj.com>
+Validation: typecheck, app build, deployment and source checks passed. Updated daily-brief browser journey passed. Updated daily-brief and embedded-risk core cases passed in the file run, whose later Zoom/Twilio cases hit Miniflare fetch failures; Zoom and Twilio each passed independently with fresh databases. Earlier source-onboarding and records-layout checks also passed. Combined local runs are not green; exact-SHA Verify remains the guarded worker's full wall.
+
+James Peter <github@zemaj.com>
+James Peter <github@zemaj.com>
+Validation: typecheck, app build, boundaries, manifest, contract docs, deployment inventory and source lock checks passed. Both focused browser journeys passed. All seven focused core cases passed across runs: initial provider suite passed five cases then hit local EADDRNOTAVAIL during Zoom archive cleanup; isolated Zoom proof passed; Twilio callback failed after that archive run and passed independently with a fresh database. Exact-SHA Verify remains the guarded worker's full wall.
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+IDENTITIES_OK candidate_commits=9 including_side_parents=true OpenAI_Codex_coauthors=0
