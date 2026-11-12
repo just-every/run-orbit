@@ -1,0 +1,29 @@
+import {fields,type ImportInput,type ImportKind} from '../contracts';
+import type {Page} from './inventory';
+import {HubSpotError,type ObjectType} from './provider';
+const kinds:Record<ObjectType,ImportKind>={companies:'company',contacts:'contact',deals:'deal',notes:'note',calls:'call',meetings:'meeting',tasks:'task'};
+const sourceFields:Record<ObjectType,Record<string,string>>={companies:{name:'name',domain:'domain',owner:'hubspot_owner_id',description:'description'},contacts:{first_name:'firstname',last_name:'lastname',email:'email',phone:'phone',job_title:'jobtitle',owner:'hubspot_owner_id',dnc:'hs_email_optout',bounce:'hs_email_hard_bounce_reason',quarantined:'hs_email_quarantined'},deals:{title:'dealname',owner:'hubspot_owner_id',amount:'amount',close_date:'closedate',description:'description'},notes:{text:'hs_note_body',occurred_at:'hs_timestamp',owner:'hubspot_owner_id'},calls:{text:'hs_call_body',occurred_at:'hs_timestamp',duration:'hs_call_duration',owner:'hubspot_owner_id'},meetings:{text:'hs_meeting_body',occurred_at:'hs_meeting_start_time',duration:'hs_meeting_end_time',owner:'hubspot_owner_id'},tasks:{title:'hs_task_subject',text:'hs_task_body',due_at:'hs_timestamp',owner:'hubspot_owner_id',status:'hs_task_status',priority:'hs_task_priority',task_type:'hs_task_type'}};
+const quote=(value:unknown)=>'"'+String(value??'').replaceAll('"','""')+'"';
+export function bundle(portal:string,pages:Page[],options:Pick<ImportInput,'owners'|'stages'|'contactability'>){
+ const decoded=pages.map(page=>JSON.parse(page.page_json)),totals:Record<string,number>={},unsupported:{object:string;property:string;reason:string}[]=[],properties=new Map<string,any[]>(),owners:any[]=[],pipelines:any[]=[];
+ for(const {job,data} of decoded){if(job.kind==='properties')properties.set(job.object,data.results);if(job.kind==='owners')owners.push(...data.results);if(job.kind==='pipelines')pipelines.push(...data.results);}
+ const stageNames=new Map<string,string>();for(const pipeline of pipelines)for(const stage of pipeline.stages??[])stageNames.set(`${pipeline.id}:${stage.id}`,`${pipeline.label}: ${stage.label}`);
+ const files:ImportInput['files']=[],sourceOwners=new Map<string,{value:string;name:string;kind:string}>();let associationCount=0;
+ for(const [object,kind] of Object.entries(kinds) as [ObjectType,ImportKind][]){
+  const items=decoded.filter(page=>page.job.kind==='objects'&&page.job.object===object).flatMap(page=>page.data.results);totals[object]=items.length;if(!items.length)continue;
+  const custom=(properties.get(object)??[]).filter(property=>!property.hubspotDefined&&!Object.values(sourceFields[object]).includes(property.name));
+  const supported=custom.filter(property=>['string','number','bool','enumeration','date','datetime'].includes(property.type)&&['contact','company','deal'].includes(kind));
+  for(const property of custom.filter(property=>!supported.includes(property)))unsupported.push({object,property:property.name,reason:'Not mapped into this native record type. Export this property with the HubSpot record ID and retain it for manual reconciliation.'});
+  const customNames=supported.map(property=>`HubSpot: ${property.name}`),base=sourceFields[object],headers=['id',...Object.keys(base),'company_ids','contact_ids','deal_ids',...(kind==='deal'?['stage']:[]),...customNames];
+  const rows=items.map((item:any)=>{const p=item.properties??{},row:Record<string,string>={id:item.id};for(const [field,name] of Object.entries(base))row[field]=String(p[name]??'');
+   if(row.owner){const value=`${kind}:${row.owner}`,person=owners.find(owner=>String(owner.id)===row.owner);sourceOwners.set(value,{value,name:[person?.firstName,person?.lastName].filter(Boolean).join(' ')||`HubSpot owner ${row.owner}`,kind});row.owner=value;}
+   if(kind==='call'){row.text=row.text||String(p.hs_call_title??'');row.duration=String(Math.ceil(Number(row.duration||0)/60000));}
+   if(kind==='meeting'){row.text=row.text||String(p.hs_meeting_title??'');const start=Date.parse(row.occurred_at),end=Date.parse(row.duration);row.duration=String(Number.isFinite(end)&&Number.isFinite(start)?Math.max(0,Math.round((end-start)/60000)):0);}
+   if(kind==='deal'){row.stage=`${p.pipeline??''}:${p.dealstage??''}`;if(!stageNames.has(row.stage))throw new HubSpotError(409,`HubSpot deal ${item.id} has an unavailable pipeline or stage. Export its pipeline and stage IDs explicitly.`);}
+   for(const [target,field] of [['companies','company_ids'],['contacts','contact_ids'],['deals','deal_ids']]){const linked=decoded.filter(page=>page.job.kind==='associations'&&page.job.object===object&&page.job.sourceId===item.id&&page.job.target===target).flatMap(page=>page.data.results.map((link:any)=>String(link.toObjectId)));row[field]=[...new Set(linked)].join(';');associationCount+=new Set(linked).size;}
+   for(const property of supported)row[`HubSpot: ${property.name}`]=String(p[property.name]??'');return headers.map(header=>quote(row[header])).join(',');});
+  files.push({kind,name:`hubspot-${object}.csv`,csv:[headers.map(quote).join(','),...rows].join('\r\n'),mapping:Object.fromEntries(headers.filter(header=>fields[kind].includes(header)).map(header=>[header,header])),customFields:customNames,separator:';'});
+ }
+ if(!files.length)throw new HubSpotError(409,'HubSpot returned no records. Export the expected objects and associations to reconcile this account.');
+ return{input:{vendor:'hubspot' as const,account:`HubSpot ${portal}`,files,...options},source:{portalId:portal,totals,associations:associationCount,pages:pages.length,pipelines:pipelines.map(p=>({id:p.id,name:p.label,stages:(p.stages??[]).map((s:any)=>({value:`${p.id}:${s.id}`,name:`${p.label}: ${s.label}`}))})),owners:[...sourceOwners.values()],unsupported,boundaries:['Attachments and their byte totals, leads, email activity and workflows are not included in this pull. Export them separately; their held migration obligations remain.']}};
+}

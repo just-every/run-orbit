@@ -1,3 +1,6 @@
+import {hubspotRoutes} from './hubspot/routes';
+import {validatePage} from './hubspot/inventory';
+import {HubSpotError,type HubSpotConfig} from './hubspot/provider';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AuthenticatedOperator } from '../identity';
@@ -5,14 +8,15 @@ import { RecordError } from '../records/shared';
 import { importInput } from './contracts';
 import {importOwners} from './owners';
 import { ImportRepository } from './repository';
-export function createImportRoutes(db:D1Database){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
- app.onError((error,c)=>c.json({error:error instanceof RecordError?error.message:`Import stopped: ${error.message}`},error instanceof RecordError?error.status:409));
+export function createImportRoutes(db:D1Database,config:HubSpotConfig={}){const app=new Hono<{Variables:{operator:AuthenticatedOperator}}>();
+ app.onError((error,c)=>c.json({error:error instanceof HubSpotError||error instanceof RecordError?error.message:'Import stopped. Review its saved source and mappings.',...error instanceof HubSpotError?{retryAt:error.retryAt}:{}},error instanceof HubSpotError||error instanceof RecordError?error.status:409));
+ app.route('/hubspot',hubspotRoutes(db,config));
  const repo=(c:any)=>new ImportRepository(db,c.get('operator'));
  app.get('/',async c=>c.json({imports:await repo(c).list()}));
  app.get('/owners',async c=>{await repo(c).authorized();return c.json({owners:await importOwners(db)});});
  app.post('/dry-run',async c=>{const parsed=importInput.safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Choose supported CSV files, a source account and explicit column mappings.',details:parsed.error.issues.map(i=>i.message)},400);return c.json(await repo(c).dryRun(parsed.data));});
- app.get('/:id',async c=>c.json(await repo(c).status(c.req.param('id'))));
- app.post('/:id/apply',async c=>{const parsed=z.object({fingerprint:z.string().regex(/^[a-f0-9]{64}$/),confirmed:z.literal(true)}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Review the dry run and confirm its exact result.'},400);return c.json(await repo(c).apply(c.req.param('id'),parsed.data.fingerprint));});
+ app.get('/:id',async c=>{const status=await repo(c).status(c.req.param('id')),source=await db.prepare('SELECT summary_json FROM crm_import_hubspot_reviews WHERE review_id=?').bind(c.req.param('id')).first<{summary_json:string}>();return c.json({...status,...source?{hubspot:JSON.parse(source.summary_json)}:{}});});
+ app.post('/:id/apply',async c=>{const parsed=z.object({fingerprint:z.string().regex(/^[a-f0-9]{64}$/),confirmed:z.literal(true)}).strict().safeParse(await c.req.json());if(!parsed.success)return c.json({error:'Review the dry run and confirm its exact result.'},400);await repo(c).review(c.req.param('id'));const source=await db.prepare('SELECT pull_id FROM crm_import_hubspot_reviews WHERE review_id=?').bind(c.req.param('id')).first<{pull_id:string}>();if(source){const page=await validatePage(db,config,c.get('operator'),source.pull_id);if(page)return c.json({...page,id:c.req.param('id')});}return c.json(await repo(c).apply(c.req.param('id'),parsed.data.fingerprint));});
  app.post('/:id/undo',async c=>{if((await c.req.json()).confirmed!==true)return c.json({error:'Confirm undo of this import.'},400);return c.json(await repo(c).undo(c.req.param('id')));});
  return app;
 }

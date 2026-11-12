@@ -17,7 +17,7 @@ const vendors:Record<string,string>={csv:'spreadsheet',hubspot:'HubSpot export',
 const importName=(namespace:string)=>{const [,vendor,...account]=namespace.split(':');return vendors[vendor]?importLabel(account.join(':'),vendor!):namespace;};
 const retained=(result:any):number=>result?.undo?.dispositions?.filter((d:any)=>d.disposition==='retained').length??0;
 const sourceNames:Record<ImportInput['vendor'],string>={csv:'Spreadsheet',hubspot:'HubSpot',pipedrive:'Pipedrive'};
-const labels:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
+const labels:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list',call:'Calls',meeting:'Meetings',task:'Tasks'};
 export function ImportsPage(){const [ownerMapping,setOwnerMapping]=useState<Record<string,string|null>>({}),[owners,setOwners]=useState<ImportOwner[]>([]),[vendor,setVendor]=useState<ImportInput['vendor']>('csv'),[account,setAccount]=useState(sourceNames.csv),[files,setFiles]=useState<ImportInput['files']>([]),[stages,setStages]=useState<Record<string,string>>({}),[settings,setSettings]=useState<any>(),[history,setHistory]=useState<any[]>([]),[review,setReview]=useState<any>(),[result,setResult]=useState<any>(),[step,setStep]=useState(0),[busy,setBusy]=useState(false),[error,setError]=useState(''),[confirmed,setConfirmed]=useState(false),[contactability,setContactability]=useState<ImportInput['contactability']>('mapped_permission');const {ask,dialog}=useOperatorDialog();
  const upload=useRef<HTMLFormElement>(null),selection=useRef(0);
  // The server-rendered upload controls work before scripts arrive. Adopt their live DOM values

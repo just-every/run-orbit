@@ -8,7 +8,7 @@ const fieldLabels:Record<string,string>={
  amount:'Deal value',close_date:'Expected close date',text:'Note text',occurred_at:'Activity date and time',
  deal_ids:'Deal IDs (from the deals file)',reason:'Reason',
 };
-const kindNames:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
+const kindNames:Record<ImportKind,string>={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list',call:'Calls',meeting:'Meetings',task:'Tasks'};
 const linkFields=['company_ids','contact_ids','deal_ids'];
 const label=(kind:ImportKind,field:string)=>field==='name'&&kind==='company'?'Company name':field==='owner'&&!['contact','company'].includes(kind)?'Owner (kept as history only)':fieldLabels[field];
 const headersOf=(file:ImportFile)=>parseCsv(file.csv.replace(/^﻿/,''))[0]??[];
