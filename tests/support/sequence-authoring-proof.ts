@@ -16,8 +16,8 @@ export async function proveSequenceAuthoring(){
   const owner=f.operator.operatorId,other=createId(),email=['synthetic-orbit-sequence-2','people.test'].join('@');
   await createDependencies(f.db).auth.ensureOperator({id:other,email,displayName:'Jordan Reyes'});
   const second=await signIn(f.db,email),invitationEmail=['synthetic-orbit-sequence-guest','people.test'].join('@');
-  await f.admin.invite(await f.nativeContext(),{email:invitationEmail,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
-  const invited=await signIn(f.db,invitationEmail);
+  const invitation=await f.admin.invite(await f.nativeContext(),{email:invitationEmail,role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
+  const invited=await signIn(f.db,invitationEmail);await f.admin.accept(invited.operator,invitation.token);
   const app=createApp({database:f.db,assets:{fetch:async()=>new Response('')},outboundMail:{send:async()=>{submissions++;throw new Error('Authoring must never submit mail.');}},captureFetch:async()=>{submissions++;throw new Error('Authoring must never call a provider.');}});
   const request=async(cookie:string,path:string,method='GET',body?:unknown)=>{const response=await app.request('https://orbit.test/api/v1/'+path,{method,headers:{Cookie:cookie,Origin:'https://orbit.test','Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});return{status:response.status,body:await response.json() as any};};
   const api=(path:string,method='GET',body?:unknown)=>request(f.cookie,path,method,body);

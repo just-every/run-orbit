@@ -2327,7 +2327,7 @@
       "executable": false
     },
     "newtests/t096/browser-journeys.test.ts": {
-      "sha256": "24fed21c19ddd32dcfff01db836ac597fd65b27dd6d77b1b959bcc665cc4f984",
+      "sha256": "18200a9a29189640ae3b17eba50e2f3bd0271d2b8732201a81c3e3b624855c38",
       "executable": false
     },
     "newtests/t096/browser-observations.ts": {
@@ -10255,7 +10255,7 @@
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
-      "sha256": "1fd6516e48e345e957ca530a0be900d0a8b039a5a1659f25e7450a295e641557",
+      "sha256": "f3f1dc28a029390fa973dfa639978a9a2e2e88d50702feeb2a77db33e63248c3",
       "executable": false
     },
     "tests/core/platform-boundaries.test.ts": {
@@ -11423,7 +11423,7 @@
       "executable": false
     },
     "tests/support/sequence-authoring-proof.ts": {
-      "sha256": "e353b16000090698ec88197911c466d841a3293908f02b9a2994b00360163577",
+      "sha256": "853f3b6b20b51d6c2d954476d89bb429b6adf7a39f0d30569c696f9f18a56604",
       "executable": false
     },
     "tests/support/sign-in-domains.ts": {
