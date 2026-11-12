@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "9a1a097a6c533f2b4c39ded9112f045a2cb178e94bed295221df40c2227f66f1",
+      "sha256": "a4b7b5dd21b930ddae7f7bd64ac66b246f8ee512d1b379368a34115c6dffd9ed",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -8143,7 +8143,7 @@
       "executable": false
     },
     "src/core/features/risks/findings.ts": {
-      "sha256": "b5fc5dbea82d9a3798ffca72ea46e46975503324e1fd7a2f3065968cf578a17f",
+      "sha256": "f1820f7a1a49b1fd4e6729a252d1173e3d56c9f9ee5996f247268591fd0d79c8",
       "executable": false
     },
     "src/core/features/risks/routes.ts": {
@@ -10263,7 +10263,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "2d9fc202d8cb9e712385321d432f04bc161e09d0bf0950aa473e609815ba5647",
+      "sha256": "af730715120d29a0f83fdc7961449a6af133a2c1023492056ac7aa385bee5736",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -11204,6 +11204,10 @@
     },
     "tests/support/email-link.ts": {
       "sha256": "4ba8b133bb62bc97630c7214cfa271e4f45f085a9fdc6f49b783a748807694e1",
+      "executable": false
+    },
+    "tests/support/embedded-risk-agent-proof.ts": {
+      "sha256": "e3bfa8c1a5ccf21e38c52b6a06ea6d4ebb0455f673494b99eb2ac6c3511cc6b1",
       "executable": false
     },
     "tests/support/emitted-mail-worker.ts": {

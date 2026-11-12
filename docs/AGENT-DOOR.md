@@ -254,6 +254,8 @@ The named **Deal-risk agent** invokes `orbit.risks.read` for that deal, then
 `orbit.handoffs.read` and `orbit.handoffs.upsert` for each current undismissed
 rule finding. Proposed task titles, due times and current evidence identities
 match person-approved risk tasks, assigned to the sponsoring operator.
+Overdue promises and tasks retain their recorded due time; a finding with no
+due time files an undated task, rather than treating an event time as a deadline.
 A target and idempotency key derived from the deal, finding and cited current
 evidence prevent reruns from filing the same task again. Existing completed or
 cancelled tasks retain the person's choice. A changed finding or cited evidence
