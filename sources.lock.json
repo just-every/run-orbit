@@ -10063,7 +10063,7 @@
       "executable": false
     },
     "tests/agent-door/native-journey.mjs": {
-      "sha256": "af5b7cd74aab5ff031a0ee05b20765e070c782bbcbfe1057fdf55c2573eb794f",
+      "sha256": "5b5cb1a7c13510a2a91b96a577c46b9d850730a318f5c9eb9ff687a54a2b3a50",
       "executable": false
     },
     "tests/agent-door/workflow-fixture.mjs": {
