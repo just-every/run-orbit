@@ -6490,8 +6490,12 @@
       "sha256": "d9f339d99c81eaf9780d9b3da54e8af73c2378523f42325a831003e2413b19dd",
       "executable": false
     },
+    "src/core/features/operator/ui/ai-setup-help.tsx": {
+      "sha256": "6989a5dddd4e591d5757d0227ac67d4f2d6922f35d1a9890f4e1f7de6d61aaf0",
+      "executable": false
+    },
     "src/core/features/operator/ui/ai-usage.tsx": {
-      "sha256": "609f45ec8463a8c8651183efc29b19177ab169d77fef6f7ffa4aeec9ce194769",
+      "sha256": "aa96c0ecba649953c176a024a8885f3f72977a0087e4c3ae41261535c3f37d01",
       "executable": false
     },
     "src/core/features/operator/ui/archive-preview.ts": {
@@ -6567,11 +6571,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/calling-settings.tsx": {
-      "sha256": "6821a97cb8996cc20469b7a27f40fba7cdf0858a9b93294d7f1e5a58deb88278",
+      "sha256": "2377a6fda54705d36fbe96a31c95abd82d5c3519d479aab446ddb02e365cadc3",
       "executable": false
     },
     "src/core/features/operator/ui/capture-address-setup.tsx": {
-      "sha256": "8da5e50a486c44b1bea4e289ad47618cb5f45859b346cb10751e03120cea558e",
+      "sha256": "04abe5d4e8aa0455cb12ad9f641785ab30ccb2e6794e7ed9c3ebde110f8a9d4e",
       "executable": false
     },
     "src/core/features/operator/ui/capture-calendar-setup.tsx": {
@@ -6604,6 +6608,10 @@
     },
     "src/core/features/operator/ui/capture-guide.tsx": {
       "sha256": "62d330039f35ff6ab3bdf609b9485c131147646c2a30021997646d057233c367",
+      "executable": false
+    },
+    "src/core/features/operator/ui/capture-hosted-setup.tsx": {
+      "sha256": "c7c3618775b74a3ebb21c288dff66dde125759e3cb5697f9a30e504c7dcfff5e",
       "executable": false
     },
     "src/core/features/operator/ui/capture-mail-rule.tsx": {
@@ -6762,6 +6770,10 @@
       "sha256": "b75ec0df8ed78d0c45f7fb2fcc65205ed67a03f8f0a7710d8f63c072fdcd1872",
       "executable": false
     },
+    "src/core/features/operator/ui/integration-setup-help.tsx": {
+      "sha256": "b2a86bccb9ab4e61bc31261a7aa81a46e421f3c9e52d22b835a0a2ec2a74bdc2",
+      "executable": false
+    },
     "src/core/features/operator/ui/mail-evidence.tsx": {
       "sha256": "8e0c4fe48a554aa3a3da0102ef1b11c7eb49679a54b675647e654faee97710e5",
       "executable": false
@@ -6779,7 +6791,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-settings.tsx": {
-      "sha256": "2137b9d1a9430956ca1c403fe418ef5a589a89ff339ac82e0a52eca0eaceac36",
+      "sha256": "8033669d335fd895e3ebf445d6a25f130f223bf5def67020fa03734f5dc3a3f3",
       "executable": false
     },
     "src/core/features/operator/ui/manual-action.tsx": {
@@ -7166,6 +7178,14 @@
       "sha256": "daa9fb4190cf95b1a5ceb88e65267a82746d65ca44b04415a3b26f03ddece8dc",
       "executable": false
     },
+    "src/core/features/operator/ui/setup-help.css": {
+      "sha256": "490682e1af25084b56c5aabd846a60889a1e048b93130731ff0059d54b378607",
+      "executable": false
+    },
+    "src/core/features/operator/ui/setup-help.tsx": {
+      "sha256": "6cc932a41edab1d818751e05697bf5feff6d661d73abbd8624feb88100a6997c",
+      "executable": false
+    },
     "src/core/features/operator/ui/setup-line.tsx": {
       "sha256": "2995540136a07447aa4cc2e8bdefec06ba6e9f54d84654621774bd31fb8ceec9",
       "executable": false
@@ -7175,7 +7195,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/slack-settings.tsx": {
-      "sha256": "ae7ee0a1166171a21aba09616c6370cfdd65d7bad46657fe40b0988f5cc6734c",
+      "sha256": "b99481ed4e04afa91f8f5f63b453219cb2fdb02e30d095ab1088d949d41b5494",
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
@@ -10931,7 +10951,7 @@
       "executable": false
     },
     "tests/rer/onboarding.test.mjs": {
-      "sha256": "fc03a864a7cedfdd5f374170cd5c970421e7dbb54cf66b06b3fd94aad23694a9",
+      "sha256": "eb43fff0ea6c1d274e8cddd5b51a51dc20e481f1883dcbaea98b24af26cfac55",
       "executable": false
     },
     "tests/rer/operator-actions-journey.mjs": {
@@ -11000,6 +11020,10 @@
     },
     "tests/rer/sent-message-proof.mjs": {
       "sha256": "1f492762d3538af5e6cbe16baea9ecc21fa89e4923fa439af953544105dd2d58",
+      "executable": false
+    },
+    "tests/rer/setup-guidance.mjs": {
+      "sha256": "b4a52498be03fcac1be02d42789c1a8ced9c3a4f9a015ba8a8ca5b89eabc8102",
       "executable": false
     },
     "tests/rer/sign-in.mjs": {
