@@ -675,7 +675,7 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 **Requirement.** When the provider accepts a submission, one local transaction records the reviewed content and provider message ID as a timeline activity, completes the recommendation, sets the next action to awaiting response, moves the opportunity from NOW to NEXT, and creates one notification for the responsible operator. A replayed provider event repeats none of it. This clause governs a send linked to an open opportunity; a send with no linked open opportunity records the same timeline activity and notification and opens OUT-017's contact-level awaiting-response obligation instead of a queue move.
 
 **Acceptance.**
-1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and notification.
+1. Accept an approved send, replay its provider response and inspect one timeline message, completed action, NEXT transition and one notification for the responsible operator unless the outcome was caused by their own action, including their own immediate send outcome. The outcome remains visible on the record/timeline; this exception leaves other recipients' notices and later provider-event notices unchanged.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `src/core/features/outreach/scheduler.ts`; `tests/core/signals-outreach.test.ts`
 **Gap.** Unasserted in the carried evidence: one sent timeline activity; recommendation completed; NEXT transition (assertion is in uncited tests/core/source-onboarding.test.ts); one notification; replayed provider response has no second effect. The cited evidence does not assert this complete journey; implementation or a test title alone is not proof.
@@ -684,10 +684,10 @@ Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS
 
 Core · published · **partial** · Cites BASE-MAIL-001, BASE-ROLE-001, BASE-OPS-003 · Rules D-1
 
-**Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once, and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012.
+**Requirement.** A transient submission failure retries up to 5 times over 1 hour. A permanent failure or an exhausted retry returns the opportunity to NOW, notifies the responsible operator once unless the outcome was caused by their own action (including their own immediate send outcome), and shows the provider's reason on the message. A permanent bounce also sets the contact do-not-contact under RECORD-012. The own-action exception leaves the outcome visible on the record/timeline and leaves other recipients' notices and later provider-event notices unchanged.
 
 **Acceptance.**
-1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification and permanent-bounce stop.
+1. Fail a submission transiently, permanently and ambiguously; verify bounded known-unsent retries, visible exhausted failure, one notification unless the responsible operator's own action caused the outcome (including their own immediate send outcome), and permanent-bounce stop. Verify that the outcome remains visible on the record/timeline and that other recipients' notices and later provider-event notices are unchanged.
 
 **Evidence.** `src/core/features/outreach/service.ts`; `tests/core/outreach-limits.test.ts`; `tests/core/signals-outreach.test.ts`
 **Gap.** Unasserted in the carried evidence: ambiguous outcome distinct; permanent bounce stops contact; provider reason retained. Asserted: known-unsent retry bounded to five attempts; exhausted failure visible; one failure notification.
