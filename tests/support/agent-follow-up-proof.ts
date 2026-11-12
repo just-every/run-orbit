@@ -56,6 +56,12 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
   await adopt(mode==='held'?heldPolicy():autonomousPolicy());
   const args={...input,title:input.title+' '+mode,idempotency_key:'synthetic-orbit-obligation-'+mode};
   const result=done(await call('orbit.obligations.accept',args)),id=result.structuredContent.id;
+  const planUri=`orbit://meetings/${meeting.id}/plan`;
+  assert.ok(result.content.some((item:any)=>item.type==='resource_link'&&item.uri===planUri),'acceptance returns the existing meeting plan resource');
+  const linked=await businessCall('',{uri:planUri},{act:agent,scope:'meetings:read'},['resources','read'].join('/'),++rpc);
+  assert.equal(linked.status,200);assert.equal(linked.body.error,undefined);
+  const linkedPlan=JSON.parse(linked.body.result.contents.find((item:any)=>item.uri===planUri).text).plan;
+  assert.equal(linkedPlan.obligations.find((item:any)=>item.id===id).goalState,'open','the resource reads back the accepted obligation under current policy');
   const decision=result._meta['com.runeditrun/decision'];assert.deepEqual(decision.classes.map((c:any)=>c.class),['standard']);assert.equal(decision.disposition,mode==='held'?'review':'autonomous');
   const row=await db.prepare("SELECT actor_type,payload_json FROM timeline_entries WHERE kind='obligation.accepted' AND json_extract(payload_json,'$.obligationId')=?").bind(id).first<{actor_type:string;payload_json:string}>();
   assert.equal(row!.actor_type,'agent');const attributed=JSON.parse(row!.payload_json);assert.equal(attributed.preparedBy.agent.id,agent.sub);assert.equal(attributed.preparedBy.for.id,ownerId);assert.deepEqual(attributed.evidence,[meeting.id]);

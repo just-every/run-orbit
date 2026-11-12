@@ -731,7 +731,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "fd942dc4baabe267ef690971ce87433b5ba76cb53896c33a4e30ebf3f4fd3b44",
+      "sha256": "91af484fbb7175ebb82274eec8f386517a291e0010492e291ac572eb32c2afe3",
       "executable": false
     },
     "docs/API-CREDENTIALS.md": {
@@ -5347,7 +5347,7 @@
       "executable": false
     },
     "src/core/features/agent-door/obligations.ts": {
-      "sha256": "b3cacbbe0ce092d71ac1bab2e334682e3c078c4b369c07ccdd17f42bd2a609c1",
+      "sha256": "44a6ac3a4bd40d2f2b77162cc56f1d05b8e9b286a6641d12e425c336a8f768ca",
       "executable": false
     },
     "src/core/features/agent-door/operator-erasure.ts": {
@@ -7883,7 +7883,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "82fb606a42c9c17301c0fda1e32ba2808295b448beeef536346fb0e06d43d38c",
+      "sha256": "b88c2ee06818a833c5cc26756a9b0723348b24aa7fd2a6bf38e2db854b820f9a",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -11087,7 +11087,7 @@
       "executable": false
     },
     "tests/support/agent-follow-up-proof.ts": {
-      "sha256": "f7f663f912a41ae6cdc472ce1b2a26b8b20134f284714f170cb9a6e7aa98b8f5",
+      "sha256": "23f55c32aa70a41b1811a017ea2fd3925698d4be8b8eb6446e2429f045f59f9c",
       "executable": false
     },
     "tests/support/agent-report-deletion-proof.ts": {

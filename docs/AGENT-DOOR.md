@@ -259,6 +259,10 @@ to `/api/v1/obligations/<id>/stop`. These native doors retain the existing
 session, current-role and restore fences. A mail failure remains visible with
 a link to review the exact saved draft; it never closes the advancement goal.
 
+Acceptance also returns the existing meeting-plan resource link, readable with
+`meetings:read`, so the caller can inspect the accepted obligation under the current
+company policy. The link supplies no additional authority.
+
 Pass the returned obligation ID as `obligation_id` to `orbit.drafts.create` to bind
 one unsent draft. Use the existing draft read and update calls to prepare exact
 content; a person still approves its current revision natively. Cited
