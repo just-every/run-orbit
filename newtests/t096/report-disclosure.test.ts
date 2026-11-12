@@ -43,7 +43,7 @@ before(async()=>{
 });
 after(async()=>{await browser?.close();await worker?.dispose();await f?.close();});
 
-test('REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence',async()=>{
+test('REPORT-002 REPORT-003 REPORT-004 an owner’s tile board links viewer-fenced saved definitions at their versions and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence',async()=>{
  // Each width's report gets a generated id; later steps (dashboard access, sharing) use the ids read from the POST bodies.
  const disclosed:Record<number,string>={};
  for(const width of [1440,390]){
