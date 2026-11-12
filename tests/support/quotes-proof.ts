@@ -69,5 +69,15 @@ export async function exerciseQuotes(){
  assert.deepEqual((await t.json<any>(path,{},200)).versions,[],'erasure withdraws every linked quote snapshot');
  assert.equal((await t.call(`${path}/versions/2/review`,{body:{}})).status,404,'an old review never resurrects erased history');
  assert.ok(!(await t.json<any>(`/api/v1/risks/${deal}/findings`,{},200)).evidence.some((line:any)=>[v1.id,v2.id].includes(line.id)));
+ // A version keeps its privacy attribution when the person is later removed from the deal.
+ const detachedEmail=['synthetic-orbit-167','example.test'].join('@'),detachedDeal=await t.opportunity('Synthetic detached quote','Synthetic detached buyer','Detached buyer',detachedEmail);
+ const detachedContact=(await t.json<any>(`/api/v1/opportunities/${detachedDeal}`,{},200)).opportunity.contacts[0].id;
+ await t.json(`${base}/deals/${detachedDeal}`,{body:{...updated,baseVersion:0,lines:[updated.lines[0],{...second,quantity:1,overrideUnitPriceCents:24000,overrideReason:'Reviewed detached concession'}]}},201);
+ const detachedContext=await t.json<any>(`/api/v1/relationships/opportunity/${detachedDeal}`,{},200);
+ await t.json(`/api/v1/relationships/opportunity/${detachedDeal}`,{method:'PUT',body:{revision:detachedContext.revision,companyId:detachedContext.company?.id??null,primaryContactId:null,stakeholders:[],products:detachedContext.products,nextStep:detachedContext.nextStep,mutualCommitments:detachedContext.mutualCommitments}},200);
+ await t.json(`/api/v1/records/contact/${detachedContact}`,{method:'DELETE',body:{confirmed:true}},200);
+ assert.deepEqual((await t.json<any>(`${base}/deals/${detachedDeal}`,{},200)).versions,[],'Historical quote attribution survives detachment for privacy erasure');
+ assert.deepEqual((await t.json<any>(`${base}/deals/${inclusiveDeal}`,{},200)).versions,[inclusive],'Erasure preserves an unrelated customer’s complete quote');
+
  }finally{await source.dispose();}
 }

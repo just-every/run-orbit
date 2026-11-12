@@ -27,7 +27,8 @@ export async function createVersion(db:D1Database,actor:string,deal:string,input
   const unitPriceCents=line.overrideUnitPriceCents??price.unitPriceCents;
   lines.push({productId:line.productId,priceId:line.priceId,name:price.name,quantity:line.quantity,bookUnitPriceCents:price.unitPriceCents,unitPriceCents,override,overrideReason:override?line.overrideReason:null,discountCents:line.discountCents,totalCents:lineTotal(unitPriceCents,line.quantity,line.discountCents)});
  }
- const content:QuoteContent={currency:'USD',issuedOn,expiresOn:input.expiresOn,lines,discountCents:input.discountCents,tax:input.tax,...quoteTotals(lines,input.discountCents,input.tax)},id=createId();
+ const contactIds=(await db.prepare('SELECT contact_id FROM opportunity_contacts WHERE opportunity_id=? ORDER BY contact_id').bind(deal).all<{contact_id:string}>()).results.map(row=>row.contact_id);
+ const content:QuoteContent={currency:'USD',contactIds,issuedOn,expiresOn:input.expiresOn,lines,discountCents:input.discountCents,tax:input.tax,...quoteTotals(lines,input.discountCents,input.tax)},id=createId();
  try{await db.batch([db.prepare('INSERT INTO quote_versions VALUES(?,?,?,?,?,?)').bind(id,deal,version+1,JSON.stringify(content),actor,at),audit(db,actor,'quote.version.created','opportunity',deal,{version:version+1})]);}
  catch(error){if(String(error).includes('UNIQUE constraint')){const current=(await quoteHistory(db,deal))[0];throw new RecordError(409,`Quote changed. Current quote is version ${current?.version??0}. Review it before editing.`);}throw error;}
  return {id,version:version+1,createdBy:actor,createdAt:at,content};
