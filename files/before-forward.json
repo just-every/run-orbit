@@ -1,0 +1,8 @@
+{
+  "name": "before-forward",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+  "exit": 1,
+  "startedAt": "2026-11-12T19:02:47.805920+00:00",
+  "finishedAt": "2026-11-12T19:06:13.334614+00:00"
+}

@@ -1,0 +1,6 @@
+{
+  "oldPath": "migrations/core/0081_meeting_follow_up.sql",
+  "newPath": "migrations/core/0085_meeting_follow_up.sql",
+  "sameBytes": true,
+  "sha256": "164e4b2d44f68fcc3daed21699a2516864bb71e71013f41611eed8b2db7c9296"
+}

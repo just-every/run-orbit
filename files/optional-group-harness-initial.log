@@ -1,0 +1,23 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Transform failed with 3 errors:
+/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.ts:4:33: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.ts:5:72: ERROR: Top-level await is currently not supported with the "cjs" output format
+/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.ts:6:23: ERROR: Top-level await is currently not supported with the "cjs" output format
+    at failureErrorWithLog (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1752:15)
+    at /workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:1019:50
+    at responseCallbacks.<computed> (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:886:9)
+    at handleIncomingPacket (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:941:12)
+    at Socket.readFromStdout (/workspace/run-orbit/node_modules/.pnpm/esbuild@0.28.2/node_modules/esbuild/lib/main.js:864:7)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  name: 'TransformError'
+}
+
+Node.js v24.19.0

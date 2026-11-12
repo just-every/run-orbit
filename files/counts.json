@@ -1,0 +1,24 @@
+{
+  "clauseCountsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "clauseCountsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "registeredBefore": 198,
+  "registeredAfter": 198,
+  "qualificationsBefore": 2,
+  "qualificationsAfter": 2,
+  "totalTestsBefore": 200,
+  "totalTestsAfter": 200,
+  "generationEntriesBefore": 33,
+  "generationEntriesAfter": 32,
+  "migrationFilesBefore": 77,
+  "migrationFilesAfter": 77
+}

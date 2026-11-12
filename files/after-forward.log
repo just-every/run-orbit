@@ -1,0 +1,16 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":130,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3128.4660710000026,"status":201},{"operation":"GET /exports/01M78K4HT47DMWZ05NS99M4F7X","milliseconds":68.45205100000021,"status":200},{"operation":"POST /exports/01M78K4HT47DMWZ05NS99M4F7X/advance","milliseconds":4269.461769000016,"status":200},{"operation":"POST /exports/01M78K4HT47DMWZ05NS99M4F7X/advance","milliseconds":2884.9937829999835,"status":200},{"operation":"POST /exports/01M78K4HT47DMWZ05NS99M4F7X/advance","milliseconds":2647.7644590000273,"status":200},{"operation":"POST /exports/01M78K4HT47DMWZ05NS99M4F7X/advance","milliseconds":1379.4844269999885,"status":200},{"operation":"GET /exports/01M78K4HT47DMWZ05NS99M4F7X/download","milliseconds":55.858605000015814,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":130,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3179.586826999963,"status":201},{"operation":"GET /exports/01M78KB0DDHZDBZMGPFY5J0A83","milliseconds":54.39441300003091,"status":200},{"operation":"POST /exports/01M78KB0DDHZDBZMGPFY5J0A83/advance","milliseconds":4407.230571000022,"status":200},{"operation":"POST /exports/01M78KB0DDHZDBZMGPFY5J0A83/advance","milliseconds":2784.280993000022,"status":200},{"operation":"POST /exports/01M78KB0DDHZDBZMGPFY5J0A83/advance","milliseconds":2945.7632710000034,"status":200},{"operation":"POST /exports/01M78KB0DDHZDBZMGPFY5J0A83/advance","milliseconds":1287.6573649999918,"status":200},{"operation":"GET /exports/01M78KB0DDHZDBZMGPFY5J0A83/download","milliseconds":60.21111999999266,"status":200}]}
+OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+✔ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (454127.562452ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 457206.47869

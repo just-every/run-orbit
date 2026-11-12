@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+const root=process.cwd();
+const {validateTransferManifest}=await import(pathToFileURL(root+'/src/core/shared/archive-transfer-profile.ts').href);
+const {selectedFoldTables,knownNativeAdditions,obligationArchiveTables}=await import(pathToFileURL(root+'/src/core/shared/archive-lineage.ts').href);
+const {validateManifest:parse}=await import(pathToFileURL(root+'/src/core/shared/archive-file.ts').href);
+const tables=[...selectedFoldTables,...knownNativeAdditions].map(name=>({name,columns:['id'],rows:0}));
+const current={format:'orbit-export',version:3,generation:'orbit-fold-1',schemaHash:'a'.repeat(64),exportedAt:'2026-11-12T00:00:00.000Z',tables,parts:0,rows:0};
+validateTransferManifest(current,parse);
+validateTransferManifest({...current,tables:tables.filter(t=>!obligationArchiveTables.includes(t.name))},parse);
+for(const name of obligationArchiveTables)assert.throws(()=>validateTransferManifest({...current,tables:tables.filter(t=>t.name!==name)},parse));
+assert.throws(()=>validateTransferManifest({...current,tables:[...tables,tables[0]]},parse));
+assert.throws(()=>validateTransferManifest({...current,tables:tables.filter(t=>t.name!=='sales_tasks')},parse));
+console.log(JSON.stringify({completeObligationsAccepted:true,preObligationsAccepted:true,eachPartialObligationGroupRefused:true,duplicatesRefused:true,incompleteSiblingGroupRefused:true}));

@@ -1,0 +1,2 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+{"migrations":77,"latest":["0081_graph_proposals.sql","0085_meeting_follow_up.sql"],"ledgerMatches":true,"deploymentMatches":true,"corruptHashRefused":true,"duplicateRefused":true}

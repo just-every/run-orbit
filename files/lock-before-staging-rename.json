@@ -1,0 +1,8 @@
+{
+  "name": "lock",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "command": "cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock && cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "exit": 1,
+  "startedAt": "2026-11-12T19:08:47.976492+00:00",
+  "finishedAt": "2026-11-12T19:08:49.327262+00:00"
+}

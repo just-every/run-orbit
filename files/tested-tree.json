@@ -1,0 +1,16 @@
+{
+  "tree": "9fffa25bb654c0b6558ee540f00cd0f184ba33e7",
+  "unchangedRegressionCases": [
+    {
+      "path": "tests/core/onboarding-archive.test.ts",
+      "unchangedFromFailedCandidate": true,
+      "sha256": "69e0f5994d05ae4927b418247db1819c750d71cd9fa29cf8cb3eca0045d39f53"
+    },
+    {
+      "path": "newtests/t096/forward-upgrade.test.ts",
+      "unchangedFromFailedCandidate": true,
+      "sha256": "a1feb49cb10575ee6e20aeeb2aede10b27ee518e229891c66a2e42891b7aa888"
+    }
+  ],
+  "worktreeMatchesIndex": true
+}

@@ -1,0 +1,8 @@
+{
+  "name": "optional-group",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "command": "cloud_run pnpm exec tsx \"$HOME/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.mts\"",
+  "exit": 0,
+  "startedAt": "2026-11-12T19:08:33.724165+00:00",
+  "finishedAt": "2026-11-12T19:08:35.357363+00:00"
+}

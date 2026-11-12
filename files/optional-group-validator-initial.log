@@ -1,0 +1,21 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.mts:7
+const parse=(value:unknown)=>manifestSchema.parse(value);
+                                            ^
+
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "generation",
+      "schemaHash"
+    ],
+    "path": [],
+    "message": "Unrecognized keys: \"generation\", \"schemaHash\""
+  }
+]
+    at parse (/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.mts:7:45)
+    at validateTransferManifest (/workspace/run-orbit/src/core/shared/archive-transfer-profile.ts:13:83)
+    at <anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.mts:10:1)
+
+Node.js v24.19.0

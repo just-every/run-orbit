@@ -1,0 +1,221 @@
+{
+  "checks": [
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/onboarding-archive.test.ts",
+      "exit": 1,
+      "finishedAt": "2026-11-12T19:02:47.772674+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "before-onboarding.log",
+      "logSha256": "a4bc0388ff6fe3b078d5ddf92e60c9e49dcd92a412488cd9cd6091a6ae3c14d2",
+      "name": "before-onboarding",
+      "startedAt": "2026-11-12T19:01:30.537768+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+      "exit": 1,
+      "finishedAt": "2026-11-12T19:06:13.334614+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "before-forward.log",
+      "logSha256": "3d171a78f10361d37c57bb29cb686970f1194142750e24505d4b4782a8431ffa",
+      "name": "before-forward",
+      "startedAt": "2026-11-12T19:02:47.805920+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/onboarding-archive.test.ts",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:15:25.994655+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "after-onboarding.log",
+      "logSha256": "a2072442a95320664d1b75b7910e19d5c5c7ac965f20e27e6e3c32f1971ce9c1",
+      "name": "after-onboarding",
+      "startedAt": "2026-11-12T19:06:59.415600+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:23:04.747184+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "after-forward.log",
+      "logSha256": "293418de60f8449f53eadc844c8558158cc386c4e760c652c52b2d6ba92e2a78",
+      "name": "after-forward",
+      "startedAt": "2026-11-12T19:15:26.058355+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:37:25.534222+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "merged-managed-owner.log",
+      "logSha256": "a21483712f4be24e275018e0574c17455421b819639f308d15d731ce7e5bfb31",
+      "name": "merged-managed-owner",
+      "startedAt": "2026-11-12T19:23:04.774370+00:00"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:07:32.890671+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "build.log",
+      "logSha256": "e49a1c3f62f505140ecef36c2105cbac4617846294b94ff95f56fb48e689d15f",
+      "name": "build",
+      "startedAt": "2026-11-12T19:07:20.269761+00:00"
+    },
+    {
+      "command": "cloud_run pnpm run deployment:spec && cloud_run pnpm run deployment:check",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:07:35.416493+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "deployment.log",
+      "logSha256": "f8e43c4bd0ef4b812e294b80366ffeb55a234d3090a1c7382642981b082d5b63",
+      "name": "deployment",
+      "startedAt": "2026-11-12T19:07:32.926238+00:00"
+    },
+    {
+      "command": "cloud_run pnpm run typecheck",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:07:58.826167+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "typecheck.log",
+      "logSha256": "f666043b9e5f65dce1e0a87f18512dc4b204bb3392f4662342034f5731c7d2bb",
+      "name": "typecheck",
+      "startedAt": "2026-11-12T19:07:35.451454+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:08:01.325041+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "first-party.log",
+      "logSha256": "0be1c32f376f15c72452fd602286b701e3a1fc7ff2cc7add4b5b721266c84cbc",
+      "name": "first-party",
+      "startedAt": "2026-11-12T19:07:58.860010+00:00"
+    },
+    {
+      "command": "cloud_run node src/base/contract-docs.mjs write && cloud_run node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:07:48.519205+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "views.log",
+      "logSha256": "6a628329da8520c35e590d7ce58c0f873b34db5c78da00757af922c2b95ae442",
+      "name": "views",
+      "startedAt": "2026-11-12T19:07:47.007182+00:00"
+    },
+    {
+      "command": "cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock && cloud_run node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:09:29.234537+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "lock.log",
+      "logSha256": "972a09d21aa896453c793f75f6b32f200ba1017ff605c1e8cdcd54db6691e614",
+      "name": "lock",
+      "startedAt": "2026-11-12T19:09:26.612077+00:00"
+    },
+    {
+      "command": "cloud_run node \"$HOME/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/migration-ledger.mjs\"",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:08:11.741012+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "migration-ledger.log",
+      "logSha256": "1fb4500430127d78d700ca8359ee58f9dc7ad2971e3a4014462d17c4d92a55bc",
+      "name": "migration-ledger",
+      "startedAt": "2026-11-12T19:08:10.461048+00:00"
+    },
+    {
+      "command": "cloud_run pnpm run agent:surface",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:08:16.384708+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "agent-surface.log",
+      "logSha256": "e806e3a665e6d83c78267b5c1288fd66c097b3a194d01a7e662195f4056e248d",
+      "name": "agent-surface",
+      "startedAt": "2026-11-12T19:08:11.774731+00:00"
+    },
+    {
+      "command": "cloud_run pnpm run check:boundaries",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:08:18.026404+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "boundaries.log",
+      "logSha256": "1de4ead981bfe750cbea70e0afe983bb3a0c7a01ab2a8ab3d8989b928df8a9a1",
+      "name": "boundaries",
+      "startedAt": "2026-11-12T19:08:16.413933+00:00"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx \"$HOME/rer-consolidation/work/sd-orbit-c-f173-fix1/packet/optional-group-probe.mts\"",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:08:35.357363+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "optional-group.log",
+      "logSha256": "504772f9f5bc79751ace39a5cc7ceb592564f510034f3f7870e651680e1c2f28",
+      "name": "optional-group",
+      "startedAt": "2026-11-12T19:08:33.724165+00:00"
+    },
+    {
+      "command": "cloud_run node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "finishedAt": "2026-11-12T19:07:50.268318+00:00",
+      "head": "97348c587039a6456d3496f58a0b514a462db641",
+      "logFile": "test-count.log",
+      "logSha256": "0c21f4c4ad7723be847b1561a76231671991f17f6fe14c179d1e72f83cf8e296",
+      "name": "test-count",
+      "startedAt": "2026-11-12T19:07:48.567255+00:00"
+    }
+  ],
+  "ci": {
+    "githubCalls": 8,
+    "head": "3cbfd12a47993ba5c90c312f79e53c6f43e7f257",
+    "run": {
+      "conclusion": "success",
+      "event": "push",
+      "head_branch": "cloud/sd-orbit-c-f173-fix1",
+      "head_sha": "3cbfd12a47993ba5c90c312f79e53c6f43e7f257",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43292124952",
+      "id": 43292124952,
+      "status": "completed"
+    },
+    "state": "completed"
+  },
+  "counts": {
+    "clauseCountsAfter": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130,
+      "total": 204
+    },
+    "clauseCountsBefore": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130,
+      "total": 204
+    },
+    "generationEntriesAfter": 32,
+    "generationEntriesBefore": 33,
+    "migrationFilesAfter": 77,
+    "migrationFilesBefore": 77,
+    "qualificationsAfter": 2,
+    "qualificationsBefore": 2,
+    "registeredAfter": 198,
+    "registeredBefore": 198,
+    "totalTestsAfter": 200,
+    "totalTestsBefore": 200
+  },
+  "localRuntimeBytesBoundBy": [
+    "tested-tree.json",
+    "tested-source-files.json",
+    "final-provenance.json"
+  ],
+  "productHead": "3cbfd12a47993ba5c90c312f79e53c6f43e7f257",
+  "push": {
+    "at": "2026-11-12T19:39:04.987262+00:00",
+    "attempts": 1,
+    "branch": "cloud/sd-orbit-c-f173-fix1",
+    "exit": 0,
+    "head": "3cbfd12a47993ba5c90c312f79e53c6f43e7f257",
+    "remoteHeadVerified": true,
+    "repository": "just-every/run-orbit"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-c-f173-fix1",
+  "testedTree": "9fffa25bb654c0b6558ee540f00cd0f184ba33e7"
+}

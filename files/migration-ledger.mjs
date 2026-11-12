@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+const root=process.cwd();
+const {migrationInventory,mapMigrationLedger}=await import(pathToFileURL(root+'/node_modules/@runeditrun/rer/cli/portability-migrations.mjs'));
+const files=await migrationInventory(root,'DB',{});
+const mapped=await mapMigrationLedger({root,entries:files});
+assert.deepEqual(mapped,files);
+const spec=JSON.parse(await readFile('management/integration/deployment-spec.json','utf8'));
+assert.deepEqual(spec.migrations.filter(row=>row.binding==='DB').map(({name,sha256})=>({name,sha256})),files);
+const newer=files.filter(row=>Number.parseInt(row.name)>=81).map(row=>row.name);
+assert.equal(new Set(newer.map(name=>name.split('_')[0])).size,newer.length);
+assert.ok(newer.indexOf('0081_graph_proposals.sql')<newer.indexOf('0085_meeting_follow_up.sql'));
+assert.ok(!files.some(row=>row.name==='0081_meeting_follow_up.sql'));
+await assert.rejects(mapMigrationLedger({root,entries:[{...files.at(-1),sha256:'0'.repeat(64)}]}));
+await assert.rejects(mapMigrationLedger({root,entries:[files.at(-1),files.at(-1)]}));
+console.log(JSON.stringify({migrations:files.length,latest:newer,ledgerMatches:true,deploymentMatches:true,corruptHashRefused:true,duplicateRefused:true}));

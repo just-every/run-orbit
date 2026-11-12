@@ -1,0 +1,8 @@
+{
+  "name": "after-onboarding",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "command": "cloud_run pnpm exec tsx --test --test-concurrency=1 tests/core/onboarding-archive.test.ts",
+  "exit": 0,
+  "startedAt": "2026-11-12T19:06:59.415600+00:00",
+  "finishedAt": "2026-11-12T19:15:25.994655+00:00"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "deployment",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "command": "cloud_run pnpm run deployment:spec && cloud_run pnpm run deployment:check",
+  "exit": 0,
+  "startedAt": "2026-11-12T19:07:32.926238+00:00",
+  "finishedAt": "2026-11-12T19:07:35.416493+00:00"
+}
