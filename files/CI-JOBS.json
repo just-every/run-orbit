@@ -1,0 +1,4845 @@
+{
+  "total_count": 27,
+  "jobs": [
+    {
+      "id": 130853130565,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed3RRRQ",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130853130565",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130853130565",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:17:19Z",
+      "started_at": "2026-11-11T23:17:21Z",
+      "completed_at": "2026-11-11T23:17:41Z",
+      "name": "plan",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:17:22Z",
+          "completed_at": "2026-11-11T23:17:23Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:17:23Z",
+          "completed_at": "2026-11-11T23:17:26Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:17:26Z",
+          "completed_at": "2026-11-11T23:17:27Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:17:27Z",
+          "completed_at": "2026-11-11T23:17:32Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:17:32Z",
+          "completed_at": "2026-11-11T23:17:32Z"
+        },
+        {
+          "name": "Install the plan's TypeScript reader",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:17:32Z",
+          "completed_at": "2026-11-11T23:17:36Z"
+        },
+        {
+          "name": "Look up complete nightly marker",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-11T23:17:36Z",
+          "completed_at": "2026-11-11T23:17:36Z"
+        },
+        {
+          "name": "Select coverage with Base's planner and Orbit's unchanged partitions",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:17:36Z",
+          "completed_at": "2026-11-11T23:17:39Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:17:39Z",
+          "completed_at": "2026-11-11T23:17:39Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:17:39Z",
+          "completed_at": "2026-11-11T23:17:39Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-11T23:17:39Z",
+          "completed_at": "2026-11-11T23:17:39Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:17:39Z",
+          "completed_at": "2026-11-11T23:17:39Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130853130565",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309127,
+      "runner_name": "GitHub Actions 1000309127",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130853290143,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed3bAnw",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130853290143",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130853290143",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:17:41Z",
+      "started_at": "2026-11-11T23:17:43Z",
+      "completed_at": "2026-11-11T23:19:53Z",
+      "name": "source and shared build",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:17:44Z",
+          "completed_at": "2026-11-11T23:17:46Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:17:46Z",
+          "completed_at": "2026-11-11T23:17:55Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:17:55Z",
+          "completed_at": "2026-11-11T23:17:56Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:17:56Z",
+          "completed_at": "2026-11-11T23:18:01Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:18:01Z",
+          "completed_at": "2026-11-11T23:18:01Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:18:01Z",
+          "completed_at": "2026-11-11T23:18:05Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:18:05Z",
+          "completed_at": "2026-11-11T23:18:11Z"
+        },
+        {
+          "name": "Verify source, types, boundaries and the single shared app build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:18:11Z",
+          "completed_at": "2026-11-11T23:19:39Z"
+        },
+        {
+          "name": "Retain clean authoritative source candidate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:19:39Z",
+          "completed_at": "2026-11-11T23:19:42Z"
+        },
+        {
+          "name": "Seal the emitted app for this exact commit",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:19:42Z",
+          "completed_at": "2026-11-11T23:19:42Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:19:42Z",
+          "completed_at": "2026-11-11T23:19:44Z"
+        },
+        {
+          "name": "Retain source shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:19:44Z",
+          "completed_at": "2026-11-11T23:19:45Z"
+        },
+        {
+          "name": "Retain authoritative source candidate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:19:45Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-11T23:19:49Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-11T23:19:49Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-11T23:19:49Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-11-11T23:19:49Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-11-11T23:19:49Z",
+          "completed_at": "2026-11-11T23:19:49Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130853290143",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309128,
+      "runner_name": "GitHub Actions 1000309128",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130853292720,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed3bKsA",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130853292720",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130853292720",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-11T23:17:41Z",
+      "started_at": "2026-11-11T23:17:41Z",
+      "completed_at": "2026-11-11T23:17:41Z",
+      "name": "light",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130853292720",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 130854267046,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wopg",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267046",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267046",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:32:56Z",
+      "name": "shards (batch-10)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:16Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:16Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:32:50Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:32:50Z",
+          "completed_at": "2026-11-11T23:32:50Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:32:50Z",
+          "completed_at": "2026-11-11T23:32:51Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:32:51Z",
+          "completed_at": "2026-11-11T23:32:52Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:32:52Z",
+          "completed_at": "2026-11-11T23:32:52Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:32:52Z",
+          "completed_at": "2026-11-11T23:32:53Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:32:53Z",
+          "completed_at": "2026-11-11T23:32:53Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:32:53Z",
+          "completed_at": "2026-11-11T23:32:53Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:32:53Z",
+          "completed_at": "2026-11-11T23:32:53Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267046",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309131,
+      "runner_name": "GitHub Actions 1000309131",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267055,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Worw",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267055",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267055",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:37:34Z",
+      "name": "shards (batch-4)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:08Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:08Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:14Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:14Z",
+          "completed_at": "2026-11-11T23:20:15Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:15Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:29Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:29Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:36Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:36Z",
+          "completed_at": "2026-11-11T23:20:38Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:38Z",
+          "completed_at": "2026-11-11T23:20:38Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:38Z",
+          "completed_at": "2026-11-11T23:37:24Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:37:24Z",
+          "completed_at": "2026-11-11T23:37:24Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:37:24Z",
+          "completed_at": "2026-11-11T23:37:25Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:37:25Z",
+          "completed_at": "2026-11-11T23:37:29Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:37:29Z",
+          "completed_at": "2026-11-11T23:37:29Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:37:29Z",
+          "completed_at": "2026-11-11T23:37:29Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:37:29Z",
+          "completed_at": "2026-11-11T23:37:29Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:37:29Z",
+          "completed_at": "2026-11-11T23:37:30Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:37:30Z",
+          "completed_at": "2026-11-11T23:37:30Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:37:30Z",
+          "completed_at": "2026-11-11T23:37:30Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267055",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309133,
+      "runner_name": "GitHub Actions 1000309133",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267066,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Woug",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267066",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267066",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:36:29Z",
+      "name": "shards (batch-2)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:57Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:20:03Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:03Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:21Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:21Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:36:25Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:36:25Z",
+          "completed_at": "2026-11-11T23:36:25Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:36:25Z",
+          "completed_at": "2026-11-11T23:36:26Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:36:26Z",
+          "completed_at": "2026-11-11T23:36:26Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:36:26Z",
+          "completed_at": "2026-11-11T23:36:27Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:36:27Z",
+          "completed_at": "2026-11-11T23:36:27Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:36:27Z",
+          "completed_at": "2026-11-11T23:36:27Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:36:27Z",
+          "completed_at": "2026-11-11T23:36:27Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:36:27Z",
+          "completed_at": "2026-11-11T23:36:27Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267066",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309135,
+      "runner_name": "GitHub Actions 1000309135",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267075,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Woww",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267075",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267075",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:31:39Z",
+      "name": "shards (batch-19)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:07Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:07Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:16Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:16Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:31:32Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:31:32Z",
+          "completed_at": "2026-11-11T23:31:32Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:31:32Z",
+          "completed_at": "2026-11-11T23:31:34Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:31:34Z",
+          "completed_at": "2026-11-11T23:31:35Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:31:35Z",
+          "completed_at": "2026-11-11T23:31:35Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:31:35Z",
+          "completed_at": "2026-11-11T23:31:35Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:31:35Z",
+          "completed_at": "2026-11-11T23:31:35Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:31:35Z",
+          "completed_at": "2026-11-11T23:31:36Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:31:36Z",
+          "completed_at": "2026-11-11T23:31:36Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267075",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309132,
+      "runner_name": "GitHub Actions 1000309132",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267084,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WozA",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267084",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267084",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:34:10Z",
+      "name": "shards (batch-6)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:14Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:14Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:30Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:30Z",
+          "completed_at": "2026-11-11T23:20:30Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:30Z",
+          "completed_at": "2026-11-11T23:34:04Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:34:04Z",
+          "completed_at": "2026-11-11T23:34:04Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:34:04Z",
+          "completed_at": "2026-11-11T23:34:05Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:34:05Z",
+          "completed_at": "2026-11-11T23:34:06Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:34:06Z",
+          "completed_at": "2026-11-11T23:34:06Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:34:06Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267084",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309130,
+      "runner_name": "GitHub Actions 1000309130",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267105,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wo4Q",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267105",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267105",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:38:16Z",
+      "name": "shards (batch-15)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:15Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:15Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:30Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:30Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:38:09Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:38:09Z",
+          "completed_at": "2026-11-11T23:38:09Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:38:09Z",
+          "completed_at": "2026-11-11T23:38:10Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:38:10Z",
+          "completed_at": "2026-11-11T23:38:12Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:38:12Z",
+          "completed_at": "2026-11-11T23:38:12Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:38:12Z",
+          "completed_at": "2026-11-11T23:38:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:38:12Z",
+          "completed_at": "2026-11-11T23:38:12Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:38:12Z",
+          "completed_at": "2026-11-11T23:38:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:38:12Z",
+          "completed_at": "2026-11-11T23:38:13Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:38:13Z",
+          "completed_at": "2026-11-11T23:38:13Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267105",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309136,
+      "runner_name": "GitHub Actions 1000309136",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267111,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wo5w",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267111",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267111",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:34:36Z",
+      "name": "shards (batch-0)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:07Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:07Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:13Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:13Z",
+          "completed_at": "2026-11-11T23:20:15Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:15Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:34:20Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:34:20Z",
+          "completed_at": "2026-11-11T23:34:20Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:34:20Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:22Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:34:22Z",
+          "completed_at": "2026-11-11T23:34:22Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:34:22Z",
+          "completed_at": "2026-11-11T23:34:22Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:34:22Z",
+          "completed_at": "2026-11-11T23:34:22Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:34:22Z",
+          "completed_at": "2026-11-11T23:34:22Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:34:22Z",
+          "completed_at": "2026-11-11T23:34:23Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267111",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309134,
+      "runner_name": "GitHub Actions 1000309134",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267175,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WpJw",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267175",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267175",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:30:07Z",
+      "name": "shards (batch-8)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:10Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:10Z",
+          "completed_at": "2026-11-11T23:20:10Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:10Z",
+          "completed_at": "2026-11-11T23:20:13Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:13Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:30:00Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:30:00Z",
+          "completed_at": "2026-11-11T23:30:00Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:30:00Z",
+          "completed_at": "2026-11-11T23:30:01Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:30:01Z",
+          "completed_at": "2026-11-11T23:30:03Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:30:03Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:30:04Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:30:04Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:30:04Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:30:04Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:30:04Z",
+          "completed_at": "2026-11-11T23:30:04Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267175",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309139,
+      "runner_name": "GitHub Actions 1000309139",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267207,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WpRw",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267207",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267207",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:34:13Z",
+      "name": "shards (batch-12)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:13Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:13Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:07Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:34:07Z",
+          "completed_at": "2026-11-11T23:34:08Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:34:08Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:34:10Z",
+          "completed_at": "2026-11-11T23:34:10Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267207",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309140,
+      "runner_name": "GitHub Actions 1000309140",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267208,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WpSA",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267208",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267208",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:37:54Z",
+      "name": "shards (batch-9)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:57Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:20:03Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:03Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:20:20Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:20Z",
+          "completed_at": "2026-11-11T23:37:50Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:37:50Z",
+          "completed_at": "2026-11-11T23:37:50Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:37:50Z",
+          "completed_at": "2026-11-11T23:37:51Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:37:51Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:37:52Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:37:52Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:37:52Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:37:52Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:37:52Z",
+          "completed_at": "2026-11-11T23:37:52Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267208",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309138,
+      "runner_name": "GitHub Actions 1000309138",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267252,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WpdA",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267252",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267252",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:27:33Z",
+      "name": "shards (batch-5)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:14Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:14Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:27:26Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:27:26Z",
+          "completed_at": "2026-11-11T23:27:26Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:27:26Z",
+          "completed_at": "2026-11-11T23:27:27Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:27:27Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:27:29Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:27:29Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:27:29Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:27:29Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:27:29Z",
+          "completed_at": "2026-11-11T23:27:29Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267252",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309141,
+      "runner_name": "GitHub Actions 1000309141",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267274,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wpig",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267274",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267274",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:31:54Z",
+      "name": "shards (batch-16)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:57Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:20:03Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:03Z",
+          "completed_at": "2026-11-11T23:20:04Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:04Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:09Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:09Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:19Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:19Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:31:50Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-11T23:31:50Z",
+          "completed_at": "2026-11-11T23:31:50Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:31:50Z",
+          "completed_at": "2026-11-11T23:31:51Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:31:51Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 32,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 33,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 34,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:31:52Z",
+          "completed_at": "2026-11-11T23:31:52Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267274",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309144,
+      "runner_name": "GitHub Actions 1000309144",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267308,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WprA",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267308",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267308",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:27:16Z",
+      "name": "shards (batch-11)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:07Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:07Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:16Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:16Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:20:33Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:33Z",
+          "completed_at": "2026-11-11T23:20:33Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:33Z",
+          "completed_at": "2026-11-11T23:27:09Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:27:09Z",
+          "completed_at": "2026-11-11T23:27:09Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:27:09Z",
+          "completed_at": "2026-11-11T23:27:10Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:27:10Z",
+          "completed_at": "2026-11-11T23:27:11Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:27:11Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:27:12Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:27:12Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:27:12Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:27:12Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:27:12Z",
+          "completed_at": "2026-11-11T23:27:12Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267308",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309142,
+      "runner_name": "GitHub Actions 1000309142",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267322,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wpug",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267322",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267322",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:37:24Z",
+      "name": "shards (batch-18)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:15Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:15Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:30Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:30Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:37:16Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:37:16Z",
+          "completed_at": "2026-11-11T23:37:16Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:37:16Z",
+          "completed_at": "2026-11-11T23:37:18Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:37:18Z",
+          "completed_at": "2026-11-11T23:37:20Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:37:20Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:37:21Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:37:21Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:37:21Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:37:21Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:37:21Z",
+          "completed_at": "2026-11-11T23:37:21Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267322",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309143,
+      "runner_name": "GitHub Actions 1000309143",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267325,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WpvQ",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267325",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267325",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:33:59Z",
+      "name": "shards (batch-1)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:59Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:14Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:14Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:33:43Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:33:43Z",
+          "completed_at": "2026-11-11T23:33:43Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:33:43Z",
+          "completed_at": "2026-11-11T23:33:54Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:33:54Z",
+          "completed_at": "2026-11-11T23:33:55Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:33:55Z",
+          "completed_at": "2026-11-11T23:33:55Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:33:55Z",
+          "completed_at": "2026-11-11T23:33:56Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:33:56Z",
+          "completed_at": "2026-11-11T23:33:56Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:33:56Z",
+          "completed_at": "2026-11-11T23:33:56Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:33:56Z",
+          "completed_at": "2026-11-11T23:33:56Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267325",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309137,
+      "runner_name": "GitHub Actions 1000309137",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267360,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wp4A",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267360",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267360",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:38:46Z",
+      "name": "shards (batch-3)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:03Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:03Z",
+          "completed_at": "2026-11-11T23:20:03Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:03Z",
+          "completed_at": "2026-11-11T23:20:08Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:08Z",
+          "completed_at": "2026-11-11T23:20:08Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:08Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:17Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:17Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:20:18Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:18Z",
+          "completed_at": "2026-11-11T23:38:41Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:38:41Z",
+          "completed_at": "2026-11-11T23:38:41Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:38:41Z",
+          "completed_at": "2026-11-11T23:38:42Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:38:42Z",
+          "completed_at": "2026-11-11T23:38:43Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:38:43Z",
+          "completed_at": "2026-11-11T23:38:43Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:38:43Z",
+          "completed_at": "2026-11-11T23:38:43Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:38:43Z",
+          "completed_at": "2026-11-11T23:38:43Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:38:43Z",
+          "completed_at": "2026-11-11T23:38:43Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:38:43Z",
+          "completed_at": "2026-11-11T23:38:44Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267360",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309145,
+      "runner_name": "GitHub Actions 1000309145",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267380,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4Wp9A",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267380",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267380",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:53Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:33:16Z",
+      "name": "shards (batch-13)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:16Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:16Z",
+          "completed_at": "2026-11-11T23:20:25Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:25Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:20:34Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:34Z",
+          "completed_at": "2026-11-11T23:20:34Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:34Z",
+          "completed_at": "2026-11-11T23:33:06Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:33:06Z",
+          "completed_at": "2026-11-11T23:33:06Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:33:06Z",
+          "completed_at": "2026-11-11T23:33:08Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:33:08Z",
+          "completed_at": "2026-11-11T23:33:11Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:33:11Z",
+          "completed_at": "2026-11-11T23:33:11Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:33:11Z",
+          "completed_at": "2026-11-11T23:33:11Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:33:11Z",
+          "completed_at": "2026-11-11T23:33:11Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:33:11Z",
+          "completed_at": "2026-11-11T23:33:11Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:33:11Z",
+          "completed_at": "2026-11-11T23:33:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:33:12Z",
+          "completed_at": "2026-11-11T23:33:12Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267380",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309146,
+      "runner_name": "GitHub Actions 1000309146",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854267649,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WrAQ",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854267649",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854267649",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:54Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:34:36Z",
+      "name": "shards (batch-14)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:57Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:07Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:07Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:12Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:12Z",
+          "completed_at": "2026-11-11T23:20:16Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:16Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:26Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:26Z",
+          "completed_at": "2026-11-11T23:20:31Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:31Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:20:32Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:32Z",
+          "completed_at": "2026-11-11T23:34:17Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:34:17Z",
+          "completed_at": "2026-11-11T23:34:17Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:34:17Z",
+          "completed_at": "2026-11-11T23:34:18Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:34:18Z",
+          "completed_at": "2026-11-11T23:34:20Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32,
+          "started_at": "2026-11-11T23:34:20Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:34:21Z",
+          "completed_at": "2026-11-11T23:34:21Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854267649",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309147,
+      "runner_name": "GitHub Actions 1000309147",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854269213,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WxHQ",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854269213",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854269213",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-11T23:19:54Z",
+      "started_at": "2026-11-11T23:19:55Z",
+      "completed_at": "2026-11-11T23:28:28Z",
+      "name": "shards (batch-17)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:13Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:13Z",
+          "completed_at": "2026-11-11T23:20:22Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:22Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:28:23Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16,
+          "started_at": "2026-11-11T23:28:23Z",
+          "completed_at": "2026-11-11T23:28:23Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:28:23Z",
+          "completed_at": "2026-11-11T23:28:24Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:28:24Z",
+          "completed_at": "2026-11-11T23:28:25Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33,
+          "started_at": "2026-11-11T23:28:25Z",
+          "completed_at": "2026-11-11T23:28:26Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 34,
+          "started_at": "2026-11-11T23:28:26Z",
+          "completed_at": "2026-11-11T23:28:26Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:28:26Z",
+          "completed_at": "2026-11-11T23:28:26Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:28:26Z",
+          "completed_at": "2026-11-11T23:28:26Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:28:26Z",
+          "completed_at": "2026-11-11T23:28:26Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854269213",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309149,
+      "runner_name": "GitHub Actions 1000309149",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130854269798,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAed4WzZg",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130854269798",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130854269798",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-11T23:19:54Z",
+      "started_at": "2026-11-11T23:19:56Z",
+      "completed_at": "2026-11-11T23:28:40Z",
+      "name": "shards (batch-7)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:19:56Z",
+          "completed_at": "2026-11-11T23:19:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-11T23:19:58Z",
+          "completed_at": "2026-11-11T23:20:05Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-11T23:20:05Z",
+          "completed_at": "2026-11-11T23:20:06Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-11T23:20:06Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Set runner-owned pnpm store",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:11Z"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-11T23:20:11Z",
+          "completed_at": "2026-11-11T23:20:14Z"
+        },
+        {
+          "name": "Install pinned package CLI for every shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-11T23:20:14Z",
+          "completed_at": "2026-11-11T23:20:23Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-11T23:20:23Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Restore the exact-commit build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Check fixed verification ports are outside automatic allocation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Set runner-owned browser cache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:24Z"
+        },
+        {
+          "name": "Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-11T23:20:24Z",
+          "completed_at": "2026-11-11T23:20:27Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-11T23:20:27Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Reserve disk for local servers and immutable archive lineage",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:20:28Z"
+        },
+        {
+          "name": "Verify routine product shard",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 15,
+          "started_at": "2026-11-11T23:20:28Z",
+          "completed_at": "2026-11-11T23:28:35Z"
+        },
+        {
+          "name": "Retain rer startup diagnostics",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-11T23:28:35Z",
+          "completed_at": "2026-11-11T23:28:35Z"
+        },
+        {
+          "name": "Retain shard completion",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-11T23:28:35Z",
+          "completed_at": "2026-11-11T23:28:36Z"
+        },
+        {
+          "name": "Retain product execution evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18,
+          "started_at": "2026-11-11T23:28:36Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Post Cache fallback apt archives",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 32,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 33,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 34,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 35,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 36,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 37,
+          "started_at": "2026-11-11T23:28:38Z",
+          "completed_at": "2026-11-11T23:28:38Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130854269798",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309148,
+      "runner_name": "GitHub Actions 1000309148",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130862514819,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAeeAOCgw",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130862514819",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130862514819",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-11T23:38:46Z",
+      "started_at": "2026-11-11T23:38:48Z",
+      "completed_at": "2026-11-11T23:38:53Z",
+      "name": "verify",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-11T23:38:49Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Require a successful plan and all required work",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 2,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 3,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 4,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Run pnpm config set store-dir \"$RUNNER_TEMP/pnpm-store\" && pnpm install --frozen-lockfile --ignore-scripts",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Require every planned shard on this commit",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:50Z"
+        },
+        {
+          "name": "Retain combined routine verdicts (capacity pending)",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 9,
+          "started_at": "2026-11-11T23:38:50Z",
+          "completed_at": "2026-11-11T23:38:51Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-11T23:38:51Z",
+          "completed_at": "2026-11-11T23:38:51Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130862514819",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000309249,
+      "runner_name": "GitHub Actions 1000309249",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 130862566267,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAeeARLew",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130862566267",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130862566267",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-11T23:38:53Z",
+      "started_at": "2026-11-11T23:38:53Z",
+      "completed_at": "2026-11-11T23:38:53Z",
+      "name": "nightly-proof",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130862566267",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 130862566458,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAeeARMOg",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130862566458",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130862566458",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-11T23:38:53Z",
+      "started_at": "2026-11-11T23:38:53Z",
+      "completed_at": "2026-11-11T23:38:53Z",
+      "name": "full-push-proof",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130862566458",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    },
+    {
+      "id": 130862567388,
+      "run_id": 43118650651,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-orbit-c-f159",
+      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43118650651",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOVG0n8M8AAAAeeARP3A",
+      "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/130862567388",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651/job/130862567388",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-11T23:38:53Z",
+      "started_at": "2026-11-11T23:38:53Z",
+      "completed_at": "2026-11-11T23:38:53Z",
+      "name": "release",
+      "steps": [],
+      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/130862567388",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ]
+}

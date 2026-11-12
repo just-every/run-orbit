@@ -5575,7 +5575,7 @@
       "executable": false
     },
     "src/core/features/capture/archive.ts": {
-      "sha256": "ce22d407a7104ed2a815f56d5e8e8537457228ffa48ea04f8cc97edb0787d4d4",
+      "sha256": "c0d1faa08932e8b17b244a678431977018c95f777f9f89c2401fc1d8eaf47807",
       "executable": false
     },
     "src/core/features/capture/calendar-link/feed.ts": {
@@ -7843,7 +7843,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "8eae54fbf7401e94fbbb9f55b7795ea200c853723ae2e3f0c0f850aced933a86",
+      "sha256": "5a8c3b1215ab7a41dc17990699f0e92828b78e5eb77d60d3874ff9373d5ead81",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {

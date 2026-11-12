@@ -6,12 +6,83 @@
       "at": "2026-11-11T23:18:18.182061+00:00",
       "endpoint": "repos/just-every/run-orbit/actions/runs?head_sha=501d8ad86a4d8728ed42717ad3315adc73231d1a&per_page=100",
       "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:23:18.434940+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651",
+      "exit": 1,
+      "error": "gh: Bad credentials (HTTP 401)\n"
+    },
+    {
+      "at": "2026-11-11T23:28:19.777778+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:33:20.250525+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:38:20.760142+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:43:21.291820+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:46:22.168847+00:00",
+      "endpoint": "repos/just-every/run-orbit/actions/runs/43118650651/jobs?per_page=100",
+      "exit": 0
+    },
+    {
+      "at": "2026-11-11T23:46:48.924276+00:00",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "43118650651",
+        "--repo",
+        "just-every/run-orbit",
+        "--job",
+        "130854267274",
+        "--log-failed"
+      ],
+      "exit": 1,
+      "log": "CI-JOB-130854267274.log"
+    },
+    {
+      "at": "2026-11-11T23:46:48.925123+00:00",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "43118650651",
+        "--repo",
+        "just-every/run-orbit",
+        "--job",
+        "130854269798",
+        "--log-failed"
+      ],
+      "exit": 0,
+      "log": "CI-JOB-130854269798.log"
     }
   ],
-  "status": "in_progress",
+  "status": "completed",
   "run_id": 43118650651,
   "event": "push",
-  "conclusion": null,
+  "conclusion": "failure",
   "head_sha": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
-  "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651"
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/43118650651",
+  "refreshes": [
+    {
+      "at": "2026-11-11T23:28:19.332638+00:00",
+      "refreshExit": 0,
+      "gitSetupExit": 0,
+      "cleanupExit": 0
+    }
+  ]
 }

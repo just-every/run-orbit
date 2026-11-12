@@ -1,0 +1,9 @@
+{
+  "head": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+  "job": "shards (batch-7)",
+  "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+  "exit": 1,
+  "runner": "cloud Node 22.20.0, CI ports and shard variables; system Chromium with no sandbox",
+  "test": "newtests/t096/forward-upgrade.test.ts",
+  "failure": "0049 retains exact columns, objects, triggers and views after stripping the library additions"
+}

@@ -1,0 +1,6 @@
+{
+  "baseHead": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+  "round": 1,
+  "command": "pnpm exec tsx --test --no-test-only newtests/t096/forward-upgrade.test.ts",
+  "exit": 0
+}

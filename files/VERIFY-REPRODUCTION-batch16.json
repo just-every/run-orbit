@@ -1,0 +1,15 @@
+{
+  "head": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+  "job": "shards (batch-16)",
+  "command": "node scripts/verification-batch.mjs '[\"core-8\",\"rer-operator-small-phone\"]'",
+  "exit": 1,
+  "runner": "same cloud Node 22.20.0 and CI variables; system Chromium",
+  "failure": "Four isolated database setup subprocesses timed out at 60000 ms with ETIMEDOUT before behavior; same archive-abort setup timeout on main",
+  "failedTests": [
+    "BASE-DATA-001 abort preserves the original administrator, session and exact metadata and a concurrent export part cannot revive private transfer data",
+    "CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs",
+    "CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible",
+    "CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay"
+  ],
+  "smallPhone": "not run because the preceding core shard failed"
+}

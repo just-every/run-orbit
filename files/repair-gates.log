@@ -1,0 +1,12 @@
+typecheck: exit=0
+boundaries: exit=0
+manifest: exit=0
+agent-surface: exit=0
+deployment: exit=0
+migration-ledger: exit=0
+views-write: exit=0
+views-check: exit=0
+restore-generated-views: exit=0
+lock: exit=0
+lock-check: exit=0
+first-party: exit=0

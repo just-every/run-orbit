@@ -1,8 +1,8 @@
 {
   "repository": "just-every/run-orbit",
   "branch": "cloud/sd-orbit-c-f159",
-  "head": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
-  "recorded": "2026-11-11T23:17:48.523244+00:00",
+  "head": "328a341c2f536f013c3451500d2cb172c4738977",
+  "recorded": "2026-11-12T00:20:20.403280+00:00",
   "checks": [
     {
       "file": "managed-owner.log",
@@ -39,6 +39,14 @@
       "sha256": "7bad611e95a37546e382bf64f57091e632685099b8a611ae7cc8c4b1c7943a57",
       "bytes": 205241,
       "executedBeforeCandidateCommit": true
+    },
+    {
+      "file": "repair-forward.log",
+      "command": "pnpm exec tsx --test --no-test-only newtests/t096/forward-upgrade.test.ts",
+      "exit": 0,
+      "sha256": "e8ff1eefdbc3ee811c8dcf93e127b85fb30ba8bc38bb730bd43fce3228e7edb8",
+      "bytes": 2727,
+      "executedBeforeCandidateCommit": true
     }
   ],
   "testBudget": {
@@ -60,7 +68,7 @@
   },
   "publicationScan": {
     "status": "PENDING_FLEET",
-    "commit": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+    "commit": "328a341c2f536f013c3451500d2cb172c4738977",
     "complete": null,
     "historyScanned": null,
     "findings": null
@@ -92,5 +100,53 @@
       "sha256": "16dc896b9f5de8947180173f45eb62f766d385e6358f06ec08c99f5f77453d59",
       "inspected": true
     }
-  ]
+  ],
+  "constructionCheck": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/managed-owner.test.ts tests/core/capture-review.test.ts",
+    "processExit": 1,
+    "captureReviewRegistration": "passed",
+    "managedOwnerInitialError": "A contact requires a name or email; a job-title-only whole-record PUT was replaced by reviewed partial-save PATCH",
+    "log": "construction-touched.log"
+  },
+  "fullHistory": true,
+  "statusCellsChanged": false,
+  "assertionsRemovedOrNarrowed": false,
+  "initialCandidate": "501d8ad86a4d8728ed42717ad3315adc73231d1a",
+  "repair": {
+    "round": 1,
+    "reproducedExit": 1,
+    "correctedExit": 0,
+    "mainComparison": "same test passed historical schema identity, then failed later isolated database setup ETIMEDOUT",
+    "log": "repair-forward.log",
+    "runtimeCodeEqualsCandidate": true
+  },
+  "selectedRuntimeAndScreensUnchangedSinceInitialCandidate": [
+    "src/core/features/agent-door/graph.ts",
+    "src/core/features/capture/proposals.ts",
+    "src/core/features/operator/ui/capture-proposals.tsx",
+    "tests/support/agent-door-graph-proof.ts",
+    "tests/agent-door/graph-browser-journey.mjs"
+  ],
+  "productPush": {
+    "branch": "cloud/sd-orbit-c-f159",
+    "head": "328a341c2f536f013c3451500d2cb172c4738977",
+    "status": "pushed",
+    "log": "product-push.log"
+  },
+  "ci": {
+    "initialRun": 43118650651,
+    "initialConclusion": "failure",
+    "finalRun": 43126455998,
+    "finalStatus": "in_progress",
+    "finalConclusion": null,
+    "logicalCalls": 10,
+    "budget": 10
+  },
+  "mainComparisonWholeTestGreen": false,
+  "setupFlakes": {
+    "main": true,
+    "batch16Failures": 4,
+    "error": "ETIMEDOUT in isolatedDatabase before test behavior",
+    "assertionsChanged": false
+  }
 }

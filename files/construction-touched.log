@@ -1,0 +1,45 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person accepts, edits or declines each, and a declined change never returns for the same evidence; activated workflows use separate guarded write authority (169781.15367ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"direct-notifications","directCreateDelta":0,"colleagueDelta":1,"agentDelta":1,"automationDelta":1,"replayDelta":0,"existingRowsUnchanged":true}
+{"proof":"BASE-AGENT-001.6","mode":"content-length","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"BASE-AGENT-001.6","mode":"stream","maxBodyBytes":1048576,"oversizedBytes":1048577,"refused":413,"unchangedTables":279,"control":200,"created":1}
+{"proof":"SURFACE-013.stalled-deal","clock":"2026-11-11T22:56:14.869Z","expected":{"id":"01M4M0FZGNMPDFTBCMMW6Y2D49","evidenceId":"01M4PJWPGNJT37629DXEDHV25N","quote":"In Synthetic proposal since 2026-10-11","since":"2026-10-11T22:56:14.869Z","days":31,"intervalDays":14,"nextTask":"Agree a dated next step with Synthetic risk buyer or close the deal"},"policies":[{"mode":"autonomous","decision":"3487d63d-0035-470c-af48-9d8e55a875a2","disposition":"autonomous","classes":[{"class":"standard","facts":{"measure":1}}],"review":null},{"mode":"held","decision":"31429bb9-b9ab-42cc-9372-b28b61c26cb7","disposition":"review","classes":[{"class":"standard","facts":{"measure":1}}],"review":"0c3a6ec1-76f8-4032-a6de-37ae1b4e6c37"}],"nativeMatch":true,"salesMailModelUnchanged":true,"blockedRefused":true,"revokedRefused":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"autonomous","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"SURFACE-001.declared-non-tools","policy":"held","tools":29,"resourceTemplates":10,"nonToolClauses":["TEAM-001","TEAM-003","PUBLIC-001","PUBLIC-002","PUBLIC-003","PUBLIC-004","MOBILE-001","OPS-001","BOUNDARY-001","RECORD-008","MIGRATE-001","MIGRATE-002","MIGRATE-003"],"nativeMatch":true,"providerCalls":0,"unchangedNativeState":true}
+{"proof":"BASE-AGENT-007.5.rejected-native-write","pendingRpc":51,"retryRpc":52,"classes":["standard","sensitive"],"approval":"e197a1e8-3f23-4dad-b19d-b4472eb51ec4","revision":12,"summary_sha256":"ec65d8eb6eadf36933b8e6e7e2a8eb16bcbd0068eaaeaf61f8ea5d94afb6cd54","state":"rejected","code":"approval_rejected","successContent":false,"completionReceipt":false,"unchangedNativeState":true,"autonomousControl":{"snapshot":"a0e570a5-e99d-408a-9735-131d9e067952","addedSnapshots":1,"addedSources":1,"addedComputedEffects":1}}
+{"proof":"SURFACE-007.saved-report-deletion","autonomous":{"id":"synthetic-orbit-autonomous-delete","affected":3,"decision":"3e9adf58-5a02-45a4-8beb-3e5347a2bf67"},"approval":{"id":"bc4c51a2-60f1-408c-9023-4e87bf2da743","affected":3,"oneEffect":true},"staleScopeRefused":true,"currentAccessRefused":true,"replayWithoutEffect":true,"retainedFactsAndAttribution":true,"nativeHttpParity":true,"unansweredClassUnchanged":true}
+{"proof":"BASE-AGENT-006.3.stored-company-text","cases":[{"mode":"autonomous","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"autonomous","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"autonomous"},{"mode":"held","protectedData":false,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":false,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}}],"disposition":"review"},{"mode":"held","protectedData":true,"injected":false,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"},{"mode":"held","protectedData":true,"injected":true,"classes":[{"class":"standard","facts":{"measure":1}},{"class":"sensitive","facts":{"kind":"protected_crm_fields","measure":1}}],"disposition":"approval"}]}
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors (200414.120518ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 379179.068857
+
+✖ failing tests:
+
+test at tests/core/managed-owner.test.ts:1:9189
+✖ Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors (200414.120518ms)
+  AssertionError [ERR_ASSERTION]: /api/v1/records/contact/01M76DAC956KQPFCA4TSAJ94A7: 400 {"error":"A contact requires a name or email."}
+      at native (/workspace/run-orbit/tests/support/agent-door-graph-proof.ts:15:109)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async agentDoorGraphProof (/workspace/run-orbit/tests/support/agent-door-graph-proof.ts:64:2)
+      at async agentDoorProof (/workspace/run-orbit/tests/support/agent-door-proof.ts:225:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit/tests/core/managed-owner.test.ts:167:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,6 @@
+{
+  "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "command": "pnpm exec tsx --test --no-test-only --test-name-pattern='BASE-DATA-001 abort' tests/core/archive-transfer.test.ts",
+  "exit": 1,
+  "runner": "same cloud Node 22.20.0 and CI variables"
+}

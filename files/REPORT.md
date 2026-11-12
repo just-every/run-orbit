@@ -1,5 +1,7 @@
 # sd-orbit-c-f159
 
+Final product head: 328a341c2f536f013c3451500d2cb172c4738977 on cloud/sd-orbit-c-f159. Exact-SHA push Verify 43126455998 is in progress; the ten-call budget is exhausted. Product custody is PUSHED, not READY or landed. AGENT-001 remains PARTIAL.
+
 Repository: just-every/run-orbit. Product branch: cloud/sd-orbit-c-f159.
 
 ## Authorized plan
@@ -160,7 +162,7 @@ question acknowledgement -> no contact or role; source disconnect -> withdrawal
 and refused retained-result read; contact erasure and original call replay -> no
 recreation. Full passing command receipt is included with this packet.
 
-## Candidate custody
+## Initial candidate custody (superseded by the repaired head below)
 
 Product head: 501d8ad86a4d8728ed42717ad3315adc73231d1a.
 Branch: cloud/sd-orbit-c-f159.
@@ -172,7 +174,7 @@ branch entry point, and none was created.
 
 Every candidate author and committer is Run Edit Run fleet with the fleet
 address. Both full candidate messages and their trailers were inspected before
-both product pushes; no co-author trailer is present. CONTRACT.md and both
+the initial product pushes; no co-author trailer is present. CONTRACT.md and both
 contract view files are byte-identical to origin/main. The source lock and
 migration ledger checks pass. The working tree is clean after the candidate
 commit. Complete local logs and structured receipts accompany this report.
@@ -186,8 +188,40 @@ registry, deployment, contract source and source lock checks all pass. Local
 runtime checks ran before the final candidate commit against the same relevant
 source bytes; this is distinguished from GitHub's exact-SHA execution.
 
-Verify run 43118650651, event push, is in progress on that exact SHA at discovery.
+Initial Verify run 43118650651, event push, was in progress at discovery and subsequently failed as recorded below.
 One REST watcher uses a minimum 300-second interval. Its actual final observed
 status and call receipts are in CI.json. Publication scanning and exact-main Run
 site remain the fleet's responsibility; the cloud has not run or claimed them.
 No READY or DONE is implied by the evidence branch.
+
+## Exact candidate Verify and reproduced repair
+
+Initial candidate 501d8ad86a4d8728ed42717ad3315adc73231d1a received push Verify 43118650651, completed failure. Batch 7, job 130854269798, failed the historical native archive upgrade assertion. Before editing, the exact command `node scripts/verification-batch.mjs '["fold-domain-3"]'` ran on that clean failed SHA with Node 22.20.0 and CI variables and exited 1. Its exact assertion was: `0049 retains exact columns, objects, triggers and views after stripping the library additions`. Existing emitted browser and native collaborator cases passed in that same shard.
+
+The migration introduced question and withdrawn constraints and a source withdrawal trigger; the historical catalog projection had omitted that new generation. Repair round 1 adds the exact pre-0081 projection to the native archive reader, preserving owner objects and every existing assertion. The published migration remains unchanged. The current native catalog still retains the withdrawal trigger. The same historical upgrade test runs on unchanged main on the same cloud runner to distinguish this regression from infrastructure failures.
+
+Batch 16, job 130854267274, could not be read using the prescribed one archive command: `gh run view 43118650651 --repo just-every/run-orbit --job 130854267274 --log-failed` returned `failed to get run log: zip: not a valid zip file` (exit 1; no HTTP status or response body was supplied). No archive download retry was made. Its exact shard command runs in an isolated worktree at the failed SHA. The first archive-abort case reports a failure; that same case on unchanged main exits 1 with `spawnSync .../node ETIMEDOUT` during isolated database setup, before its behavior. This is a known infrastructure flake; no assertion or setup timeout is changed.
+
+Repair round 1 passes the unchanged full historical forward-upgrade test, exit 0, duration 835748.967796 ms. The corrected catalog and reader bytes are identical on final product head 328a341c2f536f013c3451500d2cb172c4738977. Main's comparison passed the historical schema identity path, then failed a later ownership fixture's database setup with ETIMEDOUT. This is separately recorded; main's whole test is not claimed green.
+
+Final product branch cloud/sd-orbit-c-f159 is pushed at 328a341c2f536f013c3451500d2cb172c4738977. The candidate adds only the compatibility projection and regenerated lock after the initial candidate. All selected graph, native review, erasure proof and Capture browser bytes remain equal to 501d8ad86a4d8728ed42717ad3315adc73231d1a; the earlier passing runtime and screen receipts therefore remain relevant. A fresh fetch and merge found origin/main already incorporated. No published history was rewritten. All candidate authors and committers are fleet, with no trailers; CONTRACT.md is unchanged.
+
+MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock and check exit=0; views=node src/base/contract-docs.mjs write and check, then restore ACCEPTANCE.md and docs/CLAIMS.md exit=0; ledger=python3 /tmp/orbit-migration-history.py exit=0. Typecheck, boundaries, manifest, agent registry, deployment specification and first-party check all pass.
+
+PROBE AGENT-001 1: authenticated MCP orbit.graph.propose under native selected consent -> three pending cited proposals, standard policy dispositions, zero pre-review changes, stale review refused, one edited acceptance, terminal decline, source withdrawal, erased replay refusal and foreign-account refusal. Native review is populated and inspected at 1440 and 390.
+
+No scan, main equality or Run site receipt is claimed. Publication scan status is PENDING_FLEET on 328a341c2f536f013c3451500d2cb172c4738977, complete and historyScanned unestablished, findings unestablished. The complete actual packet is published separately on the evidence ref; it is not product acceptance or landing custody.
+
+## Final proof map and CI disposition
+
+The sole acceptance sentence remains PARTIAL: its written-evidence limb passes; the consented spoken commitment and all named holds remain unclaimed. R1 and R2 are checked by tests/support/agent-door-graph-proof.ts lines 17 to 72, R3 by lines 75 to 87, R4 by lines 96 to 107, R5 by lines 88 to 111, and R6 by tests/agent-door/graph-browser-journey.mjs lines 30 to 41, invoked by the existing Capture browser registration. The managed-owner registration at tests/core/managed-owner.test.ts line 124 calls the graph helper through tests/support/agent-door-proof.ts line 225. Standard classification, selected authority, native review and policy duties inherited from BASE-AGENT-002, 003, 005, 006, 007 and 011 are exercised in that same native consent and MCP journey; broader Base qualification remains with those clauses.
+
+The exact failed batch 16 command completed exit 1. Its four failures are each ETIMEDOUT in isolatedDatabase at tests/support/isolated-database.ts line 11, before the assertion body; the same archive-abort case on main fails at that location. Other loaded core cases passed, including export erasure, native identity, spending limits, brief, calling and D1. The subsequent small-phone shard did not run because its preceding core shard failed. No fixture, timeout or assertion was changed for this infrastructure class. The original GitHub batch 16 assertion remains unavailable because its sole log archive read returned invalid zip; no claim is made that the unavailable archive proved that same failure.
+
+Final REST discovery, logical GitHub call 10 of 10, found push Verify 43126455998 with head 328a341c2f536f013c3451500d2cb172c4738977 and status in_progress. No further poll, dispatch or rerun is performed. Initial Verify 43118650651 failed on 501d8ad86a4d8728ed42717ad3315adc73231d1a; that SHA is superseded. No exact-SHA success, main equality or Run site success is asserted for the new candidate. The product ref was independently advertised at the final full SHA after its guard push. PR: none; push is the repository's Verify entry point.
+
+Counts are unchanged: 42 DONE, 130 PARTIAL, 32 MISSING; 198 registrations plus two qualifications, 200 total. Plan row AGENT-001 receives only the selected written-evidence progress; no plan award, clause-status edit, hold release or other queue change is made. DONE riders 1 and 9 retain held scope; rider 3 awaits final Verify, rider 11 awaits the guarded lander. All other row dispositions remain as listed above. No new conservative policy default was adopted.
+
+CLAIM AGENT-001 PARTIAL points=1 tests=tests/core/managed-owner.test.ts#Managed owner claim verifies RER authority and creates the native owner and session exactly once; company text cannot change MCP classification; stalled risks and cited graph proposals agree across policy and native doors; tests/e2e/capture.spec.mjs#CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history
+GAP AGENT-001: spoken commitment needs consented CALL-002 transcripts and CALL-001; licensed enrichment, unknown-participant policy, live mailbox consent and scheduled, embedded, relationship, role, amount, stage, commitment and external variants remain held and unclaimed.
+PUSHED branch=cloud/sd-orbit-c-f159 head=328a341c2f536f013c3451500d2cb172c4738977

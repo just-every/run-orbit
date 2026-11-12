@@ -1,0 +1,6 @@
+{
+  "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "command": "pnpm exec tsx --test --no-test-only newtests/t096/forward-upgrade.test.ts",
+  "exit": 1,
+  "runner": "same cloud Node 22.20.0 and CI variables as candidate"
+}

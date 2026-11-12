@@ -1,0 +1,107 @@
+
+Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+
+Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:19414) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+PROBE TEAM-001 UI: built CRM pages at 1440 and 390 let both full operators read, edit, create and delete; Guest sees only shared fields, forbidden record URLs show refusal, native URLs redirect and revoked-share replay returns 403.
+✔ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (445349.714783ms)
+✔ selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive (54453.038035ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts (64556.485818ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (61759.160229ms)
+(node:25036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (234764.032547ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence (65274.093765ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 948014.492308
+
+✖ failing tests:
+
+test at newtests/t096/forward-upgrade.test.ts:1:2550
+✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (234764.032547ms)
+  AssertionError [ERR_ASSERTION]: 0049 retains exact columns, objects, triggers and views after stripping the library additions
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      {
+        columns: [
+          {
+            cid: 0,
+  ...
+          },
+  +       {
+  +         name: 'capture_graph_source_withdrawn',
+  +         sql: 'CREATE TRIGGER capture_graph_source_withdrawn AFTER UPDATE ON capture_sources\n' +
+  +           "WHEN NEW.state='disconnected' OR NEW.connection_id IS NOT OLD.connection_id\n" +
+  +           'BEGIN\n' +
+  +           " UPDATE capture_proposals SET status='withdrawn',decided_at=NEW.updated_at,\n" +
+  +           "  details_json=json_set(details_json,'$.withdrawal','Evidence source revoked')\n" +
+  +           " WHERE status='pending' AND json_extract(details_json,'$.graphProposal')=1\n" +
+  +           ' AND signal_id IN(SELECT id FROM signals WHERE source_id=NEW.id);\n' +
+  +           'END',
+  +         type: 'trigger'
+  +       }
+        ]
+      },
+      {
+        columns: [
+          {
+  ...
+            name: 'capture_proposals',
+  +         sql: 'CREATE TABLE "capture_proposals" (\n' +
+  -         sql: 'CREATE TABLE capture_proposals (\n' +
+              ' id TEXT PRIMARY KEY,\n' +
+              ' proposal_key TEXT NOT NULL UNIQUE,\n' +
+              ' signal_id TEXT NOT NULL REFERENCES signals(id) ON DELETE CASCADE,\n' +
+  +           " kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact','question')),\n" +
+  -           " kind TEXT NOT NULL CHECK (kind IN ('link_signal','create_contact','set_field','next_action','do_not_contact')),\n" +
+              " record_type TEXT CHECK (record_type IN ('contact','company','opportunity')),\n" +
+              ' record_id TEXT,\n' +
+              ' field TEXT,\n' +
+              ' current_value TEXT,\n' +
+              ' proposed_value TEXT,\n' +
+              ' details_json TEXT NOT NULL,\n' +
+  +           " status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined','withdrawn')),\n" +
+  -           " status TEXT NOT NULL CHECK (status IN ('pending','accepted','declined')),\n" +
+              ' decided_by TEXT,\n' +
+              ' decided_at TEXT,\n' +
+              ' decided_value TEXT,\n' +
+              ' created_at TEXT NOT NULL\n' +
+              ')',
+  
+      at proveReleasedForecastUpgrade (/workspace/run-orbit/newtests/t096/released-forecast-upgrade.ts:70:253)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forward-upgrade.test.ts:68:35)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ { name: 'access_collaborators', columns: [Array], dependencies: [], objects: [Array], schemaObjects: [] }, { name: 'access_workspaces', columns: [Array], dependencies: [], objects: [Array] }, { name: 'action_completions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'ai_calls', columns: [Array], dependencies: [], objects: [Array] }, { name: 'ai_previews', columns: [Array], dependencies: [], objects: [Array] }, { name: 'analytics_definitions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'analytics_snapshots', columns: [Array], dependencies: [], objects: [Array] }, { name: 'companies', columns: [Array], dependencies: [], objects: [Array] }, { name: 'content_revisions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'domain_audit', columns: [Array], dependencies: [], objects: [Array] }, { name: 'domain_events', columns: [Array], dependencies: [], objects: [Array] }, { name: 'evaluation_job_runs', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_revisions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_snapshots', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_source_clock', columns: [Array], dependencies: [], objects: [Array] }, { name: 'form_abuse_refusals', columns: [Array], dependencies: [], objects: [Array] }, { name: 'form_embed_origins', columns: [Array], dependencies: [], objects: [Array] }, { name: 'graph_records', columns: [Array], dependencies: [], objects: [Array] }, { name: 'graph_workspace_epochs', columns: [Array], dependencies: [], objects: [Array] }, { name: 'mail_provider_events', columns: [Array], dependencies: [], objects: [Array] }, { name: 'marketing_form_submissions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'operators', columns: [Array], dependencies: [], objects: [Array] }, { name: 'opt_out_settings', columns: [Array], dependencies: [], objects: [Array] }, { name: 'pipeline_stages', columns: [Array], dependencies: [], objects: [Array] }, { name: 'pipelines', columns: [Array], dependencies: [], objects: [Array] }, { name: 'privacy_matching_contexts', columns: [Array], dependencies: [], objects: [Array] }, { name: 'publication_operations', columns: [Array], dependencies: [], objects: [Array] }, { name: 'record_aliases', columns: [Array], dependencies: [], objects: [Array] }, { name: 'record_merge_claims', columns: [Array], dependencies: [], objects: [Array] }, { name: 'sales_task_guards', columns: [Array], dependencies: [], objects: [Array] }, { name: 'schema_types', columns: [Array], dependencies: [], objects: [Array] }, { name: 'sending_limits', columns: [Array], dependencies: [], objects: [Array] }, { name: 'signal_sources', columns: [Array], dependencies: [], objects: [Array] }, { name: 'source_event_errors', columns: [Array], dependencies: [], objects: [Array] }, { name: 'timeline_entries', columns: [Array], dependencies: [], objects: [Array] }, { name: 'unlinked_replies', columns: [Array], dependencies: [], objects: [Array] }, { name: 'workspace_settings', columns: [Array], dependencies: [], objects: [Array] }, { name: 'access_legacy_mapping', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'access_memberships', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'access_role_bundles', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'analytics_snapshot_sources', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'audit_entries', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_sources', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'consent_events', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'content_entities', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'forecast_snapshot_records', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'form_spam', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'mail_provider_conflicts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'notifications', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunities', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'original_operator_provisions', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'pipeline_stage_rules', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'publication_targets', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_series', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'signals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'timeline_entry_records', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_items', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_proposals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'evaluations', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'handoff_tasks', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_buying_context', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'recommendations', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'record_mutation_jobs', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'signal_links', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'unlinked_signals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'buying_context_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'contact_company_relationships', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'drafts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'evaluation_contributions', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'handoff_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'recommendation_evidence', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_tasks', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'draft_opt_out', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_stakeholder_roles', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_messages', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_notification_links', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_timeline', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_message_opt_out', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_opt_out_capabilities', columns: [Array], dependencies: [Array], objects: [Array] } ],
+    expected: [ { name: 'access_collaborators', columns: [Array], dependencies: [], objects: [Array], schemaObjects: [] }, { name: 'access_workspaces', columns: [Array], dependencies: [], objects: [Array] }, { name: 'action_completions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'ai_calls', columns: [Array], dependencies: [], objects: [Array] }, { name: 'ai_previews', columns: [Array], dependencies: [], objects: [Array] }, { name: 'analytics_definitions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'analytics_snapshots', columns: [Array], dependencies: [], objects: [Array] }, { name: 'companies', columns: [Array], dependencies: [], objects: [Array] }, { name: 'content_revisions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'domain_audit', columns: [Array], dependencies: [], objects: [Array] }, { name: 'domain_events', columns: [Array], dependencies: [], objects: [Array] }, { name: 'evaluation_job_runs', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_revisions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_snapshots', columns: [Array], dependencies: [], objects: [Array] }, { name: 'forecast_source_clock', columns: [Array], dependencies: [], objects: [Array] }, { name: 'form_abuse_refusals', columns: [Array], dependencies: [], objects: [Array] }, { name: 'form_embed_origins', columns: [Array], dependencies: [], objects: [Array] }, { name: 'graph_records', columns: [Array], dependencies: [], objects: [Array] }, { name: 'graph_workspace_epochs', columns: [Array], dependencies: [], objects: [Array] }, { name: 'mail_provider_events', columns: [Array], dependencies: [], objects: [Array] }, { name: 'marketing_form_submissions', columns: [Array], dependencies: [], objects: [Array] }, { name: 'operators', columns: [Array], dependencies: [], objects: [Array] }, { name: 'opt_out_settings', columns: [Array], dependencies: [], objects: [Array] }, { name: 'pipeline_stages', columns: [Array], dependencies: [], objects: [Array] }, { name: 'pipelines', columns: [Array], dependencies: [], objects: [Array] }, { name: 'privacy_matching_contexts', columns: [Array], dependencies: [], objects: [Array] }, { name: 'publication_operations', columns: [Array], dependencies: [], objects: [Array] }, { name: 'record_aliases', columns: [Array], dependencies: [], objects: [Array] }, { name: 'record_merge_claims', columns: [Array], dependencies: [], objects: [Array] }, { name: 'sales_task_guards', columns: [Array], dependencies: [], objects: [Array] }, { name: 'schema_types', columns: [Array], dependencies: [], objects: [Array] }, { name: 'sending_limits', columns: [Array], dependencies: [], objects: [Array] }, { name: 'signal_sources', columns: [Array], dependencies: [], objects: [Array] }, { name: 'source_event_errors', columns: [Array], dependencies: [], objects: [Array] }, { name: 'timeline_entries', columns: [Array], dependencies: [], objects: [Array] }, { name: 'unlinked_replies', columns: [Array], dependencies: [], objects: [Array] }, { name: 'workspace_settings', columns: [Array], dependencies: [], objects: [Array] }, { name: 'access_legacy_mapping', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'access_memberships', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'access_role_bundles', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'analytics_snapshot_sources', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'audit_entries', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_sources', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'consent_events', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'content_entities', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'forecast_snapshot_records', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'form_spam', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'mail_provider_conflicts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'notifications', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunities', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'original_operator_provisions', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'pipeline_stage_rules', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'publication_targets', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_series', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'signals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'timeline_entry_records', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_items', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'capture_proposals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'evaluations', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'handoff_tasks', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_buying_context', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'recommendations', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'record_mutation_jobs', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'signal_links', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'unlinked_signals', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'buying_context_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'contact_company_relationships', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'drafts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'evaluation_contributions', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'handoff_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_contacts', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'recommendation_evidence', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_tasks', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'draft_opt_out', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'opportunity_stakeholder_roles', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_messages', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_notification_links', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'sales_task_timeline', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_message_opt_out', columns: [Array], dependencies: [Array], objects: [Array] }, { name: 'outbound_opt_out_capabilities', columns: [Array], dependencies: [Array], objects: [Array] } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
