@@ -1,3 +1,5 @@
+import {createOutboundMail} from '../../src/core/platform/outbound-mail';
+import {createId} from '../../src/core/shared/ids';
 import {exported} from './capture-data-archive';
 import {launchFixture} from './launch-fixture';
 import {localArchiveRoundTrip} from './capture-privacy-archive';
@@ -40,11 +42,16 @@ export async function mailboxSendProof(provider:Provider){
   const source=await authorize(first),address=f.state.mailboxAddress;
   const initialMailboxes=await request('/mailboxes');assert.equal(initialMailboxes.status,200);assert.equal((await initialMailboxes.json() as any).mailboxes.length,1);
   assert.equal((await (await f.request('/sources/'+source+'/send-authorization')).json() as any).authorization.address,address);
+  const peerId=createId();await f.deps.auth.ensureOperator({id:peerId,email:['synthetic-orbit-peer','example.test'].join(String.fromCharCode(64)),displayName:'Another operator'});
+  const peerSession=await f.deps.auth.createSession(peerId),peerHeaders={...headers,cookie:'__Host-orbit_session='+peerSession.token};
+  const peerMailboxes=await f.app.request(origin+'/api/v1/workbench/mailboxes',{headers:peerHeaders});assert.equal(peerMailboxes.status,200);assert.equal((await peerMailboxes.json() as any).mailboxes.length,0);
+  const peerReview=await f.app.request(origin+'/api/v1/workbench/drafts/'+f.unsentDraft+'/approval-preview?mailboxSourceId='+source,{headers:peerHeaders});assert.equal(peerReview.status,409);assert.equal(f.state.mailSubmissions.length,0);
+
   const libraryCall=async(path:string,body:unknown,method='POST')=>{const response=await f.app.request(origin+'/api/v1/library'+path,{method,headers,body:JSON.stringify(body)});assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;};
   const signature=await libraryCall('',{kind:'signature',name:'Synthetic Orbit sender signature',body:'Synthetic signature.',visibility:'private'});
   async function draft(kind:'contact'|'company'|'opportunity'='contact'){
-   const id=kind==='contact'?f.ana:kind==='company'?f.company:f.opportunity;
-   const response=await request('/records/'+kind+'/'+id+'/drafts',{contactId:f.ana,opportunityId:f.opportunity,subject:'Synthetic Orbit résumé 🚀 '.repeat(4).trim(),body:'Exact reviewed body.'});
+   const recordId=kind==='contact'?f.ana:kind==='company'?f.company:f.opportunity;
+   const response=await request('/records/'+kind+'/'+recordId+'/drafts',{contactId:f.ana,opportunityId:f.opportunity,subject:'Synthetic Orbit résumé 🚀 '.repeat(4).trim(),body:'Exact reviewed body.'});
    assert.equal(response.status,201,await response.clone().text());const id=(await response.json() as any).id as string;
    const render=await libraryCall('/drafts/'+id+'/apply',{revision:1,signatureId:signature.id});await libraryCall('/drafts/'+id+'/render',{revision:render.revision,reviewHash:render.reviewHash});return id;
   }
@@ -110,12 +117,18 @@ export async function mailboxSendProof(provider:Provider){
   const otherSource=await f.connect();f.state.scope=base+' '+sendScopes.google;await authorize(otherSource);
   const otherDraft=await draft(),otherPreview=await preview(otherDraft,otherSource);
   const otherSent=await approve(otherDraft,otherPreview);assert.equal(otherSent.status,200,await otherSent.clone().text());assert.equal(f.state.mailSubmissions.length,before+1);assert.equal(f.state.mailSubmissions.at(-1)!.address,f.state.mailboxAddress);
-  let installationSends=0;const installationApp=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:origin,captureFetch:f.fetcher,outboundMail:{send:async()=>{installationSends++;return{providerMessageId:'synthetic-orbit-installation'};}}});
-  const installationDraft=await draft();const installationResponse=await installationApp.request(origin+'/api/v1/workbench/drafts/'+installationDraft+'/approve',{method:'POST',headers,body:JSON.stringify({revision:1,quietHoursConfirmation:(await preview(installationDraft,otherSource)).localTime})});assert.equal(installationResponse.status,200,await installationResponse.clone().text());assert.equal(installationSends,1);
+  let installationSends=0;const installationMail=createOutboundMail({DB:f.db,MAIL_FROM:['synthetic-orbit-installation','example.test'].join(String.fromCharCode(64)),MAIL_REPLY_TO:['synthetic-orbit-replies','example.test'].join(String.fromCharCode(64)),SENDGRID_API_KEY:'synthetic-orbit-1',SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!;
+  const installationApp=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:origin,captureFetch:f.fetcher,outboundMail:installationMail});
+  const installationDraft=await draft(),installationPreview=await preview(installationDraft,otherSource),originalFetch=globalThis.fetch;
+  try{globalThis.fetch=async(input,init)=>{if(String(input)==='https://api.sendgrid.com/v3/mail/send'){installationSends++;return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-installation'}});}return originalFetch(input,init);};
+   const installationResponse=await installationApp.request(origin+'/api/v1/workbench/drafts/'+installationDraft+'/approve',{method:'POST',headers,body:JSON.stringify({revision:installationPreview.revision,quietHoursConfirmation:installationPreview.localTime})});assert.equal(installationResponse.status,200,await installationResponse.clone().text());assert.equal(installationSends,1);
+  }finally{globalThis.fetch=originalFetch;}
   // Explicit opt-out uses the bound installation-origin capability, exact headers and visible footer.
   const optDraft=await draft();assert.equal((await request('/drafts/'+optDraft+'/opt-out?mailboxSourceId='+otherSource,{choice:'added'})).status,200);
   const changed=await f.db.prepare('SELECT revision,updated_at,recipient_email,subject,body FROM record_mail_drafts WHERE id=?').bind(optDraft).first<any>();
   const reviewed=await request('/drafts/'+optDraft+'/review',{revision:changed.revision,reviewedUpdatedAt:changed.updated_at,recipientContactId:f.ana,recipientEmail:changed.recipient_email,subject:changed.subject,body:changed.body});assert.equal(reviewed.status,200,await reviewed.clone().text());
+  const renderedOptResponse=await f.app.request(origin+'/api/v1/library/drafts/'+optDraft+'/render',{headers});assert.equal(renderedOptResponse.status,200);const renderedOpt=await renderedOptResponse.json() as any;
+  await libraryCall('/drafts/'+optDraft+'/render',{revision:renderedOpt.revision,reviewHash:renderedOpt.reviewHash});
   const optPreview=await preview(optDraft,otherSource),optResponse=await approve(optDraft,optPreview,{revision:(await reviewed.json() as any).revision});assert.equal(optResponse.status,200,await optResponse.clone().text());const optMessage=await optResponse.json() as any;
   const capability=await f.db.prepare('SELECT token,origin FROM record_mail_outbound_opt_out_capabilities WHERE message_id=?').bind(optMessage.id).first<any>();assert.ok(capability);
   const optRaw=f.state.mailSubmissions.at(-1)!.raw,url=capability.origin+'/unsubscribe/'+capability.token;
@@ -139,12 +152,21 @@ export async function mailboxSendProof(provider:Provider){
   const local=await isolatedDatabase();try{await localArchiveRoundTrip(f.db,local.db);assert.equal(await local.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0);assert.equal(await local.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'),0);assert.equal(await local.db.prepare("SELECT count(*) n FROM record_mail_outbound_messages WHERE state IN('scheduled','queued')").first('n'),0);}finally{await local.dispose();}
   const catalog=await foldArchiveCatalog(f.db);assert.ok(!catalog.some(table=>table.name==='mailbox_send_authorizations'||table.name==='capture_credentials'));
   const status=await (await f.request('/sources')).text();assert.ok(!status.includes('access-')&&!status.includes('refresh-'));
+  // Refreshing a previously authorized token down to read-only withdraws send authority.
+  const credentialRow=await f.db.prepare('SELECT ciphertext FROM capture_credentials WHERE source_id=?').bind(otherSource).first<string>('ciphertext');assert.ok(credentialRow);
+  const credential=JSON.parse(await security.open(credentialRow));credential.expiresAt=0;
+  await f.db.prepare('UPDATE capture_credentials SET ciphertext=? WHERE source_id=?').bind(await security.seal(JSON.stringify(credential)),otherSource).run();f.state.scope=base;
+  const lostDraft=await draft(),lostResponse=await approve(lostDraft,await preview(lostDraft,otherSource));assert.equal(lostResponse.status,502);assert.equal((await lostResponse.json() as any).state,'failed');assert.equal(f.state.mailSubmissions.length,before+3);
+  assert.equal(await f.db.prepare('SELECT state FROM mailbox_send_authorizations WHERE source_id=?').bind(otherSource).first('state'),'paused');
   // A disconnected source cannot execute its persisted approval or acquire another identity.
   await f.request('/sources/'+source+'/disconnect',{confirmed:true});
   await f.db.prepare("UPDATE record_mail_outbound_messages SET state='queued' WHERE draft_id=?").bind(held).run();
   await recovered.submit((await f.db.prepare('SELECT * FROM record_mail_outbound_messages WHERE draft_id=?').bind(held).first<any>())!);
   assert.equal(f.state.mailSubmissions.length,before+3);
-  const erased=await f.app.request(origin+'/api/v1/records/contact/'+f.ana,{method:'DELETE',headers,body:JSON.stringify({confirmed:true})});assert.equal(erased.status,200);
+  const publicBefore=await f.db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.ana).first('contactability');assert.equal((await f.app.request(url)).status,200);assert.equal(await f.db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.ana).first('contactability'),publicBefore);
+  const optPost=()=>f.app.request(url,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'List-Unsubscribe=One-Click'});
+  assert.equal((await optPost()).status,200);assert.equal((await optPost()).status,200);assert.equal(await f.db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.ana).first('contactability'),'do_not_contact');assert.equal(await f.db.prepare('SELECT contactability FROM contacts WHERE id=?').bind(f.bob).first('contactability'),'contactable');assert.equal(f.state.mailSubmissions.length,before+3);
+  const erased=await f.app.request(origin+'/api/v1/records/contact/'+f.ana,{method:'DELETE',headers,body:JSON.stringify({confirmed:true})});assert.equal(erased.status,200);assert.equal((await f.app.request(url)).status,404);
   f.state.scope=base;f.state.mailboxAddress=address;await f.connect(source);await f.request('/sources/'+source+'/scope',{mail:{folders:['INBOX','SENT']}});await f.drain(source);
   assert.equal((await f.app.request(origin+'/api/v1/records/contact/'+f.ana,{headers})).status,404);assert.equal(await f.db.prepare('SELECT count(*) n FROM record_mail_outbound_messages WHERE contact_id=?').bind(f.ana).first('n'),0);
  }finally{await f.dispose();}

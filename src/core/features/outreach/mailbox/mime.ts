@@ -7,7 +7,7 @@ export function mailboxMime(input:{recipient_email:string;subject:string;body:st
  const subject=clean(input.subject),words:string[]=[];let word='',bytes=0;
  for(const character of subject){const size=new TextEncoder().encode(character).length;if(bytes+size>42){words.push(word);word='';bytes=0;}word+=character;bytes+=size;}if(word)words.push(word);
  const encoded=words.map(part=>'=?UTF-8?B?'+base64(part)+'?=').join('\r\n ');
- const headers=['From: '+address(from),'To: '+address(input.recipient_email),'Subject: '+encoded,'Message-ID: '+clean(input.message_id),'MIME-Version: 1.0','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64'];
+ const headers=['Date: '+new Date().toUTCString(),'From: '+address(from),'To: '+address(input.recipient_email),'Subject: '+encoded,'Message-ID: '+clean(input.message_id),'MIME-Version: 1.0','Content-Type: text/plain; charset=UTF-8','Content-Transfer-Encoding: base64'];
  if(input.reference_ids)headers.push('References: '+clean(input.reference_ids),'In-Reply-To: '+clean(input.reference_ids));
  if(input.opt_out){
   if(!input.opt_out_url)throw new MailboxSendError('Opt-out requires this installation’s configured origin.','failed');

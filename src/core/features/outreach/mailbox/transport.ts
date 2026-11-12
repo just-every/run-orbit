@@ -1,3 +1,4 @@
+import {optOutOrigin} from '../opt-out-capability';
 import type {OutboundMail,OutboundMailBinding} from '../../../platform/outbound-mail';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {defaultProviderFetch,hasSendScope,type ProviderFetch} from '../../capture/providers/config';
@@ -15,7 +16,7 @@ export function mailboxTransportResolver(db:D1Database,installation:OutboundMail
   return bound(message);
  }};
  function bound(message:OutboundMailBinding):OutboundMail{
-  return {provider:'gmail',optOutOrigin:config.origin,messageIdDomain:message.mailbox_address?.split('@')[1],async send(input){return operate(message,async(request,scoped)=>{
+  return {provider:'gmail',optOutOrigin:optOutOrigin(config.origin),messageIdDomain:message.mailbox_address?.split('@')[1],async send(input){return operate(message,async(request,scoped)=>{
    const claim=await scoped.prepare("UPDATE outbound_messages SET mailbox_submission_claimed=1 WHERE id=? AND state='queued' AND mailbox_submission_claimed=-1").bind(message.id).run();
    if(claim.meta.changes!==1)throw new MailboxSendError('This approval already attempted submission. Reconcile its Sent copy before any new send.','delivery-unknown');
    try{

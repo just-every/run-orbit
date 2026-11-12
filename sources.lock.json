@@ -7414,8 +7414,16 @@
       "sha256": "c1517ac28d4b5bda733847e5ba79d4424690a1254a6dbb13b9ef4c4b0fd10094",
       "executable": false
     },
+    "src/core/features/outreach/mailbox/archive.ts": {
+      "sha256": "15b96ff46722e39908bcd5fee27a8e89380de7da0d98bf23639c8f79adc6eeee",
+      "executable": false
+    },
     "src/core/features/outreach/mailbox/binding.ts": {
       "sha256": "f70e08950eab9071aff8cc19c1b815e2e244a5a13e39e0830122045c8ded324d",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/capture-identity.ts": {
+      "sha256": "f488c695feda81b4730b838be86716a08f2564601427a46b59aac924d626a5b0",
       "executable": false
     },
     "src/core/features/outreach/mailbox/errors.ts": {
@@ -7427,11 +7435,15 @@
       "executable": false
     },
     "src/core/features/outreach/mailbox/mime.ts": {
-      "sha256": "480e77f0f4d32e62f87ec2bd8a0b1ace0130c779ced2e82b50937e7232814b2e",
+      "sha256": "1e57bcb25e90bcbb1b21b63a93488d950b569e4255877f6754758fcb8d33d012",
+      "executable": false
+    },
+    "src/core/features/outreach/mailbox/privacy.ts": {
+      "sha256": "a56e72ea4bdd4d7b16422c71a015b27246b0de5e341c6bf92eb9ca0cbd3b722f",
       "executable": false
     },
     "src/core/features/outreach/mailbox/transport.ts": {
-      "sha256": "96627080344252b320d255afb1b1998549628aaa9630310fb0a803d75cfced29",
+      "sha256": "eb9d64bb3c9cd300d68af4784e83edc0e74d7f70b65a259a377dc1de9dfdaef9",
       "executable": false
     },
     "src/core/features/outreach/opt-out-capability.ts": {
@@ -11411,7 +11423,7 @@
       "executable": false
     },
     "tests/support/mailbox-send-proof.ts": {
-      "sha256": "4a6713b9402ca68d2db084bc43f6799f91953d9b8dbb7d4734d7a5e5a079606d",
+      "sha256": "63359f250e58ede9d1e00fc3dd665ccdac10fa4d32fc71a54200c0c3123a6558",
       "executable": false
     },
     "tests/support/mailchimp-ledger-proof.ts": {
