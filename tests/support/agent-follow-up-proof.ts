@@ -47,6 +47,9 @@ export async function agentFollowUpProof(context:TestContext,{bindings,door,cook
  const before=await inventory();
  await native('/obligations','POST',{...input,goalStageId:stages[0].id},409);
  await native('/obligations','POST',{...input,meetingId:'synthetic-orbit-missing'},409);
+ await native('/obligations','POST',{...input,contactId:'synthetic-orbit-missing'},409);
+ await native('/obligations','POST',{...input,ownerId:'synthetic-orbit-missing'},409);
+ await native('/obligations','POST',input,401,'');
  assert.equal(await inventory(),before);
  const proofs:any[]=[];
  for(const mode of ['autonomous','held'] as const){

@@ -21,7 +21,7 @@ import {unstable_DevEnv} from 'wrangler';
 import {identityVars} from '../support/worker-identity.mjs';
 import assert from 'node:assert/strict';
 
-test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, reviews an agent handoff and a colleague opens a mention that keeps its entry in view, then completes a meeting follow-up obligation, in the browser at 1440 and 390',async testContext=>{
+test('Today brief, meeting plan, handoff review, mentions and follow-up outcomes work at 1440 and 390',async testContext=>{
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_TODAY_PORT??8736),origin=`http://127.0.0.1:${port}`;
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
  const runtime=new unstable_DevEnv();
@@ -60,9 +60,9 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   try {
   const stalled=await stalledRiskBrowser(testContext,riskFixture.db,origin);
   await riskFixture.close();
-  const mailKeys=mailTransportKeys(),mailEdge={submissions:[] as any[]};
+  const mailKeys=mailTransportKeys(),mailEdge={submissions:[] as any[],status:408};
   const followUpVars={...stalled.vars,...mailKeys.bindings,SENDGRID_API_KEY:'synthetic-orbit-browser-81',MAIL_FROM:['synthetic-orbit-browser','sender.test'].join('@'),MAIL_REPLY_TO:['synthetic-orbit-browser','reply.test'].join('@'),SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'};
-  const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(followUpVars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{if(request.url==='https://api.sendgrid.com/v3/mail/send'){mailEdge.submissions.push(await request.json());return new Response(null,{status:408});}if(request.url.startsWith('https://api.sendgrid.com/v3/messages?'))return Response.json({messages:[]});return new Response(null,{status:502});}}});await riskOnly.ready;
+  const riskOnly=await riskRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(followUpVars).map(([name,value])=>[name,secret(value)])),dev:{remote:false,persist:riskFixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{if(request.url==='https://api.sendgrid.com/v3/mail/send'){mailEdge.submissions.push(await request.json());return new Response(null,{status:mailEdge.status});}if(request.url.startsWith('https://api.sendgrid.com/v3/messages?'))return Response.json({messages:[]});return new Response(null,{status:502});}}});await riskOnly.ready;
   const signedIn=await browser.newContext({baseURL:origin,extraHTTPHeaders:{Cookie:stalled.cookie}});
   await stalledRiskPolicyJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
   await draftParityBrowserJourney({page:await signedIn.newPage(),...stalled,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});

@@ -7015,7 +7015,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/obligation-panel.tsx": {
-      "sha256": "381bfab86c2b7c589c410f8122d6d011685dd4a967fc7bcee24267f0fd33d5bb",
+      "sha256": "835cda8391f0e5bac839c892084dbde32ed87fd4894f7242546990fcc72d8d86",
       "executable": false
     },
     "src/core/features/operator/ui/record/obligation.css": {
@@ -7959,7 +7959,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "a953a0f1cc3463f6009a1172601c98f2dbb651d30696869796a7b856a2e92608",
+      "sha256": "aaf54b2ecb668fca836cab5db67a513620cfb8d49faeccf487514088cb11302e",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -10223,7 +10223,7 @@
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {
-      "sha256": "5f2da4de6c8abb49d622bfe76b9f4bc70ce82c7a49c1b9750450775dda9942d5",
+      "sha256": "ded99f1b50737c24345a3eeca5cb296758ca7038285acf7f0a3b720c33c73857",
       "executable": false
     },
     "tests/core/migration-recovery.test.ts": {
@@ -10339,11 +10339,11 @@
       "executable": false
     },
     "tests/delegation-browser/today-brief.test.ts": {
-      "sha256": "320e73fc5c825ee145fe54887c94c6a81f37cf7fb6152c8bd74d74a7449149f7",
+      "sha256": "201f6bb394038c1044616e24e9c3fcfc2971f32ff5fd280037ae35e875c47ae8",
       "executable": false
     },
     "tests/delegation-browser/today-journey.mjs": {
-      "sha256": "c9f34c146344fc8b0e47b3eab23705a2ea1abf857f707f47d89eacc78a6ffe61",
+      "sha256": "e1daa7ddb8bbb3f14ea042ab88399e0276e67b59c626ef0bf8d997a486de7d0d",
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
@@ -11055,7 +11055,7 @@
       "executable": false
     },
     "tests/support/agent-door-proof.ts": {
-      "sha256": "0e1fdf81c9aff12b7e7523103661316d378dd12aa3ab9386727a4cc2c3fde1dc",
+      "sha256": "87c2d7d5783c3d56dad5dadcd34d41a85fef15a8e5b243cb837700f2f10f7403",
       "executable": false
     },
     "tests/support/agent-door-stalled-risk-proof.ts": {
@@ -11067,7 +11067,7 @@
       "executable": false
     },
     "tests/support/agent-follow-up-proof.ts": {
-      "sha256": "3ff3dca6e2787b49a1f876c5b740d82f6ea0dea4fa758faa47a7025b3bffc029",
+      "sha256": "23643dc566fde414e707018e6c9fd48ec434b9d41a90c4b627afa53ec0f3d3c6",
       "executable": false
     },
     "tests/support/agent-report-deletion-proof.ts": {
