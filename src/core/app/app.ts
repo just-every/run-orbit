@@ -1,3 +1,4 @@
+import {obligationRoutes} from '../features/obligations/routes';
 import type {AgentDoor} from '../../base/modules/agent-door/index.ts';
 import {workflowRoutes} from '../features/workflows/routes';
 import {directNotificationAction,notificationDatabase} from '../features/notifications/direct-action';
@@ -179,6 +180,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route('/api/v1/imports',createImportRoutes(input.database));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));
+  app.route('/api/v1/obligations',obligationRoutes(input.database));
   app.route('/api/v1/tasks',createSalesTaskRoutes(input.database));
   app.route('/api/v1/relationships',createRelationshipRoutes(input.database));
   app.route("/api/v1/settings", createSettingsRoutes(input.database,request=>input.stepUp(request,'email:change','/app/settings/team'),input.agentErasureSecret,input.captureOrigin));

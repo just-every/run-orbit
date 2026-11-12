@@ -1,5 +1,6 @@
 import {MailboxSendError} from '../outreach/mailbox/errors';
 import {mailboxReview,sendMailboxes} from '../outreach/mailbox/binding';
+import {openDraftFence} from '../obligations/repository';
 import {draftMailDatabase,messageMailDatabase} from '../outreach/record-mail-storage';
 import {RecordMailRepository} from '../outreach/record-mail-repository';
 import {manualDraftCreateContent} from '../drafts/input';
@@ -37,7 +38,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
   app.get('/onboarding',async c=>c.json({...await onboardingState(database,await mailReady(c.get('operator').operatorId),aiConfigured),mailSettings:mailSettings??null}));
   app.get('/',async context=>context.json({...await repository.inventory(),mailConfigured:await mailReady(context.get('operator').operatorId)}));
   app.get('/records/:kind/:id/mail-context',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind'));if(!kind.success||!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid record.'},400);return c.json(await new RecordMailRepository(database).context(kind.data,c.req.param('id')));});
-  app.post('/records/:kind/:id/drafts',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind')),input=z.object({contactId:id,opportunityId:id.nullable().optional(),...manualDraftCreateContent(998)}).strict().safeParse(await c.req.json());if(!kind.success||!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a recipient, deal link and message.'},400);return c.json(await new RecordMailRepository(database).create(kind.data,c.req.param('id'),input.data,c.get('operator').operatorId),201);});
+  app.post('/records/:kind/:id/drafts',async c=>{const kind=z.enum(['contact','company','opportunity']).safeParse(c.req.param('kind')),input=z.object({contactId:id,opportunityId:id.nullable().optional(),obligationId:id.optional(),...manualDraftCreateContent(998)}).strict().safeParse(await c.req.json());if(!kind.success||!id.safeParse(c.req.param('id')).success||!input.success)return c.json({error:'Choose a recipient, deal link and message.'},400);return c.json(await new RecordMailRepository(database).create(kind.data,c.req.param('id'),input.data,c.get('operator').operatorId),201);});
   app.get('/records/contact/:id/mail',async c=>{if(!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid contact.'},400);return c.json({...await new RecordMailRepository(database).history(c.req.param('id')),mailProvider:mail?.provider??'sendgrid'});});
   app.post('/record-mail/:id/complete',async c=>{if(!id.safeParse(c.req.param('id')).success)return c.json({error:'Invalid message.'},400);return c.json(await new RecordMailRepository(database).complete(c.req.param('id'),c.get('operator').operatorId));});
   app.post('/opportunities',async context=>{
@@ -50,7 +51,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
     return context.json(await repository.recordEvent(context.req.param('id'),input.data,context.get('operator').operatorId),201);
   });
   app.post('/opportunities/:id/drafts',async context=>{
-    const input=z.object({contactId:id,...manualDraftCreateContent(998)}).safeParse(await context.req.json());if(!input.success)return context.json({error:'Choose a recipient and enter a subject and message.'},400);
+    const input=z.object({contactId:id,obligationId:id.optional(),...manualDraftCreateContent(998)}).safeParse(await context.req.json());if(!input.success)return context.json({error:'Choose a recipient and enter a subject and message.'},400);
     return context.json(await outreach.createDraft(context.req.param('id'),input.data,context.get('operator').operatorId),201);
   });
   app.get('/opportunities/:id/messages',async context=>context.json({messages:await outreach.messages(context.req.param('id')),outcomes:await followUpOutcomes(database,context.req.param('id')),mailProvider:mail?.provider??'sendgrid',scheduler:hosted?await schedulerStatus(database):null,outcomesTracked:deliveryOutcomesTracked(mailEvents)}));
@@ -75,6 +76,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
   app.post('/drafts/:id/approve',async context=>{const database=await draftMailDatabase(rootDatabase,context.req.param('id')),outreach=new OutreachRepository(database);
     if(!mail)return context.json({error:'Configure mail delivery before approving customer mail.'},503);
     const input=z.object({mailboxSourceId:z.string().min(1).max(100).optional(),mailboxReviewHash:z.string().regex(/^[a-f0-9]{64}$/).optional(),revision:z.number().int().positive(),idempotencyKey:z.string().min(1).max(128).optional(),scheduledAt:z.iso.datetime().optional(),scheduledAtConfirmation:z.iso.datetime().optional(),quietHoursConfirmation:z.string().max(200).optional()}).safeParse(await context.req.json());if(!input.success)return context.json({error:'An exact draft revision and valid approval options are required.'},400);
+    const allowed=await database.prepare(`SELECT d.id FROM drafts d WHERE d.id=?${openDraftFence()}`).bind(context.req.param('id')).first();if(!allowed)return context.json({error:'This follow-up is closed or paused. No approval was created.'},409);
     const actor=context.get('operator').operatorId,review=await mailboxReview(database,context.req.param('id'),actor,input.data.mailboxSourceId);
     if(review&&review.hash!==input.data.mailboxReviewHash)return context.json({error:'The sending mailbox or rendered content changed. Review the exact send-as message again.'},409);
     const selected=review?await mail.resolve?.({id:'',operator_id:actor,message_id:'',mailbox_source_id:review.mailbox.sourceId,mailbox_connection_id:review.mailbox.connectionId,mailbox_address:review.mailbox.address}):mail.resolve?await mail.resolve({id:'',operator_id:actor,message_id:''}):mail;

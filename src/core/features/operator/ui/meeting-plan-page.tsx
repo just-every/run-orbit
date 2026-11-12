@@ -1,3 +1,4 @@
+import {MeetingFollowUpEntry} from './record/obligation-panel';
 import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import {useParams} from '@tanstack/react-router';
 import './today.css';
@@ -75,6 +76,7 @@ export function MeetingPlanPage(){
     {plan.promises.length?<ul className="plan-list">{plan.promises.map(line=><li key={line.id} className="plan-line"><div className="plan-line__what"><a href={line.href}>{linePrefix(line)}: {line.title}</a><span>{line.detail}</span></div><time dateTime={line.occurredAt}>{line.dueAt?`Due ${formatDateTime(line.dueAt,presentation)}`:formatDateTime(line.occurredAt,presentation)}</time>{canAct&&<NextAction signalId={id} line={line} onAdded={reload}/>}</li>)}</ul>:<p>Nothing is owed on these records.</p>}
     {!canAct&&<p>Link this meeting to an opportunity to turn a line into a next action.</p>}
    </section>
+   <MeetingFollowUpEntry plan={plan} presentation={presentation}/>
    <PlanNotes plan={plan} signalId={id} onSaved={reload}/>
   </section>
  </OperatorShell>;

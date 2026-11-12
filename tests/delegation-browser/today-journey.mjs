@@ -154,3 +154,70 @@ export async function stalledRiskPolicyJourney({page,expected,policy,bearer,evid
  console.log(JSON.stringify({proof:'SURFACE-013.stalled-browser',evidenceId:expected.evidenceId,quote:expected.quote,nativeMatch:true,evidenceLinkAuthenticated:true,reviewMarked:true,widths:[1440,390]}));
  await page.close();
 }
+
+/** One approved meeting follow-up: message outcome and advancement goal stay distinct in the built app. */
+export async function followUpObligationJourney({page,bearer,policy,mailKeys,mailEdge,evidence}){
+ const origin=new URL((await page.request.get('/health')).url()).origin,api=page.request;
+ await page.setViewportSize({width:1440,height:900});
+ const native=async(path,body,method=body?'POST':'GET',status=200)=>{const response=await api.fetch('/api/v1'+path,{method,headers:{Origin:origin},...(body?{data:body}:{})});expect(response.status(),path+': '+await response.text()).toBe(status);return response.json();};
+ const setup=await native('/settings'),owner=setup.operators.find(person=>person.setup_owner===1);
+ const pipeline=await native('/settings/pipelines',{name:'Synthetic obligation browser',stages:[{name:'Synthetic meeting stage',probability:20,requiredFields:[],staleIntervalDays:14},{name:'Synthetic goal stage',probability:70,requiredFields:[],staleIntervalDays:14}]},'POST',201);
+ const settings=await native('/settings'),stages=settings.stages.filter(stage=>stage.pipeline_id===pipeline.id).sort((a,b)=>a.position-b.position);
+ const buyer=await native('/records/contact',{name:'Synthetic meeting buyer',email:['synthetic-orbit-browser','buyer.test'].join('@')},'POST',201);
+ const deal=await native('/records/opportunity',{title:'Synthetic follow-up outcome',stage_id:stages[0].id,owner_id:owner.id,value_cents:0,contact_ids:[buyer.id],primary_contact_id:buyer.id},'POST',201);
+ const meeting=await native(`/workbench/opportunities/${deal.id}/events`,{type:'meeting.completed',subject:'Synthetic completed buyer meeting',contactId:buyer.id,occurredAt:new Date(Date.now()-3600000).toISOString(),eventId:'synthetic-orbit-browser-obligation'},'POST',201);
+ await page.goto('/app/meetings/'+meeting.id);
+ await page.getByRole('button',{name:'Accept meeting follow-up',exact:true}).click();
+ await page.getByLabel('Follow-up title').fill('Agree the buyer advancement');await page.getByLabel('Human owner',{exact:true}).selectOption(owner.id);await page.getByLabel('Recipient',{exact:true}).selectOption(buyer.id);
+ await page.getByLabel(/^Due \(/).fill(new Date(Date.now()+86400000).toISOString().slice(0,16));await page.getByLabel('Advancement goal',{exact:true}).selectOption(stages[1].id);
+ await atWidths(page,evidence,'obligation-meeting-plan',async()=>{await expect(page.getByLabel('Stop conditions',{exact:true})).toBeVisible();});
+ await page.getByRole('button',{name:'Accept obligation',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Agree the buyer advancement',exact:true})).toBeVisible();
+ const accepted=(await native('/obligations/opportunities/'+deal.id)).obligations[0];
+ // A definite refusal stays actionable beside an open advancement goal.
+ const refused=await native('/obligations',{meetingId:meeting.id,opportunityId:deal.id,contactId:buyer.id,ownerId:owner.id,dueAt:new Date(Date.now()+86400000).toISOString(),goalStageId:stages[1].id,title:'Review the failed follow-up',stopCondition:'Stop on an explicit human decision'},'POST',201);
+ const refusedDraft=await native(`/workbench/records/opportunity/${deal.id}/drafts`,{contactId:buyer.id,obligationId:refused.id,subject:'Synthetic refused follow-up',body:'This exact message receives a definite provider refusal.'},'POST',201);
+ const refusedPreview=await native(`/workbench/drafts/${refusedDraft.id}/approval-preview`);
+ mailEdge.status=400;await native(`/workbench/drafts/${refusedDraft.id}/approve`,{revision:1,quietHoursConfirmation:refusedPreview.localTime},'POST',502);mailEdge.status=408;
+ await page.goto('/app/opportunities/'+deal.id);
+ const failedPanel=page.locator(`[data-obligation-id="${refused.id}"]`);await expect(failedPanel).toHaveAttribute('data-message-state','failed');await expect(failedPanel).toHaveAttribute('data-goal-state','open');
+ await expect(failedPanel.getByRole('link',{name:'Review exact draft',exact:true})).toHaveAttribute('href','/app/drafts/'+refusedDraft.id);
+ await atWidths(page,evidence,'obligation-failed',async()=>{await failedPanel.scrollIntoViewIfNeeded();await expect(failedPanel.getByText(/Review the saved message and its provider outcome/)).toBeVisible();});
+ const adopted=await api.post('/api/rer/agent-policy',{headers:{Origin:origin},data:{policy:await policy('held')}});expect(adopted.status()).toBe(200);
+ const response=await api.post('/mcp',{headers:{Authorization:'Bearer '+await bearer('drafts:read drafts:write handoffs:read handoffs:write'),'MCP-Protocol-Version':'2026-07-28','MCP-Method':['tools','call'].join('/'),'MCP-Name':'orbit.drafts.create'},data:{jsonrpc:'2.0',id:3801,method:['tools','call'].join('/'),params:{name:'orbit.drafts.create',arguments:{kind:'opportunity',id:deal.id,contact_id:buyer.id,obligation_id:accepted.id,subject:'Synthetic buyer next step',body:'Please confirm the next stage from our completed meeting.',idempotency_key:'synthetic-orbit-browser-obligation-draft'},_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}}});
+ expect(response.status()).toBe(200);const created=(await response.json()).result;expect(created.isError,JSON.stringify(created)).toBe(false);expect(created._meta['com.runeditrun/review'].id).toBeTruthy();
+ const draft=created.structuredContent;
+ const state=async(name,messageState,goalState)=>{
+  await page.goto('/app/opportunities/'+deal.id);
+  await expect(page.getByRole('heading',{level:1,name:'Synthetic follow-up outcome',exact:true})).toBeVisible();
+  const panel=page.locator(`[data-obligation-id="${accepted.id}"]`);await expect(panel).toHaveAttribute('data-message-state',messageState);await expect(panel).toHaveAttribute('data-goal-state',goalState);
+  await atWidths(page,evidence,name,async()=>{await panel.scrollIntoViewIfNeeded();await expect(panel.getByText('Advancement goal '+goalState+': Synthetic goal stage',{exact:true})).toBeVisible();});
+ };
+ await state('obligation-draft','draft','open');
+ await page.goto('/app/drafts/'+draft.id);await expect(page.getByRole('heading',{level:1})).toBeVisible();
+ const saved=(await native('/drafts/'+draft.id)).draft,preview=await native(`/workbench/drafts/${draft.id}/approval-preview`);
+ await native(`/workbench/drafts/${draft.id}/approve`,{revision:saved.revision,quietHoursConfirmation:preview.localTime},'POST',502);
+ expect(mailEdge.submissions.length).toBe(2);await state('obligation-uncertain','submitted-uncertain','open');
+ // The durable delivery key is available on the native draft's retained message, not invented by the browser.
+ const deliveryId=mailEdge.submissions[1].custom_args.rer_delivery_id;
+ const event=Buffer.from(JSON.stringify([{sg_event_id:'synthetic-orbit-browser-delivered',event:'delivered',timestamp:Math.floor(Date.now()/1000),email:['synthetic-orbit-browser','buyer.test'].join('@'),rer_product:'orbit',rer_delivery_id:deliveryId,sg_message_id:'synthetic-orbit-browser-receipt'}]));
+ const eventResponse=await api.post('/api/v1/mail/events/relay',{headers:{'content-type':'application/json',...await mailKeys.headers('relay',event,'192.0.2.82')},data:event});expect(eventResponse.status(),await eventResponse.text()).toBe(200);
+ await state('obligation-submitted','submitted','open');
+ const wireId=mailEdge.submissions[1].headers['Message-ID'];
+ const replyForm=new FormData();replyForm.set('from',['synthetic-orbit-browser','buyer.test'].join('@'));replyForm.set('subject','Re: Synthetic buyer next step');replyForm.set('text','Thank you. The deal has not advanced.');replyForm.set('headers',[`Message-ID: <${['synthetic-orbit-browser-reply','buyer.test'].join('@')}>`,`Date: ${new Date().toUTCString()}`,`In-Reply-To: ${wireId}`,`References: ${wireId}`].join('\r\n'));
+ const request=new Request(origin+'/api/v1/mail/events/reply',{method:'POST',body:replyForm}),replyBytes=new Uint8Array(await request.arrayBuffer());
+ const replyResponse=await api.post('/api/v1/mail/events/reply',{headers:{'content-type':request.headers.get('content-type'),...await mailKeys.headers('reply',replyBytes,'192.0.2.83')},data:Buffer.from(replyBytes)});expect(replyResponse.status(),await replyResponse.text()).toBe(200);
+ await state('obligation-responded-goal-open','responded','open');
+ await expect(page.locator(`[data-obligation-id="${accepted.id}"]`).getByRole('link',{name:'Reply evidence',exact:true})).toHaveAttribute('href',/^\/app\/opportunities\/[^#]+#entry-/);
+ expect((await native('/records/opportunity/'+deal.id)).record.stage_id).toBe(stages[0].id);
+ await native(`/records/opportunity/${deal.id}/move`,{stageId:stages[1].id,reviewedStageId:stages[0].id});
+ await state('obligation-advanced','responded','closed');
+ // A separate accepted obligation exercises the explicit native stop control.
+ await native(`/records/opportunity/${deal.id}/move`,{stageId:stages[0].id,reviewedStageId:stages[1].id});
+ const stop=await native('/obligations',{meetingId:meeting.id,opportunityId:deal.id,contactId:buyer.id,ownerId:owner.id,dueAt:new Date(Date.now()+86400000).toISOString(),goalStageId:stages[1].id,title:'Explicit human stop',stopCondition:'Stop when the human cancels'},'POST',201);
+ await page.goto('/app/opportunities/'+deal.id);const item=page.locator(`[data-obligation-id="${stop.id}"]`);await item.getByRole('button',{name:'Stop follow-up',exact:true}).click();await item.getByLabel('Reason for stopping').fill('Buyer asked to stop');await item.getByRole('button',{name:'Confirm stop',exact:true}).click();await expect(item).toHaveAttribute('data-goal-state','closed');
+ await atWidths(page,evidence,'obligation-explicit-stop',async()=>{await item.scrollIntoViewIfNeeded();await expect(item.getByText(/Stopped: Buyer asked to stop/)).toBeVisible();});
+ expect(mailEdge.submissions.length).toBe(2);
+ console.log(JSON.stringify({proof:'AGENT-003.browser',obligation:accepted.id,messageStates:['failed','draft','submitted-uncertain','submitted','responded'],replyLeavesGoalOpen:true,advanced:true,explicitStop:true,mailSubmissions:2,widths:[1440,390]}));
+ await page.close();
+}

@@ -1,3 +1,4 @@
+import {advanceObligationsStatements} from '../obligations/repository';
 import {workflowAssociationEvent} from '../workflows/events';
 import {normalizedTypedFields,typedFieldFences,typedFieldSave,type TypedField} from './typed-fields';
 import {fieldLabel,valueText} from '../operator/ui/data-value';
@@ -116,6 +117,7 @@ export class RecordsRepository extends RecordSeedRepository {
    for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,contact,contact===primary?1:0,now));
    statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
    for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?{...stageMovement,...(options.undoOf?{undoOf:options.undoOf}:{})}:{previous:before[field],current:data[field]}));
+   if(before&&before.stage_id!==data.stage_id&&!options.undoOf)statements.push(...advanceObligationsStatements(this.db,id,data.stage_id,actor,now));
    if(before&&before.stage_id!==data.stage_id&&!options.undoOf)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
   }
   if(kind==='contact'&&before&&Object.hasOwn(data,'company_id'))statements.push(...contactPrimaryCompanyActivity(this.db,actor,id,before.company_id??null,data.company_id??null,now));

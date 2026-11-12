@@ -1,3 +1,4 @@
+import {bindDraftStatements} from '../obligations/repository';
 import { ApprovalRepository, type ApprovalInput } from '../outreach/approval-repository';
 import { settlementStatements } from '../outreach/settlement';
 import { createId } from '../../shared/ids';
@@ -6,13 +7,14 @@ import { WorkbenchError, WorkbenchRepository } from './repository';
 
 export class OutreachRepository {
   constructor(private readonly db: D1Database) {}
-  async createDraft(opportunityId: string, input: { contactId: string; subject: string; body: string }, actor: string) {
+  async createDraft(opportunityId: string, input: { contactId: string; subject: string; body: string; obligationId?:string }, actor: string) {
     const contact = await this.db.prepare("SELECT c.id,c.email,c.contactability FROM contacts c JOIN opportunity_contacts oc ON oc.contact_id=c.id JOIN opportunities o ON o.id=oc.opportunity_id WHERE oc.opportunity_id=? AND c.id=? AND o.lifecycle='open'").bind(opportunityId,input.contactId).first<{id:string;email:string;contactability:string}>();
     if (!contact || !contact.email) throw new WorkbenchError(400,'Choose a linked contact with an email on an open opportunity.');
     if(contact.contactability !== 'contactable') throw new WorkbenchError(409,'This contact must not be contacted.');
     const recommendation = await this.db.prepare('SELECT id FROM recommendations WHERE opportunity_id=? AND is_current=1').bind(opportunityId).first<{id:string}>();
     const id=createId(), now=new Date().toISOString();
     try{await this.db.batch([
+      ...(input.obligationId?bindDraftStatements(this.db,input.obligationId,id,opportunityId,contact.id):[]),
       this.db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'draft_permission_check',NULL WHERE NOT EXISTS(SELECT 1 FROM contacts c JOIN opportunity_contacts oc ON oc.contact_id=c.id JOIN opportunities o ON o.id=oc.opportunity_id WHERE c.id=? AND oc.opportunity_id=? AND o.lifecycle='open' AND c.contactability='contactable' AND lower(trim(c.email))=lower(trim(?)))").bind(contact.id,opportunityId,contact.email),
       this.db.prepare('INSERT INTO drafts(id,opportunity_id,recommendation_id,author_id,recipient_contact_id,recipient_email,subject,body,revision,is_stale,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,1,0,?,?)').bind(id,opportunityId,recommendation?.id??null,actor,contact.id,commercialEmailKey(contact.email),input.subject,input.body,now,now),
       ...new WorkbenchRepository(this.db).timeline(opportunityId,actor,'draft.created',{draftId:id,manual:true},now)

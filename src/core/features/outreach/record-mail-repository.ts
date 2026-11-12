@@ -1,3 +1,4 @@
+import {bindDraftStatements} from '../obligations/repository';
 import {reconcileLegacyOwnership} from '../ownership/legacy';
 import {createId} from '../../shared/ids';
 import {WorkbenchError} from '../workbench/repository';
@@ -13,7 +14,7 @@ export class RecordMailRepository {
   const deals=(await this.db.prepare("SELECT o.id,o.title,oc.contact_id AS contactId FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id WHERE o.lifecycle='open' AND oc.contact_id IN(SELECT value FROM json_each(?)) ORDER BY o.updated_at DESC,o.id").bind(JSON.stringify(contacts.map(c=>c.id))).all<{id:string;title:string;contactId:string}>()).results;
   return {record,contacts,deals};
  }
- async create(kind:MailRecordKind,originId:string,input:{contactId:string;opportunityId?:string|null;subject:string;body:string},actor:string,generation?:{callId:string;evidenceIds:string[];explanation:string}){
+ async create(kind:MailRecordKind,originId:string,input:{contactId:string;opportunityId?:string|null;subject:string;body:string;obligationId?:string},actor:string,generation?:{callId:string;evidenceIds:string[];explanation:string}){
   await reconcileLegacyOwnership(this.db);
   const context=await this.context(kind,originId),contact=context.contacts.find(c=>c.id===input.contactId);
   if(!contact?.email)throw new WorkbenchError(400,'Choose a contact on this record with an email address.');
@@ -25,6 +26,7 @@ export class RecordMailRepository {
   if(linked&&!deals.some(d=>d.id===linked))throw new WorkbenchError(409,'Choose a current open deal belonging to this recipient.');
   const id=createId(),at=new Date().toISOString(),mailDb=recordMailDatabase(this.db),history=kind==='opportunity'&&context.record.lifecycle!=='open'?originId:null;
   await mailDb.batch([
+   ...(input.obligationId?bindDraftStatements(mailDb,input.obligationId,id,linked,contact.id):[]),
    mailDb.prepare("INSERT INTO runtime_controls(name,value) SELECT 'record_mail_permission',NULL WHERE NOT EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='contactable' AND lower(trim(email))=?) OR NOT EXISTS(SELECT 1 FROM operators WHERE id=? AND status='active' AND NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=?))").bind(contact.id,contact.email.trim().toLowerCase(),actor,actor),
    ...(linked?[mailDb.prepare("INSERT INTO runtime_controls(name,value) SELECT 'record_mail_deal',NULL WHERE NOT EXISTS(SELECT 1 FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id WHERE o.id=? AND o.lifecycle='open' AND oc.contact_id=?)").bind(linked,contact.id)]:[]),
    ...(kind==='company'?[mailDb.prepare("INSERT INTO runtime_controls(name,value) SELECT 'record_mail_relationship',NULL WHERE NOT EXISTS(SELECT 1 FROM contacts WHERE id=? AND (company_id=? OR EXISTS(SELECT 1 FROM contact_company_relationships WHERE contact_id=? AND company_id=?)))").bind(contact.id,originId,contact.id,originId)]:[]),
