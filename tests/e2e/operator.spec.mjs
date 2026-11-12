@@ -1,3 +1,4 @@
+import {readableMergeReview} from './readable-merge.mjs';
 import { expect, test } from "@playwright/test";
 import { createHmac, randomUUID } from "node:crypto";
 
@@ -235,7 +236,8 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("ACTION-004", "the desktop draft editor saves D1 state and surfaces a revision conflict", async ({ browser, page }) => {
+  contract("ACTION-004", "the desktop draft editor saves D1 state and surfaces a revision conflict", async ({ browser, page }, info) => {
+    test.setTimeout(180_000);
     await page.setViewportSize({ width: 1440, height: 900 });
     const failures = watchFailures(page);
     const issued = await authenticateOperator(page.context());
@@ -294,5 +296,6 @@ test.describe("authenticated operator UI", () => {
     expect(newPageFailures).toEqual([]);
     expect(staleFailures).toEqual([]);
     await secondContext.close();
+    await readableMergeReview(browser,page,issued.draft,info);
   });
 });
