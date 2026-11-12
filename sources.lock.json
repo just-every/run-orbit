@@ -2387,7 +2387,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "abf3a97fe46bb4e8a01762551225772c580e7874ca73ed2ef96eaca26901fadd",
+      "sha256": "0f9b49ce6c4f2c24c36ac93c8e5c294f57b0fa9ccd45b18a2abbd9abc63ac097",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -3751,7 +3751,7 @@
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
-      "sha256": "07f07fdab6d69e1cbda08dd0894abe951d9817da04034f733bca6cdb125e1cc4",
+      "sha256": "c265efec4065fd3226e02054f3530d9c5720265524b22e745eb5ce0cab7de6c3",
       "executable": false
     },
     "newtests/t096/report-population-race.test.ts": {
@@ -5807,7 +5807,7 @@
       "executable": false
     },
     "src/core/features/dashboards/basis.tsx": {
-      "sha256": "f448c7e8f498540395261f89237dca5ab3b141f73b1c866640800506e18dfa49",
+      "sha256": "14b62def222fea221dc70edfbb8ff59994655e923d196fcc237ba7d1e49ce83b",
       "executable": false
     },
     "src/core/features/dashboards/dashboard-dialogs.css": {
