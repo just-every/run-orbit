@@ -7820,11 +7820,11 @@
       "executable": false
     },
     "src/core/features/quotes/totals.ts": {
-      "sha256": "fa9d2ecc9ffe0c0aa428704fa8274d295d93c108cde853020c9ee926d013eaff",
+      "sha256": "3b96c71d9314a5f1d56a781de364331d36ee6875c07517377724d954754142bc",
       "executable": false
     },
     "src/core/features/quotes/versions.ts": {
-      "sha256": "68bd195b60eb4e3716e4260b8e896cafbf35c9ca83d242dc1697aa1b2ef5408b",
+      "sha256": "4844b3462018f25a1f963b72ea2de734fc28861b563ed8b52be68dabc38c4d13",
       "executable": false
     },
     "src/core/features/recommendations/index.ts": {
@@ -7872,7 +7872,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "db0650e4055b98ccd72dc7868fa6f8f5de0aa530d92896ca4ebde83fd624119b",
+      "sha256": "a7a534a84765ada10f77d2974e849fb4c1552bcc69e13ae95d441baaf5548051",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
@@ -7956,7 +7956,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "b7386400d76ea97e57d526e4cd30539c54576b8b18161427125fc7266d6fae92",
+      "sha256": "83aa94572c66ba0e44a317ee9af23e3b39db3aa695cf90a34cbcde800e028467",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -11336,7 +11336,7 @@
       "executable": false
     },
     "tests/support/quotes-proof.ts": {
-      "sha256": "0b85e3ccb42af0b40fdee06d01ecf7c41cefe93e2ba508c2ae0caabc4f548036",
+      "sha256": "d9b211d5388ccd3113bba17a475a18b3c4e53f1b2de9b15d1e293b15a92c116a",
       "executable": false
     },
     "tests/support/record-changes-proof.ts": {

@@ -1,0 +1,8 @@
+{
+  "branch": "cloud/sd-orbit-c-f165",
+  "head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+  "remote_head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+  "guard": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-c-f165",
+  "exit": 0,
+  "attempt": 1
+}

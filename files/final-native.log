@@ -1,0 +1,38 @@
+TAP version 13
+# (node:56615) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# (node:56615) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+ok 1 - TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence
+  ---
+  duration_ms: 90662.518757
+  type: 'test'
+  ...
+# Subtest: QUOTE-001 BRIEF-003 AI-001 AI-002 AI-003 AI-004 AGENT-002 reviewed summaries and cited conflicts preserve sales state while USD quote versions preserve money, history, authority, erasure and restore
+ok 2 - QUOTE-001 BRIEF-003 AI-001 AI-002 AI-003 AI-004 AGENT-002 reviewed summaries and cited conflicts preserve sales state while USD quote versions preserve money, history, authority, erasure and restore
+  ---
+  duration_ms: 374167.691215
+  type: 'test'
+  ...
+# Subtest: BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer
+ok 3 - BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer
+  ---
+  duration_ms: 24341.965247
+  type: 'test'
+  ...
+# Subtest: CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts
+ok 4 - CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts
+  ---
+  duration_ms: 27747.006898
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 551387.906659

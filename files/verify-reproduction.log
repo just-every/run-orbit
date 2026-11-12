@@ -1,0 +1,85 @@
+
+Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+
+Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:24539) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+✖ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (262622.330411ms)
+✔ selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive (30164.597401ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts (43509.926447ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (32412.123968ms)
+(node:33990) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (104364.506228ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence (29547.013773ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 3
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 519743.541013
+
+✖ failing tests:
+
+test at newtests/t096/collaborator-lifecycle.test.ts:1:780
+✖ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (262622.330411ms)
+  browserType.launch: Executable doesn't exist at /home/agent/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell
+  ╔════════════════════════════════════════════════════════════╗
+  ║ Looks like Playwright was just installed or updated.       ║
+  ║ Please run the following command to download new browsers: ║
+  ║                                                            ║
+  ║     pnpm exec playwright install                           ║
+  ║                                                            ║
+  ║ <3 Playwright Team                                         ║
+  ╚════════════════════════════════════════════════════════════╝
+      at equalOperatorBrowser (/workspace/run-orbit/newtests/t096/team-operator-browser.ts:26:26)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/collaborator-lifecycle.test.ts:32:2) {
+    name: 'Error',
+    log: []
+  }
+
+test at newtests/t096/empty-native.test.ts:1:641
+✖ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (32412.123968ms)
+  browserType.launch: Executable doesn't exist at /home/agent/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell
+  ╔════════════════════════════════════════════════════════════╗
+  ║ Looks like Playwright was just installed or updated.       ║
+  ║ Please run the following command to download new browsers: ║
+  ║                                                            ║
+  ║     pnpm exec playwright install                           ║
+  ║                                                            ║
+  ║ <3 Playwright Team                                         ║
+  ╚════════════════════════════════════════════════════════════╝
+      at TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/empty-native.test.ts:20:468) {
+    name: 'Error',
+    log: []
+  }
+
+test at newtests/t096/forward-upgrade.test.ts:1:2550
+✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (104364.506228ms)
+  Error: Archive inventory does not match a complete supported source generation.
+      at validateFoldManifest (/workspace/run-orbit/src/core/features/records/archive-fold-validation.ts:25:56)
+      at async proveReleasedForecastUpgrade (/workspace/run-orbit/newtests/t096/released-forecast-upgrade.ts:69:21)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forward-upgrade.test.ts:68:35)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    status: 400,
+    recordId: undefined
+  }

@@ -3,32 +3,79 @@
   "blockers": [],
   "branch": "cloud/sd-orbit-c-f165",
   "candidate_descends_from_observed_main": true,
-  "claimed_status": "PARTIAL",
-  "committed_head_local_checks": {
+  "ci_repair": {
+    "batch": {
+      "exit": 0,
+      "head": "15339ac5bf503a3c3711693d789627360155dcb2",
+      "log": "repair-batch.log",
+      "receipt": "repair-shard-receipt.json",
+      "tests": 6
+    },
     "browser": {
       "exit": 0,
-      "head": "d7698bd03fa518575fc190a66891a928092e98a2",
-      "log": "browser-exact-head.log",
+      "head": "15339ac5bf503a3c3711693d789627360155dcb2",
+      "log": "repair-browser.log",
       "tests": 1,
       "widths": [
         1440,
         390
       ]
     },
-    "build": {
+    "failure_reproduced": true,
+    "github_api_calls_used": 10,
+    "head": "15339ac5bf503a3c3711693d789627360155dcb2",
+    "main_comparison": {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
       "exit": 0,
-      "head": "d7698bd03fa518575fc190a66891a928092e98a2",
-      "log": "build-exact-head.log"
+      "head": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+      "log": "main-upgrade-proof.log",
+      "node": "22.20.0",
+      "tests": 1
     },
     "native": {
       "exit": 0,
-      "head": "d7698bd03fa518575fc190a66891a928092e98a2",
-      "log": "native-exact-head.log",
+      "head": "15339ac5bf503a3c3711693d789627360155dcb2",
+      "log": "repair-native.log",
       "tests": 4
     },
-    "source_lock_views_deployment": {
+    "next_ci": "not_queried_due_to_budget",
+    "original_head": "d7698bd03fa518575fc190a66891a928092e98a2",
+    "product_push": "succeeded",
+    "repair_round": 1,
+    "schema": 1,
+    "source_change": "Register the exact current quote catalog with the historical direct-notification trigger inventory, retaining every existing generation and assertion.",
+    "status": "passed",
+    "tests_changed": false
+  },
+  "claimed_status": "PARTIAL",
+  "committed_head_local_checks": {
+    "browser": {
       "exit": 0,
-      "head": "d7698bd03fa518575fc190a66891a928092e98a2"
+      "head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "log": "terminal-browser.log",
+      "tests": 1,
+      "widths": [
+        1440,
+        390
+      ]
+    },
+    "failed_shard": {
+      "exit": 0,
+      "final_head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "final_source_and_shard_test_bytes_unchanged": true,
+      "log": "final-batch.log",
+      "receipt": "final-shard-receipt.json",
+      "tested_head": "94b56da04f792839269934bdccabf7f39d62ded2",
+      "tests": 6
+    },
+    "mechanical": "MECHANICAL.json",
+    "native": {
+      "exit": 0,
+      "final_head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "final_source_and_native_test_bytes_unchanged": true,
+      "log": "final-native.log",
+      "tested_head": "94b56da04f792839269934bdccabf7f39d62ded2",
+      "tests": 4
     },
     "status": "passed"
   },
@@ -48,7 +95,8 @@
   },
   "full_history": true,
   "generated_views_committed": false,
-  "head": "d7698bd03fa518575fc190a66891a928092e98a2",
+  "github_calls_used": 10,
+  "head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
   "held": "DocuSign account and signed flows; manager approval under TEAM-005; hosted approved page and PDF; provider tax, payment and billing handoffs; forecast schedule comparison; signed-quote Slack; complete buyer walk.",
   "local_checks": {
     "archive_regression": {
@@ -61,7 +109,8 @@
     },
     "browser": {
       "exit": 0,
-      "log": "browser-tests.log",
+      "head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "log": "terminal-browser.log",
       "tests": 1,
       "widths": [
         1440,
@@ -79,8 +128,20 @@
     },
     "native": {
       "exit": 0,
-      "log": "native-tests.log",
+      "final_head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "final_source_and_native_test_bytes_unchanged": true,
+      "log": "final-native.log",
+      "tested_head": "94b56da04f792839269934bdccabf7f39d62ded2",
       "tests": 4
+    },
+    "repaired_shard": {
+      "exit": 0,
+      "final_head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+      "final_source_and_shard_test_bytes_unchanged": true,
+      "log": "final-batch.log",
+      "receipt": "final-shard-receipt.json",
+      "tested_head": "94b56da04f792839269934bdccabf7f39d62ded2",
+      "tests": 6
     },
     "source_lock": {
       "exit": 0
@@ -95,46 +156,88 @@
   },
   "mechanical_checks": [
     {
-      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "command": "node src/base/contract-docs.mjs write",
       "exit": 0,
-      "log": "source-lock-exact.log",
-      "name": "source-lock"
+      "log": "views-write-terminal.log",
+      "name": "views-write"
     },
     {
       "command": "node src/base/contract-docs.mjs check",
       "exit": 0,
-      "log": "contract-views-exact.log",
+      "log": "contract-views-terminal.log",
       "name": "contract-views"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "restore-views-terminal.log",
+      "name": "restore-views"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-regenerate-terminal.log",
+      "name": "lock-regenerate"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-lock-terminal.log",
+      "name": "source-lock"
     },
     {
       "command": "node scripts/publish-deployment-spec.mjs --check",
       "exit": 0,
-      "log": "deployment-exact.log",
+      "log": "deployment-terminal.log",
       "name": "deployment"
     },
     {
       "command": "pnpm exec rer check --profile first-party",
       "exit": 0,
-      "log": "first-party-exact.log",
+      "log": "first-party-terminal.log",
       "name": "first-party"
     },
     {
       "command": "pnpm run check:boundaries",
       "exit": 0,
-      "log": "boundaries-exact.log",
+      "log": "boundaries-terminal.log",
       "name": "boundaries"
     },
     {
       "command": "pnpm run typecheck",
       "exit": 0,
-      "log": "typecheck-exact.log",
+      "log": "typecheck-terminal.log",
       "name": "typecheck"
     },
     {
       "command": "node scripts/verification-inventory.mjs",
       "exit": 0,
-      "log": "inventory-exact.log",
+      "log": "inventory-terminal.log",
       "name": "inventory"
+    },
+    {
+      "command": "pnpm exec wrangler d1 migrations list DB --local --config wrangler.jsonc",
+      "exit": 0,
+      "log": "migration-ledger-terminal.log",
+      "name": "migration-ledger"
+    },
+    {
+      "command": "git diff --exit-code 94b56da04f792839269934bdccabf7f39d62ded2 HEAD -- src migrations tests/core tests/support newtests",
+      "exit": 0,
+      "log": "native-equivalence-terminal.log",
+      "name": "native-equivalence"
+    },
+    {
+      "command": "git diff --exit-code origin/main...HEAD -- CONTRACT.md",
+      "exit": 0,
+      "log": "contract-unchanged-terminal.log",
+      "name": "contract-unchanged"
+    },
+    {
+      "command": "git diff --exit-code",
+      "exit": 0,
+      "log": "working-tree-terminal.log",
+      "name": "working-tree"
     }
   ],
   "mechanical_receipt": "MECHANICAL.json",
@@ -147,29 +250,79 @@
   "points_closed": [
     2
   ],
+  "prior_candidate": {
+    "committed_head_local_checks": {
+      "browser": {
+        "exit": 0,
+        "head": "d7698bd03fa518575fc190a66891a928092e98a2",
+        "log": "browser-exact-head.log",
+        "tests": 1,
+        "widths": [
+          1440,
+          390
+        ]
+      },
+      "build": {
+        "exit": 0,
+        "head": "d7698bd03fa518575fc190a66891a928092e98a2",
+        "log": "build-exact-head.log"
+      },
+      "native": {
+        "exit": 0,
+        "head": "d7698bd03fa518575fc190a66891a928092e98a2",
+        "log": "native-exact-head.log",
+        "tests": 4
+      },
+      "source_lock_views_deployment": {
+        "exit": 0,
+        "head": "d7698bd03fa518575fc190a66891a928092e98a2"
+      },
+      "status": "passed"
+    },
+    "head": "d7698bd03fa518575fc190a66891a928092e98a2",
+    "verify": {
+      "conclusion": "failure",
+      "downstream_failed_job": 130919892601,
+      "event": "push",
+      "failed_job": 130911966047,
+      "head_sha": "d7698bd03fa518575fc190a66891a928092e98a2",
+      "run_id": 43135873357,
+      "status": "completed"
+    }
+  },
+  "privacy_hardening": {
+    "detached_attribution_and_unrelated_preservation": "final-native.log",
+    "head": "94b56da04f792839269934bdccabf7f39d62ded2",
+    "legacy_positive_probe": "privacy-legacy-positive-probe.log",
+    "negative_probe": "privacy-negative-probe.log"
+  },
   "product_push": "succeeded",
+  "product_ref_verified": true,
   "publication_scan": {
     "complete": null,
     "findings": null,
     "historyScanned": null,
     "status": "not_run_in_cloud"
   },
+  "ready_claimed": false,
   "repository": "just-every/run-orbit",
   "run_site": "fleet after landing",
   "schema": 1,
-  "source_lock_sha256": "6b7d299c72a89f57bb010cd8a38c65de6cb05c9d4e6c185bbe3e361afc0bd7a5",
+  "source_lock_sha256": "27498befb91ed61d1dd365f2172ceab411689da0ab13849c2cb29952ebe98551",
   "tag": "sd-orbit-c-f165",
+  "terminal_custody": "PUSHED",
   "test_inventory": {
     "qualifications": 2,
     "registrations": 198,
     "total": 200
   },
-  "tree": "f38b7e3137779bdbd9c37ec121a7ed491d3e6c20",
+  "tree": "6083521520f6790e2d6a73ae095ded18d7c70a46",
   "verify": {
     "event": "push",
-    "head_sha": "d7698bd03fa518575fc190a66891a928092e98a2",
-    "run_id": 43135873357,
-    "status": "in_progress"
+    "head_sha": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+    "reason": "ten-call GitHub budget exhausted after required failed-job diagnostics",
+    "run_id": null,
+    "status": "not_queried"
   },
   "working_tree_clean": true
 }

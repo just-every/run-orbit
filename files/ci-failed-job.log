@@ -1,0 +1,45 @@
+shards (batch-7)	Verify routine product shard	﻿2026-11-12T01:41:32.1196574Z ##[group]Run node scripts/verification-batch.mjs '[
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.1196856Z [36;1mnode scripts/verification-batch.mjs '[[0m
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.1197040Z [36;1m  "fold-domain-3"[0m
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.1197188Z [36;1m]'[0m
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.1212882Z shell: /usr/bin/bash -e {0}
+[CI environment listing omitted; only the shard flags required for reproduction are recorded in the repair receipt.]
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.7050505Z 
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.7051498Z Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.9511405Z 
+shards (batch-7)	Verify routine product shard	2026-11-12T01:41:32.9513246Z Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+shards (batch-7)	Verify routine product shard	2026-11-12T01:42:25.3167897Z (node:2618) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-7)	Verify routine product shard	2026-11-12T01:42:25.3207533Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:44:17.5340203Z PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+shards (batch-7)	Verify routine product shard	2026-11-12T01:45:45.3393388Z PROBE TEAM-001 UI: built CRM pages at 1440 and 390 let both full operators read, edit, create and delete; Guest sees only shared fields, forbidden record URLs show refusal, native URLs redirect and revoked-share replay returns 403.
+shards (batch-7)	Verify routine product shard	2026-11-12T01:45:45.4694124Z ✔ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (250202.746074ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:46:04.1405866Z ✔ selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive (18671.914366ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:46:27.1956455Z ✔ emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts (21401.784929ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:46:52.0082041Z ✔ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (22973.635916ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:46:52.8498349Z (node:6344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+shards (batch-7)	Verify routine product shard	2026-11-12T01:46:52.8499455Z (Use `node --trace-warnings ...` to show where the warning was created)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:06.0925712Z ✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (72426.507938ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5194856Z ✔ a real native insertion after complete report calculation aborts snapshot commit through the population epoch fence (22725.995873ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5651819Z ℹ tests 6
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5654358Z ℹ suites 0
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5654701Z ℹ pass 5
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5654902Z ℹ fail 1
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5655249Z ℹ cancelled 0
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5655536Z ℹ skipped 0
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5655927Z ℹ todo 0
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5656318Z ℹ duration_ms 417392.536881
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5664253Z 
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5664391Z ✖ failing tests:
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5664518Z 
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5664743Z test at newtests/t096/forward-upgrade.test.ts:1:2550
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5665624Z ✖ API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact (72426.507938ms)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5666407Z   Error: Archive inventory does not match a complete supported source generation.
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5666858Z       at validateFoldManifest (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-fold-validation.ts:25:56)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5667412Z       at async proveReleasedForecastUpgrade (/home/runner/work/run-orbit/run-orbit/newtests/t096/released-forecast-upgrade.ts:69:21)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5668342Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/forward-upgrade.test.ts:68:35)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5668704Z       at async Test.run (node:internal/test_runner/test:1054:7)
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5669074Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5669312Z     status: 400,
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5669448Z     recordId: undefined
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.5669579Z   }
+shards (batch-7)	Verify routine product shard	2026-11-12T01:48:30.7633401Z ##[error]Process completed with exit code 1.

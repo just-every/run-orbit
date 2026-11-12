@@ -1,47 +1,90 @@
 {
+  "head": "097310bd4aad9e5c61bd87c2e58cd6132317eda0",
+  "node": "22.20.0",
   "checks": [
     {
-      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "name": "views-write",
+      "command": "node src/base/contract-docs.mjs write",
       "exit": 0,
-      "log": "source-lock-exact.log",
-      "name": "source-lock"
+      "log": "views-write-terminal.log"
     },
     {
+      "name": "contract-views",
       "command": "node src/base/contract-docs.mjs check",
       "exit": 0,
-      "log": "contract-views-exact.log",
-      "name": "contract-views"
+      "log": "contract-views-terminal.log"
     },
     {
+      "name": "restore-views",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "restore-views-terminal.log"
+    },
+    {
+      "name": "lock-regenerate",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-regenerate-terminal.log"
+    },
+    {
+      "name": "source-lock",
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-lock-terminal.log"
+    },
+    {
+      "name": "deployment",
       "command": "node scripts/publish-deployment-spec.mjs --check",
       "exit": 0,
-      "log": "deployment-exact.log",
-      "name": "deployment"
+      "log": "deployment-terminal.log"
     },
     {
+      "name": "first-party",
       "command": "pnpm exec rer check --profile first-party",
       "exit": 0,
-      "log": "first-party-exact.log",
-      "name": "first-party"
+      "log": "first-party-terminal.log"
     },
     {
+      "name": "boundaries",
       "command": "pnpm run check:boundaries",
       "exit": 0,
-      "log": "boundaries-exact.log",
-      "name": "boundaries"
+      "log": "boundaries-terminal.log"
     },
     {
+      "name": "typecheck",
       "command": "pnpm run typecheck",
       "exit": 0,
-      "log": "typecheck-exact.log",
-      "name": "typecheck"
+      "log": "typecheck-terminal.log"
     },
     {
+      "name": "inventory",
       "command": "node scripts/verification-inventory.mjs",
       "exit": 0,
-      "log": "inventory-exact.log",
-      "name": "inventory"
+      "log": "inventory-terminal.log"
+    },
+    {
+      "name": "migration-ledger",
+      "command": "pnpm exec wrangler d1 migrations list DB --local --config wrangler.jsonc",
+      "exit": 0,
+      "log": "migration-ledger-terminal.log"
+    },
+    {
+      "name": "native-equivalence",
+      "command": "git diff --exit-code 94b56da04f792839269934bdccabf7f39d62ded2 HEAD -- src migrations tests/core tests/support newtests",
+      "exit": 0,
+      "log": "native-equivalence-terminal.log"
+    },
+    {
+      "name": "contract-unchanged",
+      "command": "git diff --exit-code origin/main...HEAD -- CONTRACT.md",
+      "exit": 0,
+      "log": "contract-unchanged-terminal.log"
+    },
+    {
+      "name": "working-tree",
+      "command": "git diff --exit-code",
+      "exit": 0,
+      "log": "working-tree-terminal.log"
     }
-  ],
-  "head": "d7698bd03fa518575fc190a66891a928092e98a2"
+  ]
 }
