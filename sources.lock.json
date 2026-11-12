@@ -2379,7 +2379,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "0f9b49ce6c4f2c24c36ac93c8e5c294f57b0fa9ccd45b18a2abbd9abc63ac097",
+      "sha256": "9486242f85c60f78c5ec069c2af17dc69e29f7919becf8a036d1f01e519e0d61",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
