@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f167",
+  "head": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "remoteHead": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+  "tree": "edbb61bf4f76c6a075d5dca513090d91de185a77",
+  "mainAtFinalFetch": "b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31",
+  "sourceLockSha256": "70a95fc966dde8362d83c4e4e66bcc78b51fdb8a6ec45cd283fe3f387fade5c5",
+  "fullHistory": true,
+  "workingTree": "clean",
+  "contractDiff": "none",
+  "ciRun": 43150580930,
+  "ciStatus": "in_progress",
+  "custody": "PUSHED",
+  "publications": [
+    "3074766c93fc3cdc831b2b924d518d9a90400499",
+    "0e03cabe468040db4c5a6cb5b9f7bdf21072524a"
+  ]
+}

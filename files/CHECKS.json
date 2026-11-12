@@ -89,13 +89,25 @@
     "priorMigrationsUnchanged": 75
   },
   "ci": {
-    "run": 43150580930,
+    "conclusion": null,
+    "head_sha": "0e03cabe468040db4c5a6cb5b9f7bdf21072524a",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43150580930",
+    "status": "in_progress",
+    "id": 43150580930,
     "event": "push",
-    "status": "in_progress"
+    "head_branch": "cloud/sd-orbit-c-f167",
+    "name": "Verify",
+    "githubCallsUsed": 9,
+    "terminalCustody": "PUSHED"
   },
   "publicationScan": {
     "performedInCloud": false,
     "custodian": "guarded Mac lander"
   },
-  "newProductEdits": true
+  "newProductEdits": true,
+  "scratchCleanup": {
+    "preparedNativeStatesRemoved": true,
+    "browserClosed": true,
+    "allLocalCommandsComplete": true
+  }
 }

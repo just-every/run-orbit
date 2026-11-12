@@ -1,10 +1,10 @@
 {
   "files": [
     {
-      "blob": "3a45101b7b283c9b2adf628d9c26fd957f362b08",
-      "bytes": 3237,
+      "blob": "6f5ec0aab41171ebce65127159af6efaf1ee5fba",
+      "bytes": 3661,
       "path": "CHECKS.json",
-      "sha256": "9047d54c2bc87dd3469e4fec699c15f9c76604b08cae18692a3aa3cfd098cf89"
+      "sha256": "232b4632aa2a7c6230d89ddabba471c083d440b98f9df30f4c8ce2bb2587d5d7"
     },
     {
       "blob": "11c4b2749942b8f78d350f9f38e3902418171f3d",
@@ -13,10 +13,10 @@
       "sha256": "db17a011eca2477229b7c8dc99bf5d02e02f4fcc260125c3194ec0e5b80c3379"
     },
     {
-      "blob": "bd153d1fb134998715d2f66812925c8eb139a65d",
-      "bytes": 17844,
+      "blob": "210f12177459bec7164e297b3ca264e0f28d22bb",
+      "bytes": 18871,
       "path": "REPORT.md",
-      "sha256": "14ab220b4c63c08aa85d58951438fba628b44e1e478ca990af6bb4c7064ca272"
+      "sha256": "96e0ce341c98060e515bea23b24aebac31741fc933582a2678f7ec51d9e26125"
     },
     {
       "blob": "85296e33807f65f1b043652348b26b3278273124",
@@ -43,10 +43,16 @@
       "sha256": "1d1ed29db1b02a673770f789252299009d89a0b385c7639f13b6cf4b4ced37c6"
     },
     {
-      "blob": "9b64c62d8acd10f0b63cacaaf16fcbf129d424bb",
+      "blob": "733418abb522862018c1c5036181b4c63bcb6bd8",
       "bytes": 134,
       "path": "ci-watcher.json",
-      "sha256": "09741a7ad8f00d664a723659a7e5a0b31066cbc03d1e944e25469a1d522b8cd3"
+      "sha256": "95642db7b5ad8d7b86c03f47ed4435c86dfef8c817be9989370244a158597824"
+    },
+    {
+      "blob": "cef151b7d26f6e819c0c93aa5afb69f52e0bb85d",
+      "bytes": 675,
+      "path": "custody.json",
+      "sha256": "b503a88f9c84ff14b07986eae4d29bdcd34753becbd3d2a206ced18305039cec"
     },
     {
       "blob": "422a882e43c1ddc5fa2467dda28c0b70ce95d03f",
@@ -71,6 +77,12 @@
       "bytes": 916,
       "path": "erasure-fix.txt",
       "sha256": "f083e6403d80dd22807cd80e998c7d33b79e658a95cf09d12cf5dbe9e2f17187"
+    },
+    {
+      "blob": "f73f58d921064bb7c10240d60b2e37920dedf7bf",
+      "bytes": 7531,
+      "path": "evidence-first-transfer.json",
+      "sha256": "e014508a97a1ea4d36cf1371acf8d381647d147c9c8ac1ff5519f882d29bc7b7"
     },
     {
       "blob": "c4b0db6c17bc4b08f45769009a0ff1438d288916",

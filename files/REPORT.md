@@ -29,7 +29,7 @@ The product erasure hook, existing native proof helper, existing browser journey
 
 ## Selected point coverage
 
-The native registration is `tests/core/records-complete.test.ts` — “RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export”. It calls typedFieldsProof and savedViewsProof beside each other.
+The native registration is `tests/core/records-complete.test.ts` — “RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export”. It calls typedFieldsProof and savedViewsProof beside each other. The browser registration in `tests/delegation-browser/records-layout.test.ts` is “emitted Worker record and NOW lists wrap full valid long names and save, edit, reopen and delete sorted views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390”.
 
 | Selected outcome or inherited duty | Public-door assertion |
 | --- | --- |
@@ -74,7 +74,7 @@ Fetched main b3e94efdc16e4ae467cd2ed283ee4eb0dc4c0c31 has successful exact-SHA V
 
 ## Claim and held remainder
 
-CLAIM RECORD-014 PARTIAL points=1 tests=tests/core/records-complete.test.ts#RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export; tests/delegation-browser/records-layout.test.ts#emitted Worker record and NOW lists wrap full valid long names and save, edit, reopen and delete sorted views; an invited collaborator opens only permitted mentions and survives grant revocation at 1440 and 390
+CLAIM RECORD-014 PARTIAL points=1 tests=tests/core/records-complete.test.ts#RECORD-014 typed fields and saved filtered views retain current access, stable sort and archived meaning through export
 
 `points=1` identifies only the planner-selected saved-view limb of acceptance 1 and the credited typed-field foundation. It does not assert that the full acceptance sentence is complete.
 
@@ -99,3 +99,11 @@ PROBE RECORD-014 1: authenticated Records creation and saved-view reads for cont
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check, followed by restoring both generated views from main exit=0; ledger=python3 /tmp/check-orbit-migration-ledger.py and node scripts/publish-deployment-spec.mjs --check exit=0.
 
 The packet contains the complete actual non-secret report and relevant terminal receipts. Source-lock-check.json is the real CLI output; the migration checker is retained for reproduction from the clone root. No credential, environment dump, held-out gate material or symlink is selected. Evidence publication is a report transfer only and makes no product acceptance or landing claim. Full-history publication scan COMPLETE with zero findings, exact-main equality and Run site on the landing SHA remain unestablished here and belong to the guarded Mac lander.
+
+## Terminal handoff
+
+PUSHED branch=cloud/sd-orbit-c-f167 head=0e03cabe468040db4c5a6cb5b9f7bdf21072524a
+
+Exact-SHA push Verify 43150580930 remained in progress at the final REST observation, 2026-11-12T04:11:09.984957+00:00. Nine of ten GitHub calls were used, with one watcher and at least 300 seconds between requests for that run. No workflow was dispatched or rerun. This is a PUSHED handoff with all local checks passing; it is not an assertion of green CI, product READY, acceptance or landing. The independent fleet waits for the exact-SHA Verify and runs the full-history publication scan before landing. No known real candidate test failure or local blocker remains.
+
+The first report transfer 50707e51c7a9acdf2b8875ca160718e296d85bf1 was fetched and verified against all 39 then-selected file hashes. Its actual verification receipt is included as evidence-first-transfer.json. The final report transfer supersedes that snapshot and is identified by the terminal EVIDENCE line.
