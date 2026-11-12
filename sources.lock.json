@@ -11019,7 +11019,7 @@
       "executable": false
     },
     "tests/support/agent-door-graph-proof.ts": {
-      "sha256": "09d8d3b2e0fcfe411d28bfc3d8ad1ede341128dd1505a0db8ca5d3dbeb120690",
+      "sha256": "cf8e84243c11cfae88f81b177bff36da426b8def935495a61af9aa47d2b42f07",
       "executable": false
     },
     "tests/support/agent-door-local-proof.ts": {
