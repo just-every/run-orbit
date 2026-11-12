@@ -175,5 +175,9 @@
   "product-remote.txt",
   "candidate-ci-discovery.json",
   "ci-discovery-time.txt",
-  "PUBLISH-FILES.json"
+  "PUBLISH-FILES.json",
+  "evidence-initial.log",
+  "candidate-ci-latest.json",
+  "candidate-ci-history.jsonl",
+  "CLAIM.txt"
 ]

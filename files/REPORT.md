@@ -6,7 +6,7 @@ Product delta: each ready report tile's Basis includes a keyboard-accessible lin
 
 The complete working plan is PLAN.md. Actual execution outcomes and provenance are in RECEIPT.json and the named logs. PROBES.md maps the four public-door probes; UI-REVIEW.md records the builder's screen inspection. None of these evidence files belongs to the product branch.
 
-## Acceptance evidence and frozen round rubric
+## Acceptance evidence for the independent round gate
 
 The current contract names HubSpot, Pipedrive and Salesforce as incumbents. The narrow user outcome is that a dashboard user can inspect the saved definition behind a tile without losing its chosen version or gaining access to an unavailable source. This round makes no claim about live provider delivery or the held team-role implementation.
 
@@ -14,7 +14,7 @@ Registration A: newtests/t096/report-disclosure.test.ts:46 — REPORT-002 REPORT
 
 Registration B: newtests/t096/report-time-boundaries.test.ts:13 — report periods compare instants across ISO precision and timezone equality boundaries.
 
-Each row below names its public door and observable outcome. The exact candidate Verify event and conclusion are in push Verify 43320242997, in progress on the exact SHA and RECEIPT.json; local runtime results are recorded separately and never stand in for CI.
+Each row below names its public door and observable outcome. The candidate has push Verify 43320242997, still in progress at 22:53:50 UTC after 25 minutes; its observed event and conclusion are recorded in RECEIPT.json; local runtime results are recorded separately and never stand in for CI.
 
 | Row | Acceptance sentence or inherited duty | Existing public-door evidence | Result |
 | --- | --- | --- | --- |
@@ -68,3 +68,15 @@ Contact, lead, company and custom-object Owner filters remain RECORD-016 and REC
 Actual before and after counts are both 42 DONE, 130 PARTIAL, 32 MISSING. REPORT-002's stored judgment remains PARTIAL. A successful independent gate can award REPORT-002 DONE, changing counts to 43 DONE, 129 PARTIAL, 32 MISSING; this is a requested award, not an existing count. Plan rows changed: none on the Mac. Relay this result to the REPORT-002 campaign row only after the gate disposition; no other campaign was started.
 
 Final candidate custody, CI conclusion, claim and any remaining gap are recorded in RECEIPT.json and the terminal report.
+
+## Terminal qualification
+
+All four selected native points pass locally on 7f681b4f8ce8eb93914ac415fe88a086bee3f9d2. The formal claim remains PARTIAL solely because exact-SHA push Verify 43320242997 was still in progress at the last permitted read, 2026-11-12T22:53:50.615831Z. Eight of ten GitHub calls were used; two are reserved for failure diagnostics rather than more idle polling. The watcher was stopped intentionally, with no local test or server command pending. No CI rerun or dispatch was sent. No real test failure or product blocker is known.
+
+No further product build is indicated by this run. The independent gate can score the pushed head after Verify completes, using the actual native proof and the scope correction above. Do not treat the inherited Team or email duties as a newly unbuilt REPORT-002 gap. Fresh uip, fleet publication scan, guarded landing and exact-main Run site remain required.
+
+GAP REPORT-002: Exact-SHA Verify 43320242997 remains in progress; formal DONE qualification awaits that receipt and the independent gate.
+
+The product branch is cloud/sd-orbit-c-f181 at 7f681b4f8ce8eb93914ac415fe88a086bee3f9d2. Counts and stored clause judgment are unchanged: 42 DONE, 130 PARTIAL, 32 MISSING, with REPORT-002 still PARTIAL.
+
+CLAIM REPORT-002 PARTIAL points=1,2,3,4 tests=newtests/t096/report-disclosure.test.ts#REPORT-002 REPORT-003 REPORT-004 an owner’s tile board links viewer-fenced saved definitions at their versions and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence; newtests/t096/report-time-boundaries.test.ts#report periods compare instants across ISO precision and timezone equality boundaries

@@ -11,7 +11,9 @@
   "manualInspection": [
     "definition-link-owner-1440.png",
     "definition-owner-1440.png",
-    "definition-link-owner-390.png"
+    "definition-link-owner-390.png",
+    "definition-reader-390.png"
   ],
-  "independentUipGate": "not run by builder"
+  "independentUipGate": "not run by builder",
+  "head": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2"
 }

@@ -7,3 +7,5 @@ The actual 1440 desktop captures were inspected: the Basis link is underlined, w
 Dashboard icon-only controls already use DashboardTooltip, which delegates to ActionTooltip. Basis text is 13.5 or 14 pixels; the link inherits 14 pixels. There is no newly added one-sided border or configuration placement. Runtime keyboard checks focus Basis, open it with Enter, Tab to the link and activate it with Enter.
 
 The 390 phone Basis capture was also inspected: tiles stack in one column, the link stays within the card and long source-field names wrap. The final runtime outcome will be recorded in RECEIPT.json. This builder review is not an independent uip gate. A fresh uip gate on the pushed head and both width captures is still required before landing.
+
+The limited-reader destination at 390 was inspected too: it keeps version 1 while version 2 exists, shows Limited to your access, and exposes only the two permitted deals and their USD 23,000 total. Its Basis includes the original monthly boundaries, timezone, source fields and missing-data notes.

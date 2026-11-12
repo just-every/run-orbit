@@ -105,7 +105,7 @@
     "findings": null,
     "status": "NOT RUN, fleet owned"
   },
-  "independentUipGate": "required before landing",
+  "independentUipGate": "fresh gate required before landing; builder captures and review are complete",
   "pr": null,
   "ci": {
     "runs": [
@@ -124,14 +124,40 @@
     "event": "push",
     "head": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
     "conclusion": null,
-    "observedAt": "2026-11-12T22:28:50Z",
-    "githubCallsUsed": 3
+    "observedAt": "2026-11-12T22:53:50.615831+00:00",
+    "githubCallsUsed": 8,
+    "head_sha": "7f681b4f8ce8eb93914ac415fe88a086bee3f9d2",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43320242997",
+    "watcher": "stopped by builder after 25 minutes with two API calls reserved"
   },
   "custody": {
     "productPush": "pushed",
     "mainPush": false,
-    "evidencePush": "pending",
+    "evidencePush": "Initial packet published; final evidence head is supplied in the terminal EVIDENCE line.",
     "productRemoteVerified": true,
-    "pushLog": "product-push.log"
+    "pushLog": "product-push.log",
+    "initialEvidenceHead": "3cf8bf5b1c511b1c0ed7d219ad75575ec1b9c7dc",
+    "terminal": "PUSHED"
+  },
+  "browserReceipt": "BROWSER-RECEIPT.json",
+  "remainingFleetGates": [
+    "fresh independent uip gate",
+    "COMPLETE full-history publication scan with zero findings",
+    "guarded main landing and equality",
+    "Run site on resulting main SHA"
+  ],
+  "editionId": "just-every/orbit",
+  "fullHistory": true,
+  "claim": {
+    "clause": "REPORT-002",
+    "status": "PARTIAL",
+    "points": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "nativeOutcomes": "all proven locally on the pushed head",
+    "gap": "Exact-SHA Verify 43320242997 is still in progress; DONE qualification and independent gate remain pending."
   }
 }
