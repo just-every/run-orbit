@@ -1,0 +1,12 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-consent-1",
+  "head": "62d11cf2ceeff451bf8794123d521d204554981c",
+  "guard_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-contact-consent-1",
+  "guard_exit": 0,
+  "guard_result": "PUSH_OK branch=cloud/main-orbit-contact-consent-1",
+  "product_clean": true,
+  "identity_audit": "All four candidate commits passed",
+  "default_branch_pushed": false,
+  "force_push": false
+}

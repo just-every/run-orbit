@@ -1,8 +1,8 @@
 {
   "repository": "just-every/run-orbit",
   "branch": "cloud/main-orbit-contact-consent-1",
-  "head": "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
-  "recorded_at": "2026-11-12T04:05:04.503812+00:00",
+  "head": "62d11cf2ceeff451bf8794123d521d204554981c",
+  "recorded_at": "2026-11-12T05:02:40.542732+00:00",
   "local_node": "22.20.0 final typecheck and provider retry; 24.19.0 initial browser and core tests",
   "checks": [
     {
@@ -58,6 +58,61 @@
       "before": 200,
       "after": 200,
       "receipt": "test-inventory.json"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='vendor exports and generic spreadsheets' tests/core/crm-import.test.ts",
+      "exit": 1,
+      "failure": "Fixture migration startup ETIMEDOUT before assertions",
+      "receipt": "import-core-startup-failure.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='vendor exports and generic spreadsheets' tests/core/crm-import.test.ts",
+      "exit": 1,
+      "failure": "Vendor and generic CSV assertions passed; later importOwnerFlow failed with local D1 fetch failed",
+      "receipt": "import-core-full-retry.log"
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-csv-regression.mts",
+      "exit": 0,
+      "scope": "Existing genericCsvFlow executed directly through native HTTP routes",
+      "receipt": "csv-regression.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='manual contacts start contactable' tests/core/launch-suppression.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "scope": "New malformed-row regression and erased/current address safeguards",
+      "receipt": "consent-corrected.log"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright-config.mjs imports.spec.mjs --reporter=line,json",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "receipt": "import-wizard-corrected.json",
+      "source_head": "62d11cf2ceeff451bf8794123d521d204554981c"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "node": "22.20.0",
+      "receipt": "corrected-typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-check.json"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright-config.mjs capture.spec.mjs records.spec.mjs --grep 'an operator adds a mailbox|record creation, edits' --reporter=line,json",
+      "exit": 0,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "source_head": "62d11cf2ceeff451bf8794123d521d204554981c",
+      "receipt": "final-creation-browser.json",
+      "screenshots": "candidate/ at 1440 and 390"
     }
   ],
   "proof": {
@@ -77,7 +132,8 @@
     "heads": [
       "b98e06f8f12a148592b2b9b935bad3151027d7ee",
       "6670549f5232991258ee40540788a1b3010e64ed",
-      "bdef459c5b3ed8491de96b8ba36924bbfc544d05"
+      "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
+      "62d11cf2ceeff451bf8794123d521d204554981c"
     ],
     "final_skip_ci": false,
     "public_default_branch_mutation": false,
@@ -89,5 +145,28 @@
     "status_changes": []
   },
   "full_publication_scan": "Unavailable in cloud; retained as a required fleet landing gate",
-  "browser_product_head": "6670549f5232991258ee40540788a1b3010e64ed"
+  "browser_product_head": "62d11cf2ceeff451bf8794123d521d204554981c",
+  "ci_first_candidate": {
+    "head": "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
+    "run": 43152352749,
+    "conclusion": "failure",
+    "cause": "Malformed email reached contact identity precheck before per-row rejection",
+    "correction": "62d11cf2ceeff451bf8794123d521d204554981c"
+  },
+  "remaining_verification": "Exact-SHA Verify 43158603561 is in progress; ten-call CI budget exhausted; PUSHED custody only.",
+  "ci": {
+    "conclusion": null,
+    "head_sha": "62d11cf2ceeff451bf8794123d521d204554981c",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43158603561",
+    "id": 43158603561,
+    "name": "Verify",
+    "status": "in_progress",
+    "github_calls_total": 10,
+    "observed_at": "2026-11-12T05:08:56.291420+00:00",
+    "observation_for_corrected_head": 1
+  },
+  "terminal_custody": "PUSHED",
+  "blockers": [
+    "Full exact-SHA Verify result remains pending; no READY claim."
+  ]
 }

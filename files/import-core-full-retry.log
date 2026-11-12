@@ -1,0 +1,35 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes
+not ok 1 - RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes
+  ---
+  duration_ms: 942452.210675
+  type: 'test'
+  location: '/workspace/run-orbit/tests/core/crm-import.test.ts:1:965'
+  failureType: 'testCodeFailure'
+  error: '409: {"error":"Import stopped: fetch failed"}'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    json (/workspace/run-orbit/tests/support/crm-import-flow.ts:4:94)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async finish (/workspace/run-orbit/tests/support/crm-import-flow.ts:5:104)
+    async importOwnerFlow (/workspace/run-orbit/tests/support/import-owners.ts:27:2)
+    async TestContext.<anonymous> (/workspace/run-orbit/tests/core/crm-import.test.ts:51:27)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# hubspot: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+# pipedrive: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 948504.880968

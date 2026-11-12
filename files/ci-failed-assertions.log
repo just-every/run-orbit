@@ -1,0 +1,56 @@
+Failed-job archive command (once): gh run view 43152352749 --repo just-every/run-orbit --job 130965149033 --log-failed
+Observed diagnostic: failed to get run log: zip: not a valid zip file
+HTTP status: not supplied. The complete archive downloaded for the other failed job was read locally to recover this job; no archive retry or additional network call was made.
+
+2026-11-12T04:28:37.7880612Z test at tests/core/crm-import.test.ts:1:965
+2026-11-12T04:28:37.7881880Z ✖ RECORD-008 vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes (455625.47452ms)
+2026-11-12T04:28:37.7883103Z   AssertionError [ERR_ASSERTION]: 409: {"error":"Import stopped: A valid commercial contact email is required"}
+2026-11-12T04:28:37.7883808Z       at json (/home/runner/work/run-orbit/run-orbit/tests/support/crm-import-flow.ts:4:94)
+2026-11-12T04:28:37.7884431Z       at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2026-11-12T04:28:37.7885109Z       at async genericCsvFlow (/home/runner/work/run-orbit/run-orbit/tests/support/crm-import-flow.ts:14:12)
+2026-11-12T04:28:37.7885875Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/core/crm-import.test.ts:51:3)
+2026-11-12T04:28:37.7886451Z       at async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:28:37.7887129Z       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+2026-11-12T04:28:37.7887629Z     generatedMessage: false,
+2026-11-12T04:28:37.7887901Z     code: 'ERR_ASSERTION',
+2026-11-12T04:28:37.7888155Z     actual: false,
+2026-11-12T04:28:37.7888384Z     expected: true,
+2026-11-12T04:28:37.7888617Z     operator: '==',
+2026-11-12T04:28:37.7888832Z     diff: 'simple'
+2026-11-12T04:28:37.7889043Z   }
+2026-11-12T04:28:37.8855079Z ##[error]Process completed with exit code 1.
+
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2263267Z   1) tests/e2e/imports.spec.mjs:9:1 › RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2263897Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2264096Z     Error: expect(locator).toBeVisible() failed
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2264361Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2264671Z     Locator: getByRole('heading', { name: 'Review your dry run', exact: true })
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2265339Z     Expected: visible
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2265704Z     Timeout: 5000ms
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2266072Z     Error: element(s) not found
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2266257Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2266354Z     Call log:
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2267592Z       - Expect "toBeVisible" getByRole('heading', { name: 'Review your dry run', exact: true }) with timeout 5000ms
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2268773Z       - waiting for getByRole('heading', { name: 'Review your dry run', exact: true })
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2269328Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2269343Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2270363Z       32 |   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2271217Z       33 |   await page.screenshot({path:join(screenshots,`viewport-${width}-${vendor}-mapping.png`),fullPage:true});
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2272743Z     > 34 |   await page.getByRole('button',{name:'Run dry run',exact:true}).click();await expect(page.getByRole('heading',{name:'Review your dry run',exact:true})).toBeVisible();if(vendor!=='csv')await expect(page.locator('.crm-results')).toContainText('occurrence time');
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2273894Z          |                                                                                                                                                          ^
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2274366Z       35 |   if(vendor==='csv'){
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2275097Z       36 |    const review=page.locator('section[aria-label="Import review"]');await expect(review.locator('p').first()).not.toContainText('companies made from Company name');
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2276185Z       37 |    const results=page.getByRole('list',{name:'Dry run row results'});
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2276733Z         at /home/runner/work/run-orbit/run-orbit/tests/e2e/imports.spec.mjs:34:154
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2277035Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2277564Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2278243Z     test-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/test-failed-1.png
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2279160Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2279444Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2280059Z     Error Context: test-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/error-context.md
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2280782Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2281220Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2281860Z     test-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2282317Z     Usage:
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2282486Z 
+shards (batch-13)	Verify routine product shard	2026-11-12T04:14:03.2282915Z         pnpm exec playwright show-trace test-results/imports-RECORD-008-reviewe-1bea9-he-responsive-native-wizard/trace.zip

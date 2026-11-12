@@ -1,6 +1,13 @@
 {
   "commits": [
     {
+      "head": "62d11cf2ceeff451bf8794123d521d204554981c",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": [],
+      "subject": "Validate CSV addresses before erased-contact lookup"
+    },
+    {
       "head": "bdef459c5b3ed8491de96b8ba36924bbfc544d05",
       "author": "Run Edit Run fleet <fleet@runeditrun.com>",
       "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
