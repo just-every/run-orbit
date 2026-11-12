@@ -1,0 +1,30 @@
+[
+  {
+    "shard": "rer-checkouts",
+    "command": "pnpm exec tsx tests/support/prepare-state.ts"
+  },
+  {
+    "shard": "rer-checkouts",
+    "command": "pnpm exec node scripts/verification-build.mjs check"
+  },
+  {
+    "shard": "rer-checkouts",
+    "command": "pnpm exec node --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/rer-checkouts-results.jsonl tests/rer/admission.test.mjs tests/rer/capture-proof.test.mjs tests/rer/identity.test.mjs tests/rer/onboarding.test.mjs"
+  },
+  {
+    "shard": "runtime-launch",
+    "command": "pnpm exec tsx tests/support/prepare-state.ts"
+  },
+  {
+    "shard": "runtime-launch",
+    "command": "pnpm exec node scripts/verification-build.mjs check"
+  },
+  {
+    "shard": "runtime-launch",
+    "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/launch-results.jsonl tests/launch-runtime/declared-signin.test.ts tests/launch-runtime/mail-body-transport.test.ts tests/launch-runtime/mail-ingress.test.ts tests/launch-runtime/source-mailbox-stop.test.ts"
+  },
+  {
+    "shard": "runtime-launch",
+    "command": "pnpm run test:worker"
+  }
+]

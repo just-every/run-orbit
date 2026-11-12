@@ -1,0 +1,23 @@
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:30.5257743Z Verification (runtime-launch): pnpm run test:worker
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:30.7458587Z 
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:30.7459522Z > orbit@0.4.7 test:worker /home/runner/work/run-orbit/run-orbit
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:30.7460205Z > tsx scripts/verify-worker.ts
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:30.7460449Z 
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0253430Z node:internal/modules/run_main:123
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0253925Z     triggerUncaughtException(
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0254251Z     ^
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0254391Z 
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0254817Z AssertionError [ERR_ASSERTION]: Unconfigured emitted Worker starts on its assigned host
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0255721Z     at verifyUnconfiguredHost (/home/runner/work/run-orbit/run-orbit/scripts/verify-unconfigured-host.ts:10:175)
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0256667Z     at async <anonymous> (/home/runner/work/run-orbit/run-orbit/scripts/verify-worker.ts:26:24) {
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0257275Z   generatedMessage: false,
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0257616Z   code: 'ERR_ASSERTION',
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0257935Z   actual: false,
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0258215Z   expected: true,
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0258487Z   operator: '==',
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0258753Z   diff: 'simple'
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0259023Z }
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0259161Z 
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0259278Z Node.js v22.20.0
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.0999168Z  ELIFECYCLE  Command failed with exit code 1.
+shards (batch-14)	Verify routine product shard	2026-11-12T15:37:49.1835679Z ##[error]Process completed with exit code 1.

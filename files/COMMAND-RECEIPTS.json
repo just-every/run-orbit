@@ -1,0 +1,1216 @@
+[
+  {
+    "time": "2026-11-12T16:05:08Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 1,
+    "response_note": "Initial metadata output was over-sanitized by URL-query stripping; exact run identity is independently confirmed by subsequent intact status receipts.",
+    "observed_run_id": 43246891287
+  },
+  {
+    "time": "2026-11-12T16:05:36Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287/jobs?filter=all&per_page=100",
+      "--jq",
+      "{total_count,jobs:[.jobs[]|{id,name,status,conclusion,run_attempt,started_at,completed_at,runner_name,runner_group_name,failed_steps:[.steps[]|select(.conclusion==\"failure\")]}]}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 2,
+    "response": {
+      "jobs": [
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131281843456,
+          "name": "plan",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314986",
+          "started_at": "2026-11-12T15:21:27Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:24:15Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131282122553,
+          "name": "source and shared build",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314987",
+          "started_at": "2026-11-12T15:21:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131282126364,
+          "name": "light",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:21:51Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662234,
+          "name": "shards (batch-2)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314996",
+          "started_at": "2026-11-12T15:24:19Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:37Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662305,
+          "name": "shards (batch-4)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314998",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:05Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662338,
+          "name": "shards (batch-8)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314991",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:44Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662352,
+          "name": "shards (batch-3)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315002",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:33:20Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662365,
+          "name": "shards (batch-5)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315009",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:41Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662402,
+          "name": "shards (batch-7)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314999",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:38Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662414,
+          "name": "shards (batch-10)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314990",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:34:51Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662417,
+          "name": "shards (batch-13)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314997",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:39:02Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662426,
+          "name": "shards (batch-6)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315001",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:58Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662436,
+          "name": "shards (batch-16)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314992",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:53Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662457,
+          "name": "shards (batch-0)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315004",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:44:23Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662494,
+          "name": "shards (batch-12)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314993",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:37:53Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T15:37:49Z",
+              "conclusion": "failure",
+              "name": "Verify routine product shard",
+              "number": 15,
+              "started_at": "2026-11-12T15:24:51Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131283662502,
+          "name": "shards (batch-14)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315000",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:45:03Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662519,
+          "name": "shards (batch-9)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314995",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:11Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662526,
+          "name": "shards (batch-17)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314994",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:00Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662539,
+          "name": "shards (batch-15)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315008",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:31:27Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662559,
+          "name": "shards (batch-11)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315003",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:36:34Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662624,
+          "name": "shards (batch-19)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315007",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:43:09Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662632,
+          "name": "shards (batch-18)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315006",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:29Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662742,
+          "name": "shards (batch-1)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315005",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T15:48:49Z",
+              "conclusion": "failure",
+              "name": "Require a successful plan and all required work",
+              "number": 2,
+              "started_at": "2026-11-12T15:48:48Z",
+              "status": "completed"
+            },
+            {
+              "completed_at": "2026-11-12T15:48:49Z",
+              "conclusion": "failure",
+              "name": "Retain combined routine verdicts (capacity pending)",
+              "number": 9,
+              "started_at": "2026-11-12T15:48:49Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131299331175,
+          "name": "verify",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315132",
+          "started_at": "2026-11-12T15:48:46Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299412966,
+          "name": "nightly-proof",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299413278,
+          "name": "release",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299413318,
+          "name": "full-push-proof",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        }
+      ],
+      "total_count": 27
+    }
+  },
+  {
+    "time": "2026-11-12T16:05:55Z",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "43246891287",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "131283662502",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 3,
+    "sanitized_stdout_sha256": "117a4c6dbd5f282d8535dfca3edcbae7057e0e449f8ad67894dfb9ec9a3efc23",
+    "published_excerpt": "FAILED-ASSERTION-attempt-1.log"
+  },
+  {
+    "time": "2026-11-12T16:06:28Z",
+    "command": [
+      "gh",
+      "api",
+      "--method",
+      "POST",
+      "repos/just-every/run-orbit/actions/jobs/131283662502/rerun"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 4,
+    "response": {}
+  },
+  {
+    "time": "2026-11-12T16:11:28Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,run_attempt,updated_at}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 5,
+    "response": {
+      "conclusion": null,
+      "head_sha": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43246891287",
+      "run_attempt": 2,
+      "status": "in_progress",
+      "updated_at": "2026-11-12T16:06:35Z"
+    }
+  },
+  {
+    "time": "2026-11-12T16:16:29Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,run_attempt,updated_at}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 6,
+    "response": {
+      "conclusion": null,
+      "head_sha": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43246891287",
+      "run_attempt": 2,
+      "status": "in_progress",
+      "updated_at": "2026-11-12T16:06:35Z"
+    }
+  },
+  {
+    "time": "2026-11-12T16:21:30Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,run_attempt,updated_at}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 7,
+    "response": {
+      "conclusion": "failure",
+      "head_sha": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43246891287",
+      "run_attempt": 2,
+      "status": "completed",
+      "updated_at": "2026-11-12T16:20:31Z"
+    }
+  },
+  {
+    "time": "2026-11-12T16:21:50Z",
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/actions/runs/43246891287/jobs?filter=all&per_page=100",
+      "--jq",
+      "{total_count,jobs:[.jobs[]|{id,name,status,conclusion,run_attempt,started_at,completed_at,runner_name,runner_group_name,failed_steps:[.steps[]|select(.conclusion==\"failure\")]}]}"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 8,
+    "response": {
+      "jobs": [
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131281843456,
+          "name": "plan",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314986",
+          "started_at": "2026-11-12T15:21:27Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:24:15Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131282122553,
+          "name": "source and shared build",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314987",
+          "started_at": "2026-11-12T15:21:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131282126364,
+          "name": "light",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:21:51Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662234,
+          "name": "shards (batch-2)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314996",
+          "started_at": "2026-11-12T15:24:19Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:37Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662305,
+          "name": "shards (batch-4)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314998",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:05Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662338,
+          "name": "shards (batch-8)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314991",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:44Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662352,
+          "name": "shards (batch-3)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315002",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:33:20Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662365,
+          "name": "shards (batch-5)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315009",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:41Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662402,
+          "name": "shards (batch-7)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314999",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:38Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662414,
+          "name": "shards (batch-10)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314990",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:34:51Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662417,
+          "name": "shards (batch-13)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314997",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:39:02Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662426,
+          "name": "shards (batch-6)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315001",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:58Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662436,
+          "name": "shards (batch-16)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314992",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:53Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662457,
+          "name": "shards (batch-0)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315004",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:44:23Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662494,
+          "name": "shards (batch-12)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314993",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:37:53Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T15:37:49Z",
+              "conclusion": "failure",
+              "name": "Verify routine product shard",
+              "number": 15,
+              "started_at": "2026-11-12T15:24:51Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131283662502,
+          "name": "shards (batch-14)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315000",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:45:03Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662519,
+          "name": "shards (batch-9)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314995",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:11Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662526,
+          "name": "shards (batch-17)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314994",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:00Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662539,
+          "name": "shards (batch-15)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315008",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:31:27Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662559,
+          "name": "shards (batch-11)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315003",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:36:34Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662624,
+          "name": "shards (batch-19)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315007",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:43:09Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662632,
+          "name": "shards (batch-18)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315006",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:29Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131283662742,
+          "name": "shards (batch-1)",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315005",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T15:48:49Z",
+              "conclusion": "failure",
+              "name": "Require a successful plan and all required work",
+              "number": 2,
+              "started_at": "2026-11-12T15:48:48Z",
+              "status": "completed"
+            },
+            {
+              "completed_at": "2026-11-12T15:48:49Z",
+              "conclusion": "failure",
+              "name": "Retain combined routine verdicts (capacity pending)",
+              "number": 9,
+              "started_at": "2026-11-12T15:48:49Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131299331175,
+          "name": "verify",
+          "run_attempt": 1,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315132",
+          "started_at": "2026-11-12T15:48:46Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299412966,
+          "name": "nightly-proof",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299413278,
+          "name": "release",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:51Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131299413318,
+          "name": "full-push-proof",
+          "run_attempt": 1,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T15:48:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310857270,
+          "name": "plan",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314986",
+          "started_at": "2026-11-12T15:21:27Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:48:44Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310858679,
+          "name": "shards (batch-3)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315002",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:29Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310858912,
+          "name": "shards (batch-1)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315005",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:53Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310859130,
+          "name": "shards (batch-0)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315004",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:41Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310859832,
+          "name": "shards (batch-7)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314999",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:39:02Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310859938,
+          "name": "shards (batch-6)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315001",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:50Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310859952,
+          "name": "shards (batch-2)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314996",
+          "started_at": "2026-11-12T15:24:19Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:37Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860054,
+          "name": "shards (batch-4)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314998",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T16:20:24Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T16:20:16Z",
+              "conclusion": "failure",
+              "name": "Verify routine product shard",
+              "number": 15,
+              "started_at": "2026-11-12T16:07:14Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131310860168,
+          "name": "shards (batch-14)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315256",
+          "started_at": "2026-11-12T16:06:35Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:33:20Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860408,
+          "name": "shards (batch-5)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315009",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:34:51Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860442,
+          "name": "shards (batch-13)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314997",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:38:38Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860568,
+          "name": "shards (batch-10)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314990",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:44:23Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860624,
+          "name": "shards (batch-12)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314993",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:45:03Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860655,
+          "name": "shards (batch-9)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314995",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:31:27Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860721,
+          "name": "shards (batch-11)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315003",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:05Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310860848,
+          "name": "shards (batch-8)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314991",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:43:09Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310862051,
+          "name": "shards (batch-18)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315006",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:35:11Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310862099,
+          "name": "shards (batch-17)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314994",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:36:34Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310862216,
+          "name": "shards (batch-19)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315007",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:41:58Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310862722,
+          "name": "shards (batch-16)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314992",
+          "started_at": "2026-11-12T15:24:17Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:40:00Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310862799,
+          "name": "shards (batch-15)",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315008",
+          "started_at": "2026-11-12T15:24:18Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:24:15Z",
+          "conclusion": "success",
+          "failed_steps": [],
+          "id": 131310915162,
+          "name": "source and shared build",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000314987",
+          "started_at": "2026-11-12T15:21:52Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T15:21:50Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131310953941,
+          "name": "light",
+          "run_attempt": 2,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T16:06:42Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T16:20:30Z",
+          "conclusion": "failure",
+          "failed_steps": [
+            {
+              "completed_at": "2026-11-12T16:20:28Z",
+              "conclusion": "failure",
+              "name": "Require a successful plan and all required work",
+              "number": 2,
+              "started_at": "2026-11-12T16:20:28Z",
+              "status": "completed"
+            },
+            {
+              "completed_at": "2026-11-12T16:20:28Z",
+              "conclusion": "failure",
+              "name": "Retain combined routine verdicts (capacity pending)",
+              "number": 9,
+              "started_at": "2026-11-12T16:20:28Z",
+              "status": "completed"
+            }
+          ],
+          "id": 131319816047,
+          "name": "verify",
+          "run_attempt": 2,
+          "runner_group_name": "GitHub Actions",
+          "runner_name": "GitHub Actions 1000315332",
+          "started_at": "2026-11-12T16:20:26Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T16:20:30Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131319882776,
+          "name": "release",
+          "run_attempt": 2,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T16:20:30Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T16:20:30Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131319883656,
+          "name": "nightly-proof",
+          "run_attempt": 2,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T16:20:30Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-11-12T16:20:30Z",
+          "conclusion": "skipped",
+          "failed_steps": [],
+          "id": 131319883835,
+          "name": "full-push-proof",
+          "run_attempt": 2,
+          "runner_group_name": null,
+          "runner_name": null,
+          "started_at": "2026-11-12T16:20:31Z",
+          "status": "completed"
+        }
+      ],
+      "total_count": 54
+    }
+  },
+  {
+    "time": "2026-11-12T16:22:02Z",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "43246891287",
+      "--repo",
+      "just-every/run-orbit",
+      "--job",
+      "131310860168",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "stderr": "",
+    "invocation_number": 9,
+    "sanitized_stdout_sha256": "5bbcdf089178562efe1f5ccf9b80a9c6db8826a89134917394800a266362ee31",
+    "published_excerpt": "FAILED-ASSERTION-attempt-2.log"
+  }
+]

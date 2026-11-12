@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-c-f176-fix1-rebased-ci-triage-1",
+  "repository": "just-every/run-orbit",
+  "candidate_head": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+  "original_candidate_verify_context": {
+    "head_prefix": "3e3d6fe7",
+    "run_id": 43219714316,
+    "status": "success supplied by brief; not re-fetched"
+  },
+  "investigated_run": {
+    "id": 43246891287,
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43246891287",
+    "branch": "cloud/sd-orbit-c-f176-fix1-rebase-fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+    "initial_conclusion": "failure",
+    "attempt": 1
+  },
+  "failed_product_job": {
+    "id": 131283662502,
+    "name": "shards (batch-14)",
+    "runner_name": "GitHub Actions 1000315000",
+    "logical_shard": "runtime-launch",
+    "stage": "pnpm run test:worker",
+    "command": "tsx scripts/verify-worker.ts",
+    "assertion": "Unconfigured emitted Worker starts on its assigned host",
+    "site": "scripts/verify-unconfigured-host.ts:10:175",
+    "actual": false,
+    "expected": true,
+    "caller": "scripts/verify-worker.ts:26:24",
+    "batch_logical_shards": [
+      "rer-checkouts",
+      "runtime-launch"
+    ]
+  },
+  "prior_retry_used": false,
+  "retry": {
+    "requested_at": "2026-11-12T16:06:28Z",
+    "endpoint": "POST repos/just-every/run-orbit/actions/jobs/131283662502/rerun",
+    "response": {},
+    "exit": 0,
+    "only_failed_product_job": true,
+    "attempt": 2,
+    "job_id": 131310860168,
+    "runner_name": "GitHub Actions 1000315256",
+    "started_at": "2026-11-12T16:06:35Z",
+    "completed_at": "2026-11-12T16:20:24Z",
+    "conclusion": "failure",
+    "failed_step": "Verify routine product shard",
+    "same_assertion": true,
+    "assertion_time": "2026-11-12T16:20:16.7421916Z",
+    "permitted_retry_exhausted": true
+  },
+  "before_counts": {
+    "product_shards_passed": 19,
+    "product_shards_failed": 1,
+    "clause_done": 42,
+    "clause_partial": 130,
+    "clause_missing": 32
+  },
+  "after_counts": {
+    "product_shards_passed": 19,
+    "product_shards_failed": 1,
+    "clause_done": 42,
+    "clause_partial": 130,
+    "clause_missing": 32
+  },
+  "product_changes": 0,
+  "clause_changes": 0,
+  "gate_FIX_increment": 0,
+  "landing": "refused until exact-head green",
+  "final_run": {
+    "conclusion": "failure",
+    "head_sha": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43246891287",
+    "run_attempt": 2,
+    "status": "completed",
+    "updated_at": "2026-11-12T16:20:31Z"
+  },
+  "automatic_dependent_aggregate": {
+    "job_id": 131319816047,
+    "conclusion": "failure",
+    "started_at": "2026-11-12T16:20:26Z",
+    "explicitly_requested": false
+  },
+  "successful_job_rows_note": "GitHub repeats successful jobs under attempt 2 with new IDs but original attempt-1 execution times. No successful shard was requested for retry.",
+  "gh_command_invocations": 9,
+  "main_comparison_execution": "NOT RUN: existing same-runner targeted baseline executor unavailable from this cloud",
+  "classification": "Persistent startup-readiness assertion failure; infrastructure versus main baseline versus candidate regression remains unresolved without execution on main.",
+  "narrow_next_action": "Use the fleet existing targeted baseline runner to execute only verifyUnconfiguredHost against current main, with its emitted build and prepared D1 state, on the same runner; do not rerun Verify or any shard again.",
+  "completed_at": "2026-11-12T16:23:18Z"
+}

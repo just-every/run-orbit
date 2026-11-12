@@ -1,0 +1,33 @@
+{
+  "candidate_head": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+  "observed_main_head": "eab0faafccd2eb0945dddb7d0f52c30ce573c04c",
+  "checkout_head": "eab0faafccd2eb0945dddb7d0f52c30ce573c04c",
+  "compared_paths": [
+    {
+      "path": ".github/workflows/verify.yml",
+      "identical": true,
+      "candidate_sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238",
+      "main_sha256": "2d350a75be8a46166f04f9bc77a1e822ab23c75a1ac51fa05be9789db1aec238"
+    },
+    {
+      "path": "scripts/verify-unconfigured-host.ts",
+      "identical": true,
+      "candidate_sha256": "df0cb4ba0eef90aa26713ed97aae9eb01f3cbcb898d56b6357263f6ebfb5f5ab",
+      "main_sha256": "df0cb4ba0eef90aa26713ed97aae9eb01f3cbcb898d56b6357263f6ebfb5f5ab"
+    },
+    {
+      "path": "scripts/verify-worker.ts",
+      "identical": true,
+      "candidate_sha256": "8b72bd04c641bb31558d9e57282c4fac631d8325c3a08a2f25f864f5de95a14d",
+      "main_sha256": "8b72bd04c641bb31558d9e57282c4fac631d8325c3a08a2f25f864f5de95a14d"
+    }
+  ],
+  "source_clause_counts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "product_diff": "",
+  "same_runner_main_execution": "NOT RUN: existing hosted workflows do not expose a baseline-ref plus single-test command or runner-affinity input"
+}

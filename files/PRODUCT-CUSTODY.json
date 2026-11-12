@@ -1,0 +1,31 @@
+{
+  "task_branch": "cloud/sd-orbit-c-f176-fix1-rebased-ci-triage-1",
+  "task_head": "eab0faafccd2eb0945dddb7d0f52c30ce573c04c",
+  "task_branch_pushed": false,
+  "product_commits": 0,
+  "product_files_changed": 0,
+  "investigation_head": "fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+  "candidate_branch_from_run": "cloud/sd-orbit-c-f176-fix1-rebase-fc2af9e59b27a655602ab4c0deca8cac1b48bc59",
+  "requested_branch_in_brief": "cloud/sd-orbit-c-f176-fix1",
+  "origin": "https://github.com/just-every/run-orbit.git",
+  "pull_request_created": false,
+  "landing_records_read": false,
+  "landing_records_changed": false,
+  "gate_FIX_increment": 0,
+  "clauses_changed": [],
+  "before_clause_counts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "after_clause_counts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "identity_check_command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+  "identity_check_output": "",
+  "reason_no_product_push": "CI triage assignment prohibits product edits, commits and pushes; evidence is separately authorized"
+}
