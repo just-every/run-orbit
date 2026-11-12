@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "count": 77,
+  "newMigrations": [
+    {
+      "name": "0081_hubspot_import.sql",
+      "sha256": "639a5eba10fe855306f1e431f35c41547a97f4bc922c64920f950166f943846a"
+    },
+    {
+      "name": "0082_hubspot_explicit_erasure.sql",
+      "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980"
+    }
+  ]
+}

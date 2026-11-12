@@ -1,0 +1,57 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits
+ok 1 - RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits
+  ---
+  duration_ms: 75444.17033
+  type: 'test'
+  ...
+# Subtest: RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads with no native target or suppression effect
+ok 2 - RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads with no native target or suppression effect
+  ---
+  duration_ms: 62032.842979
+  type: 'test'
+  ...
+# Subtest: RECORD-008 DATA-002 T-098 unrelated company import reviews and safe undo remain available after native contact erasure
+ok 3 - RECORD-008 DATA-002 T-098 unrelated company import reviews and safe undo remain available after native contact erasure
+  ---
+  duration_ms: 48947.576836
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: RECORD-008 connected HubSpot, vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes
+ok 4 - RECORD-008 connected HubSpot, vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes
+  ---
+  duration_ms: 997266.499162
+  type: 'test'
+  ...
+# hubspot: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+# pipedrive: 129 rows, one listed rejection; source conflict refused, persisted restart at 11 of 131 resumed the same job; records, associations, notes, replay and kit undo reconciled.
+# Subtest: RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed
+ok 5 - RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed
+  ---
+  duration_ms: 44157.220493
+  type: 'test'
+  ...
+# Subtest: RECORD-008 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans
+ok 6 - RECORD-008 a failed native batch keeps suppression effective; revoked grants and another actor cannot publish retained plans
+  ---
+  duration_ms: 42572.952407
+  type: 'test'
+  ...
+# Orbit records: unexpected Error: D1_ERROR: Finish or undo the pending suppression import before creating contacts: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER) (cause: Error: Finish or undo the pending suppression import before creating contacts: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER))
+# Subtest: RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held
+ok 7 - RECORD-008 a contact arriving after review fences every creation and send until undo; missing permission stays held
+  ---
+  duration_ms: 65822.701507
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1343199.092216

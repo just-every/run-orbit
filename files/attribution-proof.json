@@ -1,0 +1,12 @@
+{
+  "door": "GET /api/v1/opportunities/:id",
+  "before": {
+    "status": 500,
+    "failure": "Unsupported timeline actor type: import"
+  },
+  "after": {
+    "status": 200,
+    "actorName": "Synthetic attribution (HubSpot import)"
+  },
+  "proof": "current native public-door probe and retained connected import journey"
+}

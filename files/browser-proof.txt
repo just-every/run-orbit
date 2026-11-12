@@ -1,0 +1,12 @@
+[wrangler:info] POST /api/v1/imports/01M77D5TE66G4MMY685Q6FAEMV/apply 200 OK (61ms)
+[wrangler:info] POST /api/v1/imports/01M77D5TE66G4MMY685Q6FAEMV/apply 200 OK (314ms)
+[wrangler:info] POST /api/v1/imports/01M77D5TE66G4MMY685Q6FAEMV/apply 200 OK (160ms)
+[wrangler:info] GET /api/v1/settings 200 OK (15ms)
+[wrangler:info] GET /api/v1/imports/owners 200 OK (29ms)
+[wrangler:info] GET /api/v1/imports 200 OK (33ms)
+[wrangler:info] GET /api/v1/notifications 200 OK (12ms)
+[wrangler:info] GET /api/v1/tasks 200 OK (22ms)
+⎔ Shutting down local server...
+  ✓  1 tests/e2e/imports.spec.mjs:10:1 › RECORD-008 connected HubSpot, reviewed vendor files and plain CSV import and undo through the responsive native wizard (1.1m)
+
+  1 passed (1.9m)

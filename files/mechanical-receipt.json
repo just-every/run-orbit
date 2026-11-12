@@ -1,0 +1,68 @@
+{
+  "productHead": "11f4a8bf2a061c3547a3c158acc1642a45f95ff0",
+  "productBranch": "cloud/sd-orbit-c-f174",
+  "productPushed": true,
+  "status": "passed",
+  "checks": {
+    "typecheck": {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    "boundaries": {
+      "command": "pnpm check:boundaries",
+      "exit": 0
+    },
+    "firstParty": {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    "build": {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    "views": {
+      "commands": [
+        "node src/base/contract-docs.mjs write",
+        "node src/base/contract-docs.mjs check"
+      ],
+      "exit": 0,
+      "generatedFilesCommitted": false
+    },
+    "lock": {
+      "commands": [
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+        "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+      ],
+      "exit": 0
+    },
+    "deployment": {
+      "commands": [
+        "node scripts/publish-deployment-spec.mjs",
+        "node scripts/publish-deployment-spec.mjs --check"
+      ],
+      "exit": 0
+    }
+  },
+  "statusCellsChanged": false,
+  "testBudget": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "publicationScan": {
+    "status": "NOT_RUN_IN_CLOUD",
+    "commit": "11f4a8bf2a061c3547a3c158acc1642a45f95ff0",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet guarded lander"
+  },
+  "mainPushed": false,
+  "prCreated": false,
+  "identityAudit": {
+    "allCandidateAuthorsFleet": true,
+    "allCandidateCommittersFleet": true,
+    "sideParentsIncluded": true,
+    "trailers": "none"
+  }
+}

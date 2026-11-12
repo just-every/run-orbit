@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "productHead": "11f4a8bf2a061c3547a3c158acc1642a45f95ff0",
+  "branch": "cloud/sd-orbit-c-f174",
+  "localChecksPassed": true,
+  "nativeRetainedCases": 7,
+  "nativeConnectedProbe": {
+    "command": "cloud_run timeout 1200 pnpm exec tsx /tmp/orbit-api-probe.mts",
+    "exit": 0,
+    "result": "HubSpot API proof PASS",
+    "entry": "tests/support/hubspot-api-proof.ts:37",
+    "includesRestore": "tests/support/hubspot-restore-proof.ts:9"
+  },
+  "browser": {
+    "command": "cloud_run timeout 1200 pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/imports.spec.mjs --workers=1 --reporter=list",
+    "exit": 0,
+    "passed": 1,
+    "executedHead": "35c9efe1df9a70d932d3e44d6996942b0bf3cbe6",
+    "candidateDifference": [
+      "sources.lock.json"
+    ],
+    "relevantSourceAndTestBytesUnchanged": true,
+    "assertionWidth": 1440,
+    "screenshotWidths": [
+      1440,
+      390
+    ]
+  },
+  "ci": {
+    "conclusion": null,
+    "head_sha": "11f4a8bf2a061c3547a3c158acc1642a45f95ff0",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43181654250",
+    "status": "in_progress"
+  },
+  "ciRun": 43181654250,
+  "ciEvent": "push",
+  "githubCallsUsed": 6,
+  "publicationScan": "fleet lander pending",
+  "mainLanding": "not performed",
+  "clauses": {
+    "MIGRATE-001": {
+      "before": "PARTIAL",
+      "after": "PARTIAL",
+      "connectedLimbOfPoint1": "proved natively",
+      "wholeAcceptancePointsClaimed": []
+    }
+  },
+  "countsBefore": {
+    "DONE": 42,
+    "PARTIAL": 130,
+    "MISSING": 32
+  },
+  "countsAfter": {
+    "DONE": 42,
+    "PARTIAL": 130,
+    "MISSING": 32
+  }
+}
