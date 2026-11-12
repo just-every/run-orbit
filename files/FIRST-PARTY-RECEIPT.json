@@ -1,0 +1,17 @@
+{
+  "clean_source": true,
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "duration_seconds": 2.179,
+  "exit": 0,
+  "finished_at": "2026-11-12T04:22:36.965032+00:00",
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "label": "FIRST-PARTY",
+  "started_at": "2026-11-12T04:22:34.785837+00:00"
+}

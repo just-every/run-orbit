@@ -1,0 +1,213 @@
+{
+  "ci": {
+    "runs": [
+      {
+        "conclusion": null,
+        "event": "push",
+        "head_sha": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43155806123",
+        "id": 43155806123,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "total_count": 1
+  },
+  "emitted_browser_cases_passed": 1,
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "inventory": {
+    "qualifications": 2,
+    "registered": 198,
+    "total": 200
+  },
+  "mechanical": {
+    "boundaries": 0,
+    "generated_views_restored": true,
+    "migration": "none",
+    "source_lock_check": 0,
+    "source_lock_regenerated_last": true,
+    "views_check": 0,
+    "views_write": 0
+  },
+  "native_cases_with_passing_executions": 7,
+  "receipts": [
+    {
+      "clean_source": true,
+      "command": [
+        "timeout",
+        "1800",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "tests/delegation-browser/records-layout.test.ts"
+      ],
+      "duration_seconds": 192.393,
+      "exit": 0,
+      "finished_at": "2026-11-12T04:25:25.022666+00:00",
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "BROWSER",
+      "started_at": "2026-11-12T04:22:12.630060+00:00"
+    },
+    {
+      "basis": "Command ran after candidate commit in the successful set-e preparation command.",
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "exit": 0,
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "BUILD"
+    },
+    {
+      "clean_source": true,
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "duration_seconds": 2.179,
+      "exit": 0,
+      "finished_at": "2026-11-12T04:22:36.965032+00:00",
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "FIRST-PARTY",
+      "started_at": "2026-11-12T04:22:34.785837+00:00"
+    },
+    {
+      "basis": "All source and test edits preceded this invocation. They were committed unchanged while it ran; no source edits followed.",
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-name-pattern=INTEGRATE-007",
+        "tests/core/launch-suppression.test.ts"
+      ],
+      "duration_ms": 626160.187335,
+      "exit": 0,
+      "failed": 0,
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "NATIVE-MAILCHIMP",
+      "passed": 1,
+      "source_committed_after_start": true
+    },
+    {
+      "clean_source": true,
+      "command": [
+        "python3",
+        "/home/agent/rer-consolidation/.tools/cloud-push.py",
+        "origin",
+        "cloud/sd-orbit-c-f168"
+      ],
+      "duration_seconds": 1.658,
+      "exit": 0,
+      "finished_at": "2026-11-12T04:35:30.012250+00:00",
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "PRODUCT-PUSH",
+      "started_at": "2026-11-12T04:35:28.353879+00:00"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "tests/core/launch-suppression.test.ts",
+        "tests/core/records-merge-review.test.ts",
+        "tests/core/source-onboarding.test.ts"
+      ],
+      "duration_ms": 1447927.532895,
+      "exit": 1,
+      "failed": 1,
+      "failure": "Private-origin fixture used HTTP with hosted Base auth, which refused invalid_configuration before the Mailchimp route. The corrected HTTPS-loopback fixture passes in the focused rerun.",
+      "label": "CORE-SELECTION",
+      "passed": 6,
+      "resolved_by": "NATIVE-RECEIPT.json"
+    },
+    {
+      "clean_source": true,
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "duration_seconds": 0.573,
+      "exit": 0,
+      "finished_at": "2026-11-12T04:22:37.627822+00:00",
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "SOURCE-LOCK",
+      "started_at": "2026-11-12T04:22:37.054854+00:00"
+    },
+    {
+      "clean_source": true,
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "duration_seconds": 20.556,
+      "exit": 0,
+      "finished_at": "2026-11-12T04:22:34.701813+00:00",
+      "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+      "label": "TYPECHECK",
+      "started_at": "2026-11-12T04:22:14.145631+00:00"
+    }
+  ],
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "scope": {
+    "clause_status": "PARTIAL",
+    "held_keys_used": false,
+    "independent_uip_gate": "required before landing",
+    "live_mailchimp_calls": false,
+    "native_points_closed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "publication_scan": "fleet custody",
+    "run_site": "fleet custody",
+    "status_cells_changed": false
+  },
+  "screenshots": [
+    {
+      "bytes": 141962,
+      "file": "mailchimp-connected-1440.png",
+      "sha256": "d0e2cc50074dbd96430a27852bd90f82ef4e1fbceeb8d0f5f9aaf410b6ee8df8"
+    },
+    {
+      "bytes": 141219,
+      "file": "mailchimp-connected-390.png",
+      "sha256": "c049b1002a03753e31452c6faee9a713a4c77411ce5fd2a69ff5fdc60be656c8"
+    },
+    {
+      "bytes": 117101,
+      "file": "mailchimp-refused-1440.png",
+      "sha256": "55d8b327aa6098402d25052525bf63d87aebd6c87109b71d6223991e8b9618e2"
+    },
+    {
+      "bytes": 118959,
+      "file": "mailchimp-refused-390.png",
+      "sha256": "db6dc20d294572a9b0a4c774df8b87e19059283c46a6b794bb70907c9dad5dbd"
+    },
+    {
+      "bytes": 128781,
+      "file": "mailchimp-unverified-1440.png",
+      "sha256": "c078eb48fb70f1fe50c87de323d779433ae3ba91f3e86c09ae46a8106417639b"
+    },
+    {
+      "bytes": 127176,
+      "file": "mailchimp-unverified-390.png",
+      "sha256": "7f8cb0e4c56a99fc784f8ea59b41f58d04c1d211f620735ee7e2184957f94971"
+    }
+  ],
+  "tag": "sd-orbit-c-f168"
+}

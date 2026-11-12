@@ -1,0 +1,59 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+✔ RECORD-012 DATA-002 manual contacts start contactable; suppression survives ordinary edits, erasure, normalized recreation, and workbench creation; only reviewed native clear permits future review (44698.544207ms)
+✔ RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule (34970.343069ms)
+AuthError: invalid_configuration
+    at configure (file:///home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/node_modules/.pnpm/@runeditrun+rer@0.2.107/node_modules/@runeditrun/rer/modules/operator-auth/config.mjs:14:194)
+    at createOperatorAuth (file:///home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/node_modules/.pnpm/@runeditrun+rer@0.2.107/node_modules/@runeditrun/rer/modules/operator-auth/service.mjs:33:18)
+    at createOrbitIdentity (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/src/core/features/identity/auth.ts:35:16)
+    at operatorFromRequest (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/src/core/features/identity/session.ts:17:20)
+    at Object.authenticate (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/tests/support/app.ts:20:30)
+    at requireApiOperator (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/src/core/app/app.ts:70:34)
+    at dispatch (file:///home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/compose.js:22:23)
+    at file:///home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/compose.js:22:46
+    at <anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/src/core/app/app.ts:88:11)
+    at dispatch (file:///home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/compose.js:22:23) {
+  code: 'invalid_configuration',
+  status: 503
+}
+✖ INTEGRATE-007 verified webhooks, merged consent, changed members, authority, populated restore and scheduled erasure preserve the stricter marketing stop; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore (558585.545497ms)
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+✔ RECORD-004 RECORD-009 matching names across companies remain review-only and native merges refuse missing and stale reviews (62235.912887ms)
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+✔ NOTIFY-003 opt-in personal mention DMs recheck identity and access, withdraw on deletion and hold uncertainty; REPORT-004 explicitly enabled Slack schedules respect DST, hold uncertainty and never resume; email stays paused; INTEGRATE-005 INTEGRATE-009 INTEGRATE-010 INTEGRATE-011 Slack notices carry only allowed fields, replay once, withhold private data and refuse unmapped, foreign and replayed actions; BOUNDARY-001 current USD sales journey respects product boundaries and exposes unresolved provider setup; SIGNAL-001 SIGNAL-009 OPP-004 OPP-007 OUT-001 source onboarding authenticates inert connection tests, ranks real evidence and preserves customer reply through reviewed send (663532.400455ms)
+✔ SIGNAL-001 SIGNAL-003 SIGNAL-004 vendor-native booking signatures reject tampering, expiry and replay while unknown invitees remain unlinked (30925.586126ms)
+✔ SIGNAL-009 source rotation and disabling atomically refuse an already streaming signed event (43122.615048ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1447927.532895
+
+✖ failing tests:
+
+test at tests/core/launch-suppression.test.ts:1:7344
+✖ INTEGRATE-007 verified webhooks, merged consent, changed members, authority, populated restore and scheduled erasure preserve the stricter marketing stop; RECORD-012 DATA-001 manual, source and provider stops preserve anonymous suppression through export and restore (558585.545497ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  500 !== 200
+  
+      at proveMailchimpLedger (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/tests/support/mailchimp-ledger-proof.ts:135:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f168/run-orbit/tests/core/launch-suppression.test.ts:156:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,18 @@
+{
+  "basis": "All source and test edits preceded this invocation. They were committed unchanged while it ran; no source edits followed.",
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-name-pattern=INTEGRATE-007",
+    "tests/core/launch-suppression.test.ts"
+  ],
+  "duration_ms": 626160.187335,
+  "exit": 0,
+  "failed": 0,
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "label": "NATIVE-MAILCHIMP",
+  "passed": 1,
+  "source_committed_after_start": true
+}

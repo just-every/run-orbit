@@ -1,0 +1,12 @@
+{
+  "basis": "Command ran after candidate commit in the successful set-e preparation command.",
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "exit": 0,
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "label": "BUILD"
+}

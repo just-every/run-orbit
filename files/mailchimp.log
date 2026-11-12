@@ -1,0 +1,12 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+✔ INTEGRATE-007 RECORD-012 DATA-001 verified audience handoffs preserve consent and anonymous stops through merge, reconciliation, refusal, restore and erasure (622412.120636ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 626160.187335

@@ -1,0 +1,18 @@
+{
+  "clean_source": true,
+  "command": [
+    "timeout",
+    "1800",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "tests/delegation-browser/records-layout.test.ts"
+  ],
+  "duration_seconds": 192.393,
+  "exit": 0,
+  "finished_at": "2026-11-12T04:25:25.022666+00:00",
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "label": "BROWSER",
+  "started_at": "2026-11-12T04:22:12.630060+00:00"
+}

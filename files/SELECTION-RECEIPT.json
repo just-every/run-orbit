@@ -1,0 +1,19 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "tests/core/launch-suppression.test.ts",
+    "tests/core/records-merge-review.test.ts",
+    "tests/core/source-onboarding.test.ts"
+  ],
+  "duration_ms": 1447927.532895,
+  "exit": 1,
+  "failed": 1,
+  "failure": "Private-origin fixture used HTTP with hosted Base auth, which refused invalid_configuration before the Mailchimp route. The corrected HTTPS-loopback fixture passes in the focused rerun.",
+  "label": "CORE-SELECTION",
+  "passed": 6,
+  "resolved_by": "NATIVE-RECEIPT.json"
+}

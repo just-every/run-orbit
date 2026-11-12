@@ -1,0 +1,13 @@
+{
+  "clean_source": true,
+  "command": [
+    "pnpm",
+    "typecheck"
+  ],
+  "duration_seconds": 20.556,
+  "exit": 0,
+  "finished_at": "2026-11-12T04:22:34.701813+00:00",
+  "head": "b1925a397701a35280b90a99239b5b5d05d32cf2",
+  "label": "TYPECHECK",
+  "started_at": "2026-11-12T04:22:14.145631+00:00"
+}
