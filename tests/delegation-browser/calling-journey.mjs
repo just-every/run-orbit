@@ -12,7 +12,16 @@ export async function callingJourney(page,calling){
  const zoom=page.getByRole('region',{name:'Zoom meetings',exact:true});await expect(zoom.getByRole('status')).toContainText('Unresolved setup');await expect(zoom.getByLabel('Zoom client secret',{exact:true})).toHaveValue('');
  const zoomAxe=await new AxeBuilder({page}).include('[aria-labelledby="zoom-settings"]').analyze();expect(zoomAxe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await zoom.screenshot({path:`${evidence}/zoom-unconnected-${width}.png`});}
- await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
+ await page.setViewportSize({width:1440,height:900});
+ await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Connect Slack',exact:true}).click();
+ const slack=page.getByRole('region',{name:'Slack sales notices',exact:true}),declaration=slack.getByLabel('Slack connector declaration',{exact:true});
+ await expect(declaration).toBeVisible();await expect(slack.getByLabel('Bot token',{exact:true})).toHaveValue('');await expect(slack.getByLabel('Slack app signing secret',{exact:true})).toHaveValue('');
+ const setup=await(await page.request.get('/api/v1/settings/slack')).json();expect(setup.installation).toBeNull();
+ for(const scope of setup.declaration.scopes)await expect(declaration.locator('code').filter({hasText:scope.name}).first()).toBeVisible();
+ for(const callback of Object.values(setup.declaration.callbacks))await expect(declaration.locator('code').filter({hasText:callback.url})).toBeVisible();
+ for(const field of setup.declaration.allowedFields)await expect(declaration).toContainText(field.label);
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);const result=await new AxeBuilder({page}).include('[aria-labelledby="slack-settings"]').analyze();expect(result.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);await slack.screenshot({path:`${evidence}/slack-declaration-${width}.png`});}
+ await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Connect Slack',exact:true}).click();await page.getByRole('button',{name:'Open Twilio',exact:true}).click();
  const settings=page.getByRole('region',{name:'Twilio calling',exact:true});
  await expect(settings.getByRole('status').filter({hasText:'Twilio connected'})).toBeVisible();
  await expect(settings.getByLabel('Auth token',{exact:true})).toHaveValue('');
