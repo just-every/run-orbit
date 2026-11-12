@@ -10999,7 +10999,7 @@
       "executable": false
     },
     "tests/support/agent-door-ai-input-proof.ts": {
-      "sha256": "fb464a4bf1d532f9ac5e1a00c100be1bf852fab3af429cd94b5405e0c57a7474",
+      "sha256": "0d8b193a668bdbc0a451221d5f34d594a07a8cd9f698c4b83ee72d29ec1a0959",
       "executable": false
     },
     "tests/support/agent-door-audit-proof.ts": {

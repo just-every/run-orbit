@@ -124,8 +124,9 @@ export async function agentDoorAIInputProof(context:TestContext,{bindings,door,c
   await evidence('Synthetic regulated identifier: 123-45-6789'+hostile);
   const regulated=await preview('draft');
   const sensitive=await invoke('generate',argsFor('draft',regulated));assert.equal(sensitive.isError,false);assert.deepEqual(classes(sensitive),[...expected,{class:'sensitive',facts:{kind:'regulated_identifiers',measure:1}}]);
+  const protectedPreview=await preview('draft');
   const sensitivePolicy=autonomousPolicy();sensitivePolicy.rules.push({id:'sensitive-denied',class:'sensitive',do:'blocked'});await adopt(sensitivePolicy);
-  const sensitiveBefore=await inventory();assert.equal(code(await invoke('generate',argsFor('draft',await preview('draft')))),'policy_blocked');assert.deepEqual(await inventory(),sensitiveBefore);
+  const sensitiveBefore=await inventory();assert.equal(code(await invoke('preview',{opportunity_id:opportunity.id,feature:'draft'})),'policy_blocked');assert.equal(code(await invoke('generate',argsFor('draft',protectedPreview))),'policy_blocked');assert.deepEqual(await inventory(),sensitiveBefore);
   await adopt(autonomousPolicy());
   delete bindings.OPENAI_API_KEY;
   const unconfigured=await invoke('preview',{opportunity_id:opportunity.id,feature:'draft'});assert.equal(unconfigured.structuredContent.configured,false);assert.equal(unconfigured.structuredContent.provider,null);
