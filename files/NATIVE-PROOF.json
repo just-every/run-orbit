@@ -1,0 +1,55 @@
+{
+  "registration": "tests/core/managed-owner.test.ts#Managed owner and company policy preserve native authority, stalled risks and meeting follow-up outcomes",
+  "exit": 0,
+  "proofs": [
+    {
+      "proof": "AGENT-003.archive",
+      "phase": "cli-restored",
+      "obligation": "01M77H1EHA51RG1QN5XVCK50G9"
+    },
+    {
+      "proof": "AGENT-003.archive",
+      "phase": "native-exported",
+      "parts": 60,
+      "rows": 664
+    },
+    {
+      "proof": "AGENT-003.archive",
+      "phase": "native-uploaded",
+      "parts": 60
+    },
+    {
+      "proof": "AGENT-003.archive",
+      "phase": "native-restored",
+      "steps": 400
+    },
+    {
+      "proof": "AGENT-003.meeting-follow-up",
+      "policies": [
+        {
+          "id": "01M77GZR800NEECSSQ4E1VTKP3",
+          "mode": "autonomous",
+          "decision": "bc12d0fe-75b5-4412-a1ac-8bbaa18d0ccb",
+          "review": null
+        },
+        {
+          "id": "01M77GZWMZWKSJ8ZZTNXANTJSP",
+          "mode": "held",
+          "decision": "440c12f3-1638-4b2e-9aad-00c771aea607",
+          "review": "ca05bef6-069f-4732-ae6b-ea6322834974"
+        }
+      ],
+      "submissions": 2,
+      "lookupCount": 1,
+      "uncertainReconciled": true,
+      "replyLeavesGoalOpen": true,
+      "advancedOnce": true,
+      "stoppedOnce": true,
+      "lateDispatchRefused": true,
+      "restorePaused": true,
+      "restart": true,
+      "erasureRedacted": true
+    }
+  ],
+  "source_head_when_completed": "8202abe95a6de02f29385ce7bec849933220d324"
+}

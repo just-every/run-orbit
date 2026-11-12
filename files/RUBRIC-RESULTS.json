@@ -1,0 +1,66 @@
+{
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "current_runtime_qualification": "pending exact-SHA Verify",
+  "rows": [
+    {
+      "id": "Acceptance 1",
+      "item": "Complete meeting follow-up journey",
+      "result": "Passed before integration; merged-head qualification pending"
+    },
+    {
+      "id": "R1",
+      "item": "Native acceptance and refused invalid source, recipient, owner or session",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R2",
+      "item": "Held and autonomous standard policy with truthful attribution and linked review",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R3",
+      "item": "Bound unsent draft and exact native approval",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R4",
+      "item": "Definite failure and uncertain submission reconciled once",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R5",
+      "item": "Verified human reply with advancement goal still open",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R6",
+      "item": "Reviewed advancement closes once",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R7",
+      "item": "Separate human stop exits linked work once",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R8",
+      "item": "Replay, restart, late dispatch and revoked authority",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R9",
+      "item": "Canonical merge and contact erasure",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R10",
+      "item": "Actual CLI and native export and restore, paused open work",
+      "result": "Pre-integration native PASS"
+    },
+    {
+      "id": "R11",
+      "item": "Meeting form and obligation states at 1440 and 390",
+      "result": "Earlier development journey PASS; final merged-head proof pending"
+    }
+  ]
+}

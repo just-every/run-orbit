@@ -1,0 +1,74 @@
+{
+  "accept_refusals": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 47
+  },
+  "policy_and_attribution": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 55
+  },
+  "draft_and_linked_work": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 79
+  },
+  "failure_and_exact_approval": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 86
+  },
+  "uncertainty_and_reconciliation": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 91
+  },
+  "verified_human_reply": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 102
+  },
+  "separate_stop": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 116
+  },
+  "advancement_and_late_dispatch": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 131
+  },
+  "cli_restore": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 142
+  },
+  "native_restore": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 158
+  },
+  "canonical_merge_erasure": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 186
+  },
+  "policy_block_and_revocation": {
+    "path": "tests/support/agent-follow-up-proof.ts",
+    "line": 198
+  },
+  "browser_journey": {
+    "path": "tests/delegation-browser/today-journey.mjs",
+    "line": 159
+  },
+  "registered_native_case": {
+    "path": "tests/core/managed-owner.test.ts",
+    "line": 125
+  },
+  "registered_browser_case": {
+    "path": "tests/delegation-browser/today-brief.test.ts",
+    "line": 24
+  },
+  "fresh_native_signin": {
+    "path": "tests/support/agent-door-proof.ts",
+    "line": 260
+  },
+  "erasure_fk_fix": {
+    "path": "src/core/features/records/data.ts",
+    "line": 83
+  },
+  "registered_helper_hook": {
+    "path": "tests/support/agent-door-proof.ts",
+    "line": 276
+  }
+}

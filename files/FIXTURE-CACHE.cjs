@@ -1,0 +1,12 @@
+const fs=require('node:fs');
+const crypto=require('node:crypto');
+const path=require('node:path');
+const {syncBuiltinESMExports}=require('node:module');
+const root='/workspace/orbit-f173';
+const signature=()=>crypto.createHash('sha256').update(fs.readdirSync(root+'/migrations/core').filter(n=>n.endsWith('.sql')).sort().map(n=>n+'\n'+fs.readFileSync(root+'/migrations/core/'+n,'utf8')).join('\n')).digest('hex');
+const expected=JSON.parse(fs.readFileSync('/tmp/orbit-migration-template/source.json','utf8')).sha256;
+if(signature()!==expected)throw Error('Cloud migration template is stale');
+const promises=require('node:fs/promises');
+const original=promises.mkdtemp;
+promises.mkdtemp=async function(prefix,...args){const directory=await original.call(this,prefix,...args);if(String(prefix).includes('orbit-restore-test-'))fs.cpSync('/tmp/orbit-migration-template/v3',path.join(directory,'v3'),{recursive:true});return directory;};
+syncBuiltinESMExports();

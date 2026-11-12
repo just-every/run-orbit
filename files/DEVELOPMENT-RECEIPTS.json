@@ -1,0 +1,36 @@
+{
+  "ciRepairRounds": 0,
+  "scope": "local development observations; not exact-SHA Verify receipts",
+  "observations": [
+    {
+      "stage": "native erasure development probe",
+      "failure": "FOREIGN KEY constraint failed while deleting a recommendation referenced by record-mail drafts",
+      "resolution": "Clear the reference and stale affected drafts in the same contact-erasure transaction; the native probe completed afterward."
+    },
+    {
+      "stage": "meeting form browser probe",
+      "failure": "Owner, recipient, goal and stop fields lacked concise accessible names; native acceptance posted to the wrong trailing-slash route",
+      "resolution": "Explicit accessible names and the mounted native root; later probe accepted the obligation through the built form."
+    },
+    {
+      "stage": "full native registration",
+      "failure": "Delegated consent required fresh sign-in after the ten-minute window; no confirmation mail was configured in that fixture",
+      "resolution": "A real owner email-link request and confirmation refresh the fixture session; production freshness checks stay unchanged."
+    },
+    {
+      "stage": "full native registration",
+      "failure": "archive_export_active refused to replace an immutable snapshot retained by an earlier section",
+      "resolution": "List and discard the actor’s prior completed transfer through the existing native archive abort door before preparing the new snapshot."
+    },
+    {
+      "stage": "concurrent browser runs",
+      "failure": "Existing risk record did not load before its deadline while native and browser jobs ran together; retired fixture contexts continued polling",
+      "resolution": "Sequential runtime checks and closing owned browser contexts after each completed fixture phase; no timeout or assertion weakened."
+    },
+    {
+      "stage": "full native registration after both restores",
+      "failure": "Replay was refused as policy_unavailable because the signed company policy expired during the archive section",
+      "resolution": "Refresh the same held policy through its real signed policy door, then keep the exact subject_erased assertion; no policy lifetime or authority rule changed."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "exit": 0,
+  "source": "Earlier development build, before the final minor UI cleanup and before main integration; not proof of the merged head",
+  "proofs": [
+    {
+      "proof": "AGENT-003.browser",
+      "obligation": "01M77E8XVWXRF42KH3F2AMZTY3",
+      "messageStates": [
+        "failed",
+        "draft",
+        "submitted-uncertain",
+        "submitted",
+        "responded"
+      ],
+      "replyLeavesGoalOpen": true,
+      "advanced": true,
+      "explicitStop": true,
+      "mailSubmissions": 2,
+      "widths": [
+        1440,
+        390
+      ]
+    }
+  ]
+}

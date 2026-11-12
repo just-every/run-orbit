@@ -1,0 +1,117 @@
+{
+  "current_head_proof": false,
+  "screenshots": [
+    {
+      "path": "screens/obligation-meeting-plan-1440.png",
+      "width": 1440,
+      "height": 2235,
+      "sha256": "5a3d58e12de1471e16c701a945275c8d0b52b52b6069460bad88f881b028020a",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-meeting-plan-390.png",
+      "width": 390,
+      "height": 2970,
+      "sha256": "9b477f6bb7e59f512582702c09b44c3decb9237b7081ed96803a642f3cfce0da",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-failed-1440.png",
+      "width": 1440,
+      "height": 2433,
+      "sha256": "a88bed36b8eab305e5da6ced4e453137eaf81e3011d625b9b21cfd4f16eb3abb",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-failed-390.png",
+      "width": 390,
+      "height": 3916,
+      "sha256": "a3d75f68f462c3f748058a171a3a1e334986a297b1a268926bbbae058cd7d822",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-draft-1440.png",
+      "width": 1440,
+      "height": 2508,
+      "sha256": "8ac6be15f3f069f149cadb792eb8cbb00093a15574286d43e0bec9a5c9f8fec2",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-draft-390.png",
+      "width": 390,
+      "height": 4064,
+      "sha256": "73aa81bd84009e52ecd1e2c181c6bcec529ba5ae1a10f26625356b92e10ef48b",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-uncertain-1440.png",
+      "width": 1440,
+      "height": 2592,
+      "sha256": "720ec624be406e1b895dcfff20a477e3e894e4d62a8312c80ad9167c07cd9c45",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-uncertain-390.png",
+      "width": 390,
+      "height": 4217,
+      "sha256": "a9eb3aaec9083c29705e7492e343e62af7439fcc7d166c31e3b6c775b7b2c7d7",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-submitted-1440.png",
+      "width": 1440,
+      "height": 2633,
+      "sha256": "e515e70f9a802863694e0cc58281ea1751942140a73cb042fb086b62446ddf7e",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-submitted-390.png",
+      "width": 390,
+      "height": 4140,
+      "sha256": "8252a05f89f196874d4f31c505c91eccd8477a6fab7ad5e037dbcd444c93b924",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-responded-goal-open-1440.png",
+      "width": 1440,
+      "height": 2780,
+      "sha256": "430303c16705ae193f4d203ed0201c6193d87010c93ca37334947316549b6650",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-responded-goal-open-390.png",
+      "width": 390,
+      "height": 4362,
+      "sha256": "620b398d614c6da0e74aa0195179475afed4bb449572b86d13cb45c3089a4309",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-advanced-1440.png",
+      "width": 1440,
+      "height": 3112,
+      "sha256": "0cf80ae0f40a999099a8263790e143f4e992f932b6bc5ba6c60b3956f25113e3",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-advanced-390.png",
+      "width": 390,
+      "height": 4804,
+      "sha256": "88876052d7690e99ce659c489d8cd0ed989cd610a4a4020b0cb200c5cb2f2099",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-explicit-stop-1440.png",
+      "width": 1440,
+      "height": 3950,
+      "sha256": "9e73f038712370423402b220d8ad06631b188204b57a92b1bab9e48c15f860c6",
+      "source": "earlier development build, before late main integration"
+    },
+    {
+      "path": "screens/obligation-explicit-stop-390.png",
+      "width": 390,
+      "height": 5817,
+      "sha256": "4756eeab43313216217e85099ba494e96884454b7e0734b277ef0913a1b9755d",
+      "source": "earlier development build, before late main integration"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "tag": "sd-orbit-c-f173",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f173",
+  "head": "97348c587039a6456d3496f58a0b514a462db641",
+  "main_merged": "051687beaaabf0e1580767a51aeb202dfa9c071b",
+  "recorded_at": "2026-11-12T10:07:29.013015+00:00",
+  "product_push": "succeeded",
+  "claim": {
+    "id": "AGENT-003",
+    "status": "PARTIAL",
+    "points": []
+  },
+  "counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "test_budget": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "pre_integration_runtime": {
+    "native": {
+      "exit": 0,
+      "source": "run began before the late main integration; not an exact merged-head receipt",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "mail": {
+      "exit": 0,
+      "source": "run began before the late main integration; not an exact merged-head receipt",
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "today": {
+      "exit": 0,
+      "source": "run began before the late main integration; not an exact merged-head receipt",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  },
+  "pre_integration_native_head": "8202abe95a6de02f29385ce7bec849933220d324",
+  "development_browser": {
+    "exit": 0,
+    "current_head_proof": false
+  },
+  "post_merge_checks": {
+    "build": {
+      "exit": 0
+    },
+    "typecheck": {
+      "exit": 0
+    },
+    "first-party": {
+      "exit": 0
+    },
+    "agent-surface-generation": {
+      "exit": 0
+    },
+    "deployment-spec-generation": {
+      "exit": 0
+    },
+    "contract-docs-write": {
+      "exit": 0
+    },
+    "contract-docs-check": {
+      "exit": 0
+    },
+    "source-lock-write": {
+      "exit": 0
+    },
+    "source-lock-check": {
+      "exit": 0
+    },
+    "boundaries": {
+      "exit": 0
+    },
+    "migration-collection": {
+      "exit": 0
+    }
+  },
+  "post_merge_browser": {
+    "status": "NOT RUN",
+    "reason": "Adding main\u2019s graph migration invalidated the pristine local migration cache before the test body; it was not a business assertion failure."
+  },
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "97348c587039a6456d3496f58a0b514a462db641",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43196579452",
+    "id": 43196579452,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "contract_judgment_diff": "none",
+  "generated_contract_views_committed": false,
+  "identity_and_trailers": "All candidate authors and committers inspected as fleet; no trailers",
+  "scan": {
+    "commit": "97348c587039a6456d3496f58a0b514a462db641",
+    "status": "NOT RUN in cloud",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "fleet guarded lander"
+  },
+  "landing": "not performed",
+  "run_site": "pending fleet landing",
+  "pr": null,
+  "known_product_assertion_failure_on_merged_head": null
+}
