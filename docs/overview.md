@@ -20,7 +20,7 @@ A record's values and your workspace settings save as you change them. A value s
 
 ## What Orbit connects to
 
-Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences) Twilio (calls) and Zoom (meeting preparation and attendance). Orbit does not connect to Dial, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
+Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences), Twilio (calls) and Zoom (meeting preparation and attendance). Orbit does not connect to Dial, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
 
 ### Zoom meeting preparation
 
