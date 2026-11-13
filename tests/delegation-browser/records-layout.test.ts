@@ -22,7 +22,7 @@ import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
 
-test('OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside native record layouts and collaborator revocation at 1440 and 390', async () => {
+test('OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
   const port = Number(process.env.ORBIT_RECORD_LAYOUT_PORT ?? 8728);
    const origin = `https://orbit.127.0.0.1.nip.io:${port}`;

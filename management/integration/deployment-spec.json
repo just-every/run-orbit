@@ -483,7 +483,13 @@
     },
     {
       "binding": "DB",
-      "name": "0088_mailbox_send.sql",
+      "name": "0088_saved_record_views.sql",
+      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+      "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0089_mailbox_send.sql",
       "sha256": "4b61de63625dcc3a2d4e2c5157a96a517b1388db42770ed92591562382edf268",
       "sql": "-- Send authority is installation-local; message provenance travels with history.\nCREATE TABLE mailbox_send_authorizations (\n source_id TEXT PRIMARY KEY REFERENCES capture_sources(id) ON DELETE CASCADE,\n connection_id TEXT NOT NULL,\n operator_id TEXT NOT NULL REFERENCES operators(id),\n provider TEXT NOT NULL CHECK(provider IN ('google','microsoft')),\n mailbox_address TEXT NOT NULL,\n state TEXT NOT NULL CHECK(state IN ('authorized','paused')),\n retry_at TEXT,\n created_at TEXT NOT NULL\n);\nALTER TABLE outbound_messages ADD COLUMN mailbox_source_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_connection_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_address TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_provider TEXT;\nALTER TABLE outbound_messages ADD COLUMN provider_thread_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_submission_claimed INTEGER NOT NULL DEFAULT 0;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_source_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_connection_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_address TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_provider TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN provider_thread_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_submission_claimed INTEGER NOT NULL DEFAULT 0;\nCREATE VIEW outbound_installation_delivery_budget AS\n SELECT id,operator_id,claimed_at FROM outbound_messages WHERE mailbox_source_id IS NULL\n UNION ALL SELECT id,operator_id,claimed_at FROM record_mail_outbound_messages WHERE mailbox_source_id IS NULL;\n"
     }

@@ -2,7 +2,7 @@ import type {RecordKind} from './records-api';
 
 /** A Records list keeps its search, filters and view in its address (?q=harbour&stage=<id>&owner=<id>&band=high
  * &lifecycle=open&view=board), so Back from a record and a shared link both open the list as it was. */
-export interface RecordsSearch {q?: string; pipeline?: string; stage?: string; owner?: string; band?: string; lifecycle?: string; queue?: string; view?: 'board'}
+export interface RecordsSearch {q?: string; pipeline?: string; stage?: string; owner?: string; band?: string; lifecycle?: string; queue?: string; view?: 'board';saved?:string;columns?:string;sort?:string;direction?:'asc'|'desc'}
 
 // The address's words for each filter, and the list API's names for them.
 const filterKeys = {pipeline: 'pipeline_id', stage: 'stage_id', owner: 'owner_id', band: 'band', lifecycle: 'lifecycle', queue: 'queue_state'} as const;
@@ -16,6 +16,8 @@ export function recordsSearch(search: Record<string, unknown>): RecordsSearch {
  const q = text(search.q);
  if (q) result.q = q;
  for (const word of words) { const value = text(search[word]); if (value) result[word] = value; }
+ for(const key of ['saved','columns','sort'] as const){const value=text(search[key]);if(value)result[key]=value;}
+ if(search.direction==='asc'||search.direction==='desc')result.direction=search.direction;
  if (search.view === 'board') result.view = 'board';
  return result;
 }
