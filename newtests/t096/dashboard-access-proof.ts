@@ -5,6 +5,7 @@ import {expect,type Browser,type BrowserContext,type Page} from '@playwright/tes
 import {emittedRequest} from './emitted-request';
 import {watchBrowser} from './browser-observations';
 import type {seedSalesReport} from './sales-report-fixture';
+import type {SalesView} from '../../src/core/features/analytics/sales-view';
 import type {DashboardView} from '../../src/core/features/dashboards/repository';
 import {reconcileDashboard} from './browser-dashboard';
 type Worker={origin:string;certificate:{cert:string}};
@@ -13,7 +14,39 @@ const root='/api/v2/workspaces/workspace',ops=root+'/operations';
 export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,disclosed,evidence,open,shot,call}:{browser:Browser;worker:Worker;ownerCookie:string;seller:{cookie:string;operatorId:string};seed:Awaited<ReturnType<typeof seedSalesReport>>;id:string;disclosed:Record<number,string>;evidence:string;open:(width:number,cookie?:string)=>Promise<Run>;shot:(page:Page,name:string)=>Promise<void>;call:<T=any>(cookie:string,path:string,method?:string,body?:unknown)=>Promise<T>}){
  const base=root+'/dashboards/'+id,document='/app/dashboards/'+id;
  assert.equal((await emittedRequest(worker,'',document)).status,401,'dashboard documents require native sign-in');
+ // A newer source definition makes a saved tile's older version a meaningful navigation check.
+ const original=await call<DashboardView>(ownerCookie,base),savedTile=original.tiles.find(tile=>tile.status==='ready'&&tile.report?.saved);
+ assert.ok(savedTile?.status==='ready'&&savedTile.report);
+ await call(ownerCookie,ops+'/metrics','POST',{id:savedTile.report.definitionId,version:savedTile.report.definitionVersion+1,definition:{...savedTile.report.definition,name:'Quarterly sales evidence revised',description:'A later definition must not replace a tile’s saved version'}});
  const full=await call<DashboardView>(ownerCookie,base);reconcileDashboard(full);
+ const versions=(await call<{items:{id:string;version:number}[]}>(ownerCookie,ops+'/metrics')).items.filter(report=>report.id===savedTile.report!.definitionId).map(report=>report.version).sort();
+ assert.deepEqual(versions,[savedTile.report.definitionVersion,savedTile.report.definitionVersion+1],'both original and newer definitions are persisted while the tiles keep their chosen version');
+ const definitions=async(page:Page,view:DashboardView,width:number,label:string)=>{
+  for(const tile of view.tiles){
+   const article=page.locator('.dash-tile').filter({has:page.locator(`#tile-${tile.id}-title`)});
+   if(tile.status!=='ready'||!tile.report){await expect(article.getByRole('link',{name:/Open report definition/})).toHaveCount(0);continue;}
+   const report=tile.report,fold=article.locator('.dash-basis-fold'),link=fold.getByRole('link',{name:`Open report definition · v${report.definitionVersion}`,exact:true});
+   await fold.locator('summary').focus();await page.keyboard.press('Enter');await page.keyboard.press('Tab');await expect(link).toBeFocused();
+   const href=await link.getAttribute('href');assert.ok(href);const address=new URL(href,worker.origin);
+   assert.equal(address.pathname,'/app/reports/'+report.definitionId);assert.equal(address.searchParams.get('version'),String(report.definitionVersion));
+   const [response]=await Promise.all([page.waitForResponse(response=>response.url().endsWith(ops+'/reports/'+report.definitionId+'/preview')&&response.request().postDataJSON().version===report.definitionVersion&&response.status()===200),page.keyboard.press('Enter')]);
+   await expect(page).toHaveURL(address.href);
+   const opened=await response.json() as SalesView;assert.equal(opened.definitionId,report.definitionId);assert.equal(opened.definitionVersion,report.definitionVersion);
+   assert.equal(opened.period.fromMonth,report.period.fromMonth);assert.equal(opened.period.throughMonth,report.period.throughMonth);assert.equal(opened.timezone,report.timezone);assert.equal(opened.currency,report.currency);
+   const result=page.locator('.sales-result');await expect(result).toHaveAttribute('aria-busy','false');
+   await result.locator('.reports-basis>summary').click();await expect(result.locator('.sales-result__name')).toHaveText(`${opened.name} · version ${report.definitionVersion}`);
+   const disclosure=result.getByLabel('Report basis',{exact:true});
+   for(const text of [opened.period.from,opened.period.through,opened.timezone,opened.currency,opened.freshness,...opened.missing])await expect(disclosure).toContainText(text);
+   await expect(disclosure).toContainText('Missing data');
+   for(const section of report.sections){await expect(result).toContainText(section.definition);await expect(result).toContainText('Source fields: '+section.sources.join(', ')+'.');}
+   if(!view.canEdit){await expect(disclosure).toContainText('Limited to your access');await expect(result).not.toContainText(/Atlas expansion|Birch rollout|Cedar renewal|Hazel expansion|Riley Chen/);}
+   if(tile.report.saved){assert.equal(opened.definitionVersion,savedTile.report!.definitionVersion);await shot(page,`definition-${label}-${width}`);}
+   await page.goto(document);await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');
+  }
+  const reportTile=view.tiles.find(tile=>tile.status==='ready'&&tile.report);assert.ok(reportTile?.status==='ready'&&reportTile.report);
+  const basis=page.locator(`#tile-${reportTile.id}-title`).locator('..').locator('..').locator('.dash-basis-fold');
+  await basis.locator('summary').click();await shot(page,`definition-link-${label}-${width}`);await basis.locator('summary').click();
+ };
  for(const width of [1440,390]){
   const run=await open(width),page=run.page,releases:(()=>void)[]=[];
   try{
@@ -24,6 +57,7 @@ export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,di
    // While the filters equal the saved ones the saved period is selected as itself, with no date inputs until a custom range is chosen.
    await expect(page.getByLabel('Date range',{exact:true})).toHaveValue('saved');await expect(page.getByLabel('Start date',{exact:true})).toHaveCount(0);const readyTitles=await page.locator('.dash-tile h2').allTextContents();
    for(const detail of await page.locator('.dash-tile>details').all()){await detail.locator('summary').click();await expect(detail.locator('.sales-basis, p').first()).toBeVisible();await detail.locator('summary').click();}
+   await definitions(page,full,width,'owner');
    const stage=page.locator('.dash-tile--chart'),cell=stage.getByRole('button').filter({hasText:/^[1-9]\d*$/}).first(),shown=(await cell.textContent())!.trim();await cell.click();const drawer=page.getByRole('dialog');await expect(drawer.locator('.sales-drill')).toBeVisible();await expect(drawer.locator('.sales-drill [role=status]')).toContainText(`${shown} record`);await shot(page,`drill-${width}`);await page.keyboard.press('Escape');await expect(drawer).toHaveCount(0);await expect(cell).toBeFocused();
    // The default menu closes on Escape and gives focus back to its button; every action is reachable without a More menu at both widths.
    const defaults=page.getByRole('button',{name:'Your default dashboard',exact:true});await defaults.click();await expect(page.getByRole('menuitem',{name:'Remove as my default',exact:true})).toBeFocused();await page.keyboard.press('Escape');await expect(page.getByRole('menu')).toHaveCount(0);await expect(defaults).toBeFocused();
@@ -67,12 +101,23 @@ export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,di
  assert.equal(readerPipeline.report.rows[`deal:${seed.deals.dune}`]!.label,'Dune pilot');assert.equal(readerPipeline.report.rows[`deal:${seed.deals.elm}`]!.label,'Elm upgrade');
  assert.equal((await call<DashboardView>(ownerCookie,base)).isDefault,full.isDefault,'the reader changes only their own default');
  assert.equal(limited.unavailable,2);const text=JSON.stringify(limited);for(const hidden of ['Atlas expansion','Birch rollout','Cedar renewal','Hazel expansion','Riley Chen'])assert.ok(!text.includes(hidden),hidden);
- for(const width of [1440,390]){const run=await open(width,seller.cookie);for(const path of deniedHistory)run.errors.allowDeniedResource(path,409);try{await run.page.goto('/app/reports');const directory=run.page.getByRole('region',{name:'Dashboards',exact:true});await expect(directory.getByText('Your default',{exact:true})).toBeVisible();await directory.getByRole('link',{name:full.name,exact:true}).click();await expect(run.page).toHaveURL(new RegExp('/app/dashboards/'+id+'$'));await expect(run.page.locator('.dash-access')).toContainText('Limited to your access');await expect(run.page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');await expect(run.page.getByRole('button',{name:'Edit tiles',exact:true})).toHaveCount(0);await expect(run.page.getByRole('button',{name:'Share',exact:true})).toHaveCount(0);await expect(run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$23,000.00');await expect(run.page.locator('.dash-tile--activities')).toContainText('per-person groups are withheld');await shot(run.page,`dashboard-restricted-${width}`);const permittedCell=run.page.locator('.dash-tile--chart').getByRole('button').filter({hasText:/^[1-9]\d*$/}).first(),count=(await permittedCell.textContent())!.trim();await permittedCell.click();await expect(run.page.getByRole('dialog').locator('.sales-drill [role=status]')).toContainText(`${count} record`);const drillRows=run.page.getByRole('dialog').locator('.sales-drill ol>li>a');await expect(drillRows).toHaveCount(Number(count));for(const label of await drillRows.allTextContents())assert.ok(['Dune pilot','Elm upgrade'].includes(label),label);await shot(run.page,`drill-restricted-${width}`);await run.page.keyboard.press('Escape');await run.errors.check(evidence,`dashboard-restricted-${width}`);}finally{await run.context.close();}}
+ for(const width of [1440,390]){const run=await open(width,seller.cookie);for(const path of deniedHistory)run.errors.allowDeniedResource(path,409);try{await run.page.goto('/app/reports');const directory=run.page.getByRole('region',{name:'Dashboards',exact:true});await expect(directory.getByText('Your default',{exact:true})).toBeVisible();await directory.getByRole('link',{name:full.name,exact:true}).click();await expect(run.page).toHaveURL(new RegExp('/app/dashboards/'+id+'$'));await expect(run.page.locator('.dash-access')).toContainText('Limited to your access');await expect(run.page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');await expect(run.page.getByRole('button',{name:'Edit tiles',exact:true})).toHaveCount(0);await expect(run.page.getByRole('button',{name:'Share',exact:true})).toHaveCount(0);await expect(run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$23,000.00');await expect(run.page.locator('.dash-tile--activities')).toContainText('per-person groups are withheld');await shot(run.page,`dashboard-restricted-${width}`);await definitions(run.page,limited,width,'reader');const permittedCell=run.page.locator('.dash-tile--chart').getByRole('button').filter({hasText:/^[1-9]\d*$/}).first(),count=(await permittedCell.textContent())!.trim();await permittedCell.click();await expect(run.page.getByRole('dialog').locator('.sales-drill [role=status]')).toContainText(`${count} record`);const drillRows=run.page.getByRole('dialog').locator('.sales-drill ol>li>a');await expect(drillRows).toHaveCount(Number(count));for(const label of await drillRows.allTextContents())assert.ok(['Dune pilot','Elm upgrade'].includes(label),label);await shot(run.page,`drill-restricted-${width}`);await run.page.keyboard.press('Escape');await run.errors.check(evidence,`dashboard-restricted-${width}`);}finally{await run.context.close();}}
  const shared=await call(ownerCookie,base+'/sharing');await call(ownerCookie,base+'/sharing','PUT',{version:shared.version,audience:'workspace',grants:[]});assert.equal((await call(seller.cookie,base)).name,full.name,'workspace sharing opens the definition without granting another record');
  // Source sharing is independent of dashboard sharing.
- const sourceShare=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing');await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision,audience:'private',operatorIds:[]});const unavailable=await call<DashboardView>(seller.cookie,base);assert.equal(unavailable.unavailable,9);for(const tile of unavailable.tiles)assert.deepEqual(Object.keys(tile).sort(),['height','id','status','width']);
- for(const width of [1440,390]){const run=await open(width,seller.cookie);try{await run.page.goto(document);await expect(run.page.locator('.dash-tile--unavailable')).toHaveCount(9);await shot(run.page,`source-no-longer-shared-${width}`);}finally{await run.context.close();}}
- await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision+1,audience:'workspace',operatorIds:[]});
+ for(const width of [1440,390]){
+  const run=await open(width,seller.cookie);
+  try{
+   await run.page.goto(document);await expect(run.page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');
+   const basis=run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-basis-fold');await basis.locator('summary').click();
+   const link=basis.getByRole('link',{name:/Open report definition/});await link.focus();await expect(link).toBeFocused();const href=await link.getAttribute('href');assert.ok(href);
+   const sourceShare=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing');await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision,audience:'private',operatorIds:[]});
+   await run.page.keyboard.press('Enter');await expect(run.page).toHaveURL(new URL(href,worker.origin).href);await expect(run.page.getByRole('heading',{name:'Not found',exact:true})).toBeVisible();await expect(run.page.locator('.sales-result')).toHaveCount(0);
+   const denied=await emittedRequest(worker,seller.cookie,ops+'/reports/synthetic-orbit-sales/preview','POST',{version:Number(new URL(href,worker.origin).searchParams.get('version')),from:full.filters.from,through:full.filters.through});assert.equal(denied.status,403);assert.deepEqual(Object.keys(await denied.json() as object),['error']);
+   const unavailable=await call<DashboardView>(seller.cookie,base);assert.equal(unavailable.unavailable,9);for(const tile of unavailable.tiles)assert.deepEqual(Object.keys(tile).sort(),['height','id','status','width']);
+   await run.page.goto(document);await expect(run.page.locator('.dash-tile--unavailable')).toHaveCount(9);await expect(run.page.getByRole('link',{name:/Open report definition/})).toHaveCount(0);await shot(run.page,`source-no-longer-shared-${width}`);await run.errors.check(evidence,`source-no-longer-shared-${width}`);
+  }finally{await run.context.close();}
+  const sourceShare=await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing');await call(ownerCookie,ops+'/reports/synthetic-orbit-sales/sharing','PUT',{revision:sourceShare.revision,audience:'workspace',operatorIds:[]});
+ }
  // Revocation changes the very next computation, CSV and PDF; neither export reuses an on-screen result.
  await call(ownerCookie,'/api/v2/access/workspaces/workspace/grants/'+grants[1].id,'DELETE',{});const revoked=await call<DashboardView>(seller.cookie,base);reconcileDashboard(revoked);assert.ok(!JSON.stringify(revoked).includes('Elm upgrade'));const number=revoked.tiles.find(t=>t.status==='ready'&&t.tile.measure==='pipeline');assert.ok(number?.status==='ready'&&number.report);assert.equal(number.report.sections[0]!.totals.find(c=>c.key==='value')!.value,800_000);
  for(const width of [1440,390]){const run=await open(width,seller.cookie);try{await run.page.goto(document);await expect(run.page.locator('.dash-tile--number.dash-tile--pipeline .dash-number')).toContainText('$8,000.00');await shot(run.page,`access-revoked-${width}`);await run.errors.check(evidence,`access-revoked-${width}`);}finally{await run.context.close();}}
