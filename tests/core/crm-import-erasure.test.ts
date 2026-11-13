@@ -1,3 +1,4 @@
+import {hubspotRegressionFlow} from '../support/hubspot-api-proof';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {launchFixture} from '../support/launch-fixture';
@@ -7,6 +8,7 @@ import {importCopies,publicArchive} from '../support/crm-import-privacy';
 import {nativeId} from '../../src/core/features/imports/source';
 
 test('RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits',async()=>{
+ for(const sequence of ['before-undo','edited-undo'] as const){const fixture=await launchFixture();try{await hubspotRegressionFlow(fixture,sequence);}finally{await fixture.dispose();}}
  const f=await launchFixture();try{
   const source=crmFixture('hubspot',f.stage,3),mailbox='hubspot-0@example.test',companyFile=source.files.find(file=>file.kind==='company')!;
   companyFile.csv=`Record ID,Name,Company domain name,Description,Associated contact email\r\norg-1,Synthetic Company,synthetic.example.test,"Account contact <${mailbox}>",${mailbox}`;

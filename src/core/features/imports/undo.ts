@@ -7,6 +7,9 @@ export async function prepareUndo(db:D1Database,destination:string,effects:D1Und
  const observations=[],dependencies:D1UndoDependency[]=[],guards=[],byTarget=new Map(effects.map(e=>[`${e.expected.targetKind}:${e.expected.targetId}`,e]));
  const currentValues=await readUndoTargets(db,destination,effects),requiredTargets=JSON.stringify(effects.map(e=>`${e.expected.targetKind}:${e.expected.targetId}`));
  const queries=[
+  {sql:"SELECT 'task-series' AS required_kind,series_id AS required_id,'task' AS dependent_kind,id AS dependent_id FROM sales_tasks"},
+  {sql:"SELECT 'task' AS required_kind,task_id AS required_id,'note' AS dependent_kind,entry_id AS dependent_id FROM sales_task_timeline"},
+  ...['contact','company','deal'].map(kind=>({sql:`SELECT '${kind}' AS required_kind,${kind==='deal'?'opportunity':kind}_id AS required_id,'task' AS dependent_kind,id AS dependent_id FROM sales_tasks WHERE ${kind==='deal'?'opportunity':kind}_id IS NOT NULL`})),
   {sql:"SELECT record_type AS required_kind,record_id AS required_id,record_type||'-owner' AS dependent_kind,record_id AS dependent_id FROM record_ownership"},
   {sql:"SELECT record_kind AS required_kind,record_id AS required_id,'reference' AS dependent_kind,id AS dependent_id FROM crm_import_references"},
   {sql:"SELECT 'company' AS required_kind,company_id AS required_id,'contact' AS dependent_kind,id AS dependent_id FROM contacts WHERE company_id IS NOT NULL"},

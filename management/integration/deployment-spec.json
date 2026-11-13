@@ -471,7 +471,19 @@
     },
     {
       "binding": "DB",
-      "name": "0086_saved_record_views.sql",
+      "name": "0086_hubspot_import.sql",
+      "sha256": "639a5eba10fe855306f1e431f35c41547a97f4bc922c64920f950166f943846a",
+      "sql": "-- Private import custody never travels in either archive format.\nCREATE TABLE crm_import_hubspot_connection (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1),\n id TEXT NOT NULL,\n portal_id TEXT NOT NULL,\n secret_ciphertext TEXT,\n state TEXT NOT NULL,\n reason TEXT\n);\nCREATE TABLE crm_import_hubspot_pulls (\n id TEXT PRIMARY KEY,\n actor_id TEXT NOT NULL REFERENCES operators(id),\n connection_id TEXT NOT NULL,\n portal_id TEXT NOT NULL,\n state TEXT NOT NULL,\n queue_json TEXT NOT NULL,\n checkpoint INTEGER NOT NULL DEFAULT 0,\n validated INTEGER NOT NULL DEFAULT 0,\n retry_at TEXT,\n error TEXT,\n created_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_hubspot_pages (\n pull_id TEXT NOT NULL REFERENCES crm_import_hubspot_pulls(id) ON DELETE CASCADE,\n ordinal INTEGER NOT NULL,\n path TEXT NOT NULL,\n page_json TEXT NOT NULL,\n PRIMARY KEY(pull_id,ordinal)\n);\nCREATE TABLE crm_import_hubspot_reviews (\n review_id TEXT PRIMARY KEY REFERENCES crm_import_reviews(id) ON DELETE CASCADE,\n pull_id TEXT NOT NULL REFERENCES crm_import_hubspot_pulls(id) ON DELETE CASCADE,\n summary_json TEXT NOT NULL\n);\n-- A contact erasure also withdraws any unpublished or reviewed provider custody.\n-- Imports are private staging, so conservative whole-pull withdrawal is intentional.\nCREATE TRIGGER crm_import_hubspot_erasure AFTER DELETE ON contacts\nBEGIN\n DELETE FROM crm_import_hubspot_pages;\n UPDATE crm_import_hubspot_pulls SET state='withdrawn',queue_json='[]',error='Source withdrawn after privacy erasure',retry_at=NULL;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0087_hubspot_explicit_erasure.sql",
+      "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980",
+      "sql": "-- Native undo and duplicate reconciliation also delete contacts. Withdraw provider\n-- staging only in the existing explicit privacy erasure transaction.\nDROP TRIGGER crm_import_hubspot_erasure;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0088_saved_record_views.sql",
       "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
       "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
     }

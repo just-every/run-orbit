@@ -1,3 +1,4 @@
+import {importTimelineActor} from '../imports/timeline-actor';
 import {operatorListingPredicate} from '../identity/operator-listing';
 import { localTime } from '../outreach/time';
 import { TaskError, type SalesTask, type TaskHistory, type TaskList, type TaskRow } from './contracts';
@@ -23,13 +24,13 @@ export async function readTask(db: D1Database, id: string) {
  return presentTask(row);
 }
 export async function taskHistory(db: D1Database, id: string): Promise<TaskHistory[]> {
- const rows = (await db.prepare(`SELECT e.id,e.kind,e.occurred_at AS occurredAt,e.recorded_at AS recordedAt,COALESCE(p.display_name,'Erased operator') AS actorName,
+ const rows = (await db.prepare(`SELECT e.id,e.kind,e.actor_type,e.actor_id,e.source,e.occurred_at AS occurredAt,e.recorded_at AS recordedAt,COALESCE(p.display_name,'Erased operator') AS actorName,
  owner.display_name AS ownerName,previous.display_name AS previousOwnerName,e.payload_json
  FROM sales_task_timeline l JOIN timeline_entries e ON e.id=l.entry_id LEFT JOIN operators p ON p.id=e.actor_id
  LEFT JOIN operators owner ON owner.id=json_extract(e.payload_json,'$.ownerId')
  LEFT JOIN operators previous ON previous.id=json_extract(e.payload_json,'$.previousOwnerId')
- WHERE l.task_id=? ORDER BY e.occurred_at DESC,e.id LIMIT 100`).bind(id).all<Omit<TaskHistory, 'payload'> & {payload_json: string}>()).results;
- return rows.map(({payload_json, ...row}) => ({...row, payload: JSON.parse(payload_json)}));
+ WHERE l.task_id=? ORDER BY e.occurred_at DESC,e.id LIMIT 100`).bind(id).all<Omit<TaskHistory, 'payload'> & {payload_json: string;actor_type:string;actor_id:string|null;source:string}>()).results;
+ return rows.map(({payload_json,actor_type,actor_id,source,...row}) => ({...row,actorName:importTimelineActor({id:row.id,kind:row.kind,actorType:actor_type,actorId:actor_id,source,payloadJson:payload_json})??row.actorName,payload:JSON.parse(payload_json)}));
 }
 export interface TaskQuery {view: 'today' | 'overdue' | 'all'; owner?: string; date?: string; offset: number}
 export async function listTasks(db: D1Database, actorId: string, query: TaskQuery): Promise<TaskList> {

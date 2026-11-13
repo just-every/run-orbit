@@ -5,7 +5,7 @@
 export default {
  product: 'just-every/sales-orbit',
  // record_saved_views carries definitions only; restored opens recheck current native authority.
- excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context', 'api_credentials', 'call_credentials', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
+ excludeTables: ['agent_door_state','agent_door_agents','agent_door_audit','agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_events','agent_door_usage','agent_door_replay_aliases','agent_door_relay','agent_door_retired_refs','bs_settings','bs_overrides','bs_logo','bs_team','bs_audit','bs_retired','bs_assert','orbit_agent_write_context', 'api_credentials', 'call_credentials', 'crm_import_hubspot_connection', 'crm_import_hubspot_pulls', 'crm_import_hubspot_pages', 'crm_import_hubspot_reviews', 'sessions', 'magic_links', 'owner_bootstrap', 'sample_seed_runs', 'public_rate_limits', 'auth_rate_limits', 'runtime_controls', 'record_erasure_signals', 'access_write_guards', 'access_invitations', 'access_grants', 'access_form_authorities', 'record_owner_reviews', 'slack_action_tokens', 'slack_credentials', 'capture_credentials', 'capture_oauth', 'capture_locks', 'ik_%', 'crm_import_%', 'delegation_%', 'archive_%', 'identity_%'],
  derivedTables: ['record_search', 'timeline_search', 'record_search_fields'],
  // Migrations seed these rows in every empty database; the archive's rows replace them.
  replaceableTables: ['graph_workspace_epochs', 'schema_types', 'pipelines', 'forecast_source_clock','workflow_journal_metadata'],
@@ -13,6 +13,7 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(await db.prepare('SELECT 1 FROM crm_import_hubspot_connection WHERE secret_ciphertext IS NOT NULL LIMIT 1').first())throw new Error('Disconnect HubSpot before local restore. Its token never travels; connect again explicitly after restore.');
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
   if(tables.api_credentials)await db.prepare('DELETE FROM "'+tables.api_credentials.replaceAll('"','""')+'"').run();
   if(tables.call_credentials)await db.prepare('DELETE FROM "'+tables.call_credentials.replaceAll('"','""')+'"').run();
