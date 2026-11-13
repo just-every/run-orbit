@@ -37,8 +37,8 @@ export function WorkflowsSettings() {
    {metadataError&&<p className="operator-state operator-state--error" role="alert">Could not load operator and pipeline choices: {metadataError}</p>}
    {workflow?.needsReactivation&&<p className="operator-state">This workflow needs reactivation. Check its actions and current permissions, then preview it again.</p>}
    {workflow&&(workflow.activeVersion||workflow.status==='active')&&<div className="workflows-buttons"><span className="workflows-meta">Version {workflow.activeVersion??workflow.version} is active{workflow.activatedAt?` · Activated ${workflowTime(workflow.activatedAt)}`:''}</span><button type="button" disabled={busy} onClick={()=>void run(`/${encodeURIComponent(workflow.id)}/pause`)}>Pause active version</button></div>}
-   {(selected==='new'||workflow)&&<WorkflowsEditor key={selected==='new'?`new-${newKey}`:selected} initial={workflow} metadata={metadata} onSaved={onSaved} onAction={async()=>{await load();}}/>}
-   {workflow&&<WorkflowsVersionUndo key={workflow.id} workflow={workflow} onChanged={load}/>}
+   {(selected==='new'||workflow)&&<WorkflowsEditor key={selected==='new'?`new-${newKey}`:`editor-${selected}`} initial={workflow} metadata={metadata} onSaved={onSaved} onAction={async()=>{await load();}}/>}
+   {workflow&&<WorkflowsVersionUndo key={`undo-${workflow.id}`} workflow={workflow} onChanged={load}/>}
    <WorkflowFieldPolicies/>
   </div>}
   {manage===true&&data&&tab==='runs'&&<WorkflowsRuns runs={data.runs} busy={busy} onRun={run}/>}{manage===true&&data&&tab==='approvals'&&<WorkflowsApprovals approvals={data.approvals} busy={busy} onRun={run}/>}

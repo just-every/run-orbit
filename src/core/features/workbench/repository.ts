@@ -9,7 +9,7 @@ import { contactEmailKey } from '../records/identity';
 import { opportunityAssignmentPolicy } from '../../../ext/records';
 import { eligibleOpportunityOwners } from '../ownership/writes';
 import { assertCommercialRelationship } from '../../../family/sales/relationships';
-import { stopReason } from '../outreach/stop-reason';
+import { staleDraftReason, stopReason } from '../outreach/stop-reason';
 import {replyNotificationStatements} from '../notifications/reply-events';
 
 
@@ -91,7 +91,7 @@ export class WorkbenchRepository {
       statements.push(...evaluationStatements(this.db,opportunityId,actor,'New customer evidence',now,input.type));
       if(['email.replied','email.bounced'].includes(input.type))statements.push(this.db.prepare("UPDATE opportunities SET queue_state='now',queue_reason=?,next_due_at=NULL WHERE id=? AND lifecycle='open'").bind(input.type==='email.replied'?'Customer reply':'Delivery problem',opportunityId));
     }
-    if(input.contactId && (['email.replied','meeting.booked','email.unsubscribed'].includes(input.type)||stopsContact))statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(input.type),timestamp,input.contactId),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(stopReason(input.type),timestamp,input.contactId));
+    if(input.contactId && (['email.replied','meeting.booked','email.unsubscribed'].includes(input.type)||stopsContact))statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE contact_id=? AND state='scheduled'").bind(stopReason(input.type),timestamp,input.contactId),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id=?").bind(staleDraftReason(stopReason(input.type)),timestamp,input.contactId));
     if(input.type==='email.replied')statements.push(...replyNotificationStatements(this.db,id,`reply:${id}`,[opportunityId],timestamp,input.contactId?[input.contactId]:[]));
     try { await this.db.batch(statements); }
     catch(error) {

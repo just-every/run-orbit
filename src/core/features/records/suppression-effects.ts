@@ -1,5 +1,5 @@
 import {suppressionStatements} from './suppression';
-import { doNotContactReason } from '../outreach/stop-reason';
+import { doNotContactReason, staleDraftReason } from '../outreach/stop-reason';
 
 /** Resolve current recipients at commit time, including aliases and merged identities. */
 export async function contactStopStatements(db:D1Database,id:string,emails:Array<string|null|undefined>=[]){
@@ -11,7 +11,7 @@ export async function contactStopStatements(db:D1Database,id:string,emails:Array
  return [
   ...await suppressionStatements(db,identities),
   db.prepare(`UPDATE contacts SET contactability='do_not_contact',updated_at=? WHERE id IN(${recipients})`).bind(at,...bindings),
-  db.prepare(`UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id IN(${recipients})`).bind(doNotContactReason,at,...bindings),
+  db.prepare(`UPDATE drafts SET is_stale=1,stale_reason=?,updated_at=? WHERE recipient_contact_id IN(${recipients})`).bind(staleDraftReason(doNotContactReason),at,...bindings),
   db.prepare(`UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE state='scheduled' AND contact_id IN(${recipients})`).bind(doNotContactReason,at,...bindings)
  ];
 }
