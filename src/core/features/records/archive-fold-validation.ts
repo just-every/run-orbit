@@ -1,3 +1,4 @@
+import {preMailboxCatalog} from '../outreach/mailbox/archive';
 import {preCaptureMailRuleCatalog} from '../capture/archive';
 import {nativeCatalogGenerations} from './archive-generations';
 import {preLibraryCatalog} from './library-archive-compatibility';
@@ -16,7 +17,8 @@ export const foldManifestSchema=manifestSchema.extend({version:z.literal(3),gene
 export const transferManifestSchema=z.union([manifestSchema,foldManifestSchema]);
 export async function validateFoldManifest(db:D1Database,input:unknown){const parsed=transferManifestSchema.safeParse(input);if(!parsed.success)throw new RecordError(400,'Invalid archive generation or manifest.');const manifest=parsed.data,catalog=await foldInstalledCatalog(db),domain=new Set<string>(foldDomainTables),base=preLibraryCatalog(preCaptureMailRuleCatalog(preSourceRemovalCatalog(catalog))).filter(t=>!domain.has(t.name));
  try{validateTransferManifest(manifest,validateV2);if(manifest.version===3&&manifest.legacyLineage)await verifyLegacyLineage(manifest.legacyLineage,catalog);}catch{throw new RecordError(400,'Invalid complete archive lineage.');}
- const generations:ArchiveTable[][]=manifest.version===3?nativeCatalogGenerations(catalog):[base,base.filter(t=>t.name!=='mail_provider_conflicts'),base.filter(t=>!['privacy_matching_contexts','mail_provider_conflicts'].includes(t.name)).map(t=>t.name==='contacts'?{...t,columns:t.columns.filter(c=>c.name!=='contactability_revision')}:t)];
+ const legacy=preMailboxCatalog(base);
+ const generations:ArchiveTable[][]=manifest.version===3?nativeCatalogGenerations(catalog):[base,legacy,legacy.filter(t=>t.name!=='mail_provider_conflicts'),legacy.filter(t=>!['privacy_matching_contexts','mail_provider_conflicts'].includes(t.name)).map(t=>t.name==='contacts'?{...t,columns:t.columns.filter(c=>c.name!=='contactability_revision')}:t)];
  const candidates=generations.filter(candidate=>manifest.tables.length===candidate.length&&new Set(manifest.tables.map(t=>t.name)).size===candidate.length&&candidate.every(table=>{const supplied=manifest.tables.find(t=>t.name===table.name);return supplied&&JSON.stringify(supplied.columns)===JSON.stringify(table.columns.map(c=>c.name));}));
  // Trigger-only migrations can share every table and column. Select the exact
  // supported schema identity, rather than refusing an older matching inventory.

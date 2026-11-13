@@ -110,6 +110,8 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
   assert.equal(await previous.db.prepare('SELECT count(*) FROM outbound_opt_out_capabilities').first('count(*)'),names.has('outbound_opt_out_capabilities')?1:0,'Restoring old messages never invents capability authority');
   assert.equal(await previous.db.prepare('SELECT count(*) FROM message_library').first('count(*)'),0,'An older generation does not invent library entries');
   assert.deepEqual(await previous.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),{library_selection_json:'{}',merge_review_json:null},'Historical draft rows receive the additive migration defaults');
+  assert.deepEqual(await previous.db.prepare('SELECT mailbox_source_id,mailbox_connection_id,mailbox_address,mailbox_provider,provider_thread_id,mailbox_submission_claimed FROM outbound_messages WHERE id=?').bind(scheduled.id).first(),{mailbox_source_id:null,mailbox_connection_id:null,mailbox_address:null,mailbox_provider:null,provider_thread_id:null,mailbox_submission_claimed:0},'Historical messages gain migration defaults without acquiring a sending mailbox');
+  assert.equal(await previous.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0,'Historical message restore grants no mailbox send authority');
  }finally{await previous.dispose();}
  }
  const local=await isolatedDatabase();

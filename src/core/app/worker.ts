@@ -22,6 +22,7 @@ import {publicRateLimit} from "../platform/public-rate-limit";
 import {createSourceSecurity} from "../platform/source-security";
 import { createAIProvider } from "../features/assistance/provider";
 import { firstRunComplete } from "../features/setup/repository";
+import {mailboxTransportResolver} from '../features/outreach/mailbox/transport';
 import { createOutboundMail, customerMailStatus } from "../platform/outbound-mail";
 import start from "@tanstack/react-start/server-entry";
 import { createAssetStore, type PlatformBindings } from "../platform/assets";
@@ -35,7 +36,7 @@ import { movedPage } from "./moved-pages";
 import { optOutResponse } from '../features/outreach/opt-out-public';
 import {orbitAgentDoor, orbitBusinessSettings} from '../features/agent-door';
 export default withDemo({
-  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,createOutboundMail(bindings)));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));context.waitUntil(processWorkflows(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processMailchimpDeletions(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
+  async scheduled(_event:ScheduledController,bindings:PlatformBindings,context:ExecutionContext) {bindings=runtimeBindings(bindings);context.waitUntil(runHostedTimers(bindings.DB,mailboxTransportResolver(bindings.DB,createOutboundMail(bindings),{security:createSourceSecurity(bindings),origin:bindings.AUTH_ORIGIN})));context.waitUntil(sweepArchiveTrash(bindings.DB));context.waitUntil(dispatchSalesTaskReminders(bindings.DB));context.waitUntil(processWorkflows(bindings.DB));const security=createSourceSecurity(bindings);context.waitUntil(processMailchimpDeletions(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(processSlack(bindings.DB,{security,origin:bindings.AUTH_ORIGIN}));context.waitUntil(pollProviders(bindings.DB,security));if(security)context.waitUntil(pollCalendarLinks(bindings.DB,security));},
   // Cloudflare Email Routing delivers mail for the Orbit address here.
   async email(message:ForwardableEmailMessage,bindings:PlatformBindings){bindings=runtimeBindings(bindings);await receiveRoutedEmail(message,bindings.DB,{security:createSourceSecurity(bindings),address:bindings.CAPTURE_MAIL_ADDRESS});},
   async fetch(request: Request, bindings: PlatformBindings, executionContext: ExecutionContext) {return protectResponse(await handle(request,runtimeBindings(bindings),executionContext),editorOrigin(bindings),request.method==='GET'&&/^\/p\/[a-z0-9][a-z0-9-]{0,79}$/.test(new URL(request.url).pathname)?await embeddingOrigins(bindings.DB):undefined);}
@@ -99,7 +100,7 @@ async function handle(request: Request, bindings: PlatformBindings, executionCon
       if (!setupPath && (request.method === "GET" || request.method === "HEAD")) { const moved = await movedPage(bindings.DB, url, operator.operatorId); if (moved) return moved; }
       // While an archive is restored every page waits on Settings › Data, which shows the restore's progress.
       if(path!=="/app/settings/data"&&await archiveImportActive(bindings.DB))return new Response(null,{status:302,headers:{Location:"/app/settings/data"}});
-      if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,createOutboundMail(bindings)));
+      if(bindings.AUTH_LOCAL!=="true"&&request.method==='GET')executionContext.waitUntil(runRequestTimers(bindings.DB,mailboxTransportResolver(bindings.DB,createOutboundMail(bindings),{security:createSourceSecurity(bindings),origin:bindings.AUTH_ORIGIN})));
     }
     return start.fetch(request);
 }

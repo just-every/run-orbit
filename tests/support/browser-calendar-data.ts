@@ -1,3 +1,4 @@
+import {mailboxBrowserSeed} from './mailbox-browser';
 import {todayApp} from './today-workspace';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {captureProviderNetwork} from './capture-provider-network';
@@ -33,7 +34,8 @@ export async function browserCalendarData(db:D1Database,operatorId:string){
   scopeSources.push({id,name,provider});
  }
  await db.prepare("INSERT INTO oa_identity_providers(preset,status,issuer,client_id,jwks_uri,authorization_endpoint,token_endpoint,algorithms,token_auth_method,response_iss,provider_id,linked_at) VALUES('legacy-rs256','linked','https://issuer.example.invalid','synthetic-orbit-client','https://issuer.example.invalid/jwks','https://issuer.example.invalid/authorize','https://issuer.example.invalid/token','[\"RS256\"]','client_secret_post',0,'auth',?)").bind(Date.now()).run();
- return {contact,deal,source,scopeSources,savedWindow,unexpectedRequests:[] as string[],redirectSource:(provider:'google'|'microsoft',redirect:boolean)=>{providers[provider].state.redirect=redirect;},providerFetch:async(request:Request)=>{
+ const mailbox=await mailboxBrowserSeed(db,`__Host-orbit_session=${t.session.token}`,contact);
+ return {...mailbox,contact,deal,source,scopeSources,savedWindow,unexpectedRequests:[] as string[],redirectSource:(provider:'google'|'microsoft',redirect:boolean)=>{providers[provider].state.redirect=redirect;},providerFetch:async(request:Request)=>{
   const provider=new URL(request.url).hostname==='graph.microsoft.com'?'microsoft':'google';
   return providers[provider].fetcher(request.url,{method:request.method,headers:request.headers,redirect:'error',...(request.method==='GET'?{}:{body:await request.text()})});
  },writebackId:created.id,originalMeeting,currentMeeting,timeZone:(await t.json<any>('/api/v1/settings')).workspace.timezone};

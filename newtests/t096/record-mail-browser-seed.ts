@@ -1,3 +1,4 @@
+import {mailboxBrowserSeed} from '../../tests/support/mailbox-browser';
 import assert from 'node:assert/strict';
 import {mock} from 'node:test';
 import {fixture,signIn} from './fixture';
@@ -17,6 +18,6 @@ export async function recordMailBrowserSeed(f:Awaited<ReturnType<typeof fixture>
   const notice=(await call('notifications')).notifications.find((row:any)=>row.kind==='record.assigned'&&row.href===`/app/contacts/${contact.id}`);
   assert.ok(notice,'Another person still creates the contact notification the browser opens');assert.equal(notice.readAt,null);
   await notificationAutomation(async(path:string,body?:unknown)=>{const response=await app.request('https://orbit.test'+path,{method:body===undefined?'GET':'POST',headers:{Cookie:f.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});assert.ok(response.ok,await response.clone().text());return response.json();},{kind:'contact',id:contact.id,title:'Morgan Chen',ownerId:f.operator.operatorId});
-  return{companyId:company.id,contactId:contact.id,subject:'Production rollout consultation'};
+  return{...await mailboxBrowserSeed(f.db,f.cookie,contact.id),companyId:company.id,contactId:contact.id,subject:'Production rollout consultation'};
  }finally{mock.timers.reset();}
 }
