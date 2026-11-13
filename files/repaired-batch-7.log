@@ -1,0 +1,27 @@
+
+Verification (fold-domain-3): pnpm exec node scripts/verification-build.mjs check
+
+Verification (fold-domain-3): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-3-results.jsonl newtests/t096/collaborator-lifecycle.test.ts newtests/t096/emitted-restart.test.ts newtests/t096/empty-native.test.ts newtests/t096/forward-upgrade.test.ts newtests/t096/report-population-race.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:18271) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PROBE TEAM-001 core: two signed-in operators read restricted records and private fields, edit, close, reopen and delete; exact-share Guest edits name, forbidden reads and writes return 403 without changes; revoked share refuses replay.
+PROBE TEAM-001 UI: built CRM pages at 1440 and 390 let both full operators read, edit, create and delete; Guest sees only shared fields, forbidden record URLs show refusal, native URLs redirect and revoked-share replay returns 403.
+✔ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (465608.269378ms)
+✔ selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive (40055.15223ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ emitted current CRM reads authenticated by a genuine native fixture session survive ordinary Worker restarts (43210.031202ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ empty installation claims its owner once, finishes first-run setup and consumes native sign-in in the emitted Worker (43897.586135ms)
+(node:26616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":130,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":5228.309079999977,"status":201},{"operation":"GET /exports/01M798QDFWM7SVHNJ9D210KD3E","milliseconds":74.56623799999943,"status":200},{"operation":"POST /exports/01M798QDFWM7SVHNJ9D210KD3E/advance","milliseconds":6429.609224000014,"status":200},{"operation":"POST /exports/01M798QDFWM7SVHNJ9D210KD3E/advance","milliseconds":4250.054691999976,"status":200},{"operation":"POST /exports/01M798QDFWM7SVHNJ9D210KD3E/advance","milliseconds":4449.75982799998,"status":200},{"operation":"POST /exports/01M798QDFWM7SVHNJ9D210KD3E/advance","milliseconds":2689.337171000021,"status":200},{"operation":"GET /exports/01M798QDFWM7SVHNJ9D210KD3E/download","milliseconds":137.29868800000986,"status":200}]}

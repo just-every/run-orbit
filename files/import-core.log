@@ -1,0 +1,21 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits
+ok 1 - RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits
+  ---
+  duration_ms: 264400.022692
+  type: 'test'
+  ...
+# Subtest: RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads with no native target or suppression effect
+ok 2 - RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads with no native target or suppression effect
+  ---
+  duration_ms: 77785.813316
+  type: 'test'
+  ...
+# Subtest: RECORD-008 DATA-002 T-098 unrelated company import reviews and safe undo remain available after native contact erasure
+ok 3 - RECORD-008 DATA-002 T-098 unrelated company import reviews and safe undo remain available after native contact erasure
+  ---
+  duration_ms: 62018.218246
+  type: 'test'
+  ...
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m

@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f183-pc1",
+  "head": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "pushed": true,
+  "main": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "clean": true,
+  "committedLockCheckExit": 0,
+  "sourceLockSha256": "e10b8d2150a750aad4f1e43e8674baa21a7e3a9444020106f6b9cd34a95cde7e",
+  "sourceAndBrowserUnchangedSinceSave": true,
+  "finalChangeFiles": [
+    "docs/imports/MOVING.md",
+    "sources.lock.json",
+    "tests/support/salesforce-api-proof.ts"
+  ],
+  "contractAndViewsUnchangedFromMain": true,
+  "shallow": false,
+  "historyCommits": 834
+}

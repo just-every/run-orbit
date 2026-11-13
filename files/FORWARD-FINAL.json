@@ -1,0 +1,6 @@
+{
+  "head": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+  "exit": 0,
+  "cleanRuntimeSources": true
+}

@@ -1,0 +1,35 @@
+TAP version 13
+# (node:3216) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":4600.952641999989,"status":201},{"operation":"GET /exports/01M797F3Y395ADPGTZC173VQK8","milliseconds":96.98371200001566,"status":200},{"operation":"POST /exports/01M797F3Y395ADPGTZC173VQK8/advance","milliseconds":5615.325634000008,"status":200},{"operation":"POST /exports/01M797F3Y395ADPGTZC173VQK8/advance","milliseconds":3567.6983570000157,"status":200},{"operation":"POST /exports/01M797F3Y395ADPGTZC173VQK8/advance","milliseconds":3416.4600620000274,"status":200},{"operation":"POST /exports/01M797F3Y395ADPGTZC173VQK8/advance","milliseconds":1497.4576689999667,"status":200},{"operation":"GET /exports/01M797F3Y395ADPGTZC173VQK8/download","milliseconds":74.83871899999212,"status":200}]}
+# Subtest: API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+not ok 1 - API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+  ---
+  duration_ms: 557652.738747
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/newtests/t096/forward-upgrade.test.ts:1:2550'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/tests/support/isolated-database.ts:11:3)
+    async fixture (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/newtests/t096/fixture.ts:23:46)
+    async assertUpgradedOwnership (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/newtests/t096/ownership-upgrade.ts:28:70)
+    async ownershipStartingUpgrades (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/newtests/t096/ownership-upgrade.ts:66:4)
+    async TestContext.<anonymous> (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/baseline-main/newtests/t096/forward-upgrade.test.ts:68:105)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 563247.244941

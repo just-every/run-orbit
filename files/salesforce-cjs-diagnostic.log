@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+AssertionError [ERR_ASSERTION]: 409: {"error":"Import stopped: IMPORT_READ_GUARD_REQUIRED"}
+    at json (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/run-orbit/tests/support/crm-import-flow.ts:4:94)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async salesforceApiFlow (/home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/run-orbit/tests/support/salesforce-api-proof.ts:55:15) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

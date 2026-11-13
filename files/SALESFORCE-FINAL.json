@@ -1,0 +1,7 @@
+{
+  "head": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "command": "pnpm exec tsx /tmp/orbit-salesforce-final.mts",
+  "entry": "ESM entry imports and awaits the existing tests/support/salesforce-api-proof.ts salesforceApiFlow helper",
+  "exit": 0,
+  "cleanRuntimeSources": true
+}

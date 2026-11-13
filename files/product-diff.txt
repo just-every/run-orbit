@@ -1,0 +1,35 @@
+docs/imports/MOVING.md                             | 12 +++
+ management/integration/deployment-spec.json        |  6 ++
+ migrations/core/0086_salesforce_import.sql         | 29 +++++++
+ newtests/t096/released-forecast-upgrade.ts         |  5 ++
+ sources.lock.json                                  | 82 ++++++++++++++++----
+ src/core/app/app.ts                                |  2 +
+ src/core/features/imports/contracts.ts             |  3 +-
+ src/core/features/imports/owners.ts                |  5 +-
+ src/core/features/imports/planner.ts               |  3 +-
+ src/core/features/imports/repository.ts            |  9 ++-
+ src/core/features/imports/routes.ts                |  2 +-
+ src/core/features/imports/salesforce/archive.ts    | 11 +++
+ src/core/features/imports/salesforce/checkpoint.ts | 55 +++++++++++++
+ src/core/features/imports/salesforce/metadata.ts   | 25 ++++++
+ src/core/features/imports/salesforce/oauth.ts      | 46 +++++++++++
+ src/core/features/imports/salesforce/provider.ts   | 30 ++++++++
+ src/core/features/imports/salesforce/routes.ts     | 32 ++++++++
+ src/core/features/imports/salesforce/security.ts   | 20 +++++
+ src/core/features/operator/ui/import-provenance.ts |  4 +-
+ src/core/features/operator/ui/imports-page.tsx     |  8 +-
+ .../features/operator/ui/imports-salesforce.tsx    | 44 +++++++++++
+ src/core/features/records/archive-generations.ts   |  5 +-
+ .../features/records/archive-import-progress.ts    |  2 +-
+ tests/core/crm-import.test.ts                      |  4 +-
+ tests/e2e/imports-salesforce.mjs                   | 29 +++++++
+ tests/e2e/imports.spec.mjs                         |  2 +
+ tests/support/salesforce-api-proof.ts              | 89 ++++++++++++++++++++++
+ tests/support/salesforce-browser-api.ts            | 16 ++++
+ tests/support/salesforce-network.ts                | 30 ++++++++
+ 29 files changed, 577 insertions(+), 33 deletions(-)
+
+76bd666 Qualify restored Salesforce review refusal and document the supported move
+d09717c Preserve pre-Salesforce archives alongside current HubSpot imports [skip ci]
+1f9dd79 Fence Salesforce import consent, restore and reviewed owners
+2002838 Add guided Salesforce Account and Contact import custody [skip ci]

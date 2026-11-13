@@ -1,0 +1,143 @@
+{
+  "baseHead": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "widths": [
+    1440,
+    390
+  ],
+  "files": [
+    {
+      "file": "screens/salesforce-applied-1440.png",
+      "sha256": "f05ecef816958b92774519da895642279a4c12df48682e34cdac786f02d1f8ce",
+      "bytes": 635375,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-applied-390.png",
+      "sha256": "8dfe675b15e5d56059887266d52478b1bf9e74d6eb2f506460fa9ac93aac3c95",
+      "bytes": 617533,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-connected-1440.png",
+      "sha256": "0fdd8a61178f0d2c74e2c804576890f6316f5d63190ed0b5c3023548677f7f42",
+      "bytes": 207695,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-connected-390.png",
+      "sha256": "a43869f0b85076e96ea0599de67e0c683a515186b7c1a86e69a2c24e46d75f37",
+      "bytes": 204432,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-connection-1440.png",
+      "sha256": "1f90f03a2e0865e21fb2b8c696408449bbbd6be83af30e4e2e10914543fe8bcb",
+      "bytes": 192215,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-connection-390.png",
+      "sha256": "f76db202634d54562d5339c7e22a61cef7a3d374c4f9f3e03a9060c797249e3c",
+      "bytes": 170380,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-disconnected-1440.png",
+      "sha256": "bec91f7ffa1511e84e6bf305d77c4144ab656869642d394f86a92b2c2838290c",
+      "bytes": 224065,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-disconnected-390.png",
+      "sha256": "cdc94c20dede1635343c296cd068fe3060aaf03c95843493ddc76e50472804ea",
+      "bytes": 201415,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-metadata-1440.png",
+      "sha256": "642fc95d7cd602b0a781b8633faef173e8d80e58eedd5c9467540905a3758d28",
+      "bytes": 614237,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-metadata-390.png",
+      "sha256": "9ce3e17b67b964ca85ae5d2cda4c0c8301afc2f1e086b1f7660884763b9c5244",
+      "bytes": 591176,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-owners-1440.png",
+      "sha256": "c38bbcd74d51f805aa3b7799c30372048906e06b1e0e80729b40335c7873b028",
+      "bytes": 641138,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-owners-390.png",
+      "sha256": "efb77a78fbeb061d44dd6d1c8ab947ad901e89d5ffcd86e83a9f189bfa817439",
+      "bytes": 619009,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-preview-1440.png",
+      "sha256": "4d6f3024c85e3d7153235351504e68a32680ff635cb0617d37630920822d775b",
+      "bytes": 657004,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-preview-390.png",
+      "sha256": "c9a28bd6c1493f3270d4a9149a68c29791cab2499fce1dc47dec3bce6b8d6e6c",
+      "bytes": 638621,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-refused-state-1440.png",
+      "sha256": "36d49fac77c541ec4a472040f239e28d61773bb0b5532a11a3b2f67ef0e3fde2",
+      "bytes": 197640,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-refused-state-390.png",
+      "sha256": "cb31769da170d1874df1012591df0145d2b60dc393775097ccfcae34b6c65101",
+      "bytes": 177360,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-resume-1440.png",
+      "sha256": "7f73d8a81aa1bdeefa7d7cf4c89b5825e7ec85ba3ee5e0799a166518a2b2c21e",
+      "bytes": 648121,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-resume-390.png",
+      "sha256": "0bf5a113427aa73fa2a81b1d2f0cbf36a9ff654994e912236085f6fbc6783502",
+      "bytes": 626783,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-stopped-1440.png",
+      "sha256": "3256ba834ce6546870b1a616d8ea8f546b4ccfc57d3fb27c003eb2ce4d6e7b03",
+      "bytes": 658871,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-stopped-390.png",
+      "sha256": "e7e1447351fed498b629376225a9ea07f06e249c551b53817a5dd2625c603593",
+      "bytes": 639793,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-withdrawn-review-1440.png",
+      "sha256": "e7b1b88823eb5b6d2ee6c55f144959e3d088e6c2fdd4a0b6f9610abab9192a1b",
+      "bytes": 113556,
+      "visuallyInspected": true
+    },
+    {
+      "file": "screens/salesforce-withdrawn-review-390.png",
+      "sha256": "0fc568bb7a26d0e24035292ade671db3743759ce0c370467b3f04930b5679105",
+      "bytes": 97598,
+      "visuallyInspected": true
+    }
+  ],
+  "result": "Selected connection, metadata, separate-owner, preview, stopped, resumed, applied, disconnected and withdrawn-review screens inspected. Controls fit both widths. All added controls have text labels.",
+  "followUp": "Tier C: stale query success banner remains after disconnect although connection controls disappear and public server authority is withdrawn."
+}

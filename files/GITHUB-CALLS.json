@@ -1,0 +1,45 @@
+{
+  "budget": 10,
+  "used": 7,
+  "cadence": "One watcher; correct full-SHA discovery and polls separated by at least 300 seconds",
+  "calls": [
+    {
+      "call": 1,
+      "operation": "Get completed starting run jobs",
+      "run": 43332782884
+    },
+    {
+      "call": 2,
+      "operation": "Read failed job archive once",
+      "run": 43332782884,
+      "job": 131582986014
+    },
+    {
+      "call": 3,
+      "operation": "Initial discovery used short SHA; returned no rows; no conclusion inferred"
+    },
+    {
+      "call": 4,
+      "operation": "Discover exact full-SHA run",
+      "run": 43347379622
+    },
+    {
+      "call": 5,
+      "operation": "Poll run status",
+      "run": 43347379622,
+      "receipt": "ci-poll-1.json"
+    },
+    {
+      "call": 6,
+      "operation": "Poll run status",
+      "run": 43347379622,
+      "receipt": "ci-poll-2.json"
+    },
+    {
+      "call": 7,
+      "operation": "Poll run status",
+      "run": 43347379622,
+      "receipt": "ci-poll-3.json"
+    }
+  ]
+}

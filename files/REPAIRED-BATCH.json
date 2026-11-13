@@ -1,0 +1,5 @@
+{
+  "head": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+  "exit": 124
+}

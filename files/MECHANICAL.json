@@ -1,0 +1,50 @@
+{
+  "baseHead": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "checks": [
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "views-write-final.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "views-check-final.log"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "views-restore-final.log"
+    },
+    {
+      "command": "pnpm run deployment:check",
+      "exit": 0,
+      "log": "deployment-check-final.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck-final.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-final.log"
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "log": "boundaries-final.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "lock-write-final.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "lock-check-final.log"
+    }
+  ]
+}

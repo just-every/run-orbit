@@ -1,0 +1,5 @@
+{
+  "head": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+  "exit": 1
+}

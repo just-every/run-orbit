@@ -1,0 +1,11 @@
+{
+  "head": "1f9dd79164d7043a3c0e5eaff8365d8a98dca209",
+  "job": "131582986014 shards (batch-7)",
+  "command": "node scripts/verification-batch.mjs '[\"fold-domain-3\"]'",
+  "exit": 1,
+  "environment": "Pinned Node 22.20.0; workflow shard environment; system Chromium with no-sandbox; exact saved head",
+  "test": "newtests/t096/forward-upgrade.test.ts#API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact",
+  "failure": "0049 retains exact columns, objects, triggers and views after stripping the library additions",
+  "reproduced": true,
+  "additional_environment_failures": "Wrangler migration ETIMEDOUT; also observed on main control after its archive assertions passed"
+}

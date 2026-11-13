@@ -1,0 +1,8 @@
+{
+  "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/crm-import.test.ts tests/core/crm-import-erasure.test.ts",
+  "exit": 124,
+  "workingTree": "Adds source-review Apply replay refusal after restore and Salesforce operator documentation",
+  "startedHead": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "finishHead": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "outcome": "Command limit reached, not a full-suite pass. Three erasure registrations passed; source helper returned before later existing vendor flows."
+}

@@ -1,0 +1,12 @@
+{
+  "baseHead": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "command": "pnpm exec playwright test tests/e2e/imports.spec.mjs --workers=1 --forbid-only --reporter=list",
+  "exit": 0,
+  "assertionWidth": 1440,
+  "screenWidths": [
+    1440,
+    390
+  ],
+  "browser": "/usr/bin/chromium with Playwright no-sandbox default",
+  "runtimeBytesUnchangedFromBase": true
+}

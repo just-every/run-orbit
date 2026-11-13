@@ -1,0 +1,8 @@
+{
+  "branch": "cloud/sd-orbit-c-f183-pc1",
+  "head": "d09717ca4e7bc692d0880d6d936735da767c21e9",
+  "pushed": true,
+  "pushReceipt": "save-push.log",
+  "identityReceipt": "save-identities.log",
+  "skipCI": true
+}

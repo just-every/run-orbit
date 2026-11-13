@@ -1,0 +1,13 @@
+{
+  "scope": "added lines against integrated main; local review, not a publication scan",
+  "emailShapedLines": 0,
+  "bareSlashTokens": [
+    "imports/salesforce",
+    "playwright/test",
+    "records/company",
+    "records/contact"
+  ],
+  "contractUnchanged": true,
+  "generatedViewsUnchanged": true,
+  "tokenReview": "Matches are native relative API route strings and the existing scoped Playwright package, not new repository claims. No added prose repository shorthand."
+}
