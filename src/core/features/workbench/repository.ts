@@ -49,7 +49,7 @@ export class WorkbenchRepository {
       ...suppressionContextFence(this.db,emailTokens),
       ...stagePolicyFence(this.db,[policy]),
       ...(input.companyName?[this.db.prepare('INSERT INTO companies(id,name,created_at,updated_at) VALUES(?,?,?,?)').bind(companyId,input.companyName!,now,now)]:[]),
-      ...(contactId?[this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName!,email,emailKey,now,now)]:[]),
+      ...(contactId?[this.db.prepare(`INSERT INTO contacts(id,company_id,name,email,email_key,contactability,created_at,updated_at) VALUES(?,?,?,?,?,CASE WHEN ${suppressionPredicate(emailTokens,true)} THEN 'do_not_contact' ELSE 'contactable' END,?,?)`).bind(contactId,companyId,input.contactName!,email,emailKey,now,now)]:[]),
       this.db.prepare("INSERT INTO opportunities(id,title,lifecycle,stage_id,owner_id,company_id,value_cents,score,band,queue_state,queue_reason,created_at,updated_at) VALUES(?,?,'open',?,?,?,?,0,'low','now','Operator created opportunity',?,?)").bind(id,input.title,input.stageId,ownerId,companyId,input.valueCents,now,now),
       ...contactIds.map(linkedId=>this.db.prepare('INSERT INTO opportunity_contacts(opportunity_id,contact_id,is_primary,created_at) VALUES(?,?,?,?)').bind(id,linkedId,linkedId===primaryContactId?1:0,now)),
       ...this.timeline(id,actor,'opportunity.created',{title:input.title},now)

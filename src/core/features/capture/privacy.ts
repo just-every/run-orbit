@@ -1,12 +1,12 @@
 import {payloadHash} from '../../platform/source-security';
 import {createId} from '../../shared/ids';
-import {privacyMatcher,suppressionContextFence} from '../records/suppression';
+import {privacyMatcher,suppressionContextFence,erasedMailboxAction} from '../records/suppression';
 import {calendarPrivacyIdentity,storedCalendarPrivacyIdentity} from './privacy-calendar';
 import {retainedEvidenceText,retainedEvidenceIdentityMatch,retainedEvidenceIdentityPatterns} from './privacy-evidence';
 import type {Fact} from './facts';
 
 type Matcher=Awaited<ReturnType<typeof privacyMatcher>>;
-const mailboxAction='capture.erased_mailbox',itemAction='capture.erased_item';
+const mailboxAction=erasedMailboxAction,itemAction='capture.erased_item';
 const skipped={result:'skipped' as const,reason:'Evidence was removed by contact erasure'};
 const erasureEpoch="SELECT COALESCE(MAX(rowid),0) FROM audit_entries WHERE action IN('capture.erased_item','capture.erased_mailbox')";
 async function itemKeys(match:Matcher,eventId:string,calendar:string[]|null=null){
