@@ -49,6 +49,25 @@ test('CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a
     assert.ok(pending >= 2, 'the link and the phone number wait for review');
     assert.equal(await count(f.db, "SELECT count(*) n FROM signal_links l JOIN capture_items i ON i.signal_id=l.signal_id"), 0, 'the reply itself is not on any timeline until reviewed');
     assert.equal(await f.db.prepare('SELECT phone FROM contacts WHERE id=?').bind(f.ana).first('phone'), null);
+
+    // Reviewing an imported reply must not invent a cancelled follow-up for the
+    // handwritten draft. The real approval route still refuses it with no send.
+    const link = await f.db.prepare("SELECT p.id FROM capture_proposals p JOIN signals s ON s.id=p.signal_id WHERE p.kind='link_signal' AND s.subject='Quick question'").first<{id:string}>();
+    assert.ok(link);
+    assert.equal((await f.request(`/api/v1/capture/proposals/${link.id}/accept`, {method:'POST',headers:{'content-type':'application/json'},body:'{}'})).status, 200);
+    const readDraft = async () => (await (await f.request(`/api/v1/drafts/${f.unsentDraft}`)).json() as {draft:{revision:number;isStale:boolean;staleReason:string}}).draft;
+    const stale = await readDraft();
+    assert.equal(stale.isStale, true);
+    assert.match(stale.staleReason, /repl|respond/i);
+    assert.doesNotMatch(stale.staleReason, /cancel|schedul/i);
+    const sendApp = createApp({database:f.db,assets:{fetch:async()=>new Response('')},outboundMail:{send:async()=>{assert.fail('A stale draft must never reach the mail provider.');}}});
+    const approvalRequest = (path:string,body?:unknown) => sendApp.request(`https://orbit.test/api/v1/workbench/drafts/${f.unsentDraft}/${path}`, {method:body?'POST':'GET',headers:{cookie:f.cookie,origin:'https://orbit.test','content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
+    const preview = await (await approvalRequest('approval-preview')).json() as {localTime:string};
+    assert.equal((await approvalRequest('approve',{revision:stale.revision,quietHoursConfirmation:preview.localTime})).status, 409);
+    assert.equal(await count(f.db, 'SELECT count(*) n FROM outbound_messages WHERE draft_id=?', f.unsentDraft), 0);
+    // Existing installations can already hold the old explanation on disk.
+    await f.db.prepare('UPDATE drafts SET stale_reason=? WHERE id=?').bind('Customer replied, so the scheduled follow-up was cancelled',f.unsentDraft).run();
+    assert.doesNotMatch((await readDraft()).staleReason, /cancel|schedul/i);
     // Ana's own encoded display name, even one with a comma, still stops a new send and attaches in her thread.
     await f.db.prepare("UPDATE outbound_messages SET state='scheduled',failure=NULL WHERE id=?").bind(f.scheduled).run();
     const threaded = eml({ From: '=?utf-8?q?Ruiz=2C_Ana?= <ana@acme.example>', To: 'seller@orbit.test', Subject: 'Re: Proposal for Acme', Date: rfc(12), 'Message-ID': '<thread-1@acme.example>', 'In-Reply-To': f.anaThread, References: f.anaThread }, 'Thanks, we will hold for now.');

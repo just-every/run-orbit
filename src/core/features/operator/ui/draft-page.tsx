@@ -1,3 +1,4 @@
+import {recordStateLabel} from './record-presentation';
 import {messageStatus} from './message-status';
 import {recordsRequest} from './records-api';
 import {DraftLibraryPicker} from '../../drafts/ui/library-picker';
@@ -97,9 +98,9 @@ export function DraftPage() {
           <DraftLibraryPicker draft={draft} disabled={saving} onApplied={resource.reload}/>
           {draft.isStale ? <section className="operator-state operator-state--error" data-testid="stale-review">
             <h2>Review what changed</h2><p>{draft.staleReason ?? "Customer context changed."}</p>
-            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {contacts[0]?.contactability}. Review the <a href={`/app/contacts/${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
+            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {recordStateLabel(contacts[0]?.contactability??'')}. Review the <a href={`/app/contacts/${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
             <ul>{(resource.data.opportunity?.signals??[]).slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
-            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
+            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({recordStateLabel(contact.contactability)})</option>)}</select></label>
             <label style={{display:"flex",gap:8,alignItems:"flex-start"}}><input style={{width:"auto",flex:"none"}} type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>
             <button type="button" className="operator-primary-button" disabled={saving||!reviewed||!draft.recipientContactId} onClick={()=>void confirmReview()}>Confirm reviewed draft</button>
             <p>This confirms a new draft revision. It sends nothing.</p>
