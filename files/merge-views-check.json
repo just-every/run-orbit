@@ -1,0 +1,13 @@
+{
+  "name": "merge-views-check",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "node",
+    "src/base/contract-docs.mjs",
+    "check"
+  ],
+  "started": "2026-11-13T00:19:02.397851+00:00",
+  "finished": "2026-11-13T00:19:02.539307+00:00",
+  "exit": 0,
+  "log_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+}

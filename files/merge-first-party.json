@@ -1,0 +1,15 @@
+{
+  "name": "merge-first-party",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/bin/rer.mjs",
+    "check",
+    "--profile",
+    "first-party"
+  ],
+  "started": "2026-11-13T00:19:00.738996+00:00",
+  "finished": "2026-11-13T00:19:02.141165+00:00",
+  "exit": 0,
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

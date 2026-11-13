@@ -1,0 +1,15 @@
+{
+  "name": "repaired-batch-5-parallel",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "timeout",
+    "2400",
+    "node",
+    "scripts/verification-batch.mjs",
+    "[\"fold-accepted-main\"]"
+  ],
+  "started": "2026-11-12T23:59:36.852294+00:00",
+  "finished": "2026-11-13T00:15:03.183299+00:00",
+  "exit": 0,
+  "log_sha256": "5f270cc8d46ce929e5888fef3e7f60cf88fca0ef6b15c2fb931a3db80f8548fe"
+}

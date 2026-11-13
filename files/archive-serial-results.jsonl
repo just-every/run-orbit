@@ -1,0 +1,3 @@
+{"kind":"test","runner":"node:test","name":"API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions","file":"tests/core/onboarding-archive.test.ts","type":"test","nesting":0,"status":"passed","durationMs":840376.957278}
+{"kind":"test","runner":"node:test","name":"PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records","file":"tests/core/public-demo.test.ts","type":"test","nesting":0,"status":"passed","durationMs":102584.637746}
+{"kind":"summary","runner":"node:test","success":true,"counts":{"tests":2,"failed":0,"passed":2,"cancelled":0,"skipped":0,"todo":0,"topLevel":2,"suites":0}}

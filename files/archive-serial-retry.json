@@ -1,0 +1,24 @@
+{
+  "name": "archive-serial-retry",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "2400",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/archive-serial-results.jsonl",
+    "tests/core/onboarding-archive.test.ts",
+    "tests/core/public-demo.test.ts"
+  ],
+  "started": "2026-11-13T00:20:20.514474+00:00",
+  "finished": "2026-11-13T00:36:22.727466+00:00",
+  "exit": 0,
+  "log_sha256": "664c6c6733cc71685005aa94faa123646fca1ac1614ffcf071031d8576eb6f92"
+}

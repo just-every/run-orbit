@@ -1,7 +1,0 @@
-{
-  "src/core/features/outreach/mailbox/archive.ts": "05395aa67ec89da5cbfcc186c42a8b0b49f8e71ed4704e94f113512a2400eea5",
-  "src/core/features/records/archive-fold-validation.ts": "06caa5d1e41ab5ec919219e1e14ba768b855bbb83f6400337c26075fb4dce48c",
-  "src/core/features/records/archive-import.ts": "0d78bafac8d1cbf8ce86faef7454cfc5975392c9dbdb69e23879348461563408",
-  "tests/core/onboarding-archive.test.ts": "1d4d214271a572a624befa87cbae0d641787ee45b0f7401c69153c8f8a246dc9",
-  "tests/support/mailbox-send-proof.ts": "049d61cbfcb36e9185e1b0c6a3befe9bcf1904bd085aad98345269745185ddcb"
-}

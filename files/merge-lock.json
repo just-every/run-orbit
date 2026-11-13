@@ -1,0 +1,13 @@
+{
+  "name": "merge-lock",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "lock"
+  ],
+  "started": "2026-11-13T00:19:02.622872+00:00",
+  "finished": "2026-11-13T00:19:03.401923+00:00",
+  "exit": 0,
+  "log_sha256": "ead608b22c89aa370a398dc644120085335a858ef7dde74c28e8426c24d05467"
+}

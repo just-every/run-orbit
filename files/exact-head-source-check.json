@@ -1,0 +1,13 @@
+{
+  "name": "exact-head-source-check",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "node",
+    "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+    "check"
+  ],
+  "started": "2026-11-13T00:20:19.809349+00:00",
+  "finished": "2026-11-13T00:20:20.476595+00:00",
+  "exit": 0,
+  "log_sha256": "beb88499f463df2164091327b0234b41d5c27807501bcd9f34588ef63df81635"
+}

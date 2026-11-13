@@ -1,0 +1,13 @@
+{
+  "name": "exact-head-deployment",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "node",
+    "scripts/publish-deployment-spec.mjs",
+    "--check"
+  ],
+  "started": "2026-11-13T00:20:19.587591+00:00",
+  "finished": "2026-11-13T00:20:19.768735+00:00",
+  "exit": 0,
+  "log_sha256": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053"
+}

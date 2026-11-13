@@ -1,9 +1,0 @@
-{
-  "branch": "cloud/sd-orbit-c-f179-pc1",
-  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
-  "repository": "just-every/run-orbit",
-  "push": "success",
-  "attempt": 1,
-  "skip_ci": true,
-  "identity": "all candidate authors and committers fleet; no trailers; side parents included"
-}

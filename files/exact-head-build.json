@@ -1,0 +1,16 @@
+{
+  "name": "exact-head-build",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "600",
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "started": "2026-11-13T00:20:04.832817+00:00",
+  "finished": "2026-11-13T00:20:19.450563+00:00",
+  "exit": 0,
+  "log_sha256": "af0c9920b986d855586eb211466fd3afb3d74953f8a3055c856a77b4d32ca572"
+}
