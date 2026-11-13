@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "d51a10fb6595641def49d93ef66d4d578daa943484be23ec6f2c92bcb2f5438a",
+      "sha256": "c98a932160c4cf531fcf996d196c121f8854164c9c4e7fa86d79b7fbd6644100",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2232,6 +2232,10 @@
     },
     "migrations/core/0085_meeting_follow_up.sql": {
       "sha256": "164e4b2d44f68fcc3daed21699a2516864bb71e71013f41611eed8b2db7c9296",
+      "executable": false
+    },
+    "migrations/core/0086_pipedrive_import.sql": {
+      "sha256": "cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -3859,7 +3863,7 @@
       "executable": false
     },
     "public/moving-guide.html": {
-      "sha256": "577a4ba1e9be324b36f646e56c7d1eb6ccfd9901cfb9ad5f07f725028044952d",
+      "sha256": "0a13a0ad93efd0bf316c9c2b96593f135eb9ba7db75e0f0fb6cd18699499957c",
       "executable": false
     },
     "public/operator-native.css": {
@@ -4143,7 +4147,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "fd8b9b05dd9ed658862a1631c891de418ab23931cced4d889d1a542161af8998",
+      "sha256": "cb14bab2c2bb731d10590fbf9838645e84bbc77b8c11e2499fa92a6f280b3bc8",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -6346,6 +6350,30 @@
       "sha256": "6993d5c5ed475c1fa4650916726a37cbac795e2f79cca538602062d5ce333579",
       "executable": false
     },
+    "src/core/features/imports/pipedrive/authority.ts": {
+      "sha256": "2d7a787ce3b72c37e15c9a20eddbb4b77f5e7be7dc204ebf3ee4ad54919cff6b",
+      "executable": false
+    },
+    "src/core/features/imports/pipedrive/checkpoint.ts": {
+      "sha256": "4cb979655cd875ccec102ae765356ee5fdb68030fdb12e845d57b51cf7e79f1e",
+      "executable": false
+    },
+    "src/core/features/imports/pipedrive/connection.ts": {
+      "sha256": "25f86b37cc1f763887f591013b3cdb6f736bf3060b06058b82847d8c3cd56c1f",
+      "executable": false
+    },
+    "src/core/features/imports/pipedrive/provider.ts": {
+      "sha256": "7ecd7918962d3326fff83ff74fa85eb8c2ddccb35a4abd18833ddaec090553ff",
+      "executable": false
+    },
+    "src/core/features/imports/pipedrive/routes.ts": {
+      "sha256": "1ab6fb379811bb2d543f186e261e07a51b5374ab0b7ae61ef95d524e4fc50e2e",
+      "executable": false
+    },
+    "src/core/features/imports/pipedrive/source.ts": {
+      "sha256": "8c9c4a00d2ccb06753e6b28a048989c6d84622f9b43ae8a8514bb292e5f3dc07",
+      "executable": false
+    },
     "src/core/features/imports/planner.ts": {
       "sha256": "d983d8d39c2e64ce269405014a2ca5d8e0cdf10141f33ab699615ac4852b89ae",
       "executable": false
@@ -6824,6 +6852,10 @@
     },
     "src/core/features/operator/ui/imports-page.tsx": {
       "sha256": "f253ab8a3464f322d92e6f7ebbb3a82cfe20e7f523fcf8a2a16dd0150f423de0",
+      "executable": false
+    },
+    "src/core/features/operator/ui/imports-pipedrive.tsx": {
+      "sha256": "a19e901c2a22bd5a863564508f85c651dd3e4ad535cdef915498dee215530040",
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
@@ -7955,7 +7987,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
-      "sha256": "40a49180b91b6c558740926e7a4f54408ca8b37eb6b1fbad5c1316eb69a01462",
+      "sha256": "0a2cd60884ba2111e864e88f4fe9c03071013a5efb09f8391a110270216139ad",
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
@@ -10514,6 +10546,10 @@
       "sha256": "1ca217276df654801d692a99fc377229fd8b3eb2205a3ea739e971ff224efc25",
       "executable": false
     },
+    "tests/e2e/imports-pipedrive.mjs": {
+      "sha256": "7a8f3a6c2e89db38e343eab6777578f1e7b5f2b7228c04e82a5f9da7b9074436",
+      "executable": false
+    },
     "tests/e2e/imports.spec.mjs": {
       "sha256": "03cd6757c3e507c8fd0b9ba4e1454685c3491cd0604931f5383e4ab9b465eb03",
       "executable": false
@@ -11480,6 +11516,18 @@
     },
     "tests/support/personal-slack-proof.ts": {
       "sha256": "dfaf26707f50ebe11651f85b94dea94eda2aba56650f9a9648dbaf24ffc86680",
+      "executable": false
+    },
+    "tests/support/pipedrive-api-proof.ts": {
+      "sha256": "d8871d9f870344a8f180ae067751aaf23db5450a58629300db9fc481365e5ae9",
+      "executable": false
+    },
+    "tests/support/pipedrive-archive-proof.ts": {
+      "sha256": "f070b101249f8e36a95c817f7bca593dede3d0393135ca32e089712fe5b7cbd6",
+      "executable": false
+    },
+    "tests/support/pipedrive-network.ts": {
+      "sha256": "54db5c1fceadb202a8023d21f21bf447216f38cff74a928893f210c588867a99",
       "executable": false
     },
     "tests/support/prepare-state.ts": {

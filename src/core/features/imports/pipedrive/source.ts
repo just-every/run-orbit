@@ -16,13 +16,19 @@ const csv=(rows:unknown[][])=>rows.map(row=>row.map(value=>'"'+cell(value).repla
 /** Turn the supported pull into the existing CSV planner, retaining source metadata and explicit omissions. */
 export function pipedriveSource(snapshot:Snapshot,account:string,mapping:PullMapping){
  const diagnostics:ConnectedSource['diagnostics']=[],errors:Record<string,string>={},values:Record<string,Record<string,string>>={};
- const warn=(code:string,message:string,kind:string,sourceId:string,field?:string)=>diagnostics.push({severity:'warning',code,message:`${message} ${exportStep}`,kind,sourceId,...field?{field}:{},location:{artifact:'pipedrive-source.json',pointer:`/${kind}/${sourceId}${field?`/${field}`:''}`}});
+ const pointer=(kind:string,id:string,field?:string,definition=false)=>{
+  const resource=definition?({company:'organizationFields',contact:'personFields',deal:'dealFields'} as Record<string,string>)[kind]:({company:'organizations',contact:'persons',deal:'deals',note:'notes'} as Record<string,string>)[kind];
+  if(!resource)return undefined;const index=(snapshot[resource]??[]).findIndex(row=>sourceId(row.id)===id);if(index<0)return undefined;
+  const row=snapshot[resource]![index]!,escape=(key:string)=>key.replaceAll('~','~0').replaceAll('/','~1');
+  return `/${resource}/${index}`+(definition?'/key':field&&Object.hasOwn(row,field)?`/${escape(field)}`:field&&Object.hasOwn(row.custom_fields??{},field)?`/custom_fields/${escape(field)}`:'');
+ };
+ const warn=(code:string,message:string,kind:string,sourceId:string,field?:string,definition=false)=>{const location=pointer(kind,sourceId,field,definition);diagnostics.push({severity:'warning',code,message:`${message} ${exportStep}`,kind,sourceId,...field?{field}:{},location:{artifact:'pipedrive-source.json',...location?{pointer:location}:{}}});};
  const files:ImportInput['files']=[];
  for(const [resource,kind] of Object.entries(kindFor) as [keyof typeof kindFor,ImportKind][]){
   const metadata=snapshot[kind==='company'?'organizationFields':kind==='contact'?'personFields':'dealFields']??[];
   const custom=kind==='note'?[]:metadata.filter(field=>/^[a-f0-9]{40}$/i.test(field.key));
   const customNames=custom.filter(field=>scalarTypes.has(field.field_type)).map(field=>fieldName(field));
-  for(const field of custom)if(!scalarTypes.has(field.field_type))warn('UNSUPPORTED_FIELD',`Field ${cell(field.name)} (${field.key}) has unsupported type ${cell(field.field_type)}.`,kind,sourceId(field.id),field.key);
+  for(const field of custom)if(!scalarTypes.has(field.field_type))warn('UNSUPPORTED_FIELD',`Field ${cell(field.name)} (${field.key}) has unsupported type ${cell(field.field_type)}.`,kind,sourceId(field.id),field.key,true);
   if(customNames.length>100)throw new RecordError(409,`This entity has more than 100 supported custom fields. ${exportStep}`);
   const headers=[...fields[kind],...customNames],rows:Record<string,string>[]=[];
   for(const record of snapshot[resource]??[]){

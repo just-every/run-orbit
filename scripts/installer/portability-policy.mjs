@@ -12,6 +12,7 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(await db.prepare('SELECT 1 FROM crm_import_pipedrive_connections LIMIT 1').first())throw new Error('Disconnect Pipedrive before local archive restore; fresh connection and review authority are required afterwards.');
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
   if(tables.api_credentials)await db.prepare('DELETE FROM "'+tables.api_credentials.replaceAll('"','""')+'"').run();
   if(tables.call_credentials)await db.prepare('DELETE FROM "'+tables.call_credentials.replaceAll('"','""')+'"').run();
