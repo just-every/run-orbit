@@ -1,0 +1,90 @@
+{
+  "shard": "fold-accepted-main",
+  "commit": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+  "startedAt": "2026-11-12T23:32:04.000Z",
+  "finishedAt": "2026-11-12T23:34:27.366Z",
+  "status": "failed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/verification-build.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 963,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/fold-accepted-main-results.jsonl",
+        "newtests/t096/archive-lineage-accepted-main.test.ts"
+      ],
+      "env": {},
+      "files": [
+        "newtests/t096/archive-lineage-accepted-main.test.ts"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 142315,
+      "missingFiles": [],
+      "eventError": "Missing, failed or unexpected test completions.",
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": false,
+          "counts": {
+            "tests": 1,
+            "failed": 1,
+            "passed": 0,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 1,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "authenticated immutable native accepted-main archive preserves its complete 100-table baseline across fold restore, restart and re-export",
+          "file": "newtests/t096/archive-lineage-accepted-main.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "failed",
+          "durationMs": 133822.693005
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "authenticated immutable native accepted-main archive preserves its complete 100-table baseline across fold restore, restart and re-export",
+      "file": "newtests/t096/archive-lineage-accepted-main.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "failed",
+      "durationMs": 133822.693005
+    }
+  ]
+}

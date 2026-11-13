@@ -1,0 +1,25 @@
+diff --git a/tests/core/onboarding-archive.test.ts b/tests/core/onboarding-archive.test.ts
+index ab09512..100ac6b 100644
+--- a/tests/core/onboarding-archive.test.ts
++++ b/tests/core/onboarding-archive.test.ts
+@@ -110,6 +110,8 @@ test('API-002 credentials stay local while DATA-001 local archive restores recor
+   assert.equal(await previous.db.prepare('SELECT count(*) FROM outbound_opt_out_capabilities').first('count(*)'),names.has('outbound_opt_out_capabilities')?1:0,'Restoring old messages never invents capability authority');
+   assert.equal(await previous.db.prepare('SELECT count(*) FROM message_library').first('count(*)'),0,'An older generation does not invent library entries');
+   assert.deepEqual(await previous.db.prepare('SELECT library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(draft).first(),{library_selection_json:'{}',merge_review_json:null},'Historical draft rows receive the additive migration defaults');
++  assert.deepEqual(await previous.db.prepare('SELECT mailbox_source_id,mailbox_connection_id,mailbox_address,mailbox_provider,provider_thread_id,mailbox_submission_claimed FROM outbound_messages WHERE id=?').bind(scheduled.id).first(),{mailbox_source_id:null,mailbox_connection_id:null,mailbox_address:null,mailbox_provider:null,provider_thread_id:null,mailbox_submission_claimed:0},'Historical messages gain migration defaults without acquiring a sending mailbox');
++  assert.equal(await previous.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0,'Historical message restore grants no mailbox send authority');
+  }finally{await previous.dispose();}
+  }
+  const local=await isolatedDatabase();
+diff --git a/tests/support/mailbox-send-proof.ts b/tests/support/mailbox-send-proof.ts
+index e583548..bf18bc8 100644
+--- a/tests/support/mailbox-send-proof.ts
++++ b/tests/support/mailbox-send-proof.ts
+@@ -150,6 +150,7 @@ export async function mailboxSendProof(provider:Provider){
+    let job=await call('records/archive/imports','POST',{confirmed:true,manifest:archive.manifest});for(const part of archive.parts)await call('records/archive/imports/'+job.id+'/parts/'+part.index,'PUT',part);
+    for(let i=0;i<700&&job.state!=='complete';i++)job=await call('records/archive/imports/'+job.id+'/finalize','POST',{});
+    assert.equal(job.state,'complete');assert.equal(await restored.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0);assert.equal(await restored.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'),0);
++   assert.equal(await restored.db.prepare('SELECT mailbox_submission_claimed FROM record_mail_outbound_messages WHERE id=?').bind(accepted.id).first('mailbox_submission_claimed'),1,'Restoring current history preserves the completed submission claim');
+    assert.equal(await restored.db.prepare("SELECT count(*) n FROM record_mail_outbound_messages WHERE state IN('scheduled','queued')").first('n'),0);assert.equal(await restored.db.prepare('SELECT mailbox_address FROM record_mail_outbound_messages WHERE id=?').bind(accepted.id).first('mailbox_address'),address);
+   }finally{await restored.dispose();}
+   const local=await isolatedDatabase();try{await localArchiveRoundTrip(f.db,local.db);assert.equal(await local.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0);assert.equal(await local.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'),0);assert.equal(await local.db.prepare("SELECT count(*) n FROM record_mail_outbound_messages WHERE state IN('scheduled','queued')").first('n'),0);}finally{await local.dispose();}

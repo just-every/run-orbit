@@ -1,0 +1,22 @@
+[
+  {
+    "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+    "job": "shards (batch-5)",
+    "job_id": 131539756536,
+    "run": 43320028360,
+    "command": "ORBIT_VERIFY_PREBUILT=1 ORBIT_VERIFY_JOURNEYS=1 ORBIT_VERIFY_TIER=push node scripts/verification-batch.mjs '[\"fold-accepted-main\"]'",
+    "test": "newtests/t096/archive-lineage-accepted-main.test.ts#authenticated immutable native accepted-main archive preserves its complete 100-table baseline across fold restore, restart and re-export",
+    "exit": 1,
+    "failure": "Native authenticated POST /imports: 400 {\"error\":\"Archive inventory does not match a complete supported source generation.\"}"
+  },
+  {
+    "head": "816aea662699ca8b0ed2e559c116078ef57f02d0",
+    "job": "shards (batch-0)",
+    "job_id": 131539756426,
+    "run": 43320028360,
+    "command": "ORBIT_VERIFY_PREBUILT=1 ORBIT_VERIFY_JOURNEYS=1 ORBIT_VERIFY_TIER=push node scripts/verification-batch.mjs '[\"core-5\"]'",
+    "test": "tests/core/onboarding-archive.test.ts#API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+    "exit": 1,
+    "failure": "NOT NULL constraint failed: outbound_messages.mailbox_submission_claimed; POST records/archive/imports/<job>/finalize: 500 Archive operation failed. The operation remains resumable; no completion was confirmed."
+  }
+]
