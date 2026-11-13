@@ -679,7 +679,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "9e5e64c3196a6dd48d3f92307120abddb068dc38331de96129cad415691fef9a",
+      "sha256": "abf63b50b02b4828d226538fca300eda8632df0df5489519105f7f36dbd9b2d4",
       "executable": false
     },
     "CLAUDE.md": {
@@ -3819,7 +3819,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "ae55a08bd0e38345ef49d03c55ac8a348adb3b669dd62fe1eb782a7d8a6bb14d",
+      "sha256": "a653b0b4342bb85030709adfac07a350b3daad0058cdbaf7620df779cbbc25c3",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3939,7 +3939,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "230810f87f020bac68a4be681b590c52371f969ef7f1983bf65331e2a28c263a",
+      "sha256": "adbdb1abfc4821a97d73ad15952c21d87464dd83dcffefd7ae9a274751ba4f6c",
       "executable": false
     },
     "rer-project.json": {
@@ -4299,7 +4299,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "f837b4dbf149e9dae15983cbc63d4000a20ec8c4292ebd470a470def429a3c55",
+      "sha256": "e4b909cf7a1e6ab6c35f5de114d150df60f5bf323eec1cb6235baed59d7c7260",
       "executable": false
     },
     "SIGNALS-AND-OUTREACH.md": {
@@ -5743,7 +5743,7 @@
       "executable": false
     },
     "src/core/features/capture/proposals.ts": {
-      "sha256": "fab65c0c44637c28245a8be1808b607eaab3284387ed3cde45043b4ae4626c01",
+      "sha256": "d1a12d51a0561e7eb72e4aeb42fcb7f146ab8148723b0ca7dc7d86f03c71a816",
       "executable": false
     },
     "src/core/features/capture/provider-evidence.ts": {
@@ -5803,7 +5803,7 @@
       "executable": false
     },
     "src/core/features/capture/routes.ts": {
-      "sha256": "9470e045109fc140a34afedf411f56ea40f3dc8d17e61b52fd3540f77aa3146d",
+      "sha256": "aeaee7d81b2dd5debd289a569c5e93ca13faf26ae66f2043e51fedc7d10c1af9",
       "executable": false
     },
     "src/core/features/capture/sources.ts": {
@@ -6763,7 +6763,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "9f02d58c0382e7b469a5cf820101f9cd13c99598b21c3bb6f6e719ee2ce0cd85",
+      "sha256": "53e5a422dfa8962da46a90062810448b2ae507cfa3c5db9dc3a5dcada42a0984",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -6783,7 +6783,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-source.tsx": {
-      "sha256": "2144a6b5a6477256d9f151008e095fb295e830f07199341a142b8255c3fad48a",
+      "sha256": "21532405e4a07b79b624eeda2b7b73ed102d3e39e271395717801f1c0f0691e6",
       "executable": false
     },
     "src/core/features/operator/ui/capture-types.ts": {
@@ -6802,12 +6802,16 @@
       "sha256": "53efaac48313e6c70f15dccff1263a729e4a095084bb1f502326d76aff6a8494",
       "executable": false
     },
+    "src/core/features/operator/ui/deal-risk-agent-result.tsx": {
+      "sha256": "713904a29b2f0bf02b44aa91b3b3655cc2d1a66974769a674d0189fca0597b1d",
+      "executable": false
+    },
     "src/core/features/operator/ui/deal-risk-finding.tsx": {
       "sha256": "42462766b3039bddf7ac9fb5a4caf81386a7bc6cb0615d88a7e9c91785e71f90",
       "executable": false
     },
     "src/core/features/operator/ui/deal-risks.tsx": {
-      "sha256": "04eb818bb8acf43a910903688e841730f0faf76a63c4a8a984724097421cb186",
+      "sha256": "fab4c86bb25a7272e046ff559139bd4f744315294bb2630d5b28400a39766523",
       "executable": false
     },
     "src/core/features/operator/ui/delete-timeline-entry.tsx": {
@@ -7255,7 +7259,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/review-page.tsx": {
-      "sha256": "ccd849f349e4fa2058284145d4cc9a96cdcbb0b869f7f5a2917b44f90c2c1145",
+      "sha256": "9de07c158e1499cbe0868bdcc3803c1ccd168f7a376fc5423fdbccbf5ff2c8d7",
       "executable": false
     },
     "src/core/features/operator/ui/reviewed-call.tsx": {
@@ -10559,7 +10563,7 @@
       "executable": false
     },
     "tests/delegation-browser/risk-journey.mjs": {
-      "sha256": "715aae1ab78c4b1bde39eb7886b81d5b5247234d7f13142ad7ff4153c6a28624",
+      "sha256": "0ceb5611cf35d9b0d7ccfe9ef936f0aa5bff0e7a362d5587765223595ac65c63",
       "executable": false
     },
     "tests/delegation-browser/saved-deal-value-journey.mjs": {
@@ -10631,7 +10635,7 @@
       "executable": false
     },
     "tests/e2e/capture.spec.mjs": {
-      "sha256": "b727325568c49ab44b649b6da8fe6479ea1506be3ea3b41c8334668db6e3be22",
+      "sha256": "936325121c0b76ea60a81df72b15d86ded56d0c9383d7fb17bd39e96832d667e",
       "executable": false
     },
     "tests/e2e/contact-consent.mjs": {

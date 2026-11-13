@@ -147,7 +147,7 @@ export function CaptureSource({
       <div><dt>Last success</dt><dd>{when(source.last_success_at)}</dd></div>
       <div><dt>Captured</dt><dd>{source.captured_count}</dd></div>
       <div><dt>Not stored</dt><dd>{source.skipped_count}</dd></div>
-      <div><dt>Proposals waiting</dt><dd>{source.proposals_waiting}</dd></div>
+      <div><dt>Proposals waiting</dt><dd>{source.proposals_waiting>0?<a href={`/app/review?source=${encodeURIComponent(source.id)}`} aria-label={`Review ${source.proposals_waiting} pending proposals from ${source.name}`}>{source.proposals_waiting}</a>:0}</dd></div>
       {source.last_error ? <div className="capture-source-error"><dt>Last error</dt><dd>{source.last_error}</dd></div> : null}
     </dl>
 
