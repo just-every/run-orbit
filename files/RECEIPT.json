@@ -1,0 +1,140 @@
+{
+  "tag": "sd-orbit-zoom-plan-privacy-2",
+  "repository": "just-every/run-orbit",
+  "recordedAt": "2026-11-13T20:06:07Z",
+  "base": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+  "head": "2a0a929f7ba144520bfb301e7a21effa8f1a65f1",
+  "branch": "cloud/sd-orbit-zoom-plan-privacy-2",
+  "productPush": "succeeded",
+  "pushAttempts": 1,
+  "pr": null,
+  "before": {
+    "productHead": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+    "testExtensionOnly": true,
+    "command": "pnpm exec tsx --test tests/delegation/brief-handoff.test.ts",
+    "exitCode": 1,
+    "tests": 1,
+    "passed": 0,
+    "failed": 1,
+    "assertion": "contact-only plan raw JSON discloses Ben Hale"
+  },
+  "after": {
+    "command": "pnpm exec tsx --test tests/delegation/brief-handoff.test.ts",
+    "exitCode": 0,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "log": "final-test.log"
+  },
+  "typecheck": {
+    "command": "pnpm exec tsc --noEmit",
+    "exitCode": 0
+  },
+  "lock": {
+    "commands": [
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+    ],
+    "exitCodes": [
+      0,
+      0
+    ]
+  },
+  "testInventory": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  },
+  "clauseStatuses": {
+    "DELEGATE-001": {
+      "before": "PARTIAL",
+      "after": "PARTIAL",
+      "contractEdits": false,
+      "completeAcceptancePointsClaimed": []
+    }
+  },
+  "identity": {
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": "",
+    "candidateCommitsInspected": 1
+  },
+  "rebase": {
+    "base": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+    "result": "up to date before first publication"
+  },
+  "workingTreeClean": true,
+  "ci": {
+    "conclusion": null,
+    "head_sha": "2a0a929f7ba144520bfb301e7a21effa8f1a65f1",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43492722717",
+    "id": 43492722717,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "publicationScan": "fleet lander only; not run in cloud",
+  "independentPrivacyGate": "pending",
+  "filesChanged": [
+    "sources.lock.json",
+    "src/core/features/delegation/brief-routes.ts",
+    "src/core/features/delegation/routes.ts",
+    "src/core/features/today/meeting-plan.ts",
+    "src/core/features/zoom/plan.ts",
+    "src/core/features/zoom/provider.ts",
+    "tests/delegation/brief-handoff.test.ts"
+  ],
+  "proofFiles": [
+    {
+      "path": "before-test.log",
+      "bytes": 1396,
+      "sha256": "c46a10cb991eba33e671f37c63766fb4d786faf8df6bcfd993ec3c84d5408621"
+    },
+    {
+      "path": "after-test.log",
+      "bytes": 488,
+      "sha256": "49ef250b50990900d3a281d8fc018e2089bc15895290f9f51e34b75f4f739600"
+    },
+    {
+      "path": "final-test.log",
+      "bytes": 488,
+      "sha256": "f92d092de0daa7134c2a61adf1d9651f1518f66eb5d75154150fd6a93b6a05c2"
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 8524,
+      "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+    },
+    {
+      "path": "source-lock.log",
+      "bytes": 1041698,
+      "sha256": "dcf141fb6086c428ab3cc6223fa0eac70af91e54e07e28ff6090105933639db1"
+    }
+  ],
+  "ciObservationsFile": "ci-observations.jsonl",
+  "localBlockers": [],
+  "cloudCheckRuntime": {
+    "node": "v24.19.0",
+    "pnpm": "10.12.4",
+    "repoNodePin": "22.20.0",
+    "toolchain": "supplied cloud shim; rer installer used its pinned Node workflow; CI uses repository Node pin"
+  },
+  "githubApiCallsUsed": 8,
+  "githubApiBudget": 10,
+  "ciObservationCount": 8,
+  "custody": "PUSHED",
+  "ciWatchStopReason": "Verify remains in progress after eight calls over about 35 minutes; small remaining API budget retained for diagnostics. No successful or failed conclusion has been observed.",
+  "exactShaVerifyPassed": false,
+  "productWorkingTreeCleanAtReturn": true
+}

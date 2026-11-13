@@ -1,0 +1,76 @@
+{
+  "files": [
+    {
+      "blob": "f24710da10e98bbaa3e006635f73cb20a864c3db",
+      "bytes": 4180,
+      "path": "RECEIPT.json",
+      "sha256": "418ef5603279218458f8a4cb8dd8c80c9929b2511f2260e9bd6c16edd1e3ebe6"
+    },
+    {
+      "blob": "594d0c4122938649e63c303434e8e0bc75d87804",
+      "bytes": 7783,
+      "path": "REPORT.md",
+      "sha256": "ff73999e5c67da415c386c84c05f128ebe3df2af4170b32dc045eaccad3d9e6b"
+    },
+    {
+      "blob": "474e5b361bafbcd496a6a1852a1e33711bda1f64",
+      "bytes": 488,
+      "path": "after-test.log",
+      "sha256": "49ef250b50990900d3a281d8fc018e2089bc15895290f9f51e34b75f4f739600"
+    },
+    {
+      "blob": "e79b007f0877966acdca6616513cc90822ed50de",
+      "bytes": 1396,
+      "path": "before-test.log",
+      "sha256": "c46a10cb991eba33e671f37c63766fb4d786faf8df6bcfd993ec3c84d5408621"
+    },
+    {
+      "blob": "20ec8fec6c920f7961479fba42e5249b9d92fbd2",
+      "bytes": 244,
+      "path": "ci-discovery.json",
+      "sha256": "5cc9955e0ab630317cfb1f45e9689c66781c805b59f8d9f22b4897c638152e41"
+    },
+    {
+      "blob": "d5273a22a8ee43007a76946b4963ef7a000eb948",
+      "bytes": 1225,
+      "path": "ci-observations.jsonl",
+      "sha256": "1a7c18ff56b40b022ce63bc8714ad2daeb224b8922c34880696239f04702c7f2"
+    },
+    {
+      "blob": "ccc0b5b0b18af172c45a1c4ad569798d1d08f039",
+      "bytes": 488,
+      "path": "final-test.log",
+      "sha256": "f92d092de0daa7134c2a61adf1d9651f1518f66eb5d75154150fd6a93b6a05c2"
+    },
+    {
+      "blob": "3aab3fe1ae0c1a6f9cab10af12ce2d7a838aa7b3",
+      "bytes": 954,
+      "path": "push.log",
+      "sha256": "943776844aa4a2570c318a52a6469f597cb5deab0ddc263f9f7c4c71359212b7"
+    },
+    {
+      "blob": "bbd2025de244d58563eda360f5d61b433da84c79",
+      "bytes": 1041698,
+      "path": "source-lock.log",
+      "sha256": "dcf141fb6086c428ab3cc6223fa0eac70af91e54e07e28ff6090105933639db1"
+    },
+    {
+      "blob": "b1c8c054f0a218b505888cebb0633a255aa02ea3",
+      "bytes": 8524,
+      "path": "test-inventory.json",
+      "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-zoom-plan-privacy-2",
+  "product_head": "2a0a929f7ba144520bfb301e7a21effa8f1a65f1",
+  "ref": "refs/heads/evidence/sd-orbit-zoom-plan-privacy-2",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-zoom-plan-privacy-2"
+}
