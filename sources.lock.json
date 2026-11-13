@@ -5963,7 +5963,7 @@
       "executable": false
     },
     "src/core/features/delegation/brief-routes.ts": {
-      "sha256": "779d76e300c4010e0eac0e705d3b73d848ed92b38f7ba58d90bcfd9c42802121",
+      "sha256": "8eb1a4dc1d88fcc52fae2ccc2d99df44c166f5008ec40c0409f6ae4f83cb4935",
       "executable": false
     },
     "src/core/features/delegation/effects.ts": {
@@ -5999,7 +5999,7 @@
       "executable": false
     },
     "src/core/features/delegation/routes.ts": {
-      "sha256": "10699f6b4a543ee4e231bb7bf5143e749cc5d5bfcb411c948770d1c739b59188",
+      "sha256": "592ebb57cbe76a664e8c935d11b805ea83bcab8d29c716148bac4fe4c9099372",
       "executable": false
     },
     "src/core/features/delegation/settings-page.ts": {
@@ -8619,7 +8619,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "34c42087630588da5d776c02ede679fba86ef10f22f5b673e4515315dd0ff85f",
+      "sha256": "236cec0a24f66aacdc558a1fabc986ad95ad1575e7dfdddf1d80b55e91d32791",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {
@@ -8795,7 +8795,7 @@
       "executable": false
     },
     "src/core/features/zoom/plan.ts": {
-      "sha256": "6022df2c2c897a8da91be44167b9ef88fe835cfca08eff51276367455ccceff2",
+      "sha256": "fdc4c05ed09aa84d16b165e6253e706c482c56f1c71d70698c65e4037c267d37",
       "executable": false
     },
     "src/core/features/zoom/privacy.ts": {
@@ -8803,7 +8803,7 @@
       "executable": false
     },
     "src/core/features/zoom/provider.ts": {
-      "sha256": "3b80be04639d610e9dded3650b1abc3adb92364304defbd1d1237f50fad2d673",
+      "sha256": "259e0e3f0c60a6b75d69150a37deb29b0a7cd71bca3dff3455c663176ab5324b",
       "executable": false
     },
     "src/core/features/zoom/repository.ts": {
@@ -10667,7 +10667,7 @@
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
-      "sha256": "ef2aea22adfe4604c17148956843974f27d79d0dd5e6e3e1e4b52d80a3087588",
+      "sha256": "d977ed995b4d9ce81e125545f596fec5d3e324810f2476c05c4f5ec57f7df375",
       "executable": false
     },
     "tests/delegation/d1.test.ts": {
