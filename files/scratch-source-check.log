@@ -1,0 +1,4 @@
+$ node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
+Symlink in destination path: node_modules (node_modules)
+
+exit=1

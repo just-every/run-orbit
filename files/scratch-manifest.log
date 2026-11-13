@@ -1,0 +1,5 @@
+$ node tools/seed-schema/validate.mjs --schema SEED seed.json
+ok   seed.json
+1/1 valid against tools/seed-schema/SEED.schema.json
+
+exit=0

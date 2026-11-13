@@ -1,0 +1,4 @@
+$ node scripts/check-boundaries.mjs
+Boundary check passed for 876 core source files.
+
+exit=0

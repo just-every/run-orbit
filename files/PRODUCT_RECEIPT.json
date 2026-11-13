@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-contract-anchor-2-pc1",
+  "head": "08ab89c35ec432667141c6bcf29e47589752c51e",
+  "main": "43128431dc0a04ce63e03bc45b2f11c0fdd105a3",
+  "saved_head": "099ffe089261c51f7d3e1316ab5cf6a28151181a",
+  "verify_run_id": 43453662069,
+  "product_files": [
+    "docs/contract/ANCHOR.json",
+    "sources.lock.json"
+  ],
+  "claims": [],
+  "clauses_changed": [],
+  "counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "anchor_original": "28a1db90f135fe783af1c30ba3cf33c339405f9a",
+  "anchor_objects": 6,
+  "prior_failure_log": "gh run view returned exit 0 and zero bytes for batch-4",
+  "prior_artifact_download": "HTTP 403 Forbidden; no retries",
+  "scratch_tree_matches_candidate": true,
+  "tree": "444576ec2240b02345940d0a6f4d597a18a071da",
+  "candidate_authors_and_committers_checked": true,
+  "candidate_trailers": [],
+  "product_push_attempts": 1,
+  "publication_scan": "Mac fleet required; unavailable to cloud by assignment"
+}

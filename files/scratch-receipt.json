@@ -1,0 +1,111 @@
+{
+  "scratch": "/tmp/orbit-anchor-proof",
+  "commits": 2,
+  "remotes": "",
+  "anchor_original": "28a1db90f135fe783af1c30ba3cf33c339405f9a",
+  "results": [
+    {
+      "label": "scratch-without-anchor",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1
+    },
+    {
+      "label": "scratch-with-anchor",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1
+    },
+    {
+      "label": "scratch-declared-contract",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "scratch-source-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 1
+    },
+    {
+      "label": "scratch-rer-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "scratch-boundaries",
+      "command": [
+        "node",
+        "scripts/check-boundaries.mjs"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "scratch-manifest",
+      "command": [
+        "node",
+        "tools/seed-schema/validate.mjs",
+        "--schema",
+        "SEED",
+        "seed.json"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "scratch-deployment",
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "exit": 1
+    },
+    {
+      "label": "scratch-generate-views",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0
+    },
+    {
+      "label": "scratch-generated-contract",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0
+    }
+  ],
+  "harness_correction": "Initial dependency symlink was inadvertently tracked in scratch only. Removed it from scratch index, installed real local dependencies, and restored scratch views before rerunning source check.",
+  "head": "b686cf30cbce2b52b87a69f0a08cc249064cdd3f",
+  "follow_up": {
+    "source_check_installed": 0,
+    "typecheck": 0
+  },
+  "scratch_tree": "444576ec2240b02345940d0a6f4d597a18a071da",
+  "product_tree": "444576ec2240b02345940d0a6f4d597a18a071da",
+  "tree_matches_candidate": true,
+  "stamp_utc": "2026-11-13T15:36:10.480346+00:00"
+}

@@ -1,0 +1,3 @@
+$ node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party
+
+exit=0

@@ -1,0 +1,43 @@
+{
+  "stamp_utc": "2026-11-13T15:36:53.428242+00:00",
+  "head": "08ab89c35ec432667141c6bcf29e47589752c51e",
+  "checks": [
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "receipt": "full-contract-docs.log"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "source-check.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "exit": 0,
+      "receipt": "full-rer-check.log"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exit": 0,
+      "result": "876 core source files"
+    },
+    {
+      "command": "node tools/seed-schema/validate.mjs --schema SEED seed.json",
+      "exit": 0,
+      "result": "1/1 valid"
+    }
+  ],
+  "product_push": {
+    "guard": "cloud-push.py",
+    "attempt": 1,
+    "exit": 0,
+    "branch": "cloud/sd-orbit-contract-anchor-2-pc1"
+  },
+  "source_lock_sha256": "7507e591373042477fbfa9249bad98b6c5beccde1f82561fb3c635d1f8f17e9e"
+}

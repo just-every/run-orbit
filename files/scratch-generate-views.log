@@ -1,0 +1,4 @@
+$ node node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs write
+Wrote 1 contract documents.
+
+exit=0
