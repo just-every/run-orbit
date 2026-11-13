@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-11-13T13:48:20Z",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-release-0-4-9",
+  "head": "ddb340bea61f23275bb92df722ef6845a9fa65d6",
+  "base": "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7",
+  "pushStatus": "success",
+  "pushAttempts": 1,
+  "productPushCommand": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-orbit-release-0-4-9",
+  "identityCheck": {
+    "candidateCommits": 1,
+    "allAuthors": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "allCommitters": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": [],
+    "includesSideParents": true
+  },
+  "baseChecks": {
+    "verify": {
+      "id": 43426180785,
+      "head": "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/just-every/run-orbit/actions/runs/43426180785"
+    },
+    "site": {
+      "id": 43435028364,
+      "head": "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  },
+  "candidateVerify": {
+    "timestamp": "2026-11-13T14:13:46Z",
+    "runId": 43436778236,
+    "githubCall": 10,
+    "conclusion": null,
+    "head_sha": "ddb340bea61f23275bb92df722ef6845a9fa65d6",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43436778236",
+    "status": "in_progress"
+  },
+  "pr": null,
+  "tagsCreated": false,
+  "releasePublished": false,
+  "deployed": false,
+  "productDiffStat": {
+    "files": 5,
+    "insertions": 28,
+    "deletions": 22
+  },
+  "candidateRuns": [
+    {
+      "id": 43436778236,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "ddb340bea61f23275bb92df722ef6845a9fa65d6",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43436778236"
+    }
+  ],
+  "githubCalls": 10,
+  "remainingGithubCalls": 0,
+  "custody": "PUSHED",
+  "finalObservationAt": "2026-11-13T14:14:07Z",
+  "blockers": []
+}

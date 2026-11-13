@@ -1,0 +1,3 @@
+migrations/core/0088_saved_record_views.sql
+migrations/core/0089_mailbox_send.sql
+migrations/core/0090_pipedrive_import.sql

@@ -1,0 +1,136 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 456d190..ad3f2d5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,19 @@
+ # Changelog
+ 
++## 0.4.9 — 2026-11-13
++
++Orbit 0.4.9 adds saved record views, separately authorized Gmail sending and reviewed imports from a connected Pipedrive account. Orbit still runs on rer 0.2.107.
++
++- **Save the record lists you use.** Save a contact, company or deal list with its search, filters, visible columns and sort order. Keep it private or make it available to the workspace, update or delete it, and reopen it against current records and permissions. Saved views retain definitions, not a frozen copy of the results. Archived custom fields remain readable in saved views, and deal amounts use the workspace currency.
++- **Choose an authorized Gmail mailbox when reviewing a message.** Reconnect a Google capture source with separate mailbox-send consent, then select that mailbox in the draft's send review. Approval binds the saved recipient, rendered content and sending mailbox; a changed review needs fresh approval. Sent history identifies the mailbox. A paused, disconnected or refused mailbox does not switch to another sender. Uncertain delivery is reconciled against Sent without automatically submitting the same approval again. Microsoft mailbox sending remains unavailable because its connection does not request the permission needed to create a draft. Read access and calendar writeback stay separate from send consent.
++- **Review a connected Pipedrive import before applying it.** The installation owner can supply a read-only OAuth token and pull organizations, people, USD deals, pipeline and stage metadata, supported scalar custom fields and linked notes into the existing saved dry-run and Apply flow. Pulls keep checkpoints across interruptions and rate limits. Map source stages and contact or company owners before previewing; deal owners remain source history. New contacts start as Do not contact, missing source marketing status also holds an existing match, and existing stops win. This pull requires a USD workspace, never converts amounts, and is limited to 1,000 rows per entity and 2 MB of source review data. Leads, products, activities, files and automations need separate reconciliation; unsupported fields retain source references and export guidance. Orbit writes nothing back to Pipedrive. Credentials, checkpoints and connected review authority stay out of archives; reconnect and pull again after a restore.
++- **Draft and activity wording follows what happened.** A reply that makes a handwritten draft stale asks for review without claiming a scheduled follow-up was cancelled. Contact permission uses ordinary wording in that review. Record activity names task creation, completion, cancellation, reassignment, rescheduling and recurring occurrences.
++- **Record and workflow pages recover more consistently.** A missing record offers the same recovery when related reads finish in a different order. Previewing an active workflow's draft keeps one editor. Older native archives remain recognized, with new mailbox-history fields initialized from their migration defaults and restored mailbox send authority withheld until fresh consent.
++
++Account proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. The earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.
++
++Update from 0.4.8 in place after stopping writes and taking a private backup. Apply the three pending migrations once, in order, before the new Worker serves: 0088 adds saved record views, 0089 adds installation-local mailbox send consent and message provenance, and 0090 adds private Pipedrive connection and pull staging. Existing mailbox connections gain no send authority. Preserve the migration ledger and every already-applied migration; installations using intermediate migration names need their ledger and schema reconciled first. No new provider setting is required to retain existing features. Optional Gmail sending needs fresh explicit send consent and message review; optional Pipedrive pulls need the owner's read-only OAuth access. Older installations must first account for earlier pending migrations and release instructions.
++
+ ## 0.4.8 — 2026-11-13
+ 
+ Orbit 0.4.8 adds reviewed HubSpot imports from a connected account, keeps completed-meeting follow-up visible until its goal is met or someone stops it, and adds on-demand deal-risk task filing. Orbit still runs on rer 0.2.107.
+diff --git a/RELEASE.json b/RELEASE.json
+index 45c5bd2..754950f 100644
+--- a/RELEASE.json
++++ b/RELEASE.json
+@@ -1,24 +1,12 @@
+ {
+-  "version": "0.4.8",
+-  "previousVersion": "0.4.7",
++  "version": "0.4.9",
++  "previousVersion": "0.4.8",
+   "date": "2026-11-13",
+-  "publicReleaseNotes": "Orbit 0.4.8 adds reviewed HubSpot imports from a connected account, keeps completed-meeting follow-up visible until its goal is met or someone stops it, and adds on-demand deal-risk task filing. Orbit still runs on rer 0.2.107.\n\n- **Review a connected HubSpot import before applying it.** Connect a HubSpot private app with read access, inspect the source inventory, and pull companies, contacts, deals, notes, calls, meetings and tasks into the existing mapping and review flow. Pulls retain their progress and can resume after a rate limit or interruption. Imported rows keep their source links; applying and undoing use Orbit's existing review rules. Orbit writes nothing back to HubSpot. Pulls are limited to 1,000 objects of each type. Leads, email activity, attachments and workflows are excluded; unsupported properties need separate reconciliation. Imported meetings are timeline history, not completed-meeting signals. Credentials and staged provider pages stay out of archives; reconnect and pull again after a restore. Explicit contact erasure withdraws staged HubSpot data, while ordinary import undo and duplicate reconciliation do not.\n- **A completed meeting can leave a lasting follow-up.** Review its goal, stop condition, owner and due time before accepting. The deal shows the accepted follow-up and its linked work. A reply records evidence without treating the goal as complete; reaching the recorded stage or a person's explicit stop closes the obligation and cancels its remaining linked work. Written stop conditions remain for people to interpret; Orbit closes automatically only at the exact selected goal stage. Drafts still need separate review and approval before sending. Restored follow-ups retain their history but stay paused with linked reminders until fresh acceptance and any required approval.\n- **Start a deal-risk agent when you choose.** From one deal, file its current cited findings as tasks assigned to you under company policy. The run shows what was filed, already present, waiting for review or refused. Running it again preserves an existing task, including one you completed or cancelled. Recorded due times carry into proposed tasks. This is an on-demand run for that deal, not scheduled monitoring.\n- **Agents can use the configured opportunity AI assistance.** An agent can inspect the native input and request an unsent draft or a recommendation explanation under company policy. The request binds the exact input, provider and model; changed records require a fresh preview. Results cite the supplied evidence, and saved drafts grant no permission to send. This does not add general agent coverage or automatic outreach.\n- **Mailchimp handoffs check the audience more carefully.** Choosing an audience registers Orbit's webhook, and handoffs wait for Mailchimp to check its public HTTPS address. Before a handoff, Orbit reconciles changed member states, retains stops across contact merges and address changes, and tracks earlier linked member identities. Scheduled processing now advances pending permanent-deletion requests; refusal and uncertain outcomes remain visible. After reconnection or archive restore, held deletion requests need the owner's confirmation. Orbit still requires recorded marketing consent and sends no campaigns.\n- **Captured evidence does not grant contact permission.** A contact created from an unlinked event starts as Do not contact. Recreating a previously erased address also starts stopped and requires explicit permission before outreach.\n- **Shared records and draft reviews are easier to read.** Shared records show permitted names, currency amounts, dates and custom-field labels with suitable editing controls. Draft review names missing merge fields in ordinary language.\n- **Setup and archive controls explain the next step.** Capture, AI, Slack, Mailchimp and calling settings include setup guidance. Archive transfers show their start and size, with copyable support details. Older native archive generations remain recognized. An installation without its public origin configured can answer health checks without failing while constructing the agent door.\n\nAccount proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. The earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage or live-provider acceptance.\n\nUpdate from 0.4.7 in place after stopping writes and taking a private backup. Apply the five pending migrations once, in order, before the new Worker serves: they add follow-up obligations and linked work, add private HubSpot import staging, remove the broad contact-delete trigger so staging is withdrawn only for explicit privacy erasure, add versioned saved record views, then add installation-local mailbox send consent and message provenance. Existing mailbox connections gain no send authority. Preserve the migration ledger and all already-applied migration files; do not replay the graph-proposal migration from 0.4.7. No new provider setting is required to retain existing features. To use connected HubSpot imports, supply its read-only private-app access in Imports. Existing Mailchimp connections should be checked again to register and validate the webhook.",
++  "publicReleaseNotes": "Orbit 0.4.9 adds saved record views, separately authorized Gmail sending and reviewed imports from a connected Pipedrive account. Orbit still runs on rer 0.2.107.\n\n- **Save the record lists you use.** Save a contact, company or deal list with its search, filters, visible columns and sort order. Keep it private or make it available to the workspace, update or delete it, and reopen it against current records and permissions. Saved views retain definitions, not a frozen copy of the results. Archived custom fields remain readable in saved views, and deal amounts use the workspace currency.\n- **Choose an authorized Gmail mailbox when reviewing a message.** Reconnect a Google capture source with separate mailbox-send consent, then select that mailbox in the draft's send review. Approval binds the saved recipient, rendered content and sending mailbox; a changed review needs fresh approval. Sent history identifies the mailbox. A paused, disconnected or refused mailbox does not switch to another sender. Uncertain delivery is reconciled against Sent without automatically submitting the same approval again. Microsoft mailbox sending remains unavailable because its connection does not request the permission needed to create a draft. Read access and calendar writeback stay separate from send consent.\n- **Review a connected Pipedrive import before applying it.** The installation owner can supply a read-only OAuth token and pull organizations, people, USD deals, pipeline and stage metadata, supported scalar custom fields and linked notes into the existing saved dry-run and Apply flow. Pulls keep checkpoints across interruptions and rate limits. Map source stages and contact or company owners before previewing; deal owners remain source history. New contacts start as Do not contact, missing source marketing status also holds an existing match, and existing stops win. This pull requires a USD workspace, never converts amounts, and is limited to 1,000 rows per entity and 2 MB of source review data. Leads, products, activities, files and automations need separate reconciliation; unsupported fields retain source references and export guidance. Orbit writes nothing back to Pipedrive. Credentials, checkpoints and connected review authority stay out of archives; reconnect and pull again after a restore.\n- **Draft and activity wording follows what happened.** A reply that makes a handwritten draft stale asks for review without claiming a scheduled follow-up was cancelled. Contact permission uses ordinary wording in that review. Record activity names task creation, completion, cancellation, reassignment, rescheduling and recurring occurrences.\n- **Record and workflow pages recover more consistently.** A missing record offers the same recovery when related reads finish in a different order. Previewing an active workflow's draft keeps one editor. Older native archives remain recognized, with new mailbox-history fields initialized from their migration defaults and restored mailbox send authority withheld until fresh consent.\n\nAccount proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. The earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.\n\nUpdate from 0.4.8 in place after stopping writes and taking a private backup. Apply the three pending migrations once, in order, before the new Worker serves: 0088 adds saved record views, 0089 adds installation-local mailbox send consent and message provenance, and 0090 adds private Pipedrive connection and pull staging. Existing mailbox connections gain no send authority. Preserve the migration ledger and every already-applied migration; installations using intermediate migration names need their ledger and schema reconciled first. No new provider setting is required to retain existing features. Optional Gmail sending needs fresh explicit send consent and message review; optional Pipedrive pulls need the owner's read-only OAuth access. Older installations must first account for earlier pending migrations and release instructions.",
+   "contractChanges": {},
+   "proseChanges": [],
+   "extensionPointChanges": [],
+   "migrations": [
+-    {
+-      "id": "0085_meeting_follow_up.sql",
+-      "buyerSteps": "Stop writes and take a private backup outside the checkout. Apply once, before the new Worker serves. Adds follow-up obligations and linked-work tables, indexes and lifecycle triggers; it does not backfill old meetings. Closing an accepted obligation cancels remaining linked work. Preserve the migration ledger and owner customizations."
+-    },
+-    {
+-      "id": "0086_hubspot_import.sql",
+-      "buyerSteps": "Apply once after 0085 and before the new Worker serves. Adds private HubSpot connection, pull, page and review staging tables and an initial contact-delete withdrawal trigger. Staging and credentials are excluded from archives. Existing records are not imported automatically; connecting and reviewing a HubSpot pull is optional. Apply 0087 in the same upgrade before resuming writes."
+-    },
+-    {
+-      "id": "0087_hubspot_explicit_erasure.sql",
+-      "buyerSteps": "Apply once after 0086 and before the new Worker serves. Removes the broad contact-delete trigger introduced by 0086. Explicit privacy erasure withdraws HubSpot staging through the application; ordinary import undo and duplicate reconciliation no longer withdraw the whole pull. Do not omit this step or resume writes between these migrations."
+-    },
+     {
+       "id": "0088_saved_record_views.sql",
+       "buyerSteps": "Apply once after 0087 and before the new Worker serves. Adds versioned saved record view definitions; opening a saved view rechecks current record authority. Preserve all previously applied migrations and their ledger entries."
+@@ -26,8 +14,12 @@
+     {
+       "id": "0089_mailbox_send.sql",
+       "buyerSteps": "Apply once after 0088 and before the new Worker serves. Adds installation-local mailbox send authorizations and message provenance columns. Existing mailbox connections gain no send authority; sending requires fresh explicit consent and review. Preserve all previously applied migrations and their ledger entries."
++    },
++    {
++      "id": "0090_pipedrive_import.sql",
++      "buyerSteps": "Apply once after 0089 and before the new Worker serves. Adds installation-local Pipedrive credentials, source pull checkpoints and saved connected-review authority. No records are imported automatically. Optional pulls require the installation owner to connect read-only OAuth access; credentials and staging are excluded from archives and require a new connection and pull after restore. Preserve all previously applied migrations and their ledger entries."
+     }
+   ],
+   "breaking": false,
+-  "agentUpdateInstructions": "Update from 0.4.7 in place; never reset or replace the installation. Stop local dev and hosted writes and take a private backup outside the checkout, using rer export locally or Records → Export archive when hosted. Check out v0.4.8 and run rer install with pinned Node 22.20.0, pnpm 10.12.4 and rer 0.2.107. Use rer setup locally or rer deploy --env-file .dev.vars.deploy when hosted. Preserve the migration ledger: apply only pending migrations 0085_meeting_follow_up.sql, 0086_hubspot_import.sql, 0087_hubspot_explicit_erasure.sql, 0088_saved_record_views.sql and 0089_mailbox_send.sql, once in order and before the new Worker serves or writes resume. Migration 0081_graph_proposals.sql was released in 0.4.7; do not replay or alter it, and preserve every already-applied migration and owner customization. Installations that applied an intermediate candidate under earlier migration names need their ledger and schema reconciled before treating this as a routine upgrade; no automatic remapping is claimed. Older installations must first account for their earlier pending migrations and release-history instructions. Follow-up tables do not create obligations for old meetings. No new provider setting is required to retain existing features; optional connected HubSpot imports need read-only private-app access in Imports, and private credentials and provider staging must be reconnected and pulled again after restore. Check an existing Mailchimp connection again so its public HTTPS webhook is registered and validated; restored or reconnected deletion requests remain held until owner confirmation. Before resuming writes, check existing records, capture evidence and proposals, follow-up history and paused reminders, drafts, scheduled messages, forms, reports, notifications and integration settings. Retain the release-note limitations on graph maintenance, agent coverage, workflow undo and erasure."
++  "agentUpdateInstructions": "Update from 0.4.8 in place; never reset or replace the installation. Stop local dev and hosted writes and take a private backup outside the checkout, using rer export locally or Records → Export archive when hosted. Check out v0.4.9 and run rer install with pinned Node 22.20.0, pnpm 10.12.4 and rer 0.2.107. Use rer setup locally or rer deploy --env-file .dev.vars.deploy when hosted. Preserve the migration ledger: apply only pending migrations 0088_saved_record_views.sql, 0089_mailbox_send.sql and 0090_pipedrive_import.sql, once in order and before the new Worker serves or writes resume. Keep every already-applied migration and owner customization; 0085_meeting_follow_up.sql, 0086_hubspot_import.sql and 0087_hubspot_explicit_erasure.sql belong to 0.4.8 and must not be replayed. Installations that applied an intermediate candidate under earlier migration names need their ledger and schema reconciled before treating this as a routine upgrade; no automatic remapping is claimed. Older installations must first account for their earlier pending migrations and release-history instructions. Existing mailbox connections gain no send authority. Optional Gmail sending requires reconnection with separate explicit send consent and exact-content review; Microsoft mailbox sending remains unavailable. Optional Pipedrive imports require the installation owner’s read-only OAuth token, a USD workspace and a new saved dry run before Apply. Pipedrive credentials, checkpoints and connected review authority do not travel in archives; reconnect and pull again after restore. Restored mailbox history retains provenance without restoring send authority. No new provider setting is required to retain existing features. Keep the prior Mailchimp webhook checks and owner confirmation for held deletion requests after reconnection or restore. Before resuming writes, check existing records, saved views, capture evidence and proposals, follow-up history and paused reminders, drafts, scheduled messages, mailbox history, forms, reports, notifications and integration settings. Retain the release-note limitations on graph maintenance, agent coverage, workflow undo, erasure and supported import scope."
+ }
+diff --git a/package.json b/package.json
+index 71ef700..3cf93ed 100644
+--- a/package.json
++++ b/package.json
+@@ -1,7 +1,7 @@
+ {
+   "name": "orbit",
+   "private": true,
+-  "version": "0.4.8",
++  "version": "0.4.9",
+   "type": "module",
+   "packageManager": "pnpm@10.12.4",
+   "engines": {
+diff --git a/seed.json b/seed.json
+index 8ab86a2..0411cf6 100644
+--- a/seed.json
++++ b/seed.json
+@@ -1,7 +1,7 @@
+ {
+   "id": "orbit",
+   "name": "Orbit",
+-  "version": "0.4.8",
++  "version": "0.4.9",
+   "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
+   "capabilities": [
+     {
+diff --git a/sources.lock.json b/sources.lock.json
+index df46f2b..ebbb1c4 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -679,7 +679,7 @@
+       "executable": false
+     },
+     "CHANGELOG.md": {
+-      "sha256": "9e5e64c3196a6dd48d3f92307120abddb068dc38331de96129cad415691fef9a",
++      "sha256": "abf63b50b02b4828d226538fca300eda8632df0df5489519105f7f36dbd9b2d4",
+       "executable": false
+     },
+     "CLAUDE.md": {
+@@ -3815,7 +3815,7 @@
+       "executable": false
+     },
+     "package.json": {
+-      "sha256": "ae55a08bd0e38345ef49d03c55ac8a348adb3b669dd62fe1eb782a7d8a6bb14d",
++      "sha256": "a653b0b4342bb85030709adfac07a350b3daad0058cdbaf7620df779cbbc25c3",
+       "executable": false
+     },
+     "patches/miniflare-5.20260907.0-alpha.patch": {
+@@ -3935,7 +3935,7 @@
+       "executable": false
+     },
+     "RELEASE.json": {
+-      "sha256": "230810f87f020bac68a4be681b590c52371f969ef7f1983bf65331e2a28c263a",
++      "sha256": "adbdb1abfc4821a97d73ad15952c21d87464dd83dcffefd7ae9a274751ba4f6c",
+       "executable": false
+     },
+     "rer-project.json": {
+@@ -4295,7 +4295,7 @@
+       "executable": false
+     },
+     "seed.json": {
+-      "sha256": "f837b4dbf149e9dae15983cbc63d4000a20ec8c4292ebd470a470def429a3c55",
++      "sha256": "e4b909cf7a1e6ab6c35f5de114d150df60f5bf323eec1cb6235baed59d7c7260",
+       "executable": false
+     },
+     "SIGNALS-AND-OUTREACH.md": {

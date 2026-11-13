@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "version": "0.4.9",
+  "previousVersion": "0.4.8",
+  "rerPin": "0.2.107",
+  "paths": [
+    "CHANGELOG.md",
+    "RELEASE.json",
+    "package.json",
+    "seed.json",
+    "sources.lock.json"
+  ],
+  "migrations": [
+    "0088_saved_record_views.sql",
+    "0089_mailbox_send.sql",
+    "0090_pipedrive_import.sql"
+  ],
+  "contractChanges": {},
+  "newTests": 0
+}

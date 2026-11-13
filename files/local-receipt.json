@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-11-13T13:44:18Z",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-release-0-4-9",
+  "base": "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7",
+  "versionBefore": "0.4.8",
+  "versionAfter": "0.4.9",
+  "rerPinBefore": "0.2.107",
+  "rerPinAfter": "0.2.107",
+  "paths": [
+    "package.json",
+    "seed.json",
+    "CHANGELOG.md",
+    "RELEASE.json",
+    "sources.lock.json"
+  ],
+  "packageLockExists": false,
+  "checks": {
+    "releaseSchema": "passed",
+    "seedSchema": "passed",
+    "metadataConsistency": "passed",
+    "baselineTypecheck": "passed",
+    "whitespace": "passed",
+    "sourceLock": {
+      "source-lock-write.json": {
+        "ok": true,
+        "trackedFiles": 2834,
+        "sha256": "42e6496c1b8b5bd7072fffed3f92a97300ded8e755c991abb53e1c6afcd2dd18"
+      },
+      "source-lock-check.json": {
+        "ok": true,
+        "trackedFiles": 2834,
+        "sha256": "ff57b119dcb53cb75f2e2861d26e04ddb0d2649f6c729a0dd280ea0c630d150c"
+      }
+    },
+    "candidateTypecheck": "passed"
+  },
+  "counts": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "added": 0,
+    "removed": 0
+  },
+  "clauseChanges": [],
+  "notRun": [
+    "full local suite (metadata-only scope)",
+    "UI/browser proof (no UI changes)",
+    "cloud publication scan (Mac lander owns it)",
+    "tag/signing/Release publication/deployment (not authorized by metadata task)"
+  ]
+}

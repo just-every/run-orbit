@@ -1,0 +1,35 @@
+f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7 Merge current main into Pipedrive import candidate
+088a5263487a37ae465e7e42d1bb1b64167686b0 Fix mailbox send proof response body reuse
+8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74 Make record not-found recovery independent of read order
+b1038458504f4ddfa104fdc2cd62de466656f9e7 Explain stale drafts without inventing a cancelled follow-up
+f12a2b3b489019260653f782a12740bc406b2ccc Merge current main and move Pipedrive migration to 0090
+68d63aced5154cefc25b70fb1646f777a79a74d7 Keep one workflow editor through active draft previews
+7c3cb25fb66a9c7879f2ddb386473805106f994d Refresh source lock after current main integration
+d250f0660bc9cdef6771ccc1355d92dac5521520 Name task lifecycle events in record activity
+aa176b02e5c5ba19725254ee3e3d2acd8b982df4 Renumber the pending Pipedrive migration above main
+56ed45aad80f2a52dab6a4488234c5fdf2a3e508 Merge saved record views and preserve mailbox archive generations
+f162520d54df7d162112a2ccffc5291b509db468 Merge current main and sequence mailbox send migration after 0087
+008e46c5a9f2c87e990e4b2881ab16a962640f11 Merge current main dashboard report links into saved views candidate
+5f66df5313aed28d7b2a839a5b06668922812815 Merge current main into saved record views candidate
+102738071085d99c0357615e67b73749639b4625 Fence connected Pipedrive review and Apply to the USD workspace
+09ffc8a0648ead679570987627b1b2c834d5669c Keep imported note associations out of unsupported-field diagnostics
+49597e51016b4d52a1fa9a3b1700e0e76e1940f9 Merge current imports and refresh the complete Pipedrive source lock
+12d5917c998104d17e3c7b8f775840a3c4533315 Merge current main and prove mailbox history restoration
+23d597d254b1fc8c9dd451f4f9f1720b927bdc3f Complete supported Pipedrive pull and fresh restore authority
+e130ff766253c5a35cf7684dac5e058de78c0248 Restore historical mail archives with mailbox migration defaults [skip ci]
+a4c8a2b252bb2e2c70ea8d300cf15b5c7c9c2fe6 Add connected Pipedrive pull checkpoints and saved reviews [skip ci]
+8b1fdfd2f4315d33a7121936f552712a95d20b4b Merge current main into saved record views candidate
+816aea662699ca8b0ed2e559c116078ef57f02d0 Merge current main while retaining bound mailbox delivery and archive generations
+6366ddd968f9455af4bfe0cee8218c5bf66e3ae6 Preserve historical notification archive reconstruction [skip ci]
+ae91bb500222adab251858960883d64368ee3bd7 Report actual sender readiness and explicit transport unavailability
+5f89b8ec9bfbbf0cbc7bd80422220bd7c06ceeb6 Refuse unavailable mailbox authority and verify rendered mailbox delivery [skip ci]
+4d5501334c5df7bd290045297542e73195724e62 Preserve mailbox isolation, Sent provenance and restored authority [skip ci]
+8dcdb857e3821546b75979cec123dfb8153ba30c Add separately authorized Gmail mailbox transport and bound review [skip ci]
+45bcca3c47a1ee168da579db916a8d89b74189f8 Merge current main into saved record views landing candidate
+0fe9665a018e3e1d499fefdf14993163674be433 Merge current main and renumber saved record views to 0082
+f15a833113df39d8cbfbf8ac56202d1234b0720b Regenerate Orbit sources lock after currency fix and main merge
+a23c2c0eb13f358d41092e0eb85a12d571c18228 Format saved deal view values in workspace currency
+f780ad4e9fbc01bb11cd1e162153f8fb6d69fa56 Merge origin/main into saved-view currency fix
+7ba57f6aaa8efebf0b0493417fe6c1f8aa706572 Reopen saved views with fresh rows and archived column definitions
+496a2b12db77f1d95dd7cf73c2d494342bd8ab3b Preserve historical archives and immediate saved-view controls [skip ci]
+91ed9325b58cdc6e63953aac0cd42b0c72601bf7 Save versioned filtered record views with current authority [skip ci]
