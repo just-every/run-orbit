@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {createHmac} from 'node:crypto';
 import {test} from 'node:test';
 import {isolatedDatabase} from '../support/isolated-database';
 import {todayApp} from '../support/today-workspace';
@@ -9,11 +10,14 @@ import {random} from '../../src/core/features/delegation/protocol';
 import {challenge} from '../../src/core/features/delegation/token';
 import {snapshot} from '../../src/core/features/delegation/evidence';
 import type {Brief} from '../../src/core/features/today/types';
+import {createSourceSecurity} from '../../src/core/platform/source-security';
+import {zoomNetwork} from '../support/zoom-network.mjs';
 
 test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting plan with crm.evidence.read and proposes cited handoffs with crm.handoff.write; consent, scope, revocation and the human send boundary hold',async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
-  const t=await todayApp(db),cookie=`__Host-orbit_session=${t.session.token}`,native=nativeDelegation(db),api=delegationRoutes(db);
+  const zoom=zoomNetwork(['ana@selected.test','ben@hidden.test','cy@hidden.test']),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'bc'.repeat(32)})!;
+  const t=await todayApp(db,{calling:{sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:zoom.fetch}}),cookie=`__Host-orbit_session=${t.session.token}`,native=nativeDelegation(db),api=delegationRoutes(db);
   const selected=await t.opportunity('Selected renewal','Selected Co','Ana Ruiz','ana@selected.test'),hidden=await t.opportunity('Private deal','Hidden Co','Ben Hale','ben@hidden.test');
   const reply=await t.event(selected,'email.replied','Re: renewal',1),meeting=await t.event(selected,'meeting.booked','Renewal review',0),secret=await t.event(hidden,'email.replied','Re: private terms',1);
   const form=(path:string,body:Record<string,string>)=>native.request('https://orbit.test'+path,{method:'POST',headers:{Cookie:cookie,Origin:'https://orbit.test'},body:new URLSearchParams(body)});
@@ -61,6 +65,41 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   const sharedPlan=await reader.request(`/plan?target=signals/${shared}`),sharedText=await sharedPlan.clone().text();assert.equal(sharedPlan.status,200,sharedText);
   for(const leak of [hidden,hiddenCompany,draft,'Confidential acquisition terms','Hidden Co'])assert.ok(!sharedText.includes(leak),`the plan discloses nothing outside the grant: ${leak}`);
   assert.deepEqual((await sharedPlan.json()).plan.unresolved,[{email:'cy@hidden.test',company:null}]);
+
+  // A completed Zoom plan is still a selected-record read, including its nested recap and attendance.
+  await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(t.actor).run();
+  await t.json('/api/v1/settings/zoom/connect',{body:zoom.credentials},200);
+  const selection={meetingId:'98765432101',opportunityId:hidden},preview=await t.json<any>('/api/v1/zoom/meetings/preview',{body:selection},200);
+  const attached=await t.json<any>('/api/v1/zoom/meetings/attach',{body:{...selection,previewDigest:preview.digest,confirmed:true}},201),zoomSignal=attached.signalId as string;
+  const saved=await t.json<{entryId:string}>(`/api/v1/today/meetings/${zoomSignal}/plan`,{method:'PUT',body:{agenda:'Confidential acquisition terms',prep:'Private deal preparation'}},200);
+  const endedAt=new Date().toISOString(),timestamp=String(Math.floor(Date.now()/1000)),raw=JSON.stringify({event:'meeting.ended',event_ts:Date.now(),payload:{object:{id:Number(selection.meetingId),uuid:preview.meeting.uuid,end_time:endedAt}}});
+  const completed=await t.app.request('https://orbit.test/api/v1/signals/zoom',{method:'POST',headers:{'content-type':'application/json','x-zm-request-timestamp':timestamp,'x-zm-signature':'v0='+createHmac('sha256',zoom.credentials.webhookSecret).update(`v0:${timestamp}:${raw}`).digest('hex')},body:raw});
+  assert.equal(completed.status,200,await completed.clone().text());
+  const contactReader=await grant('crm.evidence.read',[`contacts/${ana}`]),zoomResponse=await contactReader.request(`/plan?target=signals/${zoomSignal}`),zoomText=await zoomResponse.text();
+  assert.equal(zoomResponse.status,200,zoomText);
+  for(const leak of [ben,'ben@hidden.test','Ben Hale','cy@hidden.test',hidden,hiddenCompany,'Private deal','Hidden Co','Confidential acquisition terms','Private deal preparation',saved.entryId])assert.ok(!zoomText.includes(leak),`a contact grant discloses no other Zoom identity or deal, even in nested fields: ${leak}`);
+  const limited=JSON.parse(zoomText).plan;
+  assert.deepEqual(limited.attendees.map((person:any)=>[person.contact.id,person.contact.name,person.email,person.company,person.opportunities]),[[ana,'Ana Ruiz','ana@selected.test',null,[]]]);
+  assert.deepEqual(limited.zoom.attendance.map((person:any)=>[person.email,person.match.contactId,person.joinedAt,person.leftAt]),[['ana@selected.test',ana,zoom.attendance[0].join_time,zoom.attendance[0].leave_time]]);
+  assert.deepEqual(limited.unresolved,[]);assert.equal(limited.primaryOpportunityId,null);assert.deepEqual(limited.opportunities,[]);assert.equal(limited.note,null);
+  assert.equal(limited.zoom.state,'completed');assert.equal(limited.zoom.completedAt,endedAt);assert.ok(limited.zoom.recap.summary.includes('1 attendance records'));
+  assert.equal(limited.zoom.hostId,null);
+  assert.equal(limited.zoom.recap.citations.find((citation:any)=>citation.kind==='completion').href,`/app/meetings/${zoomSignal}`);
+  const owner=(await t.json<any>(`/api/v1/today/meetings/${zoomSignal}`,{},200)).plan;
+  assert.deepEqual(owner.zoom.attendance.map((person:any)=>person.email),['ana@selected.test','ben@hidden.test','cy@hidden.test']);
+  assert.deepEqual(owner.attendees.map((person:any)=>person.contact.id).sort(),[ana,ben].sort());assert.ok(owner.unresolved.some((person:any)=>person.email==='cy@hidden.test'));
+  assert.equal(owner.primaryOpportunityId,hidden);assert.ok(owner.opportunities.some((deal:any)=>deal.id===hidden&&deal.title==='Private deal'));
+  assert.equal(owner.note.agenda,'Confidential acquisition terms');assert.ok(owner.zoom.recap.summary.includes('3 attendance records'));
+  assert.equal(owner.zoom.hostId,preview.meeting.hostId);assert.equal(owner.zoom.joinUrl,preview.meeting.joinUrl);
+  assert.ok(owner.zoom.recap.citations.find((citation:any)=>citation.kind==='completion').href.startsWith(`/app/opportunities/${hidden}#entry-`));
+  const dealReader=await grant('crm.evidence.read',[`opportunities/${hidden}`]),dealPlan=(await(await dealReader.request(`/plan?target=signals/${zoomSignal}`)).json()).plan;
+  assert.deepEqual(dealPlan.zoom.attendance.map((person:any)=>person.match.contactId).sort(),[ana,ben].sort());
+  assert.equal(dealPlan.primaryOpportunityId,hidden);assert.equal(dealPlan.note.agenda,owner.note.agenda);assert.deepEqual(dealPlan.zoom.recap.citations,owner.zoom.recap.citations);
+  const signalReader=await grant('crm.evidence.read',[`signals/${zoomSignal}`]),signalResponse=await signalReader.request(`/plan?target=signals/${zoomSignal}`),signalText=await signalResponse.text();assert.equal(signalResponse.status,200,signalText);
+  for(const leak of [ana,ben,'ana@selected.test','ben@hidden.test','cy@hidden.test',hidden,hiddenCompany,'Confidential acquisition terms'])assert.ok(!signalText.includes(leak),`a signal-only grant discloses no Zoom identity or deal: ${leak}`);
+  assert.deepEqual(JSON.parse(signalText).plan.zoom.attendance,[]);
+  assert.equal((await reader.request(`/plan?target=signals/${zoomSignal}`)).status,404,'an unrelated selected deal does not grant the Zoom plan');
+  assert.deepEqual(zoom.unexpected,[]);
   const before=await counts();
   assert.equal((await handoff(reader.request,'read-only',{evidence:[reply]})).status,403);
   assert.deepEqual(await counts(),before);

@@ -8615,7 +8615,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "0de7686edcc66ab380d2092284610e722ab59185f10414a04148d08327610df4",
+      "sha256": "34c42087630588da5d776c02ede679fba86ef10f22f5b673e4515315dd0ff85f",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {
@@ -8791,7 +8791,7 @@
       "executable": false
     },
     "src/core/features/zoom/plan.ts": {
-      "sha256": "5c72762371fb085f37c98e88a66d186c7d014f1dd6b4233b0c637a1e4af16fe2",
+      "sha256": "6022df2c2c897a8da91be44167b9ef88fe835cfca08eff51276367455ccceff2",
       "executable": false
     },
     "src/core/features/zoom/privacy.ts": {
@@ -10639,7 +10639,7 @@
       "executable": false
     },
     "tests/delegation/brief-handoff.test.ts": {
-      "sha256": "3e4b9f65d5475b1892a7707feb9eece5900ea6e9c20b38932302ed07fa4d2eed",
+      "sha256": "ef2aea22adfe4604c17148956843974f27d79d0dd5e6e3e1e4b52d80a3087588",
       "executable": false
     },
     "tests/delegation/d1.test.ts": {
