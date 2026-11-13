@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:synthetic-orbit-final-1@cedargrove-proof.example
+DTSTAMP:20261113T040718Z
+DTSTART:20261114T040818Z
+DTEND:20261114T043818Z
+SUMMARY:Cedar captured plan with named attendees
+ATTENDEE;CN=Maya Chen:mailto:maya@cedargrove-proof.example
+ATTENDEE;CN=Aisha Patel:mailto:aisha@cedargrove-proof.example
+ATTENDEE;CN=Unknown Buyer:mailto:unknown@cedargrove-proof.example
+ORGANIZER;CN=Jordan Lee:mailto:jordan@cedargrove-proof.example
+END:VEVENT
+END:VCALENDAR

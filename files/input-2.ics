@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:synthetic-orbit-final-2@cedargrove-proof.example
+DTSTAMP:20261113T040722Z
+DTSTART:20261114T040822Z
+DTEND:20261114T043822Z
+SUMMARY:Cedar captured plan without attendee names
+ATTENDEE:mailto:maya@cedargrove-proof.example
+ATTENDEE:mailto:aisha@cedargrove-proof.example
+ATTENDEE:mailto:no-cn@cedargrove-proof.example
+ORGANIZER:mailto:jordan@cedargrove-proof.example
+END:VEVENT
+END:VCALENDAR

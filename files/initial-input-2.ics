@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:synthetic-orbit-2-1794542536518@cedargrove.example
+DTSTAMP:20261113T040116Z
+DTSTART:20261114T040216Z
+DTEND:20261114T043216Z
+SUMMARY:Attendees without CN 1794542531506
+ATTENDEE:mailto:maya@cedargrove.example
+ATTENDEE:mailto:aisha@cedargrove.example
+ATTENDEE:mailto:unknown-no-cn@cedargrove.example
+ORGANIZER:mailto:jordan@cedargrove.example
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,48 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-meeting-attendees-1",
+  "head": "008e46c5a9f2c87e990e4b2881ab16a962640f11",
+  "productCommits": 0,
+  "productDiffFiles": 0,
+  "checks": [
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern='BRIEF-004' tests/core/today-brief.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "before": 200,
+      "after": 200,
+      "cases": 198,
+      "qualifications": 2
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "changedFiles": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true
+    }
+  ],
+  "identityReview": {
+    "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+    "candidateCommits": 0,
+    "result": "passed; branch equals fetched main; no new author, committer or trailer entries"
+  },
+  "publication": {
+    "productBranchPushed": true,
+    "attempts": 1,
+    "newProductCommits": 0,
+    "evidenceSeparate": true
+  }
+}

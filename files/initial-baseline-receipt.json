@@ -1,0 +1,420 @@
+{
+  "main": "0e9e55cf150dfcc781d1d9e62b2d88c15c9b6a63",
+  "results": [
+    {
+      "name": "Named attendees 1794542531506",
+      "importText": "Captured\t1\nAttached to an Orbit thread\t0\nOutreach stopped for a reply or booking\t3\nDelivery reports for Orbit sends\t0\nProposed changes\t5\nKept in the unlinked queue\t0\nAlready captured\t0\nChanged copies refused\t0\nNot stored\t0",
+      "status": 200,
+      "plan": {
+        "meeting": {
+          "signalId": "01M79H3XJVMMKZ6A7GMB7KECMP",
+          "status": "booked",
+          "subject": "Named attendees 1794542531506",
+          "occurredAt": "2026-11-13T04:01:11.000Z",
+          "start": "2026-11-14T04:02:11.000Z",
+          "end": "2026-11-14T04:32:11.000Z",
+          "source": "Mail and calendar files",
+          "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9"
+        },
+        "attendees": [
+          {
+            "email": "aisha@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R66WRXHRR9FNXT600MH",
+              "name": "Aisha Patel",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R66WRXHRR9FNXT600MH"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WSV1Z3T8YPN7KW98HRC",
+                "title": "Cedar renewal",
+                "href": "/app/opportunities/01M79H3WSV1Z3T8YPN7KW98HRC"
+              }
+            ]
+          },
+          {
+            "email": "jordan@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R8GGJ32RF1A7JSJ2Y1Y",
+              "name": "Jordan Lee",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R8GGJ32RF1A7JSJ2Y1Y"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WWC10Q45WC6M3B4G5Y0",
+                "title": "Cedar planning",
+                "href": "/app/opportunities/01M79H3WWC10Q45WC6M3B4G5Y0"
+              }
+            ]
+          },
+          {
+            "email": "maya@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R2ZDHRMAEFRFSAKDA68",
+              "name": "Maya Chen",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R2ZDHRMAEFRFSAKDA68"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+                "title": "Cedar expansion",
+                "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9"
+              }
+            ]
+          }
+        ],
+        "unresolved": [
+          {
+            "email": "unknown@cedargrove.example",
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove"
+            }
+          }
+        ],
+        "opportunities": [
+          {
+            "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+            "title": "Cedar expansion",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9",
+            "linked": true
+          },
+          {
+            "id": "01M79H3WWC10Q45WC6M3B4G5Y0",
+            "title": "Cedar planning",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WWC10Q45WC6M3B4G5Y0",
+            "linked": true
+          },
+          {
+            "id": "01M79H3WSV1Z3T8YPN7KW98HRC",
+            "title": "Cedar renewal",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WSV1Z3T8YPN7KW98HRC",
+            "linked": true
+          }
+        ],
+        "primaryOpportunityId": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+        "openValueCents": 375000,
+        "obligations": [],
+        "interactions": [
+          {
+            "id": "entry:01M79H3XJVMMKZ6A7GMB7KECMP",
+            "title": "Named attendees 1794542531506",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:01:11.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H3XJVMMKZ6A7GMB7KECMP",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H3XJVMMKZ6A7GMB7KECMP"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          },
+          {
+            "id": "entry:01M79H241M1BHE9930R97X92CC",
+            "title": "Attendees without CN 1794542467545",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:00:12.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H241M1BHE9930R97X92CC",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H241M1BHE9930R97X92CC"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          },
+          {
+            "id": "entry:01M79H1Z54NSPNPS1G6MKZNV4X",
+            "title": "Named attendees 1794542467545",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:00:07.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H1Z54NSPNPS1G6MKZNV4X",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H1Z54NSPNPS1G6MKZNV4X"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          }
+        ],
+        "promises": [],
+        "noteTarget": {
+          "type": "opportunity",
+          "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9"
+        },
+        "note": null
+      },
+      "attendeesText": "Attendees\nAisha Patel\nCedar Grove · Cedar renewal\nJordan Lee\nCedar Grove · Cedar planning\nMaya Chen\nCedar Grove · Cedar expansion\nunknown@cedargrove.example\n— no record. Orbit links only by this exact address and never guesses.\nCreate contact\nLink by exact email"
+    },
+    {
+      "name": "Attendees without CN 1794542531506",
+      "importText": "Captured\t1\nAttached to an Orbit thread\t0\nOutreach stopped for a reply or booking\t3\nDelivery reports for Orbit sends\t0\nProposed changes\t5\nKept in the unlinked queue\t0\nAlready captured\t0\nChanged copies refused\t0\nNot stored\t0",
+      "status": 200,
+      "plan": {
+        "meeting": {
+          "signalId": "01M79H42BE93KP2BSCN9ZW7MY3",
+          "status": "booked",
+          "subject": "Attendees without CN 1794542531506",
+          "occurredAt": "2026-11-13T04:01:16.000Z",
+          "start": "2026-11-14T04:02:16.000Z",
+          "end": "2026-11-14T04:32:16.000Z",
+          "source": "Mail and calendar files",
+          "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9"
+        },
+        "attendees": [
+          {
+            "email": "aisha@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R66WRXHRR9FNXT600MH",
+              "name": "Aisha Patel",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R66WRXHRR9FNXT600MH"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WSV1Z3T8YPN7KW98HRC",
+                "title": "Cedar renewal",
+                "href": "/app/opportunities/01M79H3WSV1Z3T8YPN7KW98HRC"
+              }
+            ]
+          },
+          {
+            "email": "jordan@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R8GGJ32RF1A7JSJ2Y1Y",
+              "name": "Jordan Lee",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R8GGJ32RF1A7JSJ2Y1Y"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WWC10Q45WC6M3B4G5Y0",
+                "title": "Cedar planning",
+                "href": "/app/opportunities/01M79H3WWC10Q45WC6M3B4G5Y0"
+              }
+            ]
+          },
+          {
+            "email": "maya@cedargrove.example",
+            "contact": {
+              "id": "01M79H0R2ZDHRMAEFRFSAKDA68",
+              "name": "Maya Chen",
+              "jobTitle": null,
+              "contactability": "contactable",
+              "href": "/app/contacts/01M79H0R2ZDHRMAEFRFSAKDA68"
+            },
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove",
+              "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+            },
+            "opportunities": [
+              {
+                "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+                "title": "Cedar expansion",
+                "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9"
+              }
+            ]
+          }
+        ],
+        "unresolved": [
+          {
+            "email": "unknown-no-cn@cedargrove.example",
+            "company": {
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+              "name": "Cedar Grove"
+            }
+          }
+        ],
+        "opportunities": [
+          {
+            "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+            "title": "Cedar expansion",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WQAGZ5ETFP9J28ZXXJ9",
+            "linked": true
+          },
+          {
+            "id": "01M79H3WWC10Q45WC6M3B4G5Y0",
+            "title": "Cedar planning",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WWC10Q45WC6M3B4G5Y0",
+            "linked": true
+          },
+          {
+            "id": "01M79H3WSV1Z3T8YPN7KW98HRC",
+            "title": "Cedar renewal",
+            "lifecycle": "open",
+            "valueCents": 125000,
+            "stageId": "01M79GWWYXCC553JWHE4SPADJP",
+            "ownerId": "01M79GWWYX64EYGTA658RWVWQV",
+            "stage": "New",
+            "owner": "Synthetic Orbit Seller",
+            "href": "/app/opportunities/01M79H3WSV1Z3T8YPN7KW98HRC",
+            "linked": true
+          }
+        ],
+        "primaryOpportunityId": "01M79H3WQAGZ5ETFP9J28ZXXJ9",
+        "openValueCents": 375000,
+        "obligations": [],
+        "interactions": [
+          {
+            "id": "entry:01M79H42BE93KP2BSCN9ZW7MY3",
+            "title": "Attendees without CN 1794542531506",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:01:16.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H42BE93KP2BSCN9ZW7MY3",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H42BE93KP2BSCN9ZW7MY3"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          },
+          {
+            "id": "entry:01M79H3XJVMMKZ6A7GMB7KECMP",
+            "title": "Named attendees 1794542531506",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:01:11.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H3XJVMMKZ6A7GMB7KECMP",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H3XJVMMKZ6A7GMB7KECMP"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          },
+          {
+            "id": "entry:01M79H241M1BHE9930R97X92CC",
+            "title": "Attendees without CN 1794542467545",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:00:12.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H241M1BHE9930R97X92CC",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H241M1BHE9930R97X92CC"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          },
+          {
+            "id": "entry:01M79H1Z54NSPNPS1G6MKZNV4X",
+            "title": "Named attendees 1794542467545",
+            "detail": "Customer signal",
+            "occurredAt": "2026-11-13T04:00:07.000Z",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S#entry-01M79H1Z54NSPNPS1G6MKZNV4X",
+            "evidence": {
+              "type": "timeline",
+              "id": "01M79H1Z54NSPNPS1G6MKZNV4X"
+            },
+            "record": {
+              "type": "company",
+              "id": "01M79H0QZC4NPBYF2MDYZ9B11S"
+            }
+          }
+        ],
+        "promises": [],
+        "noteTarget": {
+          "type": "opportunity",
+          "id": "01M79H3WQAGZ5ETFP9J28ZXXJ9"
+        },
+        "note": null
+      },
+      "attendeesText": "Attendees\nAisha Patel\nCedar Grove · Cedar renewal\nJordan Lee\nCedar Grove · Cedar planning\nMaya Chen\nCedar Grove · Cedar expansion\nunknown-no-cn@cedargrove.example\n— no record. Orbit links only by this exact address and never guesses.\nCreate contact\nLink by exact email",
+      "createdExactEmail": {
+        "email": "unknown-no-cn@cedargrove.example",
+        "unresolvedAfter": [],
+        "created": {
+          "email": "unknown-no-cn@cedargrove.example",
+          "contact": {
+            "id": "01M79H46Z3T6E9JTXYVSAV6TAJ",
+            "name": null,
+            "jobTitle": null,
+            "contactability": "contactable",
+            "href": "/app/contacts/01M79H46Z3T6E9JTXYVSAV6TAJ"
+          },
+          "company": {
+            "id": "01M79H0QZC4NPBYF2MDYZ9B11S",
+            "name": "Cedar Grove",
+            "href": "/app/companies/01M79H0QZC4NPBYF2MDYZ9B11S"
+          },
+          "opportunities": []
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "assertions": "passed: all known attendees and organizer resolved, company and open opportunities retained, unknown shown and exact-address creation succeeds"
+}
