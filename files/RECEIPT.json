@@ -3,14 +3,14 @@
   "branch": "cloud/sd-orbit-c-f183",
   "candidate_head": "1f9dd79164d7043a3c0e5eaff8365d8a98dca209",
   "ci": {
-    "api_calls_used": 3,
+    "api_calls_used": 4,
     "conclusion": null,
     "event": "push",
     "head_sha": "1f9dd79164d7043a3c0e5eaff8365d8a98dca209",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43332782884",
     "id": 43332782884,
     "name": "Verify",
-    "observed_at": "2026-11-13 00:00:04 UTC",
+    "observed_at": "2026-11-13 00:05:08 UTC",
     "status": "in_progress"
   },
   "claim": "PARTIAL",
@@ -137,6 +137,7 @@
     "associations": 11,
     "provider_pages": 4
   },
+  "product_custody": "PUSHED",
   "proof_binding": "Local executions preceded the final commit; the latest Salesforce helper and browser proof exercised the candidate source bytes. File hashes below identify the final committed tree. The original vendor journey also passed; later changes affect Salesforce-specific behavior and refusal wording. Exact-head Verify is recorded separately.",
   "publication_scan": {
     "custodian": "guarded fleet lander",

@@ -1,7 +1,9 @@
 # sd-orbit-c-f183 — Salesforce Account and Contact import
 
 Product repository: just-every/run-orbit. Product branch: cloud/sd-orbit-c-f183.
-Candidate: 1f9dd79164d7043a3c0e5eaff8365d8a98dca209. Verify: push Verify 43332782884, event push, in_progress on the exact candidate at 2026-11-13 00:00:04 UTC.
+Candidate: 1f9dd79164d7043a3c0e5eaff8365d8a98dca209. Verify: push Verify 43332782884, event push, in_progress on the exact candidate at 2026-11-13 00:05:08 UTC.
+
+CLAIM MIGRATE-003 PARTIAL points=none tests=tests/core/crm-import.test.ts#RECORD-008 vendor exports, Salesforce OAuth and generic spreadsheets dry-run, reconcile, resume and undo through current operator routes; tests/e2e/imports.spec.mjs#RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard
 
 MIGRATE-003 is claimed PARTIAL. Its stored Status row remains MISSING, byte for byte from main; no acceptance text, Gap, Evidence or generated contract view was committed. Contract counts remain 42 done, 130 partial and 32 missing, 204 total. The test inventory remains 198 registered cases plus two qualification flows, total 200. No DONE award or release is claimed.
 
@@ -46,7 +48,7 @@ These are native proofs of the selected limb, not complete proof of acceptance p
 | BASE-DATA-001 inheritance and selected erasure duty | Existing citation retained. Native streamed export and restore, exclusion of custody, no renewed pull authority and erasure of retained source copies are exercised. |
 | Rider 1 | PARTIAL for the whole clause: selected native outcomes reached, held outcomes named above. |
 | Rider 2 | PASS for supported native scope: populated outputs and unsafe refusals are asserted. |
-| Rider 3 | push Verify 43332782884, event push, in_progress on the exact candidate at 2026-11-13 00:00:04 UTC. Both proof helpers are loaded by existing Verify registrations. |
+| Rider 3 | push Verify 43332782884, event push, in_progress on the exact candidate at 2026-11-13 00:05:08 UTC. Both proof helpers are loaded by existing Verify registrations. |
 | Rider 4 | Local source and test byte hashes are recorded in RECEIPT.json; no relevant behavior was changed after its final local proof. |
 | Rider 5 | Existing BASE-DATA-001 and BASE-INPUT-001 citations retained; no contract rewrite. |
 | Rider 6 | Generator write and check pass. Stored judgments and both generated views are unchanged. |
@@ -95,3 +97,7 @@ PROBE MIGRATE-003 2: none, authorized real export and owner account are not prov
 - Export and restore: tests/support/salesforce-api-proof.ts:77.
 - Restored authority: tests/support/salesforce-api-proof.ts:80.
 - Revocation: tests/support/salesforce-api-proof.ts:83.
+
+Evidence transport: the first complete packet was published at aba97a1f971bb1ffbcdf001f122d37173db8f614 and fetched independently with all 43 file hashes and the exact product SHA verified. EVIDENCE_TRANSFER.json is the actual transport receipt. A later evidence head may include the final CI observation and this receipt; only the terminal EVIDENCE line names the final transfer.
+
+Terminal product custody: PUSHED branch=cloud/sd-orbit-c-f183 head=1f9dd79164d7043a3c0e5eaff8365d8a98dca209. Verify 43332782884 remains in progress at 2026-11-13 00:05:08 UTC; no red conclusion was observed. All local gates pass. The cloud handoff leaves exact-head CI, publication scanning and landing with the maintained fleet. There is no product push rejection and no unpublished product work.
