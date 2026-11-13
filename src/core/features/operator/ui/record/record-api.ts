@@ -37,7 +37,7 @@ export const contactContextValues=(context:ContactContext):ContactContextValues=
 export async function readContext<T>(kind:'opportunity'|'contact',id:string):Promise<T>{
  const response=await fetch(`/api/v1/relationships/${kind}/${id}`,{credentials:'same-origin'});
  const result=await response.json().catch(()=>({})) as T&{error?:string};
- if(!response.ok)throw new Error(result.error??'Orbit could not load these relationships.');
+ if(!response.ok)throw Object.assign(new Error(result.error??'Orbit could not load these relationships.'),{status:response.status});
  return result;
 }
 /** The whole context with its revision, the one change applied (today's body); 409 when it changed meanwhile. */

@@ -7079,7 +7079,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/customer-record.tsx": {
-      "sha256": "5365ad43dbfdc0c40279940aba01a259adcd1d8fc330177ddc520e97da100557",
+      "sha256": "715e6ab0c41c8638672e692087c61c4aa7ad63401dc5fbed449033cddd1c3956",
       "executable": false
     },
     "src/core/features/operator/ui/record/deal-activity.tsx": {
@@ -7131,7 +7131,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/opportunity-record.tsx": {
-      "sha256": "f8a33a856aae7b5b1ff5058154308a727bf51a4501deadc2cc4f62f7f11d90a5",
+      "sha256": "7b1415b17f28e4a143c1ad7c9fd4fb2293cc491aba9f67c58c067b333912fcb0",
       "executable": false
     },
     "src/core/features/operator/ui/record/owner-field.tsx": {
@@ -7151,7 +7151,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record-api.ts": {
-      "sha256": "bd2fd18fa52b4d8abfdf5073eb4dd2194f0d7e632ccc668ca145c18bf3b3fa16",
+      "sha256": "9dfb267f8f7d057a5f4b19051369a78878963f545bceeb7f82f2cede6621d35e",
       "executable": false
     },
     "src/core/features/operator/ui/record/record-foot.tsx": {
@@ -7387,7 +7387,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/use-operator-resource.ts": {
-      "sha256": "cca93914e5ded71f4b60f42f6e80b58ea2b4218f200c7aaa99abc806bf0ee803",
+      "sha256": "d8ce4e2297cb458932e13d9206a34082c32f64e796e8176481e35cc1e1c9a8a7",
       "executable": false
     },
     "src/core/features/operator/ui/website-node-example.tsx": {
@@ -11151,7 +11151,7 @@
       "executable": false
     },
     "tests/rer/operator-desktop.test.mjs": {
-      "sha256": "99006a032f52f612ca273992d97c4e00da3d1f44eeba11437450e1cd670cd851",
+      "sha256": "d7f287d863265800ab8ef9151a664cf70a59fd3c7dec3973eda21c37a3827272",
       "executable": false
     },
     "tests/rer/operator-fixture.mjs": {
