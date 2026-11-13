@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "bab1415b5c51ef6969296083acedead50143e9bc837b5dc2164487998a6bb5b4",
+      "sha256": "0c9edacf9fd53ffd88bc1796e6b2c0f4cfd7c44997b7dea778d0c968a0c3b534",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2238,12 +2238,12 @@
       "sha256": "639a5eba10fe855306f1e431f35c41547a97f4bc922c64920f950166f943846a",
       "executable": false
     },
-    "migrations/core/0086_pipedrive_import.sql": {
-      "sha256": "cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f",
-      "executable": false
-    },
     "migrations/core/0087_hubspot_explicit_erasure.sql": {
       "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980",
+      "executable": false
+    },
+    "migrations/core/0089_pipedrive_import.sql": {
+      "sha256": "cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f",
       "executable": false
     },
     "migrations/rewrites.json": {
