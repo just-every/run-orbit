@@ -1,4 +1,5 @@
 import {pipedriveBrowserFlow} from './imports-pipedrive.mjs';
+import {hubspotBrowserFlow} from './imports-hubspot.mjs';
 import {hydrationImportFlow} from './imports-hydration.mjs';
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -7,8 +8,8 @@ import {join} from 'node:path';
 import {authenticateOperator} from './operator-session.mjs';
 import {crmFixture} from '../support/crm-fixtures.ts';
 const names={contact:'Contacts',company:'Companies',deal:'Deals',note:'Notes',suppression:'Do not contact list'};
-test('RECORD-008 reviewed vendor files and plain CSV import and undo through the responsive native wizard',async({page,context,browser},info)=>{
- test.setTimeout(360_000);await authenticateOperator(context);const errors=[];page.on('pageerror',error=>errors.push(error.message));
+test('RECORD-008 connected HubSpot and Pipedrive, reviewed vendor files and plain CSV import and undo through the responsive native wizard',async({page,context,browser},info)=>{
+ test.setTimeout(420_000);await authenticateOperator(context);const errors=[];page.on('pageerror',error=>errors.push(error.message));
  const screenshots=process.env.IMPORT_SCREENSHOT_DIR??info.outputPath('visual');mkdirSync(screenshots,{recursive:true});
  await page.setViewportSize({width:1440,height:1024});await page.goto('/app/settings/data/import');await expect(page.getByRole('heading',{name:'Move in',level:1})).toBeVisible();
  await page.screenshot({path:join(screenshots,'desktop-upload.png'),fullPage:true});
@@ -82,6 +83,7 @@ test('RECORD-008 reviewed vendor files and plain CSV import and undo through the
    await page.setViewportSize({width:390,height:900});await page.screenshot({path:join(screenshots,'merge-stopped-survivor-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});
   }
  }
+ await hubspotBrowserFlow(browser,screenshots);
  await pipedriveBrowserFlow(browser,screenshots);
  expect(errors).toEqual([]);
 });

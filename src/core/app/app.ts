@@ -177,7 +177,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route('/api/v1/entries/visibility',entryPrivacyRoutes(input.database));
   app.route('/api/v1/calls',callRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/imports/pipedrive',createPipedriveRoutes(input.database,{security:input.sourceSecurity,fetcher:input.pipedriveFetch,now:input.pipedriveNow}));
-  app.route('/api/v1/imports',createImportRoutes(input.database));
+  app.route('/api/v1/imports',createImportRoutes(input.database,{security:input.sourceSecurity,fetcher:input.captureFetch}));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));
   app.route('/api/v1/obligations',obligationRoutes(input.database));

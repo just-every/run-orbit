@@ -1,4 +1,5 @@
 import {pipedriveApiProof} from '../support/pipedrive-api-proof';
+import {hubspotApiFlow,hubspotRegressionFlow} from '../support/hubspot-api-proof';
 import {hubspotExportFlow} from '../support/hubspot-export';
 import {importOwnerFlow} from '../support/import-owners';
 import {reviewTokens} from '../support/reviewed-merge';
@@ -14,7 +15,8 @@ import {createId} from '../../src/core/shared/ids';
 import {signRelayBody} from '../../src/base/sendgrid-event-relay/crypto';
 import {json,finish,genericCsvFlow,resumeImportFlow,sourceConflictFlow,malformedSuppressionFlow} from '../support/crm-import-flow';
 import {parseCsv} from '../../src/core/shared/csv';
-test('RECORD-008 and MIGRATE-002 vendor files and connected Pipedrive pull review, resume, reconcile and undo through native routes',async t=>{
+test('RECORD-008 connected HubSpot and Pipedrive, vendor exports and generic spreadsheets dry-run, reconcile, re-import and undo through current operator routes',async t=>{
+ const callFixture=await launchFixture();try{await hubspotRegressionFlow(callFixture,'textless-call');}finally{await callFixture.dispose();}
  const f=await launchFixture();try{for(const vendor of ['hubspot','pipedrive'] as const){
   const independentlyStopped=await f.customer(`${vendor}-independent@example.test`),restorable=await f.customer(`${vendor}-standalone@example.test`);
   await json(await f.request(`records/contact/${independentlyStopped.contactId}`,'PUT',{name:'Independently stopped customer',email:independentlyStopped.email,contactability:'do_not_contact'}));
@@ -49,7 +51,8 @@ test('RECORD-008 and MIGRATE-002 vendor files and connected Pipedrive pull revie
   assert.equal((await f.db.prepare('SELECT state FROM outbound_messages WHERE id=?').bind(scheduled.id).first<any>())!.state,'cancelled','Undo never resumes cancelled mail');
   const survivingProofs=new Set((await f.db.prepare("SELECT id FROM audit_entries WHERE action='contact.suppressed'").all<{id:string}>()).results.map(row=>row.id));assert.ok(independentProofs.every(id=>survivingProofs.has(id)));
   t.diagnostic(`${vendor}: ${dry.counts.input} rows, one listed rejection; source conflict refused, persisted restart at ${resumed.checkpoint} of ${resumed.total} resumed the same job; records, associations, notes, replay and kit undo reconciled.`);
- }await genericCsvFlow(f);await importOwnerFlow(f);await hubspotExportFlow(f);await pipedriveApiProof(f);}finally{await f.dispose();}
+ }await genericCsvFlow(f);await importOwnerFlow(f);await hubspotExportFlow(f);await hubspotApiFlow(f);}finally{await f.dispose();}
+ const pipedrive=await launchFixture();try{await pipedriveApiProof(pipedrive);}finally{await pipedrive.dispose();}
 });
 test('RECORD-008 stops block exact approved sends; undo preserves edits and independent stops, authority and malformed mapping fail closed',async()=>{
  const f=await launchFixture();try{
