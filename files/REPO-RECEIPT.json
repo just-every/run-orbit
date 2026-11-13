@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-11-13T01:23:23Z",
+  "repository": "just-every/run-orbit",
+  "local_branch": "cloud/sd-orbit-c-f178-rebased-ci-triage-1",
+  "local_head": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "origin_main": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "origin": "https://github.com/just-every/run-orbit.git",
+  "worktree_status": "",
+  "candidate_identity_trailer_check": "",
+  "product_commits_created": 0,
+  "product_pushes": 0,
+  "prs_created": 0,
+  "investigated_branch": "cloud/sd-orbit-c-f178-rebase-67f170efd24378a2f68409218adbd106d36edb93",
+  "investigated_head": "67f170efd24378a2f68409218adbd106d36edb93"
+}

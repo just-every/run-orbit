@@ -1,0 +1,24 @@
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3320816Z ✖ failing tests:
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3321115Z 
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3321513Z test at newtests/t096/browser-journeys.test.ts:1:1527
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3324510Z ✖ OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (214580.274866ms)
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3326972Z   Error: expect(locator).toBeFocused() failed
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3327409Z   
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3327693Z   Locator:  getByLabel('Starts as')
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3328083Z   Expected: focused
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3328370Z   Received: inactive
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3328659Z   Timeout:  5000ms
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3329206Z   
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3329439Z   Call log:
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3329865Z     - Expect "toBeFocused" getByLabel('Starts as') with timeout 5000ms
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3330382Z     - waiting for getByLabel('Starts as')
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3331185Z       13 × locator resolved to <select name="role" aria-describedby="collaborator-profiles">…</select>
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3331824Z          - unexpected value "inactive"
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3332163Z   
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3333243Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3334534Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3335710Z       at Object.toBeFocused (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3336800Z       at TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-journeys.test.ts:31:269) {
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3343834Z     matcherResult: { message: `expect(locator).toBeFocused() failed\n\nLocator:  getByLabel('Starts as')\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect "toBeFocused" getByLabel('Starts as') with timeout 5000ms\n  - waiting for getByLabel('Starts as')\n    13 × locator resolved to <select name="role" aria-describedby="collaborator-profiles">…</select>\n       - unexpected value "inactive"\n`, pass: false, actual: 'inactive', name: 'toBeFocused', expected: 'focused', log: [ `  - Expect "toBeFocused" getByLabel('Starts as') with timeout 5000ms`, "  - waiting for getByLabel('Starts as')", '    13 × locator resolved to <select name="role" aria-describedby="collaborator-profiles">…</select>', '       - unexpected value "inactive"' ], timeout: 5000, ariaSnapshot: '- combobox "Starts as":\n  - option "Guest" [selected]\n  - option "Analyst"\n  - option "Seller"' }
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.3349303Z   }
+shards (batch-4)	Verify routine product shard	2026-11-13T00:21:18.4506263Z ##[error]Process completed with exit code 1.

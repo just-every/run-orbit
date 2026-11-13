@@ -1,0 +1,894 @@
+
+## newtests/t096/browser-journeys.test.ts (target SHA)
+
+1: import {formIdentityBrowserJourney} from './browser-form-identity';
+2: import {optOutUpgradeBrowserJourney} from './browser-opt-out-upgrade';
+3: import {recordMailCompletionSeed} from '../../tests/support/record-mail-browser';
+4: import {captureRuleBrowserJourney} from './browser-capture-rule';
+5: import {recordMailBrowserSeed} from './record-mail-browser-seed';
+6: import {recordMailBrowserJourney} from './browser-record-mail';
+7: import {formMappingBrowserJourney} from './browser-form-mapping';
+8: import {formAbuseBrowserJourney} from './browser-form-abuse';
+9: import {createDependencies} from '../../tests/support/dependencies';
+10: import {createId} from '../../src/core/shared/ids';
+11: import {ownershipBrowserJourney} from './browser-ownership';
+12: import {forecastBrowserJourney} from './browser-forecast-journey';
+13: import {forecastArchiveJourney} from './forecast-archive-journey';
+14: import {isolateBrowserTemp} from '../../tests/support/browser-temp.mjs';
+15: isolateBrowserTemp();
+16: import assert from 'node:assert/strict';
+17: import {test} from 'node:test';
+18: import {mkdir,writeFile,readFile} from 'node:fs/promises';
+19: import {join} from 'node:path';
+20: import {chromium,expect} from '@playwright/test';
+21: import {accessible,watchBrowser,startTrace,stopTrace,closeTracedBrowser} from './browser-observations';
+22: import {formWithoutScript} from './browser-form-no-script';
+23: import {formSpam} from './browser-form-spam';
+24: import {authorReport} from './browser-report-authoring';
+25: import {collaboratorJourney} from './browser-access-journey';
+26: import {fixture,nativeRecord,signIn,signInLink} from './fixture';
+27: import {emittedWorker,httpsBuyerSite} from './emitted-fixture';
+28: 
+29: test('OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots',async()=>{const f=await fixture(),directory=process.env.ORBIT_FOLD_BROWSER_EVIDENCE;if(!directory)throw new Error('Private browser evidence directory is required.');await mkdir(directory,{recursive:true,mode:0o700});let buyer:Awaited<ReturnType<typeof httpsBuyerSite>>|undefined,worker:Awaited<ReturnType<typeof emittedWorker>>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;try{await formIdentityBrowserJourney(directory);await optOutUpgradeBrowserJourney(directory);const opportunity=await nativeRecord(f,'opportunity',{title:'Browser native deal',value_cents:3200});const contact=await nativeRecord(f,'contact',{name:'Shared browser contact',email:'shared@browser.test',custom_fields:{private_note:'Private browser marker'}});await f.db.prepare("UPDATE schema_types SET fields_json=? WHERE name='contact'").bind(JSON.stringify({email:{sensitivity:'private'},'custom_fields_json.private_note':{sensitivity:'private'}})).run();const invitation=await f.admin.invite(await f.nativeContext(),{email:'invited@browser.test',role:'seller',expiresAt:new Date(Date.now()+86400000).toISOString()}),invited=await signIn(f.db,'invited@browser.test'),returning=[await signInLink(f.db,'invited@browser.test'),await signInLink(f.db,'invited@browser.test')];const ownershipOwnerId=createId();await createDependencies(f.db).auth.ensureOperator({id:ownershipOwnerId,email:'synthetic-orbit-owner@people.test',displayName:'Jordan Reyes'});const ownershipRecipient=await signIn(f.db,'synthetic-orbit-owner@people.test');const recordMailInitial=await recordMailBrowserSeed(f),recordMailSeed={...recordMailInitial,...await recordMailCompletionSeed(f,recordMailInitial)};worker=await emittedWorker(f.target);buyer=await httpsBuyerSite(worker.certificate);browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic','--disable-gpu',...worker.browserArgs,...buyer.browserArgs]});
+30:  for(const width of [1440,390]){const context=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:f.cookie}}),errors=watchBrowser(context),page=await context.newPage();await startTrace(context,directory,`native-${width}`);await page.goto('/app/reports');await page.getByRole('link',{name:'Open opportunities',exact:true}).click();await expect(page).toHaveURL(/\/app\/reports\/open-opportunities$/);await expect(page.getByText(/ · Not saved$/)).toBeVisible();await page.getByRole('button',{name:'Save result',exact:true}).click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();await page.reload();await page.getByRole('button',{name:'Report options',exact:true}).click();await page.getByRole('button',{name:'Reopen saved report'}).first().click();await expect(page.getByText(/^Saved result · measured /)).toBeVisible();const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Report options',exact:true}).click();await page.getByRole('link',{name:'Export saved report',exact:true}).first().click();const download=await downloading,path=join(directory,`report-${width}.json`);await download.saveAs(path);const report=JSON.parse(await readFile(path,'utf8'));assert.equal(report.values.value,1);assert.equal(report.values.n,1);assert.deepEqual(report.inputs.map((ref:any)=>ref.id),[opportunity.ref.id]);assert.equal(report.population.pages,1);assert.equal(report.inputs[0].revision,opportunity.ref.revision);await accessible(page,`reports-${width}`,directory);await authorReport(page,width,directory,opportunity.ref.id);
+31:  await page.goto('/app/settings/team');await expect(page.getByRole('heading',{name:'Collaborators',exact:true})).toBeVisible();await page.getByLabel('Collaborator email',{exact:true}).focus();await page.keyboard.press('Tab');await expect(page.getByLabel('Starts as')).toBeFocused();await accessible(page,`roles-${width}`,directory);
+32:  await page.goto('/app/settings/forms');await page.getByLabel('Page title',{exact:true}).fill(`Browser inquiry ${width}`);await page.getByLabel('Page heading',{exact:true}).fill('Talk with the team');await page.getByLabel('Form title',{exact:true}).fill('Your inquiry');await page.getByLabel('Page text',{exact:true}).fill('Share your contact details to request a conversation.');await page.getByLabel('Optional consent wording').fill('Send occasional product updates');await page.getByLabel('Create an opportunity in NOW for each new enquirer').uncheck();await page.getByRole('button',{name:'Save form text',exact:true}).click();await page.getByLabel('Public path').fill(`browser-${width}`);await page.getByLabel('Publication expires').fill(new Date(Date.now()+86400000).toISOString().slice(0,16));await page.getByRole('button',{name:'Compile saved revision'}).click();await expect(page.getByRole('heading',{name:'Review exact publication'})).toBeVisible();await page.getByRole('button',{name:'Approve reviewed page'}).click();await page.getByRole('button',{name:'Publish approved page'}).click();await expect(page.getByRole('link',{name:'Open published page',exact:true})).toBeVisible();await accessible(page,`forms-${width}`,directory);await formWithoutScript(browser,worker.origin,width,directory);
+33:  const publicContext=await browser.newContext({baseURL:worker.origin,viewport:{width,height:1000},ignoreHTTPSErrors:true}),publicErrors=watchBrowser(publicContext),publicPage=await publicContext.newPage();await startTrace(publicContext,directory,`public-${width}`);const visitorRequests:string[]=[];publicPage.on('request',request=>visitorRequests.push(request.url()));await publicPage.goto(`/p/browser-${width}`);await publicPage.waitForLoadState('networkidle');assert.ok(visitorRequests.every(url=>new URL(url).origin===worker!.origin),'disabled Turnstile loads no third-party assets');assert.ok(visitorRequests.every(url=>!url.endsWith('/challenge')),'no visitor API request precedes first interaction');assert.deepEqual(await publicContext.cookies(),[]);await expect(publicPage.getByRole('button',{name:'Submit enquiry'})).toBeDisabled();await publicPage.getByLabel('Name',{exact:true}).focus();await publicPage.keyboard.press('Tab');await expect(publicPage.getByRole('button',{name:'Submit enquiry'})).toBeEnabled();await publicPage.getByRole('button',{name:'Submit enquiry'}).click();await expect(publicPage.getByLabel('Name',{exact:true})).toBeFocused();await publicPage.getByLabel('Name',{exact:true}).fill('Browser inquiry person');await publicPage.keyboard.press('Tab');await expect(publicPage.getByLabel('Email',{exact:true})).toBeFocused();await publicPage.getByLabel('Email',{exact:true}).fill('invalid-email');await publicPage.getByRole('button',{name:'Submit enquiry'}).click();assert.equal(await publicPage.getByLabel('Email',{exact:true}).evaluate((element:HTMLInputElement)=>element.validity.typeMismatch),true);await publicPage.getByLabel('Email',{exact:true}).fill(`inquiry-${width}@browser.test`);await publicPage.getByLabel('Message',{exact:true}).fill('An actual native inquiry');if(width===390)await publicPage.getByLabel('Send occasional product updates',{exact:true}).check();await publicPage.getByRole('button',{name:'Submit enquiry'}).click();await expect(publicPage.getByRole('status')).toContainText('Your enquiry was received');await expect(publicPage.getByRole('status')).toBeFocused();assert.deepEqual(await publicContext.cookies(),[]);assert.ok(visitorRequests.every(url=>new URL(url).origin===worker!.origin),'ordinary forms make no third-party requests');await accessible(publicPage,`public-form-${width}`,directory);await publicPage.getByRole('button',{name:'Submit enquiry'}).click();await expect(publicPage.getByRole('status')).toContainText('Your enquiry was received');await page.getByRole('button',{name:'Read submissions'}).first().click();await page.locator('article.fold-row a[href^="/app/contacts/"]').first().click();await expect(page.getByRole('heading',{name:'Browser inquiry person',exact:true,level:1})).toBeVisible();const inquiry=page.locator('li[id^="entry-"]').filter({hasText:'Your inquiry'});await expect(inquiry).toBeVisible();await expect(inquiry).toHaveCount(1);await expect(inquiry).toContainText('An actual native inquiry');await formSpam(page,publicPage,width,directory);await page.goto('/app/settings/forms');await page.getByRole('button',{name:'Reopen latest publication'}).first().click();
+34:  const publishedPage=page.locator(`a[href="/p/browser-${width}"]`);
+35:  await expect(publishedPage).toBeVisible();
+36:  await expect(page.locator('p[role=status][tabindex="-1"]')).toHaveCount(1);
+37:  await page.getByRole('button',{name:'Unpublish',exact:true}).click();
+38:  await expect(publishedPage).toHaveCount(0);
+39:  assert.equal((await publicPage.request.get(`/p/browser-${width}`)).status(),404);await page.reload();await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await expect(page.getByRole('group',{name:'New capture authorization'})).toBeVisible();await page.getByLabel('New maximum contacts',{exact:true}).fill('7');await page.getByRole('button',{name:'Approve reviewed page',exact:true}).click();await expect(page.getByRole('button',{name:'Publish approved page',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Publish approved page',exact:true}).click();await expect(publishedPage).toBeVisible();assert.equal((await publicPage.request.get(`/p/browser-${width}`)).status(),200);await page.getByRole('button',{name:'Edit saved form',exact:true}).first().click();await page.getByLabel('Page heading',{exact:true}).fill('Updated enquiry');const savingForm=page.waitForResponse(response=>response.request().method()==='POST'&&/^\/api\/v2\/workspaces\/[^/]+\/forms$/.test(new URL(response.url()).pathname));await page.getByRole('button',{name:'Save form text',exact:true}).click();const savedForm=await savingForm;assert.equal(savedForm.status(),200);assert.equal((await savedForm.json()).revision,2);await expect(page.getByRole('button',{name:'Save form text',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Reopen latest publication',exact:true}).first().click();await expect(publishedPage).toHaveCount(0);assert.equal((await publicPage.request.get(`/p/browser-${width}`)).status(),404);await expect(page.getByRole('region',{name:'Compiled page review'}).getByRole('status').first()).toBeVisible();await expect(page.locator('p[role=status][tabindex="-1"]')).toHaveCount(1);await expect(page.getByRole('button',{name:'Publish approved page',exact:true})).toBeDisabled();await page.getByRole('button',{name:'Unpublish',exact:true}).click();await expect(publishedPage).toHaveCount(0);await publicErrors.check(directory,`public-${width}`);await errors.check(directory,`native-${width}`);await stopTrace(publicContext);await stopTrace(context);await publicContext.close();await context.close();}
+40:  await recordMailBrowserJourney(browser,worker.origin,directory,f.cookie,recordMailSeed);await ownershipBrowserJourney(browser,worker.origin,directory,f.cookie,{id:ownershipOwnerId,cookie:ownershipRecipient.cookie});await formMappingBrowserJourney(browser,worker.origin,directory,f.cookie,[f.operator.operatorId,ownershipOwnerId],{[ownershipOwnerId]:ownershipRecipient.cookie},buyer);await formAbuseBrowserJourney(browser,worker.origin,directory,f.cookie);await collaboratorJourney(browser,worker.origin,directory,f.cookie,invited,invitation.token,contact.ref.id,returning);const forecastProof=await forecastBrowserJourney(browser,worker.origin,directory,f.cookie,invited.cookie);await browser.close();browser=undefined;await worker.dispose();worker=undefined;await f.target.reopen();await forecastArchiveJourney(f,forecastProof);await captureRuleBrowserJourney(directory);assert.equal(await f.db.prepare('SELECT count(*) n FROM marketing_form_submissions').first('n'),7);assert.equal(await f.db.prepare('SELECT count(*) n FROM consent_events').first('n'),6);assert.equal(await f.db.prepare('SELECT count(*) n FROM outbound_messages').first('n'),0);assert.equal(await f.db.prepare('SELECT name FROM contacts WHERE id=?').bind(contact.ref.id).first('name'),'Collaborator edited contact 390');await writeFile(join(directory,'runtime-closure.json'),JSON.stringify({closed:true,viewports:[1440,390],ownedWorkers:0,ownedBrowsers:0}),{mode:0o600});
+41:  }finally{try{await closeTracedBrowser(browser);}finally{await worker?.dispose();await buyer?.dispose();await f.close();}}});
+
+## src/core/features/operator/ui/settings/team.tsx (target SHA)
+
+1: import {CollaboratorConsole} from '../../../access/collaborator-console';
+2: import {FoldWorkspace} from '../../../fold-ui/workspace';
+3: import {OperatorSettings} from '../operator-settings';
+4: import {OperatorState} from '../operator-shell';
+5: import {OwnerSettings} from '../owner-settings';
+6: import {SignInPolicy} from '../sign-in-policy';
+7: import {SettingsArea} from './area';
+8: import {LinkCard} from './link-card';
+9: import {useWorkspaceSettings} from './use-workspace-settings';
+10: 
+11: /** Settings › Team: the people with full access, the owner's email, sign-in, collaborators and connected applications. */
+12: export function TeamArea(){
+13:  const settings=useWorkspaceSettings();
+14:  return <SettingsArea title="Team">
+15:   {settings.error?<OperatorState kind="error">{settings.error.message}</OperatorState>:null}
+16:   {settings.data?<><OperatorSettings operators={settings.data.operators} local={settings.data.local} onChanged={settings.changed}/><OwnerSettings owner={settings.data.owner} onSaved={settings.changed}/></>:settings.error?null:<OperatorState>Loading your team…</OperatorState>}
+17:   <SignInPolicy/>
+18:   <FoldWorkspace key={JSON.stringify(settings.data?.operators)} embedded title="Collaborators">{workspace=><CollaboratorConsole workspaceId={workspace}/>}</FoldWorkspace>
+19:   <LinkCard title="Shared records" text="The records each collaborator can see or change." href="/app/shared-records"/>
+20:   <LinkCard title="Connected applications" text="Applications that work in Orbit for one of your team." href="/delegation/settings"/>
+21:  </SettingsArea>;
+22: }
+
+## src/core/features/operator/ui/settings/use-workspace-settings.ts (target SHA)
+
+1: import {useCallback} from 'react';
+2: import {recordsRequest} from '../records-api';
+3: import {useOperatorResource} from '../use-operator-resource';
+4: 
+5: /** The workspace's settings read (owner, operators, pipelines, the workspace itself), made by the areas that show it. */
+6: export function useWorkspaceSettings(){
+7:  const load=useCallback(()=>recordsRequest<any>('settings'),[]);
+8:  const resource=useOperatorResource('workspace-settings',load);
+9:  return {...resource,changed:async()=>resource.reload()};
+10: }
+
+## src/core/features/access/collaborator-console.tsx (target SHA)
+
+1: import {useEffect,useRef,useState} from 'react';
+2: import {api} from '../fold-ui/workspace';
+3: import {CollaboratorGrants} from './collaborator-grants';
+4: import {CreatedInvitationPanel,type CreatedInvitation} from './collaborator-invite';
+5: const profiles=[{value:'guest',name:'Guest',meaning:'sees only the records you share with them'},{value:'analyst',name:'Analyst',meaning:'reads every record and reports'},{value:'seller',name:'Seller',meaning:'reads and edits every record'}];
+6: const profileName=(role:string)=>profiles.find(p=>p.value===role)?.name??role;
+7: export function CollaboratorConsole({workspaceId}:{workspaceId:string}){
+8:  const base=`/api/v2/access/workspaces/${encodeURIComponent(workspaceId)}`,[self,setSelf]=useState<any>(null),[data,setData]=useState<any>(null),[error,setError]=useState(''),[status,setStatus]=useState(''),[invitation,setInvitation]=useState<CreatedInvitation|null>(null),[busy,setBusy]=useState(false),feedback=useRef<HTMLParagraphElement>(null);
+9:  // A read fenced by the authority epoch it started under is refused when a profile change
+10:  // commits during it. That refusal describes a superseded view, so read the current one again.
+11:  async function refresh(attempt=0):Promise<void>{try{const current=await api<{access_class:string;role:string}>(`${base}/self`);setSelf(current.access_class==='collaborator'?{...current,reports:(await api<{reports:boolean}>('/api/v2/access/pages')).reports}:current);if(current.access_class==='native_full')setData(await api(`${base}/administration`));}catch(error){if(attempt<2&&error instanceof Error&&error.message==='Authority changed before the read.')return refresh(attempt+1);throw error;}}useEffect(()=>{refresh().catch(e=>setError(e.message));},[base]);
+12:  async function act(work:()=>Promise<void>){setBusy(true);setError('');try{await work();await refresh();}catch(e){setError(e instanceof Error?e.message:'Access change was not confirmed.');}finally{setBusy(false);setTimeout(()=>feedback.current?.focus(),0);}}
+13:  if(self?.access_class==='collaborator')return <section className="fold-panel"><h2>Your collaborator access</h2><p>You are a {profileName(self.role)}. The workspace owner chooses which records and fields you can use.</p><a href="/app/shared-records">Open shared records</a>{self.reports?<p><a href="/app/reports">Open reports</a></p>:null}</section>;
+14:  const pending=(data?.invitations??[]).filter((i:any)=>!i.accepted_by&&!i.revoked_at&&Date.parse(i.expires_at)>Date.now());
+15:  return <><section className="fold-panel"><h2>Collaborators</h2>
+16:   <p>People outside your team, such as an accountant, see and change only what you choose.</p>
+17:   <p ref={feedback} tabIndex={-1} role={error?'alert':'status'}>{error||status}</p>
+18:   <form onSubmit={event=>{event.preventDefault();const form=new FormData(event.currentTarget),email=String(form.get('email')).trim().toLowerCase(),role=String(form.get('role'));void act(async()=>{const result=await api<{token:string;expiresAt:string;local:boolean}>(`${base}/invitations`,{email,role,expiresAt:new Date(Date.now()+7*86400000).toISOString()});setInvitation({email,role,token:result.token,expiresAt:result.expiresAt,local:result.local});setStatus(`Invitation created for ${email}. Send them the link below.`);});}}>
+19:    <div className="fold-grid"><label>Collaborator email<input type="email" name="email" required/></label><label>Starts as<select name="role" aria-describedby="collaborator-profiles">{profiles.map(p=><option key={p.value} value={p.value}>{p.name}</option>)}</select></label></div>
+20:    <p id="collaborator-profiles" className="fold-hint">{profiles.map(p=>`${p.name} ${p.meaning}.`).join(' ')} You can change this later.</p>
+21:    <button disabled={busy}>Create invitation</button>
+22:   </form>
+23:   {invitation&&<CreatedInvitationPanel invitation={invitation}/>}
+24:   {pending.map((i:any)=><div className="fold-row" key={i.id}><p>{i.email} · invited as {profileName(i.role)} · waiting for them to open their link</p></div>)}
+25:   {data?.members.map((member:any)=><div className="fold-row" key={member.operator_id}><h3>{member.display_name}</h3><p>{member.email} · {member.access_class==='native_full'?(member.status==='active'?'Teammate with full access':'Former teammate'):`${profileName(member.role)} collaborator`}{member.status!=='active'&&` · ${member.status==='removed'?'Access removed':member.status==='suspended'?'Suspended':member.status==='invited'?'Invited':member.status}`}</p>{member.access_class==='collaborator'&&member.status==='active'&&<><label>Collaborator profile<select aria-label={`Profile for ${member.email}`} disabled={busy} value={member.role} onChange={event=>void act(async()=>{await api(`${base}/members/${member.operator_id}`,{role:event.target.value,status:'active'},'PUT');setStatus('Collaborator profile updated.');})}>{profiles.map(p=><option key={p.value} value={p.value}>{p.name}</option>)}</select></label><button disabled={busy} onClick={()=>void act(async()=>{await api(`${base}/members/${member.operator_id}`,{role:member.role,status:'removed'},'PUT');setStatus('Collaborator removed; sessions, invitations and grants revoked.');})}>Remove collaborator</button></>}</div>)}
+26:  </section>
+27:  {data&&<CollaboratorGrants base={base} workspaceId={workspaceId} members={data.members} grants={data.grants} busy={busy} act={act} setStatus={setStatus}/>}</>;
+28: }
+
+## src/core/features/operator/ui/record/customer-record.tsx (target SHA)
+
+1: import {useAppAccess} from '../../../access/app-access';
+2: import {ReadOnlyRecord} from './read-only-record';
+3: import {useCallback,useEffect,useMemo,useState} from 'react';
+4: import {Link,useParams,useRouterState} from '@tanstack/react-router';
+5: import type {ContactContext} from '../../../relationships/contracts';
+6: import {SavedLabel} from '../autosave/saved-label';
+7: import {useAutosave,type Values} from '../autosave/use-autosave';
+8: import {CaptureProposals} from '../capture-proposals';
+9: import {DoNotContactReason} from '../do-not-contact-reason';
+10: import {OperatorShell,OperatorState} from '../operator-shell';
+11: import {RecordMailComposer,useRecordMail} from '../record-mail';
+12: import {recordsRequest} from '../records-api';
+13: import {useOperatorResource} from '../use-operator-resource';
+14: import {WorkflowRecordApprovals} from '../workflows-record-approvals';
+15: import {CompanyDetails} from './company-details';
+16: import {ContactDetails} from './contact-details';
+17: import {useFieldDefinitions} from './custom-values';
+18: import {DetailsPanel} from './details-panel';
+19: import {contactContextValues,patchRecord,readContext,readRecord,recordValues,saveContactContext,type ContactContextValues} from './record-api';
+20: import {RecordActivity} from './record-activity';
+21: import {RecordFoot} from './record-foot';
+22: import {dealInNow,RecordNextAction} from './record-next-action';
+23: import {RecordFrame,RecordTitle} from './record-page';
+24: import {useRefresh} from './use-refresh';
+25: 
+26: /** A record opened just after it was created puts the caret in its first empty field (SL9). */
+27: function useCaretOnCreate(ready:boolean){
+28:  const created=useRouterState({select:state=>Boolean((state.location.state as {created?:boolean}|undefined)?.created)});
+29:  useEffect(()=>{if(!ready||!created)return;const field=[...document.querySelectorAll<HTMLInputElement|HTMLTextAreaElement>('[data-testid="record-details"] :is(input:not([type=search]),textarea)')].find(element=>!element.value);field?.focus();},[ready,created]);
+30: }
+31: 
+32: /** A contact or a company at its own address: what waits for a person, the next action (their deal in NOW), activity
+33:  * with their mail, and their details beside the work, every value saving as it changes. */
+34: function CustomerRecordPage({kind}:{kind:'contact'|'company'}){const {full}=useAppAccess();return full?<EditableCustomerRecordPage kind={kind}/>:<ReadOnlyRecord kind={kind}/>;}
+35: function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
+36:  const {id}=useParams({strict:false}) as {id:string};
+37:  const load=useCallback(async()=>{
+38:   const [detail,settings,context]=await Promise.all([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
+39:   return {detail,settings,context};
+40:  },[kind,id]);
+41:  const resource=useOperatorResource(`${kind}:${id}`,load),data=resource.data,reload=resource.reload;
+42:  const definitions=useFieldDefinitions(kind),mail=useRecordMail(kind,id);
+43:  const recordCopy=useMemo(()=>data?recordValues(data.detail.record):null,[data?.detail]),contextCopy=useMemo(()=>data?.context?contactContextValues(data.context):null,[data?.context]);
+44:  const record=useAutosave<Values>({key:`${kind}.${id}`,copy:recordCopy,version:copy=>copy.updated_at,send:(changes,base,_copy,init)=>patchRecord(kind,id,changes,base,init),reread:async()=>recordValues((await readRecord<{record:Values}>(kind,id)).record),onSaved:reload});
+45:  const context=useAutosave<ContactContextValues>({key:`contact-context.${id}`,copy:contextCopy,send:(changes,_base,copy,init)=>saveContactContext(id,changes,copy,init),reread:async()=>contactContextValues(await readContext<ContactContext>('contact',id)),onSaved:reload});
+46:  const [writing,setWriting]=useState(false);
+47:  useRefresh(reload);
+48:  useCaretOnCreate(Boolean(data&&record.copy));
+49:  if(!data)return <OperatorShell title={kind==='contact'?'Contact':'Company'}>{resource.error?<OperatorState kind="error">{resource.error.message}</OperatorState>:<OperatorState>Loading {kind}…</OperatorState>}</OperatorShell>;
+50:  const {detail,settings}=data,row=detail.record,name=String(record.value('name')??row.name??row.email??(kind==='contact'?'This contact':'This company'));
+51:  const deal=dealInNow(detail.opportunities),blocked=kind==='contact'&&row.contactability==='do_not_contact';
+52:  const eyebrow=kind==='contact'&&detail.company?<Link className="r-eyebrow-link" to="/app/companies/$id" params={{id:detail.company.id}}>{detail.company.name}</Link>:<span>{kind==='contact'?'Contact':'Company'}</span>;
+53:  const required=kind==='company'?'A company needs a name.':String(record.value('email')??'').trim()?undefined:'A contact needs a name or an email.';
+54:  return <OperatorShell title={name} eyebrow={<span className="r-eyebrow">{eyebrow}<SavedLabel show={record.saved('name')}/></span>} heading={<RecordTitle form={record} field="name" label={kind==='contact'?'Contact name':'Company name'} required={required}/>}>
+55:   <RecordFrame
+56:    waiting={<><CaptureProposals whenWaiting recordType={kind} recordId={id} onChanged={reload}/><WorkflowRecordApprovals kind={kind} id={id} workspace={settings.workspace} onChanged={reload}/></>}
+57:    next={<><RecordNextAction name={kind==='contact'?String(row.name??row.email??'them').split(/\s+/)[0]!:name} deal={deal} workspace={settings.workspace} writing={writing} onWrite={()=>setWriting(!writing)} email={kind==='contact'?`Email ${String(row.name??row.email??'them').split(/\s+/)[0]}`:'Write an email'} newDeal={kind==='contact'?{contact:id}:{company:id}}
+58:      blocked={blocked?<div className="r-blocked"><p className="r-note r-note--danger">{name} is marked do not contact</p><DoNotContactReason record={row}/></div>:undefined}/>
+59:     {writing&&!blocked?<div className="r-composer"><RecordMailComposer kind={kind} id={id} context={mail.context} deal={deal?.id}/></div>:null}</>}
+60:    activity={<RecordActivity kind={kind} id={id} record={row} timeline={detail.timeline} contacts={detail.contacts} mail={mail.history} reloadMail={mail.reload} reload={()=>{reload();void mail.reload();}}/>}
+61:    details={<DetailsPanel>
+62:     {kind==='contact'?<ContactDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} context={context} onSaved={reload}/>:<CompanyDetails id={id} record={record} detail={detail} settings={settings} definitions={definitions} onSaved={reload}/>}
+63:     <RecordFoot kind={kind} id={id} name={name} record={row} onChanged={reload} deleteSentence={kind==='contact'?`Delete ${name} and permanently erase their personal history? This also clears notifications and AI error details for their linked opportunities, including shared opportunities. AI usage totals remain.`:`Delete ${name}?`}/>
+64:    </DetailsPanel>}
+65:   />
+66:  </OperatorShell>;
+67: }
+68: export const ContactRecordPage=()=><CustomerRecordPage kind="contact"/>;
+69: export const CompanyRecordPage=()=><CustomerRecordPage kind="company"/>;
+
+## src/core/features/operator/ui/use-operator-resource.ts (target SHA)
+
+1: import { useEffect, useState } from "react";
+2: import { notFound } from '@tanstack/react-router';
+3: 
+4: export interface ResourceState<T> {
+5:   data: T | null;
+6:   error: Error | null;
+7:   loading: boolean;
+8:   reload: () => void;
+9: }
+10: 
+11: export function useOperatorResource<T>(key: string, load: () => Promise<T>, initialData?: T): ResourceState<T> {
+12:   const [data, setData] = useState<T | null>(initialData ?? null);
+13:   const [failure, setFailure] = useState<{ key: string; error: Error } | null>(null);
+14:   const error = failure?.key === key ? failure.error : null;
+15:   const [request, setRequest] = useState(0);
+16: 
+17:   useEffect(() => {
+18:     let active = true;
+19:     // Retain the server-rendered result while refreshing this view.
+20:     setFailure(null);
+21: 
+22:     load().then(
+23:       (next) => { if (active) setData(next); },
+24:       (next: unknown) => { if (active) setFailure({ key, error: next instanceof Error ? next : new Error("Orbit could not load this view.") }); }
+25:     );
+26: 
+27:     return () => { active = false; };
+28:   }, [key, load, request]);
+29: 
+30:   // The main detail read owns the route's recovery state; nested panels keep their own errors.
+31:   if (error && (error as Error & { status?: number }).status === 404 && /^(opportunity|contact|company|draft|meeting|assistance):/.test(key)) {
+32:     throw notFound();
+33:   }
+34: 
+35:   return { data, error, loading: !data && !error, reload: () => setRequest((current) => current + 1) };
+36: }
+
+## src/core/features/operator/ui/record/record-api.ts (target SHA)
+
+1: import type {ContactContext,OpportunityContext} from '../../../relationships/contracts';
+2: import {SaveRefused,type SaveAnswer,type Values} from '../autosave/use-autosave';
+3: import type {RecordKind} from '../records-api';
+4: 
+5: /** One JSON request for a record page's saves: a refusal keeps the server's words, a 409 its current copy, which
+6:  * values turns from the server's row into the form's own values (the hook compares and sends again on those). */
+7: export async function saveRequest<T>(path:string,method:string,body:unknown,init:{keepalive?:boolean}={},values?:(row:Values)=>Values):Promise<T>{
+8:  const response=await fetch(`/api/v1/${path}`,{method,credentials:'same-origin',keepalive:init.keepalive,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+9:  const result=await response.json().catch(()=>({})) as T&{error?:string;current?:Values;changedBy?:string|null};
+10:  if(!response.ok)throw new SaveRefused(result.error??'Orbit refused this change.',response.status,result.current&&values?values(result.current):result.current,result.changedBy);
+11:  return result;
+12: }
+13: 
+14: /** A record's own values, saved one change at a time (PATCH, with the values each change replaces). */
+15: export async function patchRecord(kind:RecordKind,id:string,changes:Values,base:Values,init:{keepalive?:boolean}):Promise<SaveAnswer<Values>>{
+16:  const result=await saveRequest<{changed:boolean;record:Values}>(`records/${kind}/${id}`,'PATCH',{changes,base},init,recordValues);
+17:  return {copy:recordValues(result.record),changed:result.changed};
+18: }
+19: export async function readRecord<T=any>(kind:RecordKind,id:string):Promise<T>{
+20:  const response=await fetch(`/api/v1/records/${kind}/${id}`,{credentials:'same-origin'});
+21:  const result=await response.json().catch(()=>({})) as T&{error?:string};
+22:  if(!response.ok)throw Object.assign(new Error(result.error??'Orbit could not load this record.'),{status:response.status});
+23:  return result;
+24: }
+25: /** A record row as the fields a page saves: its columns, and each custom field as custom:<key>. */
+26: export function recordValues(row:Values):Values{
+27:  const custom=JSON.parse(row.custom_fields_json??'{}') as Values;
+28:  return {...row,...Object.fromEntries(Object.entries(custom).map(([key,value])=>[`custom:${key}`,value]))};
+29: }
+30: 
+31: /** A deal's or a contact's relationships, as the fields their page saves; products are one per line. */
+32: export type DealContextValues={revision:string;company:string|null;companyName:string;stakeholders:OpportunityContext['stakeholders'];products:string;nextStep:string;mutualCommitments:string};
+33: export type ContactContextValues={revision:string;primaryCompany:ContactContext['primaryCompany'];secondaryCompanies:ContactContext['secondaryCompanies']};
+34: export const dealContextValues=(context:OpportunityContext):DealContextValues=>({revision:context.revision,company:context.company?.id??null,companyName:context.company?.name??'',stakeholders:context.stakeholders,products:context.products.join('\n'),nextStep:context.nextStep,mutualCommitments:context.mutualCommitments});
+35: export const contactContextValues=(context:ContactContext):ContactContextValues=>({revision:context.revision,primaryCompany:context.primaryCompany,secondaryCompanies:context.secondaryCompanies});
+36: 
+37: export async function readContext<T>(kind:'opportunity'|'contact',id:string):Promise<T>{
+38:  const response=await fetch(`/api/v1/relationships/${kind}/${id}`,{credentials:'same-origin'});
+39:  const result=await response.json().catch(()=>({})) as T&{error?:string};
+40:  if(!response.ok)throw new Error(result.error??'Orbit could not load these relationships.');
+41:  return result;
+42: }
+43: /** The whole context with its revision, the one change applied (today's body); 409 when it changed meanwhile. */
+44: export async function saveDealContext(id:string,changes:Partial<DealContextValues>,copy:DealContextValues,init:{keepalive?:boolean}):Promise<SaveAnswer<DealContextValues>>{
+45:  const next={...copy,...changes},stakeholders=next.stakeholders;
+46:  const body={revision:copy.revision,companyId:next.company,primaryContactId:stakeholders.find(item=>item.isPrimary)?.contactId??stakeholders[0]?.contactId??null,
+47:   stakeholders:stakeholders.map(({contactId,roles,verified})=>({contactId,roles,verified})),
+48:   products:[...new Map(next.products.split('\n').map(item=>item.trim()).filter(Boolean).map(item=>[item.toLowerCase(),item])).values()],nextStep:next.nextStep,mutualCommitments:next.mutualCommitments};
+49:  const context=await saveRequest<OpportunityContext>(`relationships/opportunity/${id}`,'PUT',body,init);
+50:  return {copy:dealContextValues(context),changed:context.revision!==copy.revision};
+51: }
+52: export async function saveContactContext(id:string,changes:Partial<ContactContextValues>,copy:ContactContextValues,init:{keepalive?:boolean}):Promise<SaveAnswer<ContactContextValues>>{
+53:  const next={...copy,...changes};
+54:  const context=await saveRequest<ContactContext>(`relationships/contact/${id}`,'PUT',{revision:copy.revision,secondaryCompanies:next.secondaryCompanies.map(({companyId,verified})=>({companyId,verified}))},init);
+55:  return {copy:contactContextValues(context),changed:context.revision!==copy.revision};
+56: }
+
+## src/routes/-operator-detail.tsx (target SHA)
+
+1: import { Link, notFound } from '@tanstack/react-router';
+2: import { OperatorShell, OperatorState } from '../core/features/operator/ui/operator-shell';
+3: import { editorLeaf } from '../editor/leaf';
+4: 
+5: type DetailKind = 'opportunity' | 'contact' | 'company' | 'draft' | 'meeting' | 'assistance';
+6: 
+7: /** The noun a missing page names, and the list it offers as the way back. */
+8: const pages: Record<DetailKind, { noun: string; list: string; label: string }> = {
+9:   opportunity: { noun: 'opportunity', list: '/app/opportunities', label: 'Opportunities' },
+10:   contact: { noun: 'contact', list: '/app/contacts', label: 'Contacts' },
+11:   company: { noun: 'company', list: '/app/companies', label: 'Companies' },
+12:   draft: { noun: 'draft', list: '/app/drafts', label: 'Drafts' },
+13:   meeting: { noun: 'meeting', list: '/app/meetings', label: 'Meetings' },
+14:   assistance: { noun: 'opportunity', list: '/app/opportunities', label: 'Opportunities' },
+15: };
+16: 
+17: export function requireDetailId(id: string, kind: DetailKind) {
+18:   const valid = kind === 'meeting' ? /^[A-Za-z0-9_-]{1,100}$/ : /^[0-9A-HJKMNP-TV-Z]{26}$/;
+19:   if (!valid.test(id)) throw notFound();
+20: }
+21: 
+22: export function OperatorDetailState({ kind, missing = false }: { kind: DetailKind; missing?: boolean }) {
+23:   const page = pages[kind];
+24:   return <OperatorShell title={missing ? 'Not found' : page.noun[0]!.toUpperCase() + page.noun.slice(1)}>
+25:     <OperatorState kind="error">{missing ? `This ${page.noun} does not exist.` : `Orbit could not load this ${page.noun}.`} <Link className="operator-back-link" to={page.list}>← {page.label}</Link></OperatorState>
+26:   </OperatorShell>;
+27: }
+28: 
+29: export function operatorDetailErrors(kind: DetailKind) {
+30:   return {
+31:     notFoundComponent: editorLeaf(() => <OperatorDetailState kind={kind} missing />),
+32:     errorComponent: editorLeaf(() => <OperatorDetailState kind={kind} />),
+33:   };
+34: }
+
+## src/core/features/relationships/snapshot.ts (target SHA)
+
+1: import type {AuthenticatedOperator} from '../identity';
+2: import {RecordError} from '../records/shared';
+3: 
+4: const company=`(SELECT json_object('id',co.id,'name',co.name,'updatedAt',co.updated_at) FROM companies co WHERE co.id=r.company_id)`;
+5: const stakeholders=`(SELECT json_group_array(json(item)) FROM (
+6:  SELECT json_object('contactId',c.id,'name',c.name,'email',c.email,'contactability',c.contactability,
+7:  'companyId',c.company_id,'updatedAt',c.updated_at,'isPrimary',oc.is_primary,'createdAt',oc.created_at,
+8:  'roles',json(COALESCE(sr.roles_json,'[]')),'verified',COALESCE(sr.verified,0),
+9:  'verifiedBy',sr.verified_by,'verifiedAt',sr.verified_at,'roleUpdatedAt',sr.updated_at) AS item
+10:  FROM opportunity_contacts oc JOIN contacts c ON c.id=oc.contact_id
+11:  LEFT JOIN opportunity_stakeholder_roles sr ON sr.opportunity_id=oc.opportunity_id AND sr.contact_id=oc.contact_id
+12:  WHERE oc.opportunity_id=r.id ORDER BY c.id))`;
+13: const context=`(SELECT json_object('products',json(products_json),'nextStep',next_step,'mutualCommitments',mutual_commitments,'updatedAt',updated_at)
+14:  FROM opportunity_buying_context WHERE opportunity_id=r.id)`;
+15: const secondary=`(SELECT json_group_array(json(item)) FROM (
+16:  SELECT json_object('companyId',co.id,'name',co.name,'companyUpdatedAt',co.updated_at,
+17:  'verified',rel.verified,'verifiedBy',rel.verified_by,'verifiedAt',rel.verified_at,'updatedAt',rel.updated_at) AS item
+18:  FROM contact_company_relationships rel JOIN companies co ON co.id=rel.company_id
+19:  WHERE rel.contact_id=r.id ORDER BY co.id))`;
+20: 
+21: /** One SQL read captures the complete reviewed relationship state, including displayed identities. */
+22: export function snapshotSql(kind:'contact'|'opportunity'){
+23:  const detail=kind==='opportunity'
+24:   ?`'stakeholders',json(${stakeholders}),'context',json(${context}),'provenance',json((SELECT json_group_array(contact_id) FROM (SELECT contact_id FROM buying_context_contacts WHERE opportunity_id=r.id ORDER BY contact_id)))`
+25:   :`'secondaryCompanies',json(${secondary})`;
+26:  return `SELECT json_object('record',json_object('id',r.id,'updatedAt',r.updated_at,'companyId',r.company_id,${kind==='opportunity'?"'title',r.title":"'name',r.name,'email',r.email"}),
+27:  'company',json(${company}),${detail}) AS snapshot FROM ${kind==='opportunity'?'opportunities':'contacts'} r WHERE r.id=?`;
+28: }
+29: export async function snapshotRevision(snapshot:string){
+30:  const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(snapshot));
+31:  return Array.from(new Uint8Array(hash),value=>value.toString(16).padStart(2,'0')).join('');
+32: }
+33: export async function readSnapshot(db:D1Database,kind:'contact'|'opportunity',id:string){
+34:  const row=await db.prepare(snapshotSql(kind)).bind(id).first<{snapshot:string}>();
+35:  if(!row)throw new RecordError(404,'Record not found.');
+36:  return {raw:row.snapshot,state:JSON.parse(row.snapshot),revision:await snapshotRevision(row.snapshot)};
+37: }
+38: export function reviewedSnapshotFence(db:D1Database,kind:'contact'|'opportunity',id:string,raw:string){
+39:  return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'relationship_review',NULL WHERE COALESCE((${snapshotSql(kind)}),'')<>?`).bind(id,raw);
+40: }
+41: export function relationshipActorFence(db:D1Database,actor:AuthenticatedOperator){
+42:  return db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'relationship_authority',NULL WHERE NOT EXISTS(
+43:  SELECT 1 FROM operators o JOIN sessions s ON s.operator_id=o.id WHERE o.id=? AND o.status='active'
+44:  AND s.id=? AND s.revoked_at IS NULL AND s.expires_at>strftime('%Y-%m-%dT%H:%M:%fZ','now')
+45:  AND NOT EXISTS(SELECT 1 FROM access_collaborators c WHERE c.operator_id=o.id))`).bind(actor.operatorId,actor.sessionId);
+46: }
+47: export async function commitRelationships(db:D1Database,statements:D1PreparedStatement[]){
+48:  try{await db.batch(statements);}catch(error){
+49:   if(String(error).includes('runtime_controls.value')||String(error).includes('FOREIGN KEY')||String(error).includes('UNIQUE'))throw new RecordError(409,'The record, relationships or access changed. Reload and review before saving.');
+50:   throw error;
+51:  }
+52: }
+
+## tests/rer/operator-routes.mjs (target SHA)
+
+1: import {expect} from '@playwright/test';
+2: import {expectProvenance} from './operator-provenance.mjs';
+3: import {exerciseSourceRemoval} from './source-recipes.mjs';
+4: 
+5: async function expectRouteRecovery(page,f){
+6:  const origin=new URL(page.url()).origin;
+7:  for(const [path,destination] of [
+8:   ['/app/opportunities','/app/opportunities'],['/app/companies','/app/companies'],['/app/contacts','/app/contacts'],
+9:   ...['now','today','meetings','drafts','assistance'].map(name=>[`/app/${name}`,'/app']),
+10:  ]){
+11:   const response=await page.request.get(origin+path);
+12:   expect(response.status()).toBe(200);
+13:   const url=new URL(response.url());expect(url.pathname+url.search).toBe(destination);
+14:   await response.dispose();
+15:  }
+16:  // OR3: a record address with an id that is not a record says Not found in the frame and offers its kind's list.
+17:  const lists={opportunities:'/app/opportunities',contacts:'/app/contacts',companies:'/app/companies',meetings:'/app/meetings',drafts:'/app/drafts',assistance:'/app/opportunities'};
+18:  for(const kind of ['opportunities','contacts','companies','meetings','drafts','assistance']){
+19:   for(const id of ['invalid.id','00000000000000000000000000']){
+20:    if(!['contacts','companies'].includes(kind)){
+21:     const read=kind==='meetings'?`/api/v1/today/meetings/${id}`:kind==='drafts'?`/api/v1/drafts/${id}`:`/api/v1/opportunities/${id}`;
+22:     const response=await page.request.get(origin+read);expect(response.status()).toBe(404);await response.dispose();
+23:    }
+24:    if(kind==='opportunities'){
+25:     const drafts=await page.request.get(origin+`/api/v1/drafts?opportunityId=${id}`);expect(drafts.status()).toBe(404);await drafts.dispose();
+26:    }
+27:    await page.goto(origin+`/app/${kind}/${id}`);
+28:    await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+29:    if(['opportunities','contacts','companies'].includes(kind))await expect(page.getByRole('main').getByRole('alert')).toContainText(`This ${{opportunities:'opportunity',contacts:'contact',companies:'company'}[kind]} does not exist.`);
+30:    await expect(page.getByRole('main').locator('form')).toHaveCount(0);
+31:    const back=page.getByRole('main').locator(`a[href="${lists[kind]}"]`);await expect(back).toBeVisible();
+32:    if(kind==='opportunities'){
+33:     await back.click();await expect(page).toHaveURL(origin+'/app/opportunities');
+34:     const create=page.getByRole('link',{name:'New opportunity',exact:true});
+35:     await expect(create).toBeVisible();await expect(create).toHaveAttribute('href','/app/opportunities/new');
+36:    }
+37:   }
+38:  }
+39:  // OR1/OR2: every moved address answers one 308 straight to its new page, the query string kept as it came.
+40:  for(const [path,destination] of [
+41:   ['/app/now?x=1','/app?x=1'],['/app/settings?a=1&b=two','/app/settings/workspace?a=1&b=two'],['/app/sources','/app/settings/capture'],
+42:   ['/app/capture?connected=abc&result=%7B%22a%22%3A1%7D','/app/settings/capture?connected=abc&result=%7B%22a%22%3A1%7D'],
+43:   ['/app/capture/connect/google?step=5','/app/settings/capture/connect/google?step=5'],['/app/capture/review','/app/review'],
+44:   ['/app/forms','/app/settings/forms'],['/app/imports','/app/settings/data/import'],['/app/library','/app/settings/mail/library'],['/app/access','/app/settings/team'],
+45:   // OR3: Records' one address per kind and per record, every stored link landing in one hop.
+46:   ['/app/records','/app/opportunities'],['/app/records?kind=contact','/app/contacts'],['/app/records?kind=company&q=operator','/app/companies?q=operator'],
+47:   [`/app/records?kind=contact&record=${f.contactId}`,`/app/contacts/${f.contactId}`],[`/app/records?kind=company&record=${f.companyId}&from=brief`,`/app/companies/${f.companyId}?from=brief`],
+48:   [`/app/records?record=${f.opportunityId}`,`/app/opportunities/${f.opportunityId}`],['/app/records?kind=contact&record=not-an-id','/app/contacts'],
+49:   ['/app/new',`/app/opportunities/new`],[`/app/new?contact=${f.contactId}`,`/app/opportunities/new?contact=${f.contactId}`],
+50:  ]){
+51:   const moved=await page.request.get(origin+path,{maxRedirects:0});
+52:   expect(moved.status(),path).toBe(308);expect(moved.headers().location,path).toBe(destination);await moved.dispose();
+53:   const landed=await page.request.get(origin+destination,{maxRedirects:0});expect(landed.status(),destination).toBe(200);await landed.dispose();
+54:  }
+55:  await page.goto(origin+'/app');await page.getByTestId('now-queue').waitFor();
+56: }
+57: 
+58: export function operatorRoutes(f){return [
+59:  {name:'now',path:'/app',ready:async page=>{await page.getByTestId('now-queue').waitFor();await expectRouteRecovery(page,f);}},
+60:  {name:'brief',path:'/app/brief',ready:page=>page.getByTestId('today-brief').waitFor()},
+61:  {name:'tasks',path:'/app/tasks',ready:page=>page.getByTestId('sales-tasks').waitFor()},
+62:  {name:'review',path:'/app/review',ready:page=>page.getByRole('heading',{name:'Review',exact:true,level:1}).waitFor()},
+63:  {name:'imports',path:'/app/settings/data/import',ready:page=>page.getByRole('heading',{name:'Move in',exact:true,level:1}).waitFor()},
+64:  {name:'records',path:'/app/opportunities',ready:page=>page.locator('.operator-queue-card').first().waitFor()},
+65:  {name:'contacts',path:'/app/contacts',ready:page=>page.getByRole('link',{name:'New contact',exact:true}).waitFor()},
+66:  {name:'companies',path:'/app/companies',ready:page=>page.getByRole('link',{name:'New company',exact:true}).waitFor()},
+67:  {name:'new',path:'/app/opportunities/new',ready:page=>expect(page.getByRole('button',{name:'Save opportunity'})).toBeEnabled()},
+68:  {name:'contact',path:`/app/contacts/${f.contactId}`,ready:async page=>{await page.getByTestId('record-details').waitFor();await expectProvenance(page,f.provenance);}},
+69:  {name:'company',path:`/app/companies/${f.companyId}`,ready:page=>page.getByTestId('record-details').waitFor()},
+70:  {name:'contact-create',path:'/app/contacts',ready:async page=>{await page.getByRole('link',{name:'New contact',exact:true}).click();await page.getByLabel('Name',{exact:true}).waitFor();}},
+71:  {name:'company-create',path:'/app/companies',ready:async page=>{await page.getByRole('link',{name:'New company',exact:true}).click();await page.getByLabel('Name',{exact:true}).waitFor();}},
+72:  {name:'opportunity-create-existing',path:'/app/opportunities',ready:async page=>{await page.getByRole('link',{name:'New opportunity',exact:true}).click();await page.getByLabel('Opportunity title',{exact:true}).waitFor();await page.getByLabel('Company name',{exact:true}).fill('Operator');await page.getByRole('list',{name:'Company search results'}).getByRole('button').first().waitFor();}},
+73:  {name:'record-edit',path:`/app/contacts/${f.contactId}`,ready:async page=>{const title=page.getByLabel('Job title',{exact:true});await title.fill('Operations lead');await title.press('Enter');await expect(page.getByTestId('record-details').getByRole('status').filter({hasText:'Saved'})).toBeVisible();await expectProvenance(page,f.provenance);}},
+74:  {name:'settings-data',path:'/app/settings/data',ready:async page=>{await page.getByRole('heading',{name:'Duplicates',exact:true}).waitFor();await page.getByRole('heading',{name:'Export and restore',exact:true}).waitFor();}},
+75:  {name:'opportunity',path:`/app/opportunities/${f.opportunityId}`,ready:page=>page.getByTestId('next-action').waitFor()},
+76:  {name:'opportunity-audit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('next-action').waitFor();await page.getByTestId('recorded-details').getByText('Recorded details',{exact:true}).click();await page.getByRole('button',{name:'Add a note',exact:true}).click();await page.getByText('Log verified customer activity',{exact:true}).click();await page.getByRole('button',{name:'Write follow-up',exact:true}).click();await page.getByTestId('contributing-evidence').locator('summary').click();for(const details of await page.getByTestId('record-activity').getByText('Recorded details',{exact:true}).all())await details.click();}},
+77:  {name:'timeline-edit',path:`/app/opportunities/${f.opportunityId}`,ready:async page=>{await page.getByTestId('record-activity').getByText('Edit entry',{exact:true}).first().click();await expect(page.getByTestId('record-activity').getByLabel('Text',{exact:true})).toBeFocused();}},
+78:  {name:'draft',path:`/app/drafts/${f.draftId}`,ready:page=>page.getByTestId('draft-subject').waitFor()},
+79:  {name:'draft-audit',path:`/app/drafts/${f.draftId}`,ready:async page=>{await page.getByTestId('draft-subject').waitFor();await page.getByText('Audit details',{exact:true}).click();}},
+80:  {name:'assistance',path:`/app/assistance/${f.opportunityId}`,ready:page=>expect(page.getByRole('button',{name:'Preview request',exact:true})).toBeEnabled()},
+81:  {name:'assistance-preview',path:`/app/assistance/${f.opportunityId}`,ready:async page=>{await page.getByRole('button',{name:'Preview request',exact:true}).click();await page.getByText('View complete request',{exact:true}).click();await expectProvenance(page,f.provenance);}},
+82:  {name:'sources',path:'/app/settings/capture',ready:page=>page.getByRole('heading',{name:'Operator review source'}).waitFor()},
+83:  ...['website','calcom','calendly','automation'].map(recipe=>({name:`sources-${recipe}`,path:'/app/settings/capture',ready:async page=>{
+84:   await page.getByRole('button',{name:'Open recipes',exact:true}).click();await page.getByLabel('Recipe',{exact:true}).selectOption(['calcom','calendly'].includes(recipe)?'booking':recipe);
+85:   if(recipe==='website'){await page.getByText('Create or publish a form',{exact:true}).click();await page.getByText('Run a form submission in Node',{exact:true}).click();}
+86:   else if(recipe==='automation')await page.getByLabel('Automation platform',{exact:true}).selectOption('make');
+87:   else await page.getByLabel('Booking provider',{exact:true}).selectOption(recipe);
+88:  }})),
+89:  {name:'sources-disabled',path:'/app/settings/capture',ready:async page=>{await page.getByText('Advanced',{exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).click();await page.getByRole('button',{name:'Enable source',exact:true}).waitFor();await page.getByRole('button',{name:'Open recipes',exact:true}).click();await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeDisabled();},after:async page=>{await page.getByRole('button',{name:'Enable source',exact:true}).click();await page.getByRole('button',{name:'Disable source',exact:true}).waitFor();await exerciseSourceRemoval(page,f);}},
+90:  {name:'settings',path:'/app/settings/workspace',ready:page=>page.getByLabel('Name',{exact:true}).waitFor()},
+91:  {name:'settings-mail',path:'/app/settings#mail-sender',ready:async page=>{await expect(page).toHaveURL(/\/app\/settings\/mail$/);await page.getByRole('heading',{name:'Sender',exact:true}).waitFor();}},
+92:  ...['team','pipeline','integrations'].map(area=>({name:`settings-${area}`,path:`/app/settings/${area}`,ready:page=>page.getByRole('heading',{name:area[0].toUpperCase()+area.slice(1),exact:true,level:1}).waitFor()})),
+93:  {name:'notifications',path:'/app/notifications',ready:page=>page.getByRole('link',{name:'Operator review opportunity',exact:true}).first().waitFor()},
+94:  {name:'notification-target',path:'/app/notifications',ready:async page=>{
+95:   const before=await(await page.request.get('/api/v1/notifications')).json(),notification=before.notifications.find(item=>item.opportunityId===f.opportunityId);
+96:   await page.getByRole('link',{name:'Operator review opportunity',exact:true}).first().click();await page.getByTestId('next-action').waitFor();
+97:   await expect(page).toHaveURL(new RegExp(`/app/opportunities/${f.opportunityId}$`));
+98:   await expect.poll(async()=>(await(await page.request.get('/api/v1/notifications')).json()).notifications.find(item=>item.id===notification.id).readAt).toBeTruthy();
+99:  }},
+100:  // An old #forecast link lands where the install's currency allows: the forecast in USD, otherwise Reports itself.
+101:  {name:'reports',path:'/app/reports#forecast',ready:async page=>{
+102:   const {workspace}=await(await page.request.get('/api/v1/settings')).json();await expect(page).toHaveURL(new RegExp(workspace.currency==='USD'?'/app/reports/forecast$':'/app/reports$'));
+103:   await page.goto(new URL('/app/reports/open-opportunities',page.url()).href);await page.getByRole('button',{name:'Report options',exact:true}).click();await page.getByRole('button',{name:'Reopen saved report'}).first().click();await page.getByText('How this report is calculated',{exact:true}).click();
+104:   await page.goto(new URL('/app/reports',page.url()).href);await page.getByRole('button',{name:'New',exact:true}).click();await page.getByRole('menuitem',{name:'New custom report',exact:true}).click();await page.getByRole('dialog',{name:'New custom report',exact:true}).waitFor();
+105:  }},
+106:  {name:'forms',path:'/app/settings/forms',ready:async page=>{await page.getByRole('button',{name:'Reopen latest publication'}).first().click();await page.frameLocator('iframe[title="Compiled landing page preview"]').getByRole('heading',{name:'Tell us about your team',exact:true}).waitFor();await page.getByRole('button',{name:'Read submissions'}).first().click();await page.getByText('A form submission shown as labelled values.',{exact:true}).waitFor();}},
+107:  {name:'access',path:'/app/settings/team',ready:page=>page.getByRole('button',{name:'Revoke grant',exact:true}).waitFor()},
+108:  {name:'shared',path:`/app/shared-records?kind=contact&id=${f.contactId}`,ready:async page=>{await page.getByRole('region',{name:'Shared record details'}).waitFor();await expectProvenance(page,f.provenance);}},
+109:  {name:'delegation-settings',path:'/delegation/settings',ready:page=>page.getByRole('heading',{name:'Delegations',exact:true}).waitFor()},
+110:  {name:'delegation-authorize',path:f.authorize,ready:page=>page.getByRole('button',{name:'Allow selected access',exact:true}).waitFor()},
+111:  ];}
+
+## .github/workflows/verify.yml (target SHA)
+
+1: name: Verify
+2: on:
+3:   push:
+4:   pull_request:
+5:   # Installer and README clone journeys run nightly and on release tags, not on every push.
+6:   schedule:
+7:     - cron: '54 5 * * 1,4'
+8:   workflow_dispatch:
+9:     inputs:
+10:       release:
+11:         description: Run the complete release qualification, including full declared capacity
+12:         type: boolean
+13:         default: false
+14: concurrency:
+15:   group: verify-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == 'refs/heads/main' && github.run_id || github.event.pull_request.number || github.ref }}
+16:   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+17: permissions:
+18:   contents: read
+19: env:
+20:   ORBIT_BROWSER_PORT: '15600'
+21:   ORBIT_ARCHIVE_PORT: '15601'
+22:   ORBIT_DELEGATION_PORT: '15602'
+23:   ORBIT_VIEWPORT_PORT: '15603'
+24:   ORBIT_RECORD_LAYOUT_PORT: '15604'
+25:   ORBIT_RELATED_RECORD_PORT: '15605'
+26:   PROOF_PORT: '15606'
+27:   ORBIT_LIFECYCLE_PORT: '15608'
+28:   # Let workerd allocate inspector sockets independently of its internal sockets.
+29:   ORBIT_INSPECTOR_PORT: '0'
+30:   ORBIT_VIEWPORT_INSPECTOR_PORT: '0'
+31:   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: '0'
+32:   ORBIT_RELATED_RECORD_INSPECTOR_PORT: '0'
+33:   WRANGLER_SEND_METRICS: 'false'
+34: jobs:
+35:   plan:
+36:     runs-on: ubuntu-24.04
+37:     timeout-minutes: 30
+38:     permissions:
+39:       contents: read
+40:       actions: read
+41:     outputs:
+42:       skip: ${{ steps.plan.outputs.skip }}
+43:       coverage: ${{ steps.plan.outputs.coverage }}
+44:       tier: ${{ steps.plan.outputs.tier }}
+45:       readers: ${{ steps.plan.outputs.readers }}
+46:       matrix: ${{ steps.plan.outputs.matrix }}
+47:       journeys: ${{ steps.plan.outputs.journeys }}
+48:     steps:
+49:       - uses: actions/checkout@v4
+50:         with:
+51:           fetch-depth: 2
+52:           persist-credentials: false
+53:       - uses: pnpm/action-setup@v4
+54:         with:
+55:           run_install: false
+56:       - uses: actions/setup-node@v4
+57:         with:
+58:           node-version-file: .node-version
+59:       - name: Set runner-owned pnpm store
+60:         run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+61:       - name: Install the plan's TypeScript reader
+62:         run: pnpm install --frozen-lockfile --ignore-scripts
+63:       - name: Look up complete nightly marker
+64:         id: nightly
+65:         if: github.event_name == 'schedule'
+66:         uses: actions/cache/restore@v4
+67:         with:
+68:           path: ${{ runner.temp }}/nightly-green
+69:           key: nightly-green-${{ github.sha }}
+70:           lookup-only: true
+71:       - id: plan
+72:         name: Select coverage with Base's planner and Orbit's unchanged partitions
+73:         env:
+74:           GITHUB_TOKEN: ${{ github.token }}
+75:           TIER: ${{ github.event_name == 'workflow_dispatch' && inputs.release && 'all' || 'push' }}
+76:           NIGHTLY_CACHE_HIT: ${{ steps.nightly.outputs.cache-hit }}
+77:         run: node --import ./scripts/verify-plan.mjs scripts/verification-ci.mjs --plan
+78:   source:
+79:     name: source and shared build
+80:     needs: plan
+81:     if: needs.plan.outputs.coverage == 'full'
+82:     runs-on: ubuntu-24.04
+83:     timeout-minutes: 15
+84:     steps:
+85:       - uses: actions/checkout@v4
+86:         with:
+87:           fetch-depth: 0
+88:           persist-credentials: false
+89:       - uses: pnpm/action-setup@v4
+90:         with:
+91:           run_install: false
+92:       - uses: actions/setup-node@v4
+93:         with:
+94:           node-version-file: .node-version
+95:       - name: Set runner-owned pnpm store
+96:         run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+97:       - uses: actions/cache@v4
+98:         with:
+99:           path: ${{ runner.temp }}/pnpm-store
+100:           key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+101:       - run: pnpm install --frozen-lockfile
+102:       - name: Verify source, types, boundaries and the single shared app build
+103:         run: node scripts/verification-shard.mjs source
+104:       - name: Retain clean authoritative source candidate
+105:         env:
+106:           GIT_ALLOW_PROTOCOL: file
+107:         run: |
+108:           node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check > /tmp/source-check.json
+109:           pnpm exec rer describe --json > /tmp/operations.json
+110:           node node_modules/@runeditrun/rer/edition-authoring/cli.mjs release /tmp/orbit-source-release > /tmp/source-release.json
+111:           git -C /tmp/orbit-source-release bundle create /tmp/orbit-source.bundle --all
+112:       - name: Seal the emitted app for this exact commit
+113:         run: |
+114:           node scripts/verification-build.mjs seal
+115:           tar -cf "$RUNNER_TEMP/orbit-build.tar" dist .wrangler/deploy verification/shared-build.json
+116:       - uses: actions/upload-artifact@v4
+117:         with:
+118:           name: orbit-shared-build
+119:           path: ${{ runner.temp }}/orbit-build.tar
+120:           if-no-files-found: error
+121:       - name: Retain source shard completion
+122:         if: always()
+123:         uses: actions/upload-artifact@v4
+124:         with:
+125:           name: orbit-shard-source
+126:           path: verification/ci-shards/source.json
+127:           if-no-files-found: error
+128:       - name: Retain authoritative source candidate
+129:         if: always()
+130:         uses: actions/upload-artifact@v4
+131:         with:
+132:           name: orbit-authoritative-source
+133:           path: |
+134:             /tmp/orbit-source.bundle
+135:             /tmp/source-check.json
+136:             /tmp/source-release.json
+137:           if-no-files-found: error
+138:   shards:
+139:     name: shards (${{ matrix.batch }})
+140:     needs: [plan, source]
+141:     if: needs.plan.outputs.coverage == 'full'
+142:     env:
+143:       ORBIT_VERIFY_PREBUILT: '1'
+144:       ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
+145:       ORBIT_VERIFY_TIER: ${{ needs.plan.outputs.tier }}
+146:     runs-on: ubuntu-24.04
+147:     timeout-minutes: 90
+148:     strategy:
+149:       fail-fast: false
+150:       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+151:     steps:
+152:       - uses: actions/checkout@v4
+153:         with:
+154:           fetch-depth: 0
+155:           persist-credentials: false
+156:       - uses: pnpm/action-setup@v4
+157:         with:
+158:           run_install: false
+159:       - uses: actions/setup-node@v4
+160:         with:
+161:           node-version-file: .node-version
+162:       - name: Set runner-owned pnpm store
+163:         run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+164:       - uses: actions/cache@v4
+165:         with:
+166:           path: ${{ runner.temp }}/pnpm-store
+167:           key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+168:       - name: Install pinned package CLI for every shard
+169:         run: pnpm install --frozen-lockfile
+170:       - uses: actions/download-artifact@v4
+171:         with:
+172:           name: orbit-shared-build
+173:           path: ${{ runner.temp }}/orbit-build
+174:       - name: Restore the exact-commit build
+175:         run: |
+176:           tar -xf "$RUNNER_TEMP/orbit-build/orbit-build.tar"
+177:           node scripts/verification-build.mjs check
+178:       - name: Check fixed verification ports are outside automatic allocation
+179:         run: |
+180:           read -r ephemeral_first ephemeral_last < /proc/sys/net/ipv4/ip_local_port_range
+181:           read -r unprivileged_first < /proc/sys/net/ipv4/ip_unprivileged_port_start
+182:           for port in "$ORBIT_BROWSER_PORT" "$ORBIT_ARCHIVE_PORT" "$ORBIT_DELEGATION_PORT" "$ORBIT_VIEWPORT_PORT" "$ORBIT_RECORD_LAYOUT_PORT" "$ORBIT_RELATED_RECORD_PORT" "$PROOF_PORT" "$((PROOF_PORT + 1))" "$ORBIT_LIFECYCLE_PORT"; do
+183:             if (( port < unprivileged_first || (port >= ephemeral_first && port <= ephemeral_last) )); then
+184:               printf 'Verification port %s conflicts with host allocation policy (%s-%s, unprivileged from %s).\n' "$port" "$ephemeral_first" "$ephemeral_last" "$unprivileged_first" >&2
+185:               exit 1
+186:             fi
+187:           done
+188:       - name: Set runner-owned browser cache
+189:         run: printf 'PLAYWRIGHT_BROWSERS_PATH=%s/ms-playwright\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+190:       - name: Cache fallback apt archives
+191:         if: matrix.browsers
+192:         uses: actions/cache@v4
+193:         with:
+194:           path: |
+195:             ${{ runner.temp }}/ms-playwright
+196:             ${{ runner.temp }}/rer-apt/archives/*.deb
+197:           key: chromium-ubuntu24-temp-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
+198:       - name: Install Chromium
+199:         if: matrix.browsers
+200:         run: |
+201:           set -euo pipefail
+202:           pnpm exec playwright install chromium
+203:           pnpm exec node scripts/chromium-probe.mjs || \
+204:             sudo env "PATH=$PATH" "APT_ARCHIVES=$RUNNER_TEMP/rer-apt/archives" python3 scripts/install-chromium-deps.py
+205:       # rer refuses to start local servers below 15 GiB free; the archive lineage needs more.
+206:       # Remove unused toolchains only until 25 GiB is free.
+207:       - name: Reserve disk for local servers and immutable archive lineage
+208:         if: matrix.disk
+209:         run: |
+210:           free_kib() { df -Pk / | awk 'END { print $4 }'; }
+211:           for unused in /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift; do
+212:             if [ "$(free_kib)" -ge "$((25 * 1024 * 1024))" ]; then break; fi
+213:             sudo rm -rf -- "$unused"
+214:           done
+215:           df -h /
+216:       - name: Verify routine product shard
+217:         run: node scripts/verification-batch.mjs '${{ toJSON(matrix.shards) }}'
+218:       - name: Retain rer startup diagnostics
+219:         if: failure()
+220:         uses: actions/upload-artifact@v4
+221:         with:
+222:           name: orbit-startup-diagnostics-${{ matrix.batch }}
+223:           path: verification/startup-diagnostics/
+224:           if-no-files-found: ignore
+225:       - name: Retain shard completion
+226:         if: always()
+227:         uses: actions/upload-artifact@v4
+228:         with:
+229:           name: orbit-shard-${{ matrix.batch }}
+230:           path: verification/ci-shards/*.json
+231:           if-no-files-found: error
+232:       - name: Retain product execution evidence
+233:         if: always()
+234:         uses: actions/upload-artifact@v4
+235:         with:
+236:           name: orbit-evidence-${{ matrix.batch }}
+237:           path: |
+238:             verification/
+239:             test-results/
+240:             .orbit-viewport-evidence/
+241:           include-hidden-files: true
+242:           if-no-files-found: error
+243:   light:
+244:     needs: plan
+245:     if: needs.plan.outputs.coverage == 'light'
+246:     runs-on: ubuntu-24.04
+247:     timeout-minutes: 12
+248:     steps:
+249:       - uses: actions/checkout@v4
+250:         with:
+251:           persist-credentials: false
+252:       - uses: actions/setup-node@v4
+253:         with:
+254:           node-version-file: .node-version
+255:       - uses: pnpm/action-setup@v4
+256:         with:
+257:           run_install: false
+258:       - run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+259:       - run: pnpm install --frozen-lockfile
+260:       - name: Check source, command contract, reviewed readers and built run site
+261:         env:
+262:           LIGHT_READERS: ${{ needs.plan.outputs.readers }}
+263:         run: node scripts/verification-ci.mjs --light
+264:   full-push-proof:
+265:     needs: [plan, verify]
+266:     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && needs.plan.outputs.tier == 'push' && needs.plan.outputs.coverage == 'full' && needs.verify.result == 'success'
+267:     runs-on: ubuntu-24.04
+268:     steps:
+269:       - run: test '${{ needs.verify.result }}' = success
+270:   nightly-proof:
+271:     needs: [plan, verify]
+272:     if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && (needs.plan.outputs.tier == 'nightly' || needs.plan.outputs.tier == 'all') && needs.plan.outputs.coverage == 'full' && needs.verify.result == 'success'
+273:     runs-on: ubuntu-24.04
+274:     steps:
+275:       - run: mkdir -p "$RUNNER_TEMP/nightly-green" && printf '%s\n' '${{ github.sha }}' > "$RUNNER_TEMP/nightly-green/sha"
+276:       - uses: actions/cache/save@v4
+277:         with:
+278:           path: ${{ runner.temp }}/nightly-green
+279:           key: nightly-green-${{ github.sha }}
+280:   verify:
+281:     needs: [plan, source, shards, light]
+282:     if: always()
+283:     runs-on: ubuntu-24.04
+284:     env:
+285:       ORBIT_VERIFY_PREBUILT: '1'
+286:     steps:
+287:       - name: Require a successful plan and all required work
+288:         env:
+289:           PLAN: ${{ needs.plan.result }}
+290:           SKIP: ${{ needs.plan.outputs.skip }}
+291:           COVERAGE: ${{ needs.plan.outputs.coverage }}
+292:           LIGHT: ${{ needs.light.result }}
+293:           SOURCE: ${{ needs.source.result }}
+294:           SHARDS: ${{ needs.shards.result }}
+295:         run: |
+296:           test "$PLAN" = success
+297:           case "$COVERAGE" in
+298:             reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;
+299:             light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;
+300:             full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;
+301:             *) exit 1 ;;
+302:           esac
+303:       - if: needs.plan.outputs.coverage == 'full'
+304:         uses: actions/checkout@v4
+305:         with:
+306:           persist-credentials: false
+307:       - if: needs.plan.outputs.coverage == 'full'
+308:         uses: actions/setup-node@v4
+309:         with:
+310:           node-version-file: .node-version
+311:       - if: needs.plan.outputs.coverage == 'full'
+312:         uses: pnpm/action-setup@v4
+313:         with:
+314:           run_install: false
+315:       - if: needs.plan.outputs.coverage == 'full'
+316:         run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store" && pnpm install --frozen-lockfile --ignore-scripts
+317:       - if: needs.plan.outputs.coverage == 'full'
+318:         uses: actions/download-artifact@v4
+319:         with:
+320:           pattern: orbit-shard-*
+321:           path: verification/ci-shards
+322:           merge-multiple: true
+323:       - if: needs.plan.outputs.coverage == 'full'
+324:         name: Require every planned shard on this commit
+325:         env:
+326:           ORBIT_VERIFY_JOURNEYS: ${{ needs.plan.outputs.journeys }}
+327:           ORBIT_VERIFY_TIER: ${{ needs.plan.outputs.tier }}
+328:         run: |
+329:           test '${{ needs.shards.result }}' = success
+330:           node scripts/verification-aggregate.mjs
+331:       - name: Retain combined routine verdicts (capacity pending)
+332:         if: always() && needs.plan.outputs.coverage == 'full'
+333:         uses: actions/upload-artifact@v4
+334:         with:
+335:           name: orbit-routine-verification
+336:           path: |
+337:             verification/core-results.jsonl
+338:             verification/ci-summary.json
+339:           if-no-files-found: error
+340:   release:
+341:     if: github.event_name == 'workflow_dispatch' && inputs.release && needs.plan.outputs.skip != 'true'
+342:     needs: [plan, verify]
+343:     runs-on: ubuntu-24.04
+344:     timeout-minutes: 360
+345:     steps:
+346:       - uses: actions/checkout@v4
+347:         with:
+348:           fetch-depth: 0
+349:           persist-credentials: false
+350:       - uses: actions/setup-node@v4
+351:         with:
+352:           node-version-file: .node-version
+353:       - uses: pnpm/action-setup@v4
+354:         with:
+355:           run_install: false
+356:       - name: Check fixed verification ports are outside automatic allocation
+357:         run: |
+358:           read -r ephemeral_first ephemeral_last < /proc/sys/net/ipv4/ip_local_port_range
+359:           read -r unprivileged_first < /proc/sys/net/ipv4/ip_unprivileged_port_start
+360:           for port in "$ORBIT_BROWSER_PORT" "$ORBIT_ARCHIVE_PORT" "$ORBIT_DELEGATION_PORT" "$ORBIT_VIEWPORT_PORT" "$ORBIT_RECORD_LAYOUT_PORT" "$ORBIT_RELATED_RECORD_PORT" "$PROOF_PORT" "$((PROOF_PORT + 1))" "$ORBIT_LIFECYCLE_PORT"; do
+361:             if (( port < unprivileged_first || (port >= ephemeral_first && port <= ephemeral_last) )); then
+362:               printf 'Verification port %s conflicts with host allocation policy (%s-%s, unprivileged from %s).\n' "$port" "$ephemeral_first" "$ephemeral_last" "$unprivileged_first" >&2
+363:               exit 1
+364:             fi
+365:           done
+366:       - name: Set runner-owned pnpm store
+367:         run: pnpm config set store-dir "$RUNNER_TEMP/pnpm-store"
+368:       - uses: actions/cache@v4
+369:         with:
+370:           path: ${{ runner.temp }}/pnpm-store
+371:           key: orbit-ubuntu24-temp-pnpm-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+372:       - run: pnpm install --frozen-lockfile
+373:       - name: Set runner-owned browser cache
+374:         run: printf 'PLAYWRIGHT_BROWSERS_PATH=%s/ms-playwright\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+375:       - name: Cache fallback apt archives
+376:         uses: actions/cache@v4
+377:         with:
+378:           path: |
+379:             ${{ runner.temp }}/ms-playwright
+380:             ${{ runner.temp }}/rer-apt/archives/*.deb
+381:           key: chromium-ubuntu24-temp-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'scripts/install-chromium-deps.py') }}
+382:       - name: Install Chromium
+383:         run: |
+384:           set -euo pipefail
+385:           pnpm exec playwright install chromium
+386:           pnpm exec node scripts/chromium-probe.mjs || \
+387:             sudo env "PATH=$PATH" "APT_ARCHIVES=$RUNNER_TEMP/rer-apt/archives" python3 scripts/install-chromium-deps.py
+388:       - name: Reserve disk for full-capacity D1 roundtrip
+389:         run: |
+390:           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/share/swift
+391:           df -h /
+392:           node --input-type=module -e 'import {statfsSync} from "node:fs"; import {tmpdir} from "node:os"; const stats=statfsSync(tmpdir()); const bytes=stats.bavail*stats.bsize; console.log(JSON.stringify({temporaryFilesystem:tmpdir(),availableGiB:bytes/1024**3})); if(bytes<30*1024**3)throw Error("Full-capacity D1 verification requires at least 30 GiB free before datasets are built.");'
+393:       - name: Complete routine and unchanged full-capacity release qualification
+394:         run: pnpm run verify:release
+395:       - name: Retain complete release execution evidence
+396:         if: always()
+397:         uses: actions/upload-artifact@v4
+398:         with:
+399:           name: orbit-release-verification
+400:           path: verification/
+401:           include-hidden-files: true
+402:           if-no-files-found: error

@@ -1,0 +1,27 @@
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3223935Z ✖ failing tests:
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3224265Z 
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3224571Z test at tests/rer/operator-desktop.test.mjs:7:1
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3225736Z ✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (89874.43923ms)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3226647Z   Error: expect(locator).toContainText(expected) failed
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3227212Z   
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3227590Z   Locator: getByRole('main').getByRole('alert')
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3228101Z   Expected substring: "This contact does not exist."
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3228621Z   Received string:    "Record not found."
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3229051Z   Timeout: 5000ms
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3229327Z   
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3229617Z   Call log:
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3230058Z     - Expect "toContainText" getByRole('main').getByRole('alert') with timeout 5000ms
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3230635Z     - waiting for getByRole('main').getByRole('alert')
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3231461Z       14 × locator resolved to <p role="alert" class="operator-state operator-state--error">Record not found.</p>
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3232148Z          - unexpected value "Record not found."
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3232507Z   
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3233249Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3234684Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3236343Z       at Object.toContainText (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3237636Z       at expectRouteRecovery (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-routes.mjs:29:119)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3238605Z       at async Object.ready (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-routes.mjs:59:91)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3239627Z       at async operatorRouteJourney (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-route-journey.mjs:11:63)
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3254525Z       at async withOperatorWorkspace (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3259072Z     matcherResult: { name: 'toContainText', expected: 'This contact does not exist.', message: `expect(locator).toContainText(expected) failed\n\nLocator: getByRole('main').getByRole('alert')\nExpected substring: "This contact does not exist."\nReceived string:    "Record not found."\nTimeout: 5000ms\n\nCall log:\n  - Expect "toContainText" getByRole('main').getByRole('alert') with timeout 5000ms\n  - waiting for getByRole('main').getByRole('alert')\n    14 × locator resolved to <p role="alert" class="operator-state operator-state--error">Record not found.</p>\n       - unexpected value "Record not found."\n`, pass: false, actual: 'Record not found.', log: [ `  - Expect "toContainText" getByRole('main').getByRole('alert') with timeout 5000ms`, "  - waiting for getByRole('main').getByRole('alert')", '    14 × locator resolved to <p role="alert" class="operator-state operator-state--error">Record not found.</p>', '       - unexpected value "Record not found."' ], timeout: 5000, ariaSnapshot: '- alert: Record not found.' }
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.3262369Z   }
+shards (batch-13)	Verify routine product shard	2026-11-13T00:25:25.4079622Z ##[error]Process completed with exit code 1.

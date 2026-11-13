@@ -1,0 +1,22 @@
+{
+  "clause_status_before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_changes": [],
+  "product_commits": 0,
+  "product_files_changed": 0,
+  "original_product_shards": {
+    "passed": 18,
+    "failed": 2,
+    "total": 20
+  },
+  "retry_results_pending": true,
+  "clause_total": 204
+}
