@@ -1,0 +1,9 @@
+$ node /home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs check-prose
+WARN PUBLIC-001 d record-placement CONTRACT.md:690: matched "This target-contract round leaves the approved homepage and app interface untouched"; source: Orbit d4a8bf1 F8 (line 76)
+WARN PUBLIC-002 d record-placement CONTRACT.md:697: matched "This deliberately replaces the former dedicated hosted-record walkthrough"; source: Orbit d4a8bf1 F8 (line 76)
+WARN DELEGATE-001 d record-placement CONTRACT.md:739: matched "Full verification includes the delegation D1, archive and native-browser regressions as well as all retained contract gates."; source: Orbit d4a8bf1 F8 (line 76)
+WARN TEAM-008 b base-duty CONTRACT.md:783: matched "Permission changes apply on the next request"; source: Orbit d4a8bf1 F5 (line 70)
+WARN RECORD-021 b base-duty CONTRACT.md:845: matched "Assignment never grants access"; source: Orbit d4a8bf1 F5 (line 70)
+Contract prose: 0 errors, 5 warnings.
+
+EXIT=0

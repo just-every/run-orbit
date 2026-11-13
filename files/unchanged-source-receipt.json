@@ -1,0 +1,32 @@
+[
+  {
+    "path": "CONTRACT.md",
+    "before_blob": "c5e1855eac1c82bf4b0aa271c8693c4062e11810",
+    "after_blob": "c5e1855eac1c82bf4b0aa271c8693c4062e11810",
+    "unchanged": true
+  },
+  {
+    "path": "ACCEPTANCE.md",
+    "before_blob": "75c7228e91ca7fbf5797e4fb7dd1932460fff5fa",
+    "after_blob": "75c7228e91ca7fbf5797e4fb7dd1932460fff5fa",
+    "unchanged": true
+  },
+  {
+    "path": "docs/CLAIMS.md",
+    "before_blob": "ddb2e57217698215404d7560d7135283f7aebf59",
+    "after_blob": "ddb2e57217698215404d7560d7135283f7aebf59",
+    "unchanged": true
+  },
+  {
+    "path": "package.json",
+    "before_blob": "71ef7003e0daa2085766ae2d0e5fa47dd4d20531",
+    "after_blob": "71ef7003e0daa2085766ae2d0e5fa47dd4d20531",
+    "unchanged": true
+  },
+  {
+    "path": "rer-project.json",
+    "before_blob": "6fbafe77ae5deea1cb665a94b98d15707c80465c",
+    "after_blob": "6fbafe77ae5deea1cb665a94b98d15707c80465c",
+    "unchanged": true
+  }
+]

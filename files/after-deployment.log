@@ -1,0 +1,25 @@
+$ pnpm deployment:check
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.8 deployment:check /tmp/orbit-anchor-after-fmdc2atz
+> node scripts/publish-deployment-spec.mjs --check
+
+ ELIFECYCLE  Command failed with exit code 1.
+node:internal/fs/promises:1086
+  const result = await PromisePrototypeThen(
+                 ^
+
+Error: ENOENT: no such file or directory, lstat '/tmp/orbit-anchor-after-fmdc2atz/dist'
+    at async lstat (node:internal/fs/promises:1086:18)
+    at async sourcePath (file:///tmp/orbit-anchor-after-fmdc2atz/scripts/delivery/base/migrations.mjs:24:18)
+    at async deploymentSpec (file:///tmp/orbit-anchor-after-fmdc2atz/scripts/delivery/base/spec.mjs:129:16)
+    at async file:///tmp/orbit-anchor-after-fmdc2atz/scripts/publish-deployment-spec.mjs:11:14 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'lstat',
+  path: '/tmp/orbit-anchor-after-fmdc2atz/dist'
+}
+
+Node.js v24.19.0
+
+EXIT=1

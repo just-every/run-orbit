@@ -1,0 +1,3 @@
+$ pnpm exec rer check --profile first-party
+
+EXIT=0

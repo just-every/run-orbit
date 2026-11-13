@@ -1,0 +1,223 @@
+{
+  "scanner": "gitleaks 8.30.1 dir --redact",
+  "total_findings": 36,
+  "unexplained_findings": 0,
+  "public_source_hash_false_positives": [
+    {
+      "file": "lock-generation.log",
+      "line": 71,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 127,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 169,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 215,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 261,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 290,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 456,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 561,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "lock-generation.log",
+      "line": 594,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 72,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 128,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 170,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 216,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 262,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 291,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 457,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 562,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-before.log",
+      "line": 595,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 73,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 129,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 171,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 217,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 263,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 292,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 458,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 563,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "candidate-scratch-source.log",
+      "line": 596,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 72,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 128,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 170,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 216,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 262,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 291,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 457,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 562,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    },
+    {
+      "file": "source-check-final.log",
+      "line": 595,
+      "rule": "generic-api-key",
+      "disposition": "public content-addressed source snapshot key; exact match in origin/main:sources.lock.json"
+    }
+  ]
+}

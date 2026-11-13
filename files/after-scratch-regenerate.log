@@ -1,0 +1,4 @@
+$ node /home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs write
+Wrote 1 contract documents.
+
+EXIT=0

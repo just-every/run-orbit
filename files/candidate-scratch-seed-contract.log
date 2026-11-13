@@ -1,0 +1,4 @@
+$ node src/base/contract-docs.mjs check
+Contract documents are current.
+
+EXIT=0

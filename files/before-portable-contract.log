@@ -1,0 +1,6 @@
+$ node /home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs check
+docs/contract/ANCHOR.json: contract_anchor_missing: original 28a1db90f135fe783af1c30ba3cf33c339405f9a is unavailable; record it with anchor --old <ref> in a checkout with history. Command failed: git rev-parse --verify --end-of-options 28a1db90f135fe783af1c30ba3cf33c339405f9a^{commit}
+fatal: Needed a single revision
+
+
+EXIT=1

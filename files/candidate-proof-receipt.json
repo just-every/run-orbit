@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "utc": "2026-11-13T14:08:20Z",
+  "product_head": "099ffe089261c51f7d3e1316ab5cf6a28151181a",
+  "product_tree": "40e5dcdf91c00d1e96526ace86c76e32f1c80749",
+  "scratch_tree": "40e5dcdf91c00d1e96526ace86c76e32f1c80749",
+  "commits": 2,
+  "remotes": [],
+  "original_commit_available": false,
+  "results": [
+    {
+      "label": "candidate-scratch-source",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit_code": 0,
+      "log": "candidate-scratch-source.log"
+    },
+    {
+      "label": "candidate-scratch-seed-contract",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit_code": 0,
+      "log": "candidate-scratch-seed-contract.log"
+    },
+    {
+      "label": "candidate-scratch-portable-prose",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check-prose"
+      ],
+      "exit_code": 0,
+      "log": "candidate-scratch-portable-prose.log"
+    },
+    {
+      "label": "candidate-scratch-portable-contract",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit_code": 1,
+      "log": "candidate-scratch-portable-contract.log"
+    }
+  ]
+}

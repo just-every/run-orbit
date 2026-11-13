@@ -1,0 +1,9 @@
+$ pnpm check:boundaries
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.8 check:boundaries /tmp/orbit-anchor-after-fmdc2atz
+> node scripts/check-boundaries.mjs
+
+Boundary check passed for 875 core source files.
+
+EXIT=0

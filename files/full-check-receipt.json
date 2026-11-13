@@ -1,0 +1,45 @@
+[
+  {
+    "label": "full-seed-contract",
+    "command": [
+      "node",
+      "src/base/contract-docs.mjs",
+      "check"
+    ],
+    "exit_code": 0,
+    "utc": "2026-11-13T14:05:08Z",
+    "log": "full-seed-contract.log"
+  },
+  {
+    "label": "full-portable-prose",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+      "check-prose"
+    ],
+    "exit_code": 0,
+    "utc": "2026-11-13T14:05:08Z",
+    "log": "full-portable-prose.log"
+  },
+  {
+    "label": "full-portable-contract",
+    "command": [
+      "node",
+      "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+      "check"
+    ],
+    "exit_code": 1,
+    "utc": "2026-11-13T14:05:08Z",
+    "log": "full-portable-contract.log"
+  },
+  {
+    "label": "full-typecheck",
+    "command": [
+      "pnpm",
+      "typecheck"
+    ],
+    "exit_code": 0,
+    "utc": "2026-11-13T14:05:38Z",
+    "log": "full-typecheck.log"
+  }
+]

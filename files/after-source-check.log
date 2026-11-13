@@ -1,0 +1,4 @@
+$ node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
+Stale lock or source/tool integrity mismatch; run changes to inspect intentional edits before lock
+
+EXIT=1

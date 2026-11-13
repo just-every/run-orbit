@@ -1,0 +1,10 @@
+{
+  "repository": "just-every/run-lamp",
+  "path": "docs/contract/ANCHOR.json",
+  "read_method": "gh api contents; no clone or write",
+  "schema": 1,
+  "original_commit": "0c54dbcd4352babe9163e1600b6b7c3e0c8d760e",
+  "objects": 6,
+  "sha256": "419a62e6fa4ad52f5ff577d684c2919207c8626bb88518f7b762cd45aa64175f",
+  "format": "Base anchor --old <original contract revision>; schema/commit/objects with exact Git commit, trees and source blobs encoded in base64"
+}

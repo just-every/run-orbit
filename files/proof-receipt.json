@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "base": "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7",
+  "original": "28a1db90f135fe783af1c30ba3cf33c339405f9a",
+  "anchor_sha256": "6c54c227b280f193219b584cb6c38be2ec1a46bb36deef98b1db8a4715635419",
+  "results": [
+    {
+      "label": "before-isolation",
+      "cwd": "/tmp/orbit-anchor-before-uw74gb70",
+      "commits": 2,
+      "remotes": [],
+      "original_commit_available": false,
+      "tree": "afce991db721a5d55152466ba487ebe6dbfdbc16"
+    },
+    {
+      "label": "before-literal-brief-path",
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-before-uw74gb70",
+      "utc": "2026-11-13T14:06:27Z",
+      "exit_code": 1,
+      "log": "before-literal-brief-path.log"
+    },
+    {
+      "label": "before-seed-contract",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-before-uw74gb70",
+      "utc": "2026-11-13T14:06:28Z",
+      "exit_code": 0,
+      "log": "before-seed-contract.log"
+    },
+    {
+      "label": "before-portable-prose",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check-prose"
+      ],
+      "cwd": "/tmp/orbit-anchor-before-uw74gb70",
+      "utc": "2026-11-13T14:06:28Z",
+      "exit_code": 1,
+      "log": "before-portable-prose.log"
+    },
+    {
+      "label": "before-portable-contract",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-before-uw74gb70",
+      "utc": "2026-11-13T14:06:28Z",
+      "exit_code": 1,
+      "log": "before-portable-contract.log"
+    },
+    {
+      "label": "before-finished",
+      "commits": 2,
+      "remotes": []
+    },
+    {
+      "label": "after-isolation",
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "commits": 2,
+      "remotes": [],
+      "original_commit_available": false,
+      "tree": "aea84092e9087959d16807df2745b0a0306fc15b"
+    },
+    {
+      "label": "after-literal-brief-path",
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:33Z",
+      "exit_code": 1,
+      "log": "after-literal-brief-path.log"
+    },
+    {
+      "label": "after-seed-contract",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:33Z",
+      "exit_code": 0,
+      "log": "after-seed-contract.log"
+    },
+    {
+      "label": "after-portable-prose",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check-prose"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:33Z",
+      "exit_code": 0,
+      "log": "after-portable-prose.log"
+    },
+    {
+      "label": "after-portable-contract",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:34Z",
+      "exit_code": 1,
+      "log": "after-portable-contract.log"
+    },
+    {
+      "label": "after-source-check",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:34Z",
+      "exit_code": 1,
+      "log": "after-source-check.log"
+    },
+    {
+      "label": "after-rer-check",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:35Z",
+      "exit_code": 0,
+      "log": "after-rer-check.log"
+    },
+    {
+      "label": "after-boundaries",
+      "command": [
+        "pnpm",
+        "check:boundaries"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:37Z",
+      "exit_code": 0,
+      "log": "after-boundaries.log"
+    },
+    {
+      "label": "after-manifest",
+      "command": [
+        "pnpm",
+        "check:manifest"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:38Z",
+      "exit_code": 0,
+      "log": "after-manifest.log"
+    },
+    {
+      "label": "after-deployment",
+      "command": [
+        "pnpm",
+        "deployment:check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:39Z",
+      "exit_code": 1,
+      "log": "after-deployment.log"
+    },
+    {
+      "label": "after-typecheck",
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:06:39Z",
+      "exit_code": 0,
+      "log": "after-typecheck.log"
+    },
+    {
+      "label": "after-scratch-regenerate",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "write"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:07:06Z",
+      "exit_code": 0,
+      "log": "after-scratch-regenerate.log"
+    },
+    {
+      "label": "after-regenerated-portable-contract",
+      "command": [
+        "node",
+        "/home/agent/rer-consolidation/work/sd-orbit-contract-anchor-2/run-orbit/node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/tmp/orbit-anchor-after-fmdc2atz",
+      "utc": "2026-11-13T14:07:06Z",
+      "exit_code": 0,
+      "log": "after-regenerated-portable-contract.log"
+    },
+    {
+      "label": "scratch-regeneration-only",
+      "contract_sha256_unchanged": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
+      "product_views_modified": false,
+      "explanation": "Only disposable scratch generated views were regenerated; no generated views committed or changed in the product checkout."
+    },
+    {
+      "label": "after-finished",
+      "commits": 2,
+      "remotes": []
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+$ pnpm check:manifest
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.8 check:manifest /tmp/orbit-anchor-after-fmdc2atz
+> node tools/seed-schema/validate.mjs --schema SEED seed.json
+
+ok   seed.json
+1/1 valid against tools/seed-schema/SEED.schema.json
+
+EXIT=0
