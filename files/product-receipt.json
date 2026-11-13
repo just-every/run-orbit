@@ -1,0 +1,55 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-timeline-tasks-1",
+  "base_main": "008e46c",
+  "initial_product_head": "99f031c34ec8c1fb85c72100cb0c85725f6699b4",
+  "final_product_head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+  "pushes": [
+    {
+      "head": "99f031c34ec8c1fb85c72100cb0c85725f6699b4",
+      "status": "success",
+      "guard": "cloud-push.py",
+      "attempt": 1
+    },
+    {
+      "head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "status": "success",
+      "guard": "cloud-push.py",
+      "attempt": 1
+    }
+  ],
+  "identity_audit": "all candidate authors and committers Run Edit Run fleet <fleet@runeditrun.com>; no trailers; no published history rewritten",
+  "local_checks": {
+    "first_browser_journey": "passed, 1 test, 29.7 seconds; total command 1.6 minutes",
+    "typecheck": "passed",
+    "rer_build": "passed",
+    "source_lock_check": "passed",
+    "test_budget": {
+      "before": 200,
+      "after": 200,
+      "cap": 200
+    },
+    "post_integration_browser": {
+      "head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "status": "passed",
+      "expected": 1,
+      "unexpected": 0,
+      "duration_ms": 91655.313,
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "sandbox_flag": "--no-sandbox"
+    },
+    "post_integration_typecheck": {
+      "head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "status": "passed",
+      "node": "22.20.0"
+    }
+  },
+  "publication_scan": "fleet Mac lander required; no Mac publication scan run in cloud",
+  "pr": null,
+  "terminal_custody": "READY",
+  "ci_run_id": 43363443202,
+  "ci_conclusion": "success",
+  "ci_head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+  "github_calls": 10
+}

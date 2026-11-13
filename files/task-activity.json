@@ -1,0 +1,157 @@
+{
+  "events": [
+    {
+      "id": "01M79HGVJ87VZ0WF0BP9C1GET3",
+      "kind": "task.created",
+      "occurred_at": "2026-11-13T04:09:16.082Z",
+      "recorded_at": "2026-11-13T04:09:16.082Z",
+      "actor_type": "operator",
+      "actor_id": "01J00000000000000000000998",
+      "source": "tasks",
+      "payload_json": "{\"taskId\":\"01M79HGVFTHZ50XCFE1VNVSCQB\",\"title\":\"Prepare clinic follow-up 1794542955053\",\"ownerId\":\"01J00000000000000000000998\",\"dueAt\":\"2026-11-13T04:09:16.082Z\",\"priority\":\"normal\",\"type\":\"follow_up\",\"status\":\"open\",\"seriesId\":\"01M79HGVFTC2QAHEJ9YF90ZYX3\",\"occurrence\":0}",
+      "actor_name": "API guide owner",
+      "source_name": null,
+      "signal_type": null
+    },
+    {
+      "id": "01M79HGV9P251321BPZE7WKVF7",
+      "kind": "task.completed",
+      "occurred_at": "2026-11-13T04:09:15.830Z",
+      "recorded_at": "2026-11-13T04:09:15.830Z",
+      "actor_type": "operator",
+      "actor_id": "01J00000000000000000000998",
+      "source": "tasks",
+      "payload_json": "{\"taskId\":\"01M79HGTT7D4T492J2V9SHJS4M\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"previousOwnerId\":null,\"dueAt\":\"2027-03-07T14:00:00.000Z\",\"previousDueAt\":\"2027-03-07T14:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"completed\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":0}",
+      "actor_name": "API guide owner",
+      "source_name": null,
+      "signal_type": null
+    },
+    {
+      "id": "01M79HGV9SYXVRAPFHEJM2BQH3",
+      "kind": "task.created",
+      "occurred_at": "2026-11-13T04:09:15.830Z",
+      "recorded_at": "2026-11-13T04:09:15.830Z",
+      "actor_type": "operator",
+      "actor_id": "01J00000000000000000000998",
+      "source": "tasks",
+      "payload_json": "{\"taskId\":\"01M79HGV9SYPR544V2MCHK65NH\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"dueAt\":\"2027-03-14T13:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"open\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":1,\"reason\":\"Next recurring occurrence\"}",
+      "actor_name": "API guide owner",
+      "source_name": null,
+      "signal_type": null
+    },
+    {
+      "id": "01M79HGTT7594V3ZNR825QJTK2",
+      "kind": "task.created",
+      "occurred_at": "2026-11-13T04:09:15.335Z",
+      "recorded_at": "2026-11-13T04:09:15.335Z",
+      "actor_type": "operator",
+      "actor_id": "01J00000000000000000000998",
+      "source": "tasks",
+      "payload_json": "{\"taskId\":\"01M79HGTT7D4T492J2V9SHJS4M\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"dueAt\":\"2027-03-07T14:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"open\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":0}",
+      "actor_name": "API guide owner",
+      "source_name": null,
+      "signal_type": null
+    }
+  ],
+  "presentation": [
+    {
+      "id": "01M79HGVJ87VZ0WF0BP9C1GET3",
+      "kind": "task.created",
+      "occurredAt": "2026-11-13T04:09:16.082Z",
+      "recordedAt": "2026-11-13T04:09:16.082Z",
+      "actorType": "operator",
+      "actorName": "API guide owner",
+      "sourceName": "Tasks",
+      "payloadJson": "{\"taskId\":\"01M79HGVFTHZ50XCFE1VNVSCQB\",\"title\":\"Prepare clinic follow-up 1794542955053\",\"ownerId\":\"01J00000000000000000000998\",\"dueAt\":\"2026-11-13T04:09:16.082Z\",\"priority\":\"normal\",\"type\":\"follow_up\",\"status\":\"open\",\"seriesId\":\"01M79HGVFTC2QAHEJ9YF90ZYX3\",\"occurrence\":0}",
+      "payload": {
+        "taskId": "01M79HGVFTHZ50XCFE1VNVSCQB",
+        "title": "Prepare clinic follow-up 1794542955053",
+        "ownerId": "01J00000000000000000000998",
+        "dueAt": "2026-11-13T04:09:16.082Z",
+        "priority": "normal",
+        "type": "follow_up",
+        "status": "open",
+        "seriesId": "01M79HGVFTC2QAHEJ9YF90ZYX3",
+        "occurrence": 0
+      }
+    },
+    {
+      "id": "01M79HGV9P251321BPZE7WKVF7",
+      "kind": "task.completed",
+      "occurredAt": "2026-11-13T04:09:15.830Z",
+      "recordedAt": "2026-11-13T04:09:15.830Z",
+      "actorType": "operator",
+      "actorName": "API guide owner",
+      "sourceName": "Tasks",
+      "payloadJson": "{\"taskId\":\"01M79HGTT7D4T492J2V9SHJS4M\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"previousOwnerId\":null,\"dueAt\":\"2027-03-07T14:00:00.000Z\",\"previousDueAt\":\"2027-03-07T14:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"completed\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":0}",
+      "payload": {
+        "taskId": "01M79HGTT7D4T492J2V9SHJS4M",
+        "title": "Call clinic about rollout 1794542955053",
+        "ownerId": null,
+        "previousOwnerId": null,
+        "dueAt": "2027-03-07T14:00:00.000Z",
+        "previousDueAt": "2027-03-07T14:00:00.000Z",
+        "priority": "normal",
+        "type": "call",
+        "status": "completed",
+        "seriesId": "01M79HGTT7XZ5DY28G4SY328RZ",
+        "occurrence": 0
+      }
+    },
+    {
+      "id": "01M79HGV9SYXVRAPFHEJM2BQH3",
+      "kind": "task.created",
+      "occurredAt": "2026-11-13T04:09:15.830Z",
+      "recordedAt": "2026-11-13T04:09:15.830Z",
+      "actorType": "operator",
+      "actorName": "API guide owner",
+      "sourceName": "Tasks",
+      "payloadJson": "{\"taskId\":\"01M79HGV9SYPR544V2MCHK65NH\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"dueAt\":\"2027-03-14T13:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"open\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":1,\"reason\":\"Next recurring occurrence\"}",
+      "payload": {
+        "taskId": "01M79HGV9SYPR544V2MCHK65NH",
+        "title": "Call clinic about rollout 1794542955053",
+        "ownerId": null,
+        "dueAt": "2027-03-14T13:00:00.000Z",
+        "priority": "normal",
+        "type": "call",
+        "status": "open",
+        "seriesId": "01M79HGTT7XZ5DY28G4SY328RZ",
+        "occurrence": 1,
+        "reason": "Next recurring occurrence"
+      }
+    },
+    {
+      "id": "01M79HGTT7594V3ZNR825QJTK2",
+      "kind": "task.created",
+      "occurredAt": "2026-11-13T04:09:15.335Z",
+      "recordedAt": "2026-11-13T04:09:15.335Z",
+      "actorType": "operator",
+      "actorName": "API guide owner",
+      "sourceName": "Tasks",
+      "payloadJson": "{\"taskId\":\"01M79HGTT7D4T492J2V9SHJS4M\",\"title\":\"Call clinic about rollout 1794542955053\",\"ownerId\":null,\"dueAt\":\"2027-03-07T14:00:00.000Z\",\"priority\":\"normal\",\"type\":\"call\",\"status\":\"open\",\"seriesId\":\"01M79HGTT7XZ5DY28G4SY328RZ\",\"occurrence\":0}",
+      "payload": {
+        "taskId": "01M79HGTT7D4T492J2V9SHJS4M",
+        "title": "Call clinic about rollout 1794542955053",
+        "ownerId": null,
+        "dueAt": "2027-03-07T14:00:00.000Z",
+        "priority": "normal",
+        "type": "call",
+        "status": "open",
+        "seriesId": "01M79HGTT7XZ5DY28G4SY328RZ",
+        "occurrence": 0
+      }
+    }
+  ],
+  "expected": [
+    "entry-01M79HGVJ87VZ0WF0BP9C1GET3",
+    "entry-01M79HGV9P251321BPZE7WKVF7",
+    "entry-01M79HGV9SYXVRAPFHEJM2BQH3",
+    "entry-01M79HGTT7594V3ZNR825QJTK2"
+  ],
+  "actual": [
+    "entry-01M79HGVJ87VZ0WF0BP9C1GET3",
+    "entry-01M79HGV9P251321BPZE7WKVF7",
+    "entry-01M79HGV9SYXVRAPFHEJM2BQH3",
+    "entry-01M79HGTT7594V3ZNR825QJTK2"
+  ]
+}

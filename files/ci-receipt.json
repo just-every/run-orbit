@@ -1,0 +1,2753 @@
+{
+  "github_calls": 10,
+  "discovered_at_epoch": 1794542875.6456554,
+  "head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+  "runs": [
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "id": 43363443202,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "last_polled_at_epoch": 1794545581.9209943,
+  "polls": [
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363443202",
+      "status": "completed"
+    }
+  ],
+  "job_observation": {
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 131682156349,
+        "name": "plan",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install the plan's TypeScript reader",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Look up complete nightly marker",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Select coverage with Base's planner and Orbit's unchanged partitions",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131682309109,
+        "name": "source and shared build",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm install --frozen-lockfile",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify source, types, boundaries and the single shared app build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain clean authoritative source candidate",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Seal the emitted app for this exact commit",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain source shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain authoritative source candidate",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "skipped",
+        "id": 131682310866,
+        "name": "light",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539742,
+        "name": "shards (batch-0)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": null,
+        "id": 131683539774,
+        "name": "shards (batch-3)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539778,
+        "name": "shards (batch-4)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539780,
+        "name": "shards (batch-12)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539787,
+        "name": "shards (batch-1)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539790,
+        "name": "shards (batch-11)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539799,
+        "name": "shards (batch-15)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539800,
+        "name": "shards (batch-17)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539805,
+        "name": "shards (batch-2)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539807,
+        "name": "shards (batch-5)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539826,
+        "name": "shards (batch-13)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539835,
+        "name": "shards (batch-6)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539841,
+        "name": "shards (batch-8)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539847,
+        "name": "shards (batch-16)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539867,
+        "name": "shards (batch-10)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539874,
+        "name": "shards (batch-7)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539893,
+        "name": "shards (batch-18)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539895,
+        "name": "shards (batch-19)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539910,
+        "name": "shards (batch-9)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "id": 131683539911,
+        "name": "shards (batch-14)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "success",
+            "name": "Set up job",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned pnpm store",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install pinned package CLI for every shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Restore the exact-commit build",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Check fixed verification ports are outside automatic allocation",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Set runner-owned browser cache",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Install Chromium",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Reserve disk for local servers and immutable archive lineage",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          },
+          {
+            "conclusion": "skipped",
+            "name": "Retain rer startup diagnostics",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain shard completion",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Retain product execution evidence",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Cache fallback apt archives",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/cache@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "name": "Complete job",
+            "status": "completed"
+          }
+        ]
+      }
+    ]
+  }
+}

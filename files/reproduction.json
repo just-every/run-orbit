@@ -1,0 +1,13 @@
+{
+  "base": "current main",
+  "rows": [
+    {
+      "kind": "manual",
+      "text": "Activity\nLog a call\nPlan a meeting\nAdd a note\nCall\n\nRecorded by Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM\nCall\n\nRecorded by Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM\nCall\n\nRecorded by Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM\nRecord Created\n\nBy Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM"
+    },
+    {
+      "kind": "workflow",
+      "text": "Activity\nLog a call\nPlan a meeting\nAdd a note\nFollow Up\n\nRecorded by Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM\nRecord Created\n\nBy Synthetic Orbit seller\n\nRecorded details\n11/13/2026, 4:02 AM"
+    }
+  ]
+}

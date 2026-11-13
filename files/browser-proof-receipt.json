@@ -1,0 +1,50 @@
+{
+  "repository": "just-every/run-orbit",
+  "before_main": "0e9e55cf150dfcc781d1d9e62b2d88c15c9b6a63",
+  "after_head": "0fcca5ff82580014891e6d4932a86e9f995605fb",
+  "screenshots": [
+    {
+      "file": "before-manual-1440.png",
+      "bytes": 39251,
+      "sha256": "fa73a814d52aaa8bb3337b4eb23a641fb584958247159719f329437db1677bb0",
+      "width": 846,
+      "height": 395
+    },
+    {
+      "file": "before-manual-390.png",
+      "bytes": 37598,
+      "sha256": "c10d900df30f046325a3c4586589cd1dbeddd8d93589a303420ecabb49988e0d",
+      "width": 350,
+      "height": 492
+    },
+    {
+      "file": "before-workflow-1440.png",
+      "bytes": 22838,
+      "sha256": "fc714f0513726a8581f21e0f81316cbc26b61c7ebcf4875cc0f635fd69d93952",
+      "width": 846,
+      "height": 224
+    },
+    {
+      "file": "before-workflow-390.png",
+      "bytes": 22276,
+      "sha256": "6a6ca32c64c9fba2437adf162ee3af4e0e8eb225c2aa9bff03d2ea72e75768d9",
+      "width": 350,
+      "height": 295
+    },
+    {
+      "file": "task-activity-1440.png",
+      "bytes": 90933,
+      "sha256": "29f3f4672e1a5e8d92f6263959d571ee4e0208525a3df90c4edec6a06c26af48",
+      "width": 846,
+      "height": 740
+    },
+    {
+      "file": "task-activity-390.png",
+      "bytes": 90467,
+      "sha256": "0aef62e78c1893b3c0cb86ada24eedf1855ca4a4a9880a61472b23acf4c72b0b",
+      "width": 350,
+      "height": 982
+    }
+  ],
+  "scenario": "Linked deal activity after a weekly task completes and an activated workflow creates a task"
+}
