@@ -2,8 +2,11 @@ import { createManagedOutboundMail, ManagedMailError } from './managed-outbound-
 import { validateRerConfig } from '../../base/modules/mail/src/adapters/rer/contract.mjs';
 import { sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
+export interface OutboundMailBinding{id:string;operator_id:string;message_id:string;mailbox_source_id?:string|null;mailbox_connection_id?:string|null;mailbox_address?:string|null}
 export interface OutboundMail {
- provider?:'rer'|'sendgrid'|'development';
+ available?:(operatorId:string)=>Promise<boolean>;
+ resolve?:(message:OutboundMailBinding)=>Promise<OutboundMail>;
+ provider?:'rer'|'sendgrid'|'development'|'gmail'|'microsoft';
  optOutOrigin?:string;
  send(input:{id:string;recipient_email:string;subject:string;body:string;message_id?:string;reference_ids?:string;idempotency_key?:string;opt_out?:boolean;opt_out_url?:string}):Promise<{providerMessageId:string|null;messageId?:string}>;
  lookup?(idempotencyKey:string):Promise<{providerMessageId:string}|undefined>;

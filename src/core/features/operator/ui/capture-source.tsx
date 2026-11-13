@@ -62,6 +62,9 @@ export function CaptureSource({
   const busy = syncPending || scopePending || disconnectPending;
   const scopeLifetime = workLifetime.current;
   const isCurrent = (lifetime: number) => mounted.current && lifetime === workLifetime.current;
+  const [sendAuth,setSendAuth]=useState<{address:string;state:string;current:number;retryAt:string|null}|null>(null);
+  useEffect(()=>{let active=true;if(isCaptureProvider(source.adapter))void fetch(`/api/v1/capture/sources/${source.id}/send-authorization`).then(async response=>{if(response.ok){const value=await response.json() as {authorization:typeof sendAuth};if(active)setSendAuth(value.authorization);}});return()=>{active=false;};},[source.id,source.state]);
+  async function revokeSend(){try{const response=await fetch(`/api/v1/capture/sources/${source.id}/revoke-send`,{method:'POST'});if(!response.ok)throw new Error('Send authorization could not be revoked.');setSendAuth(value=>value?{...value,state:'paused'}:null);onChanged();}catch(error){setActionError((error as Error).message);}}
   const oauth = isCaptureProvider(source.adapter);
   const accessRevoked = isRevokedSource(source);
   const needsReconnect = source.state === 'disconnected' || accessRevoked || source.state === 'error' || !source.has_credential;
@@ -138,6 +141,8 @@ export function CaptureSource({
       <div><h3>{source.name}</h3><p>{kinds[source.adapter] ?? source.adapter}</p></div>
       <span className={`capture-source-status${isUnavailableSource(source) ? ' capture-source-status--outage' : accessRevoked ? ' capture-source-status--revoked' : ''}`}>{statusLabel(source, receivesMail)}</span>
     </div>
+    {oauth&&<section aria-label="Mailbox sending"><p>{sendAuth?.state==='authorized'&&sendAuth.current?<><strong>Send as {sendAuth.address}</strong> · Separate send authorization{sendAuth.retryAt&&Date.parse(sendAuth.retryAt)>Date.now()?` · Deferred until ${sendAuth.retryAt}`:''}</>:'Mailbox sending paused. Read access and calendar permissions do not authorize sending.'}</p>
+      {sendAuth?.state==='authorized'&&sendAuth.current?<button type="button" onClick={()=>void revokeSend()}>Revoke send authorization</button>:source.adapter==='google'&&!needsReconnect?<a href={`/app/settings/capture/connect/google?step=5&source=${encodeURIComponent(source.id)}`}>Authorize mailbox sending</a>:null}</section>}
     <dl className="records-detail-list">
       <div><dt>Last success</dt><dd>{when(source.last_success_at)}</dd></div>
       <div><dt>Captured</dt><dd>{source.captured_count}</dd></div>

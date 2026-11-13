@@ -5,18 +5,19 @@ export const declaredUsers=25,perUserPerMinute=4,defaultSharedPerMinute=declared
 export const sharedLimitSql=`COALESCE((SELECT value FROM sending_limits WHERE id='shared'),${defaultSharedPerMinute})`;
 /** The one-to-one budget of the sender named by a SQL expression (a column or a bound parameter). */
 export const oneToOneLimitSql=(operator:string)=>`COALESCE((SELECT value FROM sending_limits WHERE id='one-to-one:'||${operator}),${defaultOneToOnePerDay})`;
+export const installationBudgetPredicate="id IN(SELECT id FROM outbound_installation_delivery_budget)";
 const windows=(now:Date)=>({minute:new Date(now.getTime()-60000).toISOString(),day:new Date(now.getTime()-86400000).toISOString()});
 async function freedAt(db:D1Database,where:string,binds:unknown[],over:number,period:number){
  const row=await db.prepare(`SELECT claimed_at FROM outbound_delivery_budget WHERE ${where} ORDER BY claimed_at LIMIT 1 OFFSET ?`).bind(...binds,over).first<{claimed_at:string}>();
  return row?Date.parse(row.claimed_at)+period:0;
 }
 /** Which limit holds this sender's next message, in words, and when it may be sent; null when none is reached. */
-export async function deferral(db:D1Database,operatorId:string,now=new Date()){
+export async function deferral(db:D1Database,operatorId:string,now=new Date(),mailbox=false){
  const {minute,day}=windows(now);
- const row=(await db.prepare(`SELECT ${sharedLimitSql} AS shared,${oneToOneLimitSql('?1')} AS budget,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE claimed_at>?2) AS sharedUsed,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE operator_id=?1 AND claimed_at>?3) AS budgetUsed`).bind(operatorId,minute,day).first<{shared:number;budget:number;sharedUsed:number;budgetUsed:number}>())!;
+ const row=(await db.prepare(`SELECT ${sharedLimitSql} AS shared,${oneToOneLimitSql('?1')} AS budget,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE ${installationBudgetPredicate} AND claimed_at>?2) AS sharedUsed,(SELECT COUNT(*) FROM outbound_delivery_budget WHERE operator_id=?1 AND claimed_at>?3) AS budgetUsed`).bind(operatorId,minute,day).first<{shared:number;budget:number;sharedUsed:number;budgetUsed:number}>())!;
  const limits:string[]=[];let retry=now.getTime();
  if(row.budgetUsed>=row.budget){limits.push(`this sender's one-to-one budget of ${row.budget} messages a rolling day`);retry=Math.max(retry,await freedAt(db,'operator_id=? AND claimed_at>?',[operatorId,day],row.budgetUsed-row.budget,86400000));}
- if(row.sharedUsed>=row.shared){limits.push(`the shared sending rate of ${row.shared} messages a minute`);retry=Math.max(retry,await freedAt(db,'claimed_at>?',[minute],row.sharedUsed-row.shared,60000));}
+ if(!mailbox&&row.sharedUsed>=row.shared){limits.push(`the shared sending rate of ${row.shared} messages a minute`);retry=Math.max(retry,await freedAt(db,installationBudgetPredicate+' AND claimed_at>?',[minute],row.sharedUsed-row.shared,60000));}
  return limits.length?{failure:`Sending limit reached: ${limits.join(' and ')}. Review and retry after the displayed time.`,retryAt:new Date(retry).toISOString()}:null;
 }
 async function requireOwner(db:D1Database,actor:string){

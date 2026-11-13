@@ -40,12 +40,12 @@ export function captureConnectionFence(db:D1Database,source:{id:string;adapter:s
   .bind(source.id,source.adapter,source.state,source.connection_id,source.ciphertext);
 }
 /** Connect a provider adapter with its credential. The credential is sealed and never leaves the installation. */
-export async function connectSource(db:D1Database,input:{id:string;adapter:string;name:string;scope:CaptureScope;credential:string},security:SourceSecurity,actor:string,fences:D1PreparedStatement[]=[]){
+export async function connectSource(db:D1Database,input:{id:string;adapter:string;name:string;scope:CaptureScope;credential:string},security:SourceSecurity,actor:string,fences:D1PreparedStatement[]=[],after:(connection:string)=>D1PreparedStatement[]=()=>[]){
  if(!/^capture-[a-z0-9-]{1,60}$/.test(input.id)||input.id===FILE_SOURCE_ID)throw new CaptureError(400,'Choose a capture source ID.');
  const at=new Date().toISOString(),connection=createId();
  await registerBatch(db,[...fences,...await register(db,input,connection,at),
   db.prepare('INSERT INTO capture_credentials(source_id,ciphertext,updated_at) VALUES(?,?,?) ON CONFLICT(source_id) DO UPDATE SET ciphertext=excluded.ciphertext,updated_at=excluded.updated_at').bind(input.id,await security.seal(input.credential),at),
-  audit(db,actor,'capture.connected','capture_source',input.id,{adapter:input.adapter,scope:input.scope})]);
+  audit(db,actor,'capture.connected','capture_source',input.id,{adapter:input.adapter,scope:input.scope}),...after(connection)]);
 }
 /** Disconnecting stops intake at once, deletes the credential and keeps what was already captured. */
 export async function disconnectSource(db:D1Database,id:string,actor:string,fences:D1PreparedStatement[]=[]){
