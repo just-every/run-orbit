@@ -8,6 +8,19 @@ export interface ResourceState<T> {
   reload: () => void;
 }
 
+/** Required detail reads run together, but response timing never chooses the route's
+ * recovery state. A missing record wins; otherwise keep the first error in read
+ * order (primary first). Optional panels handle their own refusals before joining. */
+export async function readOperatorResource<T extends readonly unknown[] | []>(reads: T): Promise<{ -readonly [K in keyof T]: Awaited<T[K]> }> {
+  const results = await Promise.allSettled(reads);
+  const failures: PromiseRejectedResult[] = [];
+  for (const result of results) if (result.status === 'rejected') failures.push(result);
+  const missing = failures.find(result => result.reason?.status === 404);
+  if (missing) throw missing.reason;
+  if (failures[0]) throw failures[0].reason;
+  return Promise.all(reads);
+}
+
 export function useOperatorResource<T>(key: string, load: () => Promise<T>, initialData?: T): ResourceState<T> {
   const [data, setData] = useState<T | null>(initialData ?? null);
   const [failure, setFailure] = useState<{ key: string; error: Error } | null>(null);
