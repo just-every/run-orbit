@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "tag": "sd-orbit-zoom-plan-privacy-1",
+  "recordedAt": "2026-11-13T18:31:17Z",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-zoom-plan-privacy-1",
+  "base": "1318a110883962527d82acde88bc0e7daf42763f",
+  "head": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+  "productPush": {
+    "status": "pushed",
+    "attempts": 1,
+    "log": "product-push.log"
+  },
+  "checks": [
+    {
+      "command": "node --import tsx --test tests/delegation/brief-handoff.test.ts",
+      "phase": "before, extended test against unchanged product main",
+      "exit": 1,
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "log": "before-test.log",
+      "observedFailure": "A one-contact consented grant received an unselected attendee contact ID in the completed Zoom plan."
+    },
+    {
+      "command": "node --import tsx --test tests/delegation/brief-handoff.test.ts",
+      "phase": "after product fix",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "log": "after-test.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "ok": true,
+      "log": "source-check.json"
+    },
+    {
+      "command": "checkTestBudget() from scripts/verification-inventory.mjs",
+      "exit": 0,
+      "casesBefore": 198,
+      "casesAfter": 198,
+      "qualifications": 2,
+      "totalBefore": 200,
+      "totalAfter": 200,
+      "limit": 200,
+      "log": "test-budget.json"
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "git fetch origin main; git rebase origin/main",
+      "exit": 0,
+      "result": "already up to date, no replayed commits"
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "exit": 0,
+      "candidateCommits": 1,
+      "allIdentities": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": [],
+      "log": "identity-check.log"
+    }
+  ],
+  "setup": {
+    "install": "npx -y @runeditrun/rer install: exit 0",
+    "setup": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive: exit 0",
+    "hooks": "reinstalled after setup, active for commit and rebase",
+    "runtime": "local checks Node v24.19.0, pnpm 10.12.4; rer installer selected project Node 22.20.0"
+  },
+  "contract": {
+    "clause": "DELEGATE-001",
+    "before": "partial",
+    "after": "partial",
+    "acceptancePointsFullyProvenThisRound": [],
+    "countsBefore": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "countsAfter": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "uiChanged": false,
+  "browserProof": "not applicable to API-only privacy repair",
+  "privacyGate": "required independent fleet gate after READY; not performed by this builder",
+  "publicationScan": "fleet Mac publication scan pending; cloud brief assigns this to the fleet",
+  "pr": null,
+  "ci": {
+    "conclusion": null,
+    "head_sha": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43475950990",
+    "id": 43475950990,
+    "name": "Verify",
+    "status": "in_progress",
+    "apiCalls": 10
+  },
+  "files": [
+    {
+      "path": "src/core/features/today/meeting-plan.ts",
+      "sha256": "34c42087630588da5d776c02ede679fba86ef10f22f5b673e4515315dd0ff85f"
+    },
+    {
+      "path": "src/core/features/zoom/plan.ts",
+      "sha256": "6022df2c2c897a8da91be44167b9ef88fe835cfca08eff51276367455ccceff2"
+    },
+    {
+      "path": "tests/delegation/brief-handoff.test.ts",
+      "sha256": "ef2aea22adfe4604c17148956843974f27d79d0dd5e6e3e1e4b52d80a3087588"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "4785e8dff87cd56f10f4f4c01cb5006e819e3d1d28e5c4d3e2b3825e281dc8b0"
+    }
+  ],
+  "terminal": "PUSHED branch=cloud/sd-orbit-zoom-plan-privacy-1 head=dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+  "blockers": "No observed red check or product blocker. Exact-SHA Verify remains in progress after the ten-call REST budget; independent privacy gate, publication scan and landing remain pending."
+}

@@ -1,0 +1,13 @@
+commit dc6b9d24887cb26799a01d3f324aff79f5fbdf4e
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Fri Nov 13 17:45:27 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Fri Nov 13 17:45:27 2026 +0000
+
+    Restrict delegated Zoom plans to selected contacts and deals
+
+ sources.lock.json                       |  6 ++---
+ src/core/features/today/meeting-plan.ts |  4 ++--
+ src/core/features/zoom/plan.ts          | 18 ++++++++++-----
+ tests/delegation/brief-handoff.test.ts  | 41 ++++++++++++++++++++++++++++++++-
+ 4 files changed, 57 insertions(+), 12 deletions(-)
