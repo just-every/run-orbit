@@ -55,3 +55,15 @@ Import source bytes, reviews, job authority and live undo metadata are private t
 For SendGrid unsubscribe reflection, configure Orbit's trusted product-scoped event relay (RER product `orbit`) or the native verified webhook. Provider-side suppression alone cannot update Orbit. The signed relay must forward unsubscribe/bounce events with the Orbit delivery correlation; forged posts are rejected. No shared provider webhook setting is changed by this importer.
 
 The HubSpot export labels were checked against the official record export, contact, company, deal, [activity properties](https://knowledge.hubspot.com/properties/hubspots-default-activity-properties) and notes documentation on 11 November 2026. The Pipedrive recipe was checked on 12 October 2026. Validation uses synthetic vendor-shaped CSVs, including the separately prepared notes/suppression recipes. No real vendor account or real customer export was supplied; real-export roundtrip remains unverified.
+
+## Salesforce Accounts and Contacts
+
+The installation owner can open Settings, Data, Move in and expand **Salesforce OAuth · Accounts and Contacts**. Supply a Salesforce Connected App client ID and secret, choose the sandbox or production environment, and register the exact callback address shown there. Authorize only the `api` and `refresh_token` scopes. Use a Salesforce user whose object and field permissions permit the intended reads. Orbit uses this connection to read Salesforce; it sends no record writes or customer messages to Salesforce.
+
+Read Account and Contact metadata first. Review each unavailable field and unsupported metadata diagnostic with its source reference and suggested export step. Read every page before saving a dry run. Each saved page has a durable checkpoint; reopen the saved pull after an interruption and resume from that checkpoint. An expired provider cursor needs a fresh pull.
+
+Review Account `OwnerId` and Contact `OwnerId` separately. Choose an existing active full operator or explicitly leave each source owner unassigned. This creates no invitation or new access. Optional supported custom fields must be selected explicitly. Accounts retain their original Salesforce IDs as company source IDs; Contacts retain their original IDs and exact `AccountId` links. New contacts start Do not contact.
+
+Save the dry run, inspect its record and association totals, and confirm Apply. Repeating the same reviewed data does not create duplicate records. Undo preserves later native edits and reports retained records. Disconnect withdraws saved pulls and reviews; revoke the Connected App in Salesforce as well to remove the provider grant. Credentials, source pages and import review authority stay installation-local. Restoring customer data requires a new connection and new source review before another pull or Apply.
+
+This connection supports Accounts and Contacts only. Leads, Opportunities, activity history, files, record type translation, other objects and automation are not included; their diagnostics remain visible. The complete sandbox migration and authorized real-export qualification remain pending.

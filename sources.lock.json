@@ -815,7 +815,7 @@
       "executable": false
     },
     "docs/imports/MOVING.md": {
-      "sha256": "3362516a996291357d87c03c2c9189aa7785a5d412c33b72431236331072b345",
+      "sha256": "b36c634a4f17851f8ef813baa7b0c2630e55dc7a666f5f560ab8c4c176dd3f0d",
       "executable": false
     },
     "docs/overview.md": {
@@ -6402,6 +6402,10 @@
       "sha256": "afc371e251900e039b34c1b0123147267c36fbc8b2b9fe5f72dea6ec448fd92d",
       "executable": false
     },
+    "src/core/features/imports/salesforce/archive.ts": {
+      "sha256": "0d1d1d6235cbaa8893b145ddb2837a23d6ce31c54cda25399f312ce346cd776b",
+      "executable": false
+    },
     "src/core/features/imports/salesforce/checkpoint.ts": {
       "sha256": "57363977d7c19c5e5eb6482ab3ac35fd497074aa757700193a32c58582ec4665",
       "executable": false
@@ -11643,7 +11647,7 @@
       "executable": false
     },
     "tests/support/salesforce-api-proof.ts": {
-      "sha256": "358429dab9af087d5f63f3e6a6ce89b2a09022b91d899c2c216d32b95074c7b7",
+      "sha256": "c5a2202e1442e4f24be5d48e6c6f31ddf6f1dcbb50535ea8e23aa564837a274a",
       "executable": false
     },
     "tests/support/salesforce-browser-api.ts": {
