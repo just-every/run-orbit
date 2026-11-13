@@ -61,6 +61,12 @@
       "sha256": "c1a641f5d62fbcee755b7084c6138b2e8e96809797f6fde987d943c8b2061483"
     },
     {
+      "blob": "707677ad906964fd023983d6b648cfdea0418ccb",
+      "bytes": 5683,
+      "path": "evidence-readback.json",
+      "sha256": "016ee71ae0de0cb9390e57670f5fd9729c6b0d10ab1acbe6b678b41a8b322f4b"
+    },
+    {
       "blob": "d9413f1e30742211dddfa3016db1354aada2a989",
       "bytes": 201632,
       "path": "initial-baseline-1-1440.png",
