@@ -1,0 +1,4 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+CANDIDATE {"agent":"The agent could not start because your company’s agent policy has not been set. An owner must choose the policy before agents can work. No tasks were filed.\n\nSet up company agent policy","capture":"Mail and calendar files\n\nFiles\n\nConnected\nLast success\n11/13/2026, 4:19 AM\nCaptured\n1\nNot stored\n0\nProposals waiting\n2\n\nUpload more files to add evidence from this source.","links":[{"text":"2","href":"/app/review?source=capture-files"},{"text":"Upload more files","href":"/app/settings/capture/connect/files"}]}

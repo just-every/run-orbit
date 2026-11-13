@@ -1,0 +1,2 @@
+CLAIM AGENT-002 PARTIAL points=1 tests=tests/delegation-browser/today-brief.test.ts#BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and follow-up outcomes, and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390
+CLAIM CAPTURE-006 PARTIAL points=none tests=tests/e2e/capture.spec.mjs#CAPTURE provider status keeps revoked access clear, reconnects through the guided setup and disconnect preserves captured history

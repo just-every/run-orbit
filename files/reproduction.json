@@ -1,0 +1,19 @@
+{
+  "main": "0e9e55cf150dfcc781d1d9e62b2d88c15c9b6a63",
+  "agent": {
+    "text": "Deal-risk agent: 0 tasks filed, 0 already filed.\n\norbit.risks.read\n\nunset · refused · policy_unset\n\nstandard · measure: 1",
+    "filed": 0,
+    "codes": [
+      "policy_unset"
+    ]
+  },
+  "capture": {
+    "text": "Mail and calendar files\n\nFiles\n\nConnected\nLast success\n11/13/2026, 4:01 AM\nCaptured\n1\nNot stored\n0\nProposals waiting\n2\n\nUpload more files to add evidence from this source.",
+    "links": [
+      {
+        "text": "Upload more files",
+        "href": "/app/settings/capture/connect/files"
+      }
+    ]
+  }
+}

@@ -1,0 +1,642 @@
+{
+  "schema": 1,
+  "tag": "main-orbit-next-step-links-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-next-step-links-1",
+  "head": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+  "integrated_main": "008e46c5a9f2c87e990e4b2881ab16a962640f11",
+  "product_push": "passed",
+  "product_push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-next-step-links-1",
+  "tests": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec playwright test --config .cloud-playwright.config.mjs tests/e2e/capture.spec.mjs",
+      "exit": 0,
+      "passed": 2,
+      "browser": "/usr/bin/chromium --no-sandbox",
+      "config": "temporary override of stock Playwright launch executable only"
+    },
+    {
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts",
+      "exit": 0,
+      "passed": 1
+    },
+    {
+      "command": "cloud_run pnpm exec tsx .repro-next-links.mts",
+      "exit": 0,
+      "assertions_width": 1440,
+      "screenshots_widths": [
+        1440,
+        390
+      ],
+      "note": "Repeated successfully against the exact committed product SHA. Both behavioral flows assert at 1440; screenshots are retained at 1440 and 390.",
+      "head": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "counts": {
+    "reported_failures_before": 2,
+    "reported_failures_after": 0,
+    "tests_before": 200,
+    "tests_after": 200,
+    "clause_status_changes": 0
+  },
+  "files": [
+    {
+      "path": "src/core/features/capture/proposals.ts",
+      "sha256": "d1a12d51a0561e7eb72e4aeb42fcb7f146ab8148723b0ca7dc7d86f03c71a816"
+    },
+    {
+      "path": "src/core/features/capture/routes.ts",
+      "sha256": "aeaee7d81b2dd5debd289a569c5e93ca13faf26ae66f2043e51fedc7d10c1af9"
+    },
+    {
+      "path": "src/core/features/operator/ui/capture-proposals.tsx",
+      "sha256": "53e5a422dfa8962da46a90062810448b2ae507cfa3c5db9dc3a5dcada42a0984"
+    },
+    {
+      "path": "src/core/features/operator/ui/capture-source.tsx",
+      "sha256": "8ec74e0cab5b81da9b69dd56355e67756da8f57c51be8efa31725e060dae3b83"
+    },
+    {
+      "path": "src/core/features/operator/ui/deal-risk-agent-result.tsx",
+      "sha256": "713904a29b2f0bf02b44aa91b3b3655cc2d1a66974769a674d0189fca0597b1d"
+    },
+    {
+      "path": "src/core/features/operator/ui/deal-risks.tsx",
+      "sha256": "fab4c86bb25a7272e046ff559139bd4f744315294bb2630d5b28400a39766523"
+    },
+    {
+      "path": "src/core/features/operator/ui/review-page.tsx",
+      "sha256": "9de07c158e1499cbe0868bdcc3803c1ccd168f7a376fc5423fdbccbf5ff2c8d7"
+    },
+    {
+      "path": "tests/delegation-browser/risk-journey.mjs",
+      "sha256": "0ceb5611cf35d9b0d7ccfe9ef936f0aa5bff0e7a362d5587765223595ac65c63"
+    },
+    {
+      "path": "tests/e2e/capture.spec.mjs",
+      "sha256": "936325121c0b76ea60a81df72b15d86ded56d0c9383d7fb17bd39e96832d667e"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "4ebc2ac74c670407575b38d44bcd2d6123a53677d494012e9ad36dd840ec099e"
+    }
+  ],
+  "ci": {
+    "status": "in_progress",
+    "calls_used": 9,
+    "last_observation_utc": "2026-11-13T04:53:00Z",
+    "discovery": [
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363968861",
+        "id": 43363968861,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ],
+    "conclusion": null,
+    "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+    "run_id": 43363968861,
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363968861",
+    "jobs": [
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131683867995,
+        "name": "plan",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131684021318,
+        "name": "source and shared build",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "skipped",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131684023179,
+        "name": "light",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293501,
+        "name": "shards (batch-3)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293534,
+        "name": "shards (batch-13)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293535,
+        "name": "shards (batch-2)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293560,
+        "name": "shards (batch-8)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293564,
+        "name": "shards (batch-0)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293568,
+        "name": "shards (batch-15)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Cache fallback apt archives",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293570,
+        "name": "shards (batch-4)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Cache fallback apt archives",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293576,
+        "name": "shards (batch-6)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293577,
+        "name": "shards (batch-7)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Cache fallback apt archives",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293579,
+        "name": "shards (batch-10)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293584,
+        "name": "shards (batch-16)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Cache fallback apt archives",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": null,
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293589,
+        "name": "shards (batch-12)",
+        "status": "in_progress",
+        "steps": [
+          {
+            "conclusion": null,
+            "name": "Verify routine product shard",
+            "status": "in_progress"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain rer startup diagnostics",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain shard completion",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Retain product execution evidence",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Cache fallback apt archives",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/cache@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run pnpm/action-setup@v4",
+            "status": "pending"
+          },
+          {
+            "conclusion": null,
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293594,
+        "name": "shards (batch-14)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293595,
+        "name": "shards (batch-1)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "failure",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293604,
+        "name": "shards (batch-18)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify routine product shard",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293606,
+        "name": "shards (batch-9)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293619,
+        "name": "shards (batch-19)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293624,
+        "name": "shards (batch-5)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293640,
+        "name": "shards (batch-11)",
+        "status": "completed",
+        "steps": []
+      },
+      {
+        "conclusion": "success",
+        "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+        "id": 131685293668,
+        "name": "shards (batch-17)",
+        "status": "completed",
+        "steps": []
+      }
+    ],
+    "final_note": "Exact-SHA Verify was still in progress at the last observation. Remaining budget is insufficient for failure diagnosis and a failed-job rerun; use the authorized PUSHED fallback.",
+    "observed_failed_job": {
+      "id": 131685293604,
+      "name": "shards (batch-18)",
+      "step": "Verify routine product shard",
+      "shards": [
+        "fold-archive-1",
+        "fold-archive-3"
+      ],
+      "observed_at": "2026-11-13T04:33:00Z",
+      "log_read": false,
+      "rerun_requested": false,
+      "note": "Log read and rerun deferred because the workflow had not completed at the last observation."
+    }
+  },
+  "blockers": [],
+  "browser_proof_head": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+  "working_tree_clean": true,
+  "custody": "PUSHED",
+  "landing_gate": "Pending exact-SHA green Verify; no landing or DONE claim"
+}
