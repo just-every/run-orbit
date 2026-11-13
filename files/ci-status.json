@@ -1,7 +1,7 @@
 {
   "id": 43425565068,
-  "conclusion": null,
+  "conclusion": "success",
   "head_sha": "433a9a020ffe443e5cfc9912c0bcff181d74fb61",
   "html_url": "https://github.com/just-every/run-orbit/actions/runs/43425565068",
-  "status": "in_progress"
+  "status": "completed"
 }

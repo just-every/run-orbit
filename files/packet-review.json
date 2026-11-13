@@ -8,13 +8,13 @@
   "files": [
     {
       "path": "RECEIPT.json",
-      "bytes": 3819,
-      "sha256": "be938c9b28e17a48e273f58f46f4740b54949f6386693d42fa75fe1e05251abe"
+      "bytes": 4821,
+      "sha256": "3326efe6ad7835cc6c97d89201cc5e52c5bff21e98ee3a7e2ec7aa991f19c684"
     },
     {
       "path": "REPORT.md",
-      "bytes": 5055,
-      "sha256": "ed3f37e29277374a8550a2c30184e1c18194fc58f4600be91679973ae8435654"
+      "bytes": 6440,
+      "sha256": "e2df00f4709237b1031861809fe095ab0fa4ee0238ea1dd8e8fb626e60567224"
     },
     {
       "path": "build.log",
@@ -42,19 +42,79 @@
       "sha256": "cb07be4ea99991912235fe8714b50df41cc3de60620e46a9dfdc0008f5fdbab6"
     },
     {
+      "path": "ci-20261113T123504Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T124007Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T124510Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T125012Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T125515Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T130018Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T130520Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T131023Z.json",
+      "bytes": 192,
+      "sha256": "d609e01d93ecc81998047068418955b63c114ab0203138fdc0ca0331430d4efa"
+    },
+    {
+      "path": "ci-20261113T131526Z.json",
+      "bytes": 195,
+      "sha256": "c40b56141723f2619a3377d9cacaef7aeb633ca94c01edeb1bfe5fee41dce5d8"
+    },
+    {
       "path": "ci-run.json",
       "bytes": 213,
       "sha256": "b43032795a095ff3ef4b136dbc05e2843d72473191b6a247e85fb92622d08834"
     },
     {
       "path": "ci-status.json",
-      "bytes": 213,
-      "sha256": "b43032795a095ff3ef4b136dbc05e2843d72473191b6a247e85fb92622d08834"
+      "bytes": 216,
+      "sha256": "277780c411599b3940e122aba7cf37d7f0551ab1e59caae084ae2d6c9e2fcf4a"
+    },
+    {
+      "path": "ci-watch.log",
+      "bytes": 2383,
+      "sha256": "5fcc94fa73e62190fc36ef433bdb4599dfcf5d8120dc715ffbf555ab3905c9e2"
+    },
+    {
+      "path": "evidence-initial-local-failure.log",
+      "bytes": 42,
+      "sha256": "c8fef469efa8673f80598697866057bd110d7d0c33b88c74bbf1182cecd9b42e"
+    },
+    {
+      "path": "evidence-initial-transfer.log",
+      "bytes": 4130,
+      "sha256": "4a0ed0de935a14f59f332ec9daa0fb19ebdbb1d8d3141c03c3d47e9aca92b8a3"
     },
     {
       "path": "github-calls.jsonl",
-      "bytes": 185,
-      "sha256": "731443db2857ecf9014ffd86add0599fbcc24c2325c79e7a8afe8cd403ca300b"
+      "bytes": 1829,
+      "sha256": "5b500106fc568f66a584e9d84f4dbcbc4a25bb2ae502678c2d576c9c87a5bae9"
     },
     {
       "path": "missing-agent-policy-1440.png",

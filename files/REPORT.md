@@ -43,3 +43,17 @@ CLAIM CAPTURE-004 PARTIAL points=1 tests=tests/e2e/capture.spec.mjs#CAPTURE-001 
 These PARTIAL claims cite the exercised portions; this replay does not establish every obligation of these broader clauses.
 
 No PR was opened: the brief specifies branch custody and fleet landing. The full publication scan remains with the Mac lander, as explicitly required by the cloud adaptation.
+
+## Evidence transport
+
+An initial packet was published to refs/heads/evidence/main-orbit-next-step-links-1-c1 at c2ed2464d866180834d420db7636cb50c46b3ac5 while exact-SHA Verify was still in progress. The first attempt failed locally in the added identity-audit fetch: Git upload-pack could not serve a missing promised blob with lazy fetching disabled. This was a local partial-clone transport issue, not a product or GitHub push rejection. The report entrypoint now uses local object alternates to inspect the exclusion commit graph, and its retry published successfully. Product HEAD/index/checkout were preserved. The terminal packet will update this same evidence ref without force pushing after CI concludes or the watch budget ends.
+
+## Terminal CI and custody
+
+Verify run 43425565068: completed; conclusion success; exact head 433a9a020ffe443e5cfc9912c0bcff181d74fb61. https://github.com/just-every/run-orbit/actions/runs/43425565068
+
+GitHub calls used: 10/10, with at least 300 seconds between status reads. Observed watch duration: 2723.96 seconds. Only one watcher ran at a time; its continuation reused the same run ID and shared timing ledger.
+
+Exact-SHA Verify completed successfully. Terminal custody is READY. Landing and the full publication scan remain with the fleet.
+
+READY branch=cloud/main-orbit-next-step-links-1-c1 head=433a9a020ffe443e5cfc9912c0bcff181d74fb61

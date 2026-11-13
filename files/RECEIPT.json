@@ -123,15 +123,25 @@
   "publicationScan": "Full publication scan belongs to the fleet lander under the cloud adaptation. Candidate identity, all messages/trailers and credential-shaped additions were checked locally.",
   "ci": {
     "id": 43425565068,
-    "conclusion": null,
+    "conclusion": "success",
     "head_sha": "433a9a020ffe443e5cfc9912c0bcff181d74fb61",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43425565068",
-    "status": "in_progress"
+    "status": "completed"
   },
   "pr": null,
-  "githubCallsUsed": 4,
+  "githubCallsUsed": 10,
   "originalNonLockPatchId": "46e3302275f74437e2e43bcb52a11d1b1b0ed0fd",
   "candidateNonLockPatchId": "46e3302275f74437e2e43bcb52a11d1b1b0ed0fd",
   "replayDeltaIdentical": true,
-  "fullHistory": true
+  "fullHistory": true,
+  "evidenceInitial": {
+    "status": "published",
+    "ref": "refs/heads/evidence/main-orbit-next-step-links-1-c1",
+    "head": "c2ed2464d866180834d420db7636cb50c46b3ac5",
+    "localAuditRecovery": "The first attempt failed before pushing at an added local fetch, because a blob-filtered clone cannot serve missing blobs with lazy fetching disabled. The audit now uses local object alternates only for its exclusion walk. No GitHub authentication or product push failed."
+  },
+  "ciWatchDurationSeconds": 2723.96,
+  "terminalCustody": "READY",
+  "blockers": [],
+  "pending": []
 }
