@@ -59,3 +59,11 @@ CI details and the evidence transfer head are recorded in the final message and 
 ## Exact-SHA CI watcher
 
 Candidate Verify: 43363594947 (https://github.com/just-every/run-orbit/actions/runs/43363594947). First permitted status poll: in_progress. The final observed result is retained in `candidate-ci-final.json`. No result from another SHA is used. One watcher owns the run, with at least 300 seconds between discovery and each status read.
+
+At GitHub call 9, the candidate source/shared build and 19 of 20 shard jobs had completed successfully. The remaining job was `shards (batch-3)`, job id 131683805996, in the `Verify routine product shard` step. The complete actual job/step snapshot is retained in `candidate-ci-jobs.json`. No logs of an unfinished job were read and no workflow was rerun.
+
+## Terminal disposition
+
+PUSHED custody, with no product changes or new product commits. The named branch points to 008e46c5a9f2c87e990e4b2881ab16a962640f11. At 2026-11-13T04:50:55Z, exact-SHA candidate Verify run 43363594947 remained `in_progress` with no conclusion. The ten-call GitHub API budget is exhausted after roughly forty minutes since the candidate push, so the cloud returns PUSHED rather than claiming a green verdict. The last job snapshot (call 9) identified job 131683805996, `shards (batch-3)`, on `Verify routine product shard`; source/shared build and the other nineteen shard jobs had passed. No unfinished job logs were read. No rerun was issued. A prior Verify success on this same SHA is retained in the discovery receipt for provenance but is not substituted for this candidate run.
+
+The fleet can continue watching that exact run. No product bug fix or contract status update is proposed. The browser and dev server were closed by this run, and the successfully published clone is removed after final evidence transfer verification; the complete local report packet remains outside it.

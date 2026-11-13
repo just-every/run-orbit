@@ -44,5 +44,16 @@
     "attempts": 1,
     "newProductCommits": 0,
     "evidenceSeparate": true
-  }
+  },
+  "ci": {
+    "conclusion": null,
+    "head_sha": "008e46c5a9f2c87e990e4b2881ab16a962640f11",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363594947",
+    "status": "in_progress",
+    "run_id": 43363594947,
+    "github_calls_total": 10,
+    "branch": "cloud/main-orbit-meeting-attendees-1",
+    "observed_at": "2026-11-13T04:50:55Z"
+  },
+  "terminalDisposition": "PUSHED; candidate Verify still running at API budget exhaustion"
 }

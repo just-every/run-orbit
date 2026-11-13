@@ -13,10 +13,10 @@
       "sha256": "5d1c327f21305e8194a1ed247a210d443f31a01f36e9943f14198ab199a25b20"
     },
     {
-      "blob": "3fccc125293a133f847571a909f9e8081613e250",
-      "bytes": 7953,
+      "blob": "68a43959f5b7be1eea64b3ab230586f670ada893",
+      "bytes": 9423,
       "path": "REPORT.md",
-      "sha256": "ca69bf59a4063e8cdf59995709f15f0dcb8800c37df48b7607d6be070dcb6f29"
+      "sha256": "1559c6c9a5eecbe7808f03c6c7e47d958ecb22e739a8a0c0adf7ddf0db5d894e"
     },
     {
       "blob": "7a40706334c944de96cd6ceef0ecd10f561c8bda",
@@ -43,16 +43,22 @@
       "sha256": "2ed704f5a8829af88597cc8859d78958fe39d1f0020880ef8e07cc9285f27f63"
     },
     {
-      "blob": "ebb320d206b0591e75c6b15473311015a807352c",
-      "bytes": 350,
+      "blob": "01d9a13c07419ebb2e38f9dad41a6c58bd242aba",
+      "bytes": 338,
       "path": "candidate-ci-final.json",
-      "sha256": "9a5a18a1569e05c462594a939563ef6edb54ce514036c180ed286018f90c2536"
+      "sha256": "e0841f1eda98ffa704644ce552e7fa835efb07f0da6407a3626ce9ad59c1e626"
     },
     {
-      "blob": "f69070977938a9134222b2c7ecfe8af60889ae70",
-      "bytes": 1289,
+      "blob": "38acda743922b1b6f9214aab1e72a98d737891d9",
+      "bytes": 73212,
+      "path": "candidate-ci-jobs.json",
+      "sha256": "156e8fe45736c52ee825c5a5245e59a95c8b847d4b1a8ab141107407a8921ad0"
+    },
+    {
+      "blob": "5f40b3823d91ed1ee08f645082e9ee26df1f9811",
+      "bytes": 1746,
       "path": "checks-receipt.json",
-      "sha256": "216cd4e4bcd0754b497b4ce2b30f99466e21e352a5ccfb20d8b8086ccf13b9ec"
+      "sha256": "c1a641f5d62fbcee755b7084c6138b2e8e96809797f6fde987d943c8b2061483"
     },
     {
       "blob": "d9413f1e30742211dddfa3016db1354aada2a989",
