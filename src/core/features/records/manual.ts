@@ -1,6 +1,7 @@
 import { createId } from '../../shared/ids';
 import { audit, RecordError, requireRecord, type RecordKind } from './shared';
 import { mentionPlan, withdrawMentions } from './mentions';
+export function manualEntryPayload(input:{text:string;durationMinutes?:number;contactIds?:string[]}){return{text:input.text,durationMinutes:input.durationMinutes??null,contactIds:input.contactIds??[]};}
 const labels={note:'note',call:'call log',meeting:'meeting log'} as const;
 export class ManualRepository {
  constructor(readonly db:D1Database){}
@@ -16,7 +17,7 @@ export class ManualRepository {
   const existing=!!id;id??=createId();
   // RECORD-017: mentions are internal, saved with the entry so they export and erase with it.
   const mentions=await mentionPlan(this.db,{source:'entry',sourceId:id,kind,recordId,label:labels[input.kind],text:input.text,author:actor});
-  const payload=JSON.stringify({text:input.text,durationMinutes:input.durationMinutes??null,contactIds:input.contactIds??[],...(mentions.mentions.length?{mentions:mentions.mentions}:{}),...(plan?{plan}:{})}),now=new Date().toISOString();
+  const payload=JSON.stringify({...manualEntryPayload(input),...(mentions.mentions.length?{mentions:mentions.mentions}:{}),...(plan?{plan}:{})}),now=new Date().toISOString();
   await this.db.batch([...mentions.statements,existing?this.db.prepare('UPDATE timeline_entries SET kind=?,occurred_at=?,payload_json=? WHERE id=?').bind(`manual.${input.kind}`,input.occurredAt,payload,id):this.db.prepare("INSERT INTO timeline_entries VALUES(?,?,?,?,'operator',?,'manual',?)").bind(id,`manual.${input.kind}`,input.occurredAt,now,actor,payload),...(!existing?[this.db.prepare('INSERT INTO timeline_entry_records VALUES(?,?,?)').bind(id,kind,recordId)]:[]),audit(this.db,actor,existing?'manual.updated':'manual.created',kind,recordId,{entryId:id})]);return {id,mentions:mentions.mentions};
  }
  async remove(kind:RecordKind,recordId:string,id:string,actor:string){const result=await this.db.prepare("SELECT t.id,t.kind,t.source FROM timeline_entries t JOIN timeline_entry_records r ON r.timeline_entry_id=t.id WHERE t.id=? AND t.kind IN ('manual.note','manual.call','manual.meeting') AND r.record_type=? AND r.record_id=?").bind(id,kind,recordId).first<{id:string;kind:string;source:string}>();if(!result)throw new RecordError(404,'Manual entry not found.');
