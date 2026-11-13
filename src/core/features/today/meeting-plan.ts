@@ -86,7 +86,7 @@ export async function buildMeetingPlan(db:D1Database,signalId:string,input:{oper
  const zoom=await meetingRow(db,signalId),attendance=zoom?JSON.parse(zoom.attendance_json) as {email:string}[]:[];
  const found=await attendees(db,[...context.participants,...attendance.map(person=>person.email).filter(Boolean)],context.links,Boolean(zoom)),people={
   resolved:found.resolved.filter(person=>allowed({type:'contact',id:person.contact.id})).map(person=>({...person,company:person.company&&allowed({type:'company',id:person.company.id})?person.company:null,opportunities:person.opportunities.filter(o=>allowed({type:'opportunity',id:o.id}))})),
-  unresolved:input.allowed?found.unresolved.map(person=>({...person,company:null})):found.unresolved};
+  unresolved:input.allowed?(zoom?[]:found.unresolved.map(person=>({...person,company:null}))):found.unresolved};
  const opportunityIds=[...new Set([...links.filter(ref=>ref.type==='opportunity').map(ref=>ref.id),...people.resolved.flatMap(person=>person.opportunities.map(o=>o.id))])];
  const opportunities=(await opportunitiesFor(db,opportunityIds)).map(row=>({...row,linked:links.some(ref=>ref.type==='opportunity'&&ref.id===row.id)}));
  const refs:RecordRef[]=[...links,...people.resolved.map(p=>({type:'contact' as const,id:p.contact.id})),...people.resolved.flatMap(p=>p.company?[{type:'company' as const,id:p.company.id}]:[]),...opportunityIds.map(id=>({type:'opportunity' as const,id}))];
@@ -95,7 +95,7 @@ export async function buildMeetingPlan(db:D1Database,signalId:string,input:{oper
  const noteTarget=allowed(context.noteTarget)?context.noteTarget:links.find(ref=>ref.type==='opportunity')??links[0]??null;
  const note=noteTarget?await planNote(db,signalId,noteTarget):null;
  return {
-  zoom:await zoomPlan(db,signalId,note),
+  zoom:await zoomPlan(db,signalId,note,input.allowed),
   meeting:{signalId:signal.id,status:signal.type.split('.')[1],subject:signal.subject??'Meeting',occurredAt:signal.occurredAt,start:context.start,end:context.end,source:signal.sourceName,
    href:noteTarget?recordHref(noteTarget):planHref(signal.id)},
   attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:links.find(ref=>ref.type==='opportunity')?.id??null,
