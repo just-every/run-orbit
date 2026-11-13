@@ -1,0 +1,16 @@
+{
+  "name": "mailbox-focused-probe",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "2400",
+    "pnpm",
+    "exec",
+    "tsx",
+    "/tmp/orbit-mailbox-probe.mts"
+  ],
+  "started": "2026-11-13T00:42:17.544949+00:00",
+  "finished": "2026-11-13T00:51:35.946545+00:00",
+  "exit": 0,
+  "log_sha256": "f1eecaac7806f192b008f8b526cc1477fca5663e5d7798668b811bbe5ab87258"
+}

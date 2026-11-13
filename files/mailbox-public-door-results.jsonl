@@ -1,0 +1,2 @@
+{"kind":"test","runner":"node:test","name":"CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation","file":"tests/core/capture-providers.test.ts","type":"test","nesting":0,"status":"failed","durationMs":212296.804141}
+{"kind":"summary","runner":"node:test","success":false,"counts":{"tests":1,"failed":1,"passed":0,"cancelled":0,"skipped":0,"todo":0,"topLevel":1,"suites":0}}

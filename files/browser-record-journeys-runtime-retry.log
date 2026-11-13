@@ -1,0 +1,36 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE FORM-003 1: hosted form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 1440, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: hosted form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: framed form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# PROBE FORM-003 1: direct form at 390, new and changed exact email -> same contact, business company and selected-stage deal; empty phone filled and changed name waits for review
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# PROBE OUT-032 established upgrade: emitted Settings and reload -> one-to-one on, upgrade basis retained, historical approvals unchanged, provider submissions=0; screens 1440 and 390
+# PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+# PROBE FORM-002 browser: no pre-interaction third-party request or cookie; optional verification follows interaction; withdrawn publication refuses UI release and retains pending payload; erasure disables release
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":934,"parts":71,"observations":[{"operation":"POST /exports","milliseconds":4743.408368999953,"status":201},{"operation":"GET /exports/01M797MQ6MYVWGTZ6WRPCPHXXA","milliseconds":68.42220700008329,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":5637.1145530000795,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":3812.1943420000607,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":4410.616110000061,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":3908.914537000004,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":4348.136109999963,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":3560.1979050000664,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":3274.066015999997,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":3220.2625070000067,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":4068.139988000039,"status":200},{"operation":"POST /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/advance","milliseconds":498.01370799995493,"status":200},{"operation":"GET /exports/01M797MQ6MYVWGTZ6WRPCPHXXA/download","milliseconds":100.20300300000235,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":130,"rows":909,"parts":70,"observations":[{"operation":"POST /exports","milliseconds":3879.102576999925,"status":201},{"operation":"GET /exports/01M7982QFF5TTY2WEA0QH77W6Z","milliseconds":65.57933799992315,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":5374.481550999917,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3588.1302410000935,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3232.548204000108,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3134.3086510000285,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3823.7905989999417,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":4503.974254000001,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3453.880572000053,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3327.2891129998025,"status":200},{"operation":"POST /exports/01M7982QFF5TTY2WEA0QH77W6Z/advance","milliseconds":3353.2053130001295,"status":200},{"operation":"GET /exports/01M7982QFF5TTY2WEA0QH77W6Z/download","milliseconds":67.23443099996075,"status":200}]}
+# Owned capture Worker PID 46717
+# Owned capture browser PIDs [
+#   { pid: 46762, type: 'browser' },
+#   { pid: 46805, type: 'GPU' },
+#   { pid: 46808, type: 'network.mojom.NetworkService' },
+#   { pid: 46830, type: 'storage.mojom.StorageService' }
+# ]
+# Subtest: OUT-013 bound Gmail review, OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+ok 1 - OUT-013 bound Gmail review, OUT-032 established opt-out upgrade, CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots
+  ---
+  duration_ms: 1296811.224173
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1307047.306361

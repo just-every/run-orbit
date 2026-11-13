@@ -1,0 +1,62 @@
+{
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "screens": [
+    {
+      "file": "browser-calendar/google-send-consent-1440.png",
+      "viewport": 1440,
+      "png_width": 1440,
+      "png_height": 1304,
+      "inspected": true
+    },
+    {
+      "file": "browser-calendar/google-send-consent-390.png",
+      "viewport": 390,
+      "png_width": 390,
+      "png_height": 1512,
+      "inspected": true
+    },
+    {
+      "file": "browser-calendar/microsoft-send-boundary-1440.png",
+      "viewport": 1440,
+      "png_width": 1440,
+      "png_height": 1386,
+      "inspected": true
+    },
+    {
+      "file": "browser-calendar/microsoft-send-boundary-390.png",
+      "viewport": 390,
+      "png_width": 390,
+      "png_height": 1679,
+      "inspected": true
+    },
+    {
+      "file": "browser-calendar/gmail-send-as-review-1440.png",
+      "viewport": 1440,
+      "png_width": 1296,
+      "png_height": 846,
+      "inspected": true
+    },
+    {
+      "file": "browser-calendar/gmail-send-as-review-390.png",
+      "viewport": 390,
+      "png_width": 350,
+      "png_height": 1049,
+      "inspected": true
+    },
+    {
+      "file": "browser-record/gmail-record-send-as-1440.png",
+      "viewport": 1440,
+      "png_width": 1440,
+      "png_height": 1973,
+      "inspected": true
+    },
+    {
+      "file": "browser-record/gmail-record-send-as-390.png",
+      "viewport": 390,
+      "png_width": 390,
+      "png_height": 2225,
+      "inspected": true
+    }
+  ],
+  "observed": "Readable responsive forms and exact bound mailbox review; no horizontal clipping of essential content; full text action labels; explicit Microsoft unavailability; no UI edits in this continuation."
+}

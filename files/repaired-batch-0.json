@@ -1,0 +1,15 @@
+{
+  "name": "repaired-batch-0",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "timeout",
+    "3600",
+    "node",
+    "scripts/verification-batch.mjs",
+    "[\"core-5\"]"
+  ],
+  "started": "2026-11-12T23:54:33.122373+00:00",
+  "finished": "2026-11-13T00:13:54.588169+00:00",
+  "exit": 1,
+  "log_sha256": "cf9a402c9629936a4d2229e0bd695fc682caec278446ed5bad32bf4abe10e59d"
+}

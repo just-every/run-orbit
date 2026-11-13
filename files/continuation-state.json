@@ -1,0 +1,14 @@
+{
+  "candidate": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "original_verify": 43320028360,
+  "candidate_verify": 43336101316,
+  "github_calls_used": 9,
+  "next_ci_read": "after serial archive retry or 00:40 UTC; one watcher; minimum 300 seconds per run",
+  "pending": [
+    "final evidence publication",
+    "product clone cleanup"
+  ],
+  "policy": "No product changes for fixture startup failures; no timeout or assertion changes.",
+  "verify": "completed/success",
+  "terminal_product": "READY"
+}

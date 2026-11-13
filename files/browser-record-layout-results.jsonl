@@ -1,0 +1,2 @@
+{"kind":"test","runner":"node:test","name":"OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside native record layouts and collaborator revocation at 1440 and 390","file":"tests/delegation-browser/records-layout.test.ts","type":"test","nesting":0,"status":"passed","durationMs":287695.897333}
+{"kind":"summary","runner":"node:test","success":true,"counts":{"tests":1,"failed":0,"passed":1,"cancelled":0,"skipped":0,"todo":0,"topLevel":1,"suites":0}}

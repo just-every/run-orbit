@@ -1,0 +1,24 @@
+{
+  "name": "mailbox-public-door",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "2400",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-name-pattern=CAPTURE-006 deletion and calendar consent and OUT-013",
+    "--test-reporter=tap",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/mailbox-public-door-results.jsonl",
+    "tests/core/capture-providers.test.ts"
+  ],
+  "started": "2026-11-13T00:37:24.718519+00:00",
+  "finished": "2026-11-13T00:41:03.215502+00:00",
+  "exit": 1,
+  "log_sha256": "fc0d8908f64c4e9ee1d34f24d5abe66565b97100e3dd16e37c326659cbd4747a"
+}

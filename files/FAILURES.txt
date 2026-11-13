@@ -1,0 +1,88 @@
+Original Verify batch 0
+Archive operation failed: Error: D1_ERROR: NOT NULL constraint failed: outbound_messages.mailbox_submission_claimed: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_NOTNULL)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async save (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-import-progress.ts:28:5)
+    at async advanceStep (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-import-progress.ts:174:5)
+    at async advanceImport (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-import-progress.ts:48:5)
+    at async ArchiveImportRepository.advance (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-import.ts:77:19)
+    at async Object.handler (/home/runner/work/run-orbit/run-orbit/src/core/features/records/archive-routes.ts:35:59)
+    at async dispatch (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/compose.js:22:17)
+    at async Object.handler (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/hono-base.js:119:39)
+    at async dispatch (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/compose.js:22:17)
+    at async handler (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/hono@4.13.5/node_modules/hono/dist/hono-base.js:119:39) {
+  [cause]: Error: NOT NULL constraint failed: outbound_messages.mailbox_submission_claimed: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_NOTNULL)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at async cloudflare-internal:d1-api:137:19
+      at async #fetch (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare/dist/src/workers/core/entry.worker.js:4959:18)
+      at async ProxyServer.fetch (file:///home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare/dist/src/workers/core/entry.worker.js:4859:14) {
+    [cause]: undefined
+  }
+}
+✖ API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions (138871.249575ms)
+(node:5135) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Original Verify batch 5
+  AssertionError [ERR_ASSERTION]: Native authenticated POST /imports: 400 {"error":"Archive inventory does not match a complete supported source generation."}
+  
+  false !== true
+  
+      at request (/home/runner/work/run-orbit/run-orbit/newtests/t096/archive-http-proof.ts:7:463)
+      at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at async httpRestore (/home/runner/work/run-orbit/run-orbit/newtests/t096/archive-http-proof.ts:11:147)
+      at async proveArchiveLineage (/home/runner/work/run-orbit/run-orbit/newtests/t096/archive-lineage-proof.ts:19:101)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+Local main startup limitation
+  Error: spawnSync /home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node ETIMEDOUT
+      at Object.spawnSync (node:internal/child_process:1120:20)
+      at spawnSync (node:child_process:902:24)
+      at execFileSync (node:child_process:945:15)
+      at isolatedDatabase (/workspace/orbit-main/tests/support/isolated-database.ts:11:3)
+      at async TestContext.<anonymous> (/workspace/orbit-main/tests/core/onboarding-archive.test.ts:115:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    errno: -110,
+    code: 'ETIMEDOUT',
+    syscall: 'spawnSync /home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node',
+    path: '/home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node',
+    spawnargs: [ 'node_modules/wrangler/bin/wrangler.js', 'd1', 'migrations', 'apply', 'DB', '--local', '--config', 'wrangler.jsonc', '--persist-to', '/tmp/orbit-restore-test-k3nwPd' ],
+    error: Error: spawnSync /home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1120:20)
+        at spawnSync (node:child_process:902:24)
+        at execFileSync (node:child_process:945:15)
+        at isolatedDatabase (/workspace/orbit-main/tests/support/isolated-database.ts:11:3)
+
+Local mailbox prelude startup limitation
+not ok 1 - CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent, exact review, Sent, uncertainty and revocation
+  ---
+  duration_ms: 212296.804141
+  type: 'test'
+  location: '/workspace/orbit/tests/core/capture-providers.test.ts:1:8698'
+  failureType: 'testCodeFailure'
+  error: 'spawnSync /home/agent/.rer/toolchain/node-22.20.0/node_modules/node/bin/node ETIMEDOUT'
+  code: 'ETIMEDOUT'
+  stack: |-
+    Object.spawnSync (node:internal/child_process:1120:20)
+    spawnSync (node:child_process:902:24)
+    execFileSync (node:child_process:945:15)
+    isolatedDatabase (/workspace/orbit/tests/support/isolated-database.ts:11:3)
+    async captureFixture (/workspace/orbit/tests/support/capture-fixture.ts:16:20)
+    async captureRecoveryFixture (/workspace/orbit/tests/support/capture-recovery-fixture.ts:11:10)
+    async googleDeletionProof (/workspace/orbit/tests/support/capture-provider-items.ts:62:10)
+    async deletedEventProof (/workspace/orbit/tests/support/capture-provider-items.ts:58:60)
+    async TestContext.<anonymous> (/workspace/orbit/tests/core/capture-providers.test.ts:67:57)
+    async Test.run (node:internal/test_runner/test:1054:7)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0

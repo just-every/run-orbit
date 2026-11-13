@@ -1,0 +1,9 @@
+{
+  "command": "pnpm exec tsx --test --no-test-only --test-concurrency=1 tests/core/onboarding-archive.test.ts",
+  "exit": 1,
+  "head": "267fa4d246666bf4eb119f612663c939601f1339",
+  "test": "tests/core/onboarding-archive.test.ts",
+  "failure": "spawnSync Node ETIMEDOUT in isolatedDatabase at tests/core/onboarding-archive.test.ts:115; Wrangler local migration subprocess exceeded its existing 60000 ms startup limit",
+  "classification": "local fixture startup; distinct from the reproduced candidate NOT NULL failure",
+  "action": "no product or test threshold change; no further main rerun"
+}

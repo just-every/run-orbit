@@ -1,0 +1,26 @@
+{
+  "name": "mailbox-and-outreach",
+  "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "command": [
+    "timeout",
+    "3600",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/mailbox-and-outreach-results.jsonl",
+    "tests/core/capture-providers.test.ts",
+    "tests/core/sendgrid-outcomes.test.ts",
+    "tests/core/outreach-limits.test.ts",
+    "tests/core/signals-outreach.test.ts"
+  ],
+  "started": "2026-11-12T23:54:12.839412+00:00",
+  "finished": "2026-11-13T00:09:31.065971+00:00",
+  "exit": 241,
+  "log_sha256": "8f1486582be3545533ae25e1be6894597a8435f0f3820d0dc02dddfa3eb43d54"
+}

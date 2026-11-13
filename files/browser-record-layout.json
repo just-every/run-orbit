@@ -1,0 +1,23 @@
+{
+  "name": "browser-record-layout",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "1800",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/browser-record-layout-results.jsonl",
+    "tests/delegation-browser/records-layout.test.ts"
+  ],
+  "started": "2026-11-13T00:52:38.979037+00:00",
+  "finished": "2026-11-13T00:57:36.892693+00:00",
+  "exit": 0,
+  "log_sha256": "90231d4fa4c05b24240670323ecbfa443faf47d3ee1d25dbcdb8ae29180e75ca"
+}

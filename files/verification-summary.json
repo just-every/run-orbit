@@ -1,0 +1,258 @@
+{
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f179-pc1",
+  "verify": {
+    "conclusion": "success",
+    "event": "push",
+    "head_sha": "12d5917c998104d17e3c7b8f775840a3c4533315",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43336101316",
+    "run_attempt": 1,
+    "status": "completed"
+  },
+  "checks": [
+    {
+      "name": "merge-typecheck",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "timeout",
+        "300",
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "started": "2026-11-13T00:18:19.984360+00:00",
+      "finished": "2026-11-13T00:18:59.932657+00:00",
+      "exit": 0,
+      "log_sha256": "4d3b0693f395b93fde7c9424d9e6e65fc21ff5e47d29cae0ae782186d292e750"
+    },
+    {
+      "name": "merge-boundaries",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "scripts/check-boundaries.mjs"
+      ],
+      "started": "2026-11-13T00:18:59.996383+00:00",
+      "finished": "2026-11-13T00:19:00.617338+00:00",
+      "exit": 0,
+      "log_sha256": "850505e6cd70abfdd9784472a3f2cad0e5357ffd4737f33bc6e95fb167747f6a"
+    },
+    {
+      "name": "merge-first-party",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "started": "2026-11-13T00:19:00.738996+00:00",
+      "finished": "2026-11-13T00:19:02.141165+00:00",
+      "exit": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "merge-views-write",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "started": "2026-11-13T00:19:02.191683+00:00",
+      "finished": "2026-11-13T00:19:02.352578+00:00",
+      "exit": 0,
+      "log_sha256": "14cee29b7bd19487e15f4013d4fb85016e022ef21d230676971a6490c88436d2"
+    },
+    {
+      "name": "merge-views-check",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "started": "2026-11-13T00:19:02.397851+00:00",
+      "finished": "2026-11-13T00:19:02.539307+00:00",
+      "exit": 0,
+      "log_sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "name": "merge-lock",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "started": "2026-11-13T00:19:02.622872+00:00",
+      "finished": "2026-11-13T00:19:03.401923+00:00",
+      "exit": 0,
+      "log_sha256": "ead608b22c89aa370a398dc644120085335a858ef7dde74c28e8426c24d05467"
+    },
+    {
+      "name": "merge-source-check",
+      "head": "e130ff766253c5a35cf7684dac5e058de78c0248",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "started": "2026-11-13T00:19:03.448970+00:00",
+      "finished": "2026-11-13T00:19:04.177825+00:00",
+      "exit": 0,
+      "log_sha256": "beb88499f463df2164091327b0234b41d5c27807501bcd9f34588ef63df81635"
+    },
+    {
+      "name": "exact-head-build",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "timeout",
+        "600",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "started": "2026-11-13T00:20:04.832817+00:00",
+      "finished": "2026-11-13T00:20:19.450563+00:00",
+      "exit": 0,
+      "log_sha256": "af0c9920b986d855586eb211466fd3afb3d74953f8a3055c856a77b4d32ca572"
+    },
+    {
+      "name": "exact-head-deployment",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "started": "2026-11-13T00:20:19.587591+00:00",
+      "finished": "2026-11-13T00:20:19.768735+00:00",
+      "exit": 0,
+      "log_sha256": "1a211665a1af41ffbe0c0174c15b5bb99e7f09cdd07cdea07871d90c70181053"
+    },
+    {
+      "name": "exact-head-source-check",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "started": "2026-11-13T00:20:19.809349+00:00",
+      "finished": "2026-11-13T00:20:20.476595+00:00",
+      "exit": 0,
+      "log_sha256": "beb88499f463df2164091327b0234b41d5c27807501bcd9f34588ef63df81635"
+    },
+    {
+      "name": "archive-serial-retry",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "timeout",
+        "2400",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/archive-serial-results.jsonl",
+        "tests/core/onboarding-archive.test.ts",
+        "tests/core/public-demo.test.ts"
+      ],
+      "started": "2026-11-13T00:20:20.514474+00:00",
+      "finished": "2026-11-13T00:36:22.727466+00:00",
+      "exit": 0,
+      "log_sha256": "664c6c6733cc71685005aa94faa123646fca1ac1614ffcf071031d8576eb6f92"
+    },
+    {
+      "name": "mailbox-focused-probe",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "timeout",
+        "2400",
+        "pnpm",
+        "exec",
+        "tsx",
+        "/tmp/orbit-mailbox-probe.mts"
+      ],
+      "started": "2026-11-13T00:42:17.544949+00:00",
+      "finished": "2026-11-13T00:51:35.946545+00:00",
+      "exit": 0,
+      "log_sha256": "f1eecaac7806f192b008f8b526cc1477fca5663e5d7798668b811bbe5ab87258"
+    },
+    {
+      "name": "browser-record-layout",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "timeout",
+        "1800",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/browser-record-layout-results.jsonl",
+        "tests/delegation-browser/records-layout.test.ts"
+      ],
+      "started": "2026-11-13T00:52:38.979037+00:00",
+      "finished": "2026-11-13T00:57:36.892693+00:00",
+      "exit": 0,
+      "log_sha256": "90231d4fa4c05b24240670323ecbfa443faf47d3ee1d25dbcdb8ae29180e75ca"
+    },
+    {
+      "name": "browser-record-journeys-runtime-retry",
+      "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+      "command": [
+        "timeout",
+        "1800",
+        "pnpm",
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/browser-record-journeys-runtime-results.jsonl",
+        "newtests/t096/browser-journeys.test.ts"
+      ],
+      "started": "2026-11-13T01:04:23.560428+00:00",
+      "finished": "2026-11-13T01:26:11.893427+00:00",
+      "exit": 0,
+      "log_sha256": "6bc3e4def55694dea543ac882524774ac6fc55a9e1bc828e4766f626d70eec27"
+    }
+  ],
+  "counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "test_budget": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "status_cells_unchanged": true,
+  "acceptance_unchanged": true,
+  "source_lock_fresh": true,
+  "publication_scan": "not run in cloud; guarded lander owns COMPLETE full-history scan",
+  "main_landing": "not performed; guarded lander owns main and Run site",
+  "pr": null
+}

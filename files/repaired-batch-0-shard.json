@@ -1,0 +1,197 @@
+{
+  "shard": "core-5",
+  "commit": "e130ff766253c5a35cf7684dac5e058de78c0248",
+  "startedAt": "2026-11-12T23:54:34.997Z",
+  "finishedAt": "2026-11-13T00:13:54.439Z",
+  "status": "failed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "tests/support/prepare-state.ts"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 62981,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/core-5-results.jsonl",
+        "tests/core/capture-boundaries.test.ts",
+        "tests/core/local-owner.test.ts",
+        "tests/core/onboarding-archive.test.ts",
+        "tests/core/public-demo.test.ts",
+        "tests/core/records-complete.test.ts"
+      ],
+      "env": {},
+      "files": [
+        "tests/core/capture-boundaries.test.ts",
+        "tests/core/local-owner.test.ts",
+        "tests/core/onboarding-archive.test.ts",
+        "tests/core/public-demo.test.ts",
+        "tests/core/records-complete.test.ts"
+      ],
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 1096405,
+      "missingFiles": [],
+      "eventError": "Missing, failed or unexpected test completions.",
+      "report": [
+        {
+          "kind": "summary",
+          "runner": "node:test",
+          "success": false,
+          "counts": {
+            "tests": 6,
+            "failed": 2,
+            "passed": 4,
+            "cancelled": 0,
+            "skipped": 0,
+            "todo": 0,
+            "topLevel": 6,
+            "suites": 0
+          }
+        }
+      ],
+      "executions": [
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a captured reply stops outreach at once while its proposals wait; capture never drafts, sends or makes anyone contactable, and only an operator session may capture",
+          "file": "tests/core/capture-boundaries.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 76601.091056
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority",
+          "file": "tests/core/local-owner.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 67434.13726
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+          "file": "tests/core/onboarding-archive.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "failed",
+          "durationMs": 458869.300334
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records",
+          "file": "tests/core/public-demo.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "failed",
+          "durationMs": 60702.051755
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "RECORD-014 typed fields validate edits and preserve paged archived definition meaning through public history and export",
+          "file": "tests/core/records-complete.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 379554.384292
+        },
+        {
+          "kind": "test",
+          "runner": "node:test",
+          "name": "RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal",
+          "file": "tests/core/records-complete.test.ts",
+          "type": "test",
+          "nesting": 0,
+          "status": "passed",
+          "durationMs": 17141.190374
+        }
+      ]
+    }
+  ],
+  "executions": [
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "CAPTURE-003 CAPTURE-005 OUT-001 OUT-007 ACTION-005 RECORD-012 SIGNAL-009 a captured reply stops outreach at once while its proposals wait; capture never drafts, sends or makes anyone contactable, and only an operator session may capture",
+      "file": "tests/core/capture-boundaries.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 76601.091056
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority",
+      "file": "tests/core/local-owner.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 67434.13726
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "API-002 credentials stay local while DATA-001 local archive restores records and keeps the hosted owner able to sign in by mail without reviving sessions",
+      "file": "tests/core/onboarding-archive.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "failed",
+      "durationMs": 458869.300334
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "PUBLIC-002 separate read-only demo has fresh stories and cannot read or mutate owner records",
+      "file": "tests/core/public-demo.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "failed",
+      "durationMs": 60702.051755
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "RECORD-014 typed fields validate edits and preserve paged archived definition meaning through public history and export",
+      "file": "tests/core/records-complete.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 379554.384292
+    },
+    {
+      "kind": "test",
+      "runner": "node:test",
+      "name": "RECORD-013 DATA-002 customer history survives one deal deletion, then contact erasure removes mail and linked signals and recomputes the surviving deal",
+      "file": "tests/core/records-complete.test.ts",
+      "type": "test",
+      "nesting": 0,
+      "status": "passed",
+      "durationMs": 17141.190374
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "browser-record-journeys",
+  "head": "12d5917c998104d17e3c7b8f775840a3c4533315",
+  "command": [
+    "timeout",
+    "1800",
+    "pnpm",
+    "exec",
+    "tsx",
+    "--test",
+    "--no-test-only",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "--test-reporter-destination=stdout",
+    "--test-reporter=./scripts/core-results.mjs",
+    "--test-reporter-destination=/home/agent/rer-consolidation/work/sd-orbit-c-f179-pc1/packet/browser-record-journeys-results.jsonl",
+    "newtests/t096/browser-journeys.test.ts"
+  ],
+  "started": "2026-11-13T00:57:36.949102+00:00",
+  "finished": "2026-11-13T00:59:15.884947+00:00",
+  "exit": 1,
+  "log_sha256": "78b433398d20b192b3c9a5627cd3c7a1ea06727e6ae2b3aebc6bb01e5cb23cc6"
+}
