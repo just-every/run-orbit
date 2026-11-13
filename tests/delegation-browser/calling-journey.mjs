@@ -8,6 +8,11 @@ export async function callingJourney(page,calling){
  const errors=[],expectedConsoleErrors=[];page.on('pageerror',e=>errors.push({text:e.message,url:'pageerror'}));page.on('console',m=>{if(m.type()==='error')errors.push({text:m.text(),url:m.location().url});});
  // Twilio is a row in Settings › Integrations; its connection opens in place under the row.
  await page.goto('/app/settings/integrations');
+ await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Connect Zoom',exact:true}).click();
+ const zoom=page.getByRole('region',{name:'Zoom meetings',exact:true});await expect(zoom.getByRole('status')).toContainText('Unresolved setup');await expect(zoom.getByLabel('Zoom client secret',{exact:true})).toHaveValue('');
+ const zoomAxe=await new AxeBuilder({page}).include('[aria-labelledby="zoom-settings"]').analyze();expect(zoomAxe.violations.filter(v=>['serious','critical'].includes(v.impact))).toEqual([]);
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await zoom.screenshot({path:`${evidence}/zoom-unconnected-${width}.png`});}
+ await page.setViewportSize({width:1440,height:900});
  await page.setViewportSize({width:1440,height:900});await page.getByRole('button',{name:'Connect Slack',exact:true}).click();
  const slack=page.getByRole('region',{name:'Slack sales notices',exact:true}),declaration=slack.getByLabel('Slack connector declaration',{exact:true});
  await expect(declaration).toBeVisible();await expect(slack.getByLabel('Bot token',{exact:true})).toHaveValue('');await expect(slack.getByLabel('Slack app signing secret',{exact:true})).toHaveValue('');

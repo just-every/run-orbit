@@ -56,6 +56,7 @@
 .plan-notes textarea { width: 100%; margin-top: 12px; min-height: 112px; }
 .plan-notes__save { margin-top: 16px; display: flex; flex-wrap: wrap; grid-column: 1 / -1; align-items: center; gap: 12px 18px; }
 .plan-notes__save p { margin: 0; color: var(--ob-muted); font-size: 14px; }
+.plan-notes__save .operator-state--info { color: var(--ob-ink); }
 
 @media (max-width: 900px) {
  .today__accounts, .plan-notes { grid-template-columns: minmax(0, 1fr); }

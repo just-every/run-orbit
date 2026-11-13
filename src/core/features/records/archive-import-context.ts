@@ -24,7 +24,7 @@ export async function foldedImportContext(db:D1Database,job:ImportJob):Promise<I
  db.prepare('DELETE FROM access_grants'),db.prepare('DELETE FROM access_invitations'),db.prepare('DELETE FROM access_form_authorities'),
  db.prepare("UPDATE access_memberships SET status='removed' WHERE operator_id IN(SELECT operator_id FROM access_collaborators)"),
  db.prepare('DELETE FROM publication_targets'),db.prepare("UPDATE publication_operations SET state='withdrawn' WHERE state='published'"),
- db.prepare("UPDATE signal_sources SET enabled=0,secret_ciphertext=NULL WHERE type='fixed_form'"),
+ db.prepare("UPDATE signal_sources SET enabled=0,secret_ciphertext=NULL WHERE type='fixed_form' OR id='zoom'"),
  db.prepare("INSERT INTO access_workspaces SELECT 'workspace','orbit',name,1 FROM workspace_settings WHERE NOT EXISTS(SELECT 1 FROM access_workspaces)"),
  db.prepare("INSERT INTO access_legacy_mapping SELECT 1,'orbit','workspace' FROM access_workspaces WHERE NOT EXISTS(SELECT 1 FROM access_legacy_mapping)"),
  db.prepare("INSERT INTO original_operator_provisions SELECT id,created_at FROM operators WHERE NOT EXISTS(SELECT 1 FROM access_collaborators WHERE operator_id=operators.id) AND id NOT IN(SELECT operator_id FROM original_operator_provisions)"),
