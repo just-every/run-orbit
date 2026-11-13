@@ -3,7 +3,8 @@
     "original_base": "5f92fa76579961950d49c7411f54d5446516a708",
     "original_candidate": "1d07561f208078d5536c5d5ad058abc7c63c04f6",
     "current_main": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
-    "rebased_candidate": "67f170efd24378a2f68409218adbd106d36edb93"
+    "rebased_candidate": "67f170efd24378a2f68409218adbd106d36edb93",
+    "latest_main_observed": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da"
   },
   "files": [
     {
@@ -12,9 +13,11 @@
         "original_base": "2e98a28742ac35e0c29e4a010af33058cc93c9f1",
         "original_candidate": "2e98a28742ac35e0c29e4a010af33058cc93c9f1",
         "current_main": "2e98a28742ac35e0c29e4a010af33058cc93c9f1",
-        "rebased_candidate": "2e98a28742ac35e0c29e4a010af33058cc93c9f1"
+        "rebased_candidate": "2e98a28742ac35e0c29e4a010af33058cc93c9f1",
+        "latest_main_observed": "2e98a28742ac35e0c29e4a010af33058cc93c9f1"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/operator/ui/settings/team.tsx",
@@ -22,9 +25,11 @@
         "original_base": "84f75c737eeaac7a418a171b24085243abf42246",
         "original_candidate": "84f75c737eeaac7a418a171b24085243abf42246",
         "current_main": "84f75c737eeaac7a418a171b24085243abf42246",
-        "rebased_candidate": "84f75c737eeaac7a418a171b24085243abf42246"
+        "rebased_candidate": "84f75c737eeaac7a418a171b24085243abf42246",
+        "latest_main_observed": "84f75c737eeaac7a418a171b24085243abf42246"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/access/collaborator-console.tsx",
@@ -32,9 +37,11 @@
         "original_base": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d",
         "original_candidate": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d",
         "current_main": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d",
-        "rebased_candidate": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d"
+        "rebased_candidate": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d",
+        "latest_main_observed": "8bc64adc821c4b90e583bb76bcb307a95b8fcf2d"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "tests/rer/operator-routes.mjs",
@@ -42,9 +49,11 @@
         "original_base": "12d6edb7079c26773090fd80cac04d545666d967",
         "original_candidate": "12d6edb7079c26773090fd80cac04d545666d967",
         "current_main": "12d6edb7079c26773090fd80cac04d545666d967",
-        "rebased_candidate": "12d6edb7079c26773090fd80cac04d545666d967"
+        "rebased_candidate": "12d6edb7079c26773090fd80cac04d545666d967",
+        "latest_main_observed": "12d6edb7079c26773090fd80cac04d545666d967"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/operator/ui/record/customer-record.tsx",
@@ -52,9 +61,11 @@
         "original_base": "12e567176be632ac313798a87a87bf91c12088a1",
         "original_candidate": "12e567176be632ac313798a87a87bf91c12088a1",
         "current_main": "12e567176be632ac313798a87a87bf91c12088a1",
-        "rebased_candidate": "12e567176be632ac313798a87a87bf91c12088a1"
+        "rebased_candidate": "12e567176be632ac313798a87a87bf91c12088a1",
+        "latest_main_observed": "12e567176be632ac313798a87a87bf91c12088a1"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/operator/ui/use-operator-resource.ts",
@@ -62,9 +73,11 @@
         "original_base": "5f289d97d0423028e8ace212a36419d28a5bdfea",
         "original_candidate": "5f289d97d0423028e8ace212a36419d28a5bdfea",
         "current_main": "5f289d97d0423028e8ace212a36419d28a5bdfea",
-        "rebased_candidate": "5f289d97d0423028e8ace212a36419d28a5bdfea"
+        "rebased_candidate": "5f289d97d0423028e8ace212a36419d28a5bdfea",
+        "latest_main_observed": "5f289d97d0423028e8ace212a36419d28a5bdfea"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/operator/ui/record/record-api.ts",
@@ -72,9 +85,11 @@
         "original_base": "95ac57a26e93cb41fd87aa831129549bc86a3e46",
         "original_candidate": "95ac57a26e93cb41fd87aa831129549bc86a3e46",
         "current_main": "95ac57a26e93cb41fd87aa831129549bc86a3e46",
-        "rebased_candidate": "95ac57a26e93cb41fd87aa831129549bc86a3e46"
+        "rebased_candidate": "95ac57a26e93cb41fd87aa831129549bc86a3e46",
+        "latest_main_observed": "95ac57a26e93cb41fd87aa831129549bc86a3e46"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/routes/-operator-detail.tsx",
@@ -82,9 +97,11 @@
         "original_base": "f5d986d8275f9137e16c1909a2a6a436f7ec4822",
         "original_candidate": "f5d986d8275f9137e16c1909a2a6a436f7ec4822",
         "current_main": "f5d986d8275f9137e16c1909a2a6a436f7ec4822",
-        "rebased_candidate": "f5d986d8275f9137e16c1909a2a6a436f7ec4822"
+        "rebased_candidate": "f5d986d8275f9137e16c1909a2a6a436f7ec4822",
+        "latest_main_observed": "f5d986d8275f9137e16c1909a2a6a436f7ec4822"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     },
     {
       "path": "src/core/features/relationships/snapshot.ts",
@@ -92,9 +109,12 @@
         "original_base": "56a0f19fd16cb74600c93cf50045d88a2df92909",
         "original_candidate": "56a0f19fd16cb74600c93cf50045d88a2df92909",
         "current_main": "56a0f19fd16cb74600c93cf50045d88a2df92909",
-        "rebased_candidate": "56a0f19fd16cb74600c93cf50045d88a2df92909"
+        "rebased_candidate": "56a0f19fd16cb74600c93cf50045d88a2df92909",
+        "latest_main_observed": "56a0f19fd16cb74600c93cf50045d88a2df92909"
       },
-      "identical": true
+      "identical": true,
+      "identical_across_all_observed_refs": true
     }
-  ]
+  ],
+  "latest_main_observed_at": "2026-11-13T01:39:38Z"
 }

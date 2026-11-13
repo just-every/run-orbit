@@ -1,0 +1,27 @@
+{
+  "scope": "explicitly selected public report packet; excludes raw runtime logs and decrypted bundle",
+  "files": [
+    "REPORT.md",
+    "PLAN.md",
+    "REPO-RECEIPT.json",
+    "RETRY-RESULTS.json",
+    "GITHUB-CALLS.json",
+    "COUNTS.json",
+    "SOURCE-COMPARISON.json",
+    "SOURCE-EXCERPTS.txt",
+    "CANDIDATE.diff",
+    "run-43334873977.json",
+    "run-43303268310.json",
+    "jobs-43334873977-all.json",
+    "jobs-43334873977-after-batch4-retry.json",
+    "retry-job-131590098446.json",
+    "retry-job-131590098535.json",
+    "retry-job-batch13-serialized.json",
+    "assertion-131590098446.txt",
+    "assertion-131590098535.txt",
+    "CHECKPOINT-TRANSFER-RECEIPT.json"
+  ],
+  "files_checked": 19,
+  "credential_shape_findings": [],
+  "not_a_fleet_publication_scan": true
+}

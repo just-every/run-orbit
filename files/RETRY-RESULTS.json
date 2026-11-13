@@ -3,7 +3,7 @@
   "run": 43334873977,
   "head": "67f170efd24378a2f68409218adbd106d36edb93",
   "retry4_requested_once": true,
-  "retry13_requested_but_not_started": true,
+  "retry13_requested_but_not_started": false,
   "request13_rejection": "HTTP 403: The workflow run containing this job is already running",
   "latest_jobs": {
     "shards (batch-4)": {
@@ -439,6 +439,9 @@
       "runner_group_name": "GitHub Actions"
     }
   },
-  "github_calls_used": 8,
-  "github_calls_remaining": 2
+  "github_calls_used": 9,
+  "github_calls_remaining": 1,
+  "retry13_request_accepted_at": "2026-11-13T01:43:11Z",
+  "retry13_requested_once_successfully": true,
+  "final_observation_pending": true
 }
