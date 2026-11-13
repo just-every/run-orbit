@@ -40,7 +40,10 @@ test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, rev
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
   await page.screenshot({path:join(screenshots,`capture-${width}.png`),fullPage:true});
   // Review is its own place once something is captured.
-  await page.getByRole('link',{name:/^Review \d+ proposed changes?$/}).click();
+  if(width===1440){
+   await page.goto('/app/settings/capture');
+   await page.locator('#capture-source-capture-files').getByRole('link',{name:/review .*pending proposals/i}).click();
+  }else await page.getByRole('link',{name:/^Review \d+ proposed changes?$/}).click();
   await expect(page.getByRole('heading',{name:'Review',level:1})).toBeVisible();await expect(page.getByRole('heading',{name:'Proposed changes',exact:true})).toBeVisible();
   await expect(page.getByRole('article',{name:'Link this reply to Ana Ruiz'})).toBeVisible();
   expect(await overflow(page)).toEqual([]);expect(await serious(page)).toEqual([]);
@@ -104,6 +107,21 @@ test('CAPTURE provider status keeps revoked access clear, reconnects through the
  for(const source of sources){
   const before=initialSources.find(item=>item.id===source.id);
   expect(before).toMatchObject({state:'error',has_credential:1,captured_count:7,skipped_count:2,proposals_waiting:1,last_success_at:'2026-10-01T12:00:00.000Z'});
+ }
+ // The count on the source card is the public door to only that source's pending work.
+ await page.setViewportSize({width:1440,height:900});
+ const allPending=(await(await page.request.get('/api/v1/capture/proposals')).json()).proposals;
+ for(const source of sources){
+  await page.goto('/app/settings/capture');
+  const card=page.getByRole('article',{name:source.name});
+  await card.getByRole('link',{name:/review .*pending proposals/i}).click();
+  await expect(page).toHaveURL(new RegExp(`/app/review\\?source=${source.id}$`));
+  await expect(page.getByRole('heading',{name:'Proposed changes',exact:true})).toBeVisible();
+  const expected=allPending.filter(proposal=>proposal.source_name===source.name);
+  expect(expected.length).toBe(initialSources.find(item=>item.id===source.id).proposals_waiting);
+  await expect(page.locator('.capture-proposal')).toHaveCount(expected.length);
+  for(const proposal of expected)await expect(page.locator(`#proposal-${proposal.id}`)).toBeVisible();
+  for(const proposal of allPending.filter(proposal=>proposal.source_name!==source.name))await expect(page.locator(`#proposal-${proposal.id}`)).toHaveCount(0);
  }
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:900});

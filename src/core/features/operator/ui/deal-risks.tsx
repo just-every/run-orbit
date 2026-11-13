@@ -1,3 +1,4 @@
+import {DealRiskAgentResult} from './deal-risk-agent-result';
 import type {RiskAgentRun} from '../../risks/embedded-agent';
 import {useCallback,useState,type FormEvent} from 'react';
 import {useOperatorResource} from './use-operator-resource';
@@ -34,16 +35,7 @@ export function DealRisks({dealId}:{dealId:string}){
     <button type="button" disabled={pending} onClick={()=>void run(async()=>{
      const result=await riskRequest<RiskAgentRun>(`${dealId}/agent-runs`,{});setAgentRun(result);resource.reload();
     })}>Start agent</button>
-    {agentRun&&<section aria-label="Deal-risk agent run">
-     <p role="status">{agentRun.agent.name}: {agentRun.filed} tasks filed, {agentRun.existing} already filed.</p>
-     <ol>{agentRun.calls.map((call,index)=><li key={index} style={{overflowWrap:'anywhere'}}>
-      <strong>{call.tool}</strong>{call.finding&&<span> · {data.findings.find(item=>item.key===call.finding)?.title??call.finding}</span>}
-      <p>{call.answer.decision?.disposition??call.answer.code??call.answer.outcome} · {call.answer.outcome}{call.answer.code?` · ${call.answer.code}`:''}</p>
-      {call.answer.decision?.classes.map(item=><p key={item.class}>{item.class} · {Object.entries(item.facts).map(([key,value])=>`${key}: ${String(value)}`).join(', ')}</p>)}
-      {call.answer.review&&<a href="/agents">Review {call.answer.review.id}</a>}
-      {call.answer.approval&&<a href={call.answer.approval.url}>Open approval</a>}
-     </li>)}</ol>
-    </section>}
+    {agentRun&&<DealRiskAgentResult run={agentRun} title={key=>data.findings.find(item=>item.key===key)?.title}/>}
    </details>
    <h3 style={{margin:'20px 0 6px',fontSize:'1rem',fontWeight:600}}>Conflicting recorded dates and prices</h3>
    {!data.aiConfigured?<p>AI is not configured, so recorded commitments, calls and notes are not checked for conflicting dates or prices. The findings above are complete without it.</p>

@@ -9,6 +9,23 @@ export async function riskJourney(page,data,model,evidence){
  await page.setViewportSize({width:1440,height:900});await page.goto(path);
  const risks=page.getByTestId('deal-risks');
  await risks.locator(':scope > summary').click();
+ // A fresh installation has no company policy: starting is explicit, refuses without effects,
+ // explains the prerequisite, and takes the person to the existing policy setup door.
+ const tasksBefore=await read(`/delegation/handoffs/${data.deal}`);
+ await risks.getByText('Run deal-risk agent',{exact:true}).click();
+ const refused=page.waitForResponse(response=>response.url().endsWith(`${api}/agent-runs`));
+ await risks.getByRole('button',{name:'Start agent',exact:true}).click();
+ const missing=await(await refused).json();
+ expect(missing.calls[0].answer.code).toBe('policy_unset');expect(missing.filed).toBe(0);
+ const stopped=risks.getByRole('region',{name:'Deal-risk agent run'});
+ await expect(stopped.getByRole('status')).toContainText(/company.*policy.*not.*set/i);
+ await expect(stopped).not.toContainText(/orbit\.[a-z.]+|policy_unset|\bunset\b|\brefused\b|\bstandard\b|\bmeasure\b/);
+ expect(await read(`/delegation/handoffs/${data.deal}`)).toEqual(tasksBefore);
+ await capture(page,risks,evidence,'missing-agent-policy');
+ const setup=stopped.getByRole('link',{name:/set up.*policy/i});
+ await expect(setup).toHaveAttribute('href',missing.calls[0].answer.fields.setup_url);
+ await setup.click();await expect(page.getByRole('heading',{name:'Agent policy',exact:true})).toBeVisible();
+ await page.goto(path);await risks.locator(':scope > summary').click();
  const finding=kind=>risks.locator(`.deal-risk[data-kind="${kind}"]`);
  const absent=finding('absent-role'),opens=finding('opens-no-reply'),stalled=finding('stalled');
  await expect(absent.getByRole('heading')).toHaveText('No contact is recorded as decision-maker on this deal');
@@ -128,13 +145,20 @@ export async function embeddedRiskJourney({page,expected,policy,evidence}){
  const response=await completed;expect(response.status()).toBe(200);const run=await response.json();
  expect(run.filed).toBe(findings.length);expect(run.existing).toBe(0);
  expect(run.calls.map(call=>call.tool)).toEqual(['orbit.risks.read',...findings.flatMap(()=>['orbit.handoffs.read','orbit.handoffs.upsert'])]);
+ // The UI uses ordinary words; the underlying company decision and computed facts remain exact.
+ for(const call of run.calls){
+  expect(call.answer.outcome).toBe('done');
+  expect(call.answer.decision.disposition).toBe('review');
+  expect(call.answer.decision.classes).toContainEqual(expect.objectContaining({class:'standard',facts:{measure:1}}));
+ }
+
  const result=risks.getByRole('region',{name:'Deal-risk agent run'});
  await expect(result.getByRole('status')).toContainText(`${findings.length} tasks filed, 0 already filed.`);
  await expect(result.locator('ol > li')).toHaveCount(run.calls.length);
  for(const item of await result.locator('ol > li').all()){
-  await expect(item).toContainText('review · done');
-  await expect(item).toContainText('standard · measure: 1');
-  await expect(item.getByRole('link',{name:/^Review /})).toHaveAttribute('href','/agents');
+  await expect(item).toContainText(/done.*review/i);
+  await expect(item).not.toContainText(/orbit\.[a-z.]+|\bstandard\b|\bmeasure\b/);
+  await expect(item.getByRole('link',{name:'Review activity'})).toHaveAttribute('href','/agents');
  }
  const saved=await page.request.get('/delegation/handoffs/'+expected.id);expect(saved.status()).toBe(200);
  const tasks=(await saved.json()).tasks;

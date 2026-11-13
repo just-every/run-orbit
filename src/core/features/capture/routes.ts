@@ -63,7 +63,7 @@ export function createCaptureRoutes(db:D1Database,providers:ProviderConfig={}){
   return form?c.redirect('/app/settings/capture',303):c.json(result);
  });
  app.get('/proposals',async c=>{
-  const query=z.object({status:z.enum(['pending','accepted','declined']).default('pending'),recordType:z.enum(['contact','company','opportunity']).optional(),recordId:recordId.optional()}).strict().safeParse(c.req.query());
+  const query=z.object({status:z.enum(['pending','accepted','declined']).default('pending'),recordType:z.enum(['contact','company','opportunity']).optional(),recordId:recordId.optional(),source:z.string().min(1).max(200).optional()}).strict().safeParse(c.req.query());
   if(!query.success)throw new CaptureError(400,'Invalid proposal filter.');
   return c.json({proposals:await listProposals(db,query.data)});
  });
