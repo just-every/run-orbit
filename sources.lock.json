@@ -10602,6 +10602,10 @@
       "sha256": "b04c5b6d6ec6197d0a3ac0ca61132e76b7e1dc961344760d4a5f37f8ad121e93",
       "executable": false
     },
+    "tests/e2e/task-activity.mjs": {
+      "sha256": "3ec938cafb7fce17d789e995a0d9483228cd30b7602f259278b88ae76710a67d",
+      "executable": false
+    },
     "tests/e2e/workbench.spec.mjs": {
       "sha256": "c6fd29f24b965e5853f030b8108a07f5946bd393a0ae5277541ba5132787f232",
       "executable": false
