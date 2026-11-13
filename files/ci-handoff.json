@@ -1,0 +1,16 @@
+{
+  "productStatus": "PUSHED",
+  "reason": "Exact-SHA Verify still in progress; eight polling calls used, two remain in ten-call budget. Budget-short handoff under the cloud brief.",
+  "lastObserved": {
+    "conclusion": null,
+    "head_sha": "f5005490f94c312127e42f957311a264241875fa",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363300128",
+    "id": 43363300128,
+    "status": "in_progress"
+  },
+  "githubCallsUsed": 8,
+  "githubCallsRemaining": 2,
+  "minutesObserved": 35.06,
+  "watcherStoppedByOwner": true,
+  "lastCheckedAt": "2026-11-13T04:41:45.339938+00:00"
+}

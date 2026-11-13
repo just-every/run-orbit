@@ -1,0 +1,7 @@
+{
+  "start": "2026-11-13T04:01:00.221Z",
+  "end": "2026-11-13T04:02:44.446Z",
+  "passed": true,
+  "journey": "tests/rer/workflow-journey.mjs#workflowBrowserJourney",
+  "width": 1440
+}

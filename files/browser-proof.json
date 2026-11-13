@@ -1,0 +1,28 @@
+{
+  "testedAt": "2026-11-13T04:01:43.482Z",
+  "activeVersion": 1,
+  "savedDraftVersion": 2,
+  "currentVersion": 2,
+  "activeVersionAfter": 1,
+  "status": "draft",
+  "trigger": "record_created",
+  "warnings": 0,
+  "widths": [
+    {
+      "width": 1440,
+      "editors": 1,
+      "preview": 1,
+      "saving": 0,
+      "working": 0,
+      "documentWidth": 1440
+    },
+    {
+      "width": 390,
+      "editors": 1,
+      "preview": 1,
+      "saving": 0,
+      "working": 0,
+      "documentWidth": 390
+    }
+  ]
+}

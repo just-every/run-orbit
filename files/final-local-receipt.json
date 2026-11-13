@@ -1,0 +1,16 @@
+{
+  "head": "f5005490f94c312127e42f957311a264241875fa",
+  "productTreeClean": true,
+  "testedWorkflowFilesMatchCommittedBytes": true,
+  "testBudgetBefore": 200,
+  "testBudgetAfter": 200,
+  "sourceLockCheck": 0,
+  "typecheckNode": "22.20.0",
+  "typecheckExit": 0,
+  "focusedWorkflowJourney": "passed",
+  "browserWidths": [
+    1440,
+    390
+  ],
+  "contractFilesChanged": false
+}

@@ -1,0 +1,47 @@
+{
+  "baseBefore": "0e9e55cf150dfcc781d1d9e62b2d88c15c9b6a63",
+  "integratedMain": "008e46c5a9f2c87e990e4b2881ab16a962640f11",
+  "checks": {
+    "typecheckBeforeIntegration": 0,
+    "sourceLockCheck": 0,
+    "diffWhitespaceCheck": 0,
+    "typecheckAfterIntegration": 0,
+    "sourceLockRegeneratedLast": true,
+    "pinnedNode22Typecheck": 0
+  },
+  "productFiles": {
+    "src/core/features/operator/ui/workflows-settings.tsx": "acccadb1e8bee24a5239c315dbdb2b98dc250a0f9449baab5773a7fd07f720e4",
+    "tests/rer/workflow-journey.mjs": "f813c778d399ba84b77a8cb8fb375f7be3c9036583c4d1738de7af458ed083c6"
+  },
+  "testsBefore": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testsAfter": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contractEdits": false,
+  "clauseStatuses": {
+    "AUTO-003": {
+      "before": "partial",
+      "after": "partial"
+    },
+    "AUTO-004": {
+      "before": "partial",
+      "after": "partial"
+    }
+  },
+  "contractStatusCountsBefore": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "contractStatusCountsAfter": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  }
+}
