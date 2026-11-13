@@ -50,22 +50,22 @@ export async function mailboxSendProof(provider:Provider){
   const peerMailboxes=await f.app.request(origin+'/api/v1/workbench/mailboxes',{headers:peerHeaders});assert.equal(peerMailboxes.status,200);assert.equal((await peerMailboxes.json() as any).mailboxes.length,0);
   const peerReview=await f.app.request(origin+'/api/v1/workbench/drafts/'+f.unsentDraft+'/approval-preview?mailboxSourceId='+source,{headers:peerHeaders});assert.equal(peerReview.status,409);assert.equal(f.state.mailSubmissions.length,0);
 
-  const libraryCall=async(path:string,body:unknown,method='POST')=>{const response=await f.app.request(origin+'/api/v1/library'+path,{method,headers,body:JSON.stringify(body)});assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;};
+  const libraryCall=async(path:string,body:unknown,method='POST')=>{const response=await f.app.request(origin+'/api/v1/library'+path,{method,headers,body:JSON.stringify(body)});const text=await response.text();assert.ok(response.ok,text);return JSON.parse(text) as any;};
   const signature=await libraryCall('',{kind:'signature',name:'Synthetic Orbit sender signature',body:'Synthetic signature.',visibility:'private'});
   async function draft(kind:'contact'|'company'|'opportunity'='contact'){
    const recordId=kind==='contact'?f.ana:kind==='company'?f.company:f.opportunity;
    const response=await request('/records/'+kind+'/'+recordId+'/drafts',{contactId:f.ana,opportunityId:kind==='contact'?null:f.opportunity,subject:'Synthetic Orbit résumé 🚀 '.repeat(4).trim(),body:'Exact reviewed body.'});
-   assert.equal(response.status,201,await response.clone().text());const id=(await response.json() as any).id as string;
+   const text=await response.text();assert.equal(response.status,201,text);const id=JSON.parse(text).id as string;
    const render=await libraryCall('/drafts/'+id+'/apply',{revision:1,signatureId:signature.id});await libraryCall('/drafts/'+id+'/render',{revision:render.revision,reviewHash:render.reviewHash});return id;
   }
-  const preview=async(id:string,selected=source)=>{const response=await request('/drafts/'+id+'/approval-preview?mailboxSourceId='+selected);assert.equal(response.status,200,await response.clone().text());const value=await response.json() as any,draftResponse=await f.app.request(origin+'/api/v1/drafts/'+id,{headers});assert.equal(draftResponse.status,200);return {...value,revision:(await draftResponse.json() as any).draft.revision};};
+  const preview=async(id:string,selected=source)=>{const response=await request('/drafts/'+id+'/approval-preview?mailboxSourceId='+selected);const text=await response.text();assert.equal(response.status,200,text);const value=JSON.parse(text) as any,draftResponse=await f.app.request(origin+'/api/v1/drafts/'+id,{headers});assert.equal(draftResponse.status,200);return {...value,revision:(await draftResponse.json() as any).draft.revision};};
   const approve=async(id:string,review:any,extra:Record<string,unknown>={})=>request('/drafts/'+id+'/approve',{revision:review.revision,mailboxSourceId:review.mailbox.sourceId,mailboxReviewHash:review.mailboxReviewHash,quietHoursConfirmation:review.localTime,...extra});
   const one=await draft('company');let review=await preview(one);
   assert.equal(review.mailbox.address,address);assert.equal(f.state.mailSubmissions.length,0,'review never submits');
   const bad=await approve(one,{...review,mailboxReviewHash:'0'.repeat(64)});assert.equal(bad.status,409);assert.equal(f.state.mailSubmissions.length,0);
   await authorize(source);assert.equal((await approve(one,review)).status,409,'A reauthorized mailbox invalidates its previous send-as review.');review=await preview(one);
   const concurrent=await Promise.all([approve(one,review),approve(one,review)]);assert.deepEqual(concurrent.map(response=>response.status).sort(),[200,409]);
-  const submitted=concurrent.find(response=>response.status===200)!;assert.equal(submitted.status,200,await submitted.clone().text());const accepted=await submitted.json() as any;
+  const submitted=concurrent.find(response=>response.status===200)!;const submittedText=await submitted.text();assert.equal(submitted.status,200,submittedText);const accepted=JSON.parse(submittedText) as any;
   assert.equal(accepted.state,'accepted');assert.equal(f.state.mailSubmissions.length,1);
   const saved=await f.db.prepare('SELECT * FROM record_mail_outbound_messages WHERE id=?').bind(accepted.id).first<any>();
   assert.equal(saved.mailbox_address,address);assert.ok(saved.provider_message_id);assert.ok(saved.provider_thread_id);
@@ -119,34 +119,34 @@ export async function mailboxSendProof(provider:Provider){
   f.state.mailboxAddress=['synthetic-orbit-2','example.test'].join(String.fromCharCode(64));f.state.scope=base;
   const otherSource=await f.connect();f.state.scope=base+' '+sendScopes.google;await authorize(otherSource);
   const otherDraft=await draft(),otherPreview=await preview(otherDraft,otherSource);
-  const otherSent=await approve(otherDraft,otherPreview);assert.equal(otherSent.status,200,await otherSent.clone().text());assert.equal(f.state.mailSubmissions.length,before+1);assert.equal(f.state.mailSubmissions.at(-1)!.address,f.state.mailboxAddress);
+  const otherSent=await approve(otherDraft,otherPreview);assert.equal(otherSent.status,200,await otherSent.text());assert.equal(f.state.mailSubmissions.length,before+1);assert.equal(f.state.mailSubmissions.at(-1)!.address,f.state.mailboxAddress);
   let installationSends=0;const installationMail=createOutboundMail({DB:f.db,MAIL_FROM:['synthetic-orbit-installation','example.test'].join(String.fromCharCode(64)),MAIL_REPLY_TO:['synthetic-orbit-replies','example.test'].join(String.fromCharCode(64)),SENDGRID_API_KEY:'synthetic-orbit-1',SENDGRID_UNSUBSCRIBE_GROUP_ID:'1'})!;
   const installationApp=createApp({database:f.db,assets:{fetch:async()=>new Response(null,{status:404})},sourceSecurity:security,captureOrigin:origin,captureFetch:f.fetcher,outboundMail:installationMail});
   const installationDraft=await draft(),installationPreview=await preview(installationDraft,otherSource),originalFetch=globalThis.fetch;
   try{globalThis.fetch=async(input,init)=>{if(String(input)==='https://api.sendgrid.com/v3/mail/send'){installationSends++;return new Response(null,{status:202,headers:{'x-message-id':'synthetic-orbit-installation'}});}return originalFetch(input,init);};
-   const installationResponse=await installationApp.request(origin+'/api/v1/workbench/drafts/'+installationDraft+'/approve',{method:'POST',headers,body:JSON.stringify({revision:installationPreview.revision,quietHoursConfirmation:installationPreview.localTime})});assert.equal(installationResponse.status,200,await installationResponse.clone().text());assert.equal(installationSends,1);
+   const installationResponse=await installationApp.request(origin+'/api/v1/workbench/drafts/'+installationDraft+'/approve',{method:'POST',headers,body:JSON.stringify({revision:installationPreview.revision,quietHoursConfirmation:installationPreview.localTime})});assert.equal(installationResponse.status,200,await installationResponse.text());assert.equal(installationSends,1);
   }finally{globalThis.fetch=originalFetch;}
   // Explicit opt-out uses the bound installation-origin capability, exact headers and visible footer.
   const optDraft=await draft();assert.equal((await request('/drafts/'+optDraft+'/opt-out?mailboxSourceId='+otherSource,{choice:'added'})).status,200);
   const changed=await f.db.prepare('SELECT revision,updated_at,recipient_email,subject,body FROM record_mail_drafts WHERE id=?').bind(optDraft).first<any>();
-  const reviewed=await request('/drafts/'+optDraft+'/review',{revision:changed.revision,reviewedUpdatedAt:changed.updated_at,recipientContactId:f.ana,recipientEmail:changed.recipient_email,subject:changed.subject,body:changed.body});assert.equal(reviewed.status,200,await reviewed.clone().text());
+  const reviewed=await request('/drafts/'+optDraft+'/review',{revision:changed.revision,reviewedUpdatedAt:changed.updated_at,recipientContactId:f.ana,recipientEmail:changed.recipient_email,subject:changed.subject,body:changed.body});const reviewedText=await reviewed.text();assert.equal(reviewed.status,200,reviewedText);const reviewedValue=JSON.parse(reviewedText) as any;
   const renderedOptResponse=await f.app.request(origin+'/api/v1/library/drafts/'+optDraft+'/render',{headers});assert.equal(renderedOptResponse.status,200);const renderedOpt=await renderedOptResponse.json() as any;
   await libraryCall('/drafts/'+optDraft+'/render',{revision:renderedOpt.revision,reviewHash:renderedOpt.reviewHash});
-  const optPreview=await preview(optDraft,otherSource),optResponse=await approve(optDraft,optPreview,{revision:(await reviewed.json() as any).revision});assert.equal(optResponse.status,200,await optResponse.clone().text());const optMessage=await optResponse.json() as any;
+  const optPreview=await preview(optDraft,otherSource),optResponse=await approve(optDraft,optPreview,{revision:reviewedValue.revision});const optText=await optResponse.text();assert.equal(optResponse.status,200,optText);const optMessage=JSON.parse(optText) as any;
   const capability=await f.db.prepare('SELECT token,origin FROM record_mail_outbound_opt_out_capabilities WHERE message_id=?').bind(optMessage.id).first<any>();assert.ok(capability);
   const optRaw=f.state.mailSubmissions.at(-1)!.raw,url=capability.origin+'/unsubscribe/'+capability.token;
   assert.ok(optRaw.includes('List-Unsubscribe: <'+url+'>'));assert.ok(optRaw.includes('List-Unsubscribe-Post: List-Unsubscribe=One-Click'));
   assert.equal(Buffer.from(optRaw.split('\r\n\r\n')[1]!,'base64').toString(),changed.body+'\n\nUnsubscribe: '+url);
   // The Workbench draft store uses the same Gmail binding and provider Sent readback.
   const workbenchDraftResponse=await request('/opportunities/'+f.opportunity+'/drafts',{contactId:f.ana,subject:'Workbench mailbox review',body:'Workbench exact approved bytes'});assert.equal(workbenchDraftResponse.status,201);
-  const workbenchDraft=(await workbenchDraftResponse.json() as any).id,workbenchResponse=await approve(workbenchDraft,await preview(workbenchDraft,otherSource));assert.equal(workbenchResponse.status,200,await workbenchResponse.clone().text());const workbenchMessage=await workbenchResponse.json() as any;
+  const workbenchDraft=(await workbenchDraftResponse.json() as any).id,workbenchResponse=await approve(workbenchDraft,await preview(workbenchDraft,otherSource));const workbenchText=await workbenchResponse.text();assert.equal(workbenchResponse.status,200,workbenchText);const workbenchMessage=JSON.parse(workbenchText) as any;
   const workbenchSaved=await f.db.prepare('SELECT mailbox_address,provider_thread_id FROM outbound_messages WHERE id=?').bind(workbenchMessage.id).first<any>();assert.equal(workbenchSaved.mailbox_address,f.state.mailboxAddress);assert.ok(workbenchSaved.provider_thread_id);
   const heldResponse=await request('/drafts/'+(await draft())+'/approval-preview?mailboxSourceId='+source);assert.equal(heldResponse.status,200);
   // The actual Records export contains history, and no token or reusable send authorization.
   const archive=await exported({...f,request:(path:string,init:RequestInit={})=>f.app.request(origin+path,{...init,headers:{...headers,...init.headers}})},true);
   const serialized=JSON.stringify(archive);assert.ok(!serialized.includes('access-')&&!serialized.includes('refresh-'));assert.ok(!archive.manifest.tables.some((table:any)=>['mailbox_send_authorizations','capture_credentials','capture_oauth'].includes(table.name)));
   const restored=await launchFixture();try{
-   const call=async(path:string,method:string,body:unknown)=>{const response=await restored.request(path,method,body);assert.ok(response.ok,await response.clone().text());return response.json() as Promise<any>;};
+   const call=async(path:string,method:string,body:unknown)=>{const response=await restored.request(path,method,body);const text=await response.text();assert.ok(response.ok,text);return JSON.parse(text) as any;};
    let job=await call('records/archive/imports','POST',{confirmed:true,manifest:archive.manifest});for(const part of archive.parts)await call('records/archive/imports/'+job.id+'/parts/'+part.index,'PUT',part);
    for(let i=0;i<700&&job.state!=='complete';i++)job=await call('records/archive/imports/'+job.id+'/finalize','POST',{});
    assert.equal(job.state,'complete');assert.equal(await restored.db.prepare('SELECT count(*) n FROM mailbox_send_authorizations').first('n'),0);assert.equal(await restored.db.prepare('SELECT count(*) n FROM capture_credentials').first('n'),0);

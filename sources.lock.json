@@ -11543,7 +11543,7 @@
       "executable": false
     },
     "tests/support/mailbox-send-proof.ts": {
-      "sha256": "049d61cbfcb36e9185e1b0c6a3befe9bcf1904bd085aad98345269745185ddcb",
+      "sha256": "8fac8ec10fcb4eb0b39ea25163280a04b92494ce59f60fa66c5816f30b462d3f",
       "executable": false
     },
     "tests/support/mailchimp-ledger-proof.ts": {
