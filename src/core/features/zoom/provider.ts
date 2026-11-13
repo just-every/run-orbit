@@ -26,15 +26,15 @@ export async function readMeeting(config:ZoomConfig,auth:{token:string;scopes:st
  const recording=meeting.settings?.auto_recording==='none'?'disabled':auth.scopes.some(scope=>scope.startsWith('cloud_recording:')||scope==='recording:read:admin')?'permission-held-unused':'permission-not-granted';
  return {id,uuid:meeting.uuid,topic:meeting.topic,start:meeting.start_time,end:new Date(Date.parse(meeting.start_time)+meeting.duration*60000).toISOString(),duration:meeting.duration,hostId:meeting.host_id,joinUrl:meeting.join_url,participants:[...new Set((meeting.settings?.meeting_invitees??[]).map(person=>person.email.trim().toLowerCase()))],recording};
 }
-const participantsSchema=z.object({participants:z.array(z.object({user_email:z.string().default(''),join_time:z.iso.datetime().optional(),leave_time:z.iso.datetime().optional()})).max(300),next_page_token:z.string().optional()});
+const participantsSchema=z.object({participants:z.array(z.object({user_email:z.string().default(''),name:z.string().optional(),join_time:z.iso.datetime().optional(),leave_time:z.iso.datetime().optional()})).max(300),next_page_token:z.string().optional()});
 /** Only attendance metadata, never recording files or transcript content. Zoom requires double encoding for slash-bearing UUIDs. */
 export async function pastParticipants(config:ZoomConfig,token:string,uuid:string){
- const encoded=uuid.startsWith('/')||uuid.includes('//')?encodeURIComponent(encodeURIComponent(uuid)):encodeURIComponent(uuid),people:{email:string;joinedAt:string|null;leftAt:string|null}[]=[];
+ const encoded=uuid.startsWith('/')||uuid.includes('//')?encodeURIComponent(encodeURIComponent(uuid)):encodeURIComponent(uuid),people:{email:string;name?:string;joinedAt:string|null;leftAt:string|null}[]=[];
  let next='';
  for(let page=0;page<10;page++){
   const parsed=participantsSchema.safeParse(await zoomRead(config,token,`/past_meetings/${encoded}/participants?page_size=300${next?'&next_page_token='+encodeURIComponent(next):''}`));
   if(!parsed.success)throw new ZoomError(502,'Zoom returned unreadable attendance. Attendance remains unresolved.');
-  for(const person of parsed.data.participants){const email=z.email().safeParse(person.user_email.trim().toLowerCase());people.push({email:email.success?email.data:'',joinedAt:person.join_time??null,leftAt:person.leave_time??null});}
+  for(const person of parsed.data.participants){const email=z.email().safeParse(person.user_email.trim().toLowerCase());people.push({email:email.success?email.data:'',...(person.name?{name:person.name}:{}),joinedAt:person.join_time??null,leftAt:person.leave_time??null});}
   next=parsed.data.next_page_token??'';if(!next)return people;
  }
  throw new ZoomError(502,'Zoom attendance exceeds this read. Attendance remains unresolved.');

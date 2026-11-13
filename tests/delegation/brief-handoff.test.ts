@@ -17,6 +17,8 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
  const fixture=await isolatedDatabase(),db=fixture.db;
  try{
   const zoom=zoomNetwork(['ana@selected.test','ben@hidden.test','cy@hidden.test']),security=createSourceSecurity({ORBIT_ENCRYPTION_KEY:'bc'.repeat(32)})!;
+  const zoomTitle='Synthetic review with Ben Hale';
+  zoom.meetings.get('98765432101')!.topic=zoomTitle;
   const t=await todayApp(db,{calling:{sourceSecurity:security,captureOrigin:'https://orbit.test',captureFetch:zoom.fetch}}),cookie=`__Host-orbit_session=${t.session.token}`,native=nativeDelegation(db),api=delegationRoutes(db);
   const selected=await t.opportunity('Selected renewal','Selected Co','Ana Ruiz','ana@selected.test'),hidden=await t.opportunity('Private deal','Hidden Co','Ben Hale','ben@hidden.test');
   const reply=await t.event(selected,'email.replied','Re: renewal',1),meeting=await t.event(selected,'meeting.booked','Renewal review',0),secret=await t.event(hidden,'email.replied','Re: private terms',1);
@@ -78,7 +80,7 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   const contactReader=await grant('crm.evidence.read',[`contacts/${ana}`]),zoomResponse=await contactReader.request(`/plan?target=signals/${zoomSignal}`),zoomText=await zoomResponse.text();
   assert.equal(zoomResponse.status,200,zoomText);
   for(const leak of [ben,'ben@hidden.test','Ben Hale','cy@hidden.test',hidden,hiddenCompany,'Private deal','Hidden Co','Confidential acquisition terms','Private deal preparation',saved.entryId])assert.ok(!zoomText.includes(leak),`a contact grant discloses no other Zoom identity or deal, even in nested fields: ${leak}`);
-  const limited=JSON.parse(zoomText).plan;
+  const limited=JSON.parse(zoomText).plan;assert.ok(typeof limited.meeting.subject==='string'&&limited.meeting.subject.length>0);
   assert.deepEqual(limited.attendees.map((person:any)=>[person.contact.id,person.contact.name,person.email,person.company,person.opportunities]),[[ana,'Ana Ruiz','ana@selected.test',null,[]]]);
   assert.deepEqual(limited.zoom.attendance.map((person:any)=>[person.email,person.match.contactId,person.joinedAt,person.leftAt]),[['ana@selected.test',ana,zoom.attendance[0].join_time,zoom.attendance[0].leave_time]]);
   assert.deepEqual(limited.unresolved,[]);assert.equal(limited.primaryOpportunityId,null);assert.deepEqual(limited.opportunities,[]);assert.equal(limited.note,null);
@@ -86,6 +88,7 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   assert.equal(limited.zoom.hostId,null);
   assert.equal(limited.zoom.recap.citations.find((citation:any)=>citation.kind==='completion').href,`/app/meetings/${zoomSignal}`);
   const owner=(await t.json<any>(`/api/v1/today/meetings/${zoomSignal}`,{},200)).plan;
+  assert.equal(owner.meeting.subject,zoomTitle,'the owner retains the complete provider title');
   assert.deepEqual(owner.zoom.attendance.map((person:any)=>person.email),['ana@selected.test','ben@hidden.test','cy@hidden.test']);
   assert.deepEqual(owner.attendees.map((person:any)=>person.contact.id).sort(),[ana,ben].sort());assert.ok(owner.unresolved.some((person:any)=>person.email==='cy@hidden.test'));
   assert.equal(owner.primaryOpportunityId,hidden);assert.ok(owner.opportunities.some((deal:any)=>deal.id===hidden&&deal.title==='Private deal'));
@@ -94,10 +97,27 @@ test('BRIEF-005 OUT-001 SIGNAL-009 an application reads the brief and a meeting 
   assert.ok(owner.zoom.recap.citations.find((citation:any)=>citation.kind==='completion').href.startsWith(`/app/opportunities/${hidden}#entry-`));
   const dealReader=await grant('crm.evidence.read',[`opportunities/${hidden}`]),dealPlan=(await(await dealReader.request(`/plan?target=signals/${zoomSignal}`)).json()).plan;
   assert.deepEqual(dealPlan.zoom.attendance.map((person:any)=>person.match.contactId).sort(),[ana,ben].sort());
+  assert.equal(dealPlan.meeting.subject,zoomTitle,'a grant including both known attendees retains the title');
   assert.equal(dealPlan.primaryOpportunityId,hidden);assert.equal(dealPlan.note.agenda,owner.note.agenda);assert.deepEqual(dealPlan.zoom.recap.citations,owner.zoom.recap.citations);
   const signalReader=await grant('crm.evidence.read',[`signals/${zoomSignal}`]),signalResponse=await signalReader.request(`/plan?target=signals/${zoomSignal}`),signalText=await signalResponse.text();assert.equal(signalResponse.status,200,signalText);
-  for(const leak of [ana,ben,'ana@selected.test','ben@hidden.test','cy@hidden.test',hidden,hiddenCompany,'Confidential acquisition terms'])assert.ok(!signalText.includes(leak),`a signal-only grant discloses no Zoom identity or deal: ${leak}`);
-  assert.deepEqual(JSON.parse(signalText).plan.zoom.attendance,[]);
+  for(const leak of ['Ben Hale',ana,ben,'ana@selected.test','ben@hidden.test','cy@hidden.test',hidden,hiddenCompany,'Confidential acquisition terms'])assert.ok(!signalText.includes(leak),`a signal-only grant discloses no Zoom identity or deal: ${leak}`);
+  assert.deepEqual(JSON.parse(signalText).plan.zoom.attendance,[]);assert.ok(JSON.parse(signalText).plan.meeting.subject.length>0);
+  for(const application of [contactReader,signalReader]){
+   const briefResponse=await application.request('/brief'),briefText=await briefResponse.text();assert.equal(briefResponse.status,200,briefText);
+   assert.ok(!briefText.includes('Ben Hale'),'the complete brief never echoes an unselected attendee in a meeting title');
+   if(application===signalReader)assert.ok(JSON.parse(briefText).brief.selectedSignals.some((line:any)=>line.evidence.id===zoomSignal));
+   const recordsResponse=await application.request('/records'),recordsText=await recordsResponse.text();assert.equal(recordsResponse.status,200,recordsText);
+   assert.ok(!recordsText.includes('Ben Hale'),'the complete records response never echoes an unselected attendee in a meeting title');
+   if(application===contactReader){assert.ok(recordsText.includes(ana));assert.ok(recordsText.includes('Ana Ruiz'));}
+   else {
+    assert.ok(JSON.parse(recordsText).items.some((item:any)=>item.target===`signals/${zoomSignal}`&&item.name.length>0));
+    const searched=await application.request('/records?q='+encodeURIComponent('Ben Hale'));assert.equal(searched.status,200);assert.deepEqual((await searched.json()).items,[],'searching an unselected name cannot discover the meeting');
+    const evidenceResponse=await application.request(`/evidence?target=signals/${zoomSignal}`),evidenceText=await evidenceResponse.text();assert.equal(evidenceResponse.status,200,evidenceText);
+    assert.ok(!evidenceText.includes('Ben Hale'),'neither the evidence title nor embedded source title echoes an unselected name');
+   }
+  }
+  const authorizedRecords=await(await dealReader.request('/records')).text();assert.ok(authorizedRecords.includes(hidden)&&authorizedRecords.includes('Private deal'));
+
   assert.equal((await reader.request(`/plan?target=signals/${zoomSignal}`)).status,404,'an unrelated selected deal does not grant the Zoom plan');
   assert.deepEqual(zoom.unexpected,[]);
   const before=await counts();
