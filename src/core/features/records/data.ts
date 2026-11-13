@@ -1,3 +1,4 @@
+import {zoomContactErasure,zoomEvidenceErasure} from '../zoom/privacy';
 import {obligationErasureStatements} from '../obligations/effects';
 import {workflowContactErasure} from '../workflows/privacy';
 import {apiCredentialErasure} from '../api/privacy';
@@ -66,9 +67,11 @@ export class DataRepository {
    statements.push(db.prepare("DELETE FROM notifications WHERE event_key IN(SELECT 'form:'||id FROM marketing_form_submissions WHERE contact_id=?)").bind(id));
    const match=identities.length?await privacyMatcher(db,statements):undefined;
    if(match)for(const email of identities)for(const token of await match(email))statements.push(suppressionProof(db,token,"EXISTS(SELECT 1 FROM contacts WHERE id=? AND contactability='do_not_contact')",[id]));
+   statements.push(...zoomContactErasure(db,id,identities));
    statements.push(db.prepare("INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM signal_links WHERE record_type='contact' AND record_id=?").bind(id,id));
    // A mailbox may appear only in a retained proposal excerpt or reviewed value. Erase the whole original.
    for(const value of identities)statements.push(db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,s.id FROM signals s WHERE ${retainedEvidenceIdentityMatch}`).bind(id,...retainedEvidenceIdentityPatterns(value)));
+   statements.push(zoomEvidenceErasure(db,id));
    statements.push(...await capturePrivacyErasureStatements(db,id,identities,match));
    statements.push(db.prepare(`DELETE FROM unlinked_signals WHERE signal_id IN (${signalIds})`).bind(id));
    statements.push(db.prepare("UPDATE audit_entries SET entity_id='erased',details_json='{}' WHERE entity_type='contact' AND entity_id IN(SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?)").bind(id),db.prepare("UPDATE audit_entries SET details_json='{}' WHERE EXISTS(SELECT 1 FROM record_merge_claims m WHERE m.record_type='contact' AND m.survivor_id=? AND instr(audit_entries.details_json,m.retired_id)>0)").bind(id));

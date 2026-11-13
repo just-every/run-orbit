@@ -1,4 +1,7 @@
 import {salesforceRoutes} from '../features/imports/salesforce/routes';
+import {zoomSettingsRoutes,zoomMeetingRoutes} from '../features/zoom/routes';
+import {zoomWebhookRoutes} from '../features/zoom/webhook';
+import {createPipedriveRoutes} from '../features/imports/pipedrive/routes';
 import {obligationRoutes} from '../features/obligations/routes';
 import type {AgentDoor} from '../../base/modules/agent-door/index.ts';
 import {workflowRoutes} from '../features/workflows/routes';
@@ -65,7 +68,7 @@ type AppEnvironment = {
   Variables: { operator: AuthenticatedOperator };
 };
 
-export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
+export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: AssetStore; database: D1Database; authenticate: (request: Request) => Promise<AuthenticatedOperator | undefined>; stepUp: (request: Request, action: StepUpAction, returnTo?: string) => Promise<Response | null>; outboundMail?: OutboundMail; mailSettings?: CustomerMailStatus; hosted?:boolean; aiProvider?: AIProvider; sourceSecurity?: SourceSecurity; captureOrigin?:string; captureFetch?:ProviderFetch; pipedriveFetch?:ProviderFetch; pipedriveNow?:()=>number; formAbuse?:FormAbuseOptions; captureMailAddress?:string; mailEventKeys?: {eventKey?:string;parseKey?:string;relaySecret?:string}; publicDemoEnabled?: boolean; agentErasureSecret?: string; deployment?: { sourceSha?: string; fingerprint?: string; versionId?: string } }) {
   input={...input,database:notificationDatabase(input.database)};
   const mail=mailboxTransportResolver(input.database,input.outboundMail,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch});
   const app = new Hono<AppEnvironment>();
@@ -97,6 +100,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route("/api/v1/public-demo", createPublicDemoRoutes(input.publicDemoEnabled !== false));
   app.route("/api/v1/mail/events", createMailEventRoutes(input.database,input.mailEventKeys??{}));
   app.route('/api/v1/mail/capture',createForwardInboundRoutes(input.database,{security:input.sourceSecurity,address:input.captureMailAddress,parseKey:input.mailEventKeys?.parseKey}));
+  app.route('/api/v1/signals/zoom',zoomWebhookRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,now:input.clock?()=>input.clock!.now():undefined}));
   app.route('/api/v1/signals/mailchimp',mailchimpWebhookRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin}));
   app.route("/api/v1/signals", createSignalIngress(input.database,input.sourceSecurity));
   app.route("/api/delegation/v1", delegationRoutes(input.database));
@@ -171,6 +175,8 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
     }
   });
   app.route('/api/v1/settings/api-credentials',apiCredentialRoutes(input.database,input.clock));
+  app.route('/api/v1/settings/zoom',zoomSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/zoom/meetings',zoomMeetingRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/settings/mailchimp',mailchimpSettingsRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/marketing/mailchimp',mailchimpHandoffRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.use('/api/v1/*',mailchimpDeletionProcessing(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
@@ -179,6 +185,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route('/api/v1/entries/visibility',entryPrivacyRoutes(input.database));
   app.route('/api/v1/calls',callRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/imports/salesforce',salesforceRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
+  app.route('/api/v1/imports/pipedrive',createPipedriveRoutes(input.database,{security:input.sourceSecurity,fetcher:input.pipedriveFetch,now:input.pipedriveNow}));
   app.route('/api/v1/imports',createImportRoutes(input.database,{security:input.sourceSecurity,fetcher:input.captureFetch}));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));

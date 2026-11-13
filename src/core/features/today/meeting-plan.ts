@@ -1,3 +1,5 @@
+import {zoomPlan} from '../zoom/plan';
+import {meetingRow} from '../zoom/repository';
 import {readObligations} from '../obligations/repository';
 import {companyDomainKey,contactEmailKey} from '../records/identity';
 import type {BriefLine,RecordRef} from './types';
@@ -13,7 +15,7 @@ const kindLabel=(kind:string)=>kindLabels[kind]??kind.replaceAll(/[._-]+/g,' ').
 
 export interface PlanLine {id:string;title:string;detail:string;occurredAt:string;href:string;evidence:{type:string;id:string};record:RecordRef}
 export interface Attendee {email:string|null;contact:{id:string;name:string|null;jobTitle:string|null;contactability:string;href:string};company:{id:string;name:string;href:string}|null;opportunities:{id:string;title:string;href:string}[]}
-export interface UnresolvedAttendee {email:string;company:{id:string;name:string}|null}
+export interface UnresolvedAttendee {email:string;company:{id:string;name:string}|null;reason?:string}
 
 /** The meeting signal and the records it is linked to; a meeting with no linked record cannot be planned. */
 export async function meetingContext(db:D1Database,signalId:string){
@@ -28,13 +30,14 @@ export async function meetingContext(db:D1Database,signalId:string){
  return {signal,links,participants,start:text(data.start),end:text(data.end),noteTarget};
 }
 
-async function attendees(db:D1Database,participants:string[],linked:RecordRef[]){
+async function attendees(db:D1Database,participants:string[],linked:RecordRef[],exactOnly=false){
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
- const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&!operators.has(key!)))];
+ const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&(exactOnly||!operators.has(key!))))];
  const matched=(await db.prepare(`SELECT c.id,c.email_key AS key FROM contacts c WHERE c.email_key IN (SELECT value FROM json_each(?1))
   UNION SELECT c.id,a.identity_key AS key FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key IN (SELECT value FROM json_each(?1))`).bind(JSON.stringify(keys)).all<{id:string;key:string}>()).results;
- const byKey=new Map(matched.map(row=>[row.key,row.id]));
- const contactIds=[...new Set([...matched.map(row=>row.id),...linked.filter(ref=>ref.type==='contact').map(ref=>ref.id)])];
+ const candidates=new Map(keys.map(key=>[key,[...new Set(matched.filter(row=>row.key===key).map(row=>row.id))]] as const));
+ const byKey=new Map([...candidates].filter(([key,ids])=>ids.length===1&&!operators.has(key)).map(([key,ids])=>[key,ids[0]!]));
+ const contactIds=[...new Set([...byKey.values(),...(exactOnly?[]:linked.filter(ref=>ref.type==='contact').map(ref=>ref.id))])];
  const contacts=(await db.prepare('SELECT c.id,c.name,c.email,c.job_title AS jobTitle,c.contactability,c.company_id AS companyId,co.name AS companyName FROM contacts c LEFT JOIN companies co ON co.id=c.company_id WHERE c.id IN (SELECT value FROM json_each(?)) ORDER BY c.name,c.id').bind(JSON.stringify(contactIds)).all<{id:string;name:string|null;email:string|null;jobTitle:string|null;contactability:string;companyId:string|null;companyName:string|null}>()).results;
  const opportunities=(await db.prepare("SELECT oc.contact_id AS contactId,o.id,o.title FROM opportunity_contacts oc JOIN opportunities o ON o.id=oc.opportunity_id WHERE o.lifecycle='open' AND oc.contact_id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id").bind(JSON.stringify(contactIds)).all<{contactId:string;id:string;title:string}>()).results;
  const resolved:Attendee[]=contacts.map(contact=>({email:contact.email,contact:{id:contact.id,name:contact.name,jobTitle:contact.jobTitle,contactability:contact.contactability,href:recordHref({type:'contact',id:contact.id})},
@@ -42,9 +45,10 @@ async function attendees(db:D1Database,participants:string[],linked:RecordRef[])
   opportunities:opportunities.filter(row=>row.contactId===contact.id).map(row=>({id:row.id,title:row.title,href:recordHref({type:'opportunity',id:row.id})}))}));
  const settings=await db.prepare("SELECT free_mail_domains_json AS free FROM workspace_settings WHERE id='workspace'").first<{free:string}>(),free=JSON.parse(settings?.free??'[]') as string[];
  const unresolved:UnresolvedAttendee[]=[];
- for(const key of keys.filter(key=>!byKey.has(key))){
+ for(const key of keys.filter(key=>!byKey.has(key)&&(!operators.has(key)||(candidates.get(key)?.length??0)>0))){
   const domain=companyDomainKey(key.split('@')[1],free),company=domain?await db.prepare('SELECT id,name FROM companies WHERE primary_domain_key=?').bind(domain).first<{id:string;name:string}>():null;
-  unresolved.push({email:key,company:company??null});
+  const ambiguous=(candidates.get(key)?.length??0)>1||(operators.has(key)&&(candidates.get(key)?.length??0)>0);
+  unresolved.push({email:key,company:ambiguous?null:company??null,...(ambiguous?{reason:'Ambiguous exact email: more than one identity matches. Review the records; Orbit has chosen nobody.'}:{})});
  }
  return {resolved,unresolved};
 }
@@ -79,22 +83,25 @@ export async function planNote(db:D1Database,signalId:string,target:RecordRef){
 export async function buildMeetingPlan(db:D1Database,signalId:string,input:{operatorId:string;now?:Date;allowed?:(ref:RecordRef)=>boolean}){
  const context=await meetingContext(db,signalId),{signal}=context,allowed=input.allowed??(()=>true),links=context.links.filter(allowed);
  // An application sees only its granted records: no company guessed from an unknown address, none it was not granted.
- const found=await attendees(db,context.participants,context.links),people={
+ const zoom=await meetingRow(db,signalId),attendance=zoom?JSON.parse(zoom.attendance_json) as {email:string}[]:[];
+ const found=await attendees(db,[...context.participants,...attendance.map(person=>person.email).filter(Boolean)],context.links,Boolean(zoom)),people={
   resolved:found.resolved.filter(person=>allowed({type:'contact',id:person.contact.id})).map(person=>({...person,company:person.company&&allowed({type:'company',id:person.company.id})?person.company:null,opportunities:person.opportunities.filter(o=>allowed({type:'opportunity',id:o.id}))})),
-  unresolved:input.allowed?found.unresolved.map(person=>({email:person.email,company:null})):found.unresolved};
+  unresolved:input.allowed?found.unresolved.map(person=>({...person,company:null})):found.unresolved};
  const opportunityIds=[...new Set([...links.filter(ref=>ref.type==='opportunity').map(ref=>ref.id),...people.resolved.flatMap(person=>person.opportunities.map(o=>o.id))])];
  const opportunities=(await opportunitiesFor(db,opportunityIds)).map(row=>({...row,linked:links.some(ref=>ref.type==='opportunity'&&ref.id===row.id)}));
  const refs:RecordRef[]=[...links,...people.resolved.map(p=>({type:'contact' as const,id:p.contact.id})),...people.resolved.flatMap(p=>p.company?[{type:'company' as const,id:p.company.id}]:[]),...opportunityIds.map(id=>({type:'opportunity' as const,id}))];
  const keys=new Set(refs.map(refKey)),brief=await buildBrief(db,{operatorId:input.operatorId,now:input.now,visible:input.allowed?{record:allowed,signal:()=>false}:undefined});
  const promises=brief.accounts.flatMap(account=>account.lines).filter((line:BriefLine)=>(line.group==='promise'||line.group==='proposal')&&line.records.some(ref=>keys.has(refKey(ref))));
  const noteTarget=allowed(context.noteTarget)?context.noteTarget:links.find(ref=>ref.type==='opportunity')??links[0]??null;
+ const note=noteTarget?await planNote(db,signalId,noteTarget):null;
  return {
+  zoom:await zoomPlan(db,signalId,note),
   meeting:{signalId:signal.id,status:signal.type.split('.')[1],subject:signal.subject??'Meeting',occurredAt:signal.occurredAt,start:context.start,end:context.end,source:signal.sourceName,
    href:noteTarget?recordHref(noteTarget):planHref(signal.id)},
   attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:links.find(ref=>ref.type==='opportunity')?.id??null,
   openValueCents:opportunities.filter(row=>row.lifecycle==='open').reduce((sum,row)=>sum+row.valueCents,0),
   obligations:!input.allowed&&links.some(ref=>ref.type==='opportunity')?(await readObligations(db,links.find(ref=>ref.type==='opportunity')!.id)).filter(item=>item.meeting_id===signalId):[],
-  interactions:await interactions(db,refs,allowed),promises,noteTarget,note:noteTarget?await planNote(db,signalId,noteTarget):null,
+  interactions:await interactions(db,refs,allowed),promises,noteTarget,note,
  };
 }
 export type MeetingPlan=Awaited<ReturnType<typeof buildMeetingPlan>>;

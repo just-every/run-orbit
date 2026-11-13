@@ -10,7 +10,7 @@ import {DoNotContactReason} from '../do-not-contact-reason';
 import {OperatorShell,OperatorState} from '../operator-shell';
 import {RecordMailComposer,useRecordMail} from '../record-mail';
 import {recordsRequest} from '../records-api';
-import {useOperatorResource} from '../use-operator-resource';
+import {readOperatorResource,useOperatorResource} from '../use-operator-resource';
 import {WorkflowRecordApprovals} from '../workflows-record-approvals';
 import {CompanyDetails} from './company-details';
 import {ContactDetails} from './contact-details';
@@ -35,7 +35,7 @@ function CustomerRecordPage({kind}:{kind:'contact'|'company'}){const {full}=useA
 function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
  const {id}=useParams({strict:false}) as {id:string};
  const load=useCallback(async()=>{
-  const [detail,settings,context]=await Promise.all([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
+  const [detail,settings,context]=await readOperatorResource([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
   return {detail,settings,context};
  },[kind,id]);
  const resource=useOperatorResource(`${kind}:${id}`,load),data=resource.data,reload=resource.reload;

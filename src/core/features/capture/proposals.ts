@@ -27,14 +27,14 @@ export async function proposalStatements(db:D1Database,sourceId:string,signalId:
  }));
 }
 
-export async function listProposals(db:D1Database,filter:{status:'pending'|'accepted'|'declined';recordType?:'contact'|'company'|'opportunity';recordId?:string}){
+export async function listProposals(db:D1Database,filter:{status:'pending'|'accepted'|'declined';recordType?:'contact'|'company'|'opportunity';recordId?:string;source?:string}){
  const scope=filter.recordType&&filter.recordId?` AND ((p.record_type=? AND p.record_id=?) OR json_extract(p.details_json,'$.companyId')=? OR EXISTS(SELECT 1 FROM json_each(p.details_json,'$.contactIds') WHERE value=?))`:'';
  const rows=(await db.prepare(`SELECT p.id,p.signal_id,p.kind,p.record_type,p.record_id,p.field,p.current_value,p.proposed_value,p.details_json,p.status,p.decided_at,p.decided_value,p.created_at,
    s.type AS signal_type,s.occurred_at,cs.name AS source_name,cs.state AS source_state,
    CASE WHEN p.kind='next_action' AND o.id IS NOT NULL THEN ${queueReviewSql} END AS queue_review
    FROM capture_proposals p JOIN signals s ON s.id=p.signal_id LEFT JOIN capture_sources cs ON cs.id=s.source_id
    LEFT JOIN opportunities o ON p.kind='next_action' AND p.record_id=o.id
-   WHERE p.status=?${scope} ORDER BY s.occurred_at DESC,p.id LIMIT 200`).bind(filter.status,...(scope?[filter.recordType,filter.recordId,filter.recordId,filter.recordId]:[])).all<Record<string,unknown>&{details_json:string}>()).results;
+   WHERE p.status=?${scope}${filter.source?' AND s.source_id=?':''} ORDER BY s.occurred_at DESC,p.id LIMIT 200`).bind(filter.status,...(scope?[filter.recordType,filter.recordId,filter.recordId,filter.recordId]:[]),...(filter.source?[filter.source]:[])).all<Record<string,unknown>&{details_json:string}>()).results;
  return Promise.all(rows.map(async({details_json,queue_review,...row})=>{
   const review=typeof queue_review==='string'?JSON.parse(queue_review) as QueueReview:null;
   return {...row,...(filter.status==='pending'&&review?{current_value:JSON.stringify({state:review.state,reason:review.reason,dueAt:review.dueAt}),revision:await queueRevision(String(row.id),review)}:{}),details:JSON.parse(details_json)};

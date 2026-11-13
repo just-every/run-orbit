@@ -1,3 +1,5 @@
+import {connection as zoomConnection,} from '../zoom/connection';
+import {ownership as zoomOwnership} from '../zoom/contracts';
 import type {SlackDeclaration} from '../slack/declaration';
 import {slackStatus} from '../slack/installation';
 import {connection as mailchimpConnection,ownership as mailchimpOwnership} from '../marketing/connection';
@@ -14,5 +16,7 @@ export async function connectedProducts(db:D1Database,origin:string,mailchimpOri
  const notices={declaration:slack.declaration,job:'Team notifications',products:['Slack'],owns:'Team channels and messages',clause:'INTEGRATE-005',state:(configured?'connected':'unresolved-setup') as ProductState,lastDeliveryAt:slack.notices.find((n:any)=>n.state==='sent')?.updated_at as string??null,inOrbit:configured?'Allowed-field sales notices and mapped internal actions. Configure channels and inspect notice status below.':`Notices paused. ${slack.installation?.error??'Connect the bot and app signing secret below.'}`};
  const mailchimp=await mailchimpConnection(db,mailchimpOrigin),audience=mailchimp.settings?.audience;
  const marketing:ConnectedProduct={job:'Marketing audiences',products:['Mailchimp'],owns:'Bulk campaigns and marketing automation',clause:'INTEGRATE-007',state:mailchimp.state,lastDeliveryAt:mailchimp.lastEventAt,inOrbit:mailchimp.state==='connected'?`${mailchimpOwnership} Orbit hands only contacts with recorded consent to the audience “${audience!.name}” and receives its unsubscribes.`:`Handoff paused. ${mailchimp.reason}`,...(mailchimp.state==='connected'&&mailchimp.link?{link:{href:mailchimp.link,label:'Open the audience in Mailchimp'}}:{})};
- return [notices,...booking,marketing];
+ const zoom=await zoomConnection(db);
+ const meetings:ConnectedProduct={job:'Meetings',products:['Zoom'],owns:'Meeting service',clause:'INTEGRATE-002',state:zoom.state,lastDeliveryAt:zoom.lastEventAt,inOrbit:zoom.state==='connected'?zoomOwnership:zoom.reason!};
+ return [notices,...booking,marketing,meetings];
 }

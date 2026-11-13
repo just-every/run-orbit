@@ -1,3 +1,4 @@
+import {exerciseZoom} from '../support/zoom-meeting-proof';
 import {exerciseTwilio} from '../support/twilio-calls';
 import {exerciseSalesTasks} from '../support/sales-tasks';
 import {exerciseManualMeeting} from '../support/manual-meeting';
@@ -290,7 +291,7 @@ async function agentRisks(t:TodayApp,off:TodayApp){
  assert.equal((await risks(off)).aiConfigured,false);assert.equal((await off.call(`/api/v1/risks/${deal}/conflicts`,{body:{requestHash:'0'.repeat(64)}})).status,503);
 }
 
-test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a cited plan with unresolved attendees shown, notes saved as one editable note, and plan lines become next actions without sending anything; a mention notifies once, asks to share the deal with its notes, calls and meetings before notifying a collaborator, who then reads only their own mention and opens the entry on Shared records until the grant is revoked; it withdraws on delete and never reaches AI or a customer',async()=>{
+test('INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody',async()=>{
  const t=await todayApp(db);
  const opportunity=await t.opportunity('Delta rollout','Delta Freight','Mia Stone','mia@delta.test',1250000);
  const prior=await t.event(opportunity,'form.submitted','Rollout questions',4);
@@ -383,6 +384,7 @@ test('BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 a booked meeting gets a
  assert.equal((await t.call('/api/v1/tasks',{body:{title:'Hidden',recordType:'opportunity',recordId:opportunity,ownerId:t.actor,dueAt:new Date(Date.now()+86400000).toISOString(),priority:'normal',type:'other',notes:'Ask @Casey Contractor',recurrence:'none',timezone:'UTC',reminderMinutes:null}})).status,201,'The explicit share covers task notes on the deal too');
  assert.equal(JSON.stringify(await db.prepare("SELECT payload_json FROM timeline_entries WHERE id=?").bind(noteId).first()).includes(riley.actor),true,'Mentions are saved with the entry, so they export and erase with it');
  assert.deepEqual([await db.prepare('SELECT score,band FROM opportunities WHERE id=?').bind(opportunity).first(),{drafts:await count('SELECT count(*) AS n FROM drafts'),messages:await count('SELECT count(*) AS n FROM outbound_messages')}],[scored,sends],'Mentions change no score and send nothing');
+ await exerciseZoom(db);
 });
 
 test('CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts',async()=>{await exerciseTwilio(db);});

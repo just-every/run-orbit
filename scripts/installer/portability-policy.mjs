@@ -13,6 +13,8 @@ export default {
  // Older valid archives may still contain schedules. Strip that installation-local
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
+  if(tables.signal_sources)await db.prepare(`UPDATE "${tables.signal_sources.replaceAll('"','""')}" SET enabled=0 WHERE id='zoom'`).run();
+  if(await db.prepare('SELECT 1 FROM crm_import_pipedrive_connections LIMIT 1').first())throw new Error('Disconnect Pipedrive before local archive restore; fresh connection and review authority are required afterwards.');
   await db.prepare("UPDATE mailbox_send_authorizations SET state='paused'").run();
   if(await db.prepare('SELECT 1 FROM crm_import_hubspot_connection WHERE secret_ciphertext IS NOT NULL LIMIT 1').first())throw new Error('Disconnect HubSpot before local restore. Its token never travels; connect again explicitly after restore.');
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');
@@ -41,6 +43,7 @@ export default {
  requiredConfiguration: ['OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN'],
  // Dev personas are real operators in local dev only; an archive carries them suspended.
  exportRow: (table, row) => {
+  if(table==='signal_sources'&&row.id==='zoom')return {...row,enabled:0};
   if(table==='follow_up_obligations'&&!row.closed_at)return {...row,paused:1};
   if(table==='workflow_versions')return {...row,status:'paused',preview_id:null,preview_json:null};
   if(table==='workflow_runs'&&!['completed','undone'].includes(row.status))return {...row,status:'stopped',reason:'Archive transfer requires fresh activation'};

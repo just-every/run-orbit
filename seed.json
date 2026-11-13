@@ -1,7 +1,7 @@
 {
   "id": "orbit",
   "name": "Orbit",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
   "capabilities": [
     {
@@ -245,6 +245,19 @@
         "Selected Account and Contact field names and pagination cursors"
       ],
       "adapters": []
+    },
+    {
+      "id": "zoom",
+      "required": false,
+      "requiredWhen": "The owner connects a Zoom Server-to-Server OAuth app.",
+      "why": "Read an explicitly reviewed scheduled meeting and past attendance metadata; receive signed completion and cancellation. No meeting creation or recording content retrieval.",
+      "data": [
+        "Zoom OAuth account and client credentials",
+        "Explicitly selected meeting ID and occurrence UUID"
+      ],
+      "adapters": [
+        "zoom.meetings.v1"
+      ]
     }
   ],
   "env": [

@@ -2,7 +2,8 @@ import { parseCsv } from '../../shared/csv';
 import { canonicalJson,sha256,type SourceBundle,type SourceRecord } from '../../../modules/import-kit/d1/index';
 import { customFieldKinds,fields,type ImportInput } from './contracts';
 export interface Row {ownerMapping?:{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean};kind:string;id:string;data:Record<string,string>;custom:Record<string,string>;source:SourceRecord;separator:string;unmapped:string[];reviewColumns?:Record<string,number>;error?:string;derivedContacts?:Row[]}
-export function readImport(input:ImportInput){
+export interface ConnectedSource {artifacts:SourceBundle['artifacts'];diagnostics:SourceBundle['diagnostics'];errors:Record<string,string>;values?:Record<string,Record<string,string>>}
+export function readImport(input:ImportInput,connected?:ConnectedSource){
  const namespace=`orbit:${input.vendor}:${input.account}`,source:SourceBundle={records:[],artifacts:[],diagnostics:[]},rows:Row[]=[];
  if(new Set(input.files.map(f=>f.kind)).size!==input.files.length)throw new Error('Choose at most one file of each type.');
  for(const file of input.files){
@@ -33,6 +34,7 @@ export function readImport(input:ImportInput){
    source.records.push(record);rows.push({kind:file.kind,id,data,custom,source:record,separator:file.separator,reviewColumns,unmapped:headers.filter(header=>!Object.values(file.mapping).includes(header)&&!customFields.includes(header)),error:values.length!==headers.length?'Column count differs from header.':emailIdentity&&!address?'Generic CSV contacts without an ID require a valid email.':!emailIdentity&&!data.id&&file.kind!=='suppression'?'Source ID is empty.':values.some(v=>v.length>100000)?'A cell exceeds 100,000 characters.':undefined});
   }
  }
+ if(connected){source.artifacts.push(...connected.artifacts);source.diagnostics.push(...connected.diagnostics);for(const row of rows){row.error??=connected.errors[`${row.kind}:${row.id}`];Object.assign(row.data,connected.values?.[`${row.kind}:${row.id}`]);row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
  return {namespace,source,rows};
 }
 export const ids=(value:string|undefined,separator:string)=>value?value.split(separator).map(v=>v.trim()).filter(Boolean):[];

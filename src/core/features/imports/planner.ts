@@ -3,7 +3,7 @@ import {manualEntryPayload} from '../records/manual';
 import { planD1Import,canonicalJson,sha256,type D1ImportContext,type MappingResult,type SourceRecord,type TargetEffect } from '../../../modules/import-kit/d1/index';
 import { contactEmailKey,companyDomainKey } from '../records/identity';
 import { privacyMatcher,activeSuppressionTokens } from '../records/suppression';
-import { readImport,nativeId,email,positive,ids,type Row } from './source';
+import { readImport,nativeId,email,positive,ids,type Row,type ConnectedSource } from './source';
 import { tables,type NativeValue } from './targets';
 import type { StopValue } from './targets-stop';
 import {mailboxListSql} from './mailboxes';
@@ -15,8 +15,8 @@ import {namedCompanies} from './named-companies';
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
 
-export async function prepareImport(input:ImportInput,context:D1ImportContext,originals:import('../../../modules/import-kit/d1/index').SourceBundle['artifacts']=[],diagnostics:import('../../../modules/import-kit/d1/index').SourceBundle['diagnostics']=[]){
- const {source,rows,namespace}=readImport(input),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
+export async function prepareImport(input:ImportInput,context:D1ImportContext,originals:import('../../../modules/import-kit/d1/index').SourceBundle['artifacts']=[],connected?:ConnectedSource,diagnostics:import('../../../modules/import-kit/d1/index').SourceBundle['diagnostics']=[]){
+ const {source,rows,namespace}=readImport(input,connected),db=context.storage.database,at=new Date().toISOString(),results=new Map<SourceRecord,MappingResult>(),references=new Map<string,string>();
  source.artifacts.push(...originals);
  source.diagnostics.push(...diagnostics);
  const ownerMappingTable=mapImportOwners(rows,input,await importOwners(db));
@@ -96,7 +96,8 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
    const stage=input.stages[data.stage];if(!stage||!stages.has(stage))throw new Error('Map this row’s source stage to a current Orbit stage.');
    const amount=data.amount?Number(data.amount):0;if(!Number.isFinite(amount)||amount<0||Math.round(amount*100)>100000000000)throw new Error('Amount must be a non-negative decimal in the workspace currency.');
    if(!data.title)throw new Error('Deal title is required.');const close=data.close_date?new Date(data.close_date):null;if(close&&!Number.isFinite(+close))throw new Error('Close date is invalid.');
-   Object.assign(native,{title:data.title,lifecycle:'open',stage_id:stage,owner_id:ownerMapping?.ownerId??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
+   if(data.status&&!['open','won','lost'].includes(data.status))throw new Error('Unsupported source deal status. Export this deal with its current status.');
+   Object.assign(native,{title:data.title,lifecycle:data.status||'open',stage_id:stage,owner_id:ownerMapping?.ownerId??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
    for(const [i,contact] of [...new Set(contacts)].entries())links.push({opportunity_id:id,contact_id:contact,is_primary:i===0?1:0,created_at:at});
   }
   if(['note','call','meeting'].includes(row.kind)){
@@ -120,7 +121,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
   links.sort((a,b)=>row.kind==='deal'?a.contact_id.localeCompare(b.contact_id):`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`));
   if(Object.values(native).some(v=>typeof v==='number'&&!Number.isFinite(v)))throw new Error('Native record has an unsupported default.');
   results.set(row.source,{effects:[{targetKind:nativeKind(row.kind),targetId:id,value:{row:native,links,...row.kind==='contact'?{suppressionTokens:emailTokens.get(native.email)??[]}:{} } as any},...ownerEffects],...row.derivedContacts?{unmapped:[{reason:'New company, from the Company name column of the contacts file. Orbit does not reuse a company it already has just because the name matches.'}]}:{}});
- }catch(error){row.error=(error as Error).message;results.set(row.source,{effects:[],rejection:row.error});
+ }catch(error){row.error=(error as Error).message;if(connected)source.diagnostics.push({severity:'warning',code:'UNSUPPORTED_RECORD',message:row.error,kind:row.kind,sourceId:row.id,location:row.source.location});results.set(row.source,{effects:[],rejection:row.error});
   // The exact original remains in kit custody. Rejected rows need only their location and reason in the resumable plan, avoiding unindexed personal-data copies.
   row.source.sourceId=`rejected:${sha256(row.source.sourceId)}`;row.source.payload={rejected:true,...row.reviewColumns?{reviewColumns:row.reviewColumns}:{}};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}}
  for(const row of rows)if(!row.error&&row.unmapped.length){const result=results.get(row.source)!;result.unmapped=[...result.unmapped??[],...row.unmapped.map(column=>({field:`column:${column}`,reason:`Column “${column}” is not imported. Orbit keeps it only in its private copy of the original file.`}))];}

@@ -1,3 +1,4 @@
+export {zoomArchiveTables} from '../../shared/archive-lineage';
 import {nativeCatalogGenerations,legacyNativeCatalog} from './archive-generations';
 import { z } from 'zod';
 import { RecordError } from './shared';

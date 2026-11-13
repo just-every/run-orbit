@@ -55,14 +55,22 @@ export function MeetingPlanPage(){
  const resource=useOperatorResource(`meeting:${id}`,load),back=<a href="/app">← NOW</a>;
  if(resource.error)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState kind="error">{resource.error.message}</OperatorState></OperatorShell>;
  if(!resource.data)return <OperatorShell eyebrow="Meeting plan" title="Meeting" action={back}><OperatorState>Loading meeting plan…</OperatorState></OperatorShell>;
- const {plan,presentation}=resource.data,canAct=Boolean(plan.primaryOpportunityId),reload=resource.reload;
+ const {plan,presentation}=resource.data,canAct=Boolean(plan.primaryOpportunityId)&&plan.meeting.status!=='cancelled',reload=resource.reload;
  return <OperatorShell eyebrow="Meeting plan" title={plan.meeting.subject} action={back}>
   <section className="operator-detail meeting-plan" data-testid="meeting-plan">
    <p className="meeting-plan__when">{when(plan,presentation)} · {plan.meeting.status==='booked'?'Booked':plan.meeting.status==='cancelled'?'Cancelled':'Completed'} · from {plan.meeting.source} · <a href={plan.meeting.href}>recorded {formatDateTime(plan.meeting.occurredAt,presentation)}</a></p>
+   {plan.zoom&&<section className="operator-surface operator-detail__section" aria-labelledby="zoom-meeting"><h2 id="zoom-meeting">Zoom meeting</h2>
+    <p><a href={plan.zoom.joinUrl} target="_blank" rel="noreferrer">Join in Zoom</a> · Meeting ID {plan.zoom.meetingId} · Host {plan.zoom.hostId} · {plan.zoom.duration} minutes</p>
+    <p>Zoom runs the meeting. Orbit keeps preparation and reviewed follow-up.</p><p>{plan.zoom.recording} {plan.zoom.transcript}</p>
+    {plan.zoom.state==='cancelled'&&<OperatorState>This Zoom meeting was cancelled. Its preparation and open plan follow-ups are stopped.</OperatorState>}
+    <h3 id="zoom-attendance">Zoom attendance</h3>
+    {plan.zoom.attendanceState==='not-read'?<p>Attendance has not been read. A signed completion is required.</p>:plan.zoom.attendanceState!=='available'?<p>Attendance unresolved: {plan.zoom.attendanceState==='permission-denied'?'Zoom denied attendance permission.':'Zoom attendance is unavailable.'}</p>:<ul className="plan-list">{plan.zoom.attendance.map((person,index)=><li className="plan-line" key={index}><span>{person.email||'Zoom supplied no email'} · {person.match.state==='matched'?'Exact contact match':person.match.state==='ambiguous'?'Ambiguous exact email; unresolved':person.match.state==='operator'?'Internal operator':'Unresolved participant'}{person.joinedAt?` · joined ${formatDateTime(person.joinedAt,presentation)}`:''}{person.leftAt?` · left ${formatDateTime(person.leftAt,presentation)}`:''}</span></li>)}</ul>}
+    {plan.zoom.recap&&<><h3>Record-backed recap</h3><p>{plan.zoom.recap.summary}</p><ul>{plan.zoom.recap.citations.map(citation=><li key={citation.kind}><a href={citation.href}>{citation.label}</a></li>)}</ul>{canAct&&<NextAction signalId={id} line={{id:plan.zoom.recap.evidenceId,title:'Review meeting follow-up',occurredAt:plan.zoom.completedAt!,href:plan.meeting.href,evidence:{id:plan.zoom.recap.evidenceId}}} onAdded={reload}/>}</>}
+   </section>}
    <section className="operator-surface operator-detail__section" aria-labelledby="plan-attendees"><h2 id="plan-attendees">Attendees</h2>
     <ul className="plan-list">
      {plan.attendees.map(person=><li key={person.contact.id} className="plan-line"><div className="plan-line__what"><a href={person.contact.href}><strong>{person.contact.name??person.email??'Unnamed contact'}</strong></a><span>{[person.contact.jobTitle,person.company?.name,...person.opportunities.map(o=>o.title)].filter(Boolean).join(' · ')||'No company or opportunity'}{person.contact.contactability==='do_not_contact'?' · Do not contact':''}</span></div></li>)}
-     {plan.unresolved.map(person=><li key={person.email} className="plan-line plan-line--unresolved"><div className="plan-line__what"><strong>{person.email}</strong><span>— no record. Orbit links only by this exact address and never guesses.</span></div><div className="plan-line__buttons"><CreateContact email={person.email} companyId={person.company?.id??null} onCreated={reload}/><a className="plan-link-button" href={person.company?`/app/companies/${person.company.id}`:'/app/contacts'}>Link by exact email</a></div></li>)}
+     {plan.unresolved.map(person=><li key={person.email} className="plan-line plan-line--unresolved"><div className="plan-line__what"><strong>{person.email}</strong><span>{person.reason??'— no record. Orbit links only by this exact address and never guesses.'}</span></div><div className="plan-line__buttons">{!person.reason&&<CreateContact email={person.email} companyId={person.company?.id??null} onCreated={reload}/>}<a className="plan-link-button" href={person.company?`/app/companies/${person.company.id}`:'/app/contacts'}>Link by exact email</a></div></li>)}
      {!plan.attendees.length&&!plan.unresolved.length&&<li className="plan-line">The source named no attendees.</li>}
     </ul>
    </section>
@@ -77,7 +85,7 @@ export function MeetingPlanPage(){
     {!canAct&&<p>Link this meeting to an opportunity to turn a line into a next action.</p>}
    </section>
    <MeetingFollowUpEntry plan={plan} presentation={presentation}/>
-   <PlanNotes plan={plan} signalId={id} onSaved={reload}/>
+   {plan.meeting.status!=='cancelled'?<PlanNotes plan={plan} signalId={id} onSaved={reload}/>:plan.note&&<p><a href={plan.note.href}>Read the saved preparation</a></p>}
   </section>
  </OperatorShell>;
 }

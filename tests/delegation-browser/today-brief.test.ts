@@ -1,3 +1,5 @@
+import {zoomNetwork} from '../support/zoom-network.mjs';
+import {zoomMeetingJourney} from './today-journey.mjs';
 import {mailTransportKeys} from '../support/mail-transport-client';
 import {followUpObligationJourney} from './today-journey.mjs';
 import {draftParityBrowserJourney} from '../support/agent-door-draft-parity-proof';
@@ -21,10 +23,10 @@ import {unstable_DevEnv} from 'wrangler';
 import {identityVars} from '../support/worker-identity.mjs';
 import assert from 'node:assert/strict';
 
-test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and follow-up outcomes, and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
+test('INTEGRATE-002 BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller starts the day from the brief, plans a meeting, runs the deal-risk agent, reviews an agent handoff and follow-up outcomes, and a colleague opens a mention that keeps its entry in view, in the browser at 1440 and 390',async testContext=>{
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_TODAY_PORT??8736),origin=`http://127.0.0.1:${port}`;
  let worker:ReturnType<typeof spawn>|undefined,browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
- const runtime=new unstable_DevEnv();
+ const runtime=new unstable_DevEnv(),zoomRuntime=new unstable_DevEnv();
  try{
   // Only the operator and the confirmed empty workspace exist; every customer record arrives through the app's doors.
   const deps=createDependencies(fixture.db),owner='01M4R2BR1EF0000000000000AA';
@@ -44,6 +46,12 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   for(const prior of browser.contexts())await prior.close();
   const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;worker=undefined;
   await fixture.reopen();
+   await fixture.db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(owner).run();
+  const zoom=zoomNetwork([['synthetic-orbit-450','example.test'].join(String.fromCharCode(64))]);
+  await fixture.close();
+  const zoomWorker=await zoomRuntime.startWorker({config:resolve('dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries({...identityVars(origin),ORBIT_ENCRYPTION_KEY:'ab'.repeat(32)}).map(([name,value])=>[name,{type:'secret_text' as const,value}])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port},outboundService:async request=>{try{return await zoom.fetch(request);}catch(error){throw new Error('Zoom fixture rejected its HTTP edge: '+(error as Error).message);}}}});await zoomWorker.ready;
+  await zoomMeetingJourney(await(await context(second.token)).newPage(),{provider:zoom,fetch:zoomWorker.fetch.bind(zoomWorker),origin,evidence:resolve(process.env.ORBIT_TODAY_EVIDENCE??'verification/ui/today')});
+  await zoomRuntime.teardown();await fixture.reopen();
   const data=await browserRiskData(fixture.db,owner),before=await riskBusinessState(fixture.db);
   await fixture.close();
   const model={requests:[] as unknown[],output:{} as unknown,unexpected:[] as string[]};
@@ -74,6 +82,6 @@ test('BRIEF-001 BRIEF-002 BRIEF-003 BRIEF-004 BRIEF-005 RECORD-017 a seller star
   } finally {await riskRuntime.teardown();await riskFixture.dispose();}
 
  }finally{
-  await browser?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await runtime.teardown();await fixture.dispose();
+  await browser?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await zoomRuntime.teardown();await runtime.teardown();await fixture.dispose();
  }
 });
