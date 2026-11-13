@@ -1,3 +1,4 @@
+import {useLocation} from '@tanstack/react-router';
 import './records.css';
 import './capture-setup.css';
 import './review-page.css';
@@ -13,15 +14,17 @@ import {useOperatorResource} from './use-operator-resource';
 
 /** Review: what waits for a person, one card per kind that has something waiting, reached from NOW and the Brief. */
 export function ReviewPage() {
+ const search=useLocation({select:location=>location.searchStr}),source=new URLSearchParams(search).get('source')||undefined;
  const summary = useOperatorResource('review-summary', useCallback(readReviewSummary, []));
- const s = summary.data, nothing = s && !s.proposals && !s.events && !s.replies && !s.calls;
+ const s = summary.data, nothing = !source && s && !s.proposals && !s.events && !s.replies && !s.calls;
  return <OperatorShell title="Review">
   <div className="review-stack">
    {summary.error ? <OperatorState kind="error">{summary.error.message}</OperatorState> : null}
-   {s?.proposals ? <div className="operator-surface review-card"><CaptureProposals onChanged={summary.reload}/></div> : null}
-   {s?.events ? <UnlinkedEvents onChange={summary.reload}/> : null}
-   {s?.replies ? <UnlinkedReplies onResolved={summary.reload}/> : null}
-   {s?.calls ? <HeldCalls onChanged={summary.reload}/> : null}
+   {source&&<p>Pending proposals from this capture source. <a href="/app/review">Review all pending work</a></p>}
+   {source||s?.proposals ? <div className="operator-surface review-card"><CaptureProposals source={source} onChanged={summary.reload}/></div> : null}
+   {!source&&s?.events ? <UnlinkedEvents onChange={summary.reload}/> : null}
+   {!source&&s?.replies ? <UnlinkedReplies onResolved={summary.reload}/> : null}
+   {!source&&s?.calls ? <HeldCalls onChanged={summary.reload}/> : null}
    {nothing ? <p className="review-empty">Nothing waits for review.</p> : null}
   </div>
   <ScrollToHash ready={Boolean(s)}/>
