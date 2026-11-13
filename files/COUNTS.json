@@ -17,6 +17,13 @@
     "failed": 2,
     "total": 20
   },
-  "retry_results_pending": true,
-  "clause_total": 204
+  "clause_total": 204,
+  "retry_results_pending": false,
+  "final_product_shards": {
+    "passed": 20,
+    "failed": 0,
+    "total": 20
+  },
+  "clauses_changed": 0,
+  "fix_count_added": 0
 }

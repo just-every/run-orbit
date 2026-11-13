@@ -11,5 +11,7 @@
   "product_pushes": 0,
   "prs_created": 0,
   "investigated_branch": "cloud/sd-orbit-c-f178-rebase-67f170efd24378a2f68409218adbd106d36edb93",
-  "investigated_head": "67f170efd24378a2f68409218adbd106d36edb93"
+  "investigated_head": "67f170efd24378a2f68409218adbd106d36edb93",
+  "terminal_observed_at": "2026-11-13T02:06:33Z",
+  "terminal_worktree_status": ""
 }

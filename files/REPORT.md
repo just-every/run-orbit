@@ -40,7 +40,7 @@ The entire candidate diff against main is four files: dashboard `basis.tsx`, das
 3. If batch-13 remains red, run only `tests/rer/operator-desktop.test.mjs` on current main on the same runner. The narrow product repair to investigate separately is preserving 404 status in relationship reads so the existing route recovery runs, or giving the primary record read deterministic ownership of missing-record recovery. Do not weaken the missing-record text and list-link assertions.
 4. The inspected Verify workflow has ubuntu-24.04 hosted jobs, no arbitrary main/test input, no retained interactive runner, and no current-main comparison leg. Its only dispatch input is release. Original hosted runners completed and are not addressable from this VM. Do not dispatch a new Verify or treat a different cloud runner as same-runner proof.
 
-REMOTE-NEEDS-LOCAL: if either shard remains red, the fleet needs an existing runner facility able to run only its named failing test at current main in the same runner environment. The original GitHub-hosted runners (1000317508 and 1000317514) are not accessible here, and this repository exposes no authorized targeted-main comparison entry point. This dependency cannot be supplied by installing tools or running a broad suite in this cloud VM.
+Conditional runner dependency (not activated): if either shard remains red, the fleet needs an existing runner facility able to run only its named failing test at current main in the same runner environment. The original GitHub-hosted runners (1000317508 and 1000317514) are not accessible here, and this repository exposes no authorized targeted-main comparison entry point. This dependency cannot be supplied by installing tools or running a broad suite in this cloud VM.
 
 ## Counts and scope
 
@@ -54,7 +54,7 @@ The cloud adaptation's REST/ten-call instructions govern over the historical bri
 
 ## Retry outcomes and terminal next step
 
-Pending final bounded REST observation. See final RETRY-RESULTS.json and terminal section appended below.
+Completed. The final ten-call-bounded REST job inventory and RETRY-RESULTS.json are summarized below.
 
 ### Retry checkpoint (date -u: 2026-11-13T01:22:12Z)
 
@@ -65,3 +65,25 @@ The immediate request to retry original batch-13 job 131590098535 returned HTTP 
 ### Serialized batch-13 retry accepted (date -u: 2026-11-13T01:43:11Z)
 
 After allowing batch-4's attempt to complete without more polling, `POST actions/jobs/131616367423/rerun` succeeded. This uses the latest retained row for original batch-13 job 131590098535; its timestamps in the saved snapshot prove no prior actual retry. The earlier HTTP 403 did not start a retry. This is batch-13's one accepted retry, expected as run attempt 3. Nine of ten GitHub command invocations are now used; the final call is reserved for all-attempt job evidence after the expected shard duration. No further job retry is authorized in this triage.
+
+## Final result: Done (final REST observation: 2026-11-13T02:05:16Z)
+
+Both sole permitted product-shard retries **passed** without a source change, test weakening, new commit or new Verify dispatch. The final all-attempt inventory contains 81 rows (27 logical jobs across three workflow attempts). All 27 latest logical jobs are completed with success or skipped; all **20 product shards are completed/success on 67f170efd24378a2f68409218adbd106d36edb93**.
+
+| Item | Actual execution / retained evidence | Result |
+| --- | --- | --- |
+| batch-4 sole retry | Job **131616367227**, actual execution attempt **2**, runner GitHub Actions 1000317716, 01:13:22Z–01:28:40Z. Its attempt-3 retained copy is **131628626116** with the same execution timestamps. | Product step and whole job success |
+| batch-13 sole retry | Job **131628625671**, actual execution attempt **3**, runner GitHub Actions 1000317749, 01:43:17Z–01:54:21Z. | Product step and whole job success |
+| Verify aggregate | Job **131632878609**, attempt **3**, 01:54:24Z–01:54:43Z. | Completed/success on the exact investigated SHA |
+
+The overall run-status endpoint was captured initially; final qualification uses the complete REST jobs inventory, including the exact-head Verify aggregate and every latest job, rather than an additional over-budget run-status request. No result from another SHA is used. FINAL-CI-RECEIPT.json and jobs-43334873977-final.json retain the actual final response and per-job steps.
+
+**Before → after:** 18 passing / 2 failing product shards → 20 passing / 0 failing. Clauses: 42 done / 130 partial / 32 missing → unchanged; REPORT-002 stays partial. Clause status changes: none. FIX count added: zero. Product commits/pushes/PRs: zero. GitHub investigation command budget: exactly **10/10**, including each failed-job archive read as one invocation per the cloud instruction.
+
+**Final classification:** these were non-persistent failures in unchanged, pre-existing focus/recovery paths. Both passed their single exact-head retry. No candidate-caused focus or text regression has been demonstrated; no REPORT-002 FIX is proposed. The mount and missing-record race explanations above remain source-backed hypotheses, not claimed runtime main reproductions or proof of a specific root cause.
+
+The condition requiring an isolated current-main same-runner reproduction was not activated because neither shard remained red. No main test was run. The conditional runner-facility limitation above is not a terminal blocker. There are no remaining CI-triage blockers. No landing record was readmitted or changed.
+
+**Exact next action:** sd should resume the existing candidate's ordinary guarded landing process using run 43334873977 attempt 3 and head 67f170efd24378a2f68409218adbd106d36edb93, with its own required fresh exact-SHA confirmation and publication gates. fv may retain the two pre-existing race hypotheses as a bounded follow-up; no f178 FIX round is warranted by this evidence. This task's local cloud branch has no product changes and is not a landing candidate, so no misleading READY/PUSHED custody line is issued for it.
+
+The complete explicitly selected packet is published only to evidence/sd-orbit-c-f178-rebased-ci-triage-1. Its earlier checkpoint was fetched back and hash-verified (CHECKPOINT-TRANSFER-RECEIPT.json). The final transfer is also fetched and verified before task completion. The disposable product clone is removed after successful final evidence verification; the packet and terminal transfer receipts remain outside it.

@@ -1,4 +1,5 @@
 {
+  "observed_at": "2026-11-13T02:07:05Z",
   "scope": "explicitly selected public report packet; excludes raw runtime logs and decrypted bundle",
   "files": [
     "REPORT.md",
@@ -19,9 +20,11 @@
     "retry-job-batch13-serialized.json",
     "assertion-131590098446.txt",
     "assertion-131590098535.txt",
-    "CHECKPOINT-TRANSFER-RECEIPT.json"
+    "CHECKPOINT-TRANSFER-RECEIPT.json",
+    "jobs-43334873977-final.json",
+    "FINAL-CI-RECEIPT.json"
   ],
-  "files_checked": 19,
+  "files_checked": 21,
   "credential_shape_findings": [],
   "not_a_fleet_publication_scan": true
 }

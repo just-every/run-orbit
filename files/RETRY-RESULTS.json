@@ -1,447 +1,51 @@
 {
-  "observed_at": "2026-11-13T01:22:12Z",
+  "observed_at": "2026-11-13T02:05:16Z",
   "run": 43334873977,
   "head": "67f170efd24378a2f68409218adbd106d36edb93",
-  "retry4_requested_once": true,
-  "retry13_requested_but_not_started": false,
-  "request13_rejection": "HTTP 403: The workflow run containing this job is already running",
-  "latest_jobs": {
-    "shards (batch-4)": {
-      "id": 131616367227,
-      "run_id": 43334873977,
-      "workflow_name": "Verify",
-      "head_branch": "cloud/sd-orbit-c-f178-rebase-67f170efd24378a2f68409218adbd106d36edb93",
-      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43334873977",
-      "run_attempt": 2,
-      "node_id": "CR_kwDOVG0n8M8AAAAepPJiew",
-      "head_sha": "67f170efd24378a2f68409218adbd106d36edb93",
-      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/131616367227",
-      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43334873977/job/131616367227",
-      "status": "in_progress",
-      "conclusion": null,
-      "created_at": "2026-11-13T01:13:20Z",
-      "started_at": "2026-11-13T01:13:22Z",
-      "completed_at": null,
-      "name": "shards (batch-4)",
-      "steps": [
-        {
-          "name": "Set up job",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 1,
-          "started_at": "2026-11-13T01:13:23Z",
-          "completed_at": "2026-11-13T01:13:24Z"
-        },
-        {
-          "name": "Run actions/checkout@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 2,
-          "started_at": "2026-11-13T01:13:24Z",
-          "completed_at": "2026-11-13T01:13:33Z"
-        },
-        {
-          "name": "Run pnpm/action-setup@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 3,
-          "started_at": "2026-11-13T01:13:33Z",
-          "completed_at": "2026-11-13T01:13:34Z"
-        },
-        {
-          "name": "Run actions/setup-node@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 4,
-          "started_at": "2026-11-13T01:13:34Z",
-          "completed_at": "2026-11-13T01:13:39Z"
-        },
-        {
-          "name": "Set runner-owned pnpm store",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 5,
-          "started_at": "2026-11-13T01:13:39Z",
-          "completed_at": "2026-11-13T01:13:39Z"
-        },
-        {
-          "name": "Run actions/cache@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 6,
-          "started_at": "2026-11-13T01:13:39Z",
-          "completed_at": "2026-11-13T01:13:42Z"
-        },
-        {
-          "name": "Install pinned package CLI for every shard",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 7,
-          "started_at": "2026-11-13T01:13:42Z",
-          "completed_at": "2026-11-13T01:13:51Z"
-        },
-        {
-          "name": "Run actions/download-artifact@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 8,
-          "started_at": "2026-11-13T01:13:51Z",
-          "completed_at": "2026-11-13T01:13:52Z"
-        },
-        {
-          "name": "Restore the exact-commit build",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 9,
-          "started_at": "2026-11-13T01:13:52Z",
-          "completed_at": "2026-11-13T01:13:52Z"
-        },
-        {
-          "name": "Check fixed verification ports are outside automatic allocation",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 10,
-          "started_at": "2026-11-13T01:13:52Z",
-          "completed_at": "2026-11-13T01:13:52Z"
-        },
-        {
-          "name": "Set runner-owned browser cache",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 11,
-          "started_at": "2026-11-13T01:13:52Z",
-          "completed_at": "2026-11-13T01:13:52Z"
-        },
-        {
-          "name": "Cache fallback apt archives",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 12,
-          "started_at": "2026-11-13T01:13:52Z",
-          "completed_at": "2026-11-13T01:13:55Z"
-        },
-        {
-          "name": "Install Chromium",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 13,
-          "started_at": "2026-11-13T01:13:55Z",
-          "completed_at": "2026-11-13T01:13:57Z"
-        },
-        {
-          "name": "Reserve disk for local servers and immutable archive lineage",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 14,
-          "started_at": "2026-11-13T01:13:57Z",
-          "completed_at": "2026-11-13T01:13:57Z"
-        },
-        {
-          "name": "Verify routine product shard",
-          "status": "in_progress",
-          "conclusion": null,
-          "number": 15,
-          "started_at": "2026-11-13T01:13:57Z",
-          "completed_at": null
-        },
-        {
-          "name": "Retain rer startup diagnostics",
-          "status": "pending",
-          "conclusion": null,
-          "number": 16,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Retain shard completion",
-          "status": "pending",
-          "conclusion": null,
-          "number": 17,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Retain product execution evidence",
-          "status": "pending",
-          "conclusion": null,
-          "number": 18,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Post Cache fallback apt archives",
-          "status": "pending",
-          "conclusion": null,
-          "number": 32,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Post Run actions/cache@v4",
-          "status": "pending",
-          "conclusion": null,
-          "number": 33,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Post Run actions/setup-node@v4",
-          "status": "pending",
-          "conclusion": null,
-          "number": 34,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Post Run pnpm/action-setup@v4",
-          "status": "pending",
-          "conclusion": null,
-          "number": 35,
-          "started_at": null,
-          "completed_at": null
-        },
-        {
-          "name": "Post Run actions/checkout@v4",
-          "status": "pending",
-          "conclusion": null,
-          "number": 36,
-          "started_at": null,
-          "completed_at": null
-        }
-      ],
-      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/131616367227",
-      "labels": [
-        "ubuntu-24.04"
-      ],
-      "runner_id": 1000317716,
-      "runner_name": "GitHub Actions 1000317716",
-      "runner_group_id": 0,
-      "runner_group_name": "GitHub Actions"
-    },
-    "shards (batch-13)": {
-      "id": 131616367423,
-      "run_id": 43334873977,
-      "workflow_name": "Verify",
-      "head_branch": "cloud/sd-orbit-c-f178-rebase-67f170efd24378a2f68409218adbd106d36edb93",
-      "run_url": "https://api.github.com/repos/just-every/run-orbit/actions/runs/43334873977",
-      "run_attempt": 2,
-      "node_id": "CR_kwDOVG0n8M8AAAAepPJjPw",
-      "head_sha": "67f170efd24378a2f68409218adbd106d36edb93",
-      "url": "https://api.github.com/repos/just-every/run-orbit/actions/jobs/131616367423",
-      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43334873977/job/131616367423",
-      "status": "completed",
-      "conclusion": "failure",
-      "created_at": "2026-11-13T01:13:20Z",
-      "started_at": "2026-11-13T00:13:50Z",
-      "completed_at": "2026-11-13T00:25:31Z",
-      "name": "shards (batch-13)",
-      "steps": [
-        {
-          "name": "Set up job",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 1,
-          "started_at": "2026-11-13T00:13:51Z",
-          "completed_at": "2026-11-13T00:13:53Z"
-        },
-        {
-          "name": "Run actions/checkout@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 2,
-          "started_at": "2026-11-13T00:13:53Z",
-          "completed_at": "2026-11-13T00:14:03Z"
-        },
-        {
-          "name": "Run pnpm/action-setup@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 3,
-          "started_at": "2026-11-13T00:14:03Z",
-          "completed_at": "2026-11-13T00:14:04Z"
-        },
-        {
-          "name": "Run actions/setup-node@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 4,
-          "started_at": "2026-11-13T00:14:04Z",
-          "completed_at": "2026-11-13T00:14:09Z"
-        },
-        {
-          "name": "Set runner-owned pnpm store",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 5,
-          "started_at": "2026-11-13T00:14:09Z",
-          "completed_at": "2026-11-13T00:14:09Z"
-        },
-        {
-          "name": "Run actions/cache@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 6,
-          "started_at": "2026-11-13T00:14:09Z",
-          "completed_at": "2026-11-13T00:14:12Z"
-        },
-        {
-          "name": "Install pinned package CLI for every shard",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 7,
-          "started_at": "2026-11-13T00:14:12Z",
-          "completed_at": "2026-11-13T00:14:22Z"
-        },
-        {
-          "name": "Run actions/download-artifact@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 8,
-          "started_at": "2026-11-13T00:14:22Z",
-          "completed_at": "2026-11-13T00:14:23Z"
-        },
-        {
-          "name": "Restore the exact-commit build",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 9,
-          "started_at": "2026-11-13T00:14:23Z",
-          "completed_at": "2026-11-13T00:14:23Z"
-        },
-        {
-          "name": "Check fixed verification ports are outside automatic allocation",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 10,
-          "started_at": "2026-11-13T00:14:23Z",
-          "completed_at": "2026-11-13T00:14:23Z"
-        },
-        {
-          "name": "Set runner-owned browser cache",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 11,
-          "started_at": "2026-11-13T00:14:23Z",
-          "completed_at": "2026-11-13T00:14:23Z"
-        },
-        {
-          "name": "Cache fallback apt archives",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 12,
-          "started_at": "2026-11-13T00:14:23Z",
-          "completed_at": "2026-11-13T00:14:27Z"
-        },
-        {
-          "name": "Install Chromium",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 13,
-          "started_at": "2026-11-13T00:14:27Z",
-          "completed_at": "2026-11-13T00:14:28Z"
-        },
-        {
-          "name": "Reserve disk for local servers and immutable archive lineage",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 14,
-          "started_at": "2026-11-13T00:14:28Z",
-          "completed_at": "2026-11-13T00:14:28Z"
-        },
-        {
-          "name": "Verify routine product shard",
-          "status": "completed",
-          "conclusion": "failure",
-          "number": 15,
-          "started_at": "2026-11-13T00:14:28Z",
-          "completed_at": "2026-11-13T00:25:25Z"
-        },
-        {
-          "name": "Retain rer startup diagnostics",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 16,
-          "started_at": "2026-11-13T00:25:25Z",
-          "completed_at": "2026-11-13T00:25:25Z"
-        },
-        {
-          "name": "Retain shard completion",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 17,
-          "started_at": "2026-11-13T00:25:25Z",
-          "completed_at": "2026-11-13T00:25:26Z"
-        },
-        {
-          "name": "Retain product execution evidence",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 18,
-          "started_at": "2026-11-13T00:25:26Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Post Cache fallback apt archives",
-          "status": "completed",
-          "conclusion": "skipped",
-          "number": 32,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Post Run actions/cache@v4",
-          "status": "completed",
-          "conclusion": "skipped",
-          "number": 33,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Post Run actions/setup-node@v4",
-          "status": "completed",
-          "conclusion": "skipped",
-          "number": 34,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Post Run pnpm/action-setup@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 35,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Post Run actions/checkout@v4",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 36,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        },
-        {
-          "name": "Complete job",
-          "status": "completed",
-          "conclusion": "success",
-          "number": 37,
-          "started_at": "2026-11-13T00:25:28Z",
-          "completed_at": "2026-11-13T00:25:28Z"
-        }
-      ],
-      "check_run_url": "https://api.github.com/repos/just-every/run-orbit/check-runs/131616367423",
-      "labels": [
-        "ubuntu-24.04"
-      ],
-      "runner_id": 1000317514,
-      "runner_name": "GitHub Actions 1000317514",
-      "runner_group_id": null,
-      "runner_group_name": "GitHub Actions"
-    }
+  "actual_batch4_retry": {
+    "id": 131616367227,
+    "run_attempt": 2,
+    "status": "completed",
+    "conclusion": "success",
+    "runner_name": "GitHub Actions 1000317716",
+    "started_at": "2026-11-13T01:13:22Z",
+    "completed_at": "2026-11-13T01:28:40Z",
+    "head_sha": "67f170efd24378a2f68409218adbd106d36edb93"
   },
-  "github_calls_used": 9,
-  "github_calls_remaining": 1,
-  "retry13_request_accepted_at": "2026-11-13T01:43:11Z",
-  "retry13_requested_once_successfully": true,
-  "final_observation_pending": true
+  "batch4_latest_retained_job": 131628626116,
+  "actual_batch13_retry": {
+    "id": 131628625671,
+    "run_attempt": 3,
+    "status": "completed",
+    "conclusion": "success",
+    "runner_name": "GitHub Actions 1000317749",
+    "started_at": "2026-11-13T01:43:17Z",
+    "completed_at": "2026-11-13T01:54:21Z",
+    "head_sha": "67f170efd24378a2f68409218adbd106d36edb93"
+  },
+  "verify_aggregate": {
+    "id": 131632878609,
+    "run_attempt": 3,
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-13T01:54:24Z",
+    "completed_at": "2026-11-13T01:54:43Z",
+    "head_sha": "67f170efd24378a2f68409218adbd106d36edb93"
+  },
+  "github_calls_used": 10,
+  "github_calls_remaining": 0,
+  "main_comparison_required": false,
+  "main_comparison_reason": "Neither failed shard remained red after its sole retry.",
+  "product_shards_before": {
+    "passed": 18,
+    "failed": 2
+  },
+  "product_shards_after": {
+    "passed": 20,
+    "failed": 0
+  },
+  "classification": "Non-persistent failures in pre-existing source paths; no candidate-caused regression demonstrated.",
+  "blockers": [],
+  "ready_claim_issued": false,
+  "ready_claim_reason": "Read-only CI triage created and pushed no product candidate."
 }
