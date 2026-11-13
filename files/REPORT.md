@@ -6,7 +6,7 @@ Candidate: e2d1b48b46f9d0296b241c3e1cda0da05da112f8
 Saved starting head: 1f9dd79164d7043a3c0e5eaff8365d8a98dca209
 Preservation save: d09717c (full identity in SAVE.json)
 Integrated main: 90c58e001a5a5ae74e81a61526fb3e88b9f616ed
-Verify: {"conclusion": null, "event": "push", "head_sha": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43351891555", "id": 43351891555, "name": "Verify", "observed_at": "2026-11-13T02:25:27.871283+00:00", "status": "in_progress"}
+Verify: {"conclusion": null, "event": "push", "head_sha": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43351891555", "id": 43351891555, "name": "Verify", "observed_at": "2026-11-13T03:14:00.646414+00:00", "status": "in_progress"}
 PR: none; Verify has a branch-push entry point.
 
 ## Outcome and scope
@@ -109,3 +109,13 @@ The final candidate declares the optional Salesforce external in seed.json: OAut
 The selected native Salesforce and complete forward-upgrade proofs passed on 76bd6668fabf2a961af410b4e7888cf92238f416. The current candidate e2d1b48b46f9d0296b241c3e1cda0da05da112f8 has identical bytes for all selected application, migration, erasure, archive, native test and browser paths listed in FINAL.json. The only intervening application difference is the unrelated dashboard fix inherited from main. No existing assertion was removed or weakened. Final source lock check exit 0; generated views and CONTRACT.md still match main exactly.
 
 CANDIDATE-BUILD.json records a fresh successful build on e2d1b48b46f9d0296b241c3e1cda0da05da112f8. CANDIDATE-SALESFORCE.json records the repeated native ESM Salesforce public-door proof on that exact final commit: exit 0 in 274 seconds. It covers the selected consent, state, grants, sealed custody, metadata, paging, persisted interruption and resume, existing-owner mapping, saved review, confirmed Apply, unchanged rerun, conflict-preserving Undo, erasure and restored-authority refusal outcomes. The passing browser and forward-upgrade receipts remain valid by the explicit relevant-byte comparison in FINAL.json.
+
+CLAIM MIGRATE-003 PARTIAL points=none tests=tests/core/crm-import.test.ts#RECORD-008 connected HubSpot, Salesforce OAuth, vendor exports and generic spreadsheets dry-run, reconcile, resume and undo through current operator routes; tests/e2e/imports.spec.mjs#RECORD-008 connected HubSpot, reviewed vendor files and plain CSV import and undo through the responsive native wizard
+
+## Terminal custody
+
+Final exact-SHA Verify 43351891555: in_progress, conclusion None; event push; head e2d1b48b46f9d0296b241c3e1cda0da05da112f8. No green result is inferred from any earlier commit. The observed terminal product status is PUSHED.
+
+Before and after: 42 DONE, 130 PARTIAL, 32 MISSING; 200 registered cases including two qualifications. Clause judgments and plan holds are unchanged. Selected native Account and Contact migration proof is complete; the full clause remains PARTIAL.
+
+PUSHED branch=cloud/sd-orbit-c-f183-pc1 head=e2d1b48b46f9d0296b241c3e1cda0da05da112f8

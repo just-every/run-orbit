@@ -1,0 +1,33 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f183-pc1",
+  "head": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8",
+  "status": "PUSHED",
+  "verify": {
+    "conclusion": null,
+    "head_sha": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43351891555",
+    "status": "in_progress",
+    "id": 43351891555,
+    "name": "Verify",
+    "event": "push",
+    "observed_at": "2026-11-13T03:14:00.646414+00:00"
+  },
+  "localBuildExit": 0,
+  "nativeSalesforceExit": 0,
+  "sourceLockCheckExit": 0,
+  "contractWriteCheckExit": 0,
+  "publicationScan": "delegated to fleet; not run in cloud",
+  "mainLanding": "not performed",
+  "pr": null,
+  "countsBefore": {
+    "DONE": 42,
+    "PARTIAL": 130,
+    "MISSING": 32
+  },
+  "countsAfter": {
+    "DONE": 42,
+    "PARTIAL": 130,
+    "MISSING": 32
+  }
+}

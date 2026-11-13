@@ -1,6 +1,6 @@
 {
   "budget": 10,
-  "used": 8,
+  "used": 10,
   "cadence": "One watcher; correct full-SHA discovery and polls separated by at least 300 seconds",
   "calls": [
     {
@@ -46,6 +46,18 @@
       "operation": "Discover final merged candidate exact-SHA run",
       "run": 43351891555,
       "receipt": "ci-candidate-discovery.json"
+    },
+    {
+      "call": 9,
+      "operation": "Poll final exact-SHA Verify",
+      "run": 43351891555,
+      "receipt": "ci-candidate-poll-1.json"
+    },
+    {
+      "call": 10,
+      "operation": "Final exact-SHA Verify poll",
+      "run": 43351891555,
+      "receipt": "ci-candidate-poll-final.json"
     }
   ]
 }

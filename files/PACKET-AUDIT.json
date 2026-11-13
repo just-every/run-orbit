@@ -1,14 +1,14 @@
 {
-  "observedAt": "2026-11-13T02:34:28.664716+00:00",
-  "selectedFiles": 140,
+  "observedAt": "2026-11-13T03:14:33.300520+00:00",
+  "selectedFiles": 145,
   "regularFilesOnly": true,
   "noInjectedValues": true,
   "excludesSelf": true,
   "files": [
     {
       "path": "REPORT.md",
-      "bytes": 20106,
-      "sha256": "98279d994cc1b39814e3e507931195b326375ef406f320fc51a5d5ca8bf31301"
+      "bytes": 21068,
+      "sha256": "b177768f33b218924cc0bf6624bae4a3482e8b4211e0792b4152fa8e19e902ab"
     },
     {
       "path": "PLAN.md",
@@ -23,12 +23,12 @@
     {
       "path": "CI.json",
       "bytes": 305,
-      "sha256": "c827585fc2a92d8f0cc1c28076849809edede8bd7453dc48c116ff1a9b28fea0"
+      "sha256": "c86a54fd492cb496cdef763f6ebd9866a3d832d4a63206b7cd21eafe6741a151"
     },
     {
       "path": "GITHUB-CALLS.json",
-      "bytes": 1177,
-      "sha256": "664d5379753f97cadee8d73da0763f14558d9bda434d4593aa8c7bf9694d4eef"
+      "bytes": 1483,
+      "sha256": "a5ae16cb49cfe9dd94a1fcc8d1d46923be7943266f40b721917b996f91a8d69e"
     },
     {
       "path": "MECHANICAL.json",
@@ -699,6 +699,31 @@
       "path": "candidate-salesforce.log",
       "bytes": 197,
       "sha256": "e0a404448bd20d3158e922957aeea364328ea3720bd4a07ebd009750d4600b94"
+    },
+    {
+      "path": "ci-candidate-poll-1.json",
+      "bytes": 175,
+      "sha256": "2568151ca29a0589344b76b3e1101ce162849ed47f6f29011c0894bffb33010d"
+    },
+    {
+      "path": "ci-candidate-poll-final.json",
+      "bytes": 175,
+      "sha256": "2568151ca29a0589344b76b3e1101ce162849ed47f6f29011c0894bffb33010d"
+    },
+    {
+      "path": "evidence-local-complete.log",
+      "bytes": 26151,
+      "sha256": "d217776821d4a5f41d7b80a5c4a10033d5289ceec5f6b64c0b6aefed26432fb1"
+    },
+    {
+      "path": "HANDOFF.json",
+      "bytes": 873,
+      "sha256": "61984e6741e1b75c603e0719fd3973670e9936629519e451ea3b097319b0799e"
+    },
+    {
+      "path": "product-readback.json",
+      "bytes": 267,
+      "sha256": "a7a833c17bf5ebdbada761bbf08e391593c5ddfd44a16c31c467d044cfb42b84"
     }
   ]
 }
