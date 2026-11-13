@@ -1,0 +1,27 @@
+{
+  "head": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+  "screens": [
+    {
+      "file": "missing-agent-policy-1440.png",
+      "bytes": 566877,
+      "sha256": "e2ea443dad408ea6cf9a990b54751ae2a6304b92b7ec4ce02f7224670ee41366"
+    },
+    {
+      "file": "missing-agent-policy-390.png",
+      "bytes": 496539,
+      "sha256": "0c9a1656239f099d916729d944613065e7aadf38a039a596b68aa860d1af8c17"
+    },
+    {
+      "file": "capture-proof/capture-revoked-1440.png",
+      "bytes": 285446,
+      "sha256": "4e8e7d1a8978bb0b18e1987ceac85be6b998ddcb37a34cc9da6b1889ecbfa4e2"
+    },
+    {
+      "file": "capture-proof/capture-revoked-390.png",
+      "bytes": 257492,
+      "sha256": "f82d7180639675c9d25767d12b82c05c2b41002c0e35c2226a8fa2ddd0e7a5c4"
+    }
+  ],
+  "visually_inspected": true,
+  "fixture_data": "synthetic"
+}

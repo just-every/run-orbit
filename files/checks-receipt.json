@@ -1,0 +1,78 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-next-step-links-1-pc1",
+  "head": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+  "changes_in_continuation": 0,
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec tsx --test tests/delegation-browser/records-layout.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1
+    },
+    {
+      "command": "pnpm exec tsx --test tests/delegation-browser/today-brief.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/capture.spec.mjs",
+      "exit": 0,
+      "tests": 2,
+      "passed": 2
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    }
+  ],
+  "test_budget": {
+    "before": 200,
+    "after": 200,
+    "limit": 200
+  },
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "viewports": [
+      1440,
+      390
+    ],
+    "serious_or_critical_axe_findings": 0
+  },
+  "contract_status_changes": [],
+  "policy_defaults_adopted": [],
+  "local_runtime": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "toolchain": "task-provided cloud shim; existing Node meets its minimum check"
+  },
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "52fb31dc6e91556136e7d71a0c33c3cebc1531ce",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43371612216",
+    "status": "completed",
+    "call": 10,
+    "observed_at": "2026-11-13T06:20:00Z",
+    "run_id": 43371612216,
+    "branch": "cloud/main-orbit-next-step-links-1-pc1"
+  },
+  "terminal_custody": "READY",
+  "blockers": []
+}
