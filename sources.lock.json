@@ -7171,7 +7171,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/timeline-entries.tsx": {
-      "sha256": "f515614092f820ad1ca05409e1ba3ac21d70d822e687e5158888edd601cdb2bf",
+      "sha256": "b1abd6fba92054fc48b37249236a13019921fef8f7db1bb55908b7f082d98ca2",
       "executable": false
     },
     "src/core/features/operator/ui/record/use-refresh.ts": {
@@ -10579,7 +10579,7 @@
       "executable": false
     },
     "tests/e2e/operator.spec.mjs": {
-      "sha256": "61d3553e728e07d3cec924078c7f0376bac58af012f125cc3c48529e79bf136d",
+      "sha256": "f1f2ad94eac9d8bf7aa1c25c618e5dcbf8ab3ea540d6140e271a9e707f49e158",
       "executable": false
     },
     "tests/e2e/opportunity-defaults.mjs": {
