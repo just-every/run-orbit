@@ -124,6 +124,13 @@
   "repository": "just-every/run-orbit",
   "shallow": false,
   "sourceLockSha256": "3ce50af5fca13056a164296beaf6c170fa1771b72f908cfc17dae53fb7e7d435",
+  "terminal": {
+    "ciRun": 43340114479,
+    "head": "102738071085d99c0357615e67b73749639b4625",
+    "observedAt": "2026-11-13T01:02:43.037165+00:00",
+    "reason": "Exact-head Verify remains in progress; nine of ten GitHub calls used, one remaining is insufficient for status and failure triage.",
+    "status": "PUSHED"
+  },
   "testsAfter": {
     "cases": 198,
     "qualifications": 2,

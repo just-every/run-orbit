@@ -1,6 +1,6 @@
 {
   "limit": 10,
-  "used": 8,
+  "used": 9,
   "earlierCalls": [
     "Initial main exact-head runs",
     "Earlier candidate exact-head discovery",
@@ -21,6 +21,12 @@
       "timeRecorded": "2026-11-13T00:56:18.312208+00:00",
       "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=102738071085d99c0357615e67b73749639b4625&per_page=100",
       "resultFile": "CI-final-discovery.json"
+    },
+    {
+      "number": 9,
+      "timeRecorded": "2026-11-13T01:02:43.037165+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs/43340114479 --jq {status,conclusion,head_sha,html_url}",
+      "resultFile": "CI-final.json"
     }
   ],
   "minimumStatusIntervalSeconds": 300
