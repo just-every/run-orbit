@@ -63,7 +63,7 @@ export async function proveReleasedForecastUpgrade(){
   const before=await snapshot(db);
   await target.upgrade('0049_opt_out_capabilities.sql');db=target.db;await assertRetained(db,before);
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
-  await target.upgrade('0085_meeting_follow_up.sql');db=target.db;
+  await target.upgrade('0089_mailbox_send.sql');db=target.db;
   const beforeSalesforce=await foldInstalledCatalog(db),beforeSalesforceRows=await snapshot(db);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);

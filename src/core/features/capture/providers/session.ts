@@ -3,7 +3,7 @@ import {guard} from '../../identity/store';
 import {createId} from '../../../shared/ids';
 import type {SourceSecurity} from '../../../platform/source-security';
 import {CaptureError,CaptureProviderError} from '../contracts';
-import {checkedScopes,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
+import {checkedScopes,hasSendScope,hasBroaderMailGrant,tokenRequest,type Credential,type Provider,type ProviderFetch} from './config';
 export interface ProviderSource{id:string;name:string;adapter:Provider;scope_json:string;state:string;connection_id:string|null;cursor:string|null}
 /** A durable lease fences every read, refresh, intake and cursor update. Expired workers cannot write. */
 export async function leaseSource(db:D1Database,id:string){
@@ -27,7 +27,9 @@ export function providerSession(db:D1Database,source:ProviderSource,lease:string
    await check();
    const result=await tokenRequest(fetcher,source.adapter,credential.tenant,new URLSearchParams({grant_type:'refresh_token',client_id:credential.clientId,client_secret:credential.clientSecret,refresh_token:credential.refreshToken}));
    const scope=result.scope===undefined?credential.scope:checkedScopes(source.adapter,result.scope);
-   credential={...credential,accessToken:result.access_token,refreshToken:typeof result.refresh_token==='string'?result.refresh_token:credential.refreshToken,expiresAt:Date.now()+result.expires_in*1000,scope};
+   const lostSend=credential.sendConsent&&(!hasSendScope(source.adapter,scope)||hasBroaderMailGrant(source.adapter,scope));
+   if(lostSend)await db.prepare("UPDATE mailbox_send_authorizations SET state='paused' WHERE source_id=? AND connection_id=?").bind(source.id,source.connection_id).run();
+   credential={...credential,...lostSend?{sendConsent:false}:{},accessToken:result.access_token,refreshToken:typeof result.refresh_token==='string'?result.refresh_token:credential.refreshToken,expiresAt:Date.now()+result.expires_in*1000,scope};
    await check();
    const saved=await db.prepare(`UPDATE capture_credentials SET ciphertext=?,updated_at=? WHERE source_id=? AND ciphertext=? AND EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')) AND EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)`).bind(await security.seal(JSON.stringify(credential)),new Date().toISOString(),source.id,row.ciphertext,source.id,source.connection_id,source.id,lease,Date.now()).run();
    if(saved.meta.changes!==1)throw new CaptureError(409,'The provider connection changed during refresh.');
@@ -53,6 +55,6 @@ export function providerSession(db:D1Database,source:ProviderSource,lease:string
   try{return await boundedResponse(response);}catch(error){if(message&&response.ok&&error instanceof ResponseTooLarge)throw new MessageTooLarge();throw error;}
  }
  const fence=()=>guard(db,{sql:"EXISTS(SELECT 1 FROM capture_sources WHERE id=? AND connection_id IS ? AND state IN('connected','syncing')) AND EXISTS(SELECT 1 FROM capture_credentials WHERE source_id=?) AND EXISTS(SELECT 1 FROM capture_locks WHERE source_id=? AND lease=? AND expires_at>?)",args:[source.id,source.connection_id,source.id,source.id,lease,Date.now()]});
- return {check,fence,read,message:(url:string,headers?:Record<string,string>)=>read(url,headers,[],true),async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
+ return {check,fence,read,credential,message:(url:string,headers?:Record<string,string>)=>read(url,headers,[],true),async json(url:string,headers?:Record<string,string>){const response=await read(url,headers);if(!response.ok)throw new CaptureProviderError('unavailable','The selected provider resource is no longer available.');return objectResponse(response);}};
 }
 export type ProviderSession=ReturnType<typeof providerSession>;

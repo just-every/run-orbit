@@ -10,6 +10,7 @@ const kind=z.enum(['contact','company','opportunity']);
 const definition=z.object({kind,fieldKey:z.string().regex(/^[a-z][a-z0-9_]{0,63}$/).refine(value=>!['constructor','prototype'].includes(value),'Choose a different field key.'),label:z.string().trim().min(1).max(100),valueType:z.enum(['text','number','date','picklist','boolean','user','datetime']),required:z.boolean(),unique:z.boolean(),options:z.array(z.string().trim().min(1).max(100)).max(100),archived:z.boolean()}).strict().refine(d=>d.valueType!=='picklist'||d.options.length>0&&new Set(d.options).size===d.options.length,'Picklists need distinct options.');
 type Definition=z.infer<typeof definition>;
 export type TypedField={kind:RecordKind;field_key:string;label:string;value_type:string;required:number;is_unique:number;options_json:string;archived:number;revision:number};
+export async function typedFields(db:D1Database,kind:RecordKind){return (await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? ORDER BY archived,field_key').bind(kind).all<TypedField>()).results;}
 const empty=(value:unknown)=>value===null||value===undefined||value==='';
 /** Empty typed inputs keep an existing empty representation, or remain absent. */
 export function normalizedTypedFields(values:Record<string,unknown>,before:Record<string,unknown>,fields:TypedField[]){

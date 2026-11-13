@@ -8,3 +8,9 @@ export const doNotContactReason='Contact is now Do not contact, so the scheduled
 /** SEQUENCE-002: a stage move or close ends the deal's scheduled follow-up in the same commit; reopening revives nothing. */
 export const stageChangedReason='Deal stage changed, so the scheduled follow-up was cancelled';
 export function closedReason(state:'won'|'lost'){return `Deal closed ${state}, so the scheduled follow-up was cancelled`;}
+
+/** A draft can need review without ever having authorized a scheduled message.
+ * Also correct explanations stored by earlier versions when that draft is read. */
+export function staleDraftReason(reason:string|null){
+ return reason?.replace(/, so the scheduled follow-up was cancelled$/, '')??null;
+}

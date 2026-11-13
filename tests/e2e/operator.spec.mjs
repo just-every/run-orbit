@@ -1,3 +1,4 @@
+import {taskActivityJourney} from './task-activity.mjs';
 import {readableMergeReview} from './readable-merge.mjs';
 import { expect, test } from "@playwright/test";
 import { createHmac, randomUUID } from "node:crypto";
@@ -167,7 +168,8 @@ test.describe("authenticated operator UI", () => {
     expect(failures).toEqual([]);
   });
 
-  contract("RECORD-005", "the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties", async ({ page }, info) => {
+  contract("RECORD-005", "the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties", async ({ browser, page }, info) => {
+    test.setTimeout(120_000);
     await page.setViewportSize({ width: 390, height: 844 });
     const failures = watchFailures(page);
     await openOpportunity(page);
@@ -234,6 +236,7 @@ test.describe("authenticated operator UI", () => {
       desktopFits: await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     }, null, 2) });
     expect(failures).toEqual([]);
+    await taskActivityJourney(browser, info);
   });
 
   contract("ACTION-004", "the desktop draft editor saves D1 state and surfaces a revision conflict", async ({ browser, page }, info) => {

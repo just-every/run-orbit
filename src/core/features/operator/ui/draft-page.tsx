@@ -1,3 +1,4 @@
+import {recordStateLabel} from './record-presentation';
 import {messageStatus} from './message-status';
 import {recordsRequest} from './records-api';
 import {DraftLibraryPicker} from '../../drafts/ui/library-picker';
@@ -11,7 +12,7 @@ import { OperatorShell, OperatorState } from "./operator-shell";
 import { useOperatorResource } from "./use-operator-resource";
 import { DraftContentFields } from "../../drafts/ui/draft-content-fields";
 
-interface SubmittedMessage { draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
+interface SubmittedMessage {sendingMailbox?:string; draftId: string; revision: number; state: string; scheduledAt: string | null;recipientEmail:string;subject:string;body:string }
 const submittedTitles: Record<string, string> = { scheduled: "Scheduled message", failed: "Message not sent", bounced: "Message bounced", "delivery-unknown":"Delivery unresolved", reconciling:"Reconciling provider acceptance", queued:"Submission in progress", delivered:"Delivered message" };
 
 export function DraftPage() {
@@ -84,7 +85,7 @@ export function DraftPage() {
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {draft.preparedByLabel&&<p>Prepared by {draft.preparedByLabel}</p>}
         {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
-        {submitted ? <SentMessage recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+        {submitted ? <SentMessage sendingMailbox={resource.data.submitted?.sendingMailbox} recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
           </label>
@@ -97,9 +98,9 @@ export function DraftPage() {
           <DraftLibraryPicker draft={draft} disabled={saving} onApplied={resource.reload}/>
           {draft.isStale ? <section className="operator-state operator-state--error" data-testid="stale-review">
             <h2>Review what changed</h2><p>{draft.staleReason ?? "Customer context changed."}</p>
-            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {contacts[0]?.contactability}. Review the <a href={`/app/contacts/${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
+            {resource.data.opportunity?<p>Current opportunity: {resource.data.opportunity.title} · {resource.data.opportunity.stage} · {resource.data.opportunity.queueReason}</p>:<p>Contact email: {contacts[0]?.email} · {recordStateLabel(contacts[0]?.contactability??'')}. Review the <a href={`/app/contacts/${draft.recipientContactId}`}>current customer evidence</a> before confirming.</p>}
             <ul>{(resource.data.opportunity?.signals??[]).slice(0,5).map(signal=><li key={signal.id}>{signal.subject??label(signal.type)} · {formatDateTime(signal.occurredAt,presentation)}</li>)}</ul>
-            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({contact.contactability})</option>)}</select></label>
+            <label>Confirm the current recipient<select value={draft.recipientContactId??''} onChange={event=>{const contact=contacts.find(contact=>contact.id===event.target.value);if(contact)setDraft({...draft,recipientContactId:contact.id,recipientEmail:contact.email??''});}}><option value="">Choose a linked contact</option>{contacts.map(contact=><option key={contact.id} value={contact.id} disabled={contact.contactability!=='contactable'}>{contact.name??contact.email} — {contact.email} ({recordStateLabel(contact.contactability)})</option>)}</select></label>
             <label style={{display:"flex",gap:8,alignItems:"flex-start"}}><input style={{width:"auto",flex:"none"}} type="checkbox" checked={reviewed} onChange={event=>setReviewed(event.target.checked)}/> I reviewed the changed evidence, current recipient, subject and body above.</label>
             <button type="button" className="operator-primary-button" disabled={saving||!reviewed||!draft.recipientContactId} onClick={()=>void confirmReview()}>Confirm reviewed draft</button>
             <p>This confirms a new draft revision. It sends nothing.</p>
@@ -128,9 +129,10 @@ export function DraftPage() {
 }
 
 /** A message handed to the mail service is a record, not a form: what was sent, as text. */
-function SentMessage({ recipient, subject, body }: { recipient: string; subject: string; body: string }) {
+function SentMessage({ recipient, subject, body,sendingMailbox }: { recipient: string; subject: string; body: string;sendingMailbox?:string }) {
   return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
     <dl className="operator-sent-message">
+      {sendingMailbox&&<div><dt>Sending mailbox</dt><dd>{sendingMailbox}</dd></div>}
       <div><dt>Recipient</dt><dd>{recipient}</dd></div>
       <div><dt>Subject</dt><dd>{subject}</dd></div>
       <div><dt>Body</dt><dd style={{ whiteSpace: "pre-wrap" }}>{body}</dd></div>

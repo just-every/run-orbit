@@ -11,16 +11,16 @@ export function RecordsFilters({query,onQuery,filters,onFilters,settings,opportu
   band:['low','medium','high'].map(value=>({id:value,name:recordStateLabel(value)})),
   queue_state:['now','next','none'].map(value=>({id:value,name:recordStateLabel(value)})),
   stage_id:settings?.stages.filter((stage:any)=>!filters.pipeline_id||stage.pipeline_id===filters.pipeline_id)??[],
-  owner_id:(settings?.operators??[]).filter((operator:any)=>operator.status==='active').map((operator:any)=>({id:operator.id,name:operator.display_name}))
+  owner_id:[{id:'unassigned',name:'Unassigned'},...(settings?.operators??[]).filter((operator:any)=>operator.status==='active').map((operator:any)=>({id:operator.id,name:operator.display_name}))]
  };
- const fields:FilterField[]=Object.entries(names).map(([field,name])=>({field,name,all:field==='pipeline_id'?'All pipelines':'All',options:options[field]!}));
+ const fields:FilterField[]=Object.entries(names).filter(([field])=>opportunities||field==='owner_id').map(([field,name])=>({field,name,all:field==='pipeline_id'?'All pipelines':'All',options:options[field]!}));
  function change(field:string,value:string){onFilters({...filters,[field]:value,...(field==='pipeline_id'?{stage_id:''}:{})});}
  const applied=Object.values(filters).filter(Boolean).length;
  return <section className="records-search" aria-label="Search and filters">
   <div className="records-search__bar"><label>Search records and timeline<input value={query} onChange={event=>onQuery(event.target.value)} type="search"/></label>
-   {opportunities?<FilterButton panel={panel} applied={applied}/>:null}
-   {opportunities?<FilterChips fields={fields} values={filters} onChange={change} valueName={recordStateLabel}/>:null}
+   {settings?<FilterButton panel={panel} applied={applied}/>:null}
+   {settings?<FilterChips fields={fields} values={filters} onChange={change} valueName={recordStateLabel}/>:null}
   </div>
-  {opportunities?<FilterPanel panel={panel} fields={fields} values={filters} onChange={change}/>:null}
+  {settings?<FilterPanel panel={panel} fields={fields} values={filters} onChange={change}/>:null}
  </section>;
 }

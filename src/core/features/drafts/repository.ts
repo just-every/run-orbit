@@ -1,3 +1,4 @@
+import {staleDraftReason} from '../outreach/stop-reason';
 import {draftRecordLinks} from '../outreach/record-mail-links';
 import {draftMailDatabase,recordMailDatabase} from '../outreach/record-mail-storage';
 import { desc, eq } from "drizzle-orm";
@@ -34,7 +35,7 @@ export class DraftsRepository {
     const attribution=await this.binding.prepare(`SELECT
       (SELECT json_extract(payload_json,'$.preparedBy.label') FROM timeline_entries WHERE json_extract(payload_json,'$.draftId')=? AND kind IN('draft.created','draft.updated') ORDER BY recorded_at DESC,id DESC LIMIT 1) AS preparer,
       (SELECT json_extract(payload_json,'$.preparedBy.label') FROM timeline_entries WHERE json_extract(payload_json,'$.draftId')=? AND kind='draft.created' ORDER BY recorded_at,id LIMIT 1) AS author`).bind(id,id).first<{preparer:string|null;author:string|null}>();
-    return {...draft,...(attribution?.preparer?{preparedByLabel:attribution.preparer}:{}),...(attribution?.author?{authorLabel:attribution.author}:{})};
+    return {...draft,staleReason:staleDraftReason(draft.staleReason),...(attribution?.preparer?{preparedByLabel:attribution.preparer}:{}),...(attribution?.author?{authorLabel:attribution.author}:{})};
   }
 
   async listOpportunityDrafts(opportunityId: string) {

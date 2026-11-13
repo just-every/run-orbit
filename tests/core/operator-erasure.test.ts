@@ -36,6 +36,8 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
   };
   await db.prepare('UPDATE operators SET setup_owner=1 WHERE id=?').bind(admin).run();
   const mark=await operator('mark@example.test','Mark','Marketing plan drafted by Mark at MARK@example.test. Also jomark@example.test.');
+  const sendingAddress=['synthetic-orbit-sender','example.test'].join(String.fromCharCode(64));
+  await db.prepare('UPDATE outbound_messages SET mailbox_address=? WHERE id=?').bind(sendingAddress,mark.message).run();await db.prepare('UPDATE record_mail_outbound_messages SET mailbox_address=? WHERE id=?').bind(sendingAddress,mark.recordMessage).run();
   const markCredential=await issueNativeCredential(db,admin,opportunity.id,mark.id);
   const other=await operator('jomark@example.test','Marketing lead','Marketing review: Mark asked for the Marketing plan');
   const snapshot=async(row:{id:string;call:string;entry:string})=>({operator:await db.prepare('SELECT * FROM operators WHERE id=?').bind(row.id).first(),call:await db.prepare('SELECT * FROM ai_calls WHERE id=?').bind(row.call).first(),entry:await db.prepare('SELECT * FROM timeline_entries WHERE id=?').bind(row.entry).first()});
@@ -60,6 +62,7 @@ test('OUT-017 BASE-DATA-003 operator erasure redacts only the erased operator\'s
    const review=JSON.parse(text);assert.equal(review.fields[0].name,'owner.name');assert.equal(review.fields[0].value,'Erased operator');assert.deepEqual(JSON.parse(review.context),{'owner.name':'Erased operator','owner.email':'Erased operator'});
   }
   assert.equal(await db.prepare('SELECT id FROM api_credentials WHERE id=?').bind(markCredential.credential.id).first(),null,'Operator erasure removes their credential verifier and scope');
+  assert.equal(await db.prepare('SELECT mailbox_address FROM outbound_messages WHERE id=?').bind(mark.message).first('mailbox_address'),null);assert.equal(await db.prepare('SELECT mailbox_address FROM record_mail_outbound_messages WHERE id=?').bind(mark.recordMessage).first('mailbox_address'),null);
   const erased=await db.prepare('SELECT display_name,email FROM operators WHERE id=?').bind(mark.id).first<{display_name:string;email:string}>();assert.equal(erased!.display_name,'Erased operator');assert.ok(erased!.email.endsWith('@example.invalid'));
 
   // 'Ann' is also part of another operator's name, so whose name attributed text means is ambiguous.

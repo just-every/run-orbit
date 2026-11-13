@@ -2,7 +2,7 @@ import {join} from 'node:path';
 import assert from 'node:assert/strict';
 import {expect,type Browser} from '@playwright/test';
 import {accessible,watchBrowser} from './browser-observations';
-export async function recordMailBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,seed:{companyId:string;contactId:string;subject:string;aiDraftId?:string;aiSubject?:string;aiBody?:string;senderId?:string;receiverId?:string;handoverContactId?:string;promiseId?:string;unassignedSenderId?:string;unassignedContactId?:string;unassignedPromiseId?:string}){
+export async function recordMailBrowserJourney(browser:Browser,origin:string,directory:string,cookie:string,seed:{mailboxSource?:string;mailboxDraft?:string;mailboxAddress?:string;companyId:string;contactId:string;subject:string;aiDraftId?:string;aiSubject?:string;aiBody?:string;senderId?:string;receiverId?:string;handoverContactId?:string;promiseId?:string;unassignedSenderId?:string;unassignedContactId?:string;unassignedPromiseId?:string}){
  for(const width of [1440,390]){
   const context=await browser.newContext({baseURL:origin,viewport:{width,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),errors=watchBrowser(context),page=await context.newPage();try{
    // OR3: the composer opens from the contact's next action, in place.
@@ -15,6 +15,14 @@ export async function recordMailBrowserJourney(browser:Browser,origin:string,dir
    await expect(notification.getByRole('link')).toHaveText('Morgan Chen');await accessible(page,`record-mail-notification-${width}`,directory);
    await notification.getByRole('link').click();await expect(page.getByRole('heading',{name:'Morgan Chen',exact:true,level:1})).toBeVisible();await expect(page).toHaveURL(new RegExp(`/app/contacts/${seed.contactId}$`));await errors.check(directory,`record-mail-${width}`);
    const history=await context.request.get(`/api/v1/workbench/records/contact/${seed.contactId}/mail`);assert.ok(history.ok());assert.equal((await history.json()).messages.filter((message:any)=>message.state==='accepted').length,1);
+  }finally{await context.close();}
+ }
+ if(seed.mailboxDraft){
+  const context=await browser.newContext({baseURL:origin,viewport:{width:1440,height:1000},ignoreHTTPSErrors:true,extraHTTPHeaders:{Cookie:cookie}}),page=await context.newPage();
+  try{await page.goto('/app/drafts/'+seed.mailboxDraft);const approval=page.locator('#send-approval');
+   await approval.getByLabel('Sending mailbox',{exact:true}).selectOption(seed.mailboxSource!);
+   await expect(approval).toContainText('Sending mailbox: '+seed.mailboxAddress);await expect(approval).toContainText('Exact Gmail review.');await expect(approval).toContainText('Synthetic signature.');
+   for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await page.screenshot({path:join(directory,`gmail-record-send-as-${width}.png`),fullPage:true});}
   }finally{await context.close();}
  }
  if(seed.aiDraftId)await recordMailCompletionBrowser(browser,origin,directory,cookie,seed as CompletionSeed);
