@@ -1,0 +1,44 @@
+{
+  "product_head": "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d",
+  "installer_files_checked": 12,
+  "all_installer_files_identical": true,
+  "all_adoption_source_except_regenerated_source_lock_identical": true,
+  "files": [
+    {
+      "path": "package.json",
+      "sha256": "a7816031e0f6e980c37e28a084b721dd53baf5c86c62452a888d6dfe746b2fe2",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "9f95f92232892d6427b0be05f812a08edd9bfcf353db89f4ec63c93ec56f444a",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "scripts/installer/local.mjs",
+      "sha256": "9e36295ec1124babbc27db6bd32016131016032f6538352abda0c8f4f66a2692",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "scripts/installer/portability.mjs",
+      "sha256": "4045c42718af4a31aee18d78d2c37f886dbef1c6f51b5e04cd2d00c0751e8baf",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "node_modules/@runeditrun/rer/package.json",
+      "sha256": "8da4aead2ff4827b6301cdef79af3d9455d54b8484842b4373a816031aa66c08",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "node_modules/@runeditrun/rer/cli/transfers.mjs",
+      "sha256": "49aa24103e6a6de6fa0e8516ebea1756459b183ca3911ba6e963688f09a91fee",
+      "scratch_matches_final_head": true
+    },
+    {
+      "path": "node_modules/@runeditrun/rer/cli/import-summary.mjs",
+      "sha256": "5a32b7b0e61c5f8455e4e860b4373b424583e5407bddef69f63e9b4aca22913a",
+      "scratch_matches_final_head": true
+    }
+  ],
+  "scratch_cleanup": "completed after public CLI command receipt was retained; private captures and archive not published"
+}

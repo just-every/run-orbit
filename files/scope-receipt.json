@@ -1,0 +1,48 @@
+{
+  "base": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+  "original": "3ea512a8b67d9cec1e97757034d65f257bbf17b7",
+  "changed_files": 24,
+  "files_byte_identical_to_original_adoption": [
+    "base-copies.json",
+    "pnpm-lock.yaml",
+    "src/base/lobby.ts",
+    "src/base/modules/agent-door/conformance/audit.mjs",
+    "src/base/modules/agent-door/index.ts",
+    "src/base/modules/agent-door/policy-event.ts",
+    "src/base/modules/business-settings/ADOPTING.md",
+    "src/base/modules/business-settings/README.md",
+    "src/base/modules/business-settings/apply.ts",
+    "src/base/modules/business-settings/retire.ts",
+    "src/base/modules/business-settings/team.ts",
+    "src/base/modules/business-settings/types.ts",
+    "src/base/run-site.ts",
+    "src/d1-transport/limits.mjs",
+    "src/demo/effects.mjs",
+    "src/demo/responses.mjs",
+    "src/operator-auth/accounts/admin.mjs",
+    "src/operator-auth/accounts/one-click.mjs",
+    "src/operator-auth/dev-admission.d.mts",
+    "src/operator-auth/dev-admission.mjs",
+    "src/operator-auth/dev/invited.mjs",
+    "src/operator-auth/index.d.mts"
+  ],
+  "package_json": "only rer pin changed; current main release version retained",
+  "sources_lock": "regenerated against current main with installed rer 0.2.113",
+  "preserved": {
+    "CONTRACT.md": "2c7cce58a1437e4b0104046706ee4c79ad96965c233d8a36149a3573f1fe2872",
+    "ACCEPTANCE.md": "78eaad7d00b7ca39f9da68dfa9967182b3430ac36d666b4725b833d7f584dfff",
+    "docs/CLAIMS.md": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d",
+    "DIVERGENCE.md": "a28fe793bc2d4aebc95a81493df41aaca5f026aae55a17976004107d2ec6e3e1"
+  },
+  "before_tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "after_tests": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "head": "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d"
+}

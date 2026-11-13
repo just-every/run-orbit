@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "rer": "0.2.113",
+  "fixture": "scratch setup with fleet owner; 138-table archive, 19 synthetic installation rows; no customer data",
+  "commands": [
+    "pnpm exec rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "pnpm exec rer export --output exports/orbit.rer",
+    "pnpm exec rer reset --yes",
+    "pnpm exec rer import --input exports/orbit.rer --yes",
+    "pnpm exec rer setup --owner-email fleet@runeditrun.com --non-interactive"
+  ],
+  "all_command_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "import_excerpt": [
+    "Restored the local copy from exports/orbit.rer: 138 tables, 19 rows, 0 files.",
+    "Full output: .seed/installer/commands-2434/install.log",
+    "Next: rer setup, then rer dev to open the restored app."
+  ],
+  "setup_recovery_excerpt": [
+    "Setup complete: database already up to date, owner set up. Full output: .seed/installer/commands-3330/install.log",
+    "RER_SETUP_READY http://127.0.0.1:8787"
+  ],
+  "no_zero_database_uuid_or_raw_wrangler_result_metadata_in_import_or_recovery_stdout": true,
+  "raw_diagnostics_retained_only_in_cli_private_capture": {
+    "path": ".seed/installer/commands-2434/install.log",
+    "exists": true,
+    "contains_wrangler_metadata": true,
+    "sha256": "7aaf5da0c70b24fede14327a7d9cf27bb6ef98b9167c26bbf402ac334a1fa82a"
+  },
+  "raw_capture_published": false,
+  "archive_published": false
+}

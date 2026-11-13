@@ -1,0 +1,23 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.12.4 → 12.18.0.   │
+   │   Changelog: https://pnpm.io/v/12.18.0   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 27, reused 0, downloaded 0, added 0
+Progress: resolved 47, reused 0, downloaded 0, added 0
+Progress: resolved 76, reused 0, downloaded 0, added 0
+Progress: resolved 108, reused 0, downloaded 0, added 0
+Progress: resolved 143, reused 0, downloaded 0, added 0
+Progress: resolved 183, reused 0, downloaded 0, added 0
+Progress: resolved 247, reused 0, downloaded 0, added 0
+Progress: resolved 300, reused 0, downloaded 0, added 0
+Progress: resolved 345, reused 0, downloaded 0, added 0
+Progress: resolved 363, reused 0, downloaded 0, added 0, done
+
+Done in 10.7s using pnpm v10.12.4
