@@ -11,7 +11,7 @@ import {operatorApi} from '../operator-api';
 import {OperatorShell,OperatorState} from '../operator-shell';
 import {recordsRequest} from '../records-api';
 import {readOnboarding} from '../setup-line';
-import {useOperatorResource} from '../use-operator-resource';
+import {readOperatorResource,useOperatorResource} from '../use-operator-resource';
 import {workbenchRequest} from '../workbench-api';
 import {WorkflowRecordApprovals} from '../workflows-record-approvals';
 import {FollowUpResults,type Outcomes} from '../follow-up-outcomes';
@@ -35,7 +35,7 @@ export function OpportunityRecordPage(){const {full}=useAppAccess();return full?
 function EditableOpportunityRecordPage(){
  const {id}=useParams({from:'/app/opportunities/$id'});
  const load=useCallback(async()=>{
-  const [detail,settings,{opportunity},{drafts},context,configuration,messages,handoffs]=await Promise.all([
+  const [detail,settings,{opportunity},{drafts},context,configuration,messages,handoffs]=await readOperatorResource([
    readRecord<{record:Values;company:{id:string;name:string}|null;contacts:Values[]}>('opportunity',id),recordsRequest<any>('settings'),operatorApi.readOpportunity(id),operatorApi.listOpportunityDrafts(id),readContext<OpportunityContext>('opportunity',id),
    readOnboarding().catch(()=>null),workbenchRequest<DealMessages&{outcomes:Outcomes}>(`/opportunities/${id}/messages`).catch(()=>null),
    fetch(`/delegation/handoffs/${id}`,{credentials:'same-origin'}).then(response=>response.ok?response.json() as Promise<{tasks:HandoffEntry[]}>:{tasks:[]}).catch(()=>({tasks:[] as HandoffEntry[]})),

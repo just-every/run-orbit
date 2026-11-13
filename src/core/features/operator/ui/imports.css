@@ -55,3 +55,5 @@
 .crm-import .crm-hubspot label{display:flex;flex-direction:column;gap:8px;margin:14px 0;font-size:15px}
 .crm-import .crm-hubspot button{margin:8px 10px 8px 0;white-space:normal}
 .crm-import .crm-hubspot input,.crm-import .crm-hubspot select{width:100%;min-width:0;font-size:15px}
+
+.crm-import .crm-connected-source{margin:0 0 24px;font-size:15px}.crm-import .crm-connected-source>summary{cursor:pointer;padding:12px 0;font-weight:650}.crm-import .crm-pipedrive{margin-top:12px;overflow-wrap:anywhere}.crm-import .crm-pipedrive h2{margin-top:0}.crm-import .crm-pipedrive button{margin:8px 8px 8px 0}.crm-import .crm-pipedrive fieldset{margin-top:20px}.crm-import .crm-pipedrive input[type=password]{font:inherit;min-height:44px}

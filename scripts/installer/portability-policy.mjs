@@ -14,6 +14,7 @@ export default {
  // approval in staging, after integrity validation and before atomic publication.
  async validateStaged({ db, tables }) {
   if(tables.signal_sources)await db.prepare(`UPDATE "${tables.signal_sources.replaceAll('"','""')}" SET enabled=0 WHERE id='zoom'`).run();
+  if(await db.prepare('SELECT 1 FROM crm_import_pipedrive_connections LIMIT 1').first())throw new Error('Disconnect Pipedrive before local archive restore; fresh connection and review authority are required afterwards.');
   await db.prepare("UPDATE mailbox_send_authorizations SET state='paused'").run();
   if(await db.prepare('SELECT 1 FROM crm_import_hubspot_connection WHERE secret_ciphertext IS NOT NULL LIMIT 1').first())throw new Error('Disconnect HubSpot before local restore. Its token never travels; connect again explicitly after restore.');
   if(await db.prepare('SELECT 1 FROM api_credentials LIMIT 1').first())throw new Error('Local restore requires an installation without API credentials; they never travel or regain authority.');

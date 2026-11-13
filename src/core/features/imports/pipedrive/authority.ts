@@ -1,0 +1,3 @@
+import {sql} from '../targets';
+/** Apply and reading private review data require the original live connection. Undo does not. */
+export function connectedReviewAuthority(id:string){return sql(`NOT EXISTS(SELECT 1 FROM crm_import_pipedrive_reviews WHERE review_id=?) OR EXISTS(SELECT 1 FROM crm_import_pipedrive_reviews r JOIN crm_import_pipedrive_pulls p ON p.id=r.pull_id JOIN crm_import_pipedrive_connections c ON c.revision=r.connection_revision WHERE r.review_id=? AND p.state='ready' AND p.connection_revision=c.revision AND EXISTS(SELECT 1 FROM workspace_settings WHERE id='workspace' AND currency='USD') AND EXISTS(SELECT 1 FROM operators WHERE id=c.actor_id AND setup_owner=1 AND status='active'))`,id,id);}
