@@ -1,0 +1,13 @@
+{
+  "before": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "after": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testsChanged": 0
+}

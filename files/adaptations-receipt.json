@@ -1,0 +1,14 @@
+[
+  {
+    "path": "src/base/modules/agent-door/operator-people.ts",
+    "sourceUnchanged": true,
+    "differenceLines": 9,
+    "reason": "Retained edition-specific import boundary and native operator mapping"
+  },
+  {
+    "path": "src/core/features/agent-door/erasure.ts",
+    "sourceUnchanged": true,
+    "differenceLines": 86,
+    "reason": "Retained edition-specific erasure table inventory and bounded selector semantics; acknowledged current main bytes before refresh"
+  }
+]

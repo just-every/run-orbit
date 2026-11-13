@@ -1,0 +1,5 @@
+{
+  "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+  "exit": 0,
+  "time": "2026-11-13T15:39:25Z"
+}

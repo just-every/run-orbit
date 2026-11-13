@@ -1,0 +1,37 @@
+{
+  "checked": "staged candidate additions",
+  "findings": {
+    "github-token": 0,
+    "private-key": 0,
+    "aws-access-key": 0
+  },
+  "files": [
+    "base-copies.json",
+    "package.json",
+    "pnpm-lock.yaml",
+    "sources.lock.json",
+    "src/base/lobby.ts",
+    "src/base/modules/agent-door/conformance/audit.mjs",
+    "src/base/modules/agent-door/index.ts",
+    "src/base/modules/agent-door/policy-event.ts",
+    "src/base/modules/business-settings/ADOPTING.md",
+    "src/base/modules/business-settings/README.md",
+    "src/base/modules/business-settings/apply.ts",
+    "src/base/modules/business-settings/retire.ts",
+    "src/base/modules/business-settings/team.ts",
+    "src/base/modules/business-settings/types.ts",
+    "src/base/run-site.ts",
+    "src/d1-transport/limits.mjs",
+    "src/demo/effects.mjs",
+    "src/demo/responses.mjs",
+    "src/operator-auth/accounts/admin.mjs",
+    "src/operator-auth/accounts/one-click.mjs",
+    "src/operator-auth/dev-admission.d.mts",
+    "src/operator-auth/dev-admission.mjs",
+    "src/operator-auth/dev/invited.mjs",
+    "src/operator-auth/index.d.mts"
+  ],
+  "noFleetEvidenceInProduct": true,
+  "contractAndViewsUnchanged": true,
+  "fullPublicationScan": "Mac fleet lander responsibility per cloud brief"
+}

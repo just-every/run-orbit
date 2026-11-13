@@ -1,0 +1,9 @@
+{
+  "scratchRecoveryRemoved": true,
+  "scratchPath": "/workspace/orbit-recovery",
+  "privateRuntimeStateAndRawCapturesRemoved": true,
+  "temporaryBaseArchiveAndBlobCacheRemoved": true,
+  "publicSafeRecoveryReceiptRetained": "cli-recovery-receipt.json",
+  "productClone": "retained until CI watch and evidence publication complete",
+  "time": "2026-11-13T16:13:03Z"
+}

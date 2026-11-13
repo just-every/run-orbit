@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "kind": "actual-readme-cli-recovery",
+  "root": "/workspace/orbit-recovery",
+  "commands": [
+    {
+      "name": "initial-setup",
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "seconds": 51.88,
+      "readableTerminal": true,
+      "rawNoiseMarkers": 0,
+      "excerpt": [
+        "Applying migrations 10/82",
+        "Applying migrations 20/82",
+        "Applying migrations 30/82",
+        "Applying migrations 40/82",
+        "Applying migrations 50/82",
+        "Applying migrations 60/82",
+        "Applying migrations 70/82",
+        "Applying migrations 80/82",
+        "Applied 82 migrations. Full output: .seed/installer/commands-12940/install.log",
+        "Claiming the first owner",
+        "First owner claimed",
+        "Setup complete: 82 migrations applied, owner set up. Full output: .seed/installer/commands-12940/install.log"
+      ],
+      "privateCaptureFiles": [
+        {
+          "path": ".seed/installer/commands-12940/install.log",
+          "mode": "0o600",
+          "bytes": 1427238,
+          "containsZeroDatabaseUuid": true,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        }
+      ]
+    },
+    {
+      "name": "export",
+      "command": "npx -y @runeditrun/rer export --output exports/orbit.rer",
+      "exit": 0,
+      "seconds": 36.69,
+      "readableTerminal": true,
+      "rawNoiseMarkers": 0,
+      "excerpt": [
+        "Checking archive policy local installation data",
+        "Checking migration history for local installation data",
+        "Exporting local data (9.1 MB on disk). Archive size and time remaining are not known yet. Progress follows every few seconds.",
+        "Building the archive: 1 part so far (238 B).",
+        "Building the archive: 8 parts so far (2.6 KB).",
+        "Building the archive: 13 of 13 parts (5.0 KB).",
+        "Writing the archive: 1 of 13 parts (380 KB).",
+        "Writing the archive: 13 of 13 parts (385 KB).",
+        "Checking the written archive.",
+        "To restore into an empty installation: rer import --input exports/orbit.rer --yes"
+      ],
+      "privateCaptureFiles": [
+        {
+          "path": ".seed/installer/commands-13974/install.log",
+          "mode": "0o600",
+          "bytes": 755,
+          "containsZeroDatabaseUuid": false,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        },
+        {
+          "path": ".seed/installer/commands-12940/install.log",
+          "mode": "0o600",
+          "bytes": 1427238,
+          "containsZeroDatabaseUuid": true,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        }
+      ]
+    },
+    {
+      "name": "reset",
+      "command": "npx -y @runeditrun/rer reset --yes",
+      "exit": 0,
+      "seconds": 2.26,
+      "readableTerminal": true,
+      "rawNoiseMarkers": 0,
+      "excerpt": [
+        "reset inventory: .wrangler/state, .rer/local, .seed/installer, .dev.vars",
+        "reset: complete (exit 0)"
+      ],
+      "privateCaptureFiles": []
+    },
+    {
+      "name": "import",
+      "command": "npx -y @runeditrun/rer import --input exports/orbit.rer --yes",
+      "exit": 0,
+      "seconds": 95.8,
+      "readableTerminal": true,
+      "rawNoiseMarkers": 0,
+      "excerpt": [
+        "Restoring a 385 KB archive. This takes under a minute.",
+        "Checking the whole archive before anything is restored.",
+        "Checking the whole archive before anything is restored.",
+        "Staging the restore: 1 of 13 parts (238 B).",
+        "Staging the restore: 5 of 13 parts (1.2 KB), under a minute left.",
+        "Staging the restore: 10 of 13 parts (3.7 KB), under a minute left.",
+        "Staging the restore: 13 of 13 parts (5.0 KB).",
+        "All 13 parts are staged; verifying them and publishing the restore. This can take several minutes.",
+        "Rebuilding search indexes",
+        "Database update complete. Full output: .seed/installer/commands-14756/install.log",
+        "Restored the local copy from exports/orbit.rer: 135 tables, 19 rows, 0 files.",
+        "Next: rer setup, then rer dev to open the restored app."
+      ],
+      "privateCaptureFiles": [
+        {
+          "path": ".seed/installer/commands-14756/install.log",
+          "mode": "0o600",
+          "bytes": 1425863,
+          "containsZeroDatabaseUuid": true,
+          "containsWranglerResultJson": true,
+          "containsWranglerMetaJson": true,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        }
+      ]
+    },
+    {
+      "name": "recovery-setup",
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "seconds": 18.9,
+      "readableTerminal": true,
+      "rawNoiseMarkers": 0,
+      "excerpt": [
+        "Heavy job admitted: Orbit setup:workflow [d19ed7506281]",
+        "Applying database migrations",
+        "Claiming the first owner",
+        "An owner is already claimed; the existing owner was kept",
+        "Setup complete: database already up to date, owner set up. Full output: .seed/installer/commands-16631/install.log"
+      ],
+      "privateCaptureFiles": [
+        {
+          "path": ".seed/installer/commands-16631/install.log",
+          "mode": "0o600",
+          "bytes": 4078,
+          "containsZeroDatabaseUuid": false,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        },
+        {
+          "path": ".seed/installer/commands-14756/install.log",
+          "mode": "0o600",
+          "bytes": 1425863,
+          "containsZeroDatabaseUuid": true,
+          "containsRowsReadWrittenOrLastRowIdMetadata": false
+        }
+      ]
+    }
+  ],
+  "started": "2026-11-13T15:33:28Z",
+  "owner": "fleet@runeditrun.com",
+  "success": true,
+  "finished": "2026-11-13T15:36:54Z"
+}
