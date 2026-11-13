@@ -1,0 +1,117 @@
+{
+  "baseline": "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e",
+  "blockers": [],
+  "branch": "cloud/sd-orbit-zoom-plan-privacy-2-pc1",
+  "checks": {
+    "candidateIdentities": {
+      "allCommitsAudited": true,
+      "allFleet": true,
+      "commits": [
+        "694350843ef82e224a9c0ea1e46e04bdc932aedc",
+        "2a0a929f7ba144520bfb301e7a21effa8f1a65f1"
+      ],
+      "trailers": []
+    },
+    "candidateSource": {
+      "failed": 0,
+      "log": "merged-after.log",
+      "node": "22.20.0",
+      "passed": 1,
+      "tests": "tests/delegation/brief-handoff.test.ts"
+    },
+    "contractStatusCountsAfter": {
+      "done": 42,
+      "partial": 130
+    },
+    "contractStatusCountsBefore": {
+      "done": 42,
+      "partial": 130
+    },
+    "contractViewsUnchanged": true,
+    "originalBaseline": {
+      "dependencyInstallation": "own frozen-lockfile install, not shared node_modules",
+      "dependencyPin": "@runeditrun/rer@0.2.107",
+      "earlierControlLog": "original-before-current-deps.log",
+      "expectedFailure": "unselected Ben Hale disclosed in complete contact-granted plan JSON",
+      "failed": 1,
+      "log": "original-before.log",
+      "node": "22.20.0",
+      "passed": 0
+    },
+    "savedContinuation": {
+      "failed": 0,
+      "log": "continuation-before.log",
+      "passed": 1
+    },
+    "sourceLock": {
+      "check": true,
+      "details": "source-check.json",
+      "generated": true
+    },
+    "testBudget": {
+      "after": {
+        "qualifications": 2,
+        "registered": 198,
+        "total": 200
+      },
+      "before": {
+        "qualifications": 2,
+        "registered": 198,
+        "total": 200
+      }
+    },
+    "typecheck": {
+      "exit": 0,
+      "log": "typecheck.log",
+      "node": "22.20.0"
+    }
+  },
+  "claim": {
+    "clause": "DELEGATE-001",
+    "completeAcceptancePointsClaimed": [],
+    "status": "PARTIAL"
+  },
+  "githubCallsUsed": 8,
+  "head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
+  "mainMerged": "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d",
+  "pr": null,
+  "priorVerify": {
+    "conclusion": "success",
+    "head_sha": "2a0a929f7ba144520bfb301e7a21effa8f1a65f1",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43492722717",
+    "id": 43492722717,
+    "run_attempt": 2,
+    "status": "completed"
+  },
+  "productPush": {
+    "attempts": 1,
+    "guard": "cloud-push.py",
+    "log": "product-push.log",
+    "status": "pushed"
+  },
+  "publicPublicationScan": "Fleet Mac gate required; cloud task cannot run this scan, per task instruction",
+  "repository": "just-every/run-orbit",
+  "savedHead": "2a0a929f7ba144520bfb301e7a21effa8f1a65f1",
+  "schema": 1,
+  "sourceSha256": {
+    "sources.lock.json": "ec6fe1e42c3300e213445accda9b28ae47959af7a5aa813d13f1d0a9c96fa422",
+    "src/core/features/delegation/brief-routes.ts": "8eb1a4dc1d88fcc52fae2ccc2d99df44c166f5008ec40c0409f6ae4f83cb4935",
+    "src/core/features/delegation/routes.ts": "592ebb57cbe76a664e8c935d11b805ea83bcab8d29c716148bac4fe4c9099372",
+    "src/core/features/today/meeting-plan.ts": "236cec0a24f66aacdc558a1fabc986ad95ad1575e7dfdddf1d80b55e91d32791",
+    "src/core/features/zoom/plan.ts": "fdc4c05ed09aa84d16b165e6253e706c482c56f1c71d70698c65e4037c267d37",
+    "src/core/features/zoom/provider.ts": "259e0e3f0c60a6b75d69150a37deb29b0a7cd71bca3dff3455c663176ab5324b",
+    "tests/delegation/brief-handoff.test.ts": "d977ed995b4d9ce81e125545f596fec5d3e324810f2476c05c4f5ec57f7df375"
+  },
+  "tag": "sd-orbit-zoom-plan-privacy-2-pc1",
+  "tree": "75460592dd5c51929c789a39da52c58c72886074",
+  "uiChanges": false,
+  "utc": "2026-11-13T20:51:10.806033+00:00",
+  "verify": {
+    "conclusion": null,
+    "head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
+    "observedUtc": "2026-11-13T21:10:20.621437+00:00",
+    "runId": 43505149609,
+    "status": "in_progress",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43505149609"
+  }
+}

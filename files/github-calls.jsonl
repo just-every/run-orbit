@@ -1,0 +1,8 @@
+{"utc": "2026-11-13T20:42:00Z", "utc_precision": "approximate from initial execution, before calls tracker installed", "args": ["api", "repos/just-every/run-orbit/actions/runs/43492722717/jobs", "--jq", ".jobs[] | {id,name,status,conclusion}"], "exit": 0, "note": "Latest jobs were attempt 2. Shards (batch-18) id 132148681215 was in progress; other returned matrix shards had succeeded."}
+{"utc": "2026-11-13T20:43:38Z", "args": ["run", "view", "43492722717", "--repo", "just-every/run-orbit", "--job", "132148681215", "--log-failed"], "exit": 1}
+{"utc": "2026-11-13T20:48:34Z", "args": ["api", "repos/just-every/run-orbit/actions/runs/43492722717", "--jq", "{id,status,conclusion,head_sha,html_url,run_attempt}"], "exit": 0}
+{"utc": "2026-11-13T20:50:11Z", "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=694350843ef82e224a9c0ea1e46e04bdc932aedc&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"], "exit": 0}
+{"utc": "2026-11-13T20:55:13Z", "args": ["api", "repos/just-every/run-orbit/actions/runs/43505149609", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"utc": "2026-11-13T21:00:15Z", "args": ["api", "repos/just-every/run-orbit/actions/runs/43505149609", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"utc": "2026-11-13T21:05:18Z", "args": ["api", "repos/just-every/run-orbit/actions/runs/43505149609", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}
+{"utc": "2026-11-13T21:10:20Z", "args": ["api", "repos/just-every/run-orbit/actions/runs/43505149609", "--jq", "{status,conclusion,head_sha,html_url}"], "exit": 0}

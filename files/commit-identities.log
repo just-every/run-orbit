@@ -1,0 +1,15 @@
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+
+694350843ef82e224a9c0ea1e46e04bdc932aedc
+Merge current main into delegated Zoom privacy continuation
+
+Preserve the saved title projection and public-door privacy assertions while adopting current main and its rer 0.2.113 source. The augmented assertion fails on dc6b9d24 for the unselected attendee name and passes on the merged source; typecheck and source lock validation pass. No contract judgments or generated views change.
+
+2a0a929f7ba144520bfb301e7a21effa8f1a65f1
+Redact unselected attendees from delegated meeting titles
+
