@@ -1,3 +1,4 @@
+import {preSalesforceCatalog} from '../../src/core/features/imports/salesforce/archive';
 import {preCallingCatalog,preDirectNotificationCatalog} from '../../src/core/features/records/archive-generations';
 import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
 import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
@@ -62,9 +63,13 @@ export async function proveReleasedForecastUpgrade(){
   const before=await snapshot(db);
   await target.upgrade('0049_opt_out_capabilities.sql');db=target.db;await assertRetained(db,before);
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
+  await target.upgrade('0085_meeting_follow_up.sql');db=target.db;
+  const beforeSalesforce=await foldInstalledCatalog(db),beforeSalesforceRows=await snapshot(db);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
   const installed=await foldInstalledCatalog(db),preDirect=preDirectNotificationCatalog(installed),currentRows=await snapshot(db);
+  assert.deepEqual(preSalesforceCatalog(installed),beforeSalesforce,'The pre-Salesforce generation retains every prior column, table, trigger and view');
+  assert.deepEqual((await validateFoldManifest(db,manifestFor(beforeSalesforce,beforeSalesforceRows,await foldSchemaHash(beforeSalesforce),now))).inputCatalog,beforeSalesforce,'Archives from before Salesforce custody remain restorable');
   assert.deepEqual((await validateFoldManifest(db,manifestFor(installed,currentRows,await foldSchemaHash(installed),now))).inputCatalog,installed);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(preDirect,currentRows,await foldSchemaHash(preDirect),now))).inputCatalog,preDirect,'An archive before direct-person suppression still restores when only its notification trigger inventory differs');
   const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(db))))))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);

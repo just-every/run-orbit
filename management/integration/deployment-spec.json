@@ -471,9 +471,21 @@
     },
     {
       "binding": "DB",
+      "name": "0086_hubspot_import.sql",
+      "sha256": "639a5eba10fe855306f1e431f35c41547a97f4bc922c64920f950166f943846a",
+      "sql": "-- Private import custody never travels in either archive format.\nCREATE TABLE crm_import_hubspot_connection (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1),\n id TEXT NOT NULL,\n portal_id TEXT NOT NULL,\n secret_ciphertext TEXT,\n state TEXT NOT NULL,\n reason TEXT\n);\nCREATE TABLE crm_import_hubspot_pulls (\n id TEXT PRIMARY KEY,\n actor_id TEXT NOT NULL REFERENCES operators(id),\n connection_id TEXT NOT NULL,\n portal_id TEXT NOT NULL,\n state TEXT NOT NULL,\n queue_json TEXT NOT NULL,\n checkpoint INTEGER NOT NULL DEFAULT 0,\n validated INTEGER NOT NULL DEFAULT 0,\n retry_at TEXT,\n error TEXT,\n created_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_hubspot_pages (\n pull_id TEXT NOT NULL REFERENCES crm_import_hubspot_pulls(id) ON DELETE CASCADE,\n ordinal INTEGER NOT NULL,\n path TEXT NOT NULL,\n page_json TEXT NOT NULL,\n PRIMARY KEY(pull_id,ordinal)\n);\nCREATE TABLE crm_import_hubspot_reviews (\n review_id TEXT PRIMARY KEY REFERENCES crm_import_reviews(id) ON DELETE CASCADE,\n pull_id TEXT NOT NULL REFERENCES crm_import_hubspot_pulls(id) ON DELETE CASCADE,\n summary_json TEXT NOT NULL\n);\n-- A contact erasure also withdraws any unpublished or reviewed provider custody.\n-- Imports are private staging, so conservative whole-pull withdrawal is intentional.\nCREATE TRIGGER crm_import_hubspot_erasure AFTER DELETE ON contacts\nBEGIN\n DELETE FROM crm_import_hubspot_pages;\n UPDATE crm_import_hubspot_pulls SET state='withdrawn',queue_json='[]',error='Source withdrawn after privacy erasure',retry_at=NULL;\nEND;\n"
+    },
+    {
+      "binding": "DB",
       "name": "0086_salesforce_import.sql",
       "sha256": "7bce354fb9cab6ca5d3fec435cc07de320c51460a818c13b2384258544043108",
       "sql": "-- Installation-local import authority and source custody never travel in archives.\nCREATE TABLE crm_import_salesforce_oauth (\n state_hash TEXT PRIMARY KEY, operator_id TEXT NOT NULL, session_id TEXT NOT NULL,\n origin TEXT NOT NULL, ciphertext TEXT NOT NULL, expires_at INTEGER NOT NULL,\n claimed INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE crm_import_salesforce_codes (code_hash TEXT PRIMARY KEY);\nCREATE TABLE crm_import_salesforce_connections (\n id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, org_id TEXT NOT NULL,\n instance TEXT NOT NULL, ciphertext TEXT NOT NULL, created_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_salesforce_pulls (\n id TEXT PRIMARY KEY, connection_id TEXT NOT NULL REFERENCES crm_import_salesforce_connections(id) ON DELETE CASCADE,\n actor_id TEXT NOT NULL, state TEXT NOT NULL, metadata_json TEXT NOT NULL,\n object_name TEXT NOT NULL DEFAULT 'Account', cursor TEXT, page INTEGER NOT NULL DEFAULT 0,\n account_total INTEGER, contact_total INTEGER, error TEXT, review_id TEXT,\n created_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_salesforce_pages (\n pull_id TEXT NOT NULL REFERENCES crm_import_salesforce_pulls(id) ON DELETE CASCADE,\n ordinal INTEGER NOT NULL, object_name TEXT NOT NULL, body TEXT NOT NULL,\n PRIMARY KEY(pull_id,ordinal)\n);\n-- Erasure invalidates staged source copies as well as the shared saved plans.\n-- All staged pages are withdrawn: unmapped fields can contain personal content.\nCREATE TRIGGER crm_import_salesforce_erasure AFTER DELETE ON contacts BEGIN\n DELETE FROM crm_import_salesforce_pages;\n UPDATE crm_import_salesforce_pulls SET state='withdrawn',metadata_json='{}',cursor=NULL,error='Source withdrawn after contact erasure';\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0087_hubspot_explicit_erasure.sql",
+      "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980",
+      "sql": "-- Native undo and duplicate reconciliation also delete contacts. Withdraw provider\n-- staging only in the existing explicit privacy erasure transaction.\nDROP TRIGGER crm_import_hubspot_erasure;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

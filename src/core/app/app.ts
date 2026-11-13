@@ -1,3 +1,4 @@
+import {salesforceRoutes} from '../features/imports/salesforce/routes';
 import {obligationRoutes} from '../features/obligations/routes';
 import type {AgentDoor} from '../../base/modules/agent-door/index.ts';
 import {workflowRoutes} from '../features/workflows/routes';
@@ -19,7 +20,6 @@ import {createLibraryRoutes} from '../features/drafts/library-routes';
 import {createSalesTaskRoutes} from '../features/tasks';
 import {createRelationshipRoutes} from '../features/relationships';
 import type {ProviderFetch} from '../features/capture/providers/config';
-import {salesforceRoutes} from '../features/imports/salesforce/routes';
 import { createImportRoutes } from '../features/imports/routes';
 import {createCaptureRoutes} from '../features/capture/routes';
 import {createForwardInboundRoutes} from '../features/capture/forward/inbound';
@@ -177,7 +177,7 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   app.route('/api/v1/entries/visibility',entryPrivacyRoutes(input.database));
   app.route('/api/v1/calls',callRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
   app.route('/api/v1/imports/salesforce',salesforceRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch}));
-  app.route('/api/v1/imports',createImportRoutes(input.database));
+  app.route('/api/v1/imports',createImportRoutes(input.database,{security:input.sourceSecurity,fetcher:input.captureFetch}));
   app.route('/api/v1/capture',createCaptureRoutes(input.database,{security:input.sourceSecurity,origin:input.captureOrigin,fetcher:input.captureFetch,mailAddress:input.captureMailAddress,local:input.hosted===false}));
   app.route("/api/v1/records", createRecordsRoutes(input.database,{agentErasureSecret:input.agentErasureSecret}));
   app.route('/api/v1/obligations',obligationRoutes(input.database));

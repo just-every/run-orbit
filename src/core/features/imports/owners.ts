@@ -9,12 +9,12 @@ export async function importOwners(db:D1Database):Promise<ImportOwner[]>{
 }
 export function resolveImportOwner(value:string,input:ImportInput,owners:ImportOwner[]){
  if(Object.hasOwn(input.owners??{},value))return owners.find(owner=>owner.id===input.owners?.[value])??null;
- return owners.find(owner=>owner.email===value)??null;
+ return input.vendor==='hubspot'&&/^(contact|company|deal|task):/.test(value)?null:owners.find(owner=>owner.email===value)??null;
 }
 /** Resolution is part of the saved source fingerprint, including explicit unassignment. */
 export function mapImportOwners(rows:Row[],input:ImportInput,owners:ImportOwner[]){
  for(const id of Object.values(input.owners??{}))if(id!==null&&!owners.some(owner=>owner.id===id))throw new Error('Choose an active full operator for every owner mapping.');
- for(const row of rows)if(['contact','company'].includes(row.kind)&&row.data.owner){
+ for(const row of rows)if((['contact','company'].includes(row.kind)||(input.vendor==='hubspot'&&['deal','task'].includes(row.kind)))&&row.data.owner){
   const value=input.vendor==='salesforce'?`${row.kind==='company'?'Account':'Contact'} OwnerId ${row.data.owner}`:row.data.owner;
   const owner=resolveImportOwner(value,input,owners);
   row.ownerMapping={value,ownerId:owner?.id??null,ownerName:owner?.display_name??null,explicit:Object.hasOwn(input.owners??{},value)};
