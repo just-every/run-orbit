@@ -1,0 +1,27 @@
+{
+  "limit": 10,
+  "used": 8,
+  "earlierCalls": [
+    "Initial main exact-head runs",
+    "Earlier candidate exact-head discovery",
+    "Earlier candidate status",
+    "Earlier candidate jobs",
+    "Earlier source failed job log archive",
+    "Earlier consequential verdict failed job log archive"
+  ],
+  "calls": [
+    {
+      "number": 7,
+      "timeRecorded": "2026-11-13T00:34:45.033201+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=09ffc8a0648ead679570987627b1b2c834d5669c&per_page=100",
+      "resultFile": "CI-final-discovery.json"
+    },
+    {
+      "number": 8,
+      "timeRecorded": "2026-11-13T00:56:18.312208+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=102738071085d99c0357615e67b73749639b4625&per_page=100",
+      "resultFile": "CI-final-discovery.json"
+    }
+  ],
+  "minimumStatusIntervalSeconds": 300
+}

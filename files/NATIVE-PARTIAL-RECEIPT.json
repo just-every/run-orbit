@@ -1,0 +1,10 @@
+{
+  "command": "timeout 1800 pnpm exec tsx --test --test-concurrency=1 tests/core/crm-import.test.ts tests/core/crm-import-erasure.test.ts",
+  "sourceBinding": "Merged shared import source; the final diagnostic classification and currency fence were subsequently added and separately covered by the final exact-head public probe and browser journey.",
+  "passedRegistrations": 4,
+  "evidence": "TAP ok 1 to ok 4 in native-import-tests.log",
+  "combinedRegistrationDurationMs": 1405987.19457,
+  "interruption": "The process ended at the local 30-minute wrapper deadline during environment reattachment. The original execution-session exit status could not be retrieved; the remaining three registrations are run separately.",
+  "exit": null,
+  "assertionFailuresObserved": 0
+}

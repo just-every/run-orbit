@@ -1,0 +1,13 @@
+{
+  "head": "09ffc8a0648ead679570987627b1b2c834d5669c",
+  "runtimeCodeClean": true,
+  "driver": "CURRENCY-PROBE.ts",
+  "command": "pnpm exec tsx .rer/pipedrive-currency-probe.ts",
+  "node": "22.20.0",
+  "door": "Authenticated settings PUT and connected import preview POST",
+  "input": "Source USD deals, current workspace EUR",
+  "expectedStatus": 409,
+  "observedStatus": 200,
+  "exit": 1,
+  "failure": "USD source amounts must not be re-labelled as workspace EUR; 200 !== 409"
+}

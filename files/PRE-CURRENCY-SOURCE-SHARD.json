@@ -1,0 +1,172 @@
+{
+  "shard": "source",
+  "commit": "09ffc8a0648ead679570987627b1b2c834d5669c",
+  "startedAt": "2026-11-13T00:29:00.571Z",
+  "finishedAt": "2026-11-13T00:31:13.481Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 544,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "run",
+        "source:check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 1261,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 1479,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "run",
+        "check:boundaries"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 693,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "run",
+        "check:manifest"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 292,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "run",
+        "agent:surface"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 2295,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "rer",
+        "build"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 12109,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+        ".",
+        "deploy.json"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 90971,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 354,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    },
+    {
+      "args": [
+        "run",
+        "typecheck"
+      ],
+      "env": {},
+      "files": [],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 22889,
+      "missingFiles": [],
+      "eventError": null,
+      "report": [],
+      "executions": []
+    }
+  ],
+  "executions": []
+}

@@ -1,0 +1,10 @@
+{
+  "head": "23d597d254b1fc8c9dd451f4f9f1720b927bdc3f",
+  "run": 43333936848,
+  "job": 131585440243,
+  "command": "node scripts/verification-shard.mjs source",
+  "node": "22.20.0",
+  "test": "source:check",
+  "exit": 1,
+  "failure": "Stale lock or source/tool integrity mismatch; run changes to inspect intentional edits before lock"
+}

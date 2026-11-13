@@ -1,0 +1,11 @@
+
+Verification (source): pnpm exec node src/base/contract-docs.mjs check
+Contract documents are current.
+
+Verification (source): pnpm run source:check
+
+> orbit@0.4.7 source:check /workspace/run-orbit
+> node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check
+
+Stale lock or source/tool integrity mismatch; run changes to inspect intentional edits before lock
+ ELIFECYCLE  Command failed with exit code 1.

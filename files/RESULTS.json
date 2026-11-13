@@ -1,0 +1,138 @@
+{
+  "base": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "branch": "cloud/sd-orbit-c-f182",
+  "changedFiles": {
+    "management/integration/deployment-spec.json": "bab1415b5c51ef6969296083acedead50143e9bc837b5dc2164487998a6bb5b4",
+    "migrations/core/0086_pipedrive_import.sql": "cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f",
+    "public/moving-guide.html": "6caa231e3f013aca8a74bc895ad6fc4cb7689b561c852033937978725ed63c29",
+    "scripts/installer/portability-policy.mjs": "29f50b3ffa9fdec76dd5d7b3356a42a1a41688aec0053a062b9ca6c7ba406e96",
+    "sources.lock.json": "3ce50af5fca13056a164296beaf6c170fa1771b72f908cfc17dae53fb7e7d435",
+    "src/core/app/app.ts": "6a3f729796ece1125dc18e2ef192b8993c05f8989ec6266050856cf6bc5591f3",
+    "src/core/features/imports/pipedrive/authority.ts": "a01f72f0b5771b0adc20601f408b12142f46ca1785ea6013e69ac621115bd943",
+    "src/core/features/imports/pipedrive/checkpoint.ts": "7697ff672957fdcde0d8ed010689d9200713f3ed6fc956bc02d490b0fea23e90",
+    "src/core/features/imports/pipedrive/connection.ts": "25f86b37cc1f763887f591013b3cdb6f736bf3060b06058b82847d8c3cd56c1f",
+    "src/core/features/imports/pipedrive/provider.ts": "7ecd7918962d3326fff83ff74fa85eb8c2ddccb35a4abd18833ddaec090553ff",
+    "src/core/features/imports/pipedrive/restore.ts": "972e96aa224f6319ca32481fff0cd9e2f326dd8f75139db249ea7b135dc17ba1",
+    "src/core/features/imports/pipedrive/routes.ts": "1ab6fb379811bb2d543f186e261e07a51b5374ab0b7ae61ef95d524e4fc50e2e",
+    "src/core/features/imports/pipedrive/source.ts": "20b41202fa25ff646d69683317a54c6d27649745279f596517f3ae48af3ab7e2",
+    "src/core/features/imports/planner.ts": "702814ac63c19b2c37f13bb0710c12af75c011c5206d581c407381397ad0d2e5",
+    "src/core/features/imports/repository.ts": "f501b15974cf52d3133733531881260eb17f90940aa36aded8a1fb8e74b1656a",
+    "src/core/features/imports/review-erasure.ts": "5acabd786c63e0cde6c01bfcfe0a39f0f988099bed9f02defe966647c42a8a3a",
+    "src/core/features/imports/source.ts": "1e27a4e9edbb3c0a7cb76d06c6a7ac6ed7eb1164f54d739d6d88ba659917adc2",
+    "src/core/features/operator/ui/imports-page.tsx": "47e85fef4513358df7ad01bbbb24f3ef70a51679a6cb80ff1744d04974ab375f",
+    "src/core/features/operator/ui/imports-pipedrive.tsx": "6b37bed0da94a3c75ef7a5b9217b13ee35e033bcc707a18228b1203012be75ea",
+    "src/core/features/operator/ui/imports.css": "7590d3fc8c6f10b99477fde63feab3a89ae374361c2f962995cc26ee0f1681a4",
+    "src/core/features/records/archive-import-context.ts": "0a2cd60884ba2111e864e88f4fe9c03071013a5efb09f8391a110270216139ad",
+    "tests/core/crm-import.test.ts": "db7836eac60446815eb32c8d9da0ed2c505ca20a117f55ed4930dc0412c9c74a",
+    "tests/e2e/imports-pipedrive.mjs": "7a8f3a6c2e89db38e343eab6777578f1e7b5f2b7228c04e82a5f9da7b9074436",
+    "tests/e2e/imports.spec.mjs": "e4b94932deebb1e313f0607b0fe2ef80c3b1d9442c6dfa4724789e08b3c8d740",
+    "tests/support/pipedrive-api-proof.ts": "f325afb653819f10e5086cee75b54b202b06abe5555c6182cf72b595e83535cd",
+    "tests/support/pipedrive-archive-proof.ts": "f070b101249f8e36a95c817f7bca593dede3d0393135ca32e089712fe5b7cbd6",
+    "tests/support/pipedrive-network.ts": "54db5c1fceadb202a8023d21f21bf447216f38cff74a928893f210c588867a99"
+  },
+  "checks": [
+    {
+      "command": "node scripts/verification-shard.mjs source",
+      "exit": 0,
+      "log": "source-shard.log",
+      "receipt": "SOURCE-SHARD.json",
+      "status": "passed"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/crm-import.test.ts tests/core/crm-import-erasure.test.ts",
+      "initialExit": null,
+      "initialReceipt": "NATIVE-PARTIAL-RECEIPT.json",
+      "log": "native-import-tests.log",
+      "remainderExit": 0,
+      "remainderReceipt": "NATIVE-REMAINDER-RECEIPT.json",
+      "status": "seven passing registrations across two executions"
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/imports.spec.mjs --config /tmp/orbit-playwright.config.mjs",
+      "exit": 0,
+      "log": "browser-import-tests.log",
+      "receipt": "BROWSER-RECEIPT.json",
+      "status": "passed"
+    },
+    {
+      "command": "Committed-candidate public HTTP probe",
+      "exit": 0,
+      "log": "PROBE.log",
+      "receipt": "PROBE.json",
+      "status": "passed"
+    }
+  ],
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "102738071085d99c0357615e67b73749639b4625",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43340114479",
+    "id": 43340114479,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "claim": {
+    "clause": "MIGRATE-002",
+    "fullyClosedAcceptancePoints": [],
+    "selectedSubset": "Supported connection-backed subset of acceptance 1",
+    "status": "PARTIAL"
+  },
+  "clean": true,
+  "contractChanges": "",
+  "countsAfter": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "countsBefore": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "currencyRefusal": {
+    "after": "PROBE.json",
+    "before": "CURRENCY-BEFORE.json",
+    "currencyChangeAfterReviewApply": 409,
+    "newRecords": 0,
+    "newSuppressionStops": 0,
+    "unsafePreview": 409
+  },
+  "head": "102738071085d99c0357615e67b73749639b4625",
+  "landing": {
+    "mainEqualsCandidate": false,
+    "pending": true
+  },
+  "publicationScan": {
+    "complete": null,
+    "custodian": "Maintained fleet lander",
+    "findings": null,
+    "head": "102738071085d99c0357615e67b73749639b4625",
+    "historyScanned": null,
+    "status": "NOT_RUN_IN_CLOUD"
+  },
+  "pullRequest": null,
+  "repair": {
+    "command": "node scripts/verification-shard.mjs source",
+    "exit": 1,
+    "failure": "Stale lock or source/tool integrity mismatch; run changes to inspect intentional edits before lock",
+    "head": "23d597d254b1fc8c9dd451f4f9f1720b927bdc3f",
+    "job": 131585440243,
+    "node": "22.20.0",
+    "run": 43333936848,
+    "test": "source:check"
+  },
+  "repository": "just-every/run-orbit",
+  "shallow": false,
+  "sourceLockSha256": "3ce50af5fca13056a164296beaf6c170fa1771b72f908cfc17dae53fb7e7d435",
+  "testsAfter": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testsBefore": {
+    "qualifications": 2,
+    "registered": 198,
+    "total": 200
+  },
+  "tree": "e2782e5feab5ac9ac342606b8f8f300209abb927"
+}

@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE MIGRATE-002 1: Connected credential is sealed; non-owner and provider refusal changed nothing.
+PROBE MIGRATE-002 1: Two pipelines and all source counts reconciled after actual persisted-store reopen and rate-limit resume.
+PROBE MIGRATE-002 1: USD preview and Apply refuse a non-USD workspace without creating records or stops.
+PROBE MIGRATE-002 1: Saved dry run lists unsupported currency and fields without importing any customer.
+PROBE MIGRATE-002 1: Suppression-first Apply completed from its native checkpoint.
+PROBE MIGRATE-002 1: Exact supported record, money, scalar-field, note, association and separate-owner counts reconciled.
+PROBE MIGRATE-002 1: Unchanged connected rerun retained the original native identities and notes.
+PROBE MIGRATE-002 1: Undo preserved a later native note and its dependency closure.
+PROBE MIGRATE-002 1: Erasure withdrew source snapshots, saved reviews and replay authority.
+PROBE MIGRATE-002 1: The actual exported archive restored with no provider credential, pull or saved-review authority.
+Committed-candidate Pipedrive public probe passed.

@@ -1,0 +1,84 @@
+{
+  "head": "09ffc8a0648ead679570987627b1b2c834d5669c",
+  "binding": "Entire execution ran after this commit. Source and browser bytes remained unchanged throughout.",
+  "command": "pnpm exec playwright test tests/e2e/imports.spec.mjs --config /tmp/orbit-playwright.config.mjs",
+  "exit": 0,
+  "tests": 1,
+  "assertionWidth": 1440,
+  "capturedWidths": [
+    1440,
+    390
+  ],
+  "screenshots": [
+    {
+      "file": "screens/pipedrive-waiting-1440.png",
+      "sha256": "5f0dd1f9463fdf380c0753a4648b8288a155b20c3cd8a6f35e15071f8d005c89",
+      "bytes": 189859
+    },
+    {
+      "file": "screens/pipedrive-resumed-390.png",
+      "sha256": "358c726ec1c20dbfb0cb9752b1f46f64b6a8da41a866ead1a63a1811a2525e7a",
+      "bytes": 230534
+    },
+    {
+      "file": "screens/pipedrive-resumed-1440.png",
+      "sha256": "028fa78f2f58a17b2e44cd3c5d46aac7bba8cfa0695f2edc359996486425df05",
+      "bytes": 257902
+    },
+    {
+      "file": "screens/pipedrive-applied-390.png",
+      "sha256": "a1104ec1b6720f90a3f4253c1c7eff3e15a51287f1549c3d27b0418507d0af4e",
+      "bytes": 628100
+    },
+    {
+      "file": "screens/pipedrive-undo-390.png",
+      "sha256": "3ad30b5f900c7f96d0681236d8307881925379814249ce0d730ad6fd82176032",
+      "bytes": 641073
+    },
+    {
+      "file": "screens/pipedrive-preview-390.png",
+      "sha256": "3996cdd9afe8c41242432ef00ff3347db2b2650a11b2e00e9c9ae109ec699f75",
+      "bytes": 644206
+    },
+    {
+      "file": "screens/pipedrive-connect-390.png",
+      "sha256": "95d843019650e116f51af97a44a23b3fb3dd1871e7dcf4df7f38235a55c7a1c0",
+      "bytes": 142798
+    },
+    {
+      "file": "screens/pipedrive-waiting-390.png",
+      "sha256": "32e55cd5675cb5848909a88456da2855d8264a7937d825b68d633d8af4a5ac5d",
+      "bytes": 166760
+    },
+    {
+      "file": "screens/pipedrive-undo-1440.png",
+      "sha256": "30c8c9dc9a980f430988f0e1e3a0c8d3406e733d77acfb7afd63dc66e71623d1",
+      "bytes": 642056
+    },
+    {
+      "file": "screens/pipedrive-preview-1440.png",
+      "sha256": "b066788cc83896a59c08c3071f19a01ec081fd242cdb0d9d98712f999f5525e6",
+      "bytes": 647646
+    },
+    {
+      "file": "screens/pipedrive-connect-1440.png",
+      "sha256": "e09731b2490fb117e579aa2b713b48c8339e87cadb3fd77ff0087ee8f2af6776",
+      "bytes": 163556
+    },
+    {
+      "file": "screens/pipedrive-applied-1440.png",
+      "sha256": "c5593732f67e88253770da22a99eed890235ffdeccf9b0fdb311c851175b4224",
+      "bytes": 629209
+    },
+    {
+      "file": "screens/pipedrive-mapping-1440.png",
+      "sha256": "635cc6f9d26be87b00939957d384d3074cc4e045245c3c1c9320b072dfdde767",
+      "bytes": 254333
+    },
+    {
+      "file": "screens/pipedrive-mapping-390.png",
+      "sha256": "e38df26f3424025a79e5d207d1c3f2ba0d831561c72518b54ba9e142ed42131b",
+      "bytes": 227289
+    }
+  ]
+}

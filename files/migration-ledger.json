@@ -1,0 +1,1 @@
+{"status":"passed","existingMigrations":79,"discoveredMigrations":80,"added":[{"name":"0086_pipedrive_import.sql","sha256":"cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f"}]}

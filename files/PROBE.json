@@ -1,0 +1,12 @@
+{
+  "head": "102738071085d99c0357615e67b73749639b4625",
+  "tree": "e2782e5feab5ac9ac342606b8f8f300209abb927",
+  "startedAt": "2026-11-13T00:43:45.687Z",
+  "finishedAt": "2026-11-13T00:48:43.910Z",
+  "exit": 0,
+  "door": "Native authenticated HTTP routes",
+  "replacement": "Pipedrive HTTP only",
+  "helper": "tests/support/pipedrive-api-proof.ts",
+  "nativeStore": "Real persisted D1 emulator, closed and reopened at the source checkpoint",
+  "restore": "Actual Records archive into a destination with its own connected pull and saved review"
+}

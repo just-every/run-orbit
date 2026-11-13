@@ -1,0 +1,10 @@
+{
+  "head": "102738071085d99c0357615e67b73749639b4625",
+  "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='stops block|a failed native batch|a contact arriving' tests/core/crm-import.test.ts",
+  "exit": 0,
+  "tests": 3,
+  "passed": 3,
+  "failed": 0,
+  "purpose": "Run the unchanged remaining registrations after the initial wrapper deadline; no code or assertion was altered for the cutoff.",
+  "log": "native-import-remainder.log"
+}

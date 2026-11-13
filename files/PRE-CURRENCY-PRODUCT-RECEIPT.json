@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-11-13T00:35:51.032580+00:00",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-c-f182",
+  "head": "09ffc8a0648ead679570987627b1b2c834d5669c",
+  "remoteRef": "refs/heads/cloud/sd-orbit-c-f182",
+  "remoteHead": "09ffc8a0648ead679570987627b1b2c834d5669c",
+  "clean": true,
+  "fullHistory": true,
+  "mainAncestor": true,
+  "main": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "candidateIdentitiesAndTrailers": "09ffc8a0648ead679570987627b1b2c834d5669c Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\n49597e51016b4d52a1fa9a3b1700e0e76e1940f9 Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\n23d597d254b1fc8c9dd451f4f9f1720b927bdc3f Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\na4c8a2b252bb2e2c70ea8d300cf15b5c7c9c2fe6 Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>",
+  "contractDiff": "",
+  "generatedViewsDiff": "",
+  "sourceLockSha256": "ecf54ac0b8b79cbd0327cdc696fc40b731b9405b0447b802434c46631fe460e4"
+}
