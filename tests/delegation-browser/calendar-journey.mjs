@@ -39,6 +39,23 @@ export async function calendarJourney(page,data){
   }
  }
  await page.setViewportSize({width:1440,height:900});
+ // The existing-source form alone offers the independent Gmail send grant.
+ await page.goto('/app/settings/capture/connect/google?step=5&source='+data.mailboxSource);
+ const sendForm=page.getByRole('form',{name:'Reconnect Google',exact:true}),sendConsent=sendForm.getByRole('checkbox',{name:'Allow reviewed mailbox sending (gmail.send)',exact:true});
+ await expect(sendConsent).not.toBeChecked();await sendConsent.check();
+ await expect(sendForm.getByRole('list',{name:'Requested permissions'}).locator('code')).toHaveText(['gmail.readonly','calendar.readonly','gmail.send']);
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('google-send-consent',width,sendForm,'.capture-key-form');}
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/app/settings/capture/connect/microsoft?step=5&source='+data.scopeSources.find(source=>source.provider==='microsoft').id);
+ const microsoftForm=page.getByRole('form',{name:'Reconnect Microsoft',exact:true});await expect(microsoftForm).toContainText('Microsoft mailbox sending is unavailable');
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('microsoft-send-boundary',width,microsoftForm,'.capture-key-form');}
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('/app/drafts/'+data.mailboxDraft);
+ const approval=page.locator('#send-approval');await approval.getByLabel('Sending mailbox',{exact:true}).selectOption(data.mailboxSource);
+ await expect(approval).toContainText('Sending mailbox: '+data.mailboxAddress);await expect(approval).toContainText('Synthetic signature.');
+ await expect(approval.getByRole('button',{name:'Approve and send exact revision',exact:true})).toBeEnabled();
+ for(const width of [1440,390]){await page.setViewportSize({width,height:900});await proof('gmail-send-as-review',width,approval,'#send-approval');}
+ await page.setViewportSize({width:1440,height:900});
  for(const source of data.scopeSources){
   await page.goto('/app/settings/capture');
   const card=page.locator(`#capture-source-${source.id}`),scope=card.locator('.capture-source-scope');

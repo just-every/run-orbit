@@ -17,6 +17,7 @@ const text=(value:unknown)=>typeof value==='string'?value:'';
 const firstLine=(value:string)=>value.split('\n')[0]??'';
 const restLines=(value:string)=>value.split('\n').slice(1).join('\n');
 const quote=(value:string)=>value.length>160?`“${value.slice(0,157).trimEnd()}…”`:`“${value}”`;
+const taskEvents:Record<string,string>={'task.created':'Created','task.completed':'Completed','task.cancelled':'Cancelled','task.reassigned':'Reassigned','task.rescheduled':'Rescheduled','task.updated':'Updated'};
 
 /** The kind word, title and quiet line for one timeline entry, in the owner's words; evaluations stay in Recorded details.
  * contactNames names the record's people by id and by lowercased email. */
@@ -25,7 +26,12 @@ export function timelineEntry({line,kind,recordId,contactNames,reload,onChanged}
  const payload=line.payload,type=line.signalType??text(payload.type)??'',by=line.actorType==='operator'&&line.actorName?`Recorded by ${line.actorName}`:`From ${sourceLabel(line.actorName??line.sourceName)}`;
  let kindWord=words[line.kind]??(line.kind.includes('.')&&/^(email|meeting|form|page|content)\./.test(line.kind)?signalKind(line.kind):label(line.kind));
  let title:ReactNode=text(payload.subject)||firstLine(text(payload.text))||mailEvidenceTitle(line.kind,type||undefined),rest:ReactNode=null,tools:ReactNode=null;
- if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
+ if(line.kind.startsWith('task.')){
+  const next=line.kind==='task.created'&&(Number(payload.occurrence)>0||payload.reason==='Next recurring occurrence');
+  kindWord='Task';title=text(payload.title)||'Untitled task';
+  rest=[next?'Next occurrence created':taskEvents[line.kind]||'Updated',line.kind==='task.created'&&text(payload.dueAt)?`Due ${formatDateTime(text(payload.dueAt))}`:'',by].filter(Boolean).join(' · ');
+ }
+ else if(line.kind==='signal.recorded'){kindWord=signalKind(type||'email.replied');rest=by;}
  else if(/^(email|meeting|form|page|content)\./.test(line.kind)){rest=text(payload.body)?quote(text(payload.body)):by;}
  else if(line.kind==='message.accepted'){const recipient=text(payload.recipient);rest=`To ${contactNames.get(recipient.toLowerCase())??(recipient||'the recipient')} · accepted by the mail provider`;}
  else if(line.kind==='action.completed'){const skipped=text(payload.outcome)==='skipped';kindWord=skipped?'Skipped':'Done';title=skipped?'Skipped the next action':'Marked the next action done';rest=text(payload.note)||by;}

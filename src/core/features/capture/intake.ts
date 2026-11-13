@@ -1,3 +1,4 @@
+import {capturedOwnMailboxMessage} from '../outreach/mailbox/capture-identity';
 import {captureFences} from './fences';
 import {rememberProviderKeys} from './provider-evidence';
 import {createId} from '../../shared/ids';
@@ -90,7 +91,7 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
  if(fact.kind==='message'&&await db.prepare("SELECT 1 FROM signals s JOIN unlinked_replies u ON u.provider_event_id=s.source_event_id AND u.opportunity_id IS NOT NULL WHERE s.source_id='sendgrid-replies' AND s.type='email.replied' AND s.source_event_id=?").bind(fact.messageId).first())return {result:'replayed'};
  const privacy=await capturePrivacy(db,fact);if(await privacy.blocked())return privacy.skipped;
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
- const senderIsOperator=fact.kind==='message'&&!!fact.sender&&operators.has(fact.sender.email);
+ const senderIsOperator=fact.kind==='message'&&!!fact.sender&&(operators.has(fact.sender.email)||await capturedOwnMailboxMessage(db,source.id,fact.messageId,fact.sender.email));
  const participants=fact.kind==='message'&&fact.bounce?.recipient?[{email:fact.bounce.recipient,name:'',role:'to' as const}]:fact.participants;
  const known=(await resolve(db,participants)).filter(person=>person.contact||person.company);
  const type=signalType(fact,source.id,senderIsOperator),at=new Date().toISOString(),signalId=createId(),itemId=createId();

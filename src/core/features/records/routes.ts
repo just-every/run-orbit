@@ -1,3 +1,4 @@
+import {savedViewRoutes,savedViewColumns,viewSort} from './saved-views';
 import {createOwnershipRoutes} from '../ownership/routes';
 import {moveOpportunity} from '../pipelines/movement';
 import { clearContactSuppression } from './suppression';
@@ -17,6 +18,7 @@ export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean;ag
  app.onError((e,c)=>{if(e instanceof RecordError)return c.json({error:e.message,recordId:e.recordId,...(e instanceof MentionAccessError?{withoutAccess:e.colleagues}:{})},e.status);logUnexpected('records',e);return c.json({error:'Record operation failed; no success was confirmed.'},500);});
  const recordId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
  app.use('*',async(c,next)=>{const match=/\/(contact|company|opportunity)\/([^/]+)(?:\/entries\/([^/]+))?/.exec(c.req.path);if(match&&!['duplicates','merge'].includes(match[2])){for(const value of [match[2],match[3]].filter(Boolean)){if(!recordId.safeParse(value).success)return c.json({error:'Invalid record ID.'},400);}}await next();});
+ app.route('/views',savedViewRoutes(db,options));
  app.route('/archive',createArchiveRoutes(db));
  if(options.ownership!==false)app.route('/ownership',createOwnershipRoutes(db));
  app.get('/mentionable',async c=>c.json({colleagues:await mentionable(db)}));
@@ -27,7 +29,7 @@ export function createRecordsRoutes(db:D1Database,options:{ownership?:boolean;ag
   return c.json(await clearContactSuppression(db,c.req.param('id'),c.get('operator').operatorId,input.data));
  });
  for(const kind of ['contact','company','opportunity'] as RecordKind[]){
-  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.literal(''),z.literal('unassigned')]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);if(options.ownership===false&&kind!=='opportunity'&&filters.data.owner_id)return c.json({error:'Owner filters require a full operator.'},403);return c.json({records:await repo.search(kind,filters.data.q??'',filters.data as Record<string,string>,options)});});
+  app.get(`/${kind}`,async c=>{const filters=z.object({q:z.string().max(500).optional(),sort_column:z.string().min(1).max(100).optional(),sort_direction:z.enum(['asc','desc']).optional(),lifecycle:z.enum(['','open','won','lost']).optional(),band:z.enum(['','low','medium','high']).optional(),queue_state:z.enum(['','now','next','none']).optional(),pipeline_id:z.union([recordId,z.literal('')]).optional(),stage_id:z.union([recordId,z.literal('')]).optional(),owner_id:z.union([recordId,z.literal(''),z.literal('unassigned')]).optional()}).strict().safeParse(c.req.query());if(!filters.success)return c.json({error:'Invalid search or opportunity filters.'},400);if(options.ownership===false&&kind!=='opportunity'&&filters.data.owner_id)return c.json({error:'Owner filters require a full operator.'},403);const sort=filters.data.sort_column?viewSort.parse({column:filters.data.sort_column,direction:filters.data.sort_direction??'asc'}):undefined;if(sort&&(options.ownership===false||!(await savedViewColumns(db,kind)).some(c=>c.key===sort.column)))return c.json({error:'Choose an available sort column with full operator access.'},400);return c.json({records:await repo.search(kind,filters.data.q??'',filters.data as Record<string,string>,{...options,sort})});});
   app.post(`/${kind}`,async c=>c.json(await repo.save(kind,await c.req.json(),c.get('operator').operatorId,undefined,{ordinaryEdit:true}),201));
   if(kind!=='opportunity'){
    app.get(`/${kind}/duplicates`,async c=>c.json({groups:await imports.candidates(kind)}));

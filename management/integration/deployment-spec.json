@@ -483,7 +483,19 @@
     },
     {
       "binding": "DB",
-      "name": "0089_pipedrive_import.sql",
+      "name": "0088_saved_record_views.sql",
+      "sha256": "4d5c969fca698f1107f71ffc973708cec64ca8f8aa02e9a0399cb0fb5cd92100",
+      "sql": "-- Definitions contain no result rows or delegated grants. Every open reads current records.\nCREATE TABLE record_saved_views (\n id TEXT PRIMARY KEY,\n author_id TEXT NOT NULL REFERENCES operators(id),\n kind TEXT NOT NULL CHECK(kind IN ('contact','company','opportunity')),\n name TEXT NOT NULL,\n visibility TEXT NOT NULL CHECK(visibility IN ('private','workspace')),\n revision INTEGER NOT NULL CHECK(revision>0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX record_saved_views_reader ON record_saved_views(kind,visibility,author_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0089_mailbox_send.sql",
+      "sha256": "4b61de63625dcc3a2d4e2c5157a96a517b1388db42770ed92591562382edf268",
+      "sql": "-- Send authority is installation-local; message provenance travels with history.\nCREATE TABLE mailbox_send_authorizations (\n source_id TEXT PRIMARY KEY REFERENCES capture_sources(id) ON DELETE CASCADE,\n connection_id TEXT NOT NULL,\n operator_id TEXT NOT NULL REFERENCES operators(id),\n provider TEXT NOT NULL CHECK(provider IN ('google','microsoft')),\n mailbox_address TEXT NOT NULL,\n state TEXT NOT NULL CHECK(state IN ('authorized','paused')),\n retry_at TEXT,\n created_at TEXT NOT NULL\n);\nALTER TABLE outbound_messages ADD COLUMN mailbox_source_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_connection_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_address TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_provider TEXT;\nALTER TABLE outbound_messages ADD COLUMN provider_thread_id TEXT;\nALTER TABLE outbound_messages ADD COLUMN mailbox_submission_claimed INTEGER NOT NULL DEFAULT 0;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_source_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_connection_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_address TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_provider TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN provider_thread_id TEXT;\nALTER TABLE record_mail_outbound_messages ADD COLUMN mailbox_submission_claimed INTEGER NOT NULL DEFAULT 0;\nCREATE VIEW outbound_installation_delivery_budget AS\n SELECT id,operator_id,claimed_at FROM outbound_messages WHERE mailbox_source_id IS NULL\n UNION ALL SELECT id,operator_id,claimed_at FROM record_mail_outbound_messages WHERE mailbox_source_id IS NULL;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0090_pipedrive_import.sql",
       "sha256": "cb417f6edc6641179fbbe067cda2d3f9fbd3e87b0de49f228156aabce0d1655f",
       "sql": "-- Installation-local credentials, source checkpoints and review authority never travel.\nCREATE TABLE crm_import_pipedrive_connections (\n id INTEGER PRIMARY KEY CHECK(id=1), account_id TEXT NOT NULL, ciphertext TEXT NOT NULL,\n revision TEXT NOT NULL, actor_id TEXT NOT NULL, connected_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_pipedrive_pulls (\n id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, connection_revision TEXT NOT NULL,\n account_id TEXT NOT NULL, state TEXT NOT NULL, resource INTEGER NOT NULL DEFAULT 0,\n cursor TEXT, version INTEGER NOT NULL DEFAULT 0, next_at TEXT, error TEXT,\n snapshot_json TEXT NOT NULL DEFAULT '{}', created_at TEXT NOT NULL\n);\nCREATE TABLE crm_import_pipedrive_reviews (\n review_id TEXT PRIMARY KEY REFERENCES crm_import_reviews(id) ON DELETE CASCADE,\n pull_id TEXT NOT NULL REFERENCES crm_import_pipedrive_pulls(id), connection_revision TEXT NOT NULL\n);\n"
     }
