@@ -1,0 +1,212 @@
+[
+  {
+    "path": "BOUNDARIES.log",
+    "bytes": 285,
+    "sha256": "3611ea0fb6fe5e80a089368d955362d8e1714b125a8b5a1d1cf6f6cd96cebb5b"
+  },
+  {
+    "path": "BROWSER.log",
+    "bytes": 4674,
+    "sha256": "906f37302c629b1cedda7a306da9f82dd53c12e95f714b838da81fce34207005"
+  },
+  {
+    "path": "BUILD.log",
+    "bytes": 3399,
+    "sha256": "a0854f3bb2a3cb816c15702acbfd2c6662aad0dbefcfed4c419ebddd485dc78a"
+  },
+  {
+    "path": "CI.json",
+    "bytes": 375,
+    "sha256": "7347ff6bdf793d6d69ee5c291f2d44d11eb86487269c6bcc5bf856c5d347c528"
+  },
+  {
+    "path": "CORE_IMPORT.log",
+    "bytes": 787,
+    "sha256": "39e246b7fa70ce8e208ca961ef9d89554b8901eb491489a6ba6f6d75bee73467"
+  },
+  {
+    "path": "CORE_REGRESSIONS.log",
+    "bytes": 1005,
+    "sha256": "dba73b871f6d589c13d7ae38d70e42b878218571cfed1d48b7a1a500d168cf32"
+  },
+  {
+    "path": "DEPLOYMENT.log",
+    "bytes": 323,
+    "sha256": "10b50a264174e6b3fd727ab9309d33817cfa81e6fd2171312f13d1fdd6658301"
+  },
+  {
+    "path": "ERASURE.log",
+    "bytes": 710,
+    "sha256": "3cc07d12ff36b5b54af1f66185b5c3a618fa1ee69b3a510abecab51f56b86185"
+  },
+  {
+    "path": "FIRST_PARTY.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "LEDGER_CHECK.mjs",
+    "bytes": 844,
+    "sha256": "13699f74d0bca5d22735d7e5a967d05ec8948e50dcae44af84089666f9e9e47c"
+  },
+  {
+    "path": "MIGRATION_LEDGER.json",
+    "bytes": 93,
+    "sha256": "784d9be1be0d4e9ba48034d6da1db5826071e40ac22e90c1a62970091573fbf3"
+  },
+  {
+    "path": "PLAN.txt",
+    "bytes": 1539,
+    "sha256": "9c3fc9737964b73353e450e8240646c1c8c12b8180b553ba44b195df6d5d683a"
+  },
+  {
+    "path": "RECEIPT.json",
+    "bytes": 7607,
+    "sha256": "f1dd46148bb5fc7ede71312268f0b11debadaa5bca722a164ab2efa438366419"
+  },
+  {
+    "path": "REPORT.md",
+    "bytes": 14571,
+    "sha256": "c693c0b60def8cad5c8c1352337c0585e9dee3d3465248f35530fffc1a7f3579"
+  },
+  {
+    "path": "SALESFORCE_PROOF.log",
+    "bytes": 173,
+    "sha256": "468e00c8e8787edeab74837df18dab97054e6eaa91f132b0937870e3b6521402"
+  },
+  {
+    "path": "SF_PROOF.mts",
+    "bytes": 214,
+    "sha256": "223c37eb934ced999657e3c06cbf02f9d7e4f21ec0f70001781ccba620a670f3"
+  },
+  {
+    "path": "SOURCE_LOCK_CHECK.json",
+    "bytes": 513674,
+    "sha256": "1ad44db73478229ae85cb3f439bb46d9782eae83593db864838023318cc381b9"
+  },
+  {
+    "path": "TEST_INVENTORY.json",
+    "bytes": 8524,
+    "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+  },
+  {
+    "path": "TYPECHECK.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "VIEWS.log",
+    "bytes": 60,
+    "sha256": "cdada4f46860989b6e41904b5bffd1be7976cfde8b8dba1b4a7dcf41c522fcda"
+  },
+  {
+    "path": "salesforce-applied-1440.png",
+    "bytes": 631939,
+    "sha256": "ce388cf547135825d382ea208e6b0478358449d77574b0217d9638e2a798ae8e"
+  },
+  {
+    "path": "salesforce-applied-390.png",
+    "bytes": 616400,
+    "sha256": "74523151c05e5f905442604b4fa3a44013e07367c48c79f9e63b2e1e1ba9a5bd"
+  },
+  {
+    "path": "salesforce-connected-1440.png",
+    "bytes": 221539,
+    "sha256": "342442a488604ad4a7076d35495b87f41ee3159ac764e455027e81830732f255"
+  },
+  {
+    "path": "salesforce-connected-390.png",
+    "bytes": 202992,
+    "sha256": "7cb4bbc25b5ef1b569b786d8a9f863b2e278daa59f9397833d5ae68b50cef76c"
+  },
+  {
+    "path": "salesforce-connection-1440.png",
+    "bytes": 188136,
+    "sha256": "42d4881dd79cbc1684488b154641fa92750184b168f1aea270e5a8917d53cc58"
+  },
+  {
+    "path": "salesforce-connection-390.png",
+    "bytes": 168910,
+    "sha256": "b58176e2d6de03d940306c8fd91a9cda5481eaebce1e4ba0c557842b434a78ea"
+  },
+  {
+    "path": "salesforce-disconnected-1440.png",
+    "bytes": 220607,
+    "sha256": "ad6516c4b103711cc56402b5116f9cde57e786a5763a814d89b3d9503d1daea0"
+  },
+  {
+    "path": "salesforce-disconnected-390.png",
+    "bytes": 200178,
+    "sha256": "809701b8d7dcc11f3344a69484f109e90157a5089ffba236855d8b9d44ed3fa0"
+  },
+  {
+    "path": "salesforce-metadata-1440.png",
+    "bytes": 609744,
+    "sha256": "6eb88d25028c016876539244c956652e8386efd4d67faadedbd41c06847c07de"
+  },
+  {
+    "path": "salesforce-metadata-390.png",
+    "bytes": 589480,
+    "sha256": "cbfdd8932838e4687d84b45ce4a35bbc91a326f94d8f8e7ae0c35b2e5cf0c692"
+  },
+  {
+    "path": "salesforce-owners-1440.png",
+    "bytes": 636584,
+    "sha256": "137e61abd614e43f995aa281d1ee8d694e08ae2f5f1dbd4e20ee136908bddb8c"
+  },
+  {
+    "path": "salesforce-owners-390.png",
+    "bytes": 617246,
+    "sha256": "0810d5ef797574fa627f5cfe38af089054a8905faacab05d871fc4f2b8a125f7"
+  },
+  {
+    "path": "salesforce-preview-1440.png",
+    "bytes": 653172,
+    "sha256": "30585b634c03a348bf6d1a211eb449093055ef9eea75b5b471bd7d995030ef4a"
+  },
+  {
+    "path": "salesforce-preview-390.png",
+    "bytes": 637561,
+    "sha256": "46a4c72fc7acfb043f9a2e014d047c1f18f8a57937e68f64bb8d903dc884b884"
+  },
+  {
+    "path": "salesforce-refused-state-1440.png",
+    "bytes": 193681,
+    "sha256": "ea72086d147998f3d5164fa401652a1772dd23334930e0cbb29e00d0c8d829b3"
+  },
+  {
+    "path": "salesforce-refused-state-390.png",
+    "bytes": 175837,
+    "sha256": "1a24b750e0fd6cb60afae5b135ccd4ddaa43cc5ea18393fd7c72a97ce5ece806"
+  },
+  {
+    "path": "salesforce-resume-1440.png",
+    "bytes": 644153,
+    "sha256": "14dce1c10de55590999464cfdfca705fe4c69f417fdfc869ae7b85f1888c421f"
+  },
+  {
+    "path": "salesforce-resume-390.png",
+    "bytes": 625143,
+    "sha256": "53907ae8d33dbad42f72023ef49806fb0bb5ab2e71f26da92a41ea6a7e61d8c9"
+  },
+  {
+    "path": "salesforce-stopped-1440.png",
+    "bytes": 654985,
+    "sha256": "47a1d4bb29a5bc0cc7dc5dd4fa880502a830f24e3ac542e3a3fe8d111e356f80"
+  },
+  {
+    "path": "salesforce-stopped-390.png",
+    "bytes": 638093,
+    "sha256": "ed6233e836cd559e5056e2551ee0299ee1f48426ef51cab19fa774d8e40ddf6f"
+  },
+  {
+    "path": "salesforce-withdrawn-review-1440.png",
+    "bytes": 109969,
+    "sha256": "a64f80bf79f431ac24f57279a0e1d3b0bad176c50dc694eb1c165783fa062fa8"
+  },
+  {
+    "path": "salesforce-withdrawn-review-390.png",
+    "bytes": 96655,
+    "sha256": "de0a12b39ff93274d1591ff1df52368753995123cff3321ee9fee4472838a212"
+  }
+]

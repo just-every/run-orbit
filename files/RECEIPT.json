@@ -1,0 +1,177 @@
+{
+  "baseline_main": "267fa4d246666bf4eb119f612663c939601f1339",
+  "branch": "cloud/sd-orbit-c-f183",
+  "candidate_head": "1f9dd79164d7043a3c0e5eaff8365d8a98dca209",
+  "ci": {
+    "api_calls_used": 3,
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "1f9dd79164d7043a3c0e5eaff8365d8a98dca209",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43332782884",
+    "id": 43332782884,
+    "name": "Verify",
+    "observed_at": "2026-11-13 00:00:04 UTC",
+    "status": "in_progress"
+  },
+  "claim": "PARTIAL",
+  "contract_counts_after": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "contract_counts_before": {
+    "done": 42,
+    "missing": 32,
+    "partial": 130
+  },
+  "file_sha256": {
+    "management/integration/deployment-spec.json": "0572771b937586b6416c6dd792b91e24bd9c0f5f7b6f3a3a7c5502ea5f8c67c8",
+    "migrations/core/0086_salesforce_import.sql": "7bce354fb9cab6ca5d3fec435cc07de320c51460a818c13b2384258544043108",
+    "sources.lock.json": "6c3ea7160043a6fb7b5e5668a0236ee5320552197cdad7b018405bcda4bdf0b6",
+    "src/core/app/app.ts": "317180949403a5ac21453ef1e65e15cb3a59395843aae89503a647616d955f5f",
+    "src/core/features/imports/contracts.ts": "7f9b86cc74293d5fa5c092137eb40af17befde72c0dcdaf4a615a242f89eba04",
+    "src/core/features/imports/owners.ts": "6583a89a28aceafc2480ed6c6728a130c015e620d413261e8d420969b0bc060a",
+    "src/core/features/imports/planner.ts": "7ddb554e3b1d0090c046dd0cdd1e54e5090e6377e5abd7d260df0545bab51de1",
+    "src/core/features/imports/repository.ts": "b1ca7535752740f425b642c04bd1b65776290778b784ba457b48333d9ee03de7",
+    "src/core/features/imports/routes.ts": "8931da5f9adfe9a2b1c9d9061537473d64c5c24d99ea50cf3e0937cee1447be9",
+    "src/core/features/imports/salesforce/checkpoint.ts": "f79df54212bef8d1dfcea93599799f61e5064db86fb7c4f3b2f14ef295c72890",
+    "src/core/features/imports/salesforce/metadata.ts": "9aaf87ee7fb113481f4bc785a5749cda57559f39cb6e1d108255887d55a14ad4",
+    "src/core/features/imports/salesforce/oauth.ts": "d155a34859d22d2c0aaf05ebffb08632b6716afc8ac46187d0270d705f3cd6a2",
+    "src/core/features/imports/salesforce/provider.ts": "0df3f41eb6a77012c7c085d9700dfa7191c39c71fad16f4f12398da7934c498b",
+    "src/core/features/imports/salesforce/routes.ts": "a7ef92d500bcc3da1e4cbf6a8098f1662ded3acbcddffd7e16df52c4ad3110e1",
+    "src/core/features/imports/salesforce/security.ts": "76efafa31cd6246f89e06ec2943a4c592dde8eee1aa4b966aa771caf738ebfed",
+    "src/core/features/operator/ui/import-provenance.ts": "234c6660b6f3bb2375d8d1317ce760e79f48dd62896a541f40b2a502e162b79d",
+    "src/core/features/operator/ui/imports-page.tsx": "a33af69d159417b02d2b2ce50c0037d7bd0af924bba1e8cc2fdc9f3ee2c1d4d1",
+    "src/core/features/operator/ui/imports-salesforce.tsx": "3ea5bb0e3c9e1bfe5e538e50af24a9a8fc2c07b577640e2a7c2bade6db53b7b1",
+    "src/core/features/records/archive-import-progress.ts": "23a8d2f47e638e9efd329989e13ea74519e3b7e0cfa695d4cc7830147f4ef50b",
+    "tests/core/crm-import.test.ts": "cfc62d0dee0e8920f6e2fc029a86145f66209ac2afc051bb9e3f6e3e01a7ee78",
+    "tests/e2e/imports-salesforce.mjs": "5d46e5661b8d32e57537b0e42ed488540116f625c02f550d51d970c487660800",
+    "tests/e2e/imports.spec.mjs": "3fef3933a6b70f86dc77bea8cd8683b720365eae22d70041d4429b2cef1eea7d",
+    "tests/support/salesforce-api-proof.ts": "358429dab9af087d5f63f3e6a6ce89b2a09022b91d899c2c216d32b95074c7b7",
+    "tests/support/salesforce-browser-api.ts": "2547429b4aaa54fcfa491240b754260d4d2b97ef00c496eb3cff09f15ab23681",
+    "tests/support/salesforce-network.ts": "38ccce0cf15e7b8fede0dddc97f5890c05cb8d639c8fd00a9819dc83dec2147e"
+  },
+  "full_acceptance_points_proven": [],
+  "local_checks": [
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern=\"vendor exports, Salesforce\" tests/core/crm-import.test.ts",
+      "exit": 0,
+      "receipt": "CORE_IMPORT.log",
+      "registered_cases": 1
+    },
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern=\"stops block exact|failed native batch|contact arriving\" tests/core/crm-import.test.ts",
+      "exit": 0,
+      "receipt": "CORE_REGRESSIONS.log",
+      "registered_cases": 3
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-sf-proof.mts",
+      "coverage": "Latest complete Salesforce helper, including added public readback assertions",
+      "exit": 0,
+      "receipt": "SALESFORCE_PROOF.log"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/crm-import-erasure.test.ts",
+      "exit": 0,
+      "receipt": "ERASURE.log",
+      "registered_cases": 3
+    },
+    {
+      "assertion_width": 1440,
+      "captured_widths": [
+        1440,
+        390
+      ],
+      "command": "IMPORT_SCREENSHOT_DIR=/tmp/orbit-sf-screenshots pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs imports.spec.mjs",
+      "exit": 0,
+      "receipt": "BROWSER.log",
+      "registered_cases": 1
+    },
+    {
+      "command": "pnpm exec tsc --noEmit",
+      "exit": 0,
+      "receipt": "TYPECHECK.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "receipt": "FIRST_PARTY.log"
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "receipt": "BOUNDARIES.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "receipt": "BUILD.log"
+    },
+    {
+      "command": "pnpm run deployment:check",
+      "exit": 0,
+      "receipt": "DEPLOYMENT.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write; node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "generated_views_restored_from_main": true,
+      "receipt": "VIEWS.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "receipt": "SOURCE_LOCK_CHECK.json"
+    },
+    {
+      "command": "node packet/LEDGER_CHECK.mjs",
+      "exit": 0,
+      "prior_main_migrations": 77,
+      "receipt": "MIGRATION_LEDGER.json"
+    }
+  ],
+  "native_scope": {
+    "Account": 2,
+    "Contact": 12,
+    "associations": 11,
+    "provider_pages": 4
+  },
+  "proof_binding": "Local executions preceded the final commit; the latest Salesforce helper and browser proof exercised the candidate source bytes. File hashes below identify the final committed tree. The original vendor journey also passed; later changes affect Salesforce-specific behavior and refusal wording. Exact-head Verify is recorded separately.",
+  "publication_scan": {
+    "custodian": "guarded fleet lander",
+    "status": "not_run_in_cloud"
+  },
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "screenshots": [
+    "salesforce-connection-1440.png",
+    "salesforce-connection-390.png",
+    "salesforce-refused-state-1440.png",
+    "salesforce-refused-state-390.png",
+    "salesforce-connected-1440.png",
+    "salesforce-connected-390.png",
+    "salesforce-metadata-1440.png",
+    "salesforce-metadata-390.png",
+    "salesforce-stopped-1440.png",
+    "salesforce-stopped-390.png",
+    "salesforce-resume-1440.png",
+    "salesforce-resume-390.png",
+    "salesforce-owners-1440.png",
+    "salesforce-owners-390.png",
+    "salesforce-preview-1440.png",
+    "salesforce-preview-390.png",
+    "salesforce-applied-1440.png",
+    "salesforce-applied-390.png",
+    "salesforce-disconnected-1440.png",
+    "salesforce-disconnected-390.png",
+    "salesforce-withdrawn-review-1440.png",
+    "salesforce-withdrawn-review-390.png"
+  ],
+  "tag": "sd-orbit-c-f183",
+  "tests": {
+    "qualifications": 2,
+    "registered": 198,
+    "total": 200
+  }
+}

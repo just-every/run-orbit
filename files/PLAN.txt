@@ -1,0 +1,8 @@
+sd-orbit-c-f183 implementation plan
+1. Keep CONTRACT judgments and all omitted provider/entity/role holds unchanged. Claim only a partial acceptance-1 limb.
+2. Add installation-local sealed Salesforce OAuth with PKCE, native-session state, consumed code hashes, strict grant and host checks and native authority fences. No provider writes.
+3. Describe Account and Contact allowed fields; record source-referenced unavailable fields and unsupported metadata with concrete export guidance. Persist paginated reads and cursor checkpoints atomically and resume after process/store restart.
+4. Convert only reviewed Account and Contact data into the shared saved dry-run engine. Keep exact source IDs, separate owner maps, explicit associations and conservative contactability. Reuse confirmed Apply, repeat safety and conflict-preserving Undo.
+5. Integrate focused Settings import controls, saved review and resume/refusal states using existing components. Extend existing core and browser registrations without increasing test count.
+6. Prove refused and replayed OAuth/grants, custody, pagination, counts, mappings, actual persisted-store resume, unchanged rerun, native-edit Undo, erasure and archive restore without pull authority. Run touched tests, typecheck, first-party, generation and source lock checks.
+7. Preserve work on the named product branch, merge updated main without rewriting published saves, publish actual reports separately, discover exact-head Verify under the API budget, and report honest partial scope and custody.

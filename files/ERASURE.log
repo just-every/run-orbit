@@ -1,0 +1,14 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ RECORD-008 DATA-002 T-098 erasure removes imported personal data from native records, search, archives and decoded custody while preserving later company edits (95470.775482ms)
+✔ RECORD-008 DATA-002 T-098 erasure reaches applied rejected-only uploads with no native target or suppression effect (61523.10848ms)
+✔ RECORD-008 DATA-002 T-098 unrelated company import reviews and safe undo remain available after native contact erasure (52021.61727ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213268.560303
