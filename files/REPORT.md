@@ -12,7 +12,7 @@ PR: none; the named branch is for fleet landing.
 
 The saved privacy implementation and its public-door assertions are preserved. This continuation adds a forward merge of current main, including its rer 0.2.113 adoption and refreshed shared source, and regenerates/validates the source lock. The merge is the only new product commit. It does not invent a product correction for an unobserved assertion failure.
 
-The fleet push guard successfully pushed the named product branch on its first attempt. The candidate's exact-SHA Verify is run 43505149609, https://github.com/just-every/run-orbit/actions/runs/43505149609. Its result is recorded in the final CI section and RECEIPT.json when complete.
+The fleet push guard successfully pushed the named product branch on its first attempt. The candidate's exact-SHA Verify is run 43505149609, https://github.com/just-every/run-orbit/actions/runs/43505149609. It completed successfully on that exact SHA; the terminal result is recorded below and in RECEIPT.json.
 
 The brief cited failed attempt 1 of Verify 43492722717 on the saved privacy SHA. The first jobs read returned latest-attempt jobs with batch-18 still in progress. The one log request for that job returned: `job 132148681215 is still in progress; logs will be available when it is complete`. A subsequent REST status read established that run 43492722717 completed successfully on **attempt 2**, on saved SHA 2a0a929f7ba144520bfb301e7a21effa8f1a65f1. This task did not rerun or dispatch that workflow. It does not claim a diagnosed or fixed cause for the historical attempt-1 failure. The complete actual returned non-secret messages and API-call ledger are retained in this packet.
 
@@ -46,6 +46,18 @@ GAP DELEGATE-001: This narrow title-privacy proof covers part of acceptance poin
 
 No clause Status/Gap/Evidence cells or generated acceptance counts were edited. There is no complete new acceptance point claim. The fleet's independent privacy gate and publication scan remain required before landing. The cloud cannot run the Mac publication scan, as stated in the assignment; no local scan result is invented. No UI proof is required because no UI changed. Source and unit public doors use synthetic provider HTTP edges, not live-account Zoom qualification. All report files selected for transfer are actual regular non-secret files. Product readiness and evidence transfer remain separate.
 
+The managed environment interrupted the command session while CI was pending. The clone, clean candidate and complete packet were retained. The previous watcher was confirmed defunct; one replacement resumed from the saved last poll time with no extra API call. Remaining reads were spaced farther apart, up to twenty minutes, to conserve the ten-call task budget. Only one watcher was active at a time.
+
+## Evidence transport
+
+The interim packet was published to the dedicated evidence ref at 2fb4ed80dedf036d070373da3b59217a9888e2a5. An isolated read-back restored and verified all 19 manifested files and their hashes, and confirmed product head 694350843ef82e224a9c0ea1e46e04bdc932aedc. The actual publication and read-back receipts are INTERIM-EVIDENCE-RECEIPT.jsonl and INTERIM-EVIDENCE-VERIFY.json. This transfer carries no product readiness claim. The final packet supersedes that interim tree without rewriting its history.
+
 ## Final CI result
 
-Pending exact-SHA Verify; the terminal result and receipt will be updated before evidence publication.
+**Success.** Verify run 43505149609 completed successfully on exact head 694350843ef82e224a9c0ea1e46e04bdc932aedc, as observed through REST at 2026-11-13T21:40:24.313613+00:00. URL: https://github.com/just-every/run-orbit/actions/runs/43505149609.
+
+The task used exactly ten GitHub calls, with one active CI watcher at a time and no workflow rerun or dispatch. candidate-run-discovery.jsonl, candidate-polls.jsonl, candidate-run-status.json, ci-watcher.log and github-calls.jsonl contain the actual observations. The primary receipt records the full candidate SHA, tree, source hashes, local checks, counts, publication and interim read-back.
+
+Blockers: none. DELEGATE-001 remains PARTIAL, with no contract or generated view edits. The independent privacy gate and fleet publication/landing checks remain required.
+
+READY branch=cloud/sd-orbit-zoom-plan-privacy-2-pc1 head=694350843ef82e224a9c0ea1e46e04bdc932aedc

@@ -14,6 +14,7 @@
     },
     "candidateSource": {
       "failed": 0,
+      "head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
       "log": "merged-after.log",
       "node": "22.20.0",
       "passed": 1,
@@ -71,8 +72,17 @@
     "completeAcceptancePointsClaimed": [],
     "status": "PARTIAL"
   },
-  "githubCallsUsed": 8,
+  "githubCallsUsed": 10,
   "head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
+  "interimEvidence": {
+    "head": "2fb4ed80dedf036d070373da3b59217a9888e2a5",
+    "manifest_sha256": "b78289db8d79a74e18b027821ae41cac183530f244bf915c3d9c92b1f3f27a3a",
+    "manifestedFilesVerified": 19,
+    "product_head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
+    "ref": "refs/heads/evidence/sd-orbit-zoom-plan-privacy-2-pc1",
+    "repository": "just-every/run-orbit",
+    "status": "restored"
+  },
   "mainMerged": "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d",
   "pr": null,
   "priorVerify": {
@@ -103,15 +113,16 @@
     "tests/delegation/brief-handoff.test.ts": "d977ed995b4d9ce81e125545f596fec5d3e324810f2476c05c4f5ec57f7df375"
   },
   "tag": "sd-orbit-zoom-plan-privacy-2-pc1",
+  "terminalProductStatus": "READY",
   "tree": "75460592dd5c51929c789a39da52c58c72886074",
   "uiChanges": false,
-  "utc": "2026-11-13T20:51:10.806033+00:00",
+  "utc": "2026-11-13T21:40:59Z",
   "verify": {
-    "conclusion": null,
+    "conclusion": "success",
     "head": "694350843ef82e224a9c0ea1e46e04bdc932aedc",
-    "observedUtc": "2026-11-13T21:10:20.621437+00:00",
+    "observedUtc": "2026-11-13T21:40:24.313613+00:00",
     "runId": 43505149609,
-    "status": "in_progress",
+    "status": "completed",
     "url": "https://github.com/just-every/run-orbit/actions/runs/43505149609"
   }
 }
