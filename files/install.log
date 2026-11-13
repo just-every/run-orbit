@@ -1,0 +1,63 @@
+Installing the pinned @runeditrun/rer and the checkout's frozen dependencies
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +243
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 243, reused 0, downloaded 19, added 19
+Progress: resolved 243, reused 0, downloaded 51, added 51
+Progress: resolved 243, reused 0, downloaded 74, added 74
+Progress: resolved 243, reused 0, downloaded 89, added 85
+Progress: resolved 243, reused 0, downloaded 119, added 119
+Progress: resolved 243, reused 0, downloaded 135, added 135
+Progress: resolved 243, reused 0, downloaded 150, added 149
+Progress: resolved 243, reused 0, downloaded 182, added 182
+Progress: resolved 243, reused 0, downloaded 227, added 227
+Progress: resolved 243, reused 0, downloaded 241, added 240
+Progress: resolved 243, reused 0, downloaded 243, added 243, done
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../node_modules/workerd postinstall$ node install.js
+.../esbuild@0.28.1/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+.../esbuild@0.28.1/node_modules/esbuild postinstall: Done
+.../node_modules/workerd postinstall: Done
+
+dependencies:
++ @tanstack/react-router 1.170.41
++ @tanstack/react-start 1.168.60
++ drizzle-orm 0.45.2
++ hono 4.13.5
++ react 19.2.8
++ react-dom 19.2.8
++ ulidx 2.4.1
++ zod 4.1.5
+
+devDependencies:
++ @axe-core/playwright 4.13.0
++ @cloudflare/vite-plugin 1.54.5
++ @cloudflare/workers-types 5.20260908.1
++ @playwright/test 1.64.1
++ @runeditrun/rer 0.2.107
++ @tailwindcss/vite 4.3.3
++ @types/node 22.19.17
++ @types/react 19.2.18
++ @types/react-dom 19.2.5
++ @vitejs/plugin-react 6.1.1
++ highlight.js 10.7.3
++ miniflare 5.20260907.0-alpha
++ react-markdown 6.0.3
++ remark-gfm 1.0.0
++ tailwindcss 4.3.3
++ tsx 4.23.0
++ typescript 5.9.3
++ vite 8.2.2
++ wrangler 4.129.1
+
+Done in 20.1s using pnpm v10.12.4
+Using project Node 22.20.0 (current Node 24.19.0).
+Heavy job admitted: Orbit install:workflow [edb2b24c1d4b]
+Checking pinned pnpm
+10.12.4
+Installing frozen dependencies
+Run this project's package scripts with rer run SCRIPT (it uses the pnpm this project pins).
+install: complete (exit 0)

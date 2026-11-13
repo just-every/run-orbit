@@ -1,0 +1,12 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.8 typecheck /home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit
+> tsc --noEmit
+
+src/core/features/operator/ui/use-operator-resource.ts(17,50): error TS2339: Property 'reason' does not exist on type 'PromiseSettledResult<unknown>'.
+  Property 'reason' does not exist on type 'PromiseFulfilledResult<unknown>'.
+src/core/features/operator/ui/use-operator-resource.ts(18,30): error TS2339: Property 'reason' does not exist on type 'PromiseSettledResult<unknown>'.
+  Property 'reason' does not exist on type 'PromiseFulfilledResult<unknown>'.
+src/core/features/operator/ui/use-operator-resource.ts(19,38): error TS2339: Property 'reason' does not exist on type 'PromiseSettledResult<unknown>'.
+  Property 'reason' does not exist on type 'PromiseFulfilledResult<unknown>'.
+ ELIFECYCLE  Command failed with exit code 2.

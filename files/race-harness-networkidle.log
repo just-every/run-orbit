@@ -1,0 +1,25 @@
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (184386.145675ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 185039.808156
+
+✖ failing tests:
+
+test at tests/rer/operator-desktop.test.mjs:7:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (184386.145675ms)
+  page.goto: Timeout 60000ms exceeded.
+  Call log:
+  [2m  - navigating to "http://127.0.0.1:45423/app/contacts/01M79W1CFP4N740RFCVS0CT57A", waiting until "networkidle"[22m
+  
+      at page.goto (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-fixture.mjs:17:88)
+      at recordReadOrderJourney (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-desktop.test.mjs:27:17)
+      at async file:///home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-desktop.test.mjs:7:200
+      at async withOperatorWorkspace (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+    name: 'TimeoutError',
+    log: [ '  - navigating to "http://127.0.0.1:45423/app/contacts/01M79W1CFP4N740RFCVS0CT57A", waiting until "networkidle"' ]
+  }

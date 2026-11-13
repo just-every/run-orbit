@@ -1,0 +1,68 @@
+TAP version 13
+# Record recovery passed: contact: primary 404, relationships 404, primary first
+# Record recovery passed: contact: primary 404, relationships 404, relationships first
+# Record recovery passed: contact: primary 404, relationships 503, primary first
+# Record recovery passed: contact: primary 404, relationships 503, relationships first
+# Record recovery passed: contact: primary 503, relationships 404, primary first
+# Record recovery passed: contact: primary 503, relationships 404, relationships first
+# Record recovery passed: contact: primary 401, relationships 403, primary first
+# Record recovery passed: contact: primary 401, relationships 403, relationships first
+# Record recovery passed: contact: primary 403, relationships 401, primary first
+# Record recovery passed: contact: primary 403, relationships 401, relationships first
+# Record recovery passed: contact: primary 409, relationships 500, primary first
+# Record recovery passed: contact: primary 409, relationships 500, relationships first
+# Record recovery passed: contact: primary 500, relationships 409, primary first
+# Record recovery passed: contact: primary 500, relationships 409, relationships first
+# Record recovery passed: contact: primary 404, relationships 200, primary first
+# Record recovery passed: contact: primary 404, relationships 200, relationships first
+# Record recovery passed: contact: primary 200, relationships 404, primary first
+# Record recovery passed: contact: primary 200, relationships 404, relationships first
+# Record recovery passed: contact: primary 403, relationships 200, primary first
+# Record recovery passed: contact: primary 403, relationships 200, relationships first
+# Record recovery passed: contact: primary 200, relationships 403, primary first
+# Record recovery passed: contact: primary 200, relationships 403, relationships first
+# Record recovery passed: contact: primary 500, relationships 200, primary first
+# Record recovery passed: contact: primary 500, relationships 200, relationships first
+# Record recovery passed: contact: primary 200, relationships 500, primary first
+# Record recovery passed: contact: primary 200, relationships 500, relationships first
+# Record recovery passed: opportunity: primary 404, relationships 404, primary first
+# Record recovery passed: opportunity: primary 404, relationships 404, relationships first
+# Record recovery passed: opportunity: primary 404, relationships 503, primary first
+# Record recovery passed: opportunity: primary 404, relationships 503, relationships first
+# Record recovery passed: opportunity: primary 503, relationships 404, primary first
+# Record recovery passed: opportunity: primary 503, relationships 404, relationships first
+# Record recovery passed: opportunity: primary 401, relationships 403, primary first
+# Record recovery passed: opportunity: primary 401, relationships 403, relationships first
+# Record recovery passed: opportunity: primary 403, relationships 401, primary first
+# Record recovery passed: opportunity: primary 403, relationships 401, relationships first
+# Record recovery passed: opportunity: primary 409, relationships 500, primary first
+# Record recovery passed: opportunity: primary 409, relationships 500, relationships first
+# Record recovery passed: opportunity: primary 500, relationships 409, primary first
+# Record recovery passed: opportunity: primary 500, relationships 409, relationships first
+# Record recovery passed: opportunity: primary 404, relationships 200, primary first
+# Record recovery passed: opportunity: primary 404, relationships 200, relationships first
+# Record recovery passed: opportunity: primary 200, relationships 404, primary first
+# Record recovery passed: opportunity: primary 200, relationships 404, relationships first
+# Record recovery passed: opportunity: primary 403, relationships 200, primary first
+# Record recovery passed: opportunity: primary 403, relationships 200, relationships first
+# Record recovery passed: opportunity: primary 200, relationships 403, primary first
+# Record recovery passed: opportunity: primary 200, relationships 403, relationships first
+# Record recovery passed: opportunity: primary 500, relationships 200, primary first
+# Record recovery passed: opportunity: primary 500, relationships 200, relationships first
+# Record recovery passed: opportunity: primary 200, relationships 500, primary first
+# Record recovery passed: opportunity: primary 200, relationships 500, relationships first
+# Subtest: BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+ok 1 - BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+  ---
+  duration_ms: 501453.958298
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 502422.842995

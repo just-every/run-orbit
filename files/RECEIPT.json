@@ -1,0 +1,148 @@
+{
+  "assertion_width": 1440,
+  "baseline": "7c3cb25fb66a9c7879f2ddb386473805106f994d",
+  "blockers": [],
+  "branch": "cloud/sd-orbit-readcontext-race-1",
+  "browser": "/usr/bin/chromium --no-sandbox",
+  "checks": {
+    "baseline_regression": {
+      "duration_ms": 268010.092929,
+      "exit": 1,
+      "expected": "This contact does not exist.",
+      "expected_product_failure": true,
+      "file": "race-before.log",
+      "order": "relationships first",
+      "received": "relationships refused (404)"
+    },
+    "boundaries": {
+      "exit": 0,
+      "file": "boundaries.log"
+    },
+    "build": {
+      "exit": 0,
+      "file": "build-final.log"
+    },
+    "candidate_T099": {
+      "controlled_orders_passed": 52,
+      "duration_ms": 501453.958298,
+      "exit": 0,
+      "file": "race-after-t099.log",
+      "test_fail": 0,
+      "test_pass": 1
+    },
+    "contract_check": {
+      "exit": 0,
+      "file": "contract-check.log"
+    },
+    "final_reads": {
+      "exit": 0,
+      "file": "final-reads-check.log",
+      "malformed_json_status_and_message": true,
+      "ordered_failures": true,
+      "statuses": [
+        401,
+        403,
+        404,
+        409,
+        429,
+        500,
+        503
+      ]
+    },
+    "identity_and_trailers": {
+      "candidate_commits": 1,
+      "exit": 0,
+      "side_parents_included": true
+    },
+    "records_complete": {
+      "duration_ms": 684674.167081,
+      "exit": 0,
+      "file": "records-tests.log",
+      "test_fail": 0,
+      "test_pass": 2
+    },
+    "rer_check": {
+      "exit": 0,
+      "file": "rer-check.log"
+    },
+    "source_check": {
+      "exit": 0,
+      "file": "source-check.log",
+      "ok": true
+    },
+    "typecheck": {
+      "exit": 0,
+      "file": "typecheck.log"
+    },
+    "whitespace": {
+      "exit": 0
+    }
+  },
+  "ci": {
+    "conclusion": null,
+    "head_sha": "43cc56c444c9d519c297913fcdc4fdfc59741d71",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43385726764",
+    "run_id": 43385726764,
+    "status": "in_progress",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43385726764"
+  },
+  "clause_counts": {
+    "after": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130
+    },
+    "before": {
+      "done": 42,
+      "missing": 32,
+      "partial": 130
+    },
+    "changed_clauses": [],
+    "claim": "none",
+    "contract_unchanged": true,
+    "total": 204
+  },
+  "custody": "PUSHED pending exact-SHA Verify",
+  "github_calls_used": 4,
+  "head": "43cc56c444c9d519c297913fcdc4fdfc59741d71",
+  "last_ci_observation_utc": "4/10: 2026-11-13T07:41:31Z: run 43385726764; exit 0.",
+  "local_complete_timestamp_utc": "2026-11-13T07:28:16Z",
+  "pr_url": null,
+  "product_paths": [
+    "sources.lock.json",
+    "src/core/features/operator/ui/record/customer-record.tsx",
+    "src/core/features/operator/ui/record/opportunity-record.tsx",
+    "src/core/features/operator/ui/record/record-api.ts",
+    "src/core/features/operator/ui/use-operator-resource.ts",
+    "tests/rer/operator-desktop.test.mjs"
+  ],
+  "product_push": "successful",
+  "proof_widths": [
+    1440,
+    390
+  ],
+  "publication_scan": "Fleet/Mac responsibility; not run in cloud",
+  "push_attempts": 1,
+  "repository": "just-every/run-orbit",
+  "rer_verify": "Equivalent final exact-SHA Verify is pending; full local rer verify was not run.",
+  "screenshots": [
+    "screens/recovery-contact-1440.png",
+    "screens/recovery-contact-390.png",
+    "screens/recovery-opportunity-1440.png",
+    "screens/recovery-opportunity-390.png"
+  ],
+  "tag": "sd-orbit-readcontext-race-1",
+  "test_counts": {
+    "after": {
+      "qualification": 2,
+      "registered": 198,
+      "total": 200
+    },
+    "before": {
+      "qualification": 2,
+      "registered": 198,
+      "total": 200
+    }
+  },
+  "timestamp_utc": "2026-11-13T07:27:01Z"
+}

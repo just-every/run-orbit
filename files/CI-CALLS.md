@@ -1,0 +1,9 @@
+# GitHub API budget
+
+1/10: 2026-11-13T07:26:14Z: exact-SHA run discovery for 43cc56c444c9d519c297913fcdc4fdfc59741d71; exit 0. No additional run read before 300 seconds.
+
+2/10: 2026-11-13T07:31:26Z: run 43385726764; exit 0.
+
+3/10: 2026-11-13T07:36:30Z: run 43385726764; exit 0.
+
+4/10: 2026-11-13T07:41:31Z: run 43385726764; exit 0.

@@ -1,0 +1,30 @@
+TAP version 13
+# Subtest: BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+not ok 1 - BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+  ---
+  duration_ms: 227177.092824
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-desktop.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    page.goto: Timeout 60000ms exceeded.
+    Call log:
+    [2m  - navigating to "http://127.0.0.1:34055/app/contacts/01M79W8EKJWFT5W4BRZA8DKBMH", waiting until "networkidle"[22m
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    page.goto (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-fixture.mjs:17:88)
+    recordReadOrderJourney (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-desktop.test.mjs:29:17)
+    async file:///home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-desktop.test.mjs:8:200
+    async withOperatorWorkspace (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/tests/rer/operator-workspace.mjs:29:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 227890.296165

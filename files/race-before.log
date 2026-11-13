@@ -1,0 +1,43 @@
+TAP version 13
+# Record recovery passed: contact: primary 404, relationships 404, primary first
+# Subtest: BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+not ok 1 - BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px
+  ---
+  duration_ms: 267269.8519
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/before-proof/tests/rer/operator-desktop.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    contact: primary 404, relationships 404, relationships first
+    
+    expect(locator).toContainText(expected) failed
+    
+    Locator: getByRole('main').getByRole('alert')
+    Expected substring: "This contact does not exist."
+    Received string:    "relationships refused (404)"
+    Timeout: 5000ms
+    
+    Call log:
+      - contact: primary 404, relationships 404, relationships first getByRole('main').getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('main').getByRole('alert')
+        14 × locator resolved to <p role="alert" class="operator-state operator-state--error">relationships refused (404)</p>
+           - unexpected value "relationships refused (404)"
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    captureRawStack (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+    callMatcherAsStep (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+    Object.toContainText (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+    recordReadOrderJourney (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/before-proof/tests/rer/operator-desktop.test.mjs:37:33)
+    async file:///home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/before-proof/tests/rer/operator-desktop.test.mjs:8:200
+    async withOperatorWorkspace (/home/agent/rer-consolidation/work/sd-orbit-readcontext-race-1/before-proof/tests/rer/operator-workspace.mjs:29:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 268010.092929

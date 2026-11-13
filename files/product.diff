@@ -1,0 +1,189 @@
+diff --git a/sources.lock.json b/sources.lock.json
+index ae42189..f404077 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -7079,7 +7079,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/customer-record.tsx": {
+-      "sha256": "5365ad43dbfdc0c40279940aba01a259adcd1d8fc330177ddc520e97da100557",
++      "sha256": "715e6ab0c41c8638672e692087c61c4aa7ad63401dc5fbed449033cddd1c3956",
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/deal-activity.tsx": {
+@@ -7131,7 +7131,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/opportunity-record.tsx": {
+-      "sha256": "f8a33a856aae7b5b1ff5058154308a727bf51a4501deadc2cc4f62f7f11d90a5",
++      "sha256": "7b1415b17f28e4a143c1ad7c9fd4fb2293cc491aba9f67c58c067b333912fcb0",
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/owner-field.tsx": {
+@@ -7151,7 +7151,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/record-api.ts": {
+-      "sha256": "bd2fd18fa52b4d8abfdf5073eb4dd2194f0d7e632ccc668ca145c18bf3b3fa16",
++      "sha256": "9dfb267f8f7d057a5f4b19051369a78878963f545bceeb7f82f2cede6621d35e",
+       "executable": false
+     },
+     "src/core/features/operator/ui/record/record-foot.tsx": {
+@@ -7387,7 +7387,7 @@
+       "executable": false
+     },
+     "src/core/features/operator/ui/use-operator-resource.ts": {
+-      "sha256": "cca93914e5ded71f4b60f42f6e80b58ea2b4218f200c7aaa99abc806bf0ee803",
++      "sha256": "d8ce4e2297cb458932e13d9206a34082c32f64e796e8176481e35cc1e1c9a8a7",
+       "executable": false
+     },
+     "src/core/features/operator/ui/website-node-example.tsx": {
+@@ -11151,7 +11151,7 @@
+       "executable": false
+     },
+     "tests/rer/operator-desktop.test.mjs": {
+-      "sha256": "99006a032f52f612ca273992d97c4e00da3d1f44eeba11437450e1cd670cd851",
++      "sha256": "d7f287d863265800ab8ef9151a664cf70a59fd3c7dec3973eda21c37a3827272",
+       "executable": false
+     },
+     "tests/rer/operator-fixture.mjs": {
+diff --git a/src/core/features/operator/ui/record/customer-record.tsx b/src/core/features/operator/ui/record/customer-record.tsx
+index 12e5671..64c3c5f 100644
+--- a/src/core/features/operator/ui/record/customer-record.tsx
++++ b/src/core/features/operator/ui/record/customer-record.tsx
+@@ -10,7 +10,7 @@ import {DoNotContactReason} from '../do-not-contact-reason';
+ import {OperatorShell,OperatorState} from '../operator-shell';
+ import {RecordMailComposer,useRecordMail} from '../record-mail';
+ import {recordsRequest} from '../records-api';
+-import {useOperatorResource} from '../use-operator-resource';
++import {readOperatorResource,useOperatorResource} from '../use-operator-resource';
+ import {WorkflowRecordApprovals} from '../workflows-record-approvals';
+ import {CompanyDetails} from './company-details';
+ import {ContactDetails} from './contact-details';
+@@ -35,7 +35,7 @@ function CustomerRecordPage({kind}:{kind:'contact'|'company'}){const {full}=useA
+ function EditableCustomerRecordPage({kind}:{kind:'contact'|'company'}){
+  const {id}=useParams({strict:false}) as {id:string};
+  const load=useCallback(async()=>{
+-  const [detail,settings,context]=await Promise.all([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
++  const [detail,settings,context]=await readOperatorResource([readRecord<any>(kind,id),recordsRequest<any>('settings'),kind==='contact'?readContext<ContactContext>('contact',id):Promise.resolve(null)]);
+   return {detail,settings,context};
+  },[kind,id]);
+  const resource=useOperatorResource(`${kind}:${id}`,load),data=resource.data,reload=resource.reload;
+diff --git a/src/core/features/operator/ui/record/opportunity-record.tsx b/src/core/features/operator/ui/record/opportunity-record.tsx
+index d96a5bd..893686e 100644
+--- a/src/core/features/operator/ui/record/opportunity-record.tsx
++++ b/src/core/features/operator/ui/record/opportunity-record.tsx
+@@ -11,7 +11,7 @@ import {operatorApi} from '../operator-api';
+ import {OperatorShell,OperatorState} from '../operator-shell';
+ import {recordsRequest} from '../records-api';
+ import {readOnboarding} from '../setup-line';
+-import {useOperatorResource} from '../use-operator-resource';
++import {readOperatorResource,useOperatorResource} from '../use-operator-resource';
+ import {workbenchRequest} from '../workbench-api';
+ import {WorkflowRecordApprovals} from '../workflows-record-approvals';
+ import {FollowUpResults,type Outcomes} from '../follow-up-outcomes';
+@@ -35,7 +35,7 @@ export function OpportunityRecordPage(){const {full}=useAppAccess();return full?
+ function EditableOpportunityRecordPage(){
+  const {id}=useParams({from:'/app/opportunities/$id'});
+  const load=useCallback(async()=>{
+-  const [detail,settings,{opportunity},{drafts},context,configuration,messages,handoffs]=await Promise.all([
++  const [detail,settings,{opportunity},{drafts},context,configuration,messages,handoffs]=await readOperatorResource([
+    readRecord<{record:Values;company:{id:string;name:string}|null;contacts:Values[]}>('opportunity',id),recordsRequest<any>('settings'),operatorApi.readOpportunity(id),operatorApi.listOpportunityDrafts(id),readContext<OpportunityContext>('opportunity',id),
+    readOnboarding().catch(()=>null),workbenchRequest<DealMessages&{outcomes:Outcomes}>(`/opportunities/${id}/messages`).catch(()=>null),
+    fetch(`/delegation/handoffs/${id}`,{credentials:'same-origin'}).then(response=>response.ok?response.json() as Promise<{tasks:HandoffEntry[]}>:{tasks:[]}).catch(()=>({tasks:[] as HandoffEntry[]})),
+diff --git a/src/core/features/operator/ui/record/record-api.ts b/src/core/features/operator/ui/record/record-api.ts
+index 95ac57a..3d7aaa7 100644
+--- a/src/core/features/operator/ui/record/record-api.ts
++++ b/src/core/features/operator/ui/record/record-api.ts
+@@ -37,7 +37,7 @@ export const contactContextValues=(context:ContactContext):ContactContextValues=
+ export async function readContext<T>(kind:'opportunity'|'contact',id:string):Promise<T>{
+  const response=await fetch(`/api/v1/relationships/${kind}/${id}`,{credentials:'same-origin'});
+  const result=await response.json().catch(()=>({})) as T&{error?:string};
+- if(!response.ok)throw new Error(result.error??'Orbit could not load these relationships.');
++ if(!response.ok)throw Object.assign(new Error(result.error??'Orbit could not load these relationships.'),{status:response.status});
+  return result;
+ }
+ /** The whole context with its revision, the one change applied (today's body); 409 when it changed meanwhile. */
+diff --git a/src/core/features/operator/ui/use-operator-resource.ts b/src/core/features/operator/ui/use-operator-resource.ts
+index 5f289d9..829ed7c 100644
+--- a/src/core/features/operator/ui/use-operator-resource.ts
++++ b/src/core/features/operator/ui/use-operator-resource.ts
+@@ -8,6 +8,19 @@ export interface ResourceState<T> {
+   reload: () => void;
+ }
+ 
++/** Required detail reads run together, but response timing never chooses the route's
++ * recovery state. A missing record wins; otherwise keep the first error in read
++ * order (primary first). Optional panels handle their own refusals before joining. */
++export async function readOperatorResource<T extends readonly unknown[] | []>(reads: T): Promise<{ -readonly [K in keyof T]: Awaited<T[K]> }> {
++  const results = await Promise.allSettled(reads);
++  const failures: PromiseRejectedResult[] = [];
++  for (const result of results) if (result.status === 'rejected') failures.push(result);
++  const missing = failures.find(result => result.reason?.status === 404);
++  if (missing) throw missing.reason;
++  if (failures[0]) throw failures[0].reason;
++  return Promise.all(reads);
++}
++
+ export function useOperatorResource<T>(key: string, load: () => Promise<T>, initialData?: T): ResourceState<T> {
+   const [data, setData] = useState<T | null>(initialData ?? null);
+   const [failure, setFailure] = useState<{ key: string; error: Error } | null>(null);
+diff --git a/tests/rer/operator-desktop.test.mjs b/tests/rer/operator-desktop.test.mjs
+index c6fe822..dfc047a 100644
+--- a/tests/rer/operator-desktop.test.mjs
++++ b/tests/rer/operator-desktop.test.mjs
+@@ -1,7 +1,53 @@
+ import {isolateBrowserTemp} from '../support/browser-temp.mjs';
+ isolateBrowserTemp();
+ import {test} from 'node:test';
++import {expect} from '@playwright/test';
+ import {withOperatorWorkspace} from './operator-workspace.mjs';
+ import {operatorRouteJourney} from './operator-route-journey.mjs';
+ 
+-test('BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px',{timeout:30*60000},()=>withOperatorWorkspace({name:'routes-1440',widths:[1440],observeSetup:true},context=>operatorRouteJourney(context,1440)));
++test('BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px',{timeout:30*60000},()=>withOperatorWorkspace({name:'routes-1440',widths:[1440],observeSetup:true},async context=>{await recordReadOrderJourney(context);await operatorRouteJourney(context,1440);}));
++
++// Hold one response until the other read has finished: no timer can decide which
++// error owns the route. Exercise the same record pages as T099 at one width.
++async function recordReadOrderJourney({page,fixture,origin,directory}){
++ for(const [kind,id] of [['contact',fixture.contactId],['opportunity',fixture.opportunityId]]){
++  for(const [primaryStatus,relationshipStatus] of [[404,404],[404,503],[503,404],[401,403],[403,401],[409,500],[500,409],[404,200],[200,404],[403,200],[200,403],[500,200],[200,500]]){
++   for(const first of ['primary','relationships']){
++    let release;const held=new Promise(done=>{release=done;});
++    let answered;const firstAnswered=new Promise(done=>{answered=done;});
++    const primary=`**/api/v1/records/${kind}/${id}`,relationships=`**/api/v1/relationships/${kind}/${id}`;
++    const handler=(read,status)=>async route=>{
++     if(read!==first)await held;
++     if(status===200)await route.continue();
++     else await route.fulfill({status,json:{error:`${read} refused (${status})`}});
++     if(read===first)answered();
++    };
++    await page.route(primary,handler('primary',primaryStatus));
++    await page.route(relationships,handler('relationships',relationshipStatus));
++    const firstResponse=page.waitForResponse(response=>response.url()===origin+`/api/v1/${first==='primary'?'records':'relationships'}/${kind}/${id}`);
++    try{
++     await page.goto(origin+`/app/${kind==='contact'?'contacts':'opportunities'}/${id}`,{waitUntil:'domcontentloaded'});
++     await firstAnswered;await (await firstResponse).finished();
++     // Observe both browser fetch and React's render before releasing the other response.
++     await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));
++     release();
++     const label=`${kind}: primary ${primaryStatus}, relationships ${relationshipStatus}, ${first} first`;
++     const alert=page.getByRole('main').getByRole('alert');
++     if(primaryStatus===404||relationshipStatus===404){
++      await expect(alert,label).toContainText(`This ${kind} does not exist.`);
++      await expect(page.getByRole('main').locator('form')).toHaveCount(0);
++      await expect(page.getByRole('main').locator(`a[href="/app/${kind==='contact'?'contacts':'opportunities'}"]`)).toBeVisible();
++     }else await expect(alert,label).toContainText(primaryStatus===200?`relationships refused (${relationshipStatus})`:`primary refused (${primaryStatus})`);
++     console.log(`Record recovery passed: ${label}`);
++     if(primaryStatus===404&&relationshipStatus===404&&first==='relationships'){
++      for(const width of [1440,390]){
++       await page.setViewportSize({width,height:900});
++       await page.screenshot({path:`${directory}/recovery-${kind}-${width}.png`,fullPage:true});
++      }
++      await page.setViewportSize({width:1440,height:900});
++     }
++    }finally{release();await page.unroute(primary);await page.unroute(relationships);}
++   }
++  }
++ }
++}

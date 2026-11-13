@@ -1,0 +1,16 @@
+{
+  "contract_unchanged": true,
+  "before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "total": 204,
+  "changed_clauses": [],
+  "claim": "none"
+}
