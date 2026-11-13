@@ -1,0 +1,7 @@
+commit 088a5263487a37ae465e7e42d1bb1b64167686b0
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Fri Nov 13 10:55:54 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Fri Nov 13 10:55:54 2026 +0000
+
+    Fix mailbox send proof response body reuse

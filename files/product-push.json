@@ -1,0 +1,14 @@
+{
+  "name": "product-push",
+  "command": [
+    "python3",
+    "/home/agent/rer-consolidation/.tools/cloud-push.py",
+    "origin",
+    "cloud/sd-orbit-mailbox-proof-body-1"
+  ],
+  "started_at": "2026-11-13T10:55:54.342354+00:00",
+  "finished_at": "2026-11-13T10:55:56.242782+00:00",
+  "duration_seconds": 1.9,
+  "exit_code": 0,
+  "head": "088a5263487a37ae465e7e42d1bb1b64167686b0"
+}

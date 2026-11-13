@@ -1,0 +1,52 @@
+{
+  "at": "2026-11-13T11:02:19.380594+00:00",
+  "mailbox_case_before": {
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0
+  },
+  "mailbox_case_after": {
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0
+  },
+  "other_importer_cases_after": {
+    "pass": 4,
+    "fail": 0,
+    "skipped": 0
+  },
+  "assertion_sites": {
+    "before": 129,
+    "after": 129,
+    "predicates_and_expected_values_preserved": true
+  },
+  "response_clone_sites": {
+    "before": 10,
+    "after": 0
+  },
+  "contract_counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "clauses": {
+    "CAPTURE-006": {
+      "before": "partial",
+      "after": "partial"
+    },
+    "OUT-013": {
+      "before": "missing",
+      "after": "missing"
+    }
+  },
+  "claim": "none"
+}

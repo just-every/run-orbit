@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-13T10:58:41.529177+00:00",
+  "path": "/home/agent/rer-consolidation/work/sd-orbit-mailbox-proof-body-1/product.bundle",
+  "bytes": 78611002,
+  "sha256": "f9ad5905d7d4a8cd0972b8b4fcacdd6376c6e06d089c33e5ce86ffc6fc7e4cb3",
+  "create_command": [
+    "git",
+    "bundle",
+    "create",
+    "/home/agent/rer-consolidation/work/sd-orbit-mailbox-proof-body-1/product.bundle",
+    "--all",
+    "HEAD"
+  ],
+  "create_exit_code": 0,
+  "verify_command": [
+    "git",
+    "bundle",
+    "verify",
+    "/home/agent/rer-consolidation/work/sd-orbit-mailbox-proof-body-1/product.bundle"
+  ],
+  "observed_verify_exit_code": 0,
+  "observed_verify_diagnostic": "product.bundle is okay; the bundle records a complete history",
+  "refs": [
+    "088a5263487a37ae465e7e42d1bb1b64167686b0 refs/heads/cloud/sd-orbit-mailbox-proof-body-1",
+    "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74 refs/heads/main",
+    "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74 refs/remotes/origin/main",
+    "088a5263487a37ae465e7e42d1bb1b64167686b0 HEAD"
+  ],
+  "custody": "Recovery data only; not READY or evidence of any additional push"
+}

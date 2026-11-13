@@ -1,0 +1,39 @@
+{
+  "at": "2026-11-13T10:56:15.648236+00:00",
+  "runner": "dedicated Codex cloud Linux VM; remote-runner adaptation applied (no heavy-slot helper)",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "kernel": "6.18.57",
+  "node": "v24.19.0",
+  "pnpm": "10.12.4",
+  "repository_pin_node": "22.20.0",
+  "base": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74",
+  "contract_sha256": "faa136fb56b398c3a3ba80defbe1789b3cfe2aca153dc9a5e7c4205e6aa2c32f",
+  "contract_counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "contract_counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "clause_status_changes": [],
+  "clause_statuses": {
+    "CAPTURE-006": "partial",
+    "OUT-013": "missing"
+  },
+  "claim": "none",
+  "setup_exit_code": 0,
+  "install_exit_code": 0,
+  "baseline_reproduction": "case passes here; reported Windows and M1 Body is unusable failures not rerun on those platforms",
+  "product_head": "088a5263487a37ae465e7e42d1bb1b64167686b0",
+  "product_branch": "cloud/sd-orbit-mailbox-proof-body-1",
+  "product_push": "success on first guard attempt; no rewrite or force push",
+  "pr": null,
+  "helper_sha256": "8fac8ec10fcb4eb0b39ea25163280a04b92494ce59f60fa66c5816f30b462d3f",
+  "source_lock_sha256": "980d18b57924805250aa4f55c5e652ee7ed131331c6855e6defd73ec4c29c27b"
+}

@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-13T10:56:15.600Z",
+  "base": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74",
+  "assertions_before": 129,
+  "assertions_after": 129,
+  "all_assertion_predicates_expected_values_and_order_unchanged": true,
+  "response_clone_sites_before": 10,
+  "response_clone_sites_after": 0,
+  "changed_files": [
+    "sources.lock.json",
+    "tests/support/mailbox-send-proof.ts"
+  ],
+  "generated_lock_changed_entries": [
+    "tests/support/mailbox-send-proof.ts"
+  ],
+  "helper_sha256": "8fac8ec10fcb4eb0b39ea25163280a04b92494ce59f60fa66c5816f30b462d3f"
+}

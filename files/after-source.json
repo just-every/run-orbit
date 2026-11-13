@@ -1,0 +1,13 @@
+{
+  "name": "after-source",
+  "command": [
+    "bash",
+    "-c",
+    ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 120 node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+  ],
+  "started_at": "2026-11-13T10:40:16.119029+00:00",
+  "finished_at": "2026-11-13T10:40:18.633696+00:00",
+  "duration_seconds": 2.515,
+  "exit_code": 0,
+  "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+}

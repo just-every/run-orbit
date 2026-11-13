@@ -1,0 +1,16 @@
+rer toolchain: node v24.19.0 pnpm 10.12.4 (pins 22.20.0 / 10.12.4)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ CAPTURE-005 OAuth binds native session, provider, origin, expiry and one use; encrypted authority stays out of status and archives (39120.235579ms)
+✔ CAPTURE-006 refreshed credentials are durable, leases prevent concurrent reads and disconnect fences in-flight tokens and callbacks (141909.084436ms)
+✔ CAPTURE-006 Microsoft rejects foreign host, user, folder and calendar delta links before bearer disclosure (40956.177579ms)
+✔ CAPTURE-006 oversized mail skips once while both providers finish other messages and selected calendars (175991.095853ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 401749.339685

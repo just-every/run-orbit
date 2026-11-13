@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "at": "2026-11-13T11:31:37.232486+00:00",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-mailbox-proof-body-1",
+  "head": "088a5263487a37ae465e7e42d1bb1b64167686b0",
+  "status": "PUSHED",
+  "pr": null,
+  "all_required_local_checks_passed": true,
+  "checks": {
+    "after-mailbox": {
+      "name": "after-mailbox",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 900 pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent\" tests/core/capture-providers.test.ts"
+      ],
+      "started_at": "2026-11-13T10:39:44.123178+00:00",
+      "finished_at": "2026-11-13T10:53:46.944614+00:00",
+      "duration_seconds": 842.822,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "other-importer-explicit": {
+      "name": "other-importer-explicit",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 900 pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"CAPTURE-005 OAuth|CAPTURE-006 refreshed credentials|CAPTURE-006 Microsoft rejects|CAPTURE-006 oversized mail\" tests/core/capture-providers.test.ts"
+      ],
+      "started_at": "2026-11-13T10:48:55.982682+00:00",
+      "finished_at": "2026-11-13T10:55:39.807053+00:00",
+      "duration_seconds": 403.825,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 300 pnpm run typecheck"
+      ],
+      "started_at": "2026-11-13T10:39:46.905091+00:00",
+      "finished_at": "2026-11-13T10:40:16.059003+00:00",
+      "duration_seconds": 29.154,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "after-source": {
+      "name": "after-source",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 120 node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+      ],
+      "started_at": "2026-11-13T10:40:16.119029+00:00",
+      "finished_at": "2026-11-13T10:40:18.633696+00:00",
+      "duration_seconds": 2.515,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "after-contract": {
+      "name": "after-contract",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 60 node src/base/contract-docs.mjs check"
+      ],
+      "started_at": "2026-11-13T10:40:18.671084+00:00",
+      "finished_at": "2026-11-13T10:40:20.019817+00:00",
+      "duration_seconds": 1.349,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "build": {
+      "name": "build",
+      "command": [
+        "bash",
+        "-c",
+        ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 600 npx -y @runeditrun/rer build"
+      ],
+      "started_at": "2026-11-13T10:40:35.881769+00:00",
+      "finished_at": "2026-11-13T10:40:53.054501+00:00",
+      "duration_seconds": 17.173,
+      "exit_code": 0,
+      "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+    },
+    "product-push": {
+      "name": "product-push",
+      "command": [
+        "python3",
+        "/home/agent/rer-consolidation/.tools/cloud-push.py",
+        "origin",
+        "cloud/sd-orbit-mailbox-proof-body-1"
+      ],
+      "started_at": "2026-11-13T10:55:54.342354+00:00",
+      "finished_at": "2026-11-13T10:55:56.242782+00:00",
+      "duration_seconds": 1.9,
+      "exit_code": 0,
+      "head": "088a5263487a37ae465e7e42d1bb1b64167686b0"
+    }
+  },
+  "baseline_case": {
+    "name": "before-mailbox",
+    "command": [
+      "bash",
+      "-c",
+      ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 900 pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent\" tests/core/capture-providers.test.ts"
+    ],
+    "started_at": "2026-11-13T10:26:16.805901+00:00",
+    "finished_at": "2026-11-13T10:39:16.258377+00:00",
+    "duration_seconds": 779.453,
+    "exit_code": 0,
+    "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+  },
+  "interrupted_duplicate_selection": {
+    "name": "other-importer-tests",
+    "command": [
+      "bash",
+      "-c",
+      ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 900 pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"^(?!CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent)\" tests/core/capture-providers.test.ts"
+    ],
+    "started_at": "2026-11-13T10:39:45.494772+00:00",
+    "finished_at": "2026-11-13T10:48:55.679701+00:00",
+    "duration_seconds": 550.185,
+    "exit_code": 241,
+    "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+  },
+  "interruption_reason": "Manually stopped after negative test-name filter also selected a duplicate mailbox case; corrected explicit positive selection completed 4/4 with zero skips/cancellations. No source assertion failed in the interrupted run.",
+  "ci": {
+    "at": "2026-11-13T11:31:20.891409+00:00",
+    "attempt": 8,
+    "run_id": 43412938780,
+    "conclusion": null,
+    "head_sha": "088a5263487a37ae465e7e42d1bb1b64167686b0",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43412938780",
+    "status": "in_progress"
+  },
+  "github_calls": 8,
+  "watch_interval_seconds_min": 300.9913740158081,
+  "clause_changes": [],
+  "counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "claim": "none",
+  "blockers": [],
+  "product_custody": "Pushed on first guard attempt; no landing, main/default-branch write, tag write or history rewrite.",
+  "identity": "All candidate author/committer fields are Run Edit Run fleet <fleet@runeditrun.com>; no co-author trailers.",
+  "helper_sha256": "8fac8ec10fcb4eb0b39ea25163280a04b92494ce59f60fa66c5816f30b462d3f",
+  "source_lock_sha256": "980d18b57924805250aa4f55c5e652ee7ed131331c6855e6defd73ec4c29c27b"
+}

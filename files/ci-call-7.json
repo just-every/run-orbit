@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-13T11:26:19.839434+00:00",
+  "args": [
+    "api",
+    "repos/just-every/run-orbit/actions/runs/43412938780",
+    "--jq",
+    "{status,conclusion,head_sha,html_url}"
+  ],
+  "exit_code": 0,
+  "stdout": "{\"conclusion\":null,\"head_sha\":\"088a5263487a37ae465e7e42d1bb1b64167686b0\",\"html_url\":\"https://github.com/just-every/run-orbit/actions/runs/43412938780\",\"status\":\"in_progress\"}\n",
+  "stderr": ""
+}

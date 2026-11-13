@@ -1,0 +1,13 @@
+{
+  "name": "typecheck",
+  "command": [
+    "bash",
+    "-c",
+    ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 300 pnpm run typecheck"
+  ],
+  "started_at": "2026-11-13T10:39:46.905091+00:00",
+  "finished_at": "2026-11-13T10:40:16.059003+00:00",
+  "duration_seconds": 29.154,
+  "exit_code": 0,
+  "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+}

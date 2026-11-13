@@ -1,0 +1,13 @@
+{
+  "name": "before-mailbox",
+  "command": [
+    "bash",
+    "-c",
+    ". /tmp/rer-cloud-toolchain.sh; cloud_run timeout 900 pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-name-pattern=\"CAPTURE-006 deletion and calendar consent and OUT-013 mailbox send consent\" tests/core/capture-providers.test.ts"
+  ],
+  "started_at": "2026-11-13T10:26:16.805901+00:00",
+  "finished_at": "2026-11-13T10:39:16.258377+00:00",
+  "duration_seconds": 779.453,
+  "exit_code": 0,
+  "head": "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74"
+}
