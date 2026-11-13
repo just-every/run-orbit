@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "stamp_utc": "2026-11-13T15:53:39.642087+00:00",
+  "budget": 10,
+  "before_watcher": [
+    {
+      "call": 1,
+      "command": "gh api repos/just-every/run-orbit/actions/runs/43439867137/jobs",
+      "result": "success; completed run jobs"
+    },
+    {
+      "call": 2,
+      "command": "gh run view 43439867137 --repo just-every/run-orbit --job 131935943851 --log-failed",
+      "result": "exit 0; empty output"
+    },
+    {
+      "call": 3,
+      "command": "gh run view 43439867137 --repo just-every/run-orbit --job 131962800082 --log-failed",
+      "result": "exit 0; aggregate log retained with environment blocks omitted"
+    },
+    {
+      "call": 4,
+      "command": "gh api repos/just-every/run-orbit/actions/jobs/131935943851",
+      "result": "success; failed shard step identified"
+    },
+    {
+      "call": 5,
+      "command": "gh run download 43439867137 --repo just-every/run-orbit --name orbit-shards-batch-4 --dir /tmp/orbit-prior-shard",
+      "result": "no matching artifact; misspelled plural name"
+    },
+    {
+      "call": 6,
+      "command": "gh run download 43439867137 --repo just-every/run-orbit --name orbit-shard-batch-4 --dir /tmp/orbit-prior-shard",
+      "result": "redirected artifact blob Forbidden; HTTP 403; not retried"
+    },
+    {
+      "call": 7,
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=08ab89c35ec432667141c6bcf29e47589752c51e&per_page=100",
+      "result": "success; exact-SHA Verify 43453662069 discovered"
+    }
+  ],
+  "watcher_receipt": "ci-status.json",
+  "watchers": 1,
+  "poll_interval_minimum_seconds": 300
+}

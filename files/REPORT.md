@@ -44,3 +44,17 @@ All candidate authors and committers are Run Edit Run fleet <fleet@runeditrun.co
 ## Candidate CI custody
 
 The first exact-SHA status observation (2026-11-13T15:41:52Z) is in_progress with no conclusion. No READY assertion has been made. The watcher has used 8 of 10 budgeted GitHub command invocations, including discovery and prior-run diagnostics. Later exact-SHA observations, if any, are in ci-status.json.
+
+The first report-only evidence publication was fetched into an isolated temporary root and verified: 30 files, exact manifest/file hashes, product head 08ab89c35ec432667141c6bcf29e47589752c51e. EVIDENCE_RETURN_CHECK.json records that actual transfer. The final publication may append a new evidence commit with later CI receipts; its exact head is reported separately.
+
+After correcting the scratch dependency harness, the five contract proof stages were repeated against the exact candidate tree: packaged check without anchor fails with contract_anchor_missing; packaged check with anchor reaches the existing generated-view mismatch; the repository-declared contract check passes; scratch-only generation and packaged check then pass. Scratch views were restored afterward and the worktree is clean. SCRATCH_FINAL_PROOF.json contains actual commands, outputs, exit codes and UTC stamp.
+
+## Terminal result
+
+PUSHED branch=cloud/sd-orbit-contract-anchor-2-pc1 head=08ab89c35ec432667141c6bcf29e47589752c51e
+
+Final allowed REST observation: 2026-11-13T16:06:52Z, Verify 43453662069 is in_progress with conclusion null on exact SHA 08ab89c35ec432667141c6bcf29e47589752c51e. All ten budgeted GitHub command invocations are used; one watcher made polls at least 300 seconds apart. No extra query, re-run or workflow dispatch was made. READY is not claimed. No product push blocker exists; remaining custody is the unfinished exact-SHA Verify. The prior failed run remains a reported historical failure, not a green result.
+
+The clone and its dependencies are removed only after final evidence publication succeeds. The fleet owns subsequent exact-SHA gate checking, its full publication scan, and landing. No clause changes or acceptance claims are requested.
+
+POST lanes/sd/INBOX.md: sd-orbit-contract-anchor-2-pc1 preserved saved 099ffe089261c51f7d3e1316ab5cf6a28151181a and merged main; pushed 08ab89c35ec432667141c6bcf29e47589752c51e. Clauses unchanged; 42 done / 130 partial / 32 missing remains 204. Contract/source/typechecks and two-commit portable-anchor proof pass with the documented generated-view caveat. Exact-SHA Verify 43453662069 still in_progress at 2026-11-13T16:06:52Z; GitHub budget 10/10, so PUSHED, not READY. Prior Verify 43439867137 failed batch-4 and aggregate verify; batch log was empty and artifact retrieval was Forbidden (HTTP 403). No out-of-lease product/test fix was guessed.

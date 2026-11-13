@@ -33,5 +33,12 @@
   "candidate_authors_and_committers_checked": true,
   "candidate_trailers": [],
   "product_push_attempts": 1,
-  "publication_scan": "Mac fleet required; unavailable to cloud by assignment"
+  "publication_scan": "Mac fleet required; unavailable to cloud by assignment",
+  "stamp_utc": "2026-11-13T16:07:33.541928+00:00",
+  "custody": "PUSHED",
+  "verify_status": "in_progress",
+  "verify_conclusion": null,
+  "verify_observed_utc": "2026-11-13T16:06:52.687165+00:00",
+  "github_command_budget_used": 10,
+  "github_command_budget_limit": 10
 }

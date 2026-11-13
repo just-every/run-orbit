@@ -1,0 +1,65 @@
+{
+  "stamp_utc": "2026-11-13T15:53:12.835505+00:00",
+  "commits": 2,
+  "remotes": "",
+  "source_tree": "444576ec2240b02345940d0a6f4d597a18a071da",
+  "stages": [
+    {
+      "label": "without-anchor",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "docs/contract/ANCHOR.json: contract_anchor_missing: original 28a1db90f135fe783af1c30ba3cf33c339405f9a is unavailable; record it with anchor --old <ref> in a checkout with history. Command failed: git rev-parse --verify --end-of-options 28a1db90f135fe783af1c30ba3cf33c339405f9a^{commit}\nfatal: Needed a single revision\n\n"
+    },
+    {
+      "label": "with-anchor",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 1,
+      "stdout": "WARN PUBLIC-001 d record-placement CONTRACT.md:690: matched \"This target-contract round leaves the approved homepage and app interface untouched\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN PUBLIC-002 d record-placement CONTRACT.md:697: matched \"This deliberately replaces the former dedicated hosted-record walkthrough\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN DELEGATE-001 d record-placement CONTRACT.md:739: matched \"Full verification includes the delegation D1, archive and native-browser regressions as well as all retained contract gates.\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN TEAM-008 b base-duty CONTRACT.md:783: matched \"Permission changes apply on the next request\"; source: Orbit d4a8bf1 F5 (line 70)\nWARN RECORD-021 b base-duty CONTRACT.md:845: matched \"Assignment never grants access\"; source: Orbit d4a8bf1 F5 (line 70)\nContract prose: 0 errors, 5 warnings.\n",
+      "stderr": "docs/CLAIMS.md: generated content differs; run contract-docs write.\n"
+    },
+    {
+      "label": "declared-contract",
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "stdout": "Contract documents are current.\n",
+      "stderr": ""
+    },
+    {
+      "label": "generate-scratch-views",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "stdout": "Wrote 1 contract documents.\n",
+      "stderr": ""
+    },
+    {
+      "label": "generated-contract",
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/foundation/runtime/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "stdout": "WARN PUBLIC-001 d record-placement CONTRACT.md:690: matched \"This target-contract round leaves the approved homepage and app interface untouched\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN PUBLIC-002 d record-placement CONTRACT.md:697: matched \"This deliberately replaces the former dedicated hosted-record walkthrough\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN DELEGATE-001 d record-placement CONTRACT.md:739: matched \"Full verification includes the delegation D1, archive and native-browser regressions as well as all retained contract gates.\"; source: Orbit d4a8bf1 F8 (line 76)\nWARN TEAM-008 b base-duty CONTRACT.md:783: matched \"Permission changes apply on the next request\"; source: Orbit d4a8bf1 F5 (line 70)\nWARN RECORD-021 b base-duty CONTRACT.md:845: matched \"Assignment never grants access\"; source: Orbit d4a8bf1 F5 (line 70)\nContract prose: 0 errors, 5 warnings.\nContract documents are current.\n",
+      "stderr": ""
+    }
+  ],
+  "worktree_clean": true,
+  "anchor_sha256": "6c54c227b280f193219b584cb6c38be2ec1a46bb36deef98b1db8a4715635419"
+}

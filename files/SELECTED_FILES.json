@@ -26,5 +26,9 @@
   "prior-verify.log",
   "prior-job.json",
   "prior-download-error.txt",
-  "ci-discovery.jsonl"
+  "ci-discovery.jsonl",
+  "EVIDENCE_RETURN_CHECK.json",
+  "SCRATCH_FINAL_PROOF.json",
+  "GITHUB_BUDGET.json",
+  "EVIDENCE_PUBLICATION_FIRST.txt"
 ]
