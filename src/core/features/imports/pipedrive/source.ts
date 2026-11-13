@@ -57,7 +57,7 @@ export function pipedriveSource(snapshot:Snapshot,account:string,mapping:PullMap
     if(typeof value==='number'&&!Number.isFinite(value)){warn('UNSUPPORTED_FIELD_VALUE',`Record ${id} has an invalid number in ${field.key}.`,kind,id,field.key);continue;}
     row[fieldName(field)]=cell(value);
    }
-   const supported=new Set(['id','name','owner_id','org_id','person_id','title','pipeline_id','stage_id','value','currency','expected_close_date','status','content','add_time','user_id','emails','email','phones','phone','marketing_status','custom_fields','is_deleted','deleted']);
+   const supported=new Set(['id','name','owner_id','org_id','person_id','deal_id','title','pipeline_id','stage_id','value','currency','expected_close_date','status','content','add_time','user_id','emails','email','phones','phone','marketing_status','custom_fields','is_deleted','deleted']);
    for(const field of Object.keys(record))if(!supported.has(field)&&!custom.some(item=>item.key===field))warn('UNSUPPORTED_FIELD',`Record ${id}: field ${field} is retained only in source review.`,kind,id,field);
    for(const field of Object.keys(record.custom_fields??{}))if(!custom.some(item=>item.key===field))warn('UNSUPPORTED_FIELD',`Record ${id}: custom field ${field} has no available definition and was not imported.`,kind,id,field);
    rows.push(row);
