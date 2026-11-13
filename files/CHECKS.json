@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stale-draft-truth-1",
+  "head": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+  "base": "008e46c5a9f2c87e990e4b2881ab16a962640f11",
+  "time_utc": "2026-11-13T04:12:30.519069+00:00",
+  "product_push": "succeeded on first attempt through cloud-push.py",
+  "pr": null,
+  "tests_before": 200,
+  "tests_after": 200,
+  "checks": [
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs stale-review.spec.mjs",
+      "result": "passed",
+      "tests": 2,
+      "log": "browser.log",
+      "viewport": 1440,
+      "screenshots": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 --test-name-pattern='captured reply stops outreach|OUT-007 OUT-009 SEQUENCE-002' tests/core/capture-boundaries.test.ts tests/core/signals-outreach.test.ts",
+      "result": "passed",
+      "tests": 2,
+      "log": "core.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "passed",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "result": "passed",
+      "log": "boundaries.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "result": "passed",
+      "log": "source-lock.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "passed",
+      "log": "source-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "result": "passed",
+      "log": "contract-check.log"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "result": "passed",
+      "total": 200
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "result": "passed",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": []
+    }
+  ],
+  "publication_scan": "reserved for fleet lander; added-diff credential-shape check passed",
+  "contract_status_change": "none",
+  "screenshots_reviewed": true,
+  "plan": "PLAN.md",
+  "report": "REPORT.md",
+  "product_custody": "PUSHED",
+  "exact_sha_verify": {
+    "run_id": 43363949058,
+    "status": "in_progress",
+    "conclusion": null,
+    "observed_at": "2026-11-13T04:53:06.339433+00:00",
+    "github_calls": 9
+  },
+  "blockers": [
+    "Exact-SHA Verify has no completed conclusion yet; no completed failing workflow was observed."
+  ]
+}

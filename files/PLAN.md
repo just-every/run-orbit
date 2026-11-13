@@ -1,0 +1,9 @@
+# Plan — main-orbit-stale-draft-truth-1
+
+1. Initialize launcher, fleet Git identity/authentication, commit cleanup hook and pinned toolchain. Read the inline RULES and checkout guidance.
+2. Reproduce on the fresh main checkout using a saved handwritten unscheduled draft, an imported synthetic reply and accepted link/next-action proposals. Check Do not contact review choices. Capture only the changed screens at 1440 and 390.
+3. Separate draft invalidation explanations from scheduled-message cancellation explanations. Use the existing record presentation helper for all contact permission values within stale draft review. Preserve revision, review and approval fences.
+4. Extend the existing ACTION-005 public browser journey at the 200-test cap; retain meeting review coverage. Assert truthful unscheduled reason, plain permission label, blocked stale editing/review until acknowledgement, and no outbound creation. Extend an existing public route case if needed to verify stale-send 409 with its existing network-edge mail fixture.
+5. Run changed tests, typecheck and test inventory. Update source lock with the documented generator last and check it. Fetch/rebase current main before the first publication; preserve main's newer source and tests.
+6. Commit with fleet identity and active hooks, inspect all candidate commit identities/messages, and push only cloud/main-orbit-stale-draft-truth-1 through cloud-push.py. Keep reports/screenshots outside the product tree.
+7. Discover/poll exact-SHA Verify using REST within the ten-call budget and 300-second interval. Repair in-scope failures if needed without rewriting published history. Publish the complete explicit non-secret evidence packet to evidence/main-orbit-stale-draft-truth-1. Report a PARTIAL claim only; do not edit clause status, gap or evidence. Remove the successful pushed clone after evidence is transferred.

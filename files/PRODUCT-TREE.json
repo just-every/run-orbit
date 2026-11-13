@@ -1,0 +1,18 @@
+{
+  "head": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+  "product_files": {
+    "sources.lock.json": "d1ac1223f065385220f0929241b8e1601e3942da1b21eec9ca9883d74e9076bd",
+    "src/core/features/drafts/repository.ts": "42f209e43427fe424d3ed5247d1aff4d325a6bfe8c0dd16b04b84998f3be8206",
+    "src/core/features/ingestion/repository.ts": "ca5ef7735b33907fedd8f690239988a32a8331e04983a38bc5d3aed0903ee62a",
+    "src/core/features/ingestion/stop-repository.ts": "18e17ab9e892f8cd11742c4dc6b7b4157779c53af52522f883f73e4785547215",
+    "src/core/features/operator/ui/draft-page.tsx": "e0204c3ebb39f9f6a8756b6cfbde82563fb0a20711978df8dc95fff2487fcc3b",
+    "src/core/features/outreach/stop-reason.ts": "6428dd89e6a4c45ca0ca7b6ed35fa79cae878b77a23cb4fb7b6ab01713418a23",
+    "src/core/features/records/suppression-effects.ts": "4b71023d4372b41fd4857099028ec755684a4314173429a2d7b00869cb0222b6",
+    "src/core/features/workbench/repository.ts": "5ab4c644aeeac942bc8b507b6f4e5eb566d6968b21c199d748bdbbf07c1bec47",
+    "tests/core/capture-boundaries.test.ts": "9c2b746522edfe0f3226aa2ec3e614f2c5c17210ebee1c0431e3dcef45ce637c",
+    "tests/e2e/stale-review.spec.mjs": "1bd7395d820d160242d70ffa727873fe624e1c59ad547e4c2d98e61f5722b5b3"
+  },
+  "report_files_committed_to_product": false,
+  "generated_views_committed": false,
+  "working_tree_clean": true
+}

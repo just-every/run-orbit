@@ -1,0 +1,155 @@
+[WebServer] (node:3117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3137) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3173) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:3181) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:3154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3715) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3728) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:3804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:3812) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+
+Running 1 test using 1 worker
+
+(node:3856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:4033) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+[WebServer] 
+[WebServer] 
+[WebServer] (node:4041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ [WARNING] Scheduled Workers are not automatically triggered during local development.
+[WebServer] 
+[WebServer]   To manually trigger a scheduled event, run:
+[WebServer]     curl "http://127.0.0.1:8722/cdn-cgi/local/scheduled"
+[WebServer]   For more details, see https://developers.cloudflare.com/workers/configuration/cron-triggers/#test-cron-triggers-locally
+[WebServer] 
+[WebServer] 
+  ✘  1 tests/contract.mjs:4:3 › ACTION-005 — an operator sees new evidence and confirms a stale draft without sending (17.0s)
+
+
+  1) tests/contract.mjs:4:3 › ACTION-005 — an operator sees new evidence and confirms a stale draft without sending 
+
+    Error: expect(received).not.toMatch(expected)
+
+    Expected pattern: not /cancel|schedul/i
+    Received string:      "Customer replied, so the scheduled follow-up was cancelled"
+
+       at stale-review.spec.mjs:55
+
+      53 |  const review=page.getByTestId('stale-review');await expect(review).toBeVisible();
+      54 |  expect.soft(await review.locator('p').first().innerText()).toMatch(/repl|respond/i);
+    > 55 |  expect.soft(await review.locator('p').first().innerText()).not.toMatch(/cancel|schedul/i);
+         |                                                                 ^
+      56 |  const screenshots=process.env.STALE_REVIEW_SCREENSHOT_DIR;
+      57 |  async function proof(state){if(!screenshots)return;mkdirSync(screenshots,{recursive:true});for(const width of [1440,390]){await page.setViewportSize({width,height:900});await page.screenshot({path:join(screenshots,`${state}-${width}.png`),fullPage:true});}await page.setViewportSize({width:1440,height:900});}
+      58 |  await proof('reply');
+        at /workspace/run-orbit/tests/e2e/stale-review.spec.mjs:55:65
+
+    Error: expect(received).not.toMatch(expected)
+
+    Expected pattern: not /do_not_contact/
+    Received string:      "Review what changedContact changedCurrent opportunity: Imported reply review · Qualified · Customer replyRe: Team plan d33900f9-d735-4997-add3-bb0eced3b208 · 11/13/2026, 2:06 PMConfirm the current recipientChoose a linked contactMaya Chen — maya-d33900f9-d735-4997-add3-bb0eced3b208@example.test (do_not_contact) I reviewed the changed evidence, current recipient, subject and body above.Confirm reviewed draftThis confirms a new draft revision. It sends nothing."
+
+       at stale-review.spec.mjs:68
+
+      66 |  await details.getByRole('group',{name:'Confirm change'}).getByRole('button',{name:'Stop mail',exact:true}).click();expect((await stopped).ok()).toBe(true);
+      67 |  await page.goto(`/app/drafts/${unscheduled.draftId}`);await expect(review).toBeVisible();
+    > 68 |  expect.soft(await review.textContent()).not.toMatch(/do_not_contact/);
+         |                                              ^
+      69 |  const recipient=review.getByLabel('Confirm the current recipient');
+      70 |  expect.soft(await recipient.locator('option:checked').textContent()).toMatch(/Do not contact/i);
+      71 |  await expect(recipient.locator('option:checked')).toBeDisabled();await proof('do-not-contact');
+        at /workspace/run-orbit/tests/e2e/stale-review.spec.mjs:68:46
+
+    Error: expect(received).toMatch(expected)
+
+    Expected pattern: /Do not contact/i
+    Received string:  "Maya Chen — maya-d33900f9-d735-4997-add3-bb0eced3b208@example.test (do_not_contact)"
+
+       at stale-review.spec.mjs:70
+
+      68 |  expect.soft(await review.textContent()).not.toMatch(/do_not_contact/);
+      69 |  const recipient=review.getByLabel('Confirm the current recipient');
+    > 70 |  expect.soft(await recipient.locator('option:checked').textContent()).toMatch(/Do not contact/i);
+         |                                                                       ^
+      71 |  await expect(recipient.locator('option:checked')).toBeDisabled();await proof('do-not-contact');
+      72 |  expect(await history()).toEqual([]);expect(approvals).toEqual([]);
+      73 | });
+        at /workspace/run-orbit/tests/e2e/stale-review.spec.mjs:70:71
+
+    Error: expect(locator).toBeDisabled() failed
+
+    Locator:  getByTestId('stale-review').getByLabel('Confirm the current recipient').locator('option:checked')
+    Expected: disabled
+    Received: enabled
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeDisabled" getByTestId('stale-review').getByLabel('Confirm the current recipient').locator('option:checked') with timeout 5000ms
+      - waiting for getByTestId('stale-review').getByLabel('Confirm the current recipient').locator('option:checked')
+        14 × locator resolved to <option disabled value="01M79HB73WCYANHHD7ETGPDC28">…</option>
+           - unexpected value "enabled"
+
+
+       at stale-review.spec.mjs:71
+
+      69 |  const recipient=review.getByLabel('Confirm the current recipient');
+      70 |  expect.soft(await recipient.locator('option:checked').textContent()).toMatch(/Do not contact/i);
+    > 71 |  await expect(recipient.locator('option:checked')).toBeDisabled();await proof('do-not-contact');
+         |                                                    ^
+      72 |  expect(await history()).toEqual([]);expect(approvals).toEqual([]);
+      73 | });
+      74 |
+        at /workspace/run-orbit/tests/e2e/stale-review.spec.mjs:71:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../tmp/orbit-test-results/stale-review-ACTION-005-—--0e5b7-stale-draft-without-sending/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../tmp/orbit-test-results/stale-review-ACTION-005-—--0e5b7-stale-draft-without-sending/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/orbit-test-results/stale-review-ACTION-005-—--0e5b7-stale-draft-without-sending/trace.zip
+    Usage:
+
+        pnpm exec playwright show-trace ../../tmp/orbit-test-results/stale-review-ACTION-005-—--0e5b7-stale-draft-without-sending/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/contract.mjs:4:3 › ACTION-005 — an operator sees new evidence and confirms a stale draft without sending 

@@ -1,0 +1,324 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+  "run_id": 43363949058,
+  "url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+  "observations": [
+    {
+      "conclusion": null,
+      "created_at": "2026-11-13T04:12:08Z",
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "id": 43363949058,
+      "name": "Verify",
+      "status": "queued"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:18:01.447775+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:23:02.046568+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:28:02.688606+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:33:03.258236+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:38:03.871721+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:48:05.740308+00:00"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43363949058",
+      "status": "in_progress",
+      "observed_at": "2026-11-13T04:53:06.339433+00:00"
+    }
+  ],
+  "github_calls": 9,
+  "last_observation_utc": "2026-11-13T04:53:06.339433+00:00",
+  "minimum_poll_interval_seconds": 300,
+  "status": "in_progress",
+  "conclusion": null,
+  "job_observations": [
+    {
+      "jobs": [
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131683801218,
+          "name": "plan",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131683925694,
+          "name": "source and shared build",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "skipped",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131683927994,
+          "name": "light",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": null,
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685237985,
+          "name": "shards (batch-3)",
+          "status": "in_progress",
+          "steps": [
+            {
+              "conclusion": null,
+              "name": "Verify routine product shard",
+              "number": 15,
+              "status": "in_progress"
+            },
+            {
+              "conclusion": null,
+              "name": "Retain rer startup diagnostics",
+              "number": 16,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Retain shard completion",
+              "number": 17,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Retain product execution evidence",
+              "number": 18,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Post Run actions/cache@v4",
+              "number": 33,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Post Run actions/setup-node@v4",
+              "number": 34,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Post Run pnpm/action-setup@v4",
+              "number": 35,
+              "status": "pending"
+            },
+            {
+              "conclusion": null,
+              "name": "Post Run actions/checkout@v4",
+              "number": 36,
+              "status": "pending"
+            }
+          ]
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238023,
+          "name": "shards (batch-5)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238058,
+          "name": "shards (batch-10)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238063,
+          "name": "shards (batch-0)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238081,
+          "name": "shards (batch-1)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238091,
+          "name": "shards (batch-9)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238103,
+          "name": "shards (batch-4)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238114,
+          "name": "shards (batch-2)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238117,
+          "name": "shards (batch-15)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238143,
+          "name": "shards (batch-13)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238146,
+          "name": "shards (batch-11)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238153,
+          "name": "shards (batch-7)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238157,
+          "name": "shards (batch-14)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238176,
+          "name": "shards (batch-8)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238207,
+          "name": "shards (batch-6)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238231,
+          "name": "shards (batch-17)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238243,
+          "name": "shards (batch-16)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238262,
+          "name": "shards (batch-19)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238297,
+          "name": "shards (batch-18)",
+          "status": "completed",
+          "steps": []
+        },
+        {
+          "conclusion": "success",
+          "head_sha": "c390b8b4a8f2cf89534b2cefad4fbc9f46106410",
+          "id": 131685238318,
+          "name": "shards (batch-12)",
+          "status": "completed",
+          "steps": []
+        }
+      ],
+      "total_count": 23,
+      "observed_at": "2026-11-13T04:43:05.178927+00:00"
+    }
+  ],
+  "terminal_product_custody": "PUSHED",
+  "handoff_reason": "Exact-SHA Verify still in progress at the last permitted poll before the 45-minute limit; the next 300-second poll would exceed the limit.",
+  "last_job_inventory_utc": "2026-11-13T04:43:05.178927+00:00",
+  "last_observed_pending_job": {
+    "id": 131685237985,
+    "name": "shards (batch-3)",
+    "step_number": 15,
+    "step": "Verify routine product shard",
+    "mapped_shard": "core-1",
+    "inventory_time_utc": "2026-11-13T04:43:05.178927+00:00",
+    "status_may_have_changed_since_inventory": true
+  }
+}
