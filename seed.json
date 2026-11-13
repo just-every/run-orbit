@@ -233,6 +233,18 @@
         "Event kind, record display name, stage from/to, owner display name, due date and authenticated Orbit link"
       ],
       "adapters": []
+    },
+    {
+      "id": "salesforce",
+      "required": false,
+      "requiredWhen": "The installation owner connects Salesforce for an Account and Contact migration.",
+      "why": "The owner explicitly authorizes OAuth and read-only Account and Contact queries using a Salesforce user with the intended read permissions.",
+      "data": [
+        "Salesforce OAuth client credentials and one-use authorization proof",
+        "Salesforce access and refresh grants",
+        "Selected Account and Contact field names and pagination cursors"
+      ],
+      "adapters": []
     }
   ],
   "env": [
