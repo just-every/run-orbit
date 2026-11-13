@@ -27,7 +27,38 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await settings.getByRole('button',{name:'Activate reviewed version',exact:true}).click();
  await expect(settings.getByRole('status').filter({hasText:'Workflow activated'})).toBeVisible();
  const activeWorkflow=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.name==='Prepare account review');
+ // Editing a selected active workflow must keep one editor while the save and
+ // immediate preview finish, including after choosing the workflow again.
+ await settings.getByLabel(/^Choose workflow/).selectOption(activeWorkflow.id);
+ await expect(settings.getByLabel('Workflow name',{exact:true})).toHaveCount(1);
  const beforeDraft=await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET');
+ const draftSaved=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/workflows/${activeWorkflow.id}`&&response.request().method()==='POST');
+ await settings.getByLabel(/^Trigger/).selectOption('record_created');
+ await settings.getByRole('button',{name:'Preview changes',exact:true}).click();
+ const draftResponse=await draftSaved;assert.equal(draftResponse.status(),200);
+ const {workflow:triggerDraft}=await draftResponse.json();
+ assert.equal(triggerDraft.version,activeWorkflow.version+1);
+ assert.equal(triggerDraft.definition.trigger.kind,'record_created');
+ await expect(settings.getByLabel('Workflow name',{exact:true})).toHaveCount(1);
+ await expect(settings.getByRole('region',{name:'Workflow activation preview'})).toBeVisible();
+ await expect(settings.getByRole('button',{name:'Preview changes',exact:true})).toBeEnabled();
+ await expect(settings.getByText('Saving draft…',{exact:true})).toHaveCount(0);
+ await expect(settings.getByRole('button',{name:'Working…',exact:true})).toHaveCount(0);
+ const previewedDraft=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);
+ assert.equal(previewedDraft.version,triggerDraft.version);
+ assert.equal(previewedDraft.activeVersion,activeWorkflow.activeVersion);
+ assert.equal(previewedDraft.status,'draft');
+ assert.deepEqual((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record,beforeDraft.record);
+ for(let selection=0;selection<2;selection++){
+  await settings.getByLabel(/^Choose workflow/).selectOption('');
+  await expect(settings.getByLabel('Workflow name',{exact:true})).toHaveCount(0);
+  await settings.getByLabel(/^Choose workflow/).selectOption(activeWorkflow.id);
+  await expect(settings.getByLabel('Workflow name',{exact:true})).toHaveCount(1);
+  await expect(settings.getByLabel(/^Trigger/)).toHaveValue('record_created');
+ }
+ await settings.getByRole('button',{name:'Preview changes',exact:true}).click();
+ await expect(settings.getByRole('region',{name:'Workflow activation preview'})).toBeVisible();
+ assert.equal((await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id).version,triggerDraft.version,'reselection and preview do not create extra versions');
  await settings.getByLabel('Value',{exact:true}).fill('Draft must not run');
  await expect.poll(async()=>{
   const saved=(await request(page,'/api/workflows',undefined,'GET')).workflows.find(workflow=>workflow.id===activeWorkflow.id);
