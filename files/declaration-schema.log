@@ -1,0 +1,6 @@
+
+> orbit@0.4.7 check:manifest /home/agent/rer-consolidation/work/sd-orbit-c-f183-pc1/run-orbit
+> node tools/seed-schema/validate.mjs --schema SEED seed.json
+
+ok   seed.json
+1/1 valid against tools/seed-schema/SEED.schema.json

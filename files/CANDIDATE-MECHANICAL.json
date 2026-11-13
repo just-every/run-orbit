@@ -1,0 +1,102 @@
+{
+  "priorHead": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "mergedMain": "90c58e001a5a5ae74e81a61526fb3e88b9f616ed",
+  "checks": [
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-1.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "check:manifest"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-2.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "deployment:spec"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-3.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "deployment:check"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-4.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-5.log"
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "write"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-6.log"
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-7.log"
+    },
+    {
+      "command": [
+        "git",
+        "checkout",
+        "origin/main",
+        "--",
+        "ACCEPTANCE.md",
+        "docs/CLAIMS.md"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-8.log"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "lock"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-9.log"
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit": 0,
+      "log": "candidate-mechanical-10.log"
+    }
+  ]
+}

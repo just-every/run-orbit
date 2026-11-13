@@ -2,11 +2,11 @@
 
 Repository: just-every/run-orbit
 Branch: cloud/sd-orbit-c-f183-pc1
-Candidate: 76bd6668fabf2a961af410b4e7888cf92238f416
+Candidate: e2d1b48b46f9d0296b241c3e1cda0da05da112f8
 Saved starting head: 1f9dd79164d7043a3c0e5eaff8365d8a98dca209
 Preservation save: d09717c (full identity in SAVE.json)
-Integrated main: 2045bd23ba8d05fede4c8663d8e1bb2797ae35da
-Verify: {"conclusion": null, "event": "push", "head_sha": "76bd6668fabf2a961af410b4e7888cf92238f416", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43347379622", "id": 43347379622, "name": "Verify", "observed_at": "2026-11-13T02:13:17.107566+00:00", "run_id": 43347379622, "status": "in_progress"}
+Integrated main: 90c58e001a5a5ae74e81a61526fb3e88b9f616ed
+Verify: {"conclusion": null, "event": "push", "head_sha": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43351891555", "id": 43351891555, "name": "Verify", "observed_at": "2026-11-13T02:25:27.871283+00:00", "status": "in_progress"}
 PR: none; Verify has a branch-push entry point.
 
 ## Outcome and scope
@@ -23,7 +23,7 @@ The full original execution plan is PLAN.md. Its steps are: preserve the saved b
 
 REPRODUCTION.json and reproduce-batch-7.log record the real nonzero reproduction. The exact assertion is: “0049 retains exact columns, objects, triggers and views after stripping the library additions”. Current main passed that archive section before later timing out in an unrelated fixture migration. The initial cloud batch additionally hit Wrangler migration-start ETIMEDOUT on other cases. MAIN-CONTROL.json and main-forward-upgrade.log preserve that same environment timeout on main. Those timeouts did not justify a product or test change. System Chromium at /usr/bin/chromium was launch-probed with no sandbox; temporary local browser executable links avoid preloading browser libraries into every migration process. No repository browser or timeout guard was weakened.
 
-The direct repaired historical archive proof passed: released store 202 tables and 208 rows; preceding store 207 tables and 209 rows; zero foreign-key violations. See repaired-archive-proof.log. The original full batch and retained CRM import registrations have their actual execution receipts beside this report. The final diff from the save is limited to an additional restore-refusal assertion, operator documentation and the generated source lock; the application and upgrade-test bytes used by the save's runtime proof are retained.
+The direct repaired historical archive proof passed: released store 202 tables and 208 rows; preceding store 207 tables and 209 rows; zero foreign-key violations. See repaired-archive-proof.log. The original full batch and retained CRM import registrations have their actual execution receipts beside this report. The qualification adds a restore-refusal assertion and operator documentation. The final metadata declaration and merge also retain main's dashboard report-link fix. FINAL.json proves every selected Salesforce runtime, migration, archive, native proof and browser proof path is byte-identical to the passing local proof commit.
 
 ## Selected native proof register
 
@@ -45,7 +45,7 @@ These rows describe the selected limb; they do not promote either complete accep
 | Historical archive compatibility | Real released and preceding stores migrate forward; preceding-generation archive is admitted; exact original 0049 and pre-forecast catalog and hash assertions remain. | newtests/t096/released-forecast-upgrade.ts:63-81, within existing forward-upgrade test |
 | Responsive native flow | Connection, invalid-state refusal, connected state, metadata, stopped page, persisted resume, owner mapping, preview, applied records, disconnected state and withdrawn review are operated at 1440 and captured also at 390. Only Salesforce HTTP is replaced for its fixture. | tests/e2e/imports-salesforce.mjs:12-28; selected PNG files |
 
-PROBE MIGRATE-003 1 (selected native limb): authenticated Salesforce start, callback, metadata, persisted page advance, owner-mapped dry run and confirmed Apply -> 2 companies, 12 contacts and 11 exact Contact to Account links; interrupted D1 resumes, repeat is unchanged and Undo preserves a later edit. Native erasure and archive restore -> no surviving pull or source-review authority. The selected native helper completed with exit 0 in SALESFORCE-FINAL.json on the exact final SHA; browser completion is recorded in IMPORT-BROWSER.json. The broader IMPORT-CORE.json timeout is not represented as a pass.
+PROBE MIGRATE-003 1 (selected native limb): authenticated Salesforce start, callback, metadata, persisted page advance, owner-mapped dry run and confirmed Apply -> 2 companies, 12 contacts and 11 exact Contact to Account links; interrupted D1 resumes, repeat is unchanged and Undo preserves a later edit. Native erasure and archive restore -> no surviving pull or source-review authority. The selected native helper completed with exit 0 in CANDIDATE-SALESFORCE.json on the exact final SHA; browser completion is recorded in IMPORT-BROWSER.json. The broader IMPORT-CORE.json timeout is not represented as a pass.
 
 ## Acceptance, inherited duties and riders
 
@@ -70,7 +70,7 @@ PROBE MIGRATE-003 1 (selected native limb): authenticated Salesforce start, call
 
 PRE-READY: no assertion removed, skipped or narrowed; no workflow edited; no Base pin changed; no data migration byte rewritten; source lock and contract generator checked; public authority, erasure and replay paths retained; responsive import screen proof retained. Salesforce controls are named text controls under Settings, with no added icon-only control. No new fixture contains an email address literal or provider-shaped credential. The final repository diff is checked for accidental slash-word references and credential-shaped values before push. Live-account obligations and broader migration scope remain disclosed.
 
-Publication scan receipt: commit=76bd6668fabf2a961af410b4e7888cf92238f416; complete=not_run; historyScanned=not_run; findings=not_run. Cloud-side publication scan is delegated by the assignment to the maintained Mac lander. No COMPLETE or zero-findings result is asserted here. Main equality and Run site are likewise pending landing, not builder receipts.
+Publication scan receipt: commit=e2d1b48b46f9d0296b241c3e1cda0da05da112f8; complete=not_run; historyScanned=not_run; findings=not_run. Cloud-side publication scan is delegated by the assignment to the maintained Mac lander. No COMPLETE or zero-findings result is asserted here. Main equality and Run site are likewise pending landing, not builder receipts.
 
 ## Remaining boundaries
 
@@ -86,9 +86,9 @@ The repaired full local fold-domain-3 batch reached the 1,200-second command lim
 
 The complete native import browser registration passed (1 test, 4.5 minutes including startup); all 22 Salesforce captures were inspected. SCREEN-REVIEW.json records file hashes and the tier-C stale success-banner follow-up after disconnect. The server removes connection and review authority despite that old query message.
 
-The broad local import command reached its 1,800-second limit after three erasure cases passed. The Salesforce helper had already returned before the observed existing HubSpot and Pipedrive rerun work. This broad command is INCOMPLETE, not green. The committed final Salesforce helper and previously failing forward-upgrade registration are being run directly; their actual receipts are SALESFORCE-FINAL.json and FORWARD-FINAL.json. Exact-final Verify 43347379622 is a push run on the full candidate SHA.
+The broad local import command reached its 1,800-second limit after three erasure cases passed. The Salesforce helper had already returned before the observed existing HubSpot and Pipedrive rerun work. This broad command is INCOMPLETE, not green. The committed Salesforce helper and previously failing forward-upgrade registration were run directly; their actual passing receipts are SALESFORCE-FINAL.json and FORWARD-FINAL.json. The native helper was then repeated successfully on the final merged candidate in CANDIDATE-SALESFORCE.json. Verify 43347379622 was the preceding qualification push; final Verify 43351891555 is on the candidate shown above.
 
-A standalone `tsx -e` diagnostic used CommonJS and failed with IMPORT_READ_GUARD_REQUIRED at initial Apply. Its original nonzero receipt is retained in SALESFORCE-CJS-DIAGNOSTIC.json and salesforce-cjs-diagnostic.log. The import kit uses module-local guard identity; the retained registration and application use ESM. The direct helper is therefore being checked through the actual ESM loader using the preserved validation/salesforce-final.mts entry, with no product or guard change. SALESFORCE-FINAL.json records that execution outcome.
+A standalone `tsx -e` diagnostic used CommonJS and failed with IMPORT_READ_GUARD_REQUIRED at initial Apply. Its original nonzero receipt is retained in SALESFORCE-CJS-DIAGNOSTIC.json and salesforce-cjs-diagnostic.log. The import kit uses module-local guard identity; the retained registration and application use ESM. The direct helper was therefore checked through the actual ESM loader using the preserved validation/salesforce-final.mts entry, with no product or guard change. SALESFORCE-FINAL.json records that execution outcome.
 
 ## Final committed local completions
 
@@ -96,8 +96,16 @@ SALESFORCE-FINAL.json: exit 0 on 76bd6668fabf2a961af410b4e7888cf92238f416 using 
 
 FORWARD-FINAL.json: exit 0 on the same exact commit. The full previously failing forward-upgrade registration passed (1 test, 596 seconds), including its historical schema assertions and later ownership and record-mail archive roundtrips. Earlier timed-out broad commands remain separately recorded as incomplete.
 
-MECHANICAL.json has nine checks, all exit 0. FINAL.json binds the clean pushed candidate, exact source lock digest and unchanged application, migration, browser and upgrade bytes since the published save. The post-commit lock check also exits 0. IMPORT-BROWSER.json and SCREEN-REVIEW.json bind the passing browser run and all 22 inspected Salesforce screenshots to those unchanged runtime bytes.
+MECHANICAL.json has nine checks, all exit 0. FINAL.json binds the clean pushed candidate, exact source lock digest and unchanged selected runtime, migration, browser and upgrade proof bytes since the passing qualification commit. The post-commit lock check also exits 0. IMPORT-BROWSER.json and SCREEN-REVIEW.json bind the passing browser run and all 22 inspected Salesforce screenshots to those unchanged runtime bytes.
 
-The current local selected-point and regression receipts are complete and passing. Broader timed-out runs and the non-native CommonJS diagnostic remain disclosed and do not become passing receipts. No subsequent product edit was made after the committed final source-lock check.
+The current local selected-point and regression receipts are complete and passing. Broader timed-out runs and the non-native CommonJS diagnostic remain disclosed and do not become passing receipts. The final metadata declaration and current-main merge were checked again; CANDIDATE-MECHANICAL.json records all ten checks at exit 0, and candidate-committed-lock-check.log verifies the committed lock.
 
 MECHANICAL lock=node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock then check exit=0; views=node src/base/contract-docs.mjs write then check exit=0, followed by restoring both generated views from origin/main; ledger=pnpm run deployment:check exit=0. All exact argument lists and outputs are retained in MECHANICAL.json and its selected logs.
+
+## Final declaration and main integration
+
+The final candidate declares the optional Salesforce external in seed.json: OAuth client credentials and one-use authorization proof, access and refresh grants, selected Account and Contact field names and paging cursors. This records the connector's existing outbound boundary; it grants no new pull or review authority. The build and manifest check pass. DECLARATION-CHECKS.json records the initial declaration checks; CANDIDATE-MECHANICAL.json records the repeated checks after merging main 90c58e001a5a5ae74e81a61526fb3e88b9f616ed. The inherited main change links dashboard tiles to the selected saved report version and retains its expanded assertions.
+
+The selected native Salesforce and complete forward-upgrade proofs passed on 76bd6668fabf2a961af410b4e7888cf92238f416. The current candidate e2d1b48b46f9d0296b241c3e1cda0da05da112f8 has identical bytes for all selected application, migration, erasure, archive, native test and browser paths listed in FINAL.json. The only intervening application difference is the unrelated dashboard fix inherited from main. No existing assertion was removed or weakened. Final source lock check exit 0; generated views and CONTRACT.md still match main exactly.
+
+CANDIDATE-BUILD.json records a fresh successful build on e2d1b48b46f9d0296b241c3e1cda0da05da112f8. CANDIDATE-SALESFORCE.json records the repeated native ESM Salesforce public-door proof on that exact final commit: exit 0 in 274 seconds. It covers the selected consent, state, grants, sealed custody, metadata, paging, persisted interruption and resume, existing-owner mapping, saved review, confirmed Apply, unchanged rerun, conflict-preserving Undo, erasure and restored-authority refusal outcomes. The passing browser and forward-upgrade receipts remain valid by the explicit relevant-byte comparison in FINAL.json.

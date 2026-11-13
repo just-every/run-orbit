@@ -1,0 +1,7 @@
+{
+  "head": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8",
+  "command": "cloud_run npx -y @runeditrun/rer build",
+  "exit": 0,
+  "elapsedSeconds": 13.80160032799995,
+  "log": "candidate-build.log"
+}

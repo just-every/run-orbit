@@ -1,0 +1,55 @@
+{
+  "baseHead": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "checks": [
+    {
+      "command": "pnpm run check:manifest",
+      "exit": 0,
+      "log": "declaration-schema.log"
+    },
+    {
+      "command": "pnpm run deployment:spec",
+      "exit": 0,
+      "log": "declaration-deployment-write.log"
+    },
+    {
+      "command": "pnpm run deployment:check",
+      "exit": 0,
+      "log": "declaration-deployment-check.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "declaration-typecheck.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "declaration-first-party.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs write",
+      "exit": 0,
+      "log": "declaration-views-write.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "declaration-views-check.log"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "log": "declaration-views-restore.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "declaration-lock-write.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "declaration-lock-check.log"
+    }
+  ]
+}

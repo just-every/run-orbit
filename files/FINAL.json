@@ -1,19 +1,38 @@
 {
   "repository": "just-every/run-orbit",
   "branch": "cloud/sd-orbit-c-f183-pc1",
-  "head": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "head": "e2d1b48b46f9d0296b241c3e1cda0da05da112f8",
   "pushed": true,
-  "main": "2045bd23ba8d05fede4c8663d8e1bb2797ae35da",
+  "main": "90c58e001a5a5ae74e81a61526fb3e88b9f616ed",
   "clean": true,
   "committedLockCheckExit": 0,
-  "sourceLockSha256": "e10b8d2150a750aad4f1e43e8674baa21a7e3a9444020106f6b9cd34a95cde7e",
-  "sourceAndBrowserUnchangedSinceSave": true,
-  "finalChangeFiles": [
-    "docs/imports/MOVING.md",
+  "sourceLockSha256": "30975ab653b4332d679dea50cef23a93602e7e5f40b5737efd0b390036d5e33e",
+  "proofBase": "76bd6668fabf2a961af410b4e7888cf92238f416",
+  "selectedRuntimeAndProofBytesUnchanged": true,
+  "comparedPaths": [
+    "src/core/features/imports",
+    "src/core/features/records/archive-generations.ts",
+    "src/core/features/records/erasure.ts",
+    "src/core/features/operator/ui/imports-page.tsx",
+    "src/core/app/app.ts",
+    "src/core/platform/source-security.ts",
+    "migrations",
+    "tests/core/crm-import.test.ts",
+    "tests/core/crm-import-erasure.test.ts",
+    "tests/support/salesforce-api-proof.ts",
+    "tests/e2e/imports.spec.mjs",
+    "tests/e2e/imports-salesforce.mjs",
+    "newtests/t096/forward-upgrade.test.ts",
+    "newtests/t096/released-forecast-upgrade.ts"
+  ],
+  "changesSinceProof": [
+    "newtests/t096/dashboard-access-proof.ts",
+    "newtests/t096/report-disclosure.test.ts",
+    "seed.json",
     "sources.lock.json",
-    "tests/support/salesforce-api-proof.ts"
+    "src/core/features/dashboards/basis.tsx"
   ],
   "contractAndViewsUnchangedFromMain": true,
   "shallow": false,
-  "historyCommits": 834
+  "historyCommits": 837
 }

@@ -2,7 +2,8 @@ docs/imports/MOVING.md                             | 12 +++
  management/integration/deployment-spec.json        |  6 ++
  migrations/core/0086_salesforce_import.sql         | 29 +++++++
  newtests/t096/released-forecast-upgrade.ts         |  5 ++
- sources.lock.json                                  | 82 ++++++++++++++++----
+ seed.json                                          | 12 +++
+ sources.lock.json                                  | 84 ++++++++++++++++----
  src/core/app/app.ts                                |  2 +
  src/core/features/imports/contracts.ts             |  3 +-
  src/core/features/imports/owners.ts                |  5 +-
@@ -27,9 +28,4 @@ docs/imports/MOVING.md                             | 12 +++
  tests/support/salesforce-api-proof.ts              | 89 ++++++++++++++++++++++
  tests/support/salesforce-browser-api.ts            | 16 ++++
  tests/support/salesforce-network.ts                | 30 ++++++++
- 29 files changed, 577 insertions(+), 33 deletions(-)
-
-76bd666 Qualify restored Salesforce review refusal and document the supported move
-d09717c Preserve pre-Salesforce archives alongside current HubSpot imports [skip ci]
-1f9dd79 Fence Salesforce import consent, restore and reviewed owners
-2002838 Add guided Salesforce Account and Contact import custody [skip ci]
+ 30 files changed, 590 insertions(+), 34 deletions(-)
