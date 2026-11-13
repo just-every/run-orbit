@@ -32,4 +32,14 @@ The candidate passed all 52 controlled browser combinations and the full unchang
 
 ## Product publication
 
-Product commit: 43cc56c444c9d519c297913fcdc4fdfc59741d71. The named branch was pushed successfully on the first attempt after every candidate author, committer and trailer was checked, including side parents. Worktree is clean. No PR, main, default branch, tag or landing write occurred. Verify run 43385726764 is being watched on this exact SHA with the ten-call/300-second REST budget. READY is not yet claimed.
+Product commit: 43cc56c444c9d519c297913fcdc4fdfc59741d71. The named branch was pushed successfully on the first attempt after every candidate author, committer and trailer was checked, including side parents. Worktree is clean. No PR, main, default branch, tag or landing write occurred. Verify run 43385726764 is being watched on this exact SHA with the ten-call/300-second REST budget. The final custody and workflow result are recorded below.
+
+## Final result
+
+UTC stamp (`date -u`): 2026-11-13T08:01:43Z. Product head: 43cc56c444c9d519c297913fcdc4fdfc59741d71. Custody: PUSHED. Verify run 43385726764: in_progress, conclusion None, exact SHA confirmed. GitHub reads used: 8/10, one watcher, at least 300 seconds between run reads.
+
+Verify was still in progress when the run-read budget became short. Product is PUSHED, not READY. No completed failure was observed in the returned run receipts, and no source fix or rerun was invented. Remaining work is the exact-SHA workflow result and the fleet publication/landing gates. This is a pending workflow, not a product push blocker. Two calls remain reserved for failure investigation.
+
+Local results: deterministic baseline failure reproduced; 52 controlled response-order combinations passed; full T099 at 1440 passed; existing records-complete tests 2/2 passed; final typecheck, build, source lock/check, contract generator check, boundaries, rer check and final API diagnostic passed. Both record recovery screens were captured at 1440 and 390. Registered tests remain 198 + 2 qualification flows = 200. Contract counts remain 42 done, 130 partial and 32 missing (204 total); no clause changes or claim. No PR was required or created. No main/default branch, tag, inbox/state or landing write occurred.
+
+The managed environment restarted during the wait. The watcher resumed from its saved call count/timestamp, retaining the same product SHA and reports. Evidence is a separate report-only ref and never signals acceptance or landing. The final evidence head is in the terminal EVIDENCE line and the local publication receipt outside the self-hashed packet.

@@ -102,10 +102,11 @@
     "contract_unchanged": true,
     "total": 204
   },
-  "custody": "PUSHED pending exact-SHA Verify",
-  "github_calls_used": 4,
+  "custody": "PUSHED",
+  "environment_restart": "Watcher resumed from persisted state; no duplicate GitHub reads or product changes.",
+  "github_calls_used": 8,
   "head": "43cc56c444c9d519c297913fcdc4fdfc59741d71",
-  "last_ci_observation_utc": "4/10: 2026-11-13T07:41:31Z: run 43385726764; exit 0.",
+  "last_ci_observation_utc": "8/10: 2026-11-13T08:01:32Z: run 43385726764; exit 0.",
   "local_complete_timestamp_utc": "2026-11-13T07:28:16Z",
   "pr_url": null,
   "product_paths": [
@@ -123,8 +124,11 @@
   ],
   "publication_scan": "Fleet/Mac responsibility; not run in cloud",
   "push_attempts": 1,
+  "remaining_verification": [
+    "Exact-SHA Verify completion; no READY claim. The fleet reruns its required gates independently."
+  ],
   "repository": "just-every/run-orbit",
-  "rer_verify": "Equivalent final exact-SHA Verify is pending; full local rer verify was not run.",
+  "rer_verify": "Final exact-SHA Verify still running at the last permitted observation; full local rer verify was not run. All requested local touched checks passed.",
   "screenshots": [
     "screens/recovery-contact-1440.png",
     "screens/recovery-contact-390.png",
@@ -144,5 +148,5 @@
       "total": 200
     }
   },
-  "timestamp_utc": "2026-11-13T07:27:01Z"
+  "timestamp_utc": "2026-11-13T08:01:43Z"
 }
