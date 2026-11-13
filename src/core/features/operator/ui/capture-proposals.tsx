@@ -42,8 +42,9 @@ function Change({proposal}:{proposal:CaptureProposal}){
  return <table className="capture-change"><caption className="sr-only">Current and proposed value</caption><thead><tr><th scope="col">Current</th><th scope="col">Proposed</th></tr></thead><tbody><tr><td>{current}</td><td>{proposed}</td></tr></tbody></table>;
 }
 /** Proposed changes waiting for a person; on a record's page (whenWaiting) the card shows only while any wait. */
-export function CaptureProposals({recordType,recordId,onChanged,whenWaiting=false}:{recordType?:string;recordId?:string;onChanged?:()=>void;whenWaiting?:boolean}){
- const query=recordType&&recordId?`?${new URLSearchParams({recordType,recordId})}`:'';
+export function CaptureProposals({recordType,recordId,source,onChanged,whenWaiting=false}:{recordType?:string;recordId?:string;source?:string;onChanged?:()=>void;whenWaiting?:boolean}){
+ const filters=new URLSearchParams({...recordType&&recordId?{recordType,recordId}:{},...source?{source}:{}});
+ const query=filters.size?`?${filters}`:'';
  const load=useCallback(async()=>{const response=await fetch(`/api/v1/capture/proposals${query}`,{credentials:'same-origin'});if(!response.ok)throw new Error('Proposed changes could not load.');return await response.json() as {proposals:CaptureProposal[]};},[query]);
  const resource=useOperatorResource(`capture-proposals${query}`,load),[busy,setBusy]=useState(''),[editing,setEditing]=useState(''),[value,setValue]=useState(''),[error,setError]=useState(''),[status,setStatus]=useState('');
  async function review(proposal:CaptureProposal,action:'accept'|'decline',edited?:string){
