@@ -3871,7 +3871,7 @@
       "executable": false
     },
     "public/moving-guide.html": {
-      "sha256": "9a6881dfc69b7fca37dd5a3eae35c375f6227b81a27cb81030163c1a254370b6",
+      "sha256": "6caa231e3f013aca8a74bc895ad6fc4cb7689b561c852033937978725ed63c29",
       "executable": false
     },
     "public/operator-native.css": {
@@ -6379,11 +6379,11 @@
       "executable": false
     },
     "src/core/features/imports/pipedrive/authority.ts": {
-      "sha256": "2d7a787ce3b72c37e15c9a20eddbb4b77f5e7be7dc204ebf3ee4ad54919cff6b",
+      "sha256": "a01f72f0b5771b0adc20601f408b12142f46ca1785ea6013e69ac621115bd943",
       "executable": false
     },
     "src/core/features/imports/pipedrive/checkpoint.ts": {
-      "sha256": "eb9cc4ae6b40624a2b22561ca019e761b504c7c71952874c0b546d95a54a685d",
+      "sha256": "7697ff672957fdcde0d8ed010689d9200713f3ed6fc956bc02d490b0fea23e90",
       "executable": false
     },
     "src/core/features/imports/pipedrive/connection.ts": {
@@ -6887,11 +6887,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/imports-page.tsx": {
-      "sha256": "8016b60d4d063d39ad37fb91d9688dd25eb23ce0327de56ba24ee776b4dee635",
+      "sha256": "47e85fef4513358df7ad01bbbb24f3ef70a51679a6cb80ff1744d04974ab375f",
       "executable": false
     },
     "src/core/features/operator/ui/imports-pipedrive.tsx": {
-      "sha256": "a19e901c2a22bd5a863564508f85c651dd3e4ad535cdef915498dee215530040",
+      "sha256": "6b37bed0da94a3c75ef7a5b9217b13ee35e033bcc707a18228b1203012be75ea",
       "executable": false
     },
     "src/core/features/operator/ui/imports.css": {
@@ -11567,7 +11567,7 @@
       "executable": false
     },
     "tests/support/pipedrive-api-proof.ts": {
-      "sha256": "301fe21d1e3f78f2d95f0a1ab05b3b4e6a5967e9ff9fd162a96263165e59ec4a",
+      "sha256": "f325afb653819f10e5086cee75b54b202b06abe5555c6182cf72b595e83535cd",
       "executable": false
     },
     "tests/support/pipedrive-archive-proof.ts": {
