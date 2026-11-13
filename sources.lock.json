@@ -679,7 +679,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "475a269de5d4245af1d2e4528a9830b6ca4cea6d5dad578860385098e0fd8aee",
+      "sha256": "9e5e64c3196a6dd48d3f92307120abddb068dc38331de96129cad415691fef9a",
       "executable": false
     },
     "CLAUDE.md": {
@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "59a6d0737cff955d6b9f249661c8ae8111e7425a81cc088dbfb4f2092b0e4874",
+      "sha256": "ab74da8f75bac412a14cc6fd47543d27a47c833321b1743515638c0f3dc10e11",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2230,10 +2230,6 @@
       "sha256": "23f6ffb0c1c3ae2d26adab1d01705c225cccdcf88106c248271cda0a355d66c3",
       "executable": false
     },
-    "migrations/core/0082_mailbox_send.sql": {
-      "sha256": "4b61de63625dcc3a2d4e2c5157a96a517b1388db42770ed92591562382edf268",
-      "executable": false
-    },
     "migrations/core/0085_meeting_follow_up.sql": {
       "sha256": "164e4b2d44f68fcc3daed21699a2516864bb71e71013f41611eed8b2db7c9296",
       "executable": false
@@ -2244,6 +2240,10 @@
     },
     "migrations/core/0087_hubspot_explicit_erasure.sql": {
       "sha256": "8b592f83907307b8106e8636c70682fa47ed823c90398f0f399fbdfa7a299980",
+      "executable": false
+    },
+    "migrations/core/0088_mailbox_send.sql": {
+      "sha256": "4b61de63625dcc3a2d4e2c5157a96a517b1388db42770ed92591562382edf268",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -2391,7 +2391,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "abf3a97fe46bb4e8a01762551225772c580e7874ca73ed2ef96eaca26901fadd",
+      "sha256": "9486242f85c60f78c5ec069c2af17dc69e29f7919becf8a036d1f01e519e0d61",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -3755,7 +3755,7 @@
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
-      "sha256": "07f07fdab6d69e1cbda08dd0894abe951d9817da04034f733bca6cdb125e1cc4",
+      "sha256": "c265efec4065fd3226e02054f3530d9c5720265524b22e745eb5ce0cab7de6c3",
       "executable": false
     },
     "newtests/t096/report-population-race.test.ts": {
@@ -3807,7 +3807,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "82470fc4aa52adf026257b5081e3548a5d0d3c1d43284858128b0e4f4fece56b",
+      "sha256": "ae55a08bd0e38345ef49d03c55ac8a348adb3b669dd62fe1eb782a7d8a6bb14d",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3922,8 +3922,12 @@
       "sha256": "5c89667651548b211a911e40e6117ec3141e3b0f4a23d3009ac5c40cf02d4ff4",
       "executable": false
     },
-    "RELEASE.json": {
+    "release-history/0.4.7.json": {
       "sha256": "89371c4ef545c382ecb6ead0e24bd7e181f01de36e5b4cddd783c935cde710cf",
+      "executable": false
+    },
+    "RELEASE.json": {
+      "sha256": "63d47a33fbc71532a9a88b632a6136ef44dba54f2bb7633392288dbb8ce89437",
       "executable": false
     },
     "rer-project.json": {
@@ -4283,7 +4287,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "17da9caaba1cb15f16a4854b24fe925fb07f6887834b2105b6ce624d44226ded",
+      "sha256": "f837b4dbf149e9dae15983cbc63d4000a20ec8c4292ebd470a470def429a3c55",
       "executable": false
     },
     "SIGNALS-AND-OUTREACH.md": {
@@ -5811,7 +5815,7 @@
       "executable": false
     },
     "src/core/features/dashboards/basis.tsx": {
-      "sha256": "f448c7e8f498540395261f89237dca5ab3b141f73b1c866640800506e18dfa49",
+      "sha256": "14b62def222fea221dc70edfbb8ff59994655e923d196fcc237ba7d1e49ce83b",
       "executable": false
     },
     "src/core/features/dashboards/dashboard-dialogs.css": {
