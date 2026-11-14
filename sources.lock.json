@@ -3819,7 +3819,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "bc3477f97fd0e17363d68c616efbe419a7b6e200478d087da37dd7db3042cc41",
+      "sha256": "010a4142adab2f3299b5db48615fd6da562655d437d337cf496b5e0f501894b0",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3835,7 +3835,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "d219dca7f65243693a4753a227b3c2d09134a23f4e79582199918fb16dfb6cb9",
+      "sha256": "705addcaabb13f30399164536a94e1524b4e78b5af0dec7637bf93838a772002",
       "executable": false
     },
     "pnpm-workspace.yaml": {
