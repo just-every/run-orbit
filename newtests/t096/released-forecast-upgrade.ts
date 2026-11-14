@@ -1,4 +1,4 @@
-import {preCallingCatalog,preDirectNotificationCatalog} from '../../src/core/features/records/archive-generations';
+import {preCallingCatalog,preDirectNotificationCatalog,preFormSubmissionNotificationCatalog} from '../../src/core/features/records/archive-generations';
 import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
 import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
 import {preFormAssignmentCatalog} from '../../src/core/features/forms/archive';
@@ -62,10 +62,14 @@ export async function proveReleasedForecastUpgrade(){
   const before=await snapshot(db);
   await target.upgrade('0049_opt_out_capabilities.sql');db=target.db;await assertRetained(db,before);
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
+  await target.upgrade('0091_zoom_meetings.sql');db=target.db;
+  const beforeFormNotice=await snapshot(db),beforeFormNoticeCatalog=await foldInstalledCatalog(db),beforeFormNoticeHash=await foldSchemaHash(beforeFormNoticeCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
   const installed=await foldInstalledCatalog(db),preDirect=preDirectNotificationCatalog(installed),currentRows=await snapshot(db);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(installed,currentRows,await foldSchemaHash(installed),now))).inputCatalog,installed);
+  assert.deepEqual(preFormSubmissionNotificationCatalog(installed),beforeFormNoticeCatalog,'A notification-only migration preserves the preceding archive schema exactly');
+  assert.deepEqual((await validateFoldManifest(db,manifestFor(beforeFormNoticeCatalog,beforeFormNotice,beforeFormNoticeHash,now))).inputCatalog,beforeFormNoticeCatalog);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(preDirect,currentRows,await foldSchemaHash(preDirect),now))).inputCatalog,preDirect,'An archive before direct-person suppression still restores when only its notification trigger inventory differs');
   const preLibrary=preLibraryCatalog(preSlackCatalog(preReportShareCatalog(preDashboardCatalog(preOwnershipCatalog(preFormAssignmentCatalog(preRecordMailCatalog(preCaptureMailRuleCatalog(preCallingCatalog(await foldInstalledCatalog(db))))))))));assert.deepEqual(preLibrary,precedingCatalog,'0049 retains exact columns, objects, triggers and views after stripping the library additions');assert.equal(await foldSchemaHash(preLibrary),precedingHash);
   const previous=preForecastCatalog(preOptOutCapabilityCatalog(preLibrary));assert.deepEqual(previous,catalog,'pre-forecast generation retains the exact released columns, objects, triggers and views');assert.equal(await foldSchemaHash(previous),schemaHash);
@@ -76,6 +80,12 @@ export async function proveReleasedForecastUpgrade(){
   assert.equal(await db.prepare('SELECT count(*) n FROM message_library').first('n'),0);
   assert.deepEqual((await db.prepare('PRAGMA foreign_key_check').all()).results,[]);
   const upgraded=createApp({database:db,assets:{fetch:async()=>new Response(null,{status:404})}}),response=await upgraded.request(`https://orbit.test/api/v1/records/opportunity/${deal.id}`,{headers:{Cookie:session.cookie}});assert.equal(response.status,200);assert.equal((await response.json() as any).record.value_cents,734567);
+  // Admit the actual preceding schema through the authenticated restore door.
+  // The source is populated, so abort before loading into this same installation.
+  const archiveHeaders={Cookie:session.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},admission=await upgraded.request('https://orbit.test/api/v1/records/archive/imports',{method:'POST',headers:archiveHeaders,body:JSON.stringify({confirmed:true,manifest:manifestFor(beforeFormNoticeCatalog,beforeFormNotice,beforeFormNoticeHash,now)})});
+  assert.equal(admission.status,201,await admission.clone().text());
+  const importJob=await admission.json() as {id:string},aborted=await upgraded.request(`https://orbit.test/api/v1/records/archive/imports/${importJob.id}/abort`,{method:'POST',headers:archiveHeaders,body:'{}'});
+  assert.equal(aborted.status,200,await aborted.clone().text());assert.equal((await aborted.json() as {state:string}).state,'aborted');
   for(const [kind,id]of [['contact',contact.id],['company',company.id]]) {
    const current=await upgraded.request(`https://orbit.test/api/v1/records/${kind}/${id}`,{headers:{Cookie:session.cookie}});assert.equal(current.status,200);assert.equal((await current.json() as any).ownership.ownerId,null);
    const reviewing=await upgraded.request('https://orbit.test/api/v1/records/ownership/review',{method:'POST',headers:{Cookie:session.cookie,Origin:'https://orbit.test','Content-Type':'application/json'},body:JSON.stringify({kind,ids:[id],ownerId:owner})});assert.equal(reviewing.status,200);const batch=await reviewing.json() as any;

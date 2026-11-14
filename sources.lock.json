@@ -3767,7 +3767,7 @@
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "09190b3c97df90757f91d2606aa635cb86d5617a52ec40e80b9e245ddefb4681",
+      "sha256": "c7a904ca783631365063942d3de200fdb60ccef214fec3735827f1fb844a1da7",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
@@ -8087,7 +8087,7 @@
       "executable": false
     },
     "src/core/features/records/archive-generations.ts": {
-      "sha256": "1ee5c694ed9f6e51a1c41850b88a9cbbf1de1f6cf5c987f2184aaef0d15173ed",
+      "sha256": "4fb516d92b1e1e119b47394fe74696093bc02a33e19e621ba5868b9ebc639c81",
       "executable": false
     },
     "src/core/features/records/archive-import-context.ts": {
