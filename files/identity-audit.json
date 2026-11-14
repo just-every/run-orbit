@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "range": "origin/main..HEAD",
+  "all_side_parents": true,
+  "commits": [
+    {
+      "head": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": []
+    },
+    {
+      "head": "efded904242fef01fbfaf2c24ff20966456c98ed",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": []
+    }
+  ]
+}

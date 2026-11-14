@@ -1,0 +1,34 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-form-notify-once-1-pc1",
+  "head": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+  "tree": "99ab579931eb81e64844114570e4a0c3b4dae15a",
+  "starting_head": "efded904242fef01fbfaf2c24ff20966456c98ed",
+  "origin_main": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "starting_head_preserved": true,
+  "worktree_clean": true,
+  "candidate_commits": [
+    "96f0e60a53ac1a350270bae42cef6740098ec8cc Preserve archives across the form notification migration",
+    "efded904242fef01fbfaf2c24ff20966456c98ed Notify routed operators once per form enquiry"
+  ],
+  "continuation_changed_paths": [
+    "newtests/t096/released-forecast-upgrade.ts",
+    "sources.lock.json",
+    "src/core/features/records/archive-generations.ts"
+  ],
+  "scope_changed_paths": [
+    "management/integration/deployment-spec.json",
+    "migrations/core/0092_form_submission_notification.sql",
+    "newtests/t096/browser-form-mapping.ts",
+    "newtests/t096/forms-mapped-journey.ts",
+    "newtests/t096/released-forecast-upgrade.ts",
+    "sources.lock.json",
+    "src/core/features/forms/native-capture.ts",
+    "src/core/features/notifications/routes.ts",
+    "src/core/features/operator/ui/notifications-page.tsx",
+    "src/core/features/records/archive-generations.ts"
+  ],
+  "pr": null,
+  "product_push": "first attempt succeeded via cloud-push.py",
+  "public_scan": "Deferred to fleet Mac by cloud task instruction"
+}

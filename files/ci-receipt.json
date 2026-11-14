@@ -1,0 +1,58 @@
+{
+  "head": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+  "github_calls_used": 10,
+  "queried_at_epoch": 1794641329.532547,
+  "runs": [
+    {
+      "id": 43567711945,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "run_attempt": 1,
+      "created_at": "2026-11-14T06:43:14Z",
+      "updated_at": "2026-11-14T06:43:15Z"
+    }
+  ],
+  "observations": [
+    {
+      "queried_at_epoch": 1794638924.1712186,
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "status": "in_progress"
+    },
+    {
+      "queried_at_epoch": 1794639525.5877852,
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "status": "in_progress"
+    },
+    {
+      "queried_at_epoch": 1794640126.9500241,
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "status": "in_progress"
+    },
+    {
+      "queried_at_epoch": 1794640728.2688158,
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "status": "in_progress"
+    },
+    {
+      "queried_at_epoch": 1794641329.532547,
+      "conclusion": null,
+      "head_sha": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567711945",
+      "status": "in_progress"
+    }
+  ],
+  "terminal_custody": "PUSHED",
+  "budget_exhausted": true,
+  "final_observed_at_utc": "2026-11-14T07:28:49.532547+00:00"
+}

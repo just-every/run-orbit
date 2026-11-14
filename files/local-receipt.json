@@ -1,0 +1,117 @@
+{
+  "repository": "just-every/run-orbit",
+  "base_head": "efded904242fef01fbfaf2c24ff20966456c98ed",
+  "test_budget_before": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "test_budget_after": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "results": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "runner": "cloud_run",
+      "exit_code": 0,
+      "result": "84 migrations applied; owner setup complete"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "runner": "cloud_run",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+      "state": "before repair",
+      "exit_code": 1,
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "reason": "later notification_skip_form_now trigger in historical schema catalog"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+      "state": "after repair",
+      "exit_code": 0,
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "node": "22.20.0",
+      "preceding_archive_admission_http_status": 201,
+      "staging_abort_http_status": 200,
+      "staging_terminal_state": "aborted"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+      "exit_code": 0,
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "assertions": [
+        "one unread increase per routed accepted submission",
+        "no notice on idempotent replay",
+        "other rep inbox unchanged",
+        "ordinary NOW event retained",
+        "fixed and unassigned routes",
+        "existing owner",
+        "rotation persists on restart",
+        "native archive roundtrip and erasure"
+      ]
+    },
+    {
+      "command": "pnpm exec tsx --import /tmp/orbit-browser-launch.mjs --test --test-concurrency=1 newtests/t096/browser-journeys.test.ts",
+      "exit_code": 1,
+      "reason": "mail-team removal: Remove Jamie Patel button locator timeout before the form mapping journey",
+      "scope": "broader existing journey; not a passing result",
+      "node": "22.20.0",
+      "browser": "/usr/bin/chromium"
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-form-browser-proof.mts",
+      "exit_code": 0,
+      "journey": "newtests/t096/browser-form-mapping.ts#formMappingBrowserJourney",
+      "viewports": [
+        1440,
+        390
+      ],
+      "assertion_width": 1440,
+      "result": "one row across all notification kinds, contact and deal destinations, persisted read state; no serious/critical axe violations or overflow",
+      "browser": "/usr/bin/chromium --no-sandbox"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit_code": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit_code": 0,
+      "result": "Contract documents are current"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exit_code": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit_code": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "contract_status_changes": [],
+  "contract_points_added": [],
+  "generated_views_committed": false,
+  "publication_scan": "Fleet Mac at landing, per cloud adaptation; not run in this VM",
+  "candidate_head": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+  "candidate_tree": "99ab579931eb81e64844114570e4a0c3b4dae15a",
+  "local_checks_timing": "Before commit; repaired source and browser proof match the candidate product tree."
+}

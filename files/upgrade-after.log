@@ -1,0 +1,22 @@
+TAP version 13
+# (node:12427) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# {"proof":"native-archive-export-requests","version":3,"tables":134,"rows":43,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":3360.5951350000105,"status":201},{"operation":"GET /exports/01M7CCD8JKHMTV8SXS3BRCYHXD","milliseconds":66.11765299999388,"status":200},{"operation":"POST /exports/01M7CCD8JKHMTV8SXS3BRCYHXD/advance","milliseconds":4577.808262999984,"status":200},{"operation":"POST /exports/01M7CCD8JKHMTV8SXS3BRCYHXD/advance","milliseconds":2673.1015389999957,"status":200},{"operation":"POST /exports/01M7CCD8JKHMTV8SXS3BRCYHXD/advance","milliseconds":2633.081422999967,"status":200},{"operation":"POST /exports/01M7CCD8JKHMTV8SXS3BRCYHXD/advance","milliseconds":1329.2369240000262,"status":200},{"operation":"GET /exports/01M7CCD8JKHMTV8SXS3BRCYHXD/download","milliseconds":53.09067300002789,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":134,"rows":40,"parts":26,"observations":[{"operation":"POST /exports","milliseconds":2919.7266850000015,"status":201},{"operation":"GET /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC","milliseconds":53.10268300003372,"status":200},{"operation":"POST /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC/advance","milliseconds":3797.764766999986,"status":200},{"operation":"POST /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC/advance","milliseconds":2549.2318879999802,"status":200},{"operation":"POST /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC/advance","milliseconds":2435.4043459999957,"status":200},{"operation":"POST /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC/advance","milliseconds":1154.730631000013,"status":200},{"operation":"GET /exports/01M7CCMB6M3M8DZV0QRZ2Z2SNC/download","milliseconds":48.62401899998076,"status":200}]}
+# OUT-017 forward upgrade: accepted mail and open sender promise retain all prior values and owner-added column; current owner initialized; foreign keys intact
+# Subtest: API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+ok 1 - API-002 credential storage and RECORD-016 ownership and accepted main and released v0.3.0 advance with every native value, custom DDL, live identity and pre-forecast archive schema intact
+  ---
+  duration_ms: 566408.543667
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 569606.644181

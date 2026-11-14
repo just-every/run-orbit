@@ -1,0 +1,50 @@
+{
+  "before": [
+    {
+      "group": "Published",
+      "done": 31,
+      "partial": 48,
+      "missing": 0,
+      "total": 79
+    },
+    {
+      "group": "Target and push further",
+      "done": 11,
+      "partial": 82,
+      "missing": 32,
+      "total": 125
+    },
+    {
+      "group": "All",
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  ],
+  "after": [
+    {
+      "group": "Published",
+      "done": 31,
+      "partial": 48,
+      "missing": 0,
+      "total": 79
+    },
+    {
+      "group": "Target and push further",
+      "done": 11,
+      "partial": 82,
+      "missing": 32,
+      "total": 125
+    },
+    {
+      "group": "All",
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  ],
+  "status_changes": [],
+  "contract_source_unchanged": true
+}

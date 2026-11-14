@@ -1,0 +1,31 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "efded904242fef01fbfaf2c24ff20966456c98ed",
+  "run_id": 43559901476,
+  "attempt": 1,
+  "failed_jobs": [
+    {
+      "id": 132342042598,
+      "name": "shards (batch-7)",
+      "step": "Verify routine product shard"
+    },
+    {
+      "id": 132353163008,
+      "name": "verify",
+      "step": "Require a successful plan and all required work"
+    }
+  ],
+  "batch_7_shard": "fold-domain-3",
+  "failed_log_command": "gh run view 43559901476 --repo just-every/run-orbit --job 132342042598 --log-failed",
+  "failed_log_result": "exit 0; returned zero bytes",
+  "artifact_command": "gh api repos/just-every/run-orbit/actions/artifacts/14100470726/zip",
+  "artifact_result": "redirect to productionresultssa1.blob.core.windows.net denied: Forbidden; no archive bytes; no retry",
+  "github_calls_used": 4,
+  "local_reproduction": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forward-upgrade.test.ts",
+    "exit_code": 1,
+    "failed_assertion": "0049 retains exact columns, objects, triggers and views after stripping the library additions",
+    "extra_object": "notification_skip_form_now",
+    "location": "newtests/t096/released-forecast-upgrade.ts:70"
+  }
+}

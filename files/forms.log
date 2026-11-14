@@ -1,0 +1,20 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+{"proof":"native-archive-export-requests","version":3,"tables":134,"rows":470,"parts":50,"observations":[{"operation":"POST /exports","milliseconds":3025.940666999988,"status":201},{"operation":"GET /exports/01M7CBZTY41H6KCG07MG1NB1C1","milliseconds":53.6170839999977,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":4160.6378369999875,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":2461.6771080000035,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":2819.3571229999943,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":2531.5859899999923,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":2614.3475939999917,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":2428.6821270000073,"status":200},{"operation":"POST /exports/01M7CBZTY41H6KCG07MG1NB1C1/advance","milliseconds":1197.3747389999917,"status":200},{"operation":"GET /exports/01M7CBZTY41H6KCG07MG1NB1C1/download","milliseconds":57.23936800000956,"status":200}]}
+{"proof":"native-archive-export-requests","version":3,"tables":134,"rows":349,"parts":49,"observations":[{"operation":"POST /exports","milliseconds":4854.728803000005,"status":201},{"operation":"GET /exports/01M7CC91N2WR99YR0QB87MQS5Y","milliseconds":105.51760299998568,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":6504.05265800003,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":3597.4822470000363,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":3951.1455059999716,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":3894.631899000029,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":3597.618569000042,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":3742.8396710000234,"status":200},{"operation":"POST /exports/01M7CC91N2WR99YR0QB87MQS5Y/advance","milliseconds":1377.923068999953,"status":200},{"operation":"GET /exports/01M7CC91N2WR99YR0QB87MQS5Y/download","milliseconds":265.6918579999474,"status":200}]}
+PROBE FORM-003 2: public checkbox and inquiry submissions -> authenticated wording, revision and time; unchecked contact stopped, prior stop preserved; anonymous read denied and erased replay stays erased
+✔ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (559105.934732ms)
+✔ public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay (40134.794367ms)
+PROBE FORM-002 consent and authority: native held release preserves true, false and omitted consent; stopped source and revoked authorization refuse without writes; fresh exact review permits release
+PROBE FORM-002 abuse boundaries: signed fill age and key binding, network and form windows, trusted metadata and Turnstile action, hostname and outage refusals preserve domain inventories; valid verified intake and replay succeed once
+✔ FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once (120390.551951ms)
+✔ existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority (38451.276067ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 760622.34203
