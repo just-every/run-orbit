@@ -3,7 +3,7 @@
   "repository": "just-every/run-orbit",
   "branch": "cloud/sd-orbit-data001-copy-1",
   "base": "9940c015edce444ed02c8f23fee20aac6a947761",
-  "recorded_at": "2026-11-14T20:45:47.904996+00:00",
+  "recorded_at": "2026-11-14T21:15:31.027410+00:00",
   "toolchain": {
     "node": "24.19.0",
     "pnpm": "10.12.4",
@@ -59,7 +59,7 @@
     "total_duration": "4.7m",
     "log": "archive-test.log"
   },
-  "product_custody": "PUSHED",
+  "product_custody": "READY",
   "pr_url": null,
   "blockers": [],
   "head": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
@@ -78,5 +78,14 @@
     "new_assertions_at_width": 1440,
     "minimum_paragraph_font_px": 13,
     "visual_inspection": "count, five names and remaining count readable at both widths; no clipping"
-  }
+  },
+  "ci": {
+    "run_id": 43639155299,
+    "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+    "state": "success",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+    "rest_calls": 7
+  },
+  "environment_reconnection": "One CI watcher resumed with its prior call count and next allowed polling timestamp; no duplicate request.",
+  "task_servers_and_subreapers_remaining": 0
 }

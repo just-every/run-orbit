@@ -2,10 +2,10 @@
   "repository": "just-every/run-orbit",
   "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
   "run_id": 43639155299,
-  "calls": 1,
+  "calls": 7,
   "budget_limit": 10,
   "watcher_limit": 8,
-  "state": "pending",
+  "state": "success",
   "observations": [
     {
       "at": "2026-11-14T20:45:21.754739+00:00",
@@ -28,6 +28,108 @@
             "status": "in_progress"
           }
         ]
+      }
+    },
+    {
+      "at": "2026-11-14T20:50:21.764462+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "in_progress"
+      }
+    },
+    {
+      "at": "2026-11-14T20:55:21.770430+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "in_progress"
+      }
+    },
+    {
+      "at": "2026-11-14T21:00:21.819774+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "in_progress"
+      }
+    },
+    {
+      "at": "2026-11-14T21:05:22.388142+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "in_progress"
+      }
+    },
+    {
+      "at": "2026-11-14T21:10:22.329287+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "in_progress"
+      }
+    },
+    {
+      "at": "2026-11-14T21:15:22.496627+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-orbit/actions/runs/43639155299",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit_code": 0,
+      "response": {
+        "conclusion": "success",
+        "head_sha": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43639155299",
+        "status": "completed"
       }
     }
   ]

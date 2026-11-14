@@ -38,4 +38,10 @@ Only the two copy follow-ups are addressed. No permission decision, reviewed-cle
 
 ## Product custody
 
-One linear product commit, `3b6296cbd5e6b0c10f93a9c84277c9b88373e906`, was rebased on the unchanged origin/main and pushed once to `cloud/sd-orbit-data001-copy-1` with the fleet guard. The first push attempt succeeded. All candidate authors/committers are Run Edit Run fleet <fleet@runeditrun.com>; no trailer or co-author line is present. The product worktree is clean. No PR was created. Exact-SHA Verify is being observed under the specified REST budget; CI.json records every query.
+One linear product commit, `3b6296cbd5e6b0c10f93a9c84277c9b88373e906`, was rebased on the unchanged origin/main and pushed once to `cloud/sd-orbit-data001-copy-1` with the fleet guard. The first push attempt succeeded. All candidate authors/committers are Run Edit Run fleet <fleet@runeditrun.com>; no trailer or co-author line is present. The product worktree is clean. No PR was created. CI.json records every exact-SHA REST query under the specified budget.
+
+## Exact-SHA Verify result
+
+Verify run `43639155299` completed with conclusion `success` on `3b6296cbd5e6b0c10f93a9c84277c9b88373e906`. The final REST observation is recorded in CI.json. Product custody is READY; this is not a landing or deployment claim. The fleet still performs its own publication scan and landing. No blockers remain.
+
+The CI watcher was resumed once after environment reconnection, preserving its accumulated call count and next allowed polling timestamp. Seven REST calls were used. No task server or subreaper remained at cleanup.
