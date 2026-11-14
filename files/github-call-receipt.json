@@ -1,0 +1,33 @@
+{
+  "calls": [
+    {
+      "purpose": "Gitleaks release metadata"
+    },
+    {
+      "purpose": "Gitleaks checksums download"
+    },
+    {
+      "purpose": "Gitleaks archive download"
+    },
+    {
+      "purpose": "--hostname",
+      "time": 1794658277.4887621
+    },
+    {
+      "purpose": "--hostname",
+      "time": 1794658715.7399256
+    },
+    {
+      "purpose": "repos/just-every/run-orbit/actions/runs?head_sha=7ad63db63c46c6a2a59157a5c128bd35f6c20173&per_page=100",
+      "time": 1794658745.8829098
+    },
+    {
+      "purpose": "repos/just-every/run-orbit/actions/runs/43594201856",
+      "time": 1794659345.8910646
+    },
+    {
+      "purpose": "repos/just-every/run-orbit/actions/runs/43594201856",
+      "time": 1794659945.8915904
+    }
+  ]
+}

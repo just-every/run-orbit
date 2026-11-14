@@ -1,0 +1,20 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ BASE-ACCESS-003 public limits share durable counters and expire without retaining clear visitor IPs (2636.859984ms)
+✔ BASE-SECRET-002 explicit provider configuration rejects partial inputs by variable name (0.61334ms)
+✔ BASE-ACCESS-004 BASE-INPUT-001 malformed authenticated JSON and cross-origin mutations fail before writing (77.829673ms)
+✔ PUBLIC-003 BASE-SECRET-002 an installed origin reports unconfigured sign-in while partial mail credentials fail by name (23.343105ms)
+✔ BASE-INPUT-001 SIGNAL-004 malformed held-reply and signal review identities return400 before persistence (134.746212ms)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ RECORD-016 reviewed owners and guarded bulk undo; OPP-009 TEAM-003 RECORD-015 RECORD-002 RECORD-011 RECORD-006 relationships retain history and pipelines move safely and search matches record and timeline text, intersects every opportunity filter and caps the first page (60899.527441ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 69041.03366

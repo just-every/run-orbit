@@ -1,0 +1,8 @@
+{
+  "started_by_this_task": true,
+  "pids_stopped": [
+    20538
+  ],
+  "signal": "SIGTERM",
+  "reason": "End single watcher for low-budget PUSHED handoff; no further GitHub polling."
+}

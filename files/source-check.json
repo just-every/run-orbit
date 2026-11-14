@@ -1,0 +1,8 @@
+{
+  "ok": true,
+  "files": 2856,
+  "commands": [
+    "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "before_package_entries": 429,
+  "after_package_entries": 428,
+  "removed_entries": [
+    "zod@4.1.5",
+    "zod@4.6.5"
+  ],
+  "added_entries": [
+    "zod@4.6.6"
+  ],
+  "unrelated_package_changes": 0
+}

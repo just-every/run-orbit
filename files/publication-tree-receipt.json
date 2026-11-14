@@ -1,0 +1,7 @@
+{
+  "head": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "tree": "db7a56d1cae9361dc23afb4081af2b4962aa205a",
+  "git_status_clean": true,
+  "runtime_artifacts_present": false,
+  "note": "Exact committed tree materialized by git worktree add --detach; scanner and its policy are unchanged."
+}

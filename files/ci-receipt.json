@@ -1,0 +1,40 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "run": {
+    "id": 43594201856,
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43594201856"
+  },
+  "status": "budget_low",
+  "observations": [
+    {
+      "time": "2026-11-14T12:19:06.603059+00:00",
+      "id": 43594201856,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43594201856"
+    },
+    {
+      "time": "2026-11-14T12:29:07.093040+00:00",
+      "id": 43594201856,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43594201856"
+    },
+    {
+      "time": "2026-11-14T12:39:07.132320+00:00",
+      "id": 43594201856,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43594201856"
+    }
+  ],
+  "github_calls_used": 8,
+  "note": "Verify remains in_progress after twenty minutes; 8 of the ten-call budget used. Returning PUSHED under the brief low-budget rule; no CI success claim."
+}

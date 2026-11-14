@@ -1,0 +1,10 @@
+{
+  "path": "/home/agent/rer-consolidation/work/gr-mt-orbit-dep-8/product-candidate.bundle",
+  "sha256": "096766f7fcaa20f1532ef7444854fc76497165c3e190768f5f4e8774e5019432",
+  "head": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "verified": true,
+  "prerequisites": [
+    "bfc52fadd56ae3fa38cb48de9484de61810e7cbd"
+  ],
+  "note": "Incremental bundle requires the already-public main parent. This is recovery data, not publication or READY proof."
+}

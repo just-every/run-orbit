@@ -1,0 +1,101 @@
+diff --git a/package.json b/package.json
+index eb5f83ff..a319e542 100644
+--- a/package.json
++++ b/package.json
+@@ -57,7 +57,7 @@
+     "react": "19.2.8",
+     "react-dom": "19.2.8",
+     "ulidx": "2.4.1",
+-    "zod": "4.1.5"
++    "zod": "4.6.6"
+   },
+   "devDependencies": {
+     "@axe-core/playwright": "4.13.0",
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index bac1b713..af70985b 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -41,8 +41,8 @@ importers:
+         specifier: 2.4.1
+         version: 2.4.1
+       zod:
+-        specifier: 4.1.5
+-        version: 4.1.5
++        specifier: 4.6.6
++        version: 4.6.6
+     devDependencies:
+       '@axe-core/playwright':
+         specifier: 4.13.0
+@@ -2002,11 +2002,8 @@ packages:
+   youch@4.1.0-beta.10:
+     resolution: {integrity: sha512-rLfVLB4FgQneDr0dv1oddCVZmKjcJ6yX6mS4pU82Mq/Dt9a3cLZQ62pDBL4AUO+uVrCvtWz3ZFUL2HFAFJ/BXQ==}
+ 
+-  zod@4.1.5:
+-    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+-
+-  zod@4.6.5:
+-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
++  zod@4.6.6:
++    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
+ 
+   zwitch@1.0.5:
+     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
+@@ -2714,7 +2711,7 @@ snapshots:
+       jiti: 2.7.0
+       magic-string: 0.30.21
+       prettier: 3.9.10
+-      zod: 4.6.5
++      zod: 4.6.6
+     transitivePeerDependencies:
+       - supports-color
+ 
+@@ -2728,7 +2725,7 @@ snapshots:
+       '@tanstack/router-utils': 1.162.3
+       chokidar: 5.0.0
+       unplugin: 3.4.0(esbuild@0.28.2)(rolldown@1.2.13)(vite@8.2.4(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0))
+-      zod: 4.6.5
++      zod: 4.6.6
+     optionalDependencies:
+       '@tanstack/react-router': 1.170.41(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+       vite: 8.2.4(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0)
+@@ -2786,7 +2783,7 @@ snapshots:
+       ufo: 1.6.4
+       vitefu: 1.1.3(vite@8.2.4(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0))
+       xmlbuilder2: 4.0.3
+-      zod: 4.6.5
++      zod: 4.6.6
+     optionalDependencies:
+       vite: 8.2.4(@types/node@22.19.17)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.0)
+     transitivePeerDependencies:
+@@ -3648,8 +3645,6 @@ snapshots:
+       cookie: 1.1.1
+       youch-core: 0.3.3
+ 
+-  zod@4.1.5: {}
+-
+-  zod@4.6.5: {}
++  zod@4.6.6: {}
+ 
+   zwitch@1.0.5: {}
+diff --git a/sources.lock.json b/sources.lock.json
+index 1dcc534d..51b0000b 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -3819,7 +3819,7 @@
+       "executable": false
+     },
+     "package.json": {
+-      "sha256": "010a4142adab2f3299b5db48615fd6da562655d437d337cf496b5e0f501894b0",
++      "sha256": "8cfe645516cc2f3ec670a3cd96c7e468c93162c2c31a2ab2921f7774c6b69078",
+       "executable": false
+     },
+     "patches/miniflare-5.20260907.0-alpha.patch": {
+@@ -3835,7 +3835,7 @@
+       "executable": false
+     },
+     "pnpm-lock.yaml": {
+-      "sha256": "705addcaabb13f30399164536a94e1524b4e78b5af0dec7637bf93838a772002",
++      "sha256": "cc1c07b413989f063bcd0c9f2bb98bcb3f58f7ade5b92a890e70e147014236ae",
+       "executable": false
+     },
+     "pnpm-workspace.yaml": {
