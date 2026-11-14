@@ -1,0 +1,81 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-runs-1",
+  "head": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "sha256": "065d141077fa06b8436b748cbc279174cfaf315fa2ea572557557a1918952515"
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs tests/e2e/operator.spec.mjs -g \"mobile opportunity timeline\"",
+      "exit": 0,
+      "log": "browser-test.log",
+      "sha256": "5700a16def1981463d5160070c17da49f16f8748ea1f75595f918e66ca5e0916"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/core/capture-review.test.ts",
+      "exit": 0,
+      "log": "workflow-regression.log",
+      "sha256": "00543819671602b1a2f6ca9b6270aec0094e0b572045dcc46e3ccb034abbbb96"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check.json",
+      "sha256": "d35c30320fbec85c2ba52a9771c1a778d6b711875991783ba552a655e88a99ed"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log",
+      "sha256": "c21aae40192141751d6d5c7a3a1d0eb701a6852f305d592d77b4dcab9c2536ab"
+    },
+    {
+      "command": "pnpm run check:boundaries",
+      "exit": 0,
+      "log": "boundaries.log",
+      "sha256": "5add99d13a5e85475871647e4c93274e9f6ecbe2890d8c64e42d6cb118ed862b"
+    }
+  ],
+  "testsBefore": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testsAfter": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "sourceHashes": {
+    "src/core/features/operator/ui/workflows-activity.tsx": "1cd7c3de192e86ba5dcebee75c0d06f215a280c02c1b51f534b058c45e3450b9",
+    "src/core/features/operator/ui/workflows.css": "95abd567c603f8adfa4d7eb98d946960880111982f6d77c976d9ac7a206d0988",
+    "src/core/features/operator/ui/zoom-settings.tsx": "428349d186e4cde45c2752c1ff081ee280e53d56c778d18ebfea4d656399a986",
+    "src/core/features/operator/ui/zoom-setup-help.tsx": "128fe359c7cedefdc4a4e4de785abcc2df6e144b19d6ff05d9bb6c6e025c7591",
+    "src/core/features/workflows/routes.ts": "53f6883612e1a81d9a5108654872371f0b7a9863b13c8b74d15118c386c282bb",
+    "src/core/features/workflows/run-presentation.ts": "d7a7d3bcc0f9015bf3ada73eeca6da49177ea76a1b7236802f67822d7c11991e",
+    "tests/e2e/task-activity.mjs": "f8dd6d073fafec2f88dc5de92e0d418257e553dccda74b2963dac8b8092c9239",
+    "sources.lock.json": "e4cb484792a4493df8c25c36043d5492efd24946c6e05df004c78bd2dc69313a"
+  },
+  "clauseStatusChanges": [],
+  "contractChanged": false,
+  "generatedViewsCommitted": false,
+  "assertionWidth": 1440,
+  "browserProofWidths": [
+    1440,
+    390
+  ],
+  "browserExecutable": "/usr/bin/chromium",
+  "browserArgs": [
+    "--no-sandbox"
+  ],
+  "localNode": "v24.19.0",
+  "pnpm": "10.12.4",
+  "publicationScan": "Mac fleet landing gate; unavailable on cloud",
+  "gitIdentity": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "trailers": "none",
+  "firstProductPush": "success"
+}

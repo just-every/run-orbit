@@ -1,0 +1,30 @@
+{
+  "testedAt": "2026-11-14T05:01:56.623Z",
+  "widths": [
+    1440,
+    390
+  ],
+  "assertionWidth": 1440,
+  "runText": "Clinic follow-up \u00b7 Version 1\nQueued \u00b7 Synthetic Orbit clinic rollout\nActivity or event occurred\n11/14/2026, 5:01:51 AM\nVersion activated\n11/14/2026, 4:50:01 AM\nDue\n11/14/2026, 5:01:51 AM\nOutcome\n\nQueued \u00b7 Completed\n\nCreate task \u00b7 Completed \u00b7 1 attempt\n\nCreated task \u00b7 Prepare clinic follow-up\n\nTrigger and source evidence\n\nNote logged \u00b7 11/14/2026, 5:01:51 AM\n\nCustomer requested clinic rollout follow-up\n\nOpen source evidence\n\nRun owner\nSynthetic Orbit owner\nCreated\n11/14/2026, 5:01:51 AM\nLast updated\n11/14/2026, 5:01:53 AM\nTechnical details",
+  "undoText": "Clinic follow-up \u00b7 Version 1\nUndone \u00b7 Synthetic Orbit clinic rollout\nUndo inspected every recorded write\nActivity or event occurred\n11/14/2026, 5:01:51 AM\nVersion activated\n11/14/2026, 4:50:01 AM\nDue\n11/14/2026, 5:01:51 AM\nOutcome\n\nNo record fields needed restoring. Tasks and messages are retained.\n\nCreate task \u00b7 Completed \u00b7 1 attempt\n\nCreated task \u00b7 Prepare clinic follow-up\n\nTrigger and source evidence\n\nNote logged \u00b7 11/14/2026, 5:01:51 AM\n\nCustomer requested clinic rollout follow-up\n\nOpen source evidence\n\nRun owner\nSynthetic Orbit owner\nCreated\n11/14/2026, 5:01:51 AM\nLast updated\n11/14/2026, 5:01:54 AM\nTechnical details",
+  "zoomText": "Zoom meetings\n\nZoom runs the meeting. Orbit keeps its reviewed deal activity, preparation and follow-up.\n\nUnresolved setup. Connect the owner\u2019s Zoom Server-to-Server OAuth app.\n\nConnect Zoom\n\nUse your Zoom Server-to-Server OAuth app. Orbit checks it with Zoom before saving credentials in this installation\u2019s sealed storage. They are never shown again or exported. After a restore, connect again.\n\nZoom cannot reach this local copy. An address on 127.0.0.1 or localhost only works on your computer. Deploy Orbit to a public HTTPS address using the Orbit deployment guide, then connect Zoom from Settings on that hosted installation. For temporary development, use a public HTTPS tunnel to this copy and keep it running while Zoom delivers events. Use the public address plus /api/v1/signals/zoom, never the loopback URL, in Zoom.\n\nHow to set this up\n\nThe Zoom account owner or an administrator with permission to build Server-to-Server OAuth apps connects the account. No meeting is created and no invitation is sent.\n\nSign in to the Zoom App Marketplace\n(opens in a new tab)\n. Choose Develop \u203a Build App \u203a Server-to-Server OAuth \u203a Create. Name the app Orbit and complete the required company and developer contact information.\nIn App Credentials, copy Account ID, Client ID and Client Secret into the three matching Zoom fields here. Keep them private.\nOpen Scopes \u203a Add Scopes. Add meeting:read:meeting:admin (read a scheduled meeting) and meeting:read:list_past_participants:admin (read past meeting participants). These authorize Orbit\u2019s meeting details and attendance reads. Accounts using Zoom\u2019s legacy scope selector use meeting:read:admin. Orbit does not need recording or transcript scopes.\nUnder Feature (shown as Features in some versions), find Event Subscriptions. Reveal or generate the Secret Token and copy it into Zoom webhook secret token here. Save the app settings and activate the app from Activation when Zoom\u2019s required information is complete. Choose Check and connect Zoom here so Orbit has the token before Zoom validates the endpoint.\nEnable Event Subscriptions and add a subscription with Event notification endpoint URL set to your reachable HTTPS Orbit address and the path below. Choose Validate, then add Meeting ended (meeting.ended) and Meeting deleted (meeting.deleted). Save the subscription and confirm the app is activated. Zoom\u2019s validation challenge uses the secret token saved here.\nhttps://YOUR-PUBLIC-ORBIT-HOST/api/v1/signals/zoom\nCopy\n\nZoom\u2019s Server-to-Server OAuth app instructions\n(opens in a new tab)\n \u00b7 Zoom\u2019s event subscription and validation guide\n(opens in a new tab)\n\nZoom account ID\nZoom client ID\nZoom client secret\nZoom webhook secret token\nCheck and connect Zoom\n\nRecording and transcript content is never fetched. A missing transcript or ungranted recording permission stays visible on the meeting plan.",
+  "screens": [
+    "after-run-1440.png",
+    "after-run-390.png",
+    "after-undo-1440.png",
+    "after-undo-390.png",
+    "after-zoom-1440.png",
+    "after-zoom-390.png"
+  ],
+  "productHead": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+  "sourceHashes": {
+    "src/core/features/operator/ui/workflows-activity.tsx": "1cd7c3de192e86ba5dcebee75c0d06f215a280c02c1b51f534b058c45e3450b9",
+    "src/core/features/operator/ui/workflows.css": "95abd567c603f8adfa4d7eb98d946960880111982f6d77c976d9ac7a206d0988",
+    "src/core/features/operator/ui/zoom-settings.tsx": "428349d186e4cde45c2752c1ff081ee280e53d56c778d18ebfea4d656399a986",
+    "src/core/features/operator/ui/zoom-setup-help.tsx": "128fe359c7cedefdc4a4e4de785abcc2df6e144b19d6ff05d9bb6c6e025c7591",
+    "src/core/features/workflows/routes.ts": "53f6883612e1a81d9a5108654872371f0b7a9863b13c8b74d15118c386c282bb",
+    "src/core/features/workflows/run-presentation.ts": "d7a7d3bcc0f9015bf3ada73eeca6da49177ea76a1b7236802f67822d7c11991e",
+    "tests/e2e/task-activity.mjs": "f8dd6d073fafec2f88dc5de92e0d418257e553dccda74b2963dac8b8092c9239",
+    "sources.lock.json": "e4cb484792a4493df8c25c36043d5492efd24946c6e05df004c78bd2dc69313a"
+  }
+}
