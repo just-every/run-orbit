@@ -77,5 +77,26 @@
   "publicationScan": "Mac fleet landing gate; unavailable on cloud",
   "gitIdentity": "Run Edit Run fleet <fleet@runeditrun.com>",
   "trailers": "none",
-  "firstProductPush": "success"
+  "firstProductPush": "success",
+  "returnState": "PUSHED",
+  "ci": {
+    "repository": "just-every/run-orbit",
+    "head": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+    "runId": 43559527137,
+    "verify": {
+      "conclusion": null,
+      "head_sha": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43559527137",
+      "status": "in_progress"
+    },
+    "apiCalls": 9,
+    "minimumPollIntervalSeconds": 300,
+    "terminal": false
+  },
+  "githubCalls": 9,
+  "finishedAt": "2026-11-14T05:43:22.348317+00:00",
+  "blockers": [],
+  "pending": [
+    "Exact-SHA Verify remains in progress; call budget is running short."
+  ]
 }

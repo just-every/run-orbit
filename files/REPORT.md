@@ -42,7 +42,7 @@ The scope does not complete the broader workflow, undo or live Zoom clauses. No 
 Before: 198 registered cases + 2 qualification flows = 200.
 After: 198 registered cases + 2 qualification flows = 200.
 New registrations: 0. Deleted, skipped or weakened assertions: 0.
-Clause status changes: none. CONTRACT.md, ACCEPTANCE.md and docs/CLAIMS.md unchanged.
+Clause status changes: none. AUTO-001 remains partial; AUTO-006 remains partial; INTEGRATE-002 remains missing. CONTRACT.md, ACCEPTANCE.md and docs/CLAIMS.md unchanged.
 
 CLAIM AUTO-001 PARTIAL points=none tests=tests/e2e/operator.spec.mjs#RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties
 CLAIM AUTO-006 PARTIAL points=none tests=tests/e2e/operator.spec.mjs#RECORD-005 — the mobile opportunity timeline shows metadata and orders out-of-order notes with ID ties
@@ -55,3 +55,11 @@ GAP INTEGRATE-002: Setup guidance is browser-reviewed copy; live-account meeting
 See validation.json, browser-receipt.json, the exact-SHA CI receipt and the product push receipt for actual commands, outcomes and terminal provenance. Product commits contain only implementation, the extended retained journey and the regenerated source lock. Report files and screenshots travel only on the separate evidence ref.
 
 Local results: final retained browser journey passed (1 test, 1.1 minutes), core capture/workflow regression passed (1 test, 174.7 seconds), typecheck passed, boundary check passed (887 core source files), generated contract docs current, regenerated source lock check ok=true. First candidate push succeeded on attempt 1; no retry or published-history rewrite. Main was unchanged at a35d331920a4bace2548bbd0efaf9344ffcd32a6 when fetched before publication.
+
+## Terminal product custody and CI
+
+Product return: PUSHED branch=cloud/main-orbit-readable-runs-1 head=97bec7a7809848abf1aafe4fe5e4423e99b13922.
+Exact-SHA Verify run: 43559527137 — status=in_progress, conclusion=None. URL: https://github.com/just-every/run-orbit/actions/runs/43559527137. GitHub calls used: 9; a single watcher maintained at least 300 seconds between discovery/status calls.
+The local work is complete and pushed. Verify was still running at the last scheduled observation after about 40 minutes; the remaining call is reserved rather than exceeding the ten-call cap. There is no READY or DONE claim, and no failed-job log was read while the run remained in progress. The fleet must obtain the completed exact-SHA verdict before landing.
+
+No product blocker is recorded. No PR was required by the shipped repository instructions or created. All local browser/server processes were closed or stopped by their own PID. The scratch clone will be removed after final evidence publication; the complete packet remains outside it.
