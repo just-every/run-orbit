@@ -1,0 +1,23 @@
+{
+  "head": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "tree": "b3a2a970bc1a899c218129801c90b6fb2c394a7b",
+  "files": [
+    {
+      "path": "package.json",
+      "bytes": 3539,
+      "sha256": "bc3477f97fd0e17363d68c616efbe419a7b6e200478d087da37dd7db3042cc41"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 121489,
+      "sha256": "d219dca7f65243693a4753a227b3c2d09134a23f4e79582199918fb16dfb6cb9"
+    },
+    {
+      "path": "sources.lock.json",
+      "bytes": 521960,
+      "sha256": "09e463f50e3e4fedbf16b86474d24b65cb231dd468afd3ea3ff7422ace2c25cc"
+    }
+  ],
+  "diffCheck": "pass",
+  "identityAudit": "fleet author and committer; no trailers; all candidate commits inspected"
+}

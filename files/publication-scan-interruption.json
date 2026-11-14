@@ -1,0 +1,6 @@
+{
+  "status": "interrupted",
+  "complete": false,
+  "reason": "Managed environment restarted while scan was running; tool session disappeared and scanner processes became zombies. No verdict was produced and no product push occurred.",
+  "head": "a35d331920a4bace2548bbd0efaf9344ffcd32a6"
+}

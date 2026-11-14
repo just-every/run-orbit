@@ -1,0 +1,136 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-6",
+  "head": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "base": "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d",
+  "viteBefore": "8.2.2",
+  "viteAfter": "8.2.4",
+  "resolvedPackagesBefore": 363,
+  "resolvedPackagesAfter": 363,
+  "removedPackageVersions": [
+    "vite@8.2.2"
+  ],
+  "addedPackageVersions": [
+    "vite@8.2.4"
+  ],
+  "targetAdvisories": [
+    "GHSA-r825-w8mm-5pxw",
+    "GHSA-587h-7wmj-h5pm"
+  ],
+  "targetAlertIds": [
+    25,
+    24,
+    23,
+    22
+  ],
+  "vulnerableViteResolutionsBefore": 1,
+  "vulnerableViteResolutionsAfter": 0,
+  "registeredCasesBefore": 198,
+  "registeredCasesAfter": 198,
+  "qualificationFlowsBefore": 2,
+  "qualificationFlowsAfter": 2,
+  "clauseStatusChanges": [],
+  "commands": [
+    {
+      "command": "pnpm install --lockfile-only",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exitCode": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exitCode": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm exec tsx tests/support/prepare-state.ts",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm run test:worker",
+      "exitCode": 0
+    }
+  ],
+  "runtimeAdaptation": "External preload selects /usr/bin/chromium headless with --no-sandbox, without changing committed code or assertions. Isolated temporary D1 state removed after proof; runtime processes stopped by their own recorded child PIDs.",
+  "publication": {
+    "status": "PASS",
+    "complete": true,
+    "findings": 0,
+    "preExisting": 5,
+    "source": {
+      "commit": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+      "tree": "b3a2a970bc1a899c218129801c90b6fb2c394a7b"
+    },
+    "environmentChecked": false,
+    "scanner": {
+      "name": "gitleaks",
+      "version": "8.30.1"
+    }
+  },
+  "productPush": {
+    "status": "pushed",
+    "attempts": 1,
+    "branch": "cloud/gr-mt-orbit-dep-6",
+    "head": "a35d331920a4bace2548bbd0efaf9344ffcd32a6"
+  },
+  "ci": {
+    "repository": "just-every/run-orbit",
+    "sha": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+    "calls": [
+      {
+        "at": "2026-11-13T23:35:57.065273+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs?head_sha=a35d331920a4bace2548bbd0efaf9344ffcd32a6&per_page=100",
+        "exitCode": 0
+      },
+      {
+        "at": "2026-11-13T23:40:57.092634+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs/43528233170",
+        "exitCode": 0
+      },
+      {
+        "at": "2026-11-13T23:45:57.058319+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs/43528233170",
+        "exitCode": 0
+      },
+      {
+        "at": "2026-11-13T23:50:57.096077+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs/43528233170",
+        "exitCode": 0
+      },
+      {
+        "at": "2026-11-13T23:55:58.506656+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs/43528233170",
+        "exitCode": 0
+      },
+      {
+        "at": "2026-11-14T00:00:59.860220+00:00",
+        "endpoint": "repos/just-every/run-orbit/actions/runs/43528233170",
+        "exitCode": 0
+      }
+    ],
+    "runId": 43528233170,
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43528233170",
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "a35d331920a4bace2548bbd0efaf9344ffcd32a6"
+  },
+  "custody": "PUSHED",
+  "githubCallsUsed": 10
+}

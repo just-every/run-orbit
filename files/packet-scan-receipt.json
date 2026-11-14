@@ -1,0 +1,119 @@
+{
+  "scanner": "gitleaks",
+  "version": "8.30.1",
+  "status": "PASS",
+  "rawDetections": 18,
+  "credentialFindings": 0,
+  "reviewedPublicSourceHashes": [
+    {
+      "file": "source-lock.json",
+      "line": 71,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 127,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 169,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 215,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 261,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 290,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 456,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 561,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-lock.json",
+      "line": 594,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 72,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 128,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 170,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 216,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 262,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 291,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 457,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 562,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    },
+    {
+      "file": "source-check.json",
+      "line": 595,
+      "rule": "hex-api-key",
+      "classification": "public source baseline content hash; complete command output exactly matches committed sources.lock.json"
+    }
+  ],
+  "symlinks": 0,
+  "note": "Supplementary report-only packet review. The product exact-tree COMPLETE/PASS scan remains the authoritative publication receipt."
+}

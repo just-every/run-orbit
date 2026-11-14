@@ -1,0 +1,41 @@
+Heavy job admitted: Orbit setup:workflow [71db22920794]
+Using port 8787 for this checkout.
+Checking pinned pnpm
+10.12.4
+Saving private local settings
+Building your application
+
+> orbit@0.4.9 build:app [REDACTED]
+> rer queue build:app -- vite build --logLevel warn
+
+build:app
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+Applying database migrations
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+Applying migrations 10/83
+Applying migrations 20/83
+Applying migrations 30/83
+Applying migrations 40/83
+Applying migrations 50/83
+Applying migrations 60/83
+Applying migrations 70/83
+Applying migrations 80/83
+Applied 83 migrations. Full output: .seed/installer/commands-1153/install.log
+Starting your application on this computer
+Waiting for the application server to finish starting; first launch may optimize dependencies.
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+Claiming the first owner
+First owner claimed
+Opening your application
+Your application is running locally
+Setup complete: 83 migrations applied, owner set up. Full output: .seed/installer/commands-1153/install.log
+RER_SETUP_READY http://127.0.0.1:8787
+Next: rer dev opens http://127.0.0.1:8787 signed in as the owner; first-run setup finishes at http://127.0.0.1:8787/setup. rer preview prints a one-time native owner link on loopback; rer demo also prints a separate native owner entry.
+To host it on your own Cloudflare account later, rer deploy needs:
+  - CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (Follow this project's deploy guide: https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account)
+  - production sign-in mail: MAIL_FROM (a real sender on your provider's verified domain; bare address or Display Name <address>), MAIL_API_KEY or SENDGRID_API_KEY, or an approved Auth SSO install (see https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account)
+Set them in your environment or a private (mode 0600) file passed with --env-file, then check with rer deploy --dry-run.
