@@ -1,0 +1,23 @@
+{
+  "tests_before": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "tests_after": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clause_status_before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_changes": []
+}

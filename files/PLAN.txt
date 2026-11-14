@@ -1,0 +1,7 @@
+1. Initialize fleet Git credentials and hooks, clone only just-every/run-orbit, and read repository rules and authoritative context.
+2. Reproduce the two findings through Capture, Brief meeting planning, contact Email permission review and Settings Data export/restore.
+3. Make meeting-plan creation explicitly start on hold. Verify fresh restore preserves an explicitly cleared hold. Explain and attribute any protective override from a separate retained destination stop, while retaining anonymous suppression, cancelled schedules and disconnected source authority.
+4. Extend the existing native archive journey; keep 198 registered cases plus 2 qualifications (200 total). Assert at 1440 and capture affected screens at 1440 and 390.
+5. Run the changed journey and typecheck, then fetch/rebase unpublished work onto main, regenerate and check the source lock last. Keep contract judgments and generated views unchanged.
+6. Commit with fleet identity and hooks; inspect all candidate identities/trailers; publish only cloud/main-orbit-contact-permission-1 through the push guard. Check exact-SHA Verify via the budgeted REST watcher.
+7. Publish complete non-secret reports and actual receipts exclusively on evidence/main-orbit-contact-permission-1; report claims, custody, counts and lane POST lines.
