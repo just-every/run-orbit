@@ -39,9 +39,17 @@ GAP FORM-004: Team audiences, external channels and lead/custom-object views rem
 Product head: efded904242fef01fbfaf2c24ff20966456c98ed
 Integrated main: a35d331920a4bace2548bbd0efaf9344ffcd32a6; fetch and rebase were a no-op.
 Push: first guarded attempt succeeded; one product commit, no skip-CI marker and a clean checkout.
-Exact-head Verify: 43559901476, https://github.com/just-every/run-orbit/actions/runs/43559901476 (in progress at packet preparation).
+Exact-head Verify: 43559901476, https://github.com/just-every/run-orbit/actions/runs/43559901476 (still in progress at the last permitted observation).
 PR: none; this task hands the cloud branch to the fleet lander.
 
 CLAIM FORM-004 PARTIAL points=none tests=newtests/t096/forms-native.test.ts#FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
 
 Claim scope: the repaired one-notice obligation is proven; the compound FORM-004 points include additional routing/audience obligations, so no complete acceptance point is promoted by this report. The product change is ready for its independent gates once exact-head Verify completes successfully.
+
+The complete committed candidate diff is retained as CHANGE.patch for review. Product and test source remain on the cloud branch; this report-only copy is evidence.
+
+## Terminal result
+
+Exact-head Verify 43559901476 was still running on efded904242fef01fbfaf2c24ff20966456c98ed at the last observation after 8 GitHub calls. No completed failure was observed or logs retrieved. The remaining two calls are reserved for a failed-job inventory and its log if a terminal failure is reported; another status call would leave insufficient calls for both. Product and complete relevant evidence are pushed. CI is pending, so this run makes no READY or acceptance claim.
+
+PUSHED branch=cloud/main-orbit-form-notify-once-1 head=efded904242fef01fbfaf2c24ff20966456c98ed
