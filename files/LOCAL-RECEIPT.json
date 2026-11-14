@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-runs-1-pc2",
+  "head": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+  "base": "a35d331",
+  "saved_head": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer install",
+      "result": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "result": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "result": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "pnpm exec playwright test --config /tmp/orbit-playwright.config.mjs --grep \"mobile opportunity timeline\" --workers=1",
+      "result": "passed",
+      "exitCode": 0,
+      "tests": 1,
+      "screenshotsWidths": [
+        1440,
+        390
+      ],
+      "assertionWidth": 1440,
+      "head": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+      "proof": [
+        "named task and source evidence links open their actual records",
+        "owner displayed by name",
+        "default expanded run and Undo omit run/task/record/owner/event IDs and raw JSON",
+        "technical details expose the stored receipt only when opened",
+        "Undo retains the created task"
+      ]
+    },
+    {
+      "command": "node --import /tmp/orbit-chromium.mjs --test --test-concurrency=1 tests/rer/operator-desktop.test.mjs",
+      "result": "passed",
+      "head": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+      "exitCode": 0,
+      "tests": 1
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "result": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node /tmp/orbit-zoom-proof.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "scope": "browser proof only, no wording test",
+      "widths": [
+        1440,
+        390
+      ],
+      "horizontalOverflow": false
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "passed",
+      "exitCode": 0,
+      "head": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705"
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "result": "passed",
+      "exitCode": 0
+    }
+  ],
+  "browser": {
+    "engine": "Chromium",
+    "executable": "/usr/bin/chromium",
+    "launchArgs": [
+      "--no-sandbox",
+      "--use-mock-keychain",
+      "--password-store=basic"
+    ],
+    "profiles": "new disposable browser contexts"
+  },
+  "counts": {
+    "before": {
+      "tests": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "tests": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  },
+  "clauseStatusChanges": [],
+  "publicationScan": "fleet-owned after cloud return, not available on this VM",
+  "screenshots": [
+    {
+      "file": "workflow-outcome-1440.png",
+      "sha256": "6b334e9cec6fee3312c1821217287967df79b7b2ff052e82d7e5e7402ba1efc5"
+    },
+    {
+      "file": "workflow-outcome-390.png",
+      "sha256": "f8205b145cc09a232ea8a98b05c1d258b647969c21ab7221a51abfa1851b7395"
+    },
+    {
+      "file": "workflow-undo-1440.png",
+      "sha256": "9351e265b3e0be1f254bdba07501489fec951c2aa7d049b7595203875c93f360"
+    },
+    {
+      "file": "workflow-undo-390.png",
+      "sha256": "d6b24af3409607e4c49b8facceb7c96e0f2918af4c0b84ed9e2f908858e64549"
+    },
+    {
+      "file": "zoom-setup-1440.png",
+      "sha256": "e7aaf54238caac03702d75baddb121f6402621cebe020b295337b10b60b2ea9e"
+    },
+    {
+      "file": "zoom-setup-390.png",
+      "sha256": "07e010c8df2532ac10d89593f581c1d716757fa02178ed210292d8cbe6e89647"
+    }
+  ]
+}

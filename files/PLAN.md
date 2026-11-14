@@ -1,0 +1,8 @@
+# Continuation plan
+
+1. Install the fleet Git authentication and publication hooks. Clone only just-every/run-orbit, fetch cloud/main-orbit-readable-runs-1-pc2, and preserve published head 7e577833179cbd0fb8db8500b61a8bd0a1d2e56b and its ancestry.
+2. Inspect Verify 43567551061 and its failed batch-18. Read each failed job archive at most once. If transport is blocked, record that limitation without downloading the same archive again.
+3. Install the pinned dependencies, run setup and build through the cloud subreaper, then run the touched workflow/Undo public-door browser journey and existing operator desktop journey plus typecheck. Capture the workflow outcome, Undo, and Zoom setup at 1440 and 390.
+4. Fetch main and merge only if it adds commits. Do not rebase or rewrite the saved commits. Check the source lock after regeneration with the documented authoring CLI. Keep the 200-registration budget and all generated views and contract judgments unchanged.
+5. Correct any reproduced defect with forward commits. If the failure is outside the touched code, retry only the failed CI jobs once. Inspect all candidate identities, messages and trailers, and use cloud-push.py for the named product branch. Require completed/success Verify on its exact full SHA through REST polling no faster than 300 seconds per run, within ten GitHub calls.
+6. Retain explicit non-secret reports, receipts, and screen captures here. Publish them only to evidence/main-orbit-readable-runs-1-pc2 through cloud_evidence.py, then report product custody separately. Delete the product clone after successful publication, retaining the packet outside it.

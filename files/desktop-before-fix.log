@@ -1,0 +1,90 @@
+Record recovery passed: contact: primary 404, relationships 404, primary first
+Record recovery passed: contact: primary 404, relationships 404, relationships first
+Record recovery passed: contact: primary 404, relationships 503, primary first
+Record recovery passed: contact: primary 404, relationships 503, relationships first
+Record recovery passed: contact: primary 503, relationships 404, primary first
+Record recovery passed: contact: primary 503, relationships 404, relationships first
+Record recovery passed: contact: primary 401, relationships 403, primary first
+Record recovery passed: contact: primary 401, relationships 403, relationships first
+Record recovery passed: contact: primary 403, relationships 401, primary first
+Record recovery passed: contact: primary 403, relationships 401, relationships first
+Record recovery passed: contact: primary 409, relationships 500, primary first
+Record recovery passed: contact: primary 409, relationships 500, relationships first
+Record recovery passed: contact: primary 500, relationships 409, primary first
+Record recovery passed: contact: primary 500, relationships 409, relationships first
+Record recovery passed: contact: primary 404, relationships 200, primary first
+Record recovery passed: contact: primary 404, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 404, primary first
+Record recovery passed: contact: primary 200, relationships 404, relationships first
+Record recovery passed: contact: primary 403, relationships 200, primary first
+Record recovery passed: contact: primary 403, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 403, primary first
+Record recovery passed: contact: primary 200, relationships 403, relationships first
+Record recovery passed: contact: primary 500, relationships 200, primary first
+Record recovery passed: contact: primary 500, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 500, primary first
+Record recovery passed: contact: primary 200, relationships 500, relationships first
+Record recovery passed: opportunity: primary 404, relationships 404, primary first
+Record recovery passed: opportunity: primary 404, relationships 404, relationships first
+Record recovery passed: opportunity: primary 404, relationships 503, primary first
+Record recovery passed: opportunity: primary 404, relationships 503, relationships first
+Record recovery passed: opportunity: primary 503, relationships 404, primary first
+Record recovery passed: opportunity: primary 503, relationships 404, relationships first
+Record recovery passed: opportunity: primary 401, relationships 403, primary first
+Record recovery passed: opportunity: primary 401, relationships 403, relationships first
+Record recovery passed: opportunity: primary 403, relationships 401, primary first
+Record recovery passed: opportunity: primary 403, relationships 401, relationships first
+Record recovery passed: opportunity: primary 409, relationships 500, primary first
+Record recovery passed: opportunity: primary 409, relationships 500, relationships first
+Record recovery passed: opportunity: primary 500, relationships 409, primary first
+Record recovery passed: opportunity: primary 500, relationships 409, relationships first
+Record recovery passed: opportunity: primary 404, relationships 200, primary first
+Record recovery passed: opportunity: primary 404, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 404, primary first
+Record recovery passed: opportunity: primary 200, relationships 404, relationships first
+Record recovery passed: opportunity: primary 403, relationships 200, primary first
+Record recovery passed: opportunity: primary 403, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 403, primary first
+Record recovery passed: opportunity: primary 200, relationships 403, relationships first
+Record recovery passed: opportunity: primary 500, relationships 200, primary first
+Record recovery passed: opportunity: primary 500, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 500, primary first
+Record recovery passed: opportunity: primary 200, relationships 500, relationships first
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (274687.168122ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 275187.46411
+
+✖ failing tests:
+
+test at tests/rer/operator-desktop.test.mjs:8:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (274687.168122ms)
+  Error: expect(locator).toContainText(expected) failed
+  
+  Locator: locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary')
+  Expected substring: "Undone"
+  Received string:    "Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped"
+  Timeout: 5000ms
+  
+  Call log:
+    - Expect "toContainText" locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary') with timeout 5000ms
+    - waiting for locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary')
+      3 × locator resolved to <summary>…</summary>
+        - unexpected value "Prepare account review · Version 1Completed · Account review ready"
+      11 × locator resolved to <summary>…</summary>
+         - unexpected value "Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped"
+  
+      at captureRawStack (/workspace/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+      at callMatcherAsStep (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+      at Object.toContainText (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+      at workflowBrowserJourney (/workspace/run-orbit/tests/rer/workflow-journey.mjs:87:48)
+      at async operatorRouteJourney (/workspace/run-orbit/tests/rer/operator-route-journey.mjs:16:17)
+      at async file:///workspace/run-orbit/tests/rer/operator-desktop.test.mjs:8:238
+      at async withOperatorWorkspace (/workspace/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+    matcherResult: { name: 'toContainText', expected: 'Undone', message: `expect(locator).toContainText(expected) failed\n\nLocator: locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary')\nExpected substring: "Undone"\nReceived string:    "Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped"\nTimeout: 5000ms\n\nCall log:\n  - Expect "toContainText" locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary') with timeout 5000ms\n  - waiting for locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary')\n    3 × locator resolved to <summary>…</summary>\n      - unexpected value "Prepare account review · Version 1Completed · Account review ready"\n    11 × locator resolved to <summary>…</summary>\n       - unexpected value "Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped"\n`, pass: false, actual: 'Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped', log: [ `  - Expect "toContainText" locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary') with timeout 5000ms`, "  - waiting for locator('.workflows-settings').getByRole('region', { name: 'Execution history', exact: true }).locator('details.workflows-card').filter({ hasText: 'Prepare account review' }).first().locator(':scope > summary')", '    3 × locator resolved to <summary>…</summary>', '      - unexpected value "Prepare account review · Version 1Completed · Account review ready"', '    11 × locator resolved to <summary>…</summary>', '       - unexpected value "Prepare account review · Version 1Stopped · Account review candidateWorkflow loop stopped"' ], timeout: 5000, ariaSnapshot: '- strong: Prepare account review · Version 1\n- text: Stopped ·\n- link "Account review candidate":\n  - /url: /app/opportunities/01M7CJ8MSXYTAV4BQ5TRQ1GD72\n- text: Workflow loop stopped' }
+  }
