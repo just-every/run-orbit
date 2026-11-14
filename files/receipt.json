@@ -1,0 +1,48 @@
+{
+  "branch": "cloud/main-orbit-form-notify-once-1-c1-fix1",
+  "head": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "productPush": "succeeded attempt 1",
+  "localTests": {
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "durationMs": 952209.58287
+  },
+  "beforeAfter": {
+    "unassignedNoticeCount": {
+      "before": 0,
+      "after": 2,
+      "activeOperators": 2
+    },
+    "fixedOwnerNoticeCount": {
+      "before": 1,
+      "after": 1
+    },
+    "testBudget": {
+      "before": 200,
+      "after": 200
+    }
+  },
+  "clause": {
+    "id": "FORM-004",
+    "statusBefore": "partial",
+    "statusAfter": "partial",
+    "claimedPoints": [
+      1,
+      2
+    ],
+    "statusGapEvidenceEdited": false
+  },
+  "ci": {
+    "runId": 43622494220,
+    "headSha": "9940c015edce444ed02c8f23fee20aac6a947761",
+    "status": "in_progress",
+    "url": "https://github.com/just-every/run-orbit/actions/runs/43622494220",
+    "run_id": 43622494220,
+    "head_sha": "9940c015edce444ed02c8f23fee20aac6a947761",
+    "conclusion": null,
+    "calls": 1
+  },
+  "blockers": [],
+  "pr": null
+}

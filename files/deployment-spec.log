@@ -1,0 +1,12 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.9 deployment:spec /home/agent/rer-consolidation/work/main-orbit-form-notify-once-1-c1-fix1/run-orbit
+> node scripts/publish-deployment-spec.mjs
+
+Deployment spec published from the build; setup digest matches rer-setup.json.
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.9 deployment:check /home/agent/rer-consolidation/work/main-orbit-form-notify-once-1-c1-fix1/run-orbit
+> node scripts/publish-deployment-spec.mjs --check
+
+Deployment spec matches the build; setup digest matches rer-setup.json.

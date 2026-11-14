@@ -1,0 +1,76 @@
+{
+  "head": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "commands": [
+    {
+      "command": "pnpm exec tsx --test --test-name-pattern=FORM-001 mapped cross-origin newtests/t096/forms-native.test.ts",
+      "phase": "before product fix",
+      "exit": 1,
+      "assertion": "unassigned enquiry gives every active operator exactly one notice",
+      "observedRecipients": 0,
+      "expectedRecipients": 2,
+      "log": "before-test.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts newtests/t096/forward-upgrade.test.ts",
+      "phase": "after product fix",
+      "status": "passed",
+      "log": "after-tests.log",
+      "exit": 0,
+      "tests": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "pnpm run deployment:spec && pnpm run deployment:check",
+      "exit": 0,
+      "log": "deployment-spec.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "source-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "log": "contract-check.log"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "log": "test-inventory.json",
+      "total": 200
+    },
+    {
+      "command": "cloud_run pnpm exec tsx .rer/form-notify-proof.ts",
+      "exit": 0,
+      "log": "browser-proof.log",
+      "receipt": "browser/receipt.json"
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit": 0,
+      "log": "diff-check.log"
+    }
+  ],
+  "toolchain": {
+    "node": "v24.19.0",
+    "pnpm": "10.12.4",
+    "note": "User-supplied cloud toolchain preserves the newer VM Node when the repository Node pin is older; CI uses .node-version."
+  }
+}

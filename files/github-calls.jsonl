@@ -1,0 +1,2 @@
+{"call": 1, "utc": "2026-11-14T17:42:24.385642+00:00", "command": ["python3", "/tmp/fleet-gh.py", "api", "repos/just-every/run-orbit/actions/runs?head_sha=9940c015edce444ed02c8f23fee20aac6a947761&per_page=100"], "run_id": null, "exit": 0}
+{"call": 2, "utc": "2026-11-14T17:47:24.385955+00:00", "command": ["python3", "/tmp/fleet-gh.py", "api", "repos/just-every/run-orbit/actions/runs/43622494220", "--jq", "{status,conclusion,head_sha,html_url}"], "run_id": 43622494220, "exit": 0}

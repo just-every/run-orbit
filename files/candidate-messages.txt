@@ -1,0 +1,4 @@
+Preserve one form enquiry notice for each intended recipient
+
+Retain the original fixed-owner notification and archive compatibility change on current main. Scope the atomic NOW suppression marker to the routed operator, and leave unassigned form queues on their normal active-operator notices. Extend the existing mapped public-door journey to cover recipient inventory, unread increments, NOW linkage and replay without adding a test registration.
+

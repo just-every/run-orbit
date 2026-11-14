@@ -1,0 +1,29 @@
+{
+  "head": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "base": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade",
+  "commits": 1,
+  "linear": true,
+  "identity": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "trailers": "absent",
+  "worktree": "clean",
+  "statusGapEvidenceEdited": false,
+  "generatedViewsCommitted": false,
+  "changedFiles": [
+    "management/integration/deployment-spec.json",
+    "migrations/core/0092_form_submission_notification.sql",
+    "newtests/t096/browser-form-mapping.ts",
+    "newtests/t096/forms-mapped-journey.ts",
+    "newtests/t096/released-forecast-upgrade.ts",
+    "sources.lock.json",
+    "src/core/features/forms/native-capture.ts",
+    "src/core/features/notifications/routes.ts",
+    "src/core/features/operator/ui/notifications-page.tsx",
+    "src/core/features/records/archive-generations.ts"
+  ],
+  "sourceCheck": true,
+  "fullPublicationScan": "Mac lander responsibility; unavailable in cloud",
+  "testBudget": {
+    "before": 200,
+    "after": 200
+  }
+}

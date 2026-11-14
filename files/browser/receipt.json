@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "scenarios": [
+    {
+      "mode": "fixed",
+      "submissionId": "01M7DHMBKNT9B727GZKVS6VRQ2",
+      "contactId": "01M7DHMBKHJFGSNN1MQ0DJ62P3",
+      "dealId": "01M7DHMBKQHKB2PZJ1GDXS2JEJ",
+      "unreadBefore": [
+        0,
+        0
+      ],
+      "unreadAfter": [
+        0,
+        1
+      ],
+      "deltas": [
+        0,
+        1
+      ],
+      "screenshots": [
+        1440,
+        390
+      ],
+      "assertionWidth": 1440
+    },
+    {
+      "mode": "unassigned",
+      "submissionId": "01M7DHMFMKMYYJHVBQZ7QTZWRQ",
+      "contactId": "01M7DHMFMGRP0R023MHD5AWDZR",
+      "dealId": "01M7DHMFMNH8V7CSPZBBVF0AZK",
+      "unreadBefore": [
+        0,
+        1
+      ],
+      "unreadAfter": [
+        1,
+        2
+      ],
+      "deltas": [
+        1,
+        1
+      ],
+      "screenshots": [
+        1440,
+        390
+      ],
+      "assertionWidth": 1440
+    }
+  ],
+  "ownedWorkersClosed": true,
+  "ownedBrowsersClosed": true
+}
