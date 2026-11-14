@@ -83,9 +83,11 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await run.locator('summary').first().click();await expect(run.getByText('Trigger and source evidence',{exact:true})).toBeVisible();
  await page.screenshot({path:join(directory,`workflow-execution-${width}.png`),fullPage:false});
  await run.getByRole('button',{name:'Undo applied changes',exact:true}).click();
- // The technical receipt retains the same reason; assert the visible outcome.
- await expect(run.locator(':scope > summary')).toContainText('Undone');
- await expect(run.locator(':scope > summary').getByText('Undo inspected every recorded write',{exact:true})).toBeVisible();
+ // Undo emits a record-change event. Its loop-stopped run can become the first
+ // row, so read the retained Undone outcome rather than whichever row is newest.
+ const undone=settings.getByRole('region',{name:'Execution history',exact:true}).locator('details.workflows-card').filter({hasText:'Prepare account review'}).filter({has:page.locator(':scope > summary').filter({hasText:'Undone'})});
+ await expect(undone).toHaveCount(1);
+ await expect(undone.locator(':scope > summary').getByText('Undo inspected every recorded write',{exact:true})).toBeVisible();
  assert.equal((await request(page,`/api/v1/records/opportunity/${fixture.opportunityId}`,undefined,'GET')).record.title,'Account review candidate','Undo restores the title written by this workflow');
  await settings.getByRole('button',{name:'Approvals',exact:true}).click();await expect(settings.getByText('No changes are waiting for approval.',{exact:true})).toBeVisible();await page.screenshot({path:join(directory,`workflow-approvals-${width}.png`),fullPage:false});
  const workflows=await request(page,'/api/workflows',undefined,'GET');for(const workflow of workflows.workflows)await request(page,`/api/workflows/${workflow.id}/pause`,{});
