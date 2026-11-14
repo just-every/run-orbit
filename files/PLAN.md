@@ -1,0 +1,8 @@
+# Plan — sd-orbit-data001-copy-1
+
+1. Start from origin/main on the named cloud branch, preserve fleet identity and commit hooks, and inspect the native restore preview and permission journey.
+2. Add a read-only preview projection of archived contact permissions, archive safety history (including retired aliases), and retained destination stops. Show the exact number of contacts returning Do not contact and up to five contact names, with “and N more”. Respect clear receipts from both installations without changing suppression decisions.
+3. Attribute new restore-hold history to the installation, restored archive, or both, using active proof provenance; explain that another address of the same contact can carry the stop. Keep clearContactSuppression and all suppression decisions unchanged.
+4. Extend the existing archive contact-permission journey with destination and archive-origin holds, names/count/capping assertions, zero matches, and history provenance assertions. Assert at 1440; inspect and retain Settings > Data screenshots at 1440 and 390 with readable text.
+5. Run the touched archive journey and typecheck locally. Refresh the source lock last, validate it, fetch/rebase unpublished work on origin/main, inspect all candidate identities/messages, commit and push the named branch with the fleet guard.
+6. Discover and poll exact-SHA Verify through REST within the ten-call budget (at most one call per run per 300 seconds). Retain actual reports and receipts, publish only the evidence ref, and return product custody, clause claim and lane POST lines. No contract status/gap/evidence edits or generated view edits.

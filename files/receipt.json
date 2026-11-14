@@ -1,0 +1,82 @@
+{
+  "tag": "sd-orbit-data001-copy-1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-data001-copy-1",
+  "base": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "recorded_at": "2026-11-14T20:45:47.904996+00:00",
+  "toolchain": {
+    "node": "24.19.0",
+    "pnpm": "10.12.4",
+    "browser": "/usr/bin/chromium --no-sandbox"
+  },
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit_code": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit_code": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit_code": 0,
+      "ok": true,
+      "log": "source-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit_code": 0,
+      "log": "contract-check.log"
+    }
+  ],
+  "clause_changes": [],
+  "claim": "DATA-001 PARTIAL points=none",
+  "contract_counts_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "contract_counts_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "first_archive_journey": {
+    "exit_code": 0,
+    "tests_passed": 1,
+    "test_duration": "3.8m",
+    "total_duration": "4.8m"
+  },
+  "final_archive_journey": {
+    "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium pnpm run test:archive",
+    "exit_code": 0,
+    "tests_passed": 1,
+    "test_duration": "3.7m",
+    "total_duration": "4.7m",
+    "log": "archive-test.log"
+  },
+  "product_custody": "PUSHED",
+  "pr_url": null,
+  "blockers": [],
+  "head": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+  "push_attempts": 1,
+  "post_fetch_base": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "identity_check": "passed: fleet author and committer; no trailers or co-author lines; one linear candidate commit; no side parents",
+  "browser_proof": {
+    "widths": [
+      1440,
+      390
+    ],
+    "screenshots": [
+      "settings-preview-1440.png",
+      "settings-preview-390.png"
+    ],
+    "new_assertions_at_width": 1440,
+    "minimum_paragraph_font_px": 13,
+    "visual_inspection": "count, five names and remaining count readable at both widths; no clipping"
+  }
+}
