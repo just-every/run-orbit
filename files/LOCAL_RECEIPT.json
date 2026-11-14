@@ -1,0 +1,52 @@
+{
+  "branch": "cloud/main-orbit-readable-runs-1-c1",
+  "head": "de7eb11ff23eb8db6529f6424639a094fc66460c",
+  "base": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "carried_from": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+  "changed_files": [
+    "tests/rer/workflow-journey.mjs",
+    "sources.lock.json"
+  ],
+  "contract_changes": false,
+  "claim_changes": false,
+  "test_count_before": 200,
+  "test_count_after": 200,
+  "core_counts_before_after": {
+    "done": 42,
+    "partial": 112,
+    "missing": 24,
+    "total": 178
+  },
+  "agent_surface_counts_before_after": {
+    "done": 0,
+    "partial": 18,
+    "missing": 8,
+    "total": 26
+  },
+  "typecheck_exit": 0,
+  "source_lock_check_ok": true,
+  "contract_docs_check": "current",
+  "build_exit": 0,
+  "setup_exit": 0,
+  "publication_scan": "Deferred to fleet Mac under cloud adaptation; no cloud scan or landing claim.",
+  "desktop_journey_exit": 0,
+  "desktop_journey_command": "cloud_run node --import /tmp/orbit-chromium.mjs --test --test-concurrency=1 tests/rer/operator-desktop.test.mjs",
+  "chromium": {
+    "executablePath": "/usr/bin/chromium",
+    "args": [
+      "--no-sandbox"
+    ]
+  },
+  "desktop_journey_result": "passed; existing 1440px native operator test, including workflow Undo retained outcome and restored title",
+  "product_pushed": true,
+  "product_push_attempts": 1,
+  "remote_head": "de7eb11ff23eb8db6529f6424639a094fc66460c",
+  "ci_run_id": 43604679577,
+  "ci_url": "https://github.com/just-every/run-orbit/actions/runs/43604679577",
+  "ci_status": "completed",
+  "ci_poll_count": 6,
+  "github_calls_used": 7,
+  "ci_conclusion": "success",
+  "blockers": [],
+  "ready": true
+}
