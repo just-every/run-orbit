@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-runs-1-pc2",
+  "localHead": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+  "remoteHead": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+  "productPushed": true,
+  "cleanWorktree": true,
+  "commits": [
+    {
+      "head": "89e4e3dcef68fb1e93f1e10d21343a38e6bc2705",
+      "authorName": "Run Edit Run fleet",
+      "authorEmail": "fleet@runeditrun.com",
+      "committerName": "Run Edit Run fleet",
+      "committerEmail": "fleet@runeditrun.com",
+      "subject": "Keep workflow Undo proof on its retained outcome"
+    },
+    {
+      "head": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+      "authorName": "Run Edit Run fleet",
+      "authorEmail": "fleet@runeditrun.com",
+      "committerName": "Run Edit Run fleet",
+      "committerEmail": "fleet@runeditrun.com",
+      "subject": "Scope workflow Undo proof to its visible outcome"
+    },
+    {
+      "head": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+      "authorName": "Run Edit Run fleet",
+      "authorEmail": "fleet@runeditrun.com",
+      "committerName": "Run Edit Run fleet",
+      "committerEmail": "fleet@runeditrun.com",
+      "subject": "Make workflow run outcomes readable and guide Zoom setup"
+    }
+  ],
+  "verifyRunId": 43575692792,
+  "ciReceipt": "CI-RECEIPT.json",
+  "evidenceRef": "refs/heads/evidence/main-orbit-readable-runs-1-pc2",
+  "clauseStatusChanges": [],
+  "publicationScan": "fleet-owned after return",
+  "terminalStatus": "PUSHED",
+  "verifyStatus": "in_progress",
+  "verifyConclusion": null,
+  "githubCallsUsed": 10
+}

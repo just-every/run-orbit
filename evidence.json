@@ -1,10 +1,10 @@
 {
   "files": [
     {
-      "blob": "13d1d50e6ccda2a9875972f489cc3d1bdcf8add7",
-      "bytes": 442,
+      "blob": "f8a063fc3eea71d5dc98d9766ea8b504dd5cb536",
+      "bytes": 605,
       "path": "CI-RECEIPT.json",
-      "sha256": "7ecbce7c3933d6ca1646423e170289641f93e51bffd171e53c277146ed274d01"
+      "sha256": "0641bd4afeffe31d09faa83f76a767d426c242fd3009dd25f3ccd6bcd16c0e82"
     },
     {
       "blob": "e777c61a401ef29645b4eba3a6651af0daac3f37",
@@ -19,10 +19,16 @@
       "sha256": "586d815c36c18bbc0fa2dcc8f27476e6e89cf162653f8d73949afe4a6abbeb37"
     },
     {
-      "blob": "788ad8ae7bb4500d3e7328e46218796e91f5ffa1",
-      "bytes": 6695,
+      "blob": "345d4a5b71e2cddbdc17894dc2a1e64168b0c2a1",
+      "bytes": 7965,
       "path": "REPORT.md",
-      "sha256": "77fb0d7ea6da121ae12bdb5651824cf5cfa5f2beef680bf3e901d92b2f764710"
+      "sha256": "486fbffa1b13bd36b8d0143d255794dd8d88fe697a3c855d52f70dd38e136914"
+    },
+    {
+      "blob": "d599fadbb5d459539e55ad9f793bcc1cab7c080a",
+      "bytes": 1592,
+      "path": "TERMINAL-PROVENANCE.json",
+      "sha256": "b9cea29cf604263b68b6f24b880afef637b39f75d51032844bec118c55d96d58"
     },
     {
       "blob": "1a894582e7500217346b4f1988ccdcb23ff24aef",
@@ -43,6 +49,24 @@
       "sha256": "599613fd071514bd024a6e6d1005c9f9b9f2b42616d62c94cf217cc89a13afdf"
     },
     {
+      "blob": "b9d23caa4f8dfa9d5f64de59f46a1c35ae5cf25a",
+      "bytes": 175,
+      "path": "ci-poll-2.json",
+      "sha256": "599613fd071514bd024a6e6d1005c9f9b9f2b42616d62c94cf217cc89a13afdf"
+    },
+    {
+      "blob": "b9d23caa4f8dfa9d5f64de59f46a1c35ae5cf25a",
+      "bytes": 175,
+      "path": "ci-poll-3.json",
+      "sha256": "599613fd071514bd024a6e6d1005c9f9b9f2b42616d62c94cf217cc89a13afdf"
+    },
+    {
+      "blob": "b9d23caa4f8dfa9d5f64de59f46a1c35ae5cf25a",
+      "bytes": 175,
+      "path": "ci-poll-4.json",
+      "sha256": "599613fd071514bd024a6e6d1005c9f9b9f2b42616d62c94cf217cc89a13afdf"
+    },
+    {
       "blob": "a005a27251d7b829e0e4df82d6c64c81f2c33a15",
       "bytes": 282,
       "path": "ci-retry.txt",
@@ -59,6 +83,12 @@
       "bytes": 4586,
       "path": "desktop-candidate.log",
       "sha256": "2741a5e8133fc9772b2be1fd7367498d15039b4e8dd10195badc35c6fdf49597"
+    },
+    {
+      "blob": "e31467061c456c0e83eb25996dc41ce8aadb33df",
+      "bytes": 4732,
+      "path": "evidence-transfer-check.json",
+      "sha256": "00adf5e97c5a9a3ecce962613f354cfd60b6c129a680fc5b238d82fa8a219adb"
     },
     {
       "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",

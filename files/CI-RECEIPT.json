@@ -6,8 +6,10 @@
   "repository": "just-every/run-orbit",
   "branch": "cloud/main-orbit-readable-runs-1-pc2",
   "runId": 43575692792,
-  "githubCallsUsed": 7,
+  "githubCallsUsed": 10,
   "githubCallLimit": 10,
-  "observation": "awaiting completion; no READY claim",
-  "priorRunId": 43567551061
+  "priorRunId": 43567551061,
+  "observedAt": "2026-11-14T09:02:39.018320+00:00",
+  "terminalStatus": "PUSHED",
+  "reason": "Exact-SHA Verify still in progress after the final allowed poll; ten-call GitHub budget exhausted. No green/READY claim."
 }
