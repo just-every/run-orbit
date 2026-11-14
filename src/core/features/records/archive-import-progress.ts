@@ -165,6 +165,11 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
             const match=await privacyMatcher(db);
             const aliases=(await db.prepare(`SELECT ${stageCell(layouts.get('record_aliases')!,'survivor_id','a')} AS survivor_id,${stageCell(layouts.get('record_aliases')!,'identity_key','a')} AS identity_key FROM ${stageName(source,'record_aliases')} a JOIN ${staged} c ON ${c('id','c')}=${stageCell(layouts.get('record_aliases')!,'survivor_id','a')} WHERE ${stageCell(layouts.get('record_aliases')!,'record_type','a')}='contact' AND c.rowid>=? AND c.rowid<=?`).bind(rows[0]!.n,end).all<{survivor_id:string;identity_key:string}>()).results;
             const identities=new Map<string,string[]>();for(const alias of aliases){const values=identities.get(alias.survivor_id)??[];values.push(alias.identity_key);identities.set(alias.survivor_id,values);}
+            // Equal mailboxes adopt the archive operator ID at finalization.
+            // Use that same identity for new restore history and audit entries.
+            const operatorLayout=layouts.get('operators')!, operatorCell=(name:string)=>stageCell(operatorLayout,name);
+            const restoredActor=await db.prepare(`SELECT ${operatorCell('id')} AS id FROM ${stageName(source,'operators')} WHERE ${operatorCell('id')}=? OR lower(${operatorCell('email')})=lower((SELECT email FROM operators WHERE id=?)) LIMIT 1`).bind(job.actor_id,job.actor_id).first<{id:string}>();
+            const actor=restoredActor?.id??job.actor_id;
             for(const contact of contacts){const tokens=[...new Set((await Promise.all([contact.email,...(identities.get(contact.id)??[])].map(email=>match(email)))).flat())];
                 if(contact.contactability==='do_not_contact')suppression.push(...tokens.filter(token=>!active.has(token)).map(token=>suppressionProof(db,token)));
                 else if(tokens.some(token=>active.has(token))){
@@ -172,8 +177,8 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
                     // stop wins. Record that exception in the same durable step.
                     const reason={reason:'retained_suppression',archivedContactability:contact.contactability,text:'Restored on Do not contact because this installation retains an email stop for this address.'};
                     suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id),
-                        ...timeline(db,job.actor_id,'contact',contact.id,'contactability.restore_hold',reason),
-                        audit(db,job.actor_id,'contactability.restore_hold','contact',contact.id,reason));
+                        ...timeline(db,actor,'contact',contact.id,'contactability.restore_hold',reason),
+                        audit(db,actor,'contactability.restore_hold','contact',contact.id,reason));
                 }
             }
         }
