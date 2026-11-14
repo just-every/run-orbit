@@ -8,9 +8,9 @@ Main base: 7ad63db63c46c6a2a59157a5c128bd35f6c20173
 Prior carry: efded904 plus 96f0e60a53ac1a350270bae42cef6740098ec8cc
 Product push: successful, first attempt, guarded branch-only push.
 PR: none; fleet branch landing rules apply.
-Verify: 43605479573 — in_progress/None, exact head ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b
+Verify: 43605479573 — completed/success, exact head ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b
 Verify URL: https://github.com/just-every/run-orbit/actions/runs/43605479573
-GitHub API calls used by the single CI watcher: 6; at least 300 seconds between calls.
+GitHub API calls used by the single CI watcher: 8; at least 300 seconds between calls.
 
 ## Plan and delivery
 
@@ -38,7 +38,7 @@ The existing journey proves round-robin recipient isolation, restart persistence
 - Browser: existing formMappingBrowserJourney passes on the committed candidate. New notification assertions run at 1440; changed screens are captured once at 1440 and 390. Both accessibility reports have zero violations, and both layouts have no horizontal overflow. The browser and emitted Worker were closed; the closure receipt records zero owned browsers and workers.
 - Contract counts before and after: 42 done, 130 partial, 32 missing (204 total). No Status, Gap or Evidence cell changed. FORM-004 remains partial; only point 1 is claimed.
 - Product diff: one commit, 10 files, 85 insertions, 16 deletions.
-- Exact-SHA Verify: in_progress/None, run 43605479573. See ci-receipt.json for the actual responses and timestamps.
+- Exact-SHA Verify: completed/success, run 43605479573. See ci-receipt.json for the actual responses and timestamps.
 
 CLAIM FORM-004 PARTIAL points=1 tests=newtests/t096/forms-native.test.ts#FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
 GAP FORM-004: This carry claims point 1 only. Team selection, team queues, team notifications, email/push and broader clause completion remain outside this carry and retain main's current judgments.
@@ -49,4 +49,4 @@ The first diagnostic launch used node --input-type=module with a TypeScript eval
 
 No full local Verify or unrelated full suite ran. Branch Verify is the full wall. No deploy, main push, default-branch update, published-history rewrite or cross-repository write occurred. The cloud cannot run the fleet publication scan; that scan and the independent migration gate remain required before landing. The evidence packet excludes credentials, environment dumps, local dev settings, auth sessions, browser traces, private Worker diagnostic files and held-out gate material.
 
-Current blocker assessment: no local product blocker; exact-SHA Verify is still pending.
+Current blocker assessment: none; exact-SHA Verify has completed successfully.

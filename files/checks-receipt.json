@@ -119,5 +119,14 @@
   "known_limitations": [
     "Only FORM-004 point 1 claimed PARTIAL; no clause promotion or Status, Gap or Evidence cell edit.",
     "Full local suite not run; only touched native checks and affected browser journey. Exact-SHA branch Verify is the full wall."
-  ]
+  ],
+  "terminal_ci": {
+    "run_id": 43605479573,
+    "head_sha": "ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43605479573"
+  },
+  "github_api_calls_used_final": 8,
+  "abandoned_diagnostic_fixture_directories_removed": 3
 }
