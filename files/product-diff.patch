@@ -1,0 +1,80 @@
+diff --git a/package.json b/package.json
+index 4a00ccfe..eb5f83ff 100644
+--- a/package.json
++++ b/package.json
+@@ -88,6 +88,9 @@
+     "onlyBuiltDependencies": [
+       "esbuild",
+       "workerd"
+-    ]
++    ],
++    "overrides": {
++      "miniflare>undici": "7.30.1"
++    }
+   }
+ }
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index 7fdcbf51..bac1b713 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -4,6 +4,9 @@ settings:
+   autoInstallPeers: true
+   excludeLinksFromLockfile: false
+ 
++overrides:
++  miniflare>undici: 7.30.1
++
+ patchedDependencies:
+   miniflare@5.20260907.0-alpha:
+     hash: 29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b
+@@ -1817,8 +1820,8 @@ packages:
+   undici-types@6.21.0:
+     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+ 
+-  undici@7.29.0:
+-    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
++  undici@7.30.1:
++    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
+     engines: {node: '>=20.18.1'}
+ 
+   unenv@2.0.0-rc.24:
+@@ -3283,7 +3286,7 @@ snapshots:
+     dependencies:
+       '@cspotcode/source-map-support': 0.8.1
+       sharp: 0.35.2
+-      undici: 7.29.0
++      undici: 7.30.1
+       workerd: 1.20260907.1
+       ws: 8.21.0
+       youch: 4.1.0-beta.10
+@@ -3503,7 +3506,7 @@ snapshots:
+ 
+   undici-types@6.21.0: {}
+ 
+-  undici@7.29.0: {}
++  undici@7.30.1: {}
+ 
+   unenv@2.0.0-rc.24:
+     dependencies:
+diff --git a/sources.lock.json b/sources.lock.json
+index a5570869..1dcc534d 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -3819,7 +3819,7 @@
+       "executable": false
+     },
+     "package.json": {
+-      "sha256": "bc3477f97fd0e17363d68c616efbe419a7b6e200478d087da37dd7db3042cc41",
++      "sha256": "010a4142adab2f3299b5db48615fd6da562655d437d337cf496b5e0f501894b0",
+       "executable": false
+     },
+     "patches/miniflare-5.20260907.0-alpha.patch": {
+@@ -3835,7 +3835,7 @@
+       "executable": false
+     },
+     "pnpm-lock.yaml": {
+-      "sha256": "d219dca7f65243693a4753a227b3c2d09134a23f4e79582199918fb16dfb6cb9",
++      "sha256": "705addcaabb13f30399164536a94e1524b4e78b5af0dec7637bf93838a772002",
+       "executable": false
+     },
+     "pnpm-workspace.yaml": {

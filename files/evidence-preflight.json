@@ -1,0 +1,12 @@
+{
+  "scanner": "Gitleaks 8.30.1 direct directory scan",
+  "scope": "non-secret evidence packet",
+  "raw_exit_code": 1,
+  "raw_findings": 18,
+  "classification": "All 18 matches are component content hashes under JSON key fields in the unmodified source-lock inventory emitted by the successful lock/check commands. Each is present byte-for-byte in committed sources.lock.json, which passed the complete Base publication scan. These are not credentials.",
+  "injected_secret_value_matches": 0,
+  "files": [
+    "source-lock.log",
+    "source-check.log"
+  ]
+}

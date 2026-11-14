@@ -1,0 +1,8 @@
+CI {"conclusion": null, "event": "push", "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505", "id": 43584388505, "name": "Verify", "observed_at": "2026-11-14T10:15:37.434766+00:00", "status": "in_progress"}
+CI_WAIT seconds=300 calls_remaining=5
+CI {"conclusion": null, "event": "push", "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505", "id": 43584388505, "name": "Verify", "observed_at": "2026-11-14T10:20:38.089286+00:00", "status": "in_progress"}
+CI_WAIT seconds=300 calls_remaining=4
+CI {"conclusion": null, "event": "push", "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505", "id": 43584388505, "name": "Verify", "observed_at": "2026-11-14T10:25:38.656167+00:00", "status": "in_progress"}
+CI_WAIT seconds=300 calls_remaining=3
+CI {"conclusion": null, "event": "push", "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505", "id": 43584388505, "name": "Verify", "observed_at": "2026-11-14T10:30:39.264155+00:00", "status": "in_progress"}
+CI_WAIT seconds=300 calls_remaining=2

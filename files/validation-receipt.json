@@ -1,0 +1,117 @@
+{
+  "tag": "gr-mt-orbit-dep-7",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-7",
+  "head": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+  "base": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+  "toolchain": {
+    "node": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "changed_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "sources.lock.json"
+  ],
+  "dependency": {
+    "parent": "miniflare@5.20260907.0-alpha",
+    "before": "undici@7.29.0",
+    "after": "undici@7.30.1",
+    "override": "miniflare>undici",
+    "vulnerable_resolutions_before": 1,
+    "vulnerable_resolutions_after": 0
+  },
+  "validation": [
+    {
+      "command": "pnpm install --lockfile-only",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit_code": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/archive-transfer.test.ts",
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit_code": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "test_inventory_before": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "test_inventory_after": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clause_changes": [],
+  "product_push": "success",
+  "ci_runs": [
+    43584388505
+  ],
+  "publication_scan": {
+    "status": "PASS",
+    "complete": true,
+    "findings": 0,
+    "source": {
+      "commit": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+      "tree": "eb4d80931bae45b75cf88f08d097a65af67245d8"
+    }
+  },
+  "tree": "eb4d80931bae45b75cf88f08d097a65af67245d8",
+  "focused_test_names": [
+    "BASE-DATA-001 abort preserves the original administrator, session and exact metadata and a concurrent export part cannot revive private transfer data",
+    "API-002 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery"
+  ],
+  "recovery_bundle": {
+    "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/candidate.bundle",
+    "sha256": "cb3b26fa2482e92475e4233074a38bd2fc4ceb4bea1571e102aad3de3739d4fd",
+    "verified": true,
+    "complete_history": true
+  },
+  "product_push_attempts": 1,
+  "custody": "PUSHED",
+  "ci_status": "in_progress",
+  "ci_last_observation": {
+    "id": 43584388505,
+    "name": "Verify",
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505",
+    "event": "push",
+    "observed_at": "2026-11-14T10:30:39.264155+00:00"
+  },
+  "github_budgeted_calls_used": 8,
+  "github_call_budget": 10,
+  "blockers": []
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "orbit",
+    "version": "0.4.9",
+    "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo",
+    "private": true,
+    "devDependencies": {
+      "miniflare": {
+        "from": "miniflare",
+        "version": "5.20260907.0-alpha",
+        "resolved": "https://registry.npmjs.org/miniflare/-/miniflare-5.20260907.0-alpha.tgz",
+        "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare",
+        "dependencies": {
+          "undici": {
+            "from": "undici",
+            "version": "7.30.1",
+            "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
+            "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/undici@7.30.1/node_modules/undici"
+          }
+        }
+      },
+      "wrangler": {
+        "from": "wrangler",
+        "version": "4.129.1",
+        "resolved": "https://registry.npmjs.org/wrangler/-/wrangler-4.129.1.tgz",
+        "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/wrangler@4.129.1_patch_hash=f4d92bf73c567e1fccd53e6eab99eed7d54d64bb7781a148da7b01fff99_e463d41890cb8bf4c21310956e7c5417/node_modules/wrangler",
+        "dependencies": {
+          "miniflare": {
+            "from": "miniflare",
+            "version": "5.20260907.0-alpha",
+            "resolved": "https://registry.npmjs.org/miniflare/-/miniflare-5.20260907.0-alpha.tgz",
+            "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare",
+            "dependencies": {
+              "undici": {
+                "from": "undici",
+                "version": "7.30.1",
+                "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
+                "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/undici@7.30.1/node_modules/undici"
+              }
+            }
+          }
+        }
+      },
+      "@cloudflare/vite-plugin": {
+        "from": "@cloudflare/vite-plugin",
+        "version": "1.54.5",
+        "resolved": "https://registry.npmjs.org/@cloudflare/vite-plugin/-/vite-plugin-1.54.5.tgz",
+        "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/@cloudflare+vite-plugin@1.54.5_vite@8.2.4_@types+node@22.19.17_esbuild@0.28.2_jiti@2.7._4f53360e23431c09caafffbc5637d63c/node_modules/@cloudflare/vite-plugin",
+        "dependencies": {
+          "miniflare": {
+            "from": "miniflare",
+            "version": "5.20260907.0-alpha",
+            "resolved": "https://registry.npmjs.org/miniflare/-/miniflare-5.20260907.0-alpha.tgz",
+            "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare",
+            "dependencies": {
+              "undici": {
+                "from": "undici",
+                "version": "7.30.1",
+                "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
+                "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/undici@7.30.1/node_modules/undici"
+              }
+            }
+          },
+          "wrangler": {
+            "from": "wrangler",
+            "version": "4.129.1",
+            "resolved": "https://registry.npmjs.org/wrangler/-/wrangler-4.129.1.tgz",
+            "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/wrangler@4.129.1_patch_hash=f4d92bf73c567e1fccd53e6eab99eed7d54d64bb7781a148da7b01fff99_e463d41890cb8bf4c21310956e7c5417/node_modules/wrangler",
+            "dependencies": {
+              "miniflare": {
+                "from": "miniflare",
+                "version": "5.20260907.0-alpha",
+                "resolved": "https://registry.npmjs.org/miniflare/-/miniflare-5.20260907.0-alpha.tgz",
+                "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/miniflare@5.20260907.0-alpha_patch_hash=29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b/node_modules/miniflare",
+                "dependencies": {
+                  "undici": {
+                    "from": "undici",
+                    "version": "7.30.1",
+                    "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
+                    "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-7/repo/node_modules/.pnpm/undici@7.30.1/node_modules/undici"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]

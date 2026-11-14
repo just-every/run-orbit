@@ -1,0 +1,49 @@
+{
+  "repository": "just-every/run-orbit",
+  "head": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+  "observations": [
+    {
+      "id": 43584388505,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505",
+      "event": "push",
+      "observed_at": "2026-11-14T10:15:37.434766+00:00"
+    },
+    {
+      "id": 43584388505,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505",
+      "event": "push",
+      "observed_at": "2026-11-14T10:20:38.089286+00:00"
+    },
+    {
+      "id": 43584388505,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505",
+      "event": "push",
+      "observed_at": "2026-11-14T10:25:38.656167+00:00"
+    },
+    {
+      "id": 43584388505,
+      "name": "Verify",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43584388505",
+      "event": "push",
+      "observed_at": "2026-11-14T10:30:39.264155+00:00"
+    }
+  ],
+  "github_calls_used": 8,
+  "terminal_status": "PUSHED",
+  "reason": "Verify remains in_progress after the fifteen-minute exact-SHA observation; eight of ten budgeted GitHub API calls used. Stop polling with the budget short; no READY or green claim."
+}
