@@ -39,7 +39,7 @@ test('native archive preparation, streamed download, confirmed restore and renew
  await authenticate(context,true);
  await exerciseRollback(page,file,sourceSession);
  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);
- await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Start restore',exact:true}).click();
+ await page.getByRole('checkbox').check();await expect(page.getByRole('region',{name:'Email permission after restore',exact:true})).toContainText('0 contacts will return as Do not contact.');await page.getByRole('button',{name:'Start restore',exact:true}).click();
  await expect(page.locator('[data-archive-state=complete]')).toBeVisible({timeout:90_000});
  await expect(page.getByRole('button',{name:'Start restore',exact:true})).toHaveCount(0);
  const denied=await page.request.get('/api/v1/records/contact');expect(denied.status()).toBe(401);

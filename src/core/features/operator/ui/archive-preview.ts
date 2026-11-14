@@ -1,8 +1,9 @@
+import {ArchiveEmailPermissionPreview,type EmailPermissionPreview} from './archive-email-permission-preview';
 import {archiveContentIdentity} from '../../../shared/archive-identity';
 import {readArchiveFile} from '../../../shared/archive-transfer-file';
 import {isDevPersonaEmail,isTrialOwnerEmail} from '../../../shared/trial-owner';
 export type ArchiveOperator={id:string;email:string;display_name:string;status:string;setup_owner?:number;collaborator?:number|boolean;invited?:number|boolean};
-export type ArchivePreview={operators:ArchiveOperator[];current:ArchiveOperator[];rows:number;parts:number;contentDigest:string};
+export type ArchivePreview={operators:ArchiveOperator[];current:ArchiveOperator[];rows:number;parts:number;contentDigest:string;emailPermission:EmailPermissionPreview};
 export function archiveOperatorAccess(operator:ArchiveOperator,current:ArchiveOperator[]){
  const retained=current.find(target=>(!target.collaborator||target.setup_owner)&&(target.id===operator.id||target.email.toLowerCase()===operator.email.toLowerCase()));
  if(retained)return {status:retained.status,explanation:'Current access kept'};
@@ -17,10 +18,11 @@ export async function previewArchive(file:File):Promise<ArchivePreview>{
  const response=await fetch('/api/v1/settings',{credentials:'same-origin'});
  if(!response.ok)throw new Error('Current operators could not be read. Restore has not started.');
  const {operators:current}=await response.json() as {operators:ArchiveOperator[]};
+ const permission=new ArchiveEmailPermissionPreview();
  const operators:ArchiveOperator[]=[],collaborators=new Set<string>(),members=new Set<string>();const digests:{index:number;sha256:string}[]=[];let manifest:Parameters<typeof archiveContentIdentity>[0]|undefined;let rows=0,parts=0;
  for await(const entry of readArchiveFile(file.stream())){
   if(entry.kind==='manifest'){manifest=entry.manifest;rows=entry.manifest.rows;parts=entry.manifest.parts;}
-  else{digests.push({index:entry.part.index,sha256:entry.part.sha256});for(const record of entry.part.records){if(record.table==='access_collaborators'&&typeof record.row.operator_id==='string')collaborators.add(record.row.operator_id);if(record.table==='access_memberships'&&typeof record.row.operator_id==='string')members.add(record.row.operator_id);if(record.table==='operators'){
+  else{digests.push({index:entry.part.index,sha256:entry.part.sha256});for(const record of entry.part.records){permission.add(record.table,record.row);if(record.table==='access_collaborators'&&typeof record.row.operator_id==='string')collaborators.add(record.row.operator_id);if(record.table==='access_memberships'&&typeof record.row.operator_id==='string')members.add(record.row.operator_id);if(record.table==='operators'){
    const row=record.row;
    if(typeof row.id!=='string'||typeof row.email!=='string'||typeof row.display_name!=='string'||typeof row.status!=='string')throw new Error('Archive operator details are invalid.');
    operators.push({id:row.id,email:row.email,display_name:row.display_name,status:row.status,setup_owner:row.setup_owner===1?1:0});
@@ -30,5 +32,5 @@ export async function previewArchive(file:File):Promise<ArchivePreview>{
  if(conflict)throw new Error(`Archive operator ${conflict.email} has a different identity here. Change that email in the source workspace before exporting again. Restore has not started.`);
  // A collaborator with no membership was invited but never accepted.
  if(!manifest)throw new Error('Archive contains no manifest.');
- return {contentDigest:await archiveContentIdentity(manifest,digests),operators:operators.map(operator=>({...operator,collaborator:collaborators.has(operator.id),invited:collaborators.has(operator.id)&&!members.has(operator.id)})),current,rows,parts};
+ return {emailPermission:await permission.finish(),contentDigest:await archiveContentIdentity(manifest,digests),operators:operators.map(operator=>({...operator,collaborator:collaborators.has(operator.id),invited:collaborators.has(operator.id)&&!members.has(operator.id)})),current,rows,parts};
 }

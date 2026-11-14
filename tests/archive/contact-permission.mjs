@@ -57,7 +57,18 @@ export async function contactPermissionJourney({page,context,testInfo,authentica
   await permission.selectOption('contactable');await source.getByRole('button',{name:'Clear do-not-contact',exact:true}).click();
   expect((await clearedHold).status()).toBe(200);await expect(permission).toHaveValue('contactable');
   const before=await api(`/api/v1/records/contact/${known}`);expect(before.record.contactability).toBe('contactable');
-  const retained=await api('/api/v1/records/contact','POST',{name:'Retained safety hold',email:'synthetic-orbit-3@example.test'});
+  const retained=await api('/api/v1/records/contact','POST',{name:'Destination hold 1',email:'synthetic-orbit-3@example.test'});
+  const destinationHeld=[retained];
+  for(let i=2;i<=6;i++)destinationHeld.push(await api('/api/v1/records/contact','POST',{name:`Destination hold ${i}`,email:`synthetic-orbit-destination-${i}@example.test`}));
+  // An archive-only stop remains on a retired address after a reviewed clear of
+  // the survivor's current address. This is fixture setup, not a new alias rule.
+  const aliasHeld=await api('/api/v1/records/contact','POST',{name:'Archive alias hold',email:'synthetic-orbit-alias-current@example.test'});
+  const retiredAlias=await api('/api/v1/records/contact','POST',{name:'Archive alias hold',email:'synthetic-orbit-alias-retired@example.test',contactability:'do_not_contact'});
+  const group=(await api('/api/v1/records/contact/duplicates')).groups.find(group=>group.some(contact=>contact.id===aliasHeld.id));
+  await api('/api/v1/records/contact/merge','POST',{survivorId:aliasHeld.id,retiredId:retiredAlias.id,choices:{email:'survivor'},reviewed:{survivor:group.find(contact=>contact.id===aliasHeld.id).mergeReviewToken,retired:group.find(contact=>contact.id===retiredAlias.id).mergeReviewToken},confirmed:true});
+  const aliasReview=(await api(`/api/v1/records/contact/${aliasHeld.id}`)).record;
+  await api(`/api/v1/records/contact/${aliasHeld.id}/clear-do-not-contact`,'POST',{confirmed:true,email:aliasReview.email,updatedAt:aliasReview.updated_at,revision:aliasReview.contactability_revision});
+  expect((await api(`/api/v1/records/contact/${aliasHeld.id}`)).record.contactability).toBe('contactable');
   await source.goto('/app/settings/data');await source.getByRole('button',{name:'Prepare export',exact:true}).click();await expect(source.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
   const downloadPromise=source.waitForEvent('download');await source.getByRole('link',{name:'Download completed archive'}).click();const download=await downloadPromise,file=testInfo.outputPath('permission-archive.json');await download.saveAs(file);
   const archived=[];for await(const entry of readArchiveFile(Readable.toWeb(createReadStream(file))))if(entry.kind==='part')archived.push(...entry.part.records);
@@ -66,13 +77,25 @@ export async function contactPermissionJourney({page,context,testInfo,authentica
   await sourceContext.close();sourceContext=undefined;const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;worker=undefined;
   // The destination is a fresh owner-only installation, after the original empty archive journey.
   await authenticate(context);await page.goto('/app/settings/data');
-  const targetStop=await browserAPI(page,'/api/v1/records/contact','POST',{name:'Destination stop',email:'synthetic-orbit-3@example.test',contactability:'do_not_contact'});
-  await browserAPI(page,`/api/v1/records/contact/${targetStop.id}`,'DELETE',{confirmed:true});
-  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);await page.getByRole('checkbox').check();await expect(page.getByRole('region',{name:'Email permission after restore',exact:true})).toBeVisible();
+  for(const contact of destinationHeld){
+   const detail=archived.find(record=>record.table==='contacts'&&record.row.id===contact.id).row;
+   const targetStop=await browserAPI(page,'/api/v1/records/contact','POST',{name:'Destination stop',email:detail.email,contactability:'do_not_contact'});
+   await browserAPI(page,`/api/v1/records/contact/${targetStop.id}`,'DELETE',{confirmed:true});
+  }
+  await page.setViewportSize({width:1440,height:1000});
+  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);await page.getByRole('checkbox').check();
+  const emailPreview=page.getByRole('region',{name:'Email permission after restore',exact:true});
+  await expect(emailPreview).toContainText('8 contacts will return as Do not contact.');
+  await expect(emailPreview).toContainText('1 already marked Do not contact in the archive; 7 additional contacts have an email stop');
+  const listed=emailPreview.getByRole('list',{name:'Contacts returning as Do not contact'}).getByRole('listitem');
+  await expect(listed).toHaveText(['Archive alias hold','Destination hold 1','Destination hold 2','Destination hold 3','Destination hold 4','and 3 more']);
+  await expect(emailPreview).not.toContainText('Known attendee');
+  expect(await emailPreview.locator('p').first().evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(13);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await page.screenshot({path:testInfo.outputPath(`permission-restore-review-${width}.png`),fullPage:true});}
   await page.setViewportSize({width:1440,height:1000});await page.getByRole('button',{name:'Start restore',exact:true}).click();await expect(page.locator('[data-archive-state=complete]')).toBeVisible({timeout:90_000});
   expect((await page.request.get(`/api/v1/records/contact/${known}`)).status()).toBe(401);await authenticate(context);
-  for(const [id,expected,name] of [[captured.id,'do_not_contact','captured'],[known,'contactable','cleared'],[retained.id,'do_not_contact','retained']]){
+  for(const [id,expected,name] of [[captured.id,'do_not_contact','captured'],[known,'contactable','cleared'],[retained.id,'do_not_contact','retained'],[aliasHeld.id,'do_not_contact','archive-alias']]){
    await page.goto(`/app/contacts/${id}`);await expect.soft(page.getByLabel('Email permission',{exact:true})).toHaveValue(expected);
    const restored=await browserAPI(page,`/api/v1/records/contact/${id}`);console.log(`PERMISSION after restore ${name}=${restored.record.contactability}`);
    expect.soft(restored.record.contactability).toBe(expected);
@@ -81,13 +104,19 @@ export async function contactPermissionJourney({page,context,testInfo,authentica
     expect(restored.timeline.some(t=>t.kind==='contactability.restore_hold')).toBe(false);
     await expect(page.getByTestId('record-activity')).toContainText('Contactability Cleared');
    }
-   if(name==='retained'){
+   if(name==='retained'||name==='archive-alias'){
     const hold=restored.timeline.find(t=>t.kind==='contactability.restore_hold');expect.soft(hold).toBeTruthy();
-    if(hold){const reason=JSON.parse(hold.payload_json);expect(reason.reason).toBe('retained_suppression');expect(reason.archivedContactability).toBe('contactable');expect(hold.actor_id).toBe(owner);expect(hold.actor_name).toBeTruthy();await expect(page.getByTestId('record-activity')).toContainText(reason.text);}
+    if(hold){const reason=JSON.parse(hold.payload_json);expect(reason.reason).toBe('retained_suppression');expect(reason.archivedContactability).toBe('contactable');
+     expect(reason.text).toContain(name==='retained'?'this installation contains an email stop':'the restored archive contains an email stop');
+     expect(reason.text).toContain('possibly on another address of the same contact');
+     if(name==='archive-alias')expect(reason.text).not.toContain('this installation');
+     expect(hold.actor_id).toBe(owner);expect(hold.actor_name).toBeTruthy();await expect(page.getByTestId('record-activity')).toContainText(reason.text);}
    }
    for(const width of [1440,390]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:testInfo.outputPath(`permission-restored-${name}-${width}.png`),fullPage:true});}
    await page.setViewportSize({width:1440,height:1000});
   }
+  const restoredContacts=(await browserAPI(page,'/api/v1/records/contact')).records;
+  expect(restoredContacts.filter(contact=>contact.contactability==='do_not_contact')).toHaveLength(8);
  }finally{
   await sourceContext?.close();if(worker&&worker.exitCode===null){const stopped=once(worker,'exit');worker.kill('SIGTERM');await stopped;}await fixture.dispose();
  }

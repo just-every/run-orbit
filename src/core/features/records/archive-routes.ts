@@ -1,3 +1,5 @@
+import {restoreStopFacts} from './archive-restore-holds';
+import {privacyMatcher} from './suppression';
 import {recoverTerminalImports} from './archive-terminal-recovery';
 import {ArchiveExportCreationError,ArchiveExportConflictError} from './archive-export-recovery';
 import {ArchiveImportCreationError} from './archive-import-recovery';
@@ -25,6 +27,18 @@ export function createArchiveRoutes(db: D1Database) {
     app.post('/exports/:id/advance', async (c) => c.json(await exports.advance(c.req.param('id'), c.get('operator').operatorId)));
     app.post('/exports/:id/abort', async (c) => c.json(await exports.abort(c.req.param('id'), c.get('operator').operatorId)));
     app.get('/exports/:id/download', async (c) => exports.download(c.req.param('id'), c.get('operator').operatorId));
+    // Preview only: no archive job, matching context or suppression proof is created.
+    app.post('/preview/email-stops',async c=>{
+        const input=z.object({emails:z.array(z.string().max(1000)).max(200),includeClears:z.boolean()}).strict().safeParse(await c.req.json());
+        if(!input.success)return c.json({error:'Provide up to 200 archive email addresses to preview.'},400);
+        const {proofs,clears}=await restoreStopFacts(db);
+        if(!proofs.length)return c.json({matches:input.data.emails.map(()=>[]),clears:input.data.includeClears?clears:[]});
+        if(!await db.prepare('SELECT 1 FROM privacy_matching_contexts LIMIT 1').first())throw new RecordError(409,'Retained email stops could not be checked. Restore has not started.');
+        const match=await privacyMatcher(db),byToken=new Map<string,string[]>();
+        for(const proof of proofs){const ids=byToken.get(proof.token)??[];ids.push(proof.id);byToken.set(proof.token,ids);}
+        const matches=await Promise.all(input.data.emails.map(async email=>(await match(email)).flatMap(token=>(byToken.get(token)??[]).map(id=>({token,id})))));
+        return c.json({matches,clears:input.data.includeClears?clears:[]});
+    });
     app.get('/imports',async(c)=>c.json({jobs:await imports.unfinished(c.get('operator').operatorId)}));
     app.post('/imports', async (c) => { const parsed = z.object({ confirmed: z.literal(true), manifest: transferManifestSchema,contentDigest:z.string().regex(/^[a-f0-9]{64}$/).optional() }).strict().safeParse(await c.req.json()); if (!parsed.success)
         return c.json({ error: 'Confirm a valid archive manifest before restoring.' }, 400); const actor=c.get('operator').operatorId;await recoverTerminalImports(db,actor);return c.json(await imports.create(parsed.data.manifest,actor,parsed.data.contentDigest),201); });

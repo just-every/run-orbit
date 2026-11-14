@@ -1,3 +1,4 @@
+import {restoreStopFacts} from './archive-restore-holds';
 import {checkArchiveOperators,restoreOperatorStatements} from './archive-operators';
 import {verifyArchiveContentIdentity} from './archive-content-identity';
 import type {ImportContext} from './archive-import-context';
@@ -170,12 +171,20 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
             const operatorLayout=layouts.get('operators')!, operatorCell=(name:string)=>stageCell(operatorLayout,name);
             const restoredActor=await db.prepare(`SELECT ${operatorCell('id')} AS id FROM ${stageName(source,'operators')} WHERE ${operatorCell('id')}=? OR lower(${operatorCell('email')})=lower((SELECT email FROM operators WHERE id=?)) LIMIT 1`).bind(job.actor_id,job.actor_id).first<{id:string}>();
             const actor=restoredActor?.id??job.actor_id;
+            // The recovery snapshot identifies proofs retained from this installation;
+            // every other active proof arrived with the archive. Read only for copy.
+            const backupAudit=layouts.get('audit_entries')!;
+            const retainedIds=new Set((await db.prepare(`SELECT ${stageCell(backupAudit,'id')} AS id FROM ${stageName(p.backupId,'audit_entries')} WHERE ${stageCell(backupAudit,'action')}='contact.suppressed'`).all<{id:string}>()).results.map(proof=>proof.id));
+            const {proofs}=await restoreStopFacts(db),localStops=new Set<string>(),archiveStops=new Set<string>();
+            for(const proof of proofs)(retainedIds.has(proof.id)?localStops:archiveStops).add(proof.token);
             for(const contact of contacts){const tokens=[...new Set((await Promise.all([contact.email,...(identities.get(contact.id)??[])].map(email=>match(email)))).flat())];
                 if(contact.contactability==='do_not_contact')suppression.push(...tokens.filter(token=>!active.has(token)).map(token=>suppressionProof(db,token)));
                 else if(tokens.some(token=>active.has(token))){
                     // The archived permission travels unless an independent retained
                     // stop wins. Record that exception in the same durable step.
-                    const reason={reason:'retained_suppression',archivedContactability:contact.contactability,text:'Restored on Do not contact because this installation retains an email stop for this address.'};
+                    const local=tokens.some(token=>localStops.has(token)),archived=tokens.some(token=>archiveStops.has(token));
+                    const source=local?(archived?'this installation and the restored archive':'this installation'):'the restored archive';
+                    const reason={reason:'retained_suppression',archivedContactability:contact.contactability,text:`Restored on Do not contact because ${source} ${local&&archived?'contain':'contains'} an email stop for this contact, possibly on another address of the same contact.`};
                     suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id),
                         ...timeline(db,actor,'contact',contact.id,'contactability.restore_hold',reason),
                         audit(db,actor,'contactability.restore_hold','contact',contact.id,reason));

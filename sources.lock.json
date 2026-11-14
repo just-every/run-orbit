@@ -6638,8 +6638,12 @@
       "sha256": "aa96c0ecba649953c176a024a8885f3f72977a0087e4c3ae41261535c3f37d01",
       "executable": false
     },
+    "src/core/features/operator/ui/archive-email-permission-preview.ts": {
+      "sha256": "4da9044ac113df02160e239d191e4fcc27a3f1589958109ee1c1132f95ecc8f3",
+      "executable": false
+    },
     "src/core/features/operator/ui/archive-preview.ts": {
-      "sha256": "4b39983076327d4a6a612f4b9d8201a274ac3ffbbab49455c7b16521a675fbed",
+      "sha256": "22aa9897e0806903c39aae8a65368ed3992147e9aa58953c7b18a71d0a6e89bb",
       "executable": false
     },
     "src/core/features/operator/ui/archive-transfer-summary.tsx": {
@@ -7499,7 +7503,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
-      "sha256": "55441da111f0ebc5254fb3da1babbdfe6e53961b6c4a8b421e46d67bcb962e26",
+      "sha256": "5e3bb612f67d8072e3e08f41bf2542ad0f1a85cf47018a7bb116cfa790846933",
       "executable": false
     },
     "src/core/features/operator/ui/zoom-settings.tsx": {
@@ -8099,7 +8103,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "bd3e355ee41f7c005ee730313766965339b0e28862219ba66c6020f65c501790",
+      "sha256": "71cf9b7b35cccf4fad66db83bfe184adc009a5a7f0a357ef0e762e57537fc2ef",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -8122,8 +8126,12 @@
       "sha256": "6e64c61d42785cb65ec557d07554005a5a0be39b2184274933577977cc6a7b82",
       "executable": false
     },
+    "src/core/features/records/archive-restore-holds.ts": {
+      "sha256": "c5f596bfb9b92f87d5a3c25e2ccaebed8b544f803945d0c066346a18462d9708",
+      "executable": false
+    },
     "src/core/features/records/archive-routes.ts": {
-      "sha256": "0539d8e11f553cc6b1140fb366eeb89426bef018a6aefc980be682c7060ba0dd",
+      "sha256": "a97bcd429fa7ab4dbbde44837e83170bc5f1aa9c227751b4c763cac74fa70850",
       "executable": false
     },
     "src/core/features/records/archive-schema-fence.ts": {
@@ -10399,11 +10407,11 @@
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
-      "sha256": "323511d2505111ba2d0198944dad76abd428205bd1399520f0e304f82b35a1bd",
+      "sha256": "c4570f0a24d2aea5d8e4320e807e7dc54bb9c4cbc750def4cef22e7ef456d9ef",
       "executable": false
     },
     "tests/archive/contact-permission.mjs": {
-      "sha256": "72578a87dd8df25036e77db1ad7387c2015e624973d0a9fa30b12688d7d533c4",
+      "sha256": "194c1b71c2ee26926003fd23981f492407a2b996dd1a5ba79ba97d0da4ef1967",
       "executable": false
     },
     "tests/archive/playwright.config.mjs": {
