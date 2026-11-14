@@ -57,7 +57,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "ulidx": "2.4.1",
-    "zod": "4.1.5"
+    "zod": "4.6.6"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
