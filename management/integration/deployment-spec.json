@@ -504,6 +504,12 @@
       "name": "0091_zoom_meetings.sql",
       "sha256": "1c3386340ce3c7e9b08a7fca12586d26b05a6d45cf5d47c46e6341ca81f280d5",
       "sql": "-- One reviewed Zoom occurrence per signal. Credentials stay sealed in signal_sources.\nCREATE TABLE zoom_meetings (\n signal_id TEXT PRIMARY KEY REFERENCES signals(id) ON DELETE CASCADE,\n meeting_id TEXT NOT NULL,\n meeting_uuid TEXT NOT NULL UNIQUE,\n opportunity_id TEXT NOT NULL REFERENCES opportunities(id) ON DELETE CASCADE,\n join_url TEXT NOT NULL,\n host_id TEXT NOT NULL,\n duration INTEGER NOT NULL,\n state TEXT NOT NULL CHECK(state IN('scheduled','completed','cancelled')),\n recording TEXT NOT NULL,\n attendance_json TEXT NOT NULL DEFAULT '[]',\n attendance_state TEXT NOT NULL DEFAULT 'not-read',\n completed_at TEXT,\n completion_entry_id TEXT REFERENCES timeline_entries(id) ON DELETE SET NULL,\n completion_digest TEXT,\n completion_timestamp TEXT,\n cancelled_at TEXT,\n last_event_at INTEGER NOT NULL DEFAULT 0\n);\nCREATE TABLE zoom_deliveries (\n digest TEXT PRIMARY KEY,\n received_at TEXT NOT NULL\n);\nCREATE TABLE zoom_plan_actions (\n signal_id TEXT NOT NULL REFERENCES zoom_meetings(signal_id) ON DELETE CASCADE,\n handoff_id TEXT NOT NULL REFERENCES handoff_tasks(id) ON DELETE CASCADE,\n PRIMARY KEY(signal_id,handoff_id)\n);\n-- A cancellation that arrives while a reviewed handoff is saved still withdraws it.\nCREATE TRIGGER zoom_plan_action_cancelled AFTER INSERT ON zoom_plan_actions\nWHEN EXISTS(SELECT 1 FROM zoom_meetings WHERE signal_id=NEW.signal_id AND state='cancelled')\nBEGIN\n UPDATE handoff_tasks SET status='cancelled',revision=lower(hex(randomblob(16))),updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=NEW.handoff_id AND status='open';\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0092_form_submission_notification.sql",
+      "sha256": "99251271d78e7dd01223974dffbcc222d5fff4a2fe4b9ce0f2eb103d67bd5d37",
+      "sql": "-- A native form intake creates its own submission-scoped recipient notice.\n-- Its deal creation or return to NOW must not duplicate that recipient's notice.\n-- The marker is installed and removed inside that intake's atomic D1 batch.\n-- Every other notification kind and every ordinary NOW event stays unchanged.\nCREATE TRIGGER notification_skip_form_now BEFORE INSERT ON notifications\nWHEN NEW.kind='opportunity.now'\n AND EXISTS(SELECT 1 FROM runtime_controls WHERE name='form_submission' AND value=NEW.operator_id)\nBEGIN\n SELECT RAISE(IGNORE);\nEND;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
