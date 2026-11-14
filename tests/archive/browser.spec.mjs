@@ -5,6 +5,7 @@ import {createReadStream} from 'node:fs';
 import {Readable} from 'node:stream';
 import {join} from 'node:path';
 import {exerciseRollback} from './rollback.mjs';
+import {contactPermissionJourney} from './contact-permission.mjs';
 const root=fileURLToPath(new URL('../..',import.meta.url));
 async function authenticate(context,targetOwner=false){const session=JSON.parse(execFileSync(process.execPath,[join(root,'node_modules/tsx/dist/cli.mjs'),join(root,'tests/archive/session.ts'),...(targetOwner?['--target-owner']:[])],{cwd:root,encoding:'utf8'}));await context.setExtraHTTPHeaders({Cookie:`${session.cookieName}=${session.token}`});await context.addCookies([{name:session.cookieName,value:session.token,url:`https://127.0.0.1:${process.env.ORBIT_ARCHIVE_PORT??8723}`,secure:true,httpOnly:true,sameSite:'Lax'}]);return session;}
 async function discardExport(page){
@@ -68,4 +69,5 @@ test('native archive preparation, streamed download, confirmed restore and renew
  await discardExport(page);
  await runTransfer({operation:'import',origin,file:cliFile},request,()=>{});
  expect((await page.request.get('/api/v1/records/contact')).status()).toBe(401);
+ await contactPermissionJourney({page,context,testInfo,authenticate});
 });

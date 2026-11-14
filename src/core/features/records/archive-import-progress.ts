@@ -5,7 +5,7 @@ import { stageLayouts, stageCell, quoteIdentifier, liveRowSelector, type StageLa
 import { privacyContextStatement, privacyMatcher, activeSuppressionTokens, suppressionProof } from './suppression';
 import {invalidateSuppressedWork} from './suppression-effects';
 import { createId } from '../../shared/ids';
-import { audit, RecordError } from './shared';
+import { audit, RecordError, timeline } from './shared';
 import { archiveCatalog, type ArchiveManifest, type ArchiveTable } from './archive-schema';
 import { stageName, stageTables } from './archive-storage';
 export type ImportJob = {
@@ -167,7 +167,14 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
             const identities=new Map<string,string[]>();for(const alias of aliases){const values=identities.get(alias.survivor_id)??[];values.push(alias.identity_key);identities.set(alias.survivor_id,values);}
             for(const contact of contacts){const tokens=[...new Set((await Promise.all([contact.email,...(identities.get(contact.id)??[])].map(email=>match(email)))).flat())];
                 if(contact.contactability==='do_not_contact')suppression.push(...tokens.filter(token=>!active.has(token)).map(token=>suppressionProof(db,token)));
-                else if(tokens.some(token=>active.has(token)))suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id));
+                else if(tokens.some(token=>active.has(token))){
+                    // The archived permission travels unless an independent retained
+                    // stop wins. Record that exception in the same durable step.
+                    const reason={reason:'retained_suppression',archivedContactability:contact.contactability,text:'Restored on Do not contact because this installation retains an email stop for this address.'};
+                    suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id),
+                        ...timeline(db,job.actor_id,'contact',contact.id,'contactability.restore_hold',reason),
+                        audit(db,job.actor_id,'contactability.restore_hold','contact',contact.id,reason));
+                }
             }
         }
     }
