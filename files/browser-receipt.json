@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "journey": "formMappingBrowserJourney",
+  "screens": [
+    1440,
+    390
+  ],
+  "assertionWidth": 1440,
+  "chromium": "/usr/bin/chromium",
+  "doors": [
+    "form builder UI",
+    "anonymous hosted form",
+    "allowlisted framed form",
+    "direct HTTPS form",
+    "operator notifications",
+    "contact document",
+    "deal document"
+  ],
+  "secretMaterialIncluded": false,
+  "productHead": "efded904242fef01fbfaf2c24ff20966456c98ed",
+  "sourceFiles": {
+    "newtests/t096/browser-form-mapping.ts": "4e11409ae52e7366d2d25d81583f4c9872baffd05b78931c45092d13d421b621",
+    "newtests/t096/forms-mapped-journey.ts": "6bb0ba6340ba4bff9bd1fc1f7c3bffda3c3ff056c80b7557b0d7e8d5a5a4ea97",
+    "src/core/features/forms/native-capture.ts": "f4e51f369f552e58b9fe76d6968125b6013df234cb6def10625b54346d912c6b",
+    "src/core/features/notifications/routes.ts": "5bdbad8d121982a3b5d8455bb4f7f8e9af1d9ecc6da2f8df1e735abeb95fa4a6",
+    "src/core/features/operator/ui/notifications-page.tsx": "db6879afd46ad4ef088060d21479dfaa8332a10076228c8124f218d9eb45e99f"
+  }
+}

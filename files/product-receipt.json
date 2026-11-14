@@ -1,0 +1,161 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-form-notify-once-1",
+  "head": "efded904242fef01fbfaf2c24ff20966456c98ed",
+  "base": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "workingTreeClean": true,
+  "commit": {
+    "authorName": "Run Edit Run fleet",
+    "authorEmail": "fleet@runeditrun.com",
+    "committerName": "Run Edit Run fleet",
+    "committerEmail": "fleet@runeditrun.com",
+    "message": "Notify routed operators once per form enquiry"
+  },
+  "integration": {
+    "fetch": "success",
+    "rebase": "already up to date",
+    "publishedHistoryRewritten": false
+  },
+  "push": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-form-notify-once-1",
+    "exitCode": 0,
+    "attempts": 1,
+    "status": "PUSH_OK"
+  },
+  "checks": [
+    {
+      "command": "cloud_run pnpm exec tsx --test newtests/t096/forms-native.test.ts",
+      "exitCode": 0,
+      "cases": 4,
+      "log": "form-after.log"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-name-pattern='NOTIFY' tests/core/assistance.test.ts",
+      "exitCode": 0,
+      "cases": 3,
+      "log": "notifications.log"
+    },
+    {
+      "command": "cloud_run pnpm run typecheck",
+      "exitCode": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "ORBIT_FOLD_BROWSER_EVIDENCE=<task>/browser cloud_run pnpm exec tsx .rer-tools/form-notification-browser.ts",
+      "exitCode": 0,
+      "journey": "newtests/t096/browser-form-mapping.ts#formMappingBrowserJourney",
+      "log": "browser.log",
+      "receipt": "browser-receipt.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exitCode": 0,
+      "receipt": "source-check.json"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/check-boundaries.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node tools/seed-schema/validate.mjs --schema SEED seed.json",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "exitCode": 0
+    },
+    {
+      "command": "checkTestBudget() from scripts/verification-inventory.mjs",
+      "exitCode": 0,
+      "registeredCases": 198,
+      "qualificationFlows": 2,
+      "total": 200
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 0
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": "management/integration/deployment-spec.json",
+      "sha256": "57b912fa91a6cfedc77a1ace1607cb16f34805f7a952d1a2c7324826fc757b99",
+      "bytes": 341987
+    },
+    {
+      "path": "migrations/core/0092_form_submission_notification.sql",
+      "sha256": "e3f649e59d28dc5ab191119968372f7d4d9464d8cd9f84a5d734783ae0a2db99",
+      "bytes": 520
+    },
+    {
+      "path": "newtests/t096/browser-form-mapping.ts",
+      "sha256": "4e11409ae52e7366d2d25d81583f4c9872baffd05b78931c45092d13d421b621",
+      "bytes": 25660
+    },
+    {
+      "path": "newtests/t096/forms-mapped-journey.ts",
+      "sha256": "6bb0ba6340ba4bff9bd1fc1f7c3bffda3c3ff056c80b7557b0d7e8d5a5a4ea97",
+      "bytes": 28803
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "0b349695725790bae0f0fd7e887180a2a2d5aa8383f1d9abfb938fbdfdd94bf2",
+      "bytes": 522140
+    },
+    {
+      "path": "src/core/features/forms/native-capture.ts",
+      "sha256": "f4e51f369f552e58b9fe76d6968125b6013df234cb6def10625b54346d912c6b",
+      "bytes": 6999
+    },
+    {
+      "path": "src/core/features/notifications/routes.ts",
+      "sha256": "5bdbad8d121982a3b5d8455bb4f7f8e9af1d9ecc6da2f8df1e735abeb95fa4a6",
+      "bytes": 3493
+    },
+    {
+      "path": "src/core/features/operator/ui/notifications-page.tsx",
+      "sha256": "db6879afd46ad4ef088060d21479dfaa8332a10076228c8124f218d9eb45e99f",
+      "bytes": 7493
+    }
+  ],
+  "proofTiming": "Browser and touched tests ran on identical product bytes before commit; main refresh was a no-op. Lock regenerated after staging the new migration.",
+  "notificationCounts": {
+    "before": 2,
+    "after": 1,
+    "replayDelta": 0,
+    "unreadDeltaBefore": 2,
+    "unreadDeltaAfter": 1
+  },
+  "testCounts": {
+    "before": 200,
+    "after": 200
+  },
+  "clauseStatusChanges": [],
+  "FORM-004": {
+    "before": "partial",
+    "after": "partial",
+    "claim": "PARTIAL",
+    "points": []
+  },
+  "publicationScan": {
+    "status": "not run in cloud",
+    "owner": "fleet Mac lander"
+  },
+  "pr": null,
+  "ciRunId": 43559901476,
+  "ciStatus": "in_progress",
+  "claimLimit": "The one-notice obligation is proven. No complete compound acceptance point, team audience, external channel or lead view is claimed."
+}

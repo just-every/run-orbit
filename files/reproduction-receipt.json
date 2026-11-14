@@ -1,0 +1,14 @@
+{
+  "repository": "just-every/run-orbit",
+  "baseline": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "door": "anonymous POST /api/public/forms/mapped-enquiry and authenticated GET /api/v1/notifications",
+  "journey": "newtests/t096/forms-mapped-journey.ts#formsMappedJourney",
+  "outcome": "reproduced",
+  "expectedUnreadDelta": 1,
+  "observedUnreadDelta": 2,
+  "notificationSources": [
+    "opportunity.now from deal insertion",
+    "form.submitted from accepted submission"
+  ],
+  "testLog": "form-before.log"
+}

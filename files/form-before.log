@@ -1,0 +1,33 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (90684.294597ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94025.198205
+
+✖ failing tests:
+
+test at newtests/t096/forms-native.test.ts:1:822
+✖ FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent (90684.294597ms)
+  AssertionError [ERR_ASSERTION]: one accepted enquiry increases the routed operator unread count by one
+  
+  2 !== 1
+  
+      at formsMappedJourney (/workspace/run-orbit/newtests/t096/forms-mapped-journey.ts:45:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (/workspace/run-orbit/newtests/t096/forms-native.test.ts:31:28)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
