@@ -1,0 +1,25 @@
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4879398Z ✖ failing tests:
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4879595Z 
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4879954Z test at tests/delegation-browser/records-layout.test.ts:1:1358
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4881463Z ✖ OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390 (160652.274347ms)
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4882466Z   Error: expect(locator).toHaveValue(expected) failed
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4882740Z   
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4883049Z   Locator:  getByRole('searchbox', { name: 'Search records and timeline' })
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4883397Z   Expected: "Synthetic Calendar Contact"
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4883643Z   Received: ""
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4883826Z   Timeout:  5000ms
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4884006Z   
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4884168Z   Call log:
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4884568Z     - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4885163Z     - waiting for getByRole('searchbox', { name: 'Search records and timeline' })
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4885740Z       14 × locator resolved to <input value="" type="search"/>
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4886056Z          - unexpected value ""
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4886275Z   
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4886830Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4887724Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4888864Z       at Object.toHaveValue (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4889661Z       at typedFieldsJourney (/home/runner/work/run-orbit/run-orbit/tests/delegation-browser/typed-fields-journey.mjs:46:81)
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4890803Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/delegation-browser/records-layout.test.ts:61:5) {
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4894586Z     matcherResult: { name: 'toHaveValue', expected: 'Synthetic Calendar Contact', message: `expect(locator).toHaveValue(expected) failed\n\nLocator:  getByRole('searchbox', { name: 'Search records and timeline' })\nExpected: "Synthetic Calendar Contact"\nReceived: ""\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms\n  - waiting for getByRole('searchbox', { name: 'Search records and timeline' })\n    14 × locator resolved to <input value="" type="search"/>\n       - unexpected value ""\n`, pass: false, actual: '', log: [ `  - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms`, "  - waiting for getByRole('searchbox', { name: 'Search records and timeline' })", '    14 × locator resolved to <input value="" type="search"/>', '       - unexpected value ""' ], timeout: 5000, ariaSnapshot: '- searchbox "Search records and timeline"' }
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.4898230Z   }
+shards (batch-18)	Verify routine product shard	2026-11-14T06:58:54.6410121Z ##[error]Process completed with exit code 1.

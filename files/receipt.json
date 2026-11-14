@@ -1,0 +1,146 @@
+{
+  "tag": "main-orbit-readable-runs-1-pc1",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-readable-runs-1-pc1",
+  "startingHead": "97bec7a7809848abf1aafe4fe5e4423e99b13922",
+  "preservedPublishedHistory": true,
+  "testsBefore": {
+    "registered": 198,
+    "qualificationFlows": 2,
+    "total": 200
+  },
+  "testsAfter": {
+    "registered": 198,
+    "qualificationFlows": 2,
+    "total": 200
+  },
+  "contractBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "contractAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "clauseStatusChanges": [],
+  "checks": [
+    {
+      "command": "pnpm exec playwright test --config .rer/cloud-playwright.config.mjs tests/e2e/operator.spec.mjs --grep \"mobile opportunity timeline\" --reporter=list",
+      "status": "passed",
+      "exit": 0,
+      "log": "readable-run-browser.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "status": "passed",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "status": "passed",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "status": "passed",
+      "exit": 0,
+      "receipt": "source-check-receipt.json"
+    },
+    {
+      "command": "NODE_OPTIONS=--import=/tmp/orbit-cloud-browser.mjs pnpm exec node --test tests/rer/operator-desktop.test.mjs (before change)",
+      "status": "passed",
+      "exit": 0,
+      "log": "desktop-before.log"
+    },
+    {
+      "command": "NODE_OPTIONS=--import=/tmp/orbit-cloud-browser.mjs pnpm exec node --test tests/rer/operator-desktop.test.mjs (scoped summary and title restoration)",
+      "status": "passed",
+      "exit": 0,
+      "log": "desktop-after.log",
+      "note": "Final exact visible-text selector is also exercised by the direct native workflow helper."
+    },
+    {
+      "command": "NODE_OPTIONS=--import=/tmp/orbit-cloud-browser.mjs node .rer/proof-workflow.mjs",
+      "status": "passed",
+      "exit": 0,
+      "log": "workflow-after.log",
+      "note": "Exact final helper; native owner setup, workflow preview/activation, dispatch, visible summary, restored title, approval and history flows."
+    }
+  ],
+  "browserProof": {
+    "widths": [
+      1440,
+      390
+    ],
+    "screens": [
+      "workflow-outcome",
+      "workflow-undo",
+      "zoom-setup"
+    ],
+    "browser": "/usr/bin/chromium",
+    "arguments": [
+      "--no-sandbox",
+      "--use-mock-keychain",
+      "--password-store=basic"
+    ]
+  },
+  "previousVerify": {
+    "runId": 43559527137,
+    "failedShardJobId": 132340770858,
+    "failedAggregateJobId": 132352469991,
+    "cause": "Undo locator matches visible summary and hidden technical receipt; strict selector ambiguity",
+    "logCalls": 2,
+    "jobsCalls": 1,
+    "cachedArchiveReadWithoutNetwork": true
+  },
+  "publicationScan": "Mac fleet gate; not available in cloud",
+  "providerProof": "Zoom setup copy reviewed; no live provider claim",
+  "finalHead": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+  "mainAtMerge": "a35d331920a4bace2548bbd0efaf9344ffcd32a6",
+  "newCommitFiles": [
+    "tests/rer/workflow-journey.mjs",
+    "sources.lock.json"
+  ],
+  "push": {
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-readable-runs-1-pc1",
+    "status": "passed",
+    "exit": 0,
+    "attempts": 1,
+    "ref": "refs/heads/cloud/main-orbit-readable-runs-1-pc1",
+    "head": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+    "identityAndTrailers": "All commits origin/main..HEAD checked, including side parents; fleet author/committer; no coauthor trailers",
+    "historyRewrite": false
+  },
+  "ci": {
+    "id": 43567551061,
+    "name": "Verify",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567551061",
+    "expected_head": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+    "exact_sha": true,
+    "api_calls_this_watcher": 6,
+    "api_calls_before_watcher": 3,
+    "api_calls_total_including_diagnostics": 10,
+    "touchedShard": "batch-13 passed: 29 browser cases, 1 archive case, desktop operator registration",
+    "failedShard": "batch-18 / Verify routine product shard / tests/delegation-browser/records-layout.test.ts",
+    "failedAssertion": "typed-fields-journey.mjs:46: searchbox expected Synthetic Calendar Contact, received empty string",
+    "failedJobRerun": "not performed: ten-call GitHub budget exhausted"
+  },
+  "terminalCustody": "PUSHED",
+  "ready": false,
+  "productChangesComplete": true,
+  "remainingWork": "Rerun failed jobs once on Verify 43567551061, then observe completed/success on 7e577833179cbd0fb8db8500b61a8bd0a1d2e56b before READY.",
+  "pr": null,
+  "diagnosticCommand": {
+    "command": "gh run view 43567551061 --repo just-every/run-orbit --log-failed",
+    "exit": 0,
+    "note": "Failed-job archive read once with the last remaining diagnostic invocation; no separate job-discovery request."
+  }
+}

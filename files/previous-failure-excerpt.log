@@ -1,0 +1,24 @@
+test at tests/rer/operator-desktop.test.mjs:8:1
+2026-11-14T05:22:17.9079141Z ✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (262964.366116ms)
+2026-11-14T05:22:17.9079757Z   Error: expect(locator).toBeVisible() failed
+2026-11-14T05:22:17.9080093Z   
+2026-11-14T05:22:17.9080555Z   Locator: locator('.workflows-settings').getByText('Undo inspected every recorded write')
+2026-11-14T05:22:17.9081053Z   Expected: visible
+2026-11-14T05:22:17.9082060Z   Error: strict mode violation: locator('.workflows-settings').getByText('Undo inspected every recorded write') resolved to 2 elements:
+2026-11-14T05:22:17.9083206Z       1) <span class="workflows-reason">Undo inspected every recorded write</span> aka getByText('Undo inspected every recorded write', { exact: true })
+2026-11-14T05:22:17.9085976Z       2) <pre>{↵  "run": {↵    "id": "01M7C837A5Z5ZCQWZGQ2ABRRP…</pre> aka getByText('{ "run": { "id": "')
+2026-11-14T05:22:17.9086555Z   
+2026-11-14T05:22:17.9086775Z   Call log:
+2026-11-14T05:22:17.9087410Z     - Expect "toBeVisible" locator('.workflows-settings').getByText('Undo inspected every recorded write') with timeout 5000ms
+2026-11-14T05:22:17.9088282Z     - waiting for locator('.workflows-settings').getByText('Undo inspected every recorded write')
+2026-11-14T05:22:17.9088751Z   
+2026-11-14T05:22:17.9089490Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-14T05:22:17.9091139Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-14T05:22:17.9092926Z       at Object.toBeVisible (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-14T05:22:17.9093952Z       at workflowBrowserJourney (/home/runner/work/run-orbit/run-orbit/tests/rer/workflow-journey.mjs:86:88)
+2026-11-14T05:22:17.9094850Z       at async operatorRouteJourney (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-route-journey.mjs:16:17)
+2026-11-14T05:22:17.9102857Z       at async file:///home/runner/work/run-orbit/run-orbit/tests/rer/operator-desktop.test.mjs:8:238
+2026-11-14T05:22:17.9103795Z       at async withOperatorWorkspace (/home/runner/work/run-orbit/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+2026-11-14T05:22:17.9109615Z     matcherResult: { message: `expect(locator).toBeVisible() failed\n\nLocator: locator('.workflows-settings').getByText('Undo inspected every recorded write')\nExpected: visible\nError: strict mode violation: locator('.workflows-settings').getByText('Undo inspected every recorded write') resolved to 2 elements:\n    1) <span class="workflows-reason">Undo inspected every recorded write</span> aka getByText('Undo inspected every recorded write', { exact: true })\n    2) <pre>{↵  "run": {↵    "id": "01M7C837A5Z5ZCQWZGQ2ABRRP…</pre> aka getByText('{ "run": { "id": "')\n\nCall log:\n  - Expect "toBeVisible" locator('.workflows-settings').getByText('Undo inspected every recorded write') with timeout 5000ms\n  - waiting for locator('.workflows-settings').getByText('Undo inspected every recorded write')\n`, pass: false, actual: undefined, name: 'toBeVisible', expected: 'visible', log: [ `  - Expect "toBeVisible" locator('.workflows-settings').getByText('Undo inspected every recorded write') with timeout 5000ms`, "  - waiting for locator('.workflows-settings').getByText('Undo inspected every recorded write')" ], timeout: undefined, ariaSnapshot: undefined }
+2026-11-14T05:22:17.9114226Z   }
+2026-11-14T05:22:17.9863035Z 

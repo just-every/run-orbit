@@ -1,0 +1,15 @@
+{
+  "surface": "/app/settings/integrations",
+  "section": "Zoom meetings",
+  "proofOnly": true,
+  "views": [
+    {
+      "width": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 390,
+      "horizontalOverflow": false
+    }
+  ]
+}

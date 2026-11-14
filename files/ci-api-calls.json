@@ -1,0 +1,38 @@
+[
+  {
+    "at": "2026-11-14T06:41:31.958457+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs?head_sha=7e577833179cbd0fb8db8500b61a8bd0a1d2e56b&per_page=100",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T06:51:31.857103+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs/43567551061",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T07:01:31.966872+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs/43567551061",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T07:16:31.905695+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs/43567551061",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T07:26:31.860270+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs/43567551061",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T07:31:38.151838+00:00",
+    "path": "repos/just-every/run-orbit/actions/runs/43567551061",
+    "exit": 0
+  },
+  {
+    "at": "2026-11-14T07:36:59.127505+00:00",
+    "command": "gh run view 43567551061 --repo just-every/run-orbit --log-failed",
+    "exit": 0,
+    "note": "One remaining diagnostic invocation; failed-job archive read once without a separate jobs discovery."
+  }
+]

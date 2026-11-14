@@ -1,0 +1,17 @@
+{
+  "id": 43567551061,
+  "name": "Verify",
+  "status": "completed",
+  "conclusion": "failure",
+  "head_sha": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/43567551061",
+  "expected_head": "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b",
+  "exact_sha": true,
+  "api_calls_this_watcher": 6,
+  "api_calls_before_watcher": 3,
+  "api_calls_total_including_diagnostics": 10,
+  "touchedShard": "batch-13 passed: 29 browser cases, 1 archive case, desktop operator registration",
+  "failedShard": "batch-18 / Verify routine product shard / tests/delegation-browser/records-layout.test.ts",
+  "failedAssertion": "typed-fields-journey.mjs:46: searchbox expected Synthetic Calendar Contact, received empty string",
+  "failedJobRerun": "not performed: ten-call GitHub budget exhausted"
+}
