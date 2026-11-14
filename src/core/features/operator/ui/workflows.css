@@ -33,3 +33,6 @@
 .workflows-people label { display:flex; gap:10px; align-items:center; }
 .workflows-settings .workflows-check { display:flex; gap:10px; align-items:center; }
 @media(max-width:640px) { .workflows-settings { padding:20px; }.workflows-grid,.workflows-value { grid-template-columns:minmax(0,1fr); }.workflows-settings .workflows-card { padding:16px; }.workflows-settings button { min-height:44px; } }
+.workflows-results { display:grid; gap:10px; margin:0; padding-left:20px; font-size:15px; line-height:1.55; overflow-wrap:anywhere; }
+.workflows-results a, .workflows-action-result a { text-decoration:underline; text-underline-offset:3px; }
+.workflows-action-result { display:grid; gap:8px; min-width:0; }

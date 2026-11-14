@@ -7451,7 +7451,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows-activity.tsx": {
-      "sha256": "eef11eb35daefc2e3e59df8f20f84ad5a138a8cf18d323183ad03f1fc3ad4e4e",
+      "sha256": "1cd7c3de192e86ba5dcebee75c0d06f215a280c02c1b51f534b058c45e3450b9",
       "executable": false
     },
     "src/core/features/operator/ui/workflows-editor.tsx": {
@@ -7487,7 +7487,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/workflows.css": {
-      "sha256": "bab940b59d897fed9a810218c535f34040ca4b88d35d2573261f8a07467e9e03",
+      "sha256": "95abd567c603f8adfa4d7eb98d946960880111982f6d77c976d9ac7a206d0988",
       "executable": false
     },
     "src/core/features/operator/ui/workspace-archive.css": {
@@ -7499,7 +7499,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/zoom-settings.tsx": {
-      "sha256": "20fdebcc5e7b306ff33e946e34129cc28a9211d89b9a41faf71d80eec99ecca6",
+      "sha256": "428349d186e4cde45c2752c1ff081ee280e53d56c778d18ebfea4d656399a986",
+      "executable": false
+    },
+    "src/core/features/operator/ui/zoom-setup-help.tsx": {
+      "sha256": "128fe359c7cedefdc4a4e4de785abcc2df6e144b19d6ff05d9bb6c6e025c7591",
       "executable": false
     },
     "src/core/features/opportunities/contracts.ts": {
@@ -8767,7 +8771,11 @@
       "executable": false
     },
     "src/core/features/workflows/routes.ts": {
-      "sha256": "2c34441a7ad5bc920acc0ca0c24697607fb0e7a1ddda46b42c3bbf0511ae8d26",
+      "sha256": "53f6883612e1a81d9a5108654872371f0b7a9863b13c8b74d15118c386c282bb",
+      "executable": false
+    },
+    "src/core/features/workflows/run-presentation.ts": {
+      "sha256": "d7a7d3bcc0f9015bf3ada73eeca6da49177ea76a1b7236802f67822d7c11991e",
       "executable": false
     },
     "src/core/features/workspace/index.ts": {
@@ -10751,7 +10759,7 @@
       "executable": false
     },
     "tests/e2e/task-activity.mjs": {
-      "sha256": "3ec938cafb7fce17d789e995a0d9483228cd30b7602f259278b88ae76710a67d",
+      "sha256": "f8dd6d073fafec2f88dc5de92e0d418257e553dccda74b2963dac8b8092c9239",
       "executable": false
     },
     "tests/e2e/workbench.spec.mjs": {

@@ -1,3 +1,4 @@
+import {ZoomSetupHelp} from './zoom-setup-help';
 import {useEffect,useState,type FormEvent} from 'react';
 import {recordsRequest} from './records-api';
 import {OperatorState} from './operator-shell';
@@ -18,12 +19,13 @@ export function ZoomSettings(){
    <OperatorState>{status.state==='connected'?'Zoom connected':`Unresolved setup. ${status.reason}`}</OperatorState>
    {status.owner?<><form className="workbench-form" onSubmit={event=>void connect(event)}><h3>{status.held?'Replace Zoom credentials':'Connect Zoom'}</h3>
     <p>Use your Zoom Server-to-Server OAuth app. Orbit checks it with Zoom before saving credentials in this installation’s sealed storage. They are never shown again or exported. After a restore, connect again.</p>
+    <ZoomSetupHelp webhookPath={status.webhookPath}/>
     <label>Zoom account ID<input name="accountId" type="password" autoComplete="new-password" required maxLength={200}/></label>
     <label>Zoom client ID<input name="clientId" type="password" autoComplete="new-password" required maxLength={200}/></label>
     <label>Zoom client secret<input name="clientSecret" type="password" autoComplete="new-password" required maxLength={300}/></label>
     <label>Zoom webhook secret token<input name="webhookSecret" type="password" autoComplete="new-password" required maxLength={300}/></label>
     <button className="operator-button" disabled={busy}>Check and connect Zoom</button></form>
-    <p>Subscribe the Zoom app to meeting.ended and meeting.deleted. Set its Event notification endpoint URL to <code style={{overflowWrap:'anywhere'}}>{typeof window==='undefined'?'':window.location.origin}{status.webhookPath}</code>. Grant read access to scheduled meetings and past meeting participants. Zoom validates the endpoint using your secret token.</p>
+
     {status.held&&<button type="button" disabled={busy} onClick={()=>void run(async()=>{await recordsRequest('settings/zoom/disconnect','POST',{});setPreview(undefined);await load();setNotice('Zoom disconnected. Credentials deleted; activities remain.');window.dispatchEvent(new Event('orbit-products-changed'));})}>Disconnect Zoom</button>}
    </>:<p>Ask the installation owner to connect or change Zoom credentials.</p>}
    <p>Recording and transcript content is never fetched. A missing transcript or ungranted recording permission stays visible on the meeting plan.</p>

@@ -1,3 +1,4 @@
+import {presentRun} from './run-presentation';
 import {saveWorkflowDraft} from './authoring';
 import {isFullOperator} from '../access/identity-class';
 import {undoWorkflowRun,undoWorkflowVersion} from './controls';
@@ -34,7 +35,7 @@ export function workflowRoutes(db:D1Database,options:{fetcher?:ProviderFetch;now
  const save=async(c:any,id?:string)=>c.json(await saveWorkflowDraft(db,actor(c),await c.req.json(),now(),id));
  app.post('/',c=>save(c));
  app.post('/process',async c=>{await owner(db,actor(c));await processWorkflows(db,{at:now(),fetcher:options.fetcher});return c.json({processed:true});});
- app.get('/runs/:id',async c=>{await owner(db,actor(c));const r=await runById(db,c.req.param('id')),e=await eventById(db,r.event_id),steps=(await db.prepare('SELECT * FROM workflow_steps WHERE run_id=? ORDER BY ordinal').bind(r.id).all()).results;return c.json({run:r,event:e,steps,plan:JSON.parse(r.plan_json),outcome:JSON.parse(r.outcome_json)});});
+ app.get('/runs/:id',async c=>{await owner(db,actor(c));const r=await runById(db,c.req.param('id')),e=await eventById(db,r.event_id),steps=(await db.prepare('SELECT * FROM workflow_steps WHERE run_id=? ORDER BY ordinal').bind(r.id).all()).results;return c.json({run:r,event:e,steps,plan:JSON.parse(r.plan_json),outcome:JSON.parse(r.outcome_json),presentation:await presentRun(db,r,e,steps,actor(c))});});
  app.post('/runs/:id/resume',async c=>{const a=actor(c),authority=await owner(db,a),r=await runById(db,c.req.param('id'));if(!['failed','dead_letter','running','needs_approval'].includes(r.status))throw new WorkflowError(409,'Only a held or failed run can resume.');const uncertain=await db.prepare("SELECT 1 FROM workflow_steps WHERE run_id=? AND status='submitting'").bind(r.id).first();if(uncertain)throw new WorkflowError(409,'Webhook outcome is uncertain. Automatic or manual replay cannot safely resubmit it.');await db.batch([authorityFence(db,a,authority.version),db.prepare("UPDATE workflow_runs SET status='queued',reason='Manually resumed',updated_at=? WHERE id=?").bind(now(),r.id),workflowAudit(db,a,'resumed',r.workflow_id,{runId:r.id},now())]);return c.json({resumed:true});});
  app.post('/runs/:id/undo',async c=>c.json(await undoWorkflowRun(db,actor(c),c.req.param('id'),now())));
 

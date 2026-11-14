@@ -62,5 +62,42 @@ export async function taskActivityJourney(browser, info) {
   // Browser proof only at the second width; assertions above run at 1440.
   await page.setViewportSize({width:390,height:1000});await activity.screenshot({path:info.outputPath('task-activity-390.png')});
   await info.attach('task-activity.json',{contentType:'application/json',body:JSON.stringify({events,presentation,expected,actual},null,2)});
+  // Read the actual workflow result through Settings, including its retained undo outcome.
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/app/settings/pipeline');
+  const settingsPanel=page.locator('.workflows-settings');
+  await settingsPanel.getByRole('button',{name:'Execution history',exact:true}).click();
+  const run= settingsPanel.locator('details.workflows-card').filter({hasText:`Synthetic clinic workflow ${suffix}`}).first();
+  await run.locator(':scope > summary').click();
+  const listed=(await call('/api/workflows')).runs.find(row=>row.workflowId===workflow.id);
+  const details=await call(`/api/workflows/runs/${listed.id}`);
+  const created=(await call('/api/v1/tasks')).tasks.find(row=>row.title===workflowTitle);
+  const owner=settings.operators.find(person=>person.id===details.run.owner_id);
+  const noRaw=async()=>{
+   await expect(run.getByRole('region',{name:'Run outcome'})).toBeVisible();
+   const visible=await run.innerText();
+   for(const id of [listed.id,deal,created.id,details.run.owner_id,details.event.id])expect(visible).not.toContain(id);
+   expect(visible).not.toMatch(/[{}]|result_json|chain_json|taskId|record_id|owner_id/);
+   await expect(run.locator('pre')).not.toBeVisible();
+   await expect(run.getByRole('definition').filter({hasText:owner.display_name})).toHaveCount(1);
+  };
+  await noRaw();
+  await expect(run.getByRole('link',{name:workflowTitle,exact:true})).toHaveAttribute('href',`/app/tasks/${created.id}`);
+  await expect(run.getByRole('region',{name:'Trigger and source evidence'})).toContainText('Synthetic clinic follow-up requested');
+  const evidence=run.getByRole('link',{name:'Open source evidence',exact:true});
+  await expect(evidence).toHaveAttribute('href',`/app/opportunities/${deal}#entry-${details.event.id.split(':')[0]}`);
+  await evidence.click();await expect(page.locator(`#entry-${details.event.id.split(':')[0]}`)).toBeVisible();
+  await page.goBack();await settingsPanel.getByRole('button',{name:'Execution history',exact:true}).click();await run.locator(':scope > summary').click();
+  await run.getByRole('link',{name:workflowTitle,exact:true}).click();await expect(page).toHaveURL(new RegExp(`/app/tasks/${created.id}$`));await expect(page.getByRole('heading',{name:workflowTitle,exact:true})).toBeVisible();
+  await page.goBack();await settingsPanel.getByRole('button',{name:'Execution history',exact:true}).click();await run.locator(':scope > summary').click();await noRaw();
+  await run.getByText('Technical details',{exact:true}).click();await expect(run.locator('pre')).toContainText(listed.id);await run.getByText('Technical details',{exact:true}).click();
+  for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await run.screenshot({path:info.outputPath(`workflow-outcome-${width}.png`)});}
+  await page.setViewportSize({width:1440,height:1000});
+  await run.getByRole('button',{name:'Undo applied changes',exact:true}).click();await expect(run.locator(':scope > summary')).toContainText('Undone');await noRaw();
+  await expect(run.getByRole('link',{name:workflowTitle,exact:true})).toHaveAttribute('href',`/app/tasks/${created.id}`);
+  expect((await call('/api/v1/tasks')).tasks.find(row=>row.id===created.id)).toEqual(created);
+  for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await run.screenshot({path:info.outputPath(`workflow-undo-${width}.png`)});}
+  await info.attach('workflow-readable.json',{contentType:'application/json',body:JSON.stringify({run:listed.id,task:created.id,owner:owner.display_name,afterUndo:(await call(`/api/workflows/runs/${listed.id}`)).presentation},null,2)});
+
  }finally{await context.close();}
 }
