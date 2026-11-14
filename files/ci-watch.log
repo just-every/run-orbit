@@ -1,0 +1,32 @@
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:05:53.865299+00:00", "status": "in_progress"} calls=4
+CI_WAIT remaining_seconds=238 calls=4
+CI_WAIT remaining_seconds=178 calls=4
+CI_WAIT remaining_seconds=118 calls=4
+CI_WAIT remaining_seconds=58 calls=4
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:10:53.871928+00:00", "status": "in_progress"} calls=5
+CI_WAIT remaining_seconds=238 calls=5
+CI_WAIT remaining_seconds=178 calls=5
+CI_WAIT remaining_seconds=118 calls=5
+CI_WAIT remaining_seconds=58 calls=5
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:15:53.897253+00:00", "status": "in_progress"} calls=6
+CI_WAIT remaining_seconds=238 calls=6
+CI_WAIT remaining_seconds=178 calls=6
+CI_WAIT remaining_seconds=118 calls=6
+CI_WAIT remaining_seconds=58 calls=6
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:20:53.797237+00:00", "status": "in_progress"} calls=7
+CI_WAIT remaining_seconds=238 calls=7
+CI_WAIT remaining_seconds=178 calls=7
+CI_WAIT remaining_seconds=118 calls=7
+CI_WAIT remaining_seconds=58 calls=7
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:25:53.831917+00:00", "status": "in_progress"} calls=8
+CI_WAIT remaining_seconds=238 calls=8
+CI_WAIT remaining_seconds=178 calls=8
+CI_WAIT remaining_seconds=118 calls=8
+CI_WAIT remaining_seconds=58 calls=8
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:30:53.886401+00:00", "status": "in_progress"} calls=9
+CI_WAIT remaining_seconds=238 calls=9
+CI_WAIT remaining_seconds=178 calls=9
+CI_WAIT remaining_seconds=118 calls=9
+CI_WAIT remaining_seconds=58 calls=9
+CI {"conclusion": null, "head_sha": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade", "html_url": "https://github.com/just-every/run-orbit/actions/runs/43613706021", "id": 43613706021, "observedAt": "2026-11-14T16:35:53.825535+00:00", "status": "in_progress"} calls=10
+CI_BUDGET_EXHAUSTED exact SHA still pending

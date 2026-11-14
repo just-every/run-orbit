@@ -1,0 +1,22 @@
+{
+  "repository": "just-every/run-orbit",
+  "base": "de7eb11ff23eb8db6529f6424639a094fc66460c",
+  "carriedHead": "1bf610b4bd3937e66c745b6a127babd44a373317",
+  "test": "tests/archive/browser.spec.mjs#native archive preparation, streamed download, confirmed restore and renewed session preserve workspace records",
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run pnpm run test:archive --reporter=line",
+  "unchangedCarry": {
+    "exitCode": 0,
+    "result": "1 passed (3.2m)"
+  },
+  "controlledReproduction": {
+    "exitCode": 1,
+    "instrumentation": "Only this browser clear-do-not-contact request delayed 750 ms before route.continue(); real Worker and persistence unchanged. Temporary instrumentation removed before candidate.",
+    "expected": "contactable",
+    "received": "do_not_contact",
+    "location": "tests/archive/contact-permission.mjs:53",
+    "log": "reproduction-delayed-clear.log",
+    "sha256": "49e53415a0f762d57c46d2b5991ce6d27ea9d25187ad47a7f3fe2f2f84dff0ad"
+  },
+  "diagnosis": "Test reads before asynchronous clear request completes; permission field displays queued/in-flight values.",
+  "fix": "Register response waits before confirming Stop mail (PATCH contact) and Clear do-not-contact (POST clear), assert each succeeds, then retain all original UI/API/archive/history assertions."
+}

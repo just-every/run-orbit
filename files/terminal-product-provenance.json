@@ -1,0 +1,40 @@
+{
+  "repository": "just-every/run-orbit",
+  "tag": "main-orbit-contact-permission-1-c1",
+  "branch": "cloud/main-orbit-contact-permission-1-c1",
+  "head": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade",
+  "custody": "PUSHED",
+  "ciRunId": 43613706021,
+  "ciStatus": "in_progress",
+  "ciConclusion": null,
+  "ciUrl": "https://github.com/just-every/run-orbit/actions/runs/43613706021",
+  "githubCalls": 10,
+  "lastObservedAt": "2026-11-14T16:35:53.825535+00:00",
+  "testCountsBefore": 200,
+  "testCountsAfter": 200,
+  "contractCountsBeforeAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clauseStatusChanges": [],
+  "pr": null,
+  "implementationBlockers": [],
+  "remaining": [
+    "Exact-SHA Verify completion"
+  ],
+  "claims": [
+    {
+      "clause": "CAPTURE-005",
+      "status": "PARTIAL",
+      "points": []
+    },
+    {
+      "clause": "DATA-001",
+      "status": "PARTIAL",
+      "points": [
+        3
+      ]
+    }
+  ]
+}

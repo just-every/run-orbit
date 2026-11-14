@@ -1,0 +1,147 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-permission-1-c1",
+  "head": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade",
+  "tree": "8b7809f7450da89135750c905270758cf09358a0",
+  "worktreeClean": true,
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exitCode": 0,
+      "result": "Your application is built; build: complete (exit 0)",
+      "scope": "Carried product build; subsequent change only adds response waits to the archive journey helper."
+    },
+    {
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run pnpm run test:archive --reporter=line",
+      "exitCode": 0,
+      "result": "1 passed (3.1m)",
+      "assertionViewport": 1440,
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "noSandbox": true
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exitCode": 0
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exitCode": 0,
+      "before": {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      },
+      "after": {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      }
+    }
+  ],
+  "browserProof": [
+    {
+      "path": "browser/permission-plan-1440.png",
+      "bytes": 129535,
+      "sha256": "574d58e63ee9713cb6396c3c25db2130a59f9d958cbf4c7d39ffb9ffbfc7e5e3",
+      "width": 1440
+    },
+    {
+      "path": "browser/permission-plan-390.png",
+      "bytes": 116081,
+      "sha256": "06236471f83ee2f8a956a2301df6351f984fd97b4ec77e25918ecf9e1a335bf7",
+      "width": 390
+    },
+    {
+      "path": "browser/permission-restore-review-1440.png",
+      "bytes": 288947,
+      "sha256": "1886edd63462714f01d669fa8012f23d1016ce04e13935adc16b5ef96f3034b6",
+      "width": 1440
+    },
+    {
+      "path": "browser/permission-restore-review-390.png",
+      "bytes": 262776,
+      "sha256": "0784ec3abe76e112f831d5c0e0ca4d5bd9c721271d3a41876116b29f70f757f2",
+      "width": 390
+    },
+    {
+      "path": "browser/permission-restored-captured-1440.png",
+      "bytes": 138836,
+      "sha256": "b4123e3f05d96d52b97a228fd574e52804b19d9e7d0b0c2f369ed27a1910b6d4",
+      "width": 1440
+    },
+    {
+      "path": "browser/permission-restored-captured-390.png",
+      "bytes": 117669,
+      "sha256": "66bbbb6770ee5e9d8077a336d8f479d42bddefe9cf98940327e2de3a6fa35ce2",
+      "width": 390
+    },
+    {
+      "path": "browser/permission-restored-cleared-1440.png",
+      "bytes": 137246,
+      "sha256": "8171b19608a3303c9272ef9718435a7c520f48ad4694429edf7c76d2fc7ef3af",
+      "width": 1440
+    },
+    {
+      "path": "browser/permission-restored-cleared-390.png",
+      "bytes": 118590,
+      "sha256": "ac3212098258c849ae8964349662fe928d3b72b05950d55b0f6ef34cce113ca6",
+      "width": 390
+    },
+    {
+      "path": "browser/permission-restored-retained-1440.png",
+      "bytes": 168910,
+      "sha256": "2861e663091d55e5e88f3ca9e2ee9ac3293360c303f6b64aa4f3aff6b9639d4f",
+      "width": 1440
+    },
+    {
+      "path": "browser/permission-restored-retained-390.png",
+      "bytes": 142449,
+      "sha256": "64e8a3570ffc4a8265203dd00a0064c0ad91e5caed53cdc577b19e0cc12d0941",
+      "width": 390
+    }
+  ],
+  "screenshotsInspected": [
+    "permission-plan-1440.png",
+    "permission-plan-390.png",
+    "permission-restore-review-1440.png",
+    "permission-restore-review-390.png",
+    "permission-restored-captured-1440.png",
+    "permission-restored-captured-390.png",
+    "permission-restored-cleared-1440.png",
+    "permission-restored-cleared-390.png",
+    "permission-restored-retained-1440.png",
+    "permission-restored-retained-390.png"
+  ],
+  "contractCountsBeforeAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clauseStatusChanges": [],
+  "productPush": "success on first attempt",
+  "pr": null,
+  "clauseStatusBeforeAfter": {
+    "CAPTURE-005": {
+      "before": "partial",
+      "after": "partial"
+    },
+    "DATA-001": {
+      "before": "done",
+      "after": "done"
+    }
+  }
+}

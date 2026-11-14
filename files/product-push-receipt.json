@@ -1,0 +1,18 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-contact-permission-1-c1",
+  "head": "f81354dbd80552d9841f7e48fdb8f7a6541b8ade",
+  "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-contact-permission-1-c1",
+  "exitCode": 0,
+  "attempts": 1,
+  "guardResult": "PUSH_OK branch=cloud/main-orbit-contact-permission-1-c1",
+  "pushResult": "HEAD:refs/heads/cloud/main-orbit-contact-permission-1-c1 [new branch]",
+  "identityCheck": {
+    "commits": 1,
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": []
+  },
+  "defaultBranchWritten": false,
+  "forcePush": false
+}

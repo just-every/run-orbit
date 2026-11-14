@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "schemaVersion": 1,
+  "edition": "just-every/orbit",
+  "manifest": "dc7d6704d5ed529d120a628ed52e9bd9804900d13506a343fd1606c02de0d59d",
+  "files": 2857,
+  "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "exitCode": 0,
+  "sourceLockSha256": "ae0926bca73cbbe12a515e05d1aee5658ac7d47d1b755a88591f9e7778619790",
+  "changedInputs": {
+    "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
+      "sha256": "55441da111f0ebc5254fb3da1babbdfe6e53961b6c4a8b421e46d67bcb962e26",
+      "executable": false
+    },
+    "src/core/features/operator/ui/meeting-plan-page.tsx": {
+      "sha256": "a9ac5737af97f17ce4b5456c5c277344e116917589cb8a5878b281945a2d38db",
+      "executable": false
+    },
+    "src/core/features/records/archive-import-progress.ts": {
+      "sha256": "bd3e355ee41f7c005ee730313766965339b0e28862219ba66c6020f65c501790",
+      "executable": false
+    },
+    "tests/archive/browser.spec.mjs": {
+      "sha256": "323511d2505111ba2d0198944dad76abd428205bd1399520f0e304f82b35a1bd",
+      "executable": false
+    },
+    "tests/archive/contact-permission.mjs": {
+      "sha256": "72578a87dd8df25036e77db1ad7387c2015e624973d0a9fa30b12688d7d533c4",
+      "executable": false
+    },
+    "tests/archive/playwright.config.mjs": {
+      "sha256": "992b48380e0c4143738c9916c3f57b746be4bfeee8c047e33872b611328f0f09",
+      "executable": false
+    },
+    "tests/archive/session.ts": {
+      "sha256": "7baf95618a4f03216ee82269d9b153fb3f9a31c7c3fa805fbe0f9dbb09c07f59",
+      "executable": false
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{"time": "2026-11-14T15:51:54.350124+00:00", "args": ["run", "view", "43604737145", "--repo", "just-every/run-orbit", "--log-failed"]}
+{"time": "2026-11-14T15:53:56.315137+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43604737145/jobs?per_page=100", "--jq", ".jobs[] | select(.conclusion == \"failure\") | {id,name,conclusion}"]}
+{"time": "2026-11-14T15:54:35.333964+00:00", "args": ["run", "view", "43604737145", "--repo", "just-every/run-orbit", "--job", "132477737270", "--log-failed"]}
+{"time": "2026-11-14T16:05:52.533309+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs?head_sha=f81354dbd80552d9841f7e48fdb8f7a6541b8ade&per_page=100"]}
+{"time": "2026-11-14T16:10:52.535757+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
+{"time": "2026-11-14T16:15:52.549941+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
+{"time": "2026-11-14T16:20:52.532995+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
+{"time": "2026-11-14T16:25:52.533147+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
+{"time": "2026-11-14T16:30:52.533829+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
+{"time": "2026-11-14T16:35:52.537040+00:00", "args": ["api", "repos/just-every/run-orbit/actions/runs/43613706021"]}
