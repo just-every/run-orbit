@@ -1,0 +1,13 @@
+{
+  "runId": 43622494220,
+  "headSha": "9940c015edce444ed02c8f23fee20aac6a947761",
+  "command": "gh run rerun 43622494220 --repo just-every/run-orbit --failed",
+  "exit": 0,
+  "requestAccepted": true,
+  "outcome": "not observed; ten-call GitHub budget exhausted",
+  "githubCalls": 10,
+  "failedJobId": 132532161962,
+  "failedJob": "shards (batch-18)",
+  "failedStep": "Verify routine product shard",
+  "failure": "tests/delegation-browser/typed-fields-journey.mjs:46 Search records and timeline expected Synthetic Calendar Contact, received empty string"
+}

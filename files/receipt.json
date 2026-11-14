@@ -36,13 +36,22 @@
   "ci": {
     "runId": 43622494220,
     "headSha": "9940c015edce444ed02c8f23fee20aac6a947761",
-    "status": "in_progress",
+    "lastObservedStatus": "completed",
+    "lastObservedConclusion": "failure",
+    "lastObservedAttempt": 1,
+    "rerunRequestAccepted": true,
+    "rerunOutcome": "unobserved; API budget exhausted",
     "url": "https://github.com/just-every/run-orbit/actions/runs/43622494220",
-    "run_id": 43622494220,
-    "head_sha": "9940c015edce444ed02c8f23fee20aac6a947761",
-    "conclusion": null,
-    "calls": 1
+    "githubCalls": 10,
+    "failedJob": "shards (batch-18)",
+    "failedStep": "Verify routine product shard",
+    "failureSource": "tests/delegation-browser/typed-fields-journey.mjs:46"
   },
   "blockers": [],
-  "pr": null
+  "pr": null,
+  "terminalProductState": "PUSHED",
+  "pendingChecks": [
+    "Exact-SHA Verify failed-jobs retry result"
+  ],
+  "completedAt": "2026-11-14T18:16:26.898812+00:00"
 }
