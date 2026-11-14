@@ -8095,7 +8095,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "96343b5ef49f7d2956bf3a5529356910a905852ead01911f9665bce06deaceb1",
+      "sha256": "bd3e355ee41f7c005ee730313766965339b0e28862219ba66c6020f65c501790",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -10399,7 +10399,7 @@
       "executable": false
     },
     "tests/archive/contact-permission.mjs": {
-      "sha256": "408b7d8ef7d3dbfdb06fd5e6db0e7f215468c1633544ba78ac75716d7b323dba",
+      "sha256": "88bda846aca320c723cbc6fb4ab0d21427f38aadc743f15b123dc9ae412c8081",
       "executable": false
     },
     "tests/archive/playwright.config.mjs": {
@@ -10415,7 +10415,7 @@
       "executable": false
     },
     "tests/archive/session.ts": {
-      "sha256": "d7a85e1cab5166dddbbbd38dac1e5ad29220954a620dd67e6e501788e21c9e22",
+      "sha256": "7baf95618a4f03216ee82269d9b153fb3f9a31c7c3fa805fbe0f9dbb09c07f59",
       "executable": false
     },
     "tests/contract.mjs": {

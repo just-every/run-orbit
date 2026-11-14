@@ -15,7 +15,7 @@ export async function contactPermissionJourney({page,context,testInfo,authentica
  const fixture=await isolatedDatabase(),port=Number(process.env.ORBIT_ARCHIVE_PORT??8723)+20,origin=`http://127.0.0.1:${port}`;
  let worker,sourceContext;
  try{
-  const deps=createDependencies(fixture.db),owner='01J00000000000000000000990';
+  const deps=createDependencies(fixture.db),owner='01J00000000000000000000993';
   await deps.auth.ensureOperator({id:owner,email:'archive-owner@example.test',displayName:'Archive owner'});
   await deps.workspace.ensureWorkspace({name:'Permission journey',timezone:'UTC',currency:'USD',workingHours:{},staleIntervalDays:14,awaitingResponseWorkingDays:5,freeMailDomains:[]});
   await deps.workspace.ensurePipelineStage({id:'01J00000000000000000000991',name:'Qualified',position:1});
@@ -76,7 +76,7 @@ export async function contactPermissionJourney({page,context,testInfo,authentica
    }
    if(name==='retained'){
     const hold=restored.timeline.find(t=>t.kind==='contactability.restore_hold');expect.soft(hold).toBeTruthy();
-    if(hold){const reason=JSON.parse(hold.payload_json);expect(reason.reason).toBe('retained_suppression');expect(reason.archivedContactability).toBe('contactable');expect(hold.actor_name).toBeTruthy();await expect(page.getByTestId('record-activity')).toContainText(reason.text);}
+    if(hold){const reason=JSON.parse(hold.payload_json);expect(reason.reason).toBe('retained_suppression');expect(reason.archivedContactability).toBe('contactable');expect(hold.actor_id).toBe(owner);expect(hold.actor_name).toBeTruthy();await expect(page.getByTestId('record-activity')).toContainText(reason.text);}
    }
    for(const width of [1440,390]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:testInfo.outputPath(`permission-restored-${name}-${width}.png`),fullPage:true});}
    await page.setViewportSize({width:1440,height:1000});
