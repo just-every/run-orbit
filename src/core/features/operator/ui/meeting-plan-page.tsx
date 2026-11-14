@@ -39,7 +39,7 @@ function PlanNotes({plan,signalId,onSaved}:{plan:MeetingPlan;signalId:string;onS
 
 function CreateContact({email,companyId,onCreated}:{email:string;companyId:string|null;onCreated:()=>void}){
  const [error,setError]=useState(''),[busy,setBusy]=useState(false);
- async function create(){setBusy(true);setError('');try{const response=await fetch('/api/v1/records/contact',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({email,...(companyId?{company_id:companyId}:{})})});if(!response.ok)throw new Error(((await response.json().catch(()=>({}))) as {error?:string}).error??'The contact could not be created.');onCreated();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ async function create(){setBusy(true);setError('');try{const response=await fetch('/api/v1/records/contact',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({email,contactability:'do_not_contact',...(companyId?{company_id:companyId}:{})})});if(!response.ok)throw new Error(((await response.json().catch(()=>({}))) as {error?:string}).error??'The contact could not be created.');onCreated();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <><button type="button" className="operator-button" disabled={busy} onClick={()=>void create()} aria-label={`Create contact ${email}`}>Create contact</button>{error&&<OperatorState kind="error">{error}</OperatorState>}</>;
 }
 
