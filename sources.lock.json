@@ -6955,7 +6955,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/meeting-plan-page.tsx": {
-      "sha256": "cac85a1d387e6792aee4e46031d45a4a8bc0a763a7896d75ed26275b6b886ed1",
+      "sha256": "a9ac5737af97f17ce4b5456c5c277344e116917589cb8a5878b281945a2d38db",
       "executable": false
     },
     "src/core/features/operator/ui/meeting-writeback.tsx": {
@@ -7495,7 +7495,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/WorkspaceArchiveTools.tsx": {
-      "sha256": "0fd147751d244dc9cca7ee96c215bae713511d10cf3790ab28ae180a75b5e137",
+      "sha256": "55441da111f0ebc5254fb3da1babbdfe6e53961b6c4a8b421e46d67bcb962e26",
       "executable": false
     },
     "src/core/features/operator/ui/zoom-settings.tsx": {
@@ -8095,7 +8095,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "280573389a8c63f13f63196e09f070503e3b47eacdaae08f3d8d61f3a2efa9de",
+      "sha256": "bd3e355ee41f7c005ee730313766965339b0e28862219ba66c6020f65c501790",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -10395,11 +10395,15 @@
       "executable": false
     },
     "tests/archive/browser.spec.mjs": {
-      "sha256": "17d3c8b573f37b67343c2d0d0175d2ac5dcc606bb78a9957f7027130b754407d",
+      "sha256": "323511d2505111ba2d0198944dad76abd428205bd1399520f0e304f82b35a1bd",
+      "executable": false
+    },
+    "tests/archive/contact-permission.mjs": {
+      "sha256": "72578a87dd8df25036e77db1ad7387c2015e624973d0a9fa30b12688d7d533c4",
       "executable": false
     },
     "tests/archive/playwright.config.mjs": {
-      "sha256": "d1d7cda450f2d7d2538981d0f9f77df002c473699773acce450d2762c35e632f",
+      "sha256": "992b48380e0c4143738c9916c3f57b746be4bfeee8c047e33872b611328f0f09",
       "executable": false
     },
     "tests/archive/rollback.mjs": {
@@ -10411,7 +10415,7 @@
       "executable": false
     },
     "tests/archive/session.ts": {
-      "sha256": "d7a85e1cab5166dddbbbd38dac1e5ad29220954a620dd67e6e501788e21c9e22",
+      "sha256": "7baf95618a4f03216ee82269d9b153fb3f9a31c7c3fa805fbe0f9dbb09c07f59",
       "executable": false
     },
     "tests/contract.mjs": {

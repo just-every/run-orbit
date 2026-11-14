@@ -10,8 +10,8 @@ try{
  const db=platform.env.DB,ownerId='01J00000000000000000000990';
  if(!await db.prepare('SELECT id FROM operators LIMIT 1').first()){await db.prepare("INSERT INTO owner_bootstrap(id,owner_id,email,display_name,workspace_name,timezone,currency,stages_json,created_at) VALUES('initial-owner',?,'archive-owner@example.test','Archive owner','Archive proof','UTC','USD',?,'2026-09-13T00:00:00.000Z')").bind(ownerId,JSON.stringify([{id:'01J00000000000000000000991',name:'Qualified'}])).run();await db.prepare("INSERT INTO first_run_setup VALUES('workspace','2026-09-13T00:00:00.000Z')").run();}
  const auth=createDependencies(db).auth;
- const sessionOwner=process.argv.includes('--target-owner')?'01J00000000000000000000992':ownerId;
- if(sessionOwner!==ownerId)await auth.ensureOperator({id:sessionOwner,email:'target-owner@example.test',displayName:'Target owner'});
+ const sessionOwner=process.argv.includes('--target-owner')?'01J00000000000000000000992':await db.prepare("SELECT id FROM operators WHERE lower(email)='archive-owner@example.test'").first<string>('id')??ownerId;
+ if(process.argv.includes('--target-owner'))await auth.ensureOperator({id:sessionOwner,email:'target-owner@example.test',displayName:'Target owner'});
  const session=await auth.createSession(sessionOwner);
  process.stdout.write(JSON.stringify({cookieName:sessionCookieName,token:session.token}));
 }finally{await platform.dispose();}
