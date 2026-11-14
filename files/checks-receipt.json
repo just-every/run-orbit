@@ -1,0 +1,123 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-form-notify-once-1-c1",
+  "head": "ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b",
+  "base": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "candidate_commits": 1,
+  "clean_worktree": true,
+  "notification_count_before": 2,
+  "notification_count_after": 1,
+  "unread_increase_before": 2,
+  "unread_increase_after": 1,
+  "test_budget_before": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "test_budget_after": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "contract_status_counts_before": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "contract_status_counts_after": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "clause_status_changes": [],
+  "claim": {
+    "clause": "FORM-004",
+    "status": "PARTIAL",
+    "points": [
+      1
+    ]
+  },
+  "checks": [
+    {
+      "command": "node --import tsx /tmp/orbit-reproduce.mts",
+      "tree": "main product with carried journey assertions only",
+      "result": "expected failure",
+      "assertion": "one accepted enquiry increases the routed operator unread count by one",
+      "actual": 2,
+      "expected": 1,
+      "log": "reproduction.log"
+    },
+    {
+      "command": "node --import tsx --test --test-concurrency=1 newtests/t096/forms-native.test.ts",
+      "result": "pass",
+      "tests": 4,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 479474.580436,
+      "log": "forms-native.log"
+    },
+    {
+      "command": "node --import tsx /tmp/orbit-archive-upgrade-proof.mts",
+      "target": "newtests/t096/released-forecast-upgrade.ts#proveReleasedForecastUpgrade",
+      "result": "pass",
+      "exit": 0,
+      "log": "archive-upgrade.log"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "result": "pass",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "result": "pass",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node scripts/publish-deployment-spec.mjs --check",
+      "result": "pass",
+      "exit": 0,
+      "observation": "Deployment spec matches the build; setup digest matches rer-setup.json."
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "result": "pass",
+      "exit": 0,
+      "observation": "Contract documents are current."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "pass",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "command": "node --import tsx /tmp/orbit-form-browser-proof.mts",
+      "target": "newtests/t096/browser-form-mapping.ts#formMappingBrowserJourney",
+      "head": "ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b",
+      "result": "pass",
+      "widths": [
+        1440,
+        390
+      ],
+      "assertion_width": 1440,
+      "serious_critical_accessibility_violations": 0,
+      "horizontal_overflow": false,
+      "owned_browsers_after": 0,
+      "owned_workers_after": 0,
+      "log": "browser-proof.log"
+    }
+  ],
+  "publication_scan": "not available in cloud; fleet landing gate remains required",
+  "independent_gate": "required before landing; builder Verify and evidence are not a substitute",
+  "pr_url": null,
+  "product_push": "success",
+  "push_attempts": 1,
+  "github_api_calls_used_at_creation": 1,
+  "known_limitations": [
+    "Only FORM-004 point 1 claimed PARTIAL; no clause promotion or Status, Gap or Evidence cell edit.",
+    "Full local suite not run; only touched native checks and affected browser journey. Exact-SHA branch Verify is the full wall."
+  ]
+}

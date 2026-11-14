@@ -1,0 +1,43 @@
+TAP version 13
+# (node:4614) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# {"proof":"native-archive-export-requests","version":3,"tables":134,"rows":470,"parts":50,"observations":[{"operation":"POST /exports","milliseconds":1623.1963590000087,"status":201},{"operation":"GET /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ","milliseconds":42.28156800000579,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":2171.069344000003,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":1370.1235779999988,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":1444.5358100000012,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":1615.7679649999918,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":1575.440398000006,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":1388.2428800000052,"status":200},{"operation":"POST /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/advance","milliseconds":711.8267009999981,"status":200},{"operation":"GET /exports/01M7D7AWZQXEYN1Q1EW5QK4TCZ/download","milliseconds":25.313786999991862,"status":200}]}
+# {"proof":"native-archive-export-requests","version":3,"tables":134,"rows":349,"parts":49,"observations":[{"operation":"POST /exports","milliseconds":1523.0516230000067,"status":201},{"operation":"GET /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA","milliseconds":23.550236999988556,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":2398.187429999991,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":1430.0395390000194,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":1740.9865160000045,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":1869.1826979999896,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":1642.758014000021,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":1659.041574999981,"status":200},{"operation":"POST /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/advance","milliseconds":588.2624309999519,"status":200},{"operation":"GET /exports/01M7D7FY6P3ZK2DWPCZ5P19PGA/download","milliseconds":41.96238199999789,"status":200}]}
+# PROBE FORM-003 2: public checkbox and inquiry submissions -> authenticated wording, revision and time; unchecked contact stopped, prior stop preserved; anonymous read denied and erased replay stays erased
+# Subtest: FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+ok 1 - FORM-001 mapped cross-origin capture with picklist and declared hidden fields, reviewed proposals and durable owner rotation retain fixed publication, DNC and consent
+  ---
+  duration_ms: 342482.93598
+  type: 'test'
+  ...
+# Subtest: public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay
+ok 2 - public capture is one atomic native batch across publication revoke, source stop, consent failure and concurrent replay
+  ---
+  duration_ms: 37098.231613
+  type: 'test'
+  ...
+# PROBE FORM-002 consent and authority: native held release preserves true, false and omitted consent; stopped source and revoked authorization refuse without writes; fresh exact review permits release
+# PROBE FORM-002 abuse boundaries: signed fill age and key binding, network and form windows, trusted metadata and Turnstile action, hostname and outage refusals preserve domain inventories; valid verified intake and replay succeed once
+# Subtest: FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once
+ok 3 - FORM-001 public form HTTP refuses abuse without customer writes and releases spam exactly once
+  ---
+  duration_ms: 68622.041774
+  type: 'test'
+  ...
+# Subtest: existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority
+ok 4 - existing-contact form capture atomically links and evaluates native opportunities exactly once without changing contact fields or mail authority
+  ---
+  duration_ms: 28406.30084
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 479474.580436
+EXIT=0

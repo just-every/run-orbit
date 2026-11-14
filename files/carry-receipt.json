@@ -1,0 +1,66 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-form-notify-once-1-c1",
+  "base": "7ad63db63c46c6a2a59157a5c128bd35f6c20173",
+  "carried_from": "96f0e60a53ac1a350270bae42cef6740098ec8cc",
+  "product_files": [
+    {
+      "path": "management/integration/deployment-spec.json",
+      "sha256": "57b912fa91a6cfedc77a1ace1607cb16f34805f7a952d1a2c7324826fc757b99",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "migrations/core/0092_form_submission_notification.sql",
+      "sha256": "e3f649e59d28dc5ab191119968372f7d4d9464d8cd9f84a5d734783ae0a2db99",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "newtests/t096/browser-form-mapping.ts",
+      "sha256": "4e11409ae52e7366d2d25d81583f4c9872baffd05b78931c45092d13d421b621",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "newtests/t096/forms-mapped-journey.ts",
+      "sha256": "6bb0ba6340ba4bff9bd1fc1f7c3bffda3c3ff056c80b7557b0d7e8d5a5a4ea97",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "newtests/t096/released-forecast-upgrade.ts",
+      "sha256": "c7a904ca783631365063942d3de200fdb60ccef214fec3735827f1fb844a1da7",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "94590f6810a4df3e1d593b4298793f2f8541ad1bca7e8dbb2e04826ec15b81fc",
+      "identical_to_prior_candidate": false
+    },
+    {
+      "path": "src/core/features/forms/native-capture.ts",
+      "sha256": "f4e51f369f552e58b9fe76d6968125b6013df234cb6def10625b54346d912c6b",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "src/core/features/notifications/routes.ts",
+      "sha256": "5bdbad8d121982a3b5d8455bb4f7f8e9af1d9ecc6da2f8df1e735abeb95fa4a6",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "src/core/features/operator/ui/notifications-page.tsx",
+      "sha256": "db6879afd46ad4ef088060d21479dfaa8332a10076228c8124f218d9eb45e99f",
+      "identical_to_prior_candidate": true
+    },
+    {
+      "path": "src/core/features/records/archive-generations.ts",
+      "sha256": "4fb516d92b1e1e119b47394fe74696093bc02a33e19e621ba5868b9ebc639c81",
+      "identical_to_prior_candidate": true
+    }
+  ],
+  "contract_views_changed": false,
+  "test_registrations_before": 198,
+  "test_registrations_after": 198,
+  "qualification_flows": 2,
+  "test_budget": 200,
+  "migration": "0092_form_submission_notification.sql",
+  "migration_renumbered": false,
+  "head": "ef7efc1eeee05bd87323e3bcb9d06cb349e00a9b"
+}

@@ -1,0 +1,6 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE FORM-001 1: real allowlisted HTTPS buyer page -> browser Origin admitted, challenge and direct POST 200; authenticated Records phone, exact company and numeric deal size match
+PASS existing formMappingBrowserJourney: one enquiry row, contact and deal links, mark-read, 1440 and 390 screenshots
+EXIT=0

@@ -1,0 +1,26 @@
+(node:3984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: one accepted enquiry increases the routed operator unread count by one
+
+2 !== 1
+
+    at formsMappedJourney (/workspace/run-orbit/newtests/t096/forms-mapped-journey.ts:45:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (/tmp/orbit-reproduce.mts:2:1) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 2,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+EXIT=1
