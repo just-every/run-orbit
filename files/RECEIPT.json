@@ -221,5 +221,11 @@
   "blockers": [],
   "evidenceRef": "refs/heads/evidence/sd-orbit-release-0-4-10",
   "readyClaim": false,
-  "pendingReason": "Exact-SHA Verify is still in progress after the final permitted REST observation; ten-call GitHub budget exhausted."
+  "pendingReason": "Exact-SHA Verify is still in progress after the final permitted REST observation; ten-call GitHub budget exhausted.",
+  "firstEvidencePublication": {
+    "ref": "refs/heads/evidence/sd-orbit-release-0-4-10",
+    "head": "e6e1f57e39a6a92326ce3e81a8fd384ca1b3128c",
+    "remoteReadbackVerified": true,
+    "receipt": "evidence-publication-receipt.txt"
+  }
 }
