@@ -1,0 +1,41 @@
+{
+  "mode": "after",
+  "head": "3b702a7d6dd316404f006be8f140f63008cffb81",
+  "trips": [
+    {
+      "trip": 1,
+      "valid": true,
+      "message": "",
+      "description": "form-public-path-hint",
+      "title": "Use 1–80 lowercase letters, numbers or hyphens, starting with a letter or number; a leading slash is optional."
+    },
+    {
+      "trip": 2,
+      "cites": "Cites: Draft: Clinic saved draft"
+    },
+    {
+      "trip": 3,
+      "asOf": "2026-11-15T08:50:53.594Z",
+      "expectedDate": "11/15/2026, 12:50 AM",
+      "previewed": "Previewed 11/15/2026, 12:50 AM"
+    },
+    {
+      "trip": 4,
+      "resultLinks": [
+        "Review 1 unlinked message"
+      ],
+      "captureLinks": [
+        "Review 1 unlinked event"
+      ]
+    },
+    {
+      "trip": 5,
+      "reviewSubject": "Next steps for Synthetic Clinic",
+      "timelineSubject": "Next steps for Synthetic Clinic"
+    },
+    {
+      "trip": 6,
+      "labels": "Owner\nAll owners\nOwner\nPipeline\nAll pipelines\nSales pipeline\nDate range\nNov 1 – Nov 30, 2026, PT\nCustom date range\nClinic count\nAll values\n12\nReset to saved filters"
+    }
+  ]
+}

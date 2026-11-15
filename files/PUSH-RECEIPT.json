@@ -1,0 +1,15 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stranger32-trips-1",
+  "head": "3b702a7d6dd316404f006be8f140f63008cffb81",
+  "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/main-orbit-stranger32-trips-1",
+  "exit_code": 0,
+  "attempts": 1,
+  "result": "PUSH_OK branch=cloud/main-orbit-stranger32-trips-1",
+  "candidate_commits": 1,
+  "identity_audit": "all authors and committers Run Edit Run fleet <fleet@runeditrun.com>; no trailers; all candidate parents inspected",
+  "main_base": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+  "contract_status_changes": 0,
+  "generated_views_committed": false,
+  "publication_scan": "fleet Mac lander gate; not run in this cloud"
+}
