@@ -27,7 +27,7 @@ Build output under `dist/` is disposable. Commands refuse a legacy store at `dis
 
 ## Deploy
 
-For current run instructions, see [Run locally](/run/local) and [Local installation](#local-installation).
+For current run instructions, open `/run/local` or follow [Local installation](#local-installation).
 
 `rer deploy [--environment NAME]` builds locally, then uses the Base deploy kit against the owner's Cloudflare account. Stop `rer dev` in the checkout first (`rer dev --stop`); deploy refuses while dev holds the local state.
 
