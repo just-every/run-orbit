@@ -34,5 +34,10 @@ export async function readableMergeReview(browser,page,draft,info){
   if(render.missing.length)await expect(review.getByRole('button',{name:'Confirm rendered merge values',exact:true})).toBeDisabled();
   await page.screenshot({path:info.outputPath('merge-values-1440.png'),fullPage:true});
   await page.setViewportSize({width:390,height:900});await page.screenshot({path:info.outputPath('merge-values-390.png'),fullPage:true});await page.setViewportSize({width:1440,height:900});
+  const saved=(await(await page.request.get('/api/v1/drafts/'+draft.id)).json()).draft;
+  await page.goto('/app/opportunities/'+saved.opportunityId);await page.reload();
+  const timelineDraft=page.locator(`a[href="/app/drafts/${draft.id}"]`).first();await expect(timelineDraft).toHaveText(render.subject);await expect(timelineDraft).not.toContainText('{{');
+  for(const width of [1440,390]){await page.setViewportSize({width,height:900});await timelineDraft.scrollIntoViewIfNeeded();await page.screenshot({path:info.outputPath(`rendered-draft-timeline-${width}.png`),fullPage:true});}
+
  }finally{await ownerContext.close();}
 }

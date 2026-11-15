@@ -16,6 +16,12 @@ const overflow=page=>page.evaluate(()=>document.documentElement.scrollWidth<=inn
 test('CAPTURE-001 CAPTURE-004 an operator adds a mailbox and calendar files, reviews the proposals and opens the account at 1440 and 390',async({page,context},info)=>{
  test.setTimeout(240_000);await authenticateOperator(context);const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await capturedContactConsent(page);
+ await page.goto('/app/settings/capture/connect/files');
+ await page.getByLabel('Mail (.eml or mbox) and calendar (.ics) files').setInputFiles({name:'unknown.eml',mimeType:'message/rfc822',buffer:Buffer.from(['From: Pat Unknown <pat@synthetic-orbit-unknown.test>','To: owner@orbit.test','Subject: Synthetic clinic question',`Date: ${new Date().toUTCString()}`,`Message-ID: <${crypto.randomUUID()}@synthetic-orbit-unknown.test>`,'','Please help us plan our clinic rollout.'].join('\r\n'))});
+ await page.getByLabel(/Also keep messages/).check();await page.getByRole('button',{name:'Add files',exact:true}).click();
+ const held=page.getByRole('link',{name:/Review 1 unlinked message/i});await expect(held).toHaveAttribute('href','/app/review');await held.click();await expect(page.getByRole('heading',{name:'Synthetic clinic question',exact:true})).toBeVisible();
+ await page.goto('/app/settings/capture');const heldCount=page.getByRole('link',{name:/Review \d+ unlinked events?/i});await expect(heldCount).toHaveAttribute('href','/app/review');await heldCount.click();await expect(page.getByRole('heading',{name:'Synthetic clinic question',exact:true})).toBeVisible();
+
  const screenshots=process.env.CAPTURE_SCREENSHOT_DIR??join('verification','ui','capture');mkdirSync(screenshots,{recursive:true});
  await page.goto('/app/settings/capture');const origin=new URL(page.url()).origin;
  const create=async(kind,body)=>{const response=await page.request.post(`/api/v1/records/${kind}`,{headers:{Origin:origin},data:body});expect(response.status()).toBe(201);return (await response.json()).id;};

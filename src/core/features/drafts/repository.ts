@@ -1,3 +1,4 @@
+import {draftDisplaySubject} from './render';
 import {staleDraftReason} from '../outreach/stop-reason';
 import {draftRecordLinks} from '../outreach/record-mail-links';
 import {draftMailDatabase,recordMailDatabase} from '../outreach/record-mail-storage';
@@ -42,7 +43,7 @@ export class DraftsRepository {
     const rows=await Promise.all([this.binding,recordMailDatabase(this.binding)].map(binding=>drizzle(binding)
       .select().from(drafts).where(eq(drafts.opportunityId,opportunityId))
       .orderBy(desc(drafts.updatedAt),desc(drafts.id))));
-    return rows.flat().sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)||b.id.localeCompare(a.id));
+    return Promise.all(rows.flat().sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)||b.id.localeCompare(a.id)).map(async draft=>({...draft,subject:await draftDisplaySubject(await draftMailDatabase(this.binding,draft.id),draft.id)})));
   }
 
   async hasOpportunity(opportunityId: string): Promise<boolean> {

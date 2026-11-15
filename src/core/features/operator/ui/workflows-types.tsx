@@ -1,3 +1,5 @@
+import {formatDateTime} from './formatters';
+
 export type WorkflowCondition = {field:string;operator:'equals'|'not_equals'|'empty'|'not_empty'|'lt'|'gt';value?:unknown};
 export type WorkflowAction = {kind:'set'|'copy'|'stamp'|'clear'|'add'|'subtract'|'move_stage'|'create_record'|'assign_owner'|'create_task'|'remind_task'|'notify'|'webhook';target?:string;approverId?:string;field?:string;value?:unknown;sourceField?:string;sourceTarget?:string;offsetDays?:number;clock?:'trigger'|'run';title?:string;recordType?:'opportunity'|'company'|'contact';values?:Record<string,unknown>;stage?:string;pipelineId?:string;operatorIds?:string[];mode?:'fixed'|'account_owner'|'round_robin';url?:string;body?:string};
 export type WorkflowDefinition = {trigger:{kind:'record_created'|'record_changed'|'activity_logged'|'form_submitted'|'schedule'|'enrichment';recordType:'opportunity'|'contact'|'company';activityKind?:'note'|'call'|'meeting';staleDays?:number};conditions:WorkflowCondition[];actions:WorkflowAction[];delayMinutes?:number;order?:number;writeLimitPerHour?:number};
@@ -20,7 +22,7 @@ export async function workflowRequest<T>(path='',body?:unknown):Promise<T> {
 }
 export const workflowLabel=(text:string)=>text.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase());
 export const workflowValue=(value:unknown):string=>value===null?'Empty':value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value,null,2):String(value);
-export const workflowTime=(value?:string|null)=>value?new Date(value).toLocaleString():'Not scheduled';
+export const workflowTime=(value?:string|null)=>value?formatDateTime(value):'Not scheduled';
 export const newWorkflowDefinition=():WorkflowDefinition=>({trigger:{kind:'record_changed',recordType:'opportunity'},conditions:[],actions:[{kind:'set',target:'trigger',field:'',value:''}],delayMinutes:0,order:0});
 
 export function WorkflowValueInput({value,onChange,label='Value'}:{value:unknown;onChange:(value:unknown)=>void;label?:string}) {
