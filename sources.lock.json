@@ -10667,7 +10667,7 @@
       "executable": false
     },
     "tests/delegation-browser/typed-fields-journey.mjs": {
-      "sha256": "1ef8d92aea0a7eda4d2f0eda36b1f55665ebb4b5d097a02d0d463091b2b02e20",
+      "sha256": "7b71b8598d9f33564d680a8a364f5b5f948898387f96e70bf0b15eaeac9e4d79",
       "executable": false
     },
     "tests/delegation-browser/viewport-journey.mjs": {
