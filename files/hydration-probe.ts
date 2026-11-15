@@ -1,0 +1,34 @@
+import {writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {unstable_DevEnv} from 'wrangler';
+import {chromium,expect} from '@playwright/test';
+import {isolatedDatabase} from '../tests/support/isolated-database';
+import {createTestDependencies} from '../tests/support/test-dependencies';
+import {sampleData} from '../tests/fixtures/sample-data';
+import {sessionCookieName} from '../tests/support/test-auth';
+import {identityVars} from '../tests/support/worker-identity.mjs';
+import {customCertificate} from '../tests/support/http-listener-fixture';
+import {certificateTrust} from '../newtests/t096/emitted-fixture';
+const fixture=await isolatedDatabase(),runtime=new unstable_DevEnv();let browser;
+try{
+ const deps=createTestDependencies(fixture.db);await deps.sampleData.seed();
+ const session=await deps.auth.createSession(sampleData.operators[0].id),certificate=await customCertificate(fixture.directory);
+ await fixture.close();const origin='https://orbit.127.0.0.1.nip.io:8739';
+ const worker=await runtime.startWorker({config:join(process.cwd(),'dist/server/wrangler.json'),bindings:Object.fromEntries(Object.entries(identityVars(origin)).map(([name,value])=>[name,{type:'secret_text',value}])),dev:{remote:false,persist:fixture.directory,watch:false,inspector:false,server:{hostname:'127.0.0.1',port:8739,secure:true,httpsKeyPath:certificate.keyPath,httpsCertPath:certificate.certPath},origin:{secure:true,hostname:new URL(origin).host}}});await worker.ready;
+ browser=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',args:['--no-sandbox','--no-proxy-server','--host-resolver-rules=MAP orbit.127.0.0.1.nip.io 127.0.0.1',...certificateTrust(certificate.cert)]});
+ const context=await browser.newContext({baseURL:origin,ignoreHTTPSErrors:true,viewport:{width:1440,height:900},extraHTTPHeaders:{Cookie:`${sessionCookieName}=${session.token}`}}),page=await context.newPage();
+ let release!:()=>void;const gate=new Promise<void>(resolve=>release=resolve);
+ await page.route('**/assets/*.js',async route=>{await gate;await route.continue();});
+ await page.goto('/app/contacts',{waitUntil:'commit'});
+ const views=page.getByRole('region',{name:'Saved record views',exact:true}),search=page.getByRole('searchbox',{name:'Search records and timeline'}),name=views.getByLabel('View name',{exact:true});
+ await views.locator('summary').click();await search.fill('Synthetic search before hydration');await name.fill('Synthetic view before hydration');
+ const before={search:await search.inputValue(),name:await name.inputValue()};release();
+ await expect(views.getByRole('checkbox',{name:'Email',exact:true})).toBeVisible();
+ await expect(name).toHaveValue('');await expect(search).toHaveValue('');
+ const lost={search:await search.inputValue(),name:await name.inputValue()};
+ await search.fill('Synthetic search after hydration');await page.waitForURL(url=>url.searchParams.get('q')==='Synthetic search after hydration');await name.fill('Synthetic view after hydration');await views.getByLabel('Sort direction',{exact:true}).selectOption('desc');await page.waitForURL(url=>url.searchParams.get('direction')==='desc');
+ await expect(search).toHaveValue('Synthetic search after hydration');await expect(name).toHaveValue('Synthetic view after hydration');await expect(views.getByRole('button',{name:'Save new view',exact:true})).toBeEnabled();
+ const after={search:await search.inputValue(),name:await name.inputValue(),saveEnabled:await views.getByRole('button',{name:'Save new view',exact:true}).isEnabled()};
+ await writeFile(join(process.env.HOME!,'rer-consolidation/work/main-orbit-stranger32-trips-1-pc1/packet/HYDRATION-PROBE.json'),JSON.stringify({author:'Run Edit Run fleet',date:'2026-11-15',sourceHead:'3b702a7d6dd316404f006be8f140f63008cffb81',runtime:'emitted Worker with browser JavaScript responses held until after typing',before,lost,after},null,2)+'\n');
+ console.log('Hydration probe: pre-hydration text lost; catalog-ready text and save enabled preserved.');
+}finally{await browser?.close();await runtime.teardown();await fixture.dispose();}

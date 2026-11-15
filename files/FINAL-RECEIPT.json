@@ -1,0 +1,24 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-15",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stranger32-trips-1-pc1",
+  "head": "84b5f81da192fc4b0b2efb7ce948a13d3205e258",
+  "product_custody": "PUSHED",
+  "readiness": "awaiting exact-SHA Verify",
+  "ci_run_id": 43703752288,
+  "ci_status": "in_progress",
+  "ci_conclusion": null,
+  "github_calls": 9,
+  "trip_count_before": 6,
+  "trip_count_after": 0,
+  "test_count_before": 200,
+  "test_count_after": 200,
+  "clause_status_changes": [],
+  "product_source_changes_in_continuation": [],
+  "continuation_changes": [
+    "tests/delegation-browser/typed-fields-journey.mjs",
+    "sources.lock.json"
+  ],
+  "evidence_publication": "separate report-only ref; never an acceptance or landing signal"
+}

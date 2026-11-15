@@ -1,0 +1,31 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-15",
+  "inherited_head": "3b702a7d6dd316404f006be8f140f63008cffb81",
+  "inherited_ref": "refs/heads/evidence/main-orbit-stranger32-trips-1",
+  "inherited_sources_checked": 17,
+  "all_product_and_original_trip_journey_hashes_match": true,
+  "changed_hashes": [
+    "sources.lock.json"
+  ],
+  "current_source_hashes": {
+    "newtests/t096/browser-dashboard.ts": "0978c721eb1d82e671085692bb6cc4ba167882ebd1e082b46fbb568d61beb4ae",
+    "newtests/t096/browser-form-mapping.ts": "4a8e4a79d18a19ed7ce65b3f1ebc29dcc53e856e1699b4f648f2a7fbdbaa3695",
+    "newtests/t096/dashboard-access-proof.ts": "528f346c74f5009c6528ed1a2e2a37f31e38343a3a64b41986b287eeb79cb6bb",
+    "sources.lock.json": "2f369b8ac9508ebfa18148486d8fc8ee7a06ea1e15465fd0aa2e4fc4597f311f",
+    "src/core/features/dashboards/filters.tsx": "9a34f9a4393d5ed7f32c8299ede9f68b5b61b3c7bc1bbb344b308bebad55fd38",
+    "src/core/features/dashboards/repository.ts": "22962364657fde17e05c5fc798dfde612217b071cceb5aaed63343b9dc7919e3",
+    "src/core/features/drafts/render.ts": "5fda664d9b9e0fa83ec0d44c4f0df044421046278eac49959cc55695db2dda7f",
+    "src/core/features/drafts/repository.ts": "e718656d348dc41542192938a523d4bbfef87a508a911554f64ff3aec341fd38",
+    "src/core/features/forms/console.tsx": "fa9c426d4d539e208a3b022ac98735ab1708b72b9d8c8bc96bba9443c209a3a0",
+    "src/core/features/operator/ui/capture-files-setup.tsx": "63efa6ee93df53f26363ebfc7b21cc0756bb778e40e057f7a3cc95b614202fff",
+    "src/core/features/operator/ui/capture-page.tsx": "192fb319e45202d9e580339be8cd06e690cb1a4e8b6b14740fe57590b0512337",
+    "src/core/features/operator/ui/workflows-types.tsx": "6e460ef59910222fb207864abfb2b1b9de012f003da48b5a72418cd2ec870e40",
+    "src/core/features/today/evidence-labels.ts": "4ad965a0ec318df2f424f10be0cb630bba20798c84b9b061f021b957a7369de3",
+    "tests/delegation-browser/today-journey.mjs": "8f39aac48e0e837e759dbe04733406861b89cb0a759645db79c7486ae1372642",
+    "tests/e2e/capture.spec.mjs": "2b2b766b938c4e130cb1012211071d47bb93de124e91bfec6f67d898b9502d08",
+    "tests/e2e/readable-merge.mjs": "6db2f121813a7f298e1e03c03a7215deede8a87d71b1c22e95d4db1d881bc783",
+    "tests/e2e/task-activity.mjs": "fa9d54a5258847b922bda4b957e0e44f6a3a315a6bdf91edcddb3d04f8f56a89"
+  },
+  "note": "Original screenshots retain their original head attribution. Continuation edits only typed-fields-journey.mjs and its source-lock entry."
+}

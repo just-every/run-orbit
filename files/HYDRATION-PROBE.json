@@ -1,0 +1,19 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-15",
+  "sourceHead": "3b702a7d6dd316404f006be8f140f63008cffb81",
+  "runtime": "emitted Worker with browser JavaScript responses held until after typing",
+  "before": {
+    "search": "Synthetic search before hydration",
+    "name": "Synthetic view before hydration"
+  },
+  "lost": {
+    "search": "",
+    "name": ""
+  },
+  "after": {
+    "search": "Synthetic search after hydration",
+    "name": "Synthetic view after hydration",
+    "saveEnabled": true
+  }
+}

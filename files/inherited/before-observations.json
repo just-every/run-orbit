@@ -1,0 +1,37 @@
+{
+  "mode": "before",
+  "head": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+  "trips": [
+    {
+      "trip": 1,
+      "valid": false,
+      "message": "Please match the requested format.",
+      "description": null,
+      "title": ""
+    },
+    {
+      "trip": 2,
+      "cites": "Cites: draft.created"
+    },
+    {
+      "trip": 3,
+      "asOf": "2026-11-15T08:14:12.102Z",
+      "expectedDate": "11/15/2026, 12:14 AM",
+      "previewed": "Previewed 11/15/2026, 5:14:12 PM"
+    },
+    {
+      "trip": 4,
+      "resultLinks": [],
+      "captureLinks": []
+    },
+    {
+      "trip": 5,
+      "reviewSubject": "Next steps for Synthetic Clinic",
+      "timelineSubject": "Next steps for {{company.name}}"
+    },
+    {
+      "trip": 6,
+      "labels": "Owner\nAll owners\nOwner\nPipeline\nAll pipelines\nSales pipeline\nDate range\nNov 1 – Nov 30, 2026, PT\nCustom date range\nclinic_count\nAll values\n12\nReset to saved filters"
+    }
+  ]
+}
