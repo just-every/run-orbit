@@ -1,0 +1,48 @@
+TAP version 13
+# [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+# Subtest: emitted Worker preserves bounded mail transport and durable quota isolation after declared and chunked oversize bodies
+ok 1 - emitted Worker preserves bounded mail transport and durable quota isolation after declared and chunked oversize bodies
+  ---
+  duration_ms: 43598.212745
+  type: 'test'
+  ...
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# relay declared 1048575: 200 accepted
+# relay declared 1048576: 200 accepted
+# relay declared 1048577: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# relay chunked 1048575: 200 accepted
+# relay chunked 1048576: 200 accepted
+# relay chunked 1048577: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# sendgrid declared 1048575: 200 accepted
+# sendgrid declared 1048576: 200 accepted
+# sendgrid declared 1048577: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"39"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# sendgrid chunked 1048575: 200 accepted
+# sendgrid chunked 1048576: 200 accepted
+# sendgrid chunked 1048577: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# reply declared 262143: 200 accepted
+# reply declared 262144: 200 accepted
+# reply declared 262145: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# reply chunked 262143: 200 accepted
+# reply chunked 262144: 200 accepted
+# reply chunked 262145: 413 body-limit
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+# general response {"status":429,"category":"rate-limit","connection":"close","retryAfter":"38"}
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 46402.982521

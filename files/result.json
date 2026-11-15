@@ -1,0 +1,7 @@
+{
+  "status": "no-change",
+  "sha": "bca89d44de7c8357544fc54375a030f9d1d4611f",
+  "summary": "Already fixed on current main by bfc52fadd56ae3fa38cb48de9484de61810e7cbd: the Miniflare override and every locked and installed Undici runtime resolve to 7.30.1; no product changes are needed.",
+  "tests": "Node 22.20.0 / pnpm 10.12.4: frozen install, typecheck, RER build, source lock check and focused emitted mail-body transport test all passed on 22ca38c0e0bb5784440df021e8a5eb5b41a81de8; final main bca89d44de7c8357544fc54375a030f9d1d4611f keeps identical dependency files and passed exact-SHA Verify 43706656140.",
+  "security": true
+}

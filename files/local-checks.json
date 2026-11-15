@@ -1,0 +1,25 @@
+{
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "install": {
+    "command": "pnpm install --frozen-lockfile",
+    "exit": 0
+  },
+  "typecheck": {
+    "command": "pnpm run typecheck",
+    "exit": 0
+  },
+  "build": {
+    "command": "npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "source_check": {
+    "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "exit": 0
+  },
+  "transport_test": {
+    "command": "pnpm exec tsx --test --test-concurrency=1 tests/launch-runtime/mail-body-transport.test.ts",
+    "exit": 0
+  },
+  "head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8"
+}

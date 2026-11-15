@@ -1,0 +1,25 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-15",
+  "selection": [
+    "REPORT.md",
+    "PLAN.md",
+    "result.json",
+    "dependency-receipt.json",
+    "local-checks.json",
+    "dependency-tree.json",
+    "install.log",
+    "typecheck.log",
+    "build.log",
+    "source-check.json",
+    "transport-test.log",
+    "test-inventory.json",
+    "ci-runs.json",
+    "latest-main-ci-runs.json"
+  ],
+  "regular_files_only": true,
+  "injected_value_matches": 0,
+  "credential_shape_matches": 0,
+  "product_changes": 0,
+  "scope": "report-only evidence; no product candidate or product publication"
+}

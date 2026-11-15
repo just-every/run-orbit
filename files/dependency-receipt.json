@@ -1,0 +1,42 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-15",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-10",
+  "head": "bca89d44de7c8357544fc54375a030f9d1d4611f",
+  "origin_main": "bca89d44de7c8357544fc54375a030f9d1d4611f",
+  "fix_commit": "bfc52fadd56ae3fa38cb48de9484de61810e7cbd",
+  "fix_is_ancestor": true,
+  "prior_fix_runtime_versions": [
+    "7.29.0"
+  ],
+  "current_main_runtime_versions": [
+    "7.30.1"
+  ],
+  "current_worktree_runtime_versions": [
+    "7.30.1"
+  ],
+  "lockfile_sha256": "cc1c07b413989f063bcd0c9f2bb98bcb3f58f7ade5b92a890e70e147014236ae",
+  "installed_undici_version": "7.30.1",
+  "dependency_paths": [
+    "miniflare > undici",
+    "wrangler > miniflare > undici",
+    "@cloudflare/vite-plugin > miniflare > undici",
+    "@cloudflare/vite-plugin > wrangler > miniflare > undici"
+  ],
+  "vulnerable_runtime_versions": {
+    "before_task": 0,
+    "after_task": 0
+  },
+  "product_diff": "",
+  "status": "no-change",
+  "latest_origin_main": "bca89d44de7c8357544fc54375a030f9d1d4611f",
+  "latest_origin_main_runtime_versions": [
+    "7.30.1"
+  ],
+  "latest_dependency_diff": "",
+  "latest_main_check": "The dependency fix remains present after the final fetch; local build and transport checks ran on the initial main SHA recorded in head.",
+  "local_checks_head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "working_tree_status": "",
+  "final_main_check": "Task branch fast-forwarded to the final fetched main; package.json and pnpm-lock.yaml are byte-identical to the locally tested initial main SHA."
+}
