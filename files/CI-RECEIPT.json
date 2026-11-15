@@ -2,7 +2,7 @@
   "repository": "just-every/run-orbit",
   "branch": "cloud/main-orbit-stranger32-trips-1",
   "head": "3b702a7d6dd316404f006be8f140f63008cffb81",
-  "calls": 5,
+  "calls": 10,
   "observations": [
     {
       "at": "2026-11-15T08:50:02.958714+00:00",
@@ -38,7 +38,68 @@
       "conclusion": null,
       "head_sha": "3b702a7d6dd316404f006be8f140f63008cffb81",
       "html_url": "https://github.com/just-every/run-orbit/actions/runs/43696298752"
+    },
+    {
+      "at": "2026-11-15T09:15:02.872154+00:00",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "3b702a7d6dd316404f006be8f140f63008cffb81",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43696298752"
+    },
+    {
+      "at": "2026-11-15T09:28:34.555207+00:00",
+      "after_rerun": true,
+      "conclusion": null,
+      "head_sha": "3b702a7d6dd316404f006be8f140f63008cffb81",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/43696298752",
+      "status": "in_progress"
     }
   ],
-  "run_id": 43696298752
+  "run_id": 43696298752,
+  "failed_jobs": [
+    {
+      "id": 132758383626,
+      "name": "shards (batch-18)",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Verify routine product shard"
+      ]
+    },
+    {
+      "id": 132763205774,
+      "name": "verify",
+      "conclusion": "failure",
+      "failed_steps": [
+        "Require a successful plan and all required work",
+        "Retain combined routine verdicts (capacity pending)"
+      ]
+    }
+  ],
+  "archive_reads": [
+    {
+      "job_id": 132758383626,
+      "command": "gh run view 43696298752 --repo just-every/run-orbit --job 132758383626 --log-failed",
+      "exit_code": 0
+    }
+  ],
+  "initial_final": {
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "3b702a7d6dd316404f006be8f140f63008cffb81",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43696298752"
+  },
+  "unrelated_failure": {
+    "test": "tests/delegation-browser/records-layout.test.ts",
+    "journey": "tests/delegation-browser/typed-fields-journey.mjs:46",
+    "assertion": "saved-view search box expected Synthetic Calendar Contact; received empty string",
+    "product_paths_touched": false
+  },
+  "rerun": {
+    "at": "2026-11-15T09:23:33.997796+00:00",
+    "command": "gh run rerun 43696298752 --repo just-every/run-orbit --failed",
+    "exit_code": 0,
+    "attempt": 2
+  },
+  "pending": true,
+  "remaining_calls": 0
 }

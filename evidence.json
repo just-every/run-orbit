@@ -1,10 +1,16 @@
 {
   "files": [
     {
-      "blob": "942e635625b37fe6e297790f62276f03f4e49ecc",
-      "bytes": 1531,
+      "blob": "8814c72c3a3b92716c1c8a0dc15cf3b1ce829813",
+      "bytes": 3257,
+      "path": "CI-FAILURE.txt",
+      "sha256": "eed06bb8ee82939207a0095a6f00dd1ba39f43d6a1c2de458987dc794a583a92"
+    },
+    {
+      "blob": "f583cdd635137c5ebca2fcd8407b57a4310246da",
+      "bytes": 3480,
       "path": "CI-RECEIPT.json",
-      "sha256": "246755529591758e96fa947f6b34e7d0a6270ddc32346277f813e7d83f763432"
+      "sha256": "de6f543ae20f37317c0d5a7e13d003b111176bf4dfeb5c5d7111ec0c13940ddb"
     },
     {
       "blob": "71f050bbe531f8b47782a6bcf0c10888ae2ddf2b",
@@ -19,10 +25,10 @@
       "sha256": "79469c3aa089610a3040127a7194ff307073b8e8c910e34e551e4e96acc6bd26"
     },
     {
-      "blob": "8159254a9696eb152a32b2a3798d321cd101449a",
-      "bytes": 7383,
+      "blob": "18e863414ce5a82e0bfe84fb82aba55df96c4c93",
+      "bytes": 10066,
       "path": "REPORT.md",
-      "sha256": "99657aa652ffd2ae4017ee6df2c1a9f18ce02f232021071abf8e803e068b8403"
+      "sha256": "870ba6b23d3463a77297ce7178109a2d01cfdab1e4639f46ee00ce5401ec4aa9"
     },
     {
       "blob": "d3e3f2730e73b45f1948db49005cbb1a270515c2",

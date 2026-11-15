@@ -2,6 +2,9 @@
 
 Author: Run Edit Run fleet, 2026-11-15.
 
+Final custody: product branch pushed at 3b702a7d6dd316404f006be8f140f63008cffb81. Exact-SHA Verify 43696298752 was still in progress after the one permitted failed-job rerun at the final REST check. The 10-call GitHub budget is exhausted. The fleet must continue observing this same run; no green branch verdict or landing is claimed.
+
+
 Repository: just-every/run-orbit
 Branch: cloud/main-orbit-stranger32-trips-1
 Baseline: 3b6296cbd5e6b0c10f93a9c84277c9b88373e906
@@ -58,3 +61,19 @@ These claims describe the retained journeys' proven points and do not change con
 Final published-head browser proof passed all six checks on 3b702a7d6dd316404f006be8f140f63008cffb81; after-observations.json records that exact head. Fourteen PNG captures show the seven changed screens at 1440 and 390. SCREEN-RECEIPT.json binds every changed source file and screenshot by SHA-256. The product worktree is clean.
 
 Contract summary before and after is identical: Published 31 done / 48 partial / 0 missing (79); Target and push further 11 done / 82 partial / 32 missing (125); All 42 done / 130 partial / 32 missing (204). CONTRACT.md is byte-identical to the fetched base 3b6296cbd5e6b0c10f93a9c84277c9b88373e906.
+
+
+## Exact-SHA Verify and permitted rerun
+
+Run 43696298752 completed its first attempt with one failed product shard, shards (batch-18), job 132758383626, step Verify routine product shard. The aggregate verify job 132763205774 failed as a consequence. The archive was read once with `gh run view 43696298752 --repo just-every/run-orbit --job 132758383626 --log-failed` (exit 0).
+
+The assertion is in the untouched saved-view/search journey, tests/delegation-browser/typed-fields-journey.mjs:46, called by tests/delegation-browser/records-layout.test.ts:61. Its search input expected Synthetic Calendar Contact and received an empty string. This round changes no record search, saved view or typed-field editing behavior. Per the brief, only the failed jobs were requested once again on the same SHA, with `gh run rerun 43696298752 --repo just-every/run-orbit --failed`. No source was changed to address that unrelated failure. The sanitized actual failure excerpt is in CI-FAILURE.txt; CI-RECEIPT.json records the first verdict and rerun request separately.
+
+
+## Terminal result
+
+All six requested trips are fixed and the published-head browser probe passes them. The branch remains pushed, awaiting the already-requested Verify rerun. The last exact-SHA REST result is in_progress with no conclusion, on 3b702a7d6dd316404f006be8f140f63008cffb81. Ten GitHub calls were used: six discovery/status calls, one failed-job metadata call, one successful failed-job archive read, one permitted rerun request, and one final status call.
+
+Initial failure: run 43696298752, shards (batch-18), job 132758383626, step Verify routine product shard, tests/delegation-browser/typed-fields-journey.mjs:46, saved search expected Synthetic Calendar Contact but received empty. Aggregate job 132763205774 failed as a consequence. The failed jobs were requested once again on the unchanged SHA. There is no further product commit or workflow dispatch.
+
+The product branch has one real commit and no skip marker. No source, status cell, generated view, migration, README or deployment changes beyond the requested fixes are pending locally. The separate evidence ref contains the complete selected public-safe reports, actual receipts, failure excerpt, and 14 screenshots. Product acceptance, final publication scan and landing remain the fleet's independent gates.
