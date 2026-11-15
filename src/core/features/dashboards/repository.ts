@@ -1,3 +1,5 @@
+import {typedFields} from '../records/typed-fields';
+import {fieldLabel} from '../operator/ui/data-value';
 import {dashboardSourceFences} from './read-fences';
 import {filtersPeriod,forecastPeriod,measuredNow} from './display';
 import {measureCatalog} from '../analytics/sales-definition';
@@ -113,7 +115,8 @@ export class Dashboards{
   const fieldValues=new Map<string,Set<string>>();let cursor:string|undefined;do{const page=await this.metrics.sales.graph.scanRecords(current.c,{types:['opportunity'],query:'',fields:[],filters:{},limit:1000,...(cursor?{cursor}:{})});for(const item of page.items){const custom=typeof item.fields.custom_fields_json==='string'?JSON.parse(item.fields.custom_fields_json):{};for(const [name,value] of Object.entries(custom)){if(name!=='import_source'&&['string','number','boolean'].includes(typeof value)&&String(value).length<=200&&/^[a-zA-Z][a-zA-Z0-9_]{0,80}$/.test(name)){const values=fieldValues.get(name)??new Set<string>();values.add(String(value));fieldValues.set(name,values);}}}cursor=page.nextCursor??undefined;}while(cursor);await this.metrics.checkSources(current.c,[]);
   // Customer custom fields only; importer provenance remains stored but is not a report field.
   // Only the workspace's shared (custom) fields, the dashboard's saved field first; internal record states are not dashboard fields.
-  const savedField=current.definition.filters.field?.name,fields=[...fieldValues].map(([name,values])=>({name,values:[...values].sort()})).sort((a,b)=>Number(b.name===savedField)-Number(a.name===savedField));
+  const labels=new Map((await typedFields(this.db,'opportunity')).map(field=>[field.field_key,field.label]));
+  const savedField=current.definition.filters.field?.name,fields=[...fieldValues].map(([name,values])=>({name,label:labels.get(name)??fieldLabel(name),values:[...values].sort()})).sort((a,b)=>Number(b.name===savedField)-Number(a.name===savedField));
   const owner=full?await this.db.prepare('SELECT display_name FROM operators WHERE id=?').bind(current.h.owner_id).first<string>('display_name'):null;
   const namedPeople=full&&current.share.audience==='named'?await this.metrics.sales.shares.members(current.c):[];
   const isDefault=Boolean(await this.db.prepare('SELECT 1 FROM sales_dashboard_defaults WHERE workspace_id=? AND operator_id=? AND dashboard_id=?').bind(c.workspaceId,actor(c),id).first());

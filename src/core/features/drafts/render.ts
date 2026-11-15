@@ -9,13 +9,26 @@ export interface RenderReview {revision:number;sourceSubject:string;sourceBody:s
 const nativeContextSql=`SELECT json_object('contact.name',c.name,'contact.email',c.email,'contact.job_title',c.job_title,'company.name',co.name,'deal.title',o.title,'owner.name',a.display_name,'owner.email',a.email) AS value FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN companies co ON co.id=COALESCE(c.company_id,o.company_id) LEFT JOIN operators a ON a.id=o.owner_id WHERE d.id=?`;
 const recordContextSql=`SELECT json_object('contact.name',c.name,'contact.email',c.email,'contact.job_title',c.job_title,'company.name',co.name,'deal.title',o.title,'owner.name',a.display_name,'owner.email',a.email) AS value FROM drafts d JOIN contacts c ON c.id=d.recipient_contact_id LEFT JOIN opportunities o ON o.id=d.opportunity_id LEFT JOIN companies co ON co.id=c.company_id LEFT JOIN record_ownership ro ON ro.record_type='contact' AND ro.record_id=c.id LEFT JOIN operators a ON a.id=CASE WHEN d.opportunity_id IS NOT NULL THEN o.owner_id ELSE ro.owner_id END WHERE d.id=?`;
 const contextSql=(db:D1Database)=>isRecordMailDatabase(db)?recordContextSql:nativeContextSql;
+const mergeText=(source:string,values:Record<string,string|null>,field:(name:string,value:string|null)=>void=()=>{})=>source.replace(/\{\{\s*([^{}]+?)\s*\}\}/g,(_,name:string)=>{const value=values[name]??null;field(name,value);return value??`{{${name}}}`;});
+
+/** A list or citation reads the same current merge values as exact-content review. */
+export async function draftDisplaySubject(db:D1Database,id:string):Promise<string>{
+ const subject=await db.prepare('SELECT subject FROM drafts WHERE id=?').bind(id).first<string>('subject');
+ if(subject===null)return 'Saved draft unavailable';
+ if(!subject.includes('{{')&&!subject.includes('}}'))return subject;
+ const context=await db.prepare(contextSql(db)).bind(id).first<{value:string}>();
+ if(!context)return 'Draft needs a linked recipient';
+ const rendered=mergeText(subject,JSON.parse(context.value));
+ return rendered.includes('{{')||rendered.includes('}}')?'Draft needs merge values':rendered;
+}
+
 export async function renderDraft(db:D1Database,id:string,actor:string){
  const library=new LibraryRepository(db);await library.access(actor);
  const draft=await db.prepare('SELECT id,revision,subject,body,recipient_email,library_selection_json,merge_review_json FROM drafts WHERE id=?').bind(id).first<RenderDraft>();
  if(!draft)throw new WorkbenchError(404,'Draft not found.');
  const context=await db.prepare(contextSql(db)).bind(id).first<{value:string}>();if(!context)throw new WorkbenchError(409,'Choose a current linked recipient before rendering.');
  const values=JSON.parse(context.value) as Record<string,string|null>,fields=new Map<string,string|null>(),missing:string[]=[],stale:string[]=[];
- const expand=(source:string)=>{const rendered=source.replace(/\{\{\s*([^{}]+?)\s*\}\}/g,(_,name:string)=>{const value=values[name]??null;fields.set(name,value);if(!value?.trim())missing.push(name);return value??`{{${name}}}`;});if(rendered.includes('{{')||rendered.includes('}}'))missing.push('Unresolved merge field');return rendered;};
+ const expand=(source:string)=>{const rendered=mergeText(source,values,(name,value)=>{fields.set(name,value);if(!value?.trim())missing.push(name);});if(rendered.includes('{{')||rendered.includes('}}'))missing.push('Unresolved merge field');return rendered;};
  const selection=JSON.parse(draft.library_selection_json) as LibrarySelection,selectionGuards:D1PreparedStatement[]=[];
  for(const [kind,selected]of Object.entries(selection)){
   const entry=await db.prepare("SELECT id,revision,kind FROM message_library WHERE id=? AND (visibility='shared' OR owner_id=?)").bind(selected.id,actor).first<{id:string;revision:number;kind:string}>();

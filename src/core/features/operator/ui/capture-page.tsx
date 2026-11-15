@@ -1,3 +1,4 @@
+import {readReviewSummary} from './review-line';
 import {CaptureMailRule} from './capture-mail-rule';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './records.css';
@@ -8,7 +9,7 @@ import { useOperatorResource } from './use-operator-resource';
 import { CaptureSource } from './capture-source';
 import type { CaptureSource as CaptureSourceRecord } from './capture-types';
 
-interface Overview { sources: CaptureSourceRecord[]; forward: { configured: boolean; available: boolean; address: string | null } }
+interface Overview { unlinked: number; sources: CaptureSourceRecord[]; forward: { configured: boolean; available: boolean; address: string | null } }
 
 const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 const icons = {
@@ -83,9 +84,9 @@ function Daily({ data, onChanged, focus }: { data: Overview; onChanged: () => vo
  * contact with several open deals. What Orbit found waits on Review. */
 export function CaptureSettings() {
   const load = useCallback(async () => {
-    const [sources, forward] = await Promise.all([fetch('/api/v1/capture/sources', { credentials: 'same-origin' }), fetch('/api/v1/capture/forward', { credentials: 'same-origin' })]);
+    const [sources, forward, review] = await Promise.all([fetch('/api/v1/capture/sources', { credentials: 'same-origin' }), fetch('/api/v1/capture/forward', { credentials: 'same-origin' }), readReviewSummary()]);
     if (!sources.ok || !forward.ok) throw new Error('Capture could not load.');
-    return { sources: (await sources.json() as { sources: CaptureSourceRecord[] }).sources, forward: await forward.json() } as Overview;
+    return { unlinked: review.events, sources: (await sources.json() as { sources: CaptureSourceRecord[] }).sources, forward: await forward.json() } as Overview;
   }, []);
   const overview = useOperatorResource('capture-overview', load);
   const reload = useRef(overview.reload);
@@ -112,6 +113,7 @@ export function CaptureSettings() {
       {error ? <OperatorState kind="error">{error}</OperatorState> : null}
       {overview.loading ? <OperatorState>Loading Capture…</OperatorState> : null}
       {overview.error ? <OperatorState kind="error">{overview.error.message}</OperatorState> : null}
+      {overview.data?.unlinked ? <p><a href="/app/review">Review {overview.data.unlinked} unlinked {overview.data.unlinked === 1 ? 'event' : 'events'}</a> waiting for a record.</p> : null}
       {overview.data ? live.length ? <Daily data={{ ...overview.data, sources: live }} onChanged={overview.reload} focus={focus} /> : <Start forward={overview.data.forward} /> : null}
     </section>
     {overview.data ? <CaptureMailRule/> : null}

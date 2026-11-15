@@ -3,7 +3,7 @@ import {authenticateOperator} from './operator-session.mjs';
 
 /** Extend the retained timeline journey without another test registration. */
 export async function taskActivityJourney(browser, info) {
- const context=await browser.newContext({baseURL:info.project.use.baseURL,viewport:{width:1440,height:1000}});
+ const context=await browser.newContext({baseURL:info.project.use.baseURL,viewport:{width:1440,height:1000},timezoneId:'Asia/Tokyo'});
  try {
   await authenticateOperator(context,{owner:true});
   const page=await context.newPage();await page.goto('/app');
@@ -12,7 +12,10 @@ export async function taskActivityJourney(browser, info) {
    const response=await page.request.fetch(path,{method,headers:{Origin:origin},data:body});
    expect(response.ok(),await response.text()).toBe(true);return response.json();
   }
-  const settings=await call('/api/v1/settings'),suffix=Date.now();
+  const settings=await call('/api/v1/settings'),suffix=Date.now(),workspace=settings.workspace;
+  const workspaceSettings=(timezone)=>({name:workspace.name,timezone,currency:workspace.currency,workingHours:JSON.parse(workspace.working_hours_json),staleIntervalDays:workspace.stale_interval_days,awaitingResponseWorkingDays:workspace.awaiting_response_working_days,freeMailDomains:JSON.parse(workspace.free_mail_domains_json)});
+  await call('/api/v1/settings',workspaceSettings('America/Los_Angeles'),'PUT');
+
   const {id:deal}=await call('/api/v1/records/opportunity',{title:`Synthetic clinic ${suffix}`,stage_id:settings.stages[0].id,value_cents:100000});
   const title=`Call clinic about rollout ${suffix}`;
   const input={title,recordType:'opportunity',recordId:deal,ownerId:null,dueAt:'2027-03-07T14:00:00Z',priority:'normal',type:'call',notes:'',recurrence:'weekly',timezone:'America/New_York',reminderMinutes:null};
@@ -22,7 +25,12 @@ export async function taskActivityJourney(browser, info) {
   await page.getByRole('button',{name:'Complete task',exact:true}).click();expect((await completed).ok()).toBe(true);
   const workflowTitle=`Prepare clinic follow-up ${suffix}`;
   const {workflow}=await call('/api/workflows',{name:`Synthetic clinic workflow ${suffix}`,definition:{trigger:{kind:'activity_logged',recordType:'opportunity',activityKind:'note'},conditions:[{field:'title',operator:'equals',value:`Synthetic clinic ${suffix}`}],actions:[{kind:'create_task',title:workflowTitle}]}});
-  const preview=await call(`/api/workflows/${workflow.id}/preview`,{});await call(`/api/workflows/${workflow.id}/activate`,{previewId:preview.previewId});
+  await page.goto('/app/settings/pipeline');await page.locator('.workflows-settings select').first().selectOption(workflow.id);
+  const previewing=page.waitForResponse(response=>new URL(response.url()).pathname===`/api/workflows/${workflow.id}/preview`&&response.request().method()==='POST');await page.getByRole('button',{name:'Preview changes',exact:true}).click();const preview=await(await previewing).json();
+  const expectedTime=new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',calendar:'gregory',year:'numeric',month:'2-digit',day:'2-digit',numberingSystem:'latn',hour:'numeric',minute:'2-digit'}).format(new Date(preview.asOf));await expect(page.getByRole('region',{name:'Workflow activation preview'})).toContainText(expectedTime);
+  for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await page.getByRole('region',{name:'Workflow activation preview'}).screenshot({path:info.outputPath(`workflow-preview-zone-${width}.png`)});}await page.setViewportSize({width:1440,height:1000});
+  await call(`/api/workflows/${workflow.id}/activate`,{previewId:preview.previewId});await call('/api/v1/settings',workspaceSettings(workspace.timezone),'PUT');
+
   await call(`/api/v1/records/opportunity/${deal}/entries`,{kind:'note',text:'Synthetic clinic follow-up requested',occurredAt:new Date().toISOString()});await call('/api/workflows/process',{});
   const read=await call(`/api/v1/records/opportunity/${deal}`),events=read.timeline.filter(entry=>entry.kind.startsWith('task.'));
   expect(events).toHaveLength(4);

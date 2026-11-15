@@ -67,14 +67,20 @@ export async function todayJourney({first,second,colleague,evidence}){
  await expect(page.getByRole('button',{name:/Summarise .* with AI/})).toHaveCount(0);
 
  // Meeting plan: attendees, unresolved attendee, notes that persist after sign-out, a next action from a plan line.
+ const acmeContact=(await(await api.get(`/api/v1/opportunities/${acme}`)).json()).opportunity.contacts[0].id;
+ const planDraft=await post(`/api/v1/workbench/opportunities/${acme}/drafts`,{contactId:acmeContact,subject:'Renewal usage report',body:'The usage figures for our meeting.'});
+
  await page.goto(meeting.planHref);
  await atWidths(page,evidence,'meeting-plan',async()=>{await expect(page.getByTestId('meeting-plan')).toBeVisible();await expect(page.getByText('sam@acme.test',{exact:true})).toBeVisible();});
  await expect(page.getByRole('link',{name:'Ana Ruiz'})).toBeVisible();const sam=page.locator('.plan-line--unresolved',{hasText:'sam@acme.test'});await expect(sam.getByRole('button',{name:'Create contact sam@acme.test'})).toBeVisible();await expect(sam.getByRole('link',{name:'Link by exact email'})).toBeVisible();
  await page.getByLabel('Agenda').fill('1. Renewal dates\n2. Owners');await page.getByLabel('Prep notes').fill('Bring the usage report');
  await page.getByRole('button',{name:'Save plan as note'}).click();await expect(page.getByText('Plan saved as a note.')).toBeVisible();
- const interaction=page.locator('.plan-line').filter({has:page.getByRole('link',{name:'Pricing request',exact:true})});await interaction.getByRole('button',{name:/Make next action/}).click();await expect(interaction.getByLabel('Next action')).toBeFocused();
+ const interaction=page.locator('.plan-line').filter({hasText:'Draft started'}).first();await interaction.getByRole('button',{name:/Make next action/}).click();await expect(interaction.getByLabel('Next action')).toBeFocused();
  await interaction.getByLabel('Next action').fill('Send the usage report');await interaction.getByLabel(/^Due \(/).fill(new Date(Date.now()-86400000).toISOString().slice(0,16));
  await interaction.getByRole('button',{name:'Add next action'}).click();await expect(page.getByRole('link',{name:'Next action added'})).toBeFocused();
+ const nextHref=await page.getByRole('link',{name:'Next action added'}).getAttribute('href'),taskId=nextHref.split('#handoff-')[1],taskPage=await first.newPage();await taskPage.setViewportSize({width:1440,height:900});await taskPage.goto(nextHref);const task=taskPage.getByTestId('handoff-tasks');await expect(task.getByRole('link',{name:/Renewal usage report/})).toHaveAttribute('href',`/app/drafts/${planDraft.id}`);expect(await task.innerText()).not.toContain('draft.created');
+ for(const width of [1440,390]){await taskPage.setViewportSize({width,height:900});await taskPage.screenshot({path:`${evidence}/saved-draft-citation-${width}.png`,fullPage:true});}await taskPage.close();
+
  await page.getByRole('button',{name:'Create contact sam@acme.test'}).click();await expect(page.getByRole('button',{name:'Create contact sam@acme.test'})).toHaveCount(0);await expect(page.getByRole('link',{name:'sam@acme.test'})).toBeVisible();
  await page.getByRole('button',{name:'Sign out'}).click();await page.waitForURL(/signin|\/$/);
  expect((await api.get('/api/v1/today')).status()).toBe(401);
@@ -92,12 +98,13 @@ export async function todayJourney({first,second,colleague,evidence}){
  const read=(await(await agent.get('/api/delegation/v1/brief',{headers})).json()).brief;expect(read.accounts.map(a=>a.name)).toEqual(['Acme Logistics']);
  expect((await agent.get('/api/delegation/v1/plan',{headers,params:{target:'signals/'+meeting.evidence.id}})).status()).toBe(200);
  const target=`opportunities/${acme}/handoffs/${nonce}`,check=await(await agent.get('/api/delegation/v1/check',{headers,params:{target}})).json(),audience=await(await agent.get('/api/delegation/v1/audience',{headers,params:{target,operation:'orbit.handoff.upsert'}})).json();
- const written=await agent.post('/api/delegation/v1/effects',{headers,data:{operationKey:nonce,operation:'orbit.handoff.upsert',target,expectedRevision:check.revision,expectedAudienceRevision:audience.audienceRevision,content:{title:'Prepare renewal pricing for the review',description:'Ana asked for pricing before the call.',assigneeId:null,dueAt:null,status:'open',evidence:[reply,form]}}});
+ const written=await agent.post('/api/delegation/v1/effects',{headers,data:{operationKey:nonce,operation:'orbit.handoff.upsert',target,expectedRevision:check.revision,expectedAudienceRevision:audience.audienceRevision,content:{title:'Prepare renewal pricing for the review',description:'Ana asked for pricing before the call.',assigneeId:null,dueAt:null,status:'open',evidence:[reply,form,planDraft.id,taskId,acme]}}});
  expect(written.status(),await written.text()).toBe(200);
  await again.goto('/app/brief');await expect(again.locator(`[data-line="handoff-proposed:${nonce}"]`)).toBeVisible();
  await again.goto(`/app/opportunities/${acme}#handoff-${nonce}`);
  const proposal=again.locator(`[id="handoff-${nonce}"]`);
  await atWidths(again,evidence,'handoff-proposal',async()=>{await expect(proposal.getByText(`Proposed by ${client}.`)).toBeVisible();await expect(proposal.getByRole('link',{name:'Re: pricing request'})).toBeVisible();});
+ await expect(proposal.getByRole('link',{name:'Draft: Renewal usage report',exact:true})).toHaveAttribute('href',`/app/drafts/${planDraft.id}`);await expect(proposal.getByRole('link',{name:'Handoff: Send the usage report',exact:true})).toHaveAttribute('href',`/app/opportunities/${acme}#handoff-${taskId}`);await expect(proposal.getByRole('link',{name:'This opportunity',exact:true})).toHaveAttribute('href',`/app/opportunities/${acme}`);
  await proposal.getByRole('button',{name:'Accept',exact:true}).click();await expect(again.getByText(`Proposed by ${client}.`)).toHaveCount(0);
  await expect(again.getByTestId('record-activity').getByText('Handoff Accepted').first()).toBeVisible();
  await mentionLink({author:again,colleague,origin,opportunity:acme,occurredAt:daysAgo(20)});
