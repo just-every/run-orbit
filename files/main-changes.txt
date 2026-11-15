@@ -1,0 +1,176 @@
+3b6296c Name contacts in restore preview and attribute retained email stops
+9940c01 Preserve one form enquiry notice for each intended recipient
+f81354d Preserve reviewed contact permission across meeting capture and restore
+de7eb11 Keep workflow Undo proof on its retained outcome
+7ad63db Upgrade Zod to 4.6.6
+bfc52fa Upgrade Miniflare transitive Undici to 7.30.1
+7e57783 Scope workflow Undo proof to its visible outcome
+97bec7a Make workflow run outcomes readable and guide Zoom setup
+a35d331 Upgrade Vite to 8.2.4 for launch-editor security fixes
+31ee78c Adopt rer 0.2.113 and refresh recorded Base source
+dc6b9d2 Restrict delegated Zoom plans to selected contacts and deals
+1318a11 Merge current main into Zoom integration candidate
+13e5e62 Merge current main into Zoom integration candidate
+f04ffb3 Merge current main into Pipedrive import candidate
+088a526 Fix mailbox send proof response body reuse
+8f4e14a Make record not-found recovery independent of read order
+eea4bb3 Merge remote-tracking branch 'origin/main' into cloud/sd-orbit-c-f175-fix2-land-r5
+b103845 Explain stale drafts without inventing a cancelled follow-up
+ccfa2fe Merge current main and reserve migration 0091 for Zoom
+f12a2b3 Merge current main and move Pipedrive migration to 0090
+68d63ac Keep one workflow editor through active draft previews
+7c3cb25 Refresh source lock after current main integration
+d250f06 Name task lifecycle events in record activity
+c5121b4 Merge current main and renumber Zoom migration to 0089
+aa176b0 Renumber the pending Pipedrive migration above main
+56ed45a Merge saved record views and preserve mailbox archive generations
+f162520 Merge current main and sequence mailbox send migration after 0087
+008e46c Merge current main dashboard report links into saved views candidate
+dccced4 Merge current main into Zoom meeting candidate
+0e9e55c release: prepare Orbit 0.4.8 metadata
+5f66df5 Merge current main into saved record views candidate
+90c58e0 Prove dashboard links retain the selected report version
+7e31704 Link dashboard tiles to their saved report definitions [skip ci]
+57bce5c Merge HubSpot main into Zoom candidate for landing
+1027380 Fence connected Pipedrive review and Apply to the USD workspace
+09ffc8a Keep imported note associations out of unsupported-field diagnostics
+49597e5 Merge current imports and refresh the complete Pipedrive source lock
+12d5917 Merge current main and prove mailbox history restoration
+23d597d Complete supported Pipedrive pull and fresh restore authority
+e130ff7 Restore historical mail archives with mailbox migration defaults [skip ci]
+0fb167a Merge current main into Zoom meeting candidate
+a4c8a2b Add connected Pipedrive pull checkpoints and saved reviews [skip ci]
+8b1fdfd Merge current main into saved record views candidate
+2045bd2 Merge current main into HubSpot import candidate
+816aea6 Merge current main while retaining bound mailbox delivery and archive generations
+6366ddd Preserve historical notification archive reconstruction [skip ci]
+267fa4d Start captured and recreated erased contacts as Do not contact
+ae91bb5 Report actual sender readiness and explicit transport unavailability
+41a1803 Drop optional Zoom slice from pre-notification archive generation
+5f89b8e Refuse unavailable mailbox authority and verify rendered mailbox delivery [skip ci]
+63aa064 Merge main into completed-meeting follow-up candidate
+4d55013 Preserve mailbox isolation, Sent provenance and restored authority [skip ci]
+8dcdb85 Add separately authorized Gmail mailbox transport and bound review [skip ci]
+8e75688 Merge current main guard and embedded risk changes into Zoom landing
+67eb8b1 Merge current main and allocate Zoom migration 0082
+45bcca3 Merge current main into saved record views landing candidate
+5f92fa7 Merge current main setup guides into guard repair
+3cbfd12 Restore historical archive compatibility and renumber meeting follow-up migration
+e46f833 Merge current main and finalize HubSpot import erasure fixes
+0971c14 Separate task import effects for erasure-safe undo [skip ci]
+6f3361d Merge current main while retaining published graph candidate ancestry
+b0c9cae Preserve task import erasure and accept textless HubSpot calls [skip ci]
+c3065f3 Merge current main into forecast policy proof candidate
+b362bc8 Guard health agent-door construction when AUTH_ORIGIN is empty
+8788053 Replay readable shared values on current Orbit main
+13b8fe1 Merge current main into AUTH_ORIGIN guard repair
+6d7da4f guides: replay five setup guides on current main
+0fe9665 Merge current main and renumber saved record views to 0082
+0a994fa Merge current main and retain Zoom archive compatibility
+f28766f Regenerate deployment specification for renumbered HubSpot migrations
+0354536 Restore pre-Zoom archive compatibility while merging current main
+a79bd2d Merge main and move HubSpot import migrations to 0083 and 0084
+d10d939 Merge current main into finished Mailchimp candidate
+e397ddb Merge remote-tracking branch 'origin/main' into cloud/gr-orbit-f169-resolve-1
+fc2af9e Repair unconfigured Worker initialization and retain current main
+eab0faa release: prepare Orbit 0.4.7 metadata
+81276c3 Merge current main into AI assistance agent-door candidate
+0cf675b Merge current main into Mailchimp ledger candidate
+0868082 Show saved quota periods and customer fields on dashboards
+cf44d4f Verify explicit record handovers and truthful removal summaries
+db2dff0 Hand over owned records when removing a teammate [skip ci]
+a33e190 Explain workflow activity skips, effect boundaries and named history
+97348c5 Merge account graph proposals with completed-meeting follow-up obligations
+d783cd5 Set AUTO-006 back to partial: no gate verdict has marked it done
+fc153fd Restore CONTRACT.md main-side text dropped by lander merge replays
+91a7f46 Merge current main while retaining graph and embedded risk proofs
+a2b31c7 Retain recorded due times in proposed risk tasks
+5ef0685 Prove embedded and outside deal-risk task parity [skip ci]
+8202abe Document the completed meeting follow-up doors and preserve current source integrity
+8bc3554 Respect retained archive custody and policy leases in the follow-up journey [skip ci]
+f15a833 Regenerate Orbit sources lock after currency fix and main merge
+e003ab1 Add on-demand embedded deal-risk task filing [skip ci]
+a23c2c0 Format saved deal view values in workspace currency
+f780ad4 Merge origin/main into saved-view currency fix
+bd4a513 Complete native follow-up erasure and accessible meeting acceptance [skip ci]
+051687b Follow native audit cursors in the expanded graph proof
+ffbc31e Prove native graph review retains corrected fields and contactability
+26e659a Qualify graph review and independent erasure under both policies [skip ci]
+6a2fc80 Preserve native archive generations across graph proposal migration
+fd9a98d Prove proposal-only scope and clarify graph review fields
+276859b Add selected account graph proposals and native review proof [skip ci]
+974775b Keep Zoom proof isolated while preserving existing meeting journeys
+45c6061 Preserve canonical follow-up evidence through reviewed contact merges [skip ci]
+11f4a8b Complete reviewed read-only HubSpot import and recovery guidance
+151da53 Keep saved meeting preparation notices readable
+4f6ab89 Merge current main into Zoom work [skip ci]
+28aa5c4 Preserve Zoom activity identity and completion provenance [skip ci]
+17f3a92 Merge remote-tracking branch 'origin/main' into cloud/sd-orbit-c-f173
+0d7eac7 Retain signed reply evidence and pause linked reminders on restore [skip ci]
+4577eb2 Merge current main before HubSpot qualification [skip ci]
+a6e9ece Save HubSpot connection controls and resumed import proof [skip ci]
+24be32f Persist completed-meeting follow-up obligations and native lifecycle [skip ci]
+6a372ff Add reviewed Zoom meeting flow and native proof [skip ci]
+df5060f Save connected HubSpot source review and native import adapters [skip ci]
+01c1535 Prove the Slack declaration survives Settings Disconnect
+44adb06 Exercise Settings Disconnect after capturing archived action authority [skip ci]
+2157fe1 Use the delivery declaration as the Slack setup field list
+998d6de Declare Slack setup facts and extend disconnect proof [skip ci]
+a8f2deb Contract: a person's own actions no longer notify them (NOTIFY-001, OUT-023)
+bd9c4b5 Prove manual draft normalization retains native and MCP input boundaries
+8e5c14a Keep manual draft parity proof independent of native audit pagination
+464d724 Preserve complete refusal witnesses and inspect saved draft revision [skip ci]
+f8d6b6b Normalize manual drafts consistently across native and MCP doors [skip ci]
+a0f408a Read every retained audit page after opportunity AI activity
+34d6c57 Exercise sensitive AI refusal against a previously reviewed input [skip ci]
+b1925a3 Complete native Mailchimp handoff, restore and scheduled deletion proof
+421b0e7 Return the saved explanation through governed AI generation [skip ci]
+1304828 Prove verified Mailchimp states and scheduled erasure in the emitted Worker [skip ci]
+f056ac3 Preserve Mailchimp consent, verify webhooks and reconcile member stops [skip ci]
+273d6a0 Share native opportunity AI generation with the governed agent door [skip ci]
+7ba57f6 Reopen saved views with fresh rows and archived column definitions
+496a2b1 Preserve historical archives and immediate saved-view controls [skip ci]
+91ed932 Save versioned filtered record views with current authority [skip ci]
+328a341 Preserve native archive generations across graph proposal migration
+41ba287 Name nonbinding forecasts in the retained native agent journey
+501d8ad Prove proposal-only scope and clarify graph review fields
+4468b12 Prove standard forecast estimates under both company policies [skip ci]
+4e59880 Add selected account graph proposals and native review proof [skip ci]
+e98f2c8 Prove guide tool scopes and classes agree with live discovery
+b3e94ef Merge remote-tracking branch 'origin/main' into cloud/sd-orbit-c-f149
+ff49ff8 Merge remote-tracking branch 'origin/main' into cloud/sd-orbit-c-f150
+7bd2d7f Check browser risk review preserves the native sales record and history
+86ce26a Start stalled-risk browser proof in its own emitted runtime [skip ci]
+10f7400 Verify retained sponsor review and unchanged stalled-deal findings
+ec6d807 Prove populated stalled risks across native and MCP doors [skip ci]
+02bc578 Reconcile declared non-tool parts across agent discovery and guide [skip ci]
+9e7f46c release: Orbit 0.4.6 (erasure reaches agent records, mail sender explained, own actions silent, newcomer fixes)
+752cf8e Merge current queue labels from main into the notification repair
+3f5a82a Keep notification journeys silent for direct actions and faithful for other actors
+429dc84 Merge main with verified US date input behavior
+2ccd809 Merge current main while retaining notification and session scopes [skip ci]
+5f34184 Repair notification context fences and prior archive generations [skip ci]
+49cc386 Name queue causes and remove repeated activity labels
+cb9e02a Keep saved form compilation visible after reload
+d3e41c8 Make scoped API access discoverable in Integrations and group connections truthfully
+b65e26b Assert invalid dates through their field validation
+0d98096 Keep locale dates consistent in rendering and typed-date journeys
+9bc9627 Use shared locale date formatting and parse typed dates [skip ci]
+f336b13 Sequence collaborator browser checks around grant changes
+8695116 Fix HubSpot note exports and preserve early import selections
+2851234 Keep immediate send responses in the direct actor scope
+89c8436 Merge origin/main into the agent-door erasure fix
+f50ca67 Keep direct actions out of the actor's notification inbox
+81e9125 Align workbench journey with unavailable mail sender
+2d2e830 Regenerate sources.lock.json for the change-feed cursor fix
+fee457a Keep an agent's change-feed cursor working across a contact erasure
+31e8cf2 Explain missing mail sender before draft approval
+134dd79 Merge origin/main into the agent-door erasure fix
+9309f3a Regenerate sources.lock.json for the agent-door erasure change
+5a4f977 Erasing a person or contact also erases what the agent door recorded about them
+36f701c Lock the release history file
+22ea61f Adopt rer 0.2.107 in Orbit: erasing an operator retires them from the Business roster
+7e53722 Merge origin/main (rer 0.2.106 adoption) into cloud/sd-orbit-restore-done-1
+72bce58 Restore five DONE rows lost to stale merges: RECORD-008, AGENT-002, BRIEF-002, PUBLIC-002, FORM-002
+cfd5357 Adopt rer 0.2.106 in Orbit: Business relay fails closed, deploy dry-run and owner-settle fixes
+0083997 Lock the new useHydrated source file

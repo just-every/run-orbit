@@ -1,0 +1,9 @@
+Run 43700618240; head 05488c682f04f419f3be4910b805e6c7f45f91de.
+Failed source job 132770792255.
+Read once: gh run view 43700618240 --repo just-every/run-orbit --job 132770792255 --log-failed
+Archive read exit=0. Actual failure lines:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-15T09:44:31.3665401Z RolldownError: Docs: 1 broken link(s) or page problem(s) in the repository Markdown:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-15T09:44:31.3665907Z   OPERATIONS.md: /run/local (use a path relative to OPERATIONS.md)
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-15T09:44:31.5914643Z Docs: 1 broken link(s) or page problem(s) in the repository Markdown:
+source and shared build	Verify source, types, boundaries and the single shared app build	2026-11-15T09:44:31.5914929Z   OPERATIONS.md: /run/local (use a path relative to OPERATIONS.md)
+Resolution: show /run/local as plain inline code; retain the valid Local installation anchor. Regenerate source lock and check the actual docs renderer. No CI rerun or dispatch.

@@ -1,0 +1,7 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> orbit@0.4.10 check:manifest /home/agent/rer-consolidation/work/sd-orbit-release-0-4-10/run-orbit
+> node tools/seed-schema/validate.mjs --schema SEED seed.json
+
+ok   seed.json
+1/1 valid against tools/seed-schema/SEED.schema.json

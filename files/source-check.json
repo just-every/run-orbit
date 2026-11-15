@@ -1,0 +1,4 @@
+{
+  "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "ok": true
+}

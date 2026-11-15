@@ -1,0 +1,16 @@
+{
+  "version": "0.4.10",
+  "previousVersion": "0.4.9",
+  "date": "2026-11-15",
+  "rerPin": "0.2.113",
+  "notesMatch": true,
+  "newMigrations": [
+    "migrations/core/0091_zoom_meetings.sql",
+    "migrations/core/0092_form_submission_notification.sql"
+  ],
+  "existingMigrationsChanged": false,
+  "packageLock": "absent on main; not created",
+  "packageManager": "pnpm@10.12.4",
+  "testChanges": 0,
+  "clauseStatusChanges": 0
+}

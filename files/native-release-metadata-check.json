@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "commit": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "tree": "3b06e0a4a6c02413f5fede94d80446b9ca95f2ab",
+  "tag": "v0.4.10",
+  "version": "0.4.10",
+  "previousVersion": "0.4.9",
+  "notesPresent": true,
+  "operation": "read-only native release inspector; no tag or export"
+}

@@ -1,0 +1,172 @@
+{
+  "files": [
+    {
+      "blob": "15420d8a11550867ce0f861c5290cbcff10eb28d",
+      "bytes": 6263,
+      "path": "RECEIPT.json",
+      "sha256": "f5d9aacfeccb5dde812f257ea7853780d11102d2ee7fa922600cd9c1525adbdf"
+    },
+    {
+      "blob": "6cbcaa91600c9e950dd0d9f8b8f16d5e1d9c82ff",
+      "bytes": 11500,
+      "path": "REPORT.md",
+      "sha256": "04faa5b168a453a3202535b0012f74d33df99573b688f7b1c94fec0a19dd4984"
+    },
+    {
+      "blob": "f8bc5d0ac5707e5732aacba4a6d070e6bb1f5375",
+      "bytes": 22669,
+      "path": "candidate.diff",
+      "sha256": "593654042fc746b54b09580b9f434ceedd759f3970bc25c9f797bae81eb8812e"
+    },
+    {
+      "blob": "c2e718f853792b111d2371337038fae2cc560ce2",
+      "bytes": 243,
+      "path": "ci-discovery.json",
+      "sha256": "6ee2eaa49a86149f8e31941c26d96062fb4d405e1036d0206a67baa51c64904a"
+    },
+    {
+      "blob": "92f6c43d1367c276c1b63cc779e95001e1693ac0",
+      "bytes": 1129,
+      "path": "ci-failed-jobs.json",
+      "sha256": "e73d5cc83dad396db2366b7b4b381f47a2677d12498cc6aa2ce826e8cf612eb9"
+    },
+    {
+      "blob": "0e8d76e2e0a6c0dfd17e1fb3e65ff9dd672c16e6",
+      "bytes": 1173,
+      "path": "ci-failure-diagnosis.txt",
+      "sha256": "34eb48b913fa54493186cc4e6cb39dc3be3f73927de4af6c1ec192f307aa6449"
+    },
+    {
+      "blob": "1f20b1d95c5dbbf937e4fa6e54ddb2961d5f0a78",
+      "bytes": 175,
+      "path": "ci-final-candidate.json",
+      "sha256": "2cb929bd19df0b05df77304c69f7cb4c50080f04aca64f0c266fe8f6ab7ff74a"
+    },
+    {
+      "blob": "4adc7f0563b9b2a7c470b9843fc16dbb0ac954d0",
+      "bytes": 243,
+      "path": "ci-final-discovery.json",
+      "sha256": "f268d7fcdd87ab9a9866c37f4c50c99cfa7e78c9ffb6ac87701a81e580392ec1"
+    },
+    {
+      "blob": "69defc04ff4f96a2fa52d19cdcd3c4f2d61cc63a",
+      "bytes": 178,
+      "path": "ci-final.json",
+      "sha256": "8c5785c0f287c2afd932881906208c1353102cf3e60e914b502b2d36bd3c7e1f"
+    },
+    {
+      "blob": "039ade4804f3260ca24ea86f4516efac273f1853",
+      "bytes": 1971807,
+      "path": "ci-source-failed.txt",
+      "sha256": "ceb003296f753fc65864c4e8f143c2e00585026d5fceef7b5a8f40027288c144"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "command-contract-check.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "4f594e91296b15b7d976b9e6101a09aaf9a26f3e",
+      "bytes": 50,
+      "path": "docs-link-check.json",
+      "sha256": "3e9bdb4cf010c452354092a3941e5cf42ee62a3fb5190fe52dc9ad846a8f0406"
+    },
+    {
+      "blob": "06ede4e8232bc997036d8536958b05e68f168196",
+      "bytes": 316,
+      "path": "identity-audit.txt",
+      "sha256": "1305213c1fd701a3fdf2a6c6129f190cfe4c43a7472aa1aa984c1f7f76404f3c"
+    },
+    {
+      "blob": "2dace2d1817c51d890fd3e4c4e70becd1e100436",
+      "bytes": 12613,
+      "path": "main-changes.txt",
+      "sha256": "7671b5bc0d82c04fed9f457f34aa1b6afcc2cd1c26fe2f8e392eebf112c68adf"
+    },
+    {
+      "blob": "9c695a0df3f0b178e45d665ad5ee46ed71016b81",
+      "bytes": 5315,
+      "path": "main-diff-stat.txt",
+      "sha256": "e80a3baa2ef8929db72193bd44985e33d072f2028630cb350b8270a2e82a6616"
+    },
+    {
+      "blob": "35651c5f6cc74657846a627c5ef051e6d9846075",
+      "bytes": 337,
+      "path": "manifest-check.txt",
+      "sha256": "0f2b70eb5c9ca39eff38a526e9c3ecb073b494fa81a1e97c66355a1ad5ac2676"
+    },
+    {
+      "blob": "7b5d7588ab136133f7303c4ec87e9598a94a1ee0",
+      "bytes": 427,
+      "path": "metadata-check.json",
+      "sha256": "31cfecfacfdd532fe814a21711ea57024328283257adc9bf87740b3bac7da902"
+    },
+    {
+      "blob": "868b14e381b8fdc2458ee83798cbf1401629937a",
+      "bytes": 295,
+      "path": "native-release-metadata-check.json",
+      "sha256": "5d836fa73ce9c82ef460c0c8b50bcdfc046d2acf10a51b3a14108855ed951362"
+    },
+    {
+      "blob": "6b8d0635ab8042ec4e9c3eac796b44556fef755f",
+      "bytes": 735,
+      "path": "product-push-final.txt",
+      "sha256": "c1f1e86bb6346bc596cc169ffe77ac2af1a0271be5f6cba2aad0431776eeb665"
+    },
+    {
+      "blob": "bce95cbcc63d68d9f20057c73f7402a2094dd788",
+      "bytes": 937,
+      "path": "product-push.txt",
+      "sha256": "9c7f1fed4f8bc424f5018eb6f1e064588957cbdb42e6aa46ebd433922196280a"
+    },
+    {
+      "blob": "b282638f2262794bb2928b2303c7ed592dc8e5fe",
+      "bytes": 82,
+      "path": "product-remote-readback.txt",
+      "sha256": "73ff71b6452c1ddd9314c9b9677e26382950a59af5aff17a82248b3f696f7739"
+    },
+    {
+      "blob": "1732c791ab51a4b8e3837ec1935d03827ad49e83",
+      "bytes": 74,
+      "path": "release-schema-check.txt",
+      "sha256": "5581b5a2c2deb957514697f45e499f1df28db6737fc7dbcd63206becf703f5c4"
+    },
+    {
+      "blob": "0a86953963f4c5c99efaf26b276b5304c510e531",
+      "bytes": 77729,
+      "path": "release-source-diff.patch",
+      "sha256": "7d6727f9990d87196ee3a615a191f1ca85a482888b84f33d437fb654d274d8e8"
+    },
+    {
+      "blob": "79b0db1fd5542a78c0aa3fb1445598b97974db33",
+      "bytes": 523037,
+      "path": "source-check-output.json",
+      "sha256": "86b761b9248374714daea30765128629037b253aaf3f691d56d56c971774ce75"
+    },
+    {
+      "blob": "566530e0ed678e9122192576f6a25bd118357273",
+      "bytes": 99,
+      "path": "source-check.json",
+      "sha256": "674979ad7de95346b575880624e4af39afe0c688e03360f00bfdf5daa6090970"
+    },
+    {
+      "blob": "b1c8c054f0a218b505888cebb0633a255aa02ea3",
+      "bytes": 8524,
+      "path": "test-inventory.json",
+      "sha256": "832c7e9f3712023081eb7bd4d6d960cedf7fe17cb1b22a7fc888913aef820653"
+    },
+    {
+      "blob": "2c54568b87abe661b85a7fcfaf75031266aa35f9",
+      "bytes": 217,
+      "path": "typecheck.txt",
+      "sha256": "8a3d67241aace0ce0ac78b23df06e9d5c9e5ecaec9e68ca1856ec867dcc1f43f"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-release-0-4-10",
+  "product_head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "ref": "refs/heads/evidence/sd-orbit-release-0-4-10",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-release-0-4-10"
+}

@@ -1,0 +1,225 @@
+{
+  "tag": "sd-orbit-release-0-4-10",
+  "timestamp": "2026-11-15T10:06:03Z",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-release-0-4-10",
+  "head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "base": "3b6296cbd5e6b0c10f93a9c84277c9b88373e906",
+  "previousTag": "v0.4.9",
+  "previousTagCommit": "a5f471626aea1bfcb2c79f5dbee2250fdb38fd49",
+  "newVersion": "0.4.10",
+  "rerPin": "0.2.113",
+  "paths": [
+    "CHANGELOG.md",
+    "OPERATIONS.md",
+    "RELEASE.json",
+    "package.json",
+    "seed.json",
+    "sources.lock.json"
+  ],
+  "sourceLockOnlyUpdatesChangedFileHashes": [
+    "CHANGELOG.md",
+    "OPERATIONS.md",
+    "package.json",
+    "RELEASE.json",
+    "seed.json"
+  ],
+  "productPush": "success",
+  "newTests": 0,
+  "removedTests": 0,
+  "weakenedTests": 0,
+  "clauseStatusChanges": [],
+  "beforeCounts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "afterCounts": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "pr": null,
+  "verifyRunId": 43701118360,
+  "verifyStatus": "in_progress",
+  "verifyConclusion": null,
+  "githubCallsUsed": 10,
+  "fullLocalSuite": "not run; metadata-only scope",
+  "browserProof": "not required; no UI changes",
+  "publicationScan": "fleet lander gate; not available in this cloud",
+  "tagsPublished": false,
+  "releasePublished": false,
+  "deploymentPerformed": false,
+  "testInventory": {
+    "cases": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "checks": [
+    {
+      "command": "pnpm run typecheck",
+      "status": "PASS",
+      "output": "typecheck.txt"
+    },
+    {
+      "command": "pnpm run check:manifest",
+      "status": "PASS",
+      "output": "manifest-check.txt"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/bin/rer.mjs check --profile first-party",
+      "status": "PASS",
+      "output": "command-contract-check.txt"
+    },
+    {
+      "command": "read-only inspectSource and releaseMessage from pinned rer release modules",
+      "status": "PASS",
+      "output": "native-release-metadata-check.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "status": "PASS",
+      "output": "source-check-output.json"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "status": "PASS",
+      "output": "test-inventory.json"
+    },
+    {
+      "command": "pnpm exec tsx --eval buildSite(process.cwd()) and reject site.problems",
+      "status": "PASS",
+      "output": "docs-link-check.json",
+      "scope": "actual repository docs compiler, including all Markdown links and anchors; final committed bytes"
+    },
+    {
+      "command": "node tools/seed-schema/validate.mjs --schema RELEASE RELEASE.json",
+      "status": "PASS",
+      "output": "release-schema-check.txt"
+    }
+  ],
+  "preflight": {
+    "observedAt": "2026-11-15T09:39:02Z",
+    "latestPublishedRelease": {
+      "tag_name": "v0.4.9",
+      "name": "Orbit 0.4.9",
+      "draft": false,
+      "published_at": "2026-11-13T17:49:50Z",
+      "html_url": "https://github.com/just-every/run-orbit/releases/tag/v0.4.9"
+    },
+    "v0410TagAbsent": true,
+    "v0410PeerReleaseBranchAbsent": true,
+    "peerOrdinaryReleasePrAbsent": true,
+    "openPrNumbers": [
+      25,
+      24,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      13,
+      11,
+      6,
+      5
+    ],
+    "mainAfterV049": true,
+    "mainMatchedBriefGreenSha": true,
+    "mainNetDiff": {
+      "files": 85,
+      "insertions": 1800,
+      "deletions": 301
+    },
+    "mainVerifySuppliedByBrief": 43684875674,
+    "mainRunSiteSuppliedByBrief": 43643388500
+  },
+  "packetReviewedForPublication": {
+    "regularFilesOnly": true,
+    "credentialShapedValuesDetected": false,
+    "privateHeldOutMaterialSelected": false,
+    "environmentDumpsSelected": false,
+    "explicitSelectionRequired": true
+  },
+  "candidateCommits": [
+    "05488c682f04f419f3be4910b805e6c7f45f91de",
+    "22ca38c0e0bb5784440df021e8a5eb5b41a81de8"
+  ],
+  "ciHistory": [
+    {
+      "runId": 43700618240,
+      "head": "05488c682f04f419f3be4910b805e6c7f45f91de",
+      "status": "completed",
+      "conclusion": "failure",
+      "failedSourceJob": 132770792255,
+      "cause": "Docs renderer rejects root-relative Markdown links: OPERATIONS.md /run/local",
+      "resolutionCommit": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8"
+    },
+    {
+      "runId": 43701118360,
+      "head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+      "status": "in_progress",
+      "conclusion": null,
+      "discoveredAt": "2026-11-15T09:50:07Z",
+      "observations": [
+        {
+          "at": "2026-11-15T09:50:07Z",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "at": "2026-11-15T09:55:09Z",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "at": "2026-11-15T10:00:10Z",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "at": "2026-11-15T10:05:19Z",
+          "status": "in_progress",
+          "conclusion": null
+        }
+      ]
+    }
+  ],
+  "typecheckScope": "Passed before final docs-only correction; final correction changes OPERATIONS.md and its source-lock hash only.",
+  "pushes": [
+    {
+      "head": "05488c682f04f419f3be4910b805e6c7f45f91de",
+      "result": "success",
+      "receipt": "product-push.txt"
+    },
+    {
+      "head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+      "result": "success",
+      "receipt": "product-push-final.txt"
+    }
+  ],
+  "finalScopeCheck": {
+    "cleanCheckout": true,
+    "fiveExpectedSourceLockHashUpdates": [
+      "CHANGELOG.md",
+      "OPERATIONS.md",
+      "package.json",
+      "RELEASE.json",
+      "seed.json"
+    ],
+    "nativeReleaseInspectorMatchesHead": true,
+    "docsCompilerPages": 15,
+    "docsCompilerProblems": 0
+  },
+  "terminalCustody": "PUSHED",
+  "blockers": [],
+  "evidenceRef": "refs/heads/evidence/sd-orbit-release-0-4-10",
+  "readyClaim": false,
+  "pendingReason": "Exact-SHA Verify is still in progress after the final permitted REST observation; ten-call GitHub budget exhausted."
+}

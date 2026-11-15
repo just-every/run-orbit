@@ -1,0 +1,747 @@
+diff --git a/docs/overview.md b/docs/overview.md
+index 870f8ab..3697a70 100644
+--- a/docs/overview.md
++++ b/docs/overview.md
+@@ -20,7 +20,19 @@ A record's values and your workspace settings save as you change them. A value s
+ 
+ ## What Orbit connects to
+ 
+-Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences) and Twilio (calls). Orbit does not connect to Dial, Zoom, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
++Settings › Integrations connects Slack (team notifications), Calendly and Cal.com (bookings), Mailchimp (marketing audiences), Twilio (calls) and Zoom (meeting preparation and attendance). Orbit does not connect to Dial, Aircall, HappyToHelp, Help Scout, Zendesk, DocuSign, Nectar, Stripe, QuickBooks Online, Xero or Buoy: keep using them directly, and log a meeting or call from them by hand on the deal.
++
++### Zoom meeting preparation
++
++The installation owner opens Settings › Integrations › Zoom and connects their Zoom Server-to-Server OAuth account ID, client ID, client secret and webhook secret token. Credentials are checked with Zoom, sealed only in this installation, never shown again and excluded from exports. A refused connection is unresolved setup; after a restore Zoom stays paused until connected again.
++
++In the Zoom app, grant `meeting:read:meeting:admin` and `meeting:read:list_past_participants:admin` (or the corresponding account-level read scopes). Subscribe to `meeting.ended` and `meeting.deleted`, using the endpoint shown in Settings. Orbit verifies Zoom’s timestamp and exact-body signature, answers endpoint validation, and refuses forged, stale and replayed deliveries. Rotating or disconnecting credentials stops old deliveries.
++
++A full operator finds the intended deal, enters the exact numeric ID of a scheduled, non-recurring meeting, and reads its real details. Review the topic, start, duration, host, Zoom URL, attendees and chosen deal, then confirm. If details change, review them again. Attaching creates one Zoom activity and a meeting preparation link; it sends no invitation and changes no outreach state. Participants match only one contact with the exact email or retained alias. Multiple exact matches stay visibly ambiguous.
++
++The meeting plan shows the actual Zoom link, attendees and recording state. Save the agenda and preparation there. A signed completion updates the same activity once and reads only Zoom’s past attendance metadata. Its record-backed recap cites the saved plan, attendance and signed completion; it never invents discussion or decisions. A follow-up is an internal next action only after your explicit review in the plan. A cancellation stops that meeting’s preparation and open plan follow-ups, leaving other meetings and handoffs alone.
++
++Recording permission is shown separately from attendance. A disabled recording, ungranted permission and missing transcript are stated plainly. Orbit fetches no recording or transcript content and makes no transcript-based recap. Unavailable attendance stays unresolved. Erasure removes attendee identity and its retained evidence, and old deliveries cannot recreate it. Export and restore retain the meeting history without its connection secrets. Zoom runs the meeting; meeting creation and rescheduling remain in Zoom. Live developer-account qualification and the complete cross-product buyer walk remain unproved.
+ 
+ ## How a score works
+ 
+diff --git a/migrations/core/0091_zoom_meetings.sql b/migrations/core/0091_zoom_meetings.sql
+new file mode 100644
+index 0000000..ada0ecf
+--- /dev/null
++++ b/migrations/core/0091_zoom_meetings.sql
+@@ -0,0 +1,35 @@
++-- One reviewed Zoom occurrence per signal. Credentials stay sealed in signal_sources.
++CREATE TABLE zoom_meetings (
++ signal_id TEXT PRIMARY KEY REFERENCES signals(id) ON DELETE CASCADE,
++ meeting_id TEXT NOT NULL,
++ meeting_uuid TEXT NOT NULL UNIQUE,
++ opportunity_id TEXT NOT NULL REFERENCES opportunities(id) ON DELETE CASCADE,
++ join_url TEXT NOT NULL,
++ host_id TEXT NOT NULL,
++ duration INTEGER NOT NULL,
++ state TEXT NOT NULL CHECK(state IN('scheduled','completed','cancelled')),
++ recording TEXT NOT NULL,
++ attendance_json TEXT NOT NULL DEFAULT '[]',
++ attendance_state TEXT NOT NULL DEFAULT 'not-read',
++ completed_at TEXT,
++ completion_entry_id TEXT REFERENCES timeline_entries(id) ON DELETE SET NULL,
++ completion_digest TEXT,
++ completion_timestamp TEXT,
++ cancelled_at TEXT,
++ last_event_at INTEGER NOT NULL DEFAULT 0
++);
++CREATE TABLE zoom_deliveries (
++ digest TEXT PRIMARY KEY,
++ received_at TEXT NOT NULL
++);
++CREATE TABLE zoom_plan_actions (
++ signal_id TEXT NOT NULL REFERENCES zoom_meetings(signal_id) ON DELETE CASCADE,
++ handoff_id TEXT NOT NULL REFERENCES handoff_tasks(id) ON DELETE CASCADE,
++ PRIMARY KEY(signal_id,handoff_id)
++);
++-- A cancellation that arrives while a reviewed handoff is saved still withdraws it.
++CREATE TRIGGER zoom_plan_action_cancelled AFTER INSERT ON zoom_plan_actions
++WHEN EXISTS(SELECT 1 FROM zoom_meetings WHERE signal_id=NEW.signal_id AND state='cancelled')
++BEGIN
++ UPDATE handoff_tasks SET status='cancelled',revision=lower(hex(randomblob(16))),updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=NEW.handoff_id AND status='open';
++END;
+diff --git a/migrations/core/0092_form_submission_notification.sql b/migrations/core/0092_form_submission_notification.sql
+new file mode 100644
+index 0000000..27fc477
+--- /dev/null
++++ b/migrations/core/0092_form_submission_notification.sql
+@@ -0,0 +1,10 @@
++-- A native form intake creates its own submission-scoped recipient notice.
++-- Its deal creation or return to NOW must not duplicate that recipient's notice.
++-- The marker is installed and removed inside that intake's atomic D1 batch.
++-- Every other notification kind and every ordinary NOW event stays unchanged.
++CREATE TRIGGER notification_skip_form_now BEFORE INSERT ON notifications
++WHEN NEW.kind='opportunity.now'
++ AND EXISTS(SELECT 1 FROM runtime_controls WHERE name='form_submission' AND value=NEW.operator_id)
++BEGIN
++ SELECT RAISE(IGNORE);
++END;
+diff --git a/src/core/features/forms/native-capture.ts b/src/core/features/forms/native-capture.ts
+index 25dec81..711c737 100644
+--- a/src/core/features/forms/native-capture.ts
++++ b/src/core/features/forms/native-capture.ts
+@@ -36,5 +36,11 @@ export async function nativeCapture(db:D1Database,input:{form:FormDefinition;int
+  if(existing){statements.push(db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'form_opportunity_fence',NULL WHERE (SELECT json_group_array(opportunity_id) FROM(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=? ORDER BY opportunity_id))<>?").bind(contactId,JSON.stringify(targets.filter(t=>t.type==='opportunity').map(t=>t.id).sort())));if(company.id&&!existing.company_id&&!targets.some(target=>target.type==='company'&&target.id===company.id))targets.push({type:'company',id:company.id,basis:'Exact submitted company domain'});}
+  statements.push(db.prepare("INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,'form.submitted',?,?,?,?,'observed','Published form exact email',?,?)").bind(signalId,source,submissionId,form.title,at,at,input.payloadHash,at,JSON.stringify({formId:input.formId,operationId:input.operationId,values:submitted,contactBasis:basis})),db.prepare('UPDATE signal_sources SET last_accepted_at=?,updated_at=? WHERE id=?').bind(at,at,source),...await new IngestionRepository(db).linkStatements(signalId,event,targets,source,at,'source',source,{text:submitted.message??''}),...await formFieldProposals(db,source,signalId,submissionId,input.formId,submitted,proposals,at),db.prepare('INSERT INTO marketing_form_submissions VALUES(?,?,?,?,?,?,?,?,?,?)').bind(submissionId,input.formId,input.operationId,intake.idempotencyKey,input.payloadHash,contactId,signalId,JSON.stringify(submitted),Number(Boolean(proposals.length||existing)),at),...formSubmissionNotice(db,submissionId,assignment.ownerId,opportunityId??targets.find(target=>target.type==='opportunity')?.id??null,at));
+  if(form.consentWording&&intake.consent)statements.push(db.prepare('INSERT INTO consent_events VALUES(?,?,?,?,?,?,?)').bind(createId(),submissionId,contactId,form.consentWording,intake.revision,input.artifactHash,input.consentOccurredAt??at));
++ // Only the submission notice recipient's NOW event is redundant. Keep this
++ // recipient marker in the atomic batch; unassigned queues retain normal notices.
++ if(assignment.ownerId){
++  statements.unshift(db.prepare("INSERT INTO runtime_controls(name,value) VALUES('form_submission',?)").bind(assignment.ownerId));
++  statements.push(db.prepare("DELETE FROM runtime_controls WHERE name='form_submission'"));
++ }
+  return{statements,created:!existing,result:{submissionId,contactId,signalId,reviewRequired:Boolean(proposals.length||existing),...(opportunityId?{opportunityId}:{})}};
+ }
+diff --git a/src/core/features/notifications/routes.ts b/src/core/features/notifications/routes.ts
+index 865accf..7bd2dab 100644
+--- a/src/core/features/notifications/routes.ts
++++ b/src/core/features/notifications/routes.ts
+@@ -15,7 +15,7 @@ export function createNotificationRoutes(db:D1Database,config:SlackConfig={}) {
+  app.get('/',async c=>{
+   const actor=c.get('operator').operatorId;
+   const [items,count]=await Promise.all([
+-   db.prepare(`SELECT n.id,COALESCE(CASE WHEN n.event_key LIKE 'import-ownership:%' THEN '/app/contacts' END,(SELECT '/app/contacts/'||c.id FROM contacts c WHERE c.id=${contactId}),(SELECT CASE b.record_type WHEN 'company' THEN '/app/companies' ELSE '/app/contacts' END||CASE WHEN b.item_count=1 THEN '/'||(SELECT record_id FROM ownership_batch_items WHERE batch_id=b.id LIMIT 1) ELSE '' END FROM ownership_batches b WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id),(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,COALESCE(o.title,(SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId}),(${assignmentTitle})) AS recordTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
++   db.prepare(`SELECT n.id,COALESCE(CASE WHEN n.event_key LIKE 'import-ownership:%' THEN '/app/contacts' END,(SELECT '/app/contacts/'||c.id FROM contacts c WHERE c.id=${contactId}),(SELECT CASE b.record_type WHEN 'company' THEN '/app/companies' ELSE '/app/contacts' END||CASE WHEN b.item_count=1 THEN '/'||(SELECT record_id FROM ownership_batch_items WHERE batch_id=b.id LIMIT 1) ELSE '' END FROM ownership_batches b WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id),(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,COALESCE(CASE WHEN n.kind='form.submitted' THEN (SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId}) END,o.title,(SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId}),(${assignmentTitle})) AS recordTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
+    db.prepare('SELECT count(*) AS count FROM notifications WHERE operator_id=? AND read_at IS NULL').bind(actor).first<{count:number}>()
+   ]);
+   return c.json({notifications:items.results,unread:count?.count??0});
+diff --git a/src/core/features/operator/ui/archive-email-permission-preview.ts b/src/core/features/operator/ui/archive-email-permission-preview.ts
+new file mode 100644
+index 0000000..5225255
+--- /dev/null
++++ b/src/core/features/operator/ui/archive-email-permission-preview.ts
+@@ -0,0 +1,55 @@
++type Row=Record<string,string|number|null>;
++type Proof={id:string;token:string};
++type Contact={id:string;name:string;email:string|null;contactability:string};
++export type EmailPermissionPreview={count:number;names:{id:string;name:string}[];archivedCount:number;additionalCount:number};
++/** Project the same archived addresses and clear receipts used by restore, without changing them. */
++export class ArchiveEmailPermissionPreview{
++ private contacts:Contact[]=[];
++ private aliases=new Map<string,string[]>();
++ private contexts:{id:string;key:string}[]=[];
++ private proofs:Proof[]=[];
++ private cleared=new Set<string>();
++ add(table:string,row:Row){
++  if(table==='contacts')this.contacts.push({id:String(row.id),name:String(row.name||row.email||'Unnamed contact'),email:typeof row.email==='string'?row.email:null,contactability:String(row.contactability)});
++  if(table==='record_aliases'&&row.record_type==='contact'&&typeof row.survivor_id==='string'&&typeof row.identity_key==='string'){
++   const values=this.aliases.get(row.survivor_id)??[];values.push(row.identity_key);this.aliases.set(row.survivor_id,values);
++  }
++  if(table==='privacy_matching_contexts'){
++   if(typeof row.context_id!=='string'||!/^[a-f0-9]{32}$/.test(row.context_id)||typeof row.matching_key!=='string'||!/^[a-f0-9]{64}$/.test(row.matching_key))throw new Error('Archive email permission details are invalid.');
++   this.contexts.push({id:row.context_id,key:row.matching_key});
++  }
++  if(table==='audit_entries'&&row.action==='contact.suppressed')this.proofs.push({id:String(row.id),token:String(row.entity_id)});
++  if(table==='audit_entries'&&row.action==='contact.suppression_cleared'){
++   const details=JSON.parse(String(row.details_json));
++   for(const id of details.proofs??[])this.cleared.add(`${row.entity_id}/${id}`);
++  }
++ }
++ async finish():Promise<EmailPermissionPreview>{
++  const normalize=(email:string)=>email.trim().toLowerCase();
++  const addresses=[...new Set(this.contacts.flatMap(contact=>[contact.email,...(this.aliases.get(contact.id)??[])].filter((email):email is string=>!!email?.trim()).map(normalize)))];
++  const target=new Map<string,Proof[]>();
++  // Bounded requests reveal matching proof IDs, never this installation's private matching keys.
++  for(let offset=0;offset<addresses.length||offset===0;offset+=200){
++   const emails=addresses.slice(offset,offset+200),response=await fetch('/api/v1/records/archive/preview/email-stops',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({emails,includeClears:offset===0})});
++   if(!response.ok)throw new Error('Email stops could not be checked. Restore has not started.');
++   const result=await response.json() as {matches:Proof[][];clears:Proof[]};
++   for(const proof of result.clears)this.cleared.add(`${proof.token}/${proof.id}`);
++   emails.forEach((email,index)=>target.set(email,result.matches[index]));
++  }
++  const archiveStops=new Set(this.proofs.filter(proof=>!this.cleared.has(`${proof.token}/${proof.id}`)).map(proof=>proof.token));
++  const keys=await Promise.all(this.contexts.map(async context=>({id:context.id,key:await crypto.subtle.importKey('raw',Uint8Array.from(context.key.match(/../g)!,byte=>parseInt(byte,16)),{name:'HMAC',hash:'SHA-256'},false,['sign'])})));
++  const stopped=new Set<string>();
++  for(const email of addresses){
++   if(target.get(email)?.some(proof=>!this.cleared.has(`${proof.token}/${proof.id}`))){stopped.add(email);continue;}
++   for(const context of keys){
++    const digest=await crypto.subtle.sign('HMAC',context.key,new TextEncoder().encode(`orbit-mail-suppression-v1:${email}`));
++    const token=context.id+':'+Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
++    if(archiveStops.has(token)){stopped.add(email);break;}
++   }
++  }
++  const held=this.contacts.filter(contact=>contact.contactability==='do_not_contact'||[contact.email,...(this.aliases.get(contact.id)??[])].some(email=>email&&stopped.has(normalize(email))));
++  held.sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
++  const archivedCount=held.filter(contact=>contact.contactability==='do_not_contact').length;
++  return {count:held.length,names:held.slice(0,5).map(({id,name})=>({id,name})),archivedCount,additionalCount:held.length-archivedCount};
++ }
++}
+diff --git a/src/core/features/records/archive-import-progress.ts b/src/core/features/records/archive-import-progress.ts
+index a3b4a66..c254fe4 100644
+--- a/src/core/features/records/archive-import-progress.ts
++++ b/src/core/features/records/archive-import-progress.ts
+@@ -1,3 +1,4 @@
++import {restoreStopFacts} from './archive-restore-holds';
+ import {checkArchiveOperators,restoreOperatorStatements} from './archive-operators';
+ import {verifyArchiveContentIdentity} from './archive-content-identity';
+ import type {ImportContext} from './archive-import-context';
+@@ -5,7 +6,7 @@ import { stageLayouts, stageCell, quoteIdentifier, liveRowSelector, type StageLa
+ import { privacyContextStatement, privacyMatcher, activeSuppressionTokens, suppressionProof } from './suppression';
+ import {invalidateSuppressedWork} from './suppression-effects';
+ import { createId } from '../../shared/ids';
+-import { audit, RecordError } from './shared';
++import { audit, RecordError, timeline } from './shared';
+ import { archiveCatalog, type ArchiveManifest, type ArchiveTable } from './archive-schema';
+ import { stageName, stageTables } from './archive-storage';
+ export type ImportJob = {
+@@ -165,9 +166,29 @@ async function advanceStep(db: D1Database, job: ImportJob, context: ImportContex
+             const match=await privacyMatcher(db);
+             const aliases=(await db.prepare(`SELECT ${stageCell(layouts.get('record_aliases')!,'survivor_id','a')} AS survivor_id,${stageCell(layouts.get('record_aliases')!,'identity_key','a')} AS identity_key FROM ${stageName(source,'record_aliases')} a JOIN ${staged} c ON ${c('id','c')}=${stageCell(layouts.get('record_aliases')!,'survivor_id','a')} WHERE ${stageCell(layouts.get('record_aliases')!,'record_type','a')}='contact' AND c.rowid>=? AND c.rowid<=?`).bind(rows[0]!.n,end).all<{survivor_id:string;identity_key:string}>()).results;
+             const identities=new Map<string,string[]>();for(const alias of aliases){const values=identities.get(alias.survivor_id)??[];values.push(alias.identity_key);identities.set(alias.survivor_id,values);}
++            // Equal mailboxes adopt the archive operator ID at finalization.
++            // Use that same identity for new restore history and audit entries.
++            const operatorLayout=layouts.get('operators')!, operatorCell=(name:string)=>stageCell(operatorLayout,name);
++            const restoredActor=await db.prepare(`SELECT ${operatorCell('id')} AS id FROM ${stageName(source,'operators')} WHERE ${operatorCell('id')}=? OR lower(${operatorCell('email')})=lower((SELECT email FROM operators WHERE id=?)) LIMIT 1`).bind(job.actor_id,job.actor_id).first<{id:string}>();
++            const actor=restoredActor?.id??job.actor_id;
++            // The recovery snapshot identifies proofs retained from this installation;
++            // every other active proof arrived with the archive. Read only for copy.
++            const backupAudit=layouts.get('audit_entries')!;
++            const retainedIds=new Set((await db.prepare(`SELECT ${stageCell(backupAudit,'id')} AS id FROM ${stageName(p.backupId,'audit_entries')} WHERE ${stageCell(backupAudit,'action')}='contact.suppressed'`).all<{id:string}>()).results.map(proof=>proof.id));
++            const {proofs}=await restoreStopFacts(db),localStops=new Set<string>(),archiveStops=new Set<string>();
++            for(const proof of proofs)(retainedIds.has(proof.id)?localStops:archiveStops).add(proof.token);
+             for(const contact of contacts){const tokens=[...new Set((await Promise.all([contact.email,...(identities.get(contact.id)??[])].map(email=>match(email)))).flat())];
+                 if(contact.contactability==='do_not_contact')suppression.push(...tokens.filter(token=>!active.has(token)).map(token=>suppressionProof(db,token)));
+-                else if(tokens.some(token=>active.has(token)))suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id));
++                else if(tokens.some(token=>active.has(token))){
++                    // The archived permission travels unless an independent retained
++                    // stop wins. Record that exception in the same durable step.
++                    const local=tokens.some(token=>localStops.has(token)),archived=tokens.some(token=>archiveStops.has(token));
++                    const source=local?(archived?'this installation and the restored archive':'this installation'):'the restored archive';
++                    const reason={reason:'retained_suppression',archivedContactability:contact.contactability,text:`Restored on Do not contact because ${source} ${local&&archived?'contain':'contains'} an email stop for this contact, possibly on another address of the same contact.`};
++                    suppression.push(db.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(contact.id),
++                        ...timeline(db,actor,'contact',contact.id,'contactability.restore_hold',reason),
++                        audit(db,actor,'contactability.restore_hold','contact',contact.id,reason));
++                }
+             }
+         }
+     }
+diff --git a/src/core/features/records/archive-restore-holds.ts b/src/core/features/records/archive-restore-holds.ts
+new file mode 100644
+index 0000000..693b103
+--- /dev/null
++++ b/src/core/features/records/archive-restore-holds.ts
+@@ -0,0 +1,7 @@
++/** Read-only facts for restore copy. The restore's suppression decisions stay in suppression.ts. */
++export async function restoreStopFacts(db:D1Database){
++ const proofs=(await db.prepare("SELECT id,entity_id AS token FROM audit_entries WHERE action='contact.suppressed'").all<{id:string;token:string}>()).results;
++ const clears=(await db.prepare("SELECT cleared.entity_id AS token,item.value AS id FROM audit_entries cleared,json_each(cleared.details_json,'$.proofs') item WHERE cleared.action='contact.suppression_cleared'").all<{id:string;token:string}>()).results;
++ const cleared=new Set(clears.map(proof=>`${proof.token}/${proof.id}`));
++ return {proofs:proofs.filter(proof=>!cleared.has(`${proof.token}/${proof.id}`)),clears};
++}
+diff --git a/src/core/features/settings/connected-products.ts b/src/core/features/settings/connected-products.ts
+index 3d656ef..09e6f1d 100644
+--- a/src/core/features/settings/connected-products.ts
++++ b/src/core/features/settings/connected-products.ts
+@@ -1,3 +1,5 @@
++import {connection as zoomConnection,} from '../zoom/connection';
++import {ownership as zoomOwnership} from '../zoom/contracts';
+ import type {SlackDeclaration} from '../slack/declaration';
+ import {slackStatus} from '../slack/installation';
+ import {connection as mailchimpConnection,ownership as mailchimpOwnership} from '../marketing/connection';
+@@ -14,5 +16,7 @@ export async function connectedProducts(db:D1Database,origin:string,mailchimpOri
+  const notices={declaration:slack.declaration,job:'Team notifications',products:['Slack'],owns:'Team channels and messages',clause:'INTEGRATE-005',state:(configured?'connected':'unresolved-setup') as ProductState,lastDeliveryAt:slack.notices.find((n:any)=>n.state==='sent')?.updated_at as string??null,inOrbit:configured?'Allowed-field sales notices and mapped internal actions. Configure channels and inspect notice status below.':`Notices paused. ${slack.installation?.error??'Connect the bot and app signing secret below.'}`};
+  const mailchimp=await mailchimpConnection(db,mailchimpOrigin),audience=mailchimp.settings?.audience;
+  const marketing:ConnectedProduct={job:'Marketing audiences',products:['Mailchimp'],owns:'Bulk campaigns and marketing automation',clause:'INTEGRATE-007',state:mailchimp.state,lastDeliveryAt:mailchimp.lastEventAt,inOrbit:mailchimp.state==='connected'?`${mailchimpOwnership} Orbit hands only contacts with recorded consent to the audience “${audience!.name}” and receives its unsubscribes.`:`Handoff paused. ${mailchimp.reason}`,...(mailchimp.state==='connected'&&mailchimp.link?{link:{href:mailchimp.link,label:'Open the audience in Mailchimp'}}:{})};
+- return [notices,...booking,marketing];
++ const zoom=await zoomConnection(db);
++ const meetings:ConnectedProduct={job:'Meetings',products:['Zoom'],owns:'Meeting service',clause:'INTEGRATE-002',state:zoom.state,lastDeliveryAt:zoom.lastEventAt,inOrbit:zoom.state==='connected'?zoomOwnership:zoom.reason!};
++ return [notices,...booking,marketing,meetings];
+ }
+diff --git a/src/core/features/today/meeting-plan.ts b/src/core/features/today/meeting-plan.ts
+index eef31e1..a2d2120 100644
+--- a/src/core/features/today/meeting-plan.ts
++++ b/src/core/features/today/meeting-plan.ts
+@@ -1,3 +1,5 @@
++import {zoomPlan} from '../zoom/plan';
++import {meetingRow} from '../zoom/repository';
+ import {readObligations} from '../obligations/repository';
+ import {companyDomainKey,contactEmailKey} from '../records/identity';
+ import type {BriefLine,RecordRef} from './types';
+@@ -13,7 +15,7 @@ const kindLabel=(kind:string)=>kindLabels[kind]??kind.replaceAll(/[._-]+/g,' ').
+ 
+ export interface PlanLine {id:string;title:string;detail:string;occurredAt:string;href:string;evidence:{type:string;id:string};record:RecordRef}
+ export interface Attendee {email:string|null;contact:{id:string;name:string|null;jobTitle:string|null;contactability:string;href:string};company:{id:string;name:string;href:string}|null;opportunities:{id:string;title:string;href:string}[]}
+-export interface UnresolvedAttendee {email:string;company:{id:string;name:string}|null}
++export interface UnresolvedAttendee {email:string;company:{id:string;name:string}|null;reason?:string}
+ 
+ /** The meeting signal and the records it is linked to; a meeting with no linked record cannot be planned. */
+ export async function meetingContext(db:D1Database,signalId:string){
+@@ -28,13 +30,14 @@ export async function meetingContext(db:D1Database,signalId:string){
+  return {signal,links,participants,start:text(data.start),end:text(data.end),noteTarget};
+ }
+ 
+-async function attendees(db:D1Database,participants:string[],linked:RecordRef[]){
++async function attendees(db:D1Database,participants:string[],linked:RecordRef[],exactOnly=false){
+  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
+- const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&!operators.has(key!)))];
++ const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&(exactOnly||!operators.has(key!))))];
+  const matched=(await db.prepare(`SELECT c.id,c.email_key AS key FROM contacts c WHERE c.email_key IN (SELECT value FROM json_each(?1))
+   UNION SELECT c.id,a.identity_key AS key FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key IN (SELECT value FROM json_each(?1))`).bind(JSON.stringify(keys)).all<{id:string;key:string}>()).results;
+- const byKey=new Map(matched.map(row=>[row.key,row.id]));
+- const contactIds=[...new Set([...matched.map(row=>row.id),...linked.filter(ref=>ref.type==='contact').map(ref=>ref.id)])];
++ const candidates=new Map(keys.map(key=>[key,[...new Set(matched.filter(row=>row.key===key).map(row=>row.id))]] as const));
++ const byKey=new Map([...candidates].filter(([key,ids])=>ids.length===1&&!operators.has(key)).map(([key,ids])=>[key,ids[0]!]));
++ const contactIds=[...new Set([...byKey.values(),...(exactOnly?[]:linked.filter(ref=>ref.type==='contact').map(ref=>ref.id))])];
+  const contacts=(await db.prepare('SELECT c.id,c.name,c.email,c.job_title AS jobTitle,c.contactability,c.company_id AS companyId,co.name AS companyName FROM contacts c LEFT JOIN companies co ON co.id=c.company_id WHERE c.id IN (SELECT value FROM json_each(?)) ORDER BY c.name,c.id').bind(JSON.stringify(contactIds)).all<{id:string;name:string|null;email:string|null;jobTitle:string|null;contactability:string;companyId:string|null;companyName:string|null}>()).results;
+  const opportunities=(await db.prepare("SELECT oc.contact_id AS contactId,o.id,o.title FROM opportunity_contacts oc JOIN opportunities o ON o.id=oc.opportunity_id WHERE o.lifecycle='open' AND oc.contact_id IN (SELECT value FROM json_each(?)) ORDER BY o.title,o.id").bind(JSON.stringify(contactIds)).all<{contactId:string;id:string;title:string}>()).results;
+  const resolved:Attendee[]=contacts.map(contact=>({email:contact.email,contact:{id:contact.id,name:contact.name,jobTitle:contact.jobTitle,contactability:contact.contactability,href:recordHref({type:'contact',id:contact.id})},
+@@ -42,9 +45,10 @@ async function attendees(db:D1Database,participants:string[],linked:RecordRef[])
+   opportunities:opportunities.filter(row=>row.contactId===contact.id).map(row=>({id:row.id,title:row.title,href:recordHref({type:'opportunity',id:row.id})}))}));
+  const settings=await db.prepare("SELECT free_mail_domains_json AS free FROM workspace_settings WHERE id='workspace'").first<{free:string}>(),free=JSON.parse(settings?.free??'[]') as string[];
+  const unresolved:UnresolvedAttendee[]=[];
+- for(const key of keys.filter(key=>!byKey.has(key))){
++ for(const key of keys.filter(key=>!byKey.has(key)&&(!operators.has(key)||(candidates.get(key)?.length??0)>0))){
+   const domain=companyDomainKey(key.split('@')[1],free),company=domain?await db.prepare('SELECT id,name FROM companies WHERE primary_domain_key=?').bind(domain).first<{id:string;name:string}>():null;
+-  unresolved.push({email:key,company:company??null});
++  const ambiguous=(candidates.get(key)?.length??0)>1||(operators.has(key)&&(candidates.get(key)?.length??0)>0);
++  unresolved.push({email:key,company:ambiguous?null:company??null,...(ambiguous?{reason:'Ambiguous exact email: more than one identity matches. Review the records; Orbit has chosen nobody.'}:{})});
+  }
+  return {resolved,unresolved};
+ }
+@@ -79,22 +83,25 @@ export async function planNote(db:D1Database,signalId:string,target:RecordRef){
+ export async function buildMeetingPlan(db:D1Database,signalId:string,input:{operatorId:string;now?:Date;allowed?:(ref:RecordRef)=>boolean}){
+  const context=await meetingContext(db,signalId),{signal}=context,allowed=input.allowed??(()=>true),links=context.links.filter(allowed);
+  // An application sees only its granted records: no company guessed from an unknown address, none it was not granted.
+- const found=await attendees(db,context.participants,context.links),people={
++ const zoom=await meetingRow(db,signalId),attendance=zoom?JSON.parse(zoom.attendance_json) as {email:string}[]:[];
++ const found=await attendees(db,[...context.participants,...attendance.map(person=>person.email).filter(Boolean)],context.links,Boolean(zoom)),people={
+   resolved:found.resolved.filter(person=>allowed({type:'contact',id:person.contact.id})).map(person=>({...person,company:person.company&&allowed({type:'company',id:person.company.id})?person.company:null,opportunities:person.opportunities.filter(o=>allowed({type:'opportunity',id:o.id}))})),
+-  unresolved:input.allowed?found.unresolved.map(person=>({email:person.email,company:null})):found.unresolved};
++  unresolved:input.allowed?(zoom?[]:found.unresolved.map(person=>({...person,company:null}))):found.unresolved};
+  const opportunityIds=[...new Set([...links.filter(ref=>ref.type==='opportunity').map(ref=>ref.id),...people.resolved.flatMap(person=>person.opportunities.map(o=>o.id))])];
+  const opportunities=(await opportunitiesFor(db,opportunityIds)).map(row=>({...row,linked:links.some(ref=>ref.type==='opportunity'&&ref.id===row.id)}));
+  const refs:RecordRef[]=[...links,...people.resolved.map(p=>({type:'contact' as const,id:p.contact.id})),...people.resolved.flatMap(p=>p.company?[{type:'company' as const,id:p.company.id}]:[]),...opportunityIds.map(id=>({type:'opportunity' as const,id}))];
+  const keys=new Set(refs.map(refKey)),brief=await buildBrief(db,{operatorId:input.operatorId,now:input.now,visible:input.allowed?{record:allowed,signal:()=>false}:undefined});
+  const promises=brief.accounts.flatMap(account=>account.lines).filter((line:BriefLine)=>(line.group==='promise'||line.group==='proposal')&&line.records.some(ref=>keys.has(refKey(ref))));
+  const noteTarget=allowed(context.noteTarget)?context.noteTarget:links.find(ref=>ref.type==='opportunity')??links[0]??null;
++ const note=noteTarget?await planNote(db,signalId,noteTarget):null;
+  return {
++  zoom:await zoomPlan(db,signalId,note,input.allowed),
+   meeting:{signalId:signal.id,status:signal.type.split('.')[1],subject:signal.subject??'Meeting',occurredAt:signal.occurredAt,start:context.start,end:context.end,source:signal.sourceName,
+    href:noteTarget?recordHref(noteTarget):planHref(signal.id)},
+   attendees:people.resolved,unresolved:people.unresolved,opportunities,primaryOpportunityId:links.find(ref=>ref.type==='opportunity')?.id??null,
+   openValueCents:opportunities.filter(row=>row.lifecycle==='open').reduce((sum,row)=>sum+row.valueCents,0),
+   obligations:!input.allowed&&links.some(ref=>ref.type==='opportunity')?(await readObligations(db,links.find(ref=>ref.type==='opportunity')!.id)).filter(item=>item.meeting_id===signalId):[],
+-  interactions:await interactions(db,refs,allowed),promises,noteTarget,note:noteTarget?await planNote(db,signalId,noteTarget):null,
++  interactions:await interactions(db,refs,allowed),promises,noteTarget,note,
+  };
+ }
+ export type MeetingPlan=Awaited<ReturnType<typeof buildMeetingPlan>>;
+diff --git a/src/core/features/today/plan-actions.ts b/src/core/features/today/plan-actions.ts
+index 778d0c2..d83fbb2 100644
+--- a/src/core/features/today/plan-actions.ts
++++ b/src/core/features/today/plan-actions.ts
+@@ -1,3 +1,4 @@
++import {meetingRow} from '../zoom/repository';
+ import {ManualRepository} from '../records/manual';
+ import {writeHandoff} from '../delegation/effects';
+ import {snapshot} from '../delegation/evidence';
+@@ -7,6 +8,7 @@ import {buildMeetingPlan,meetingContext,planNote} from './meeting-plan';
+ 
+ /** Saves the agenda and prep notes as one RECORD-010 note on the meeting's record; nothing is sent. */
+ export async function savePlan(db:D1Database,signalId:string,input:{agenda:string;prep:string},actor:string){
++ if((await meetingRow(db,signalId))?.state==='cancelled')throw new TodayError(409,'This Zoom meeting was cancelled. Its preparation is stopped.');
+  const context=await meetingContext(db,signalId),existing=await planNote(db,signalId,context.noteTarget);
+  const text=[`Meeting plan: ${context.signal.subject??'Meeting'}`,'',`Agenda`,input.agenda.trim()||'None','',`Prep notes`,input.prep.trim()||'None'].join('\n');
+  const saved=await new ManualRepository(db).save(context.noteTarget.type,context.noteTarget.id,{kind:'note',text,occurredAt:new Date().toISOString()},actor,existing?.entryId,{meetingSignalId:signalId,agenda:input.agenda,prep:input.prep});
+@@ -16,10 +18,13 @@ export async function savePlan(db:D1Database,signalId:string,input:{agenda:strin
+ /** Turns one cited plan line into an internal next action (a handoff task) on the meeting's opportunity. */
+ export async function planAction(db:D1Database,signalId:string,input:{title:string;dueAt:string|null;evidenceId:string;obligationId?:string},actor:string){
+  const plan=await buildMeetingPlan(db,signalId,{operatorId:actor});
++ if(plan.meeting.status==='cancelled')throw new TodayError(409,'This meeting was cancelled. Its follow-up is stopped.');
+  if(!plan.primaryOpportunityId)throw new TodayError(409,'Link this meeting to an opportunity before adding a next action.');
+  const cited=new Set([plan.meeting.signalId,...plan.interactions.map(line=>line.evidence.id),...plan.promises.map(line=>line.evidence.id)]);
+  if(!cited.has(input.evidenceId))throw new TodayError(400,'A next action must cite a line of this plan.');
+  const target=`opportunities/${plan.primaryOpportunityId}/handoffs/${random().slice(0,32)}`,before=await snapshot(db,target,true);
+- return writeHandoff(db,{operationKey:random().slice(0,64),operation:'orbit.handoff.upsert',target,expectedRevision:before.revision,expectedAudienceRevision:before.audience.audienceRevision,
++ const written=await writeHandoff(db,{operationKey:random().slice(0,64),operation:'orbit.handoff.upsert',target,expectedRevision:before.revision,expectedAudienceRevision:before.audience.audienceRevision,
+   content:{title:input.title,description:`From the meeting plan for ${plan.meeting.subject}`,assigneeId:actor,dueAt:input.dueAt,status:'open',evidence:[input.evidenceId]}},{actor,...(input.obligationId?{obligationId:input.obligationId}:{})});
++ if(plan.zoom)await db.prepare('INSERT INTO zoom_plan_actions(signal_id,handoff_id) VALUES(?,?)').bind(signalId,target.split('/')[3]).run();
++ return written;
+ }
+diff --git a/src/core/features/workflows/run-presentation.ts b/src/core/features/workflows/run-presentation.ts
+new file mode 100644
+index 0000000..5e0270f
+--- /dev/null
++++ b/src/core/features/workflows/run-presentation.ts
+@@ -0,0 +1,64 @@
++import type {Event,Run} from './contracts';
++import type {PlannedAction} from './planning';
++import {record,sourceAvailable} from './repository';
++
++type Row=Record<string,any>;
++type Item={text:string;href?:string;label?:string;detail?:string};
++const label=(value:string)=>value.replaceAll('_',' ').replace(/^./,s=>s.toUpperCase());
++// Diagnostic messages can contain database identifiers. Exact diagnostics remain in technical details.
++const readable=(value:string)=>value.replace(/\b[0-9A-HJKMNP-TV-Z]{26}\b|\b[0-9a-f]{32,64}\b|\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b/gi,'record');
++const parse=(value:string|null)=>JSON.parse(value??'[]');
++
++/** A read-only projection of retained execution evidence. It never dispatches or changes a run. */
++export async function presentRun(db:D1Database,run:Run,event:Event|null,steps:Row[],actor:string){
++ const person=async(id:string|null)=>id?await db.prepare('SELECT display_name FROM operators WHERE id=?').bind(id).first<string>('display_name')??'Former operator':'Unassigned';
++ async function reference(kind:string,id:string):Promise<{label:string;href?:string}>{
++  const row=await record(db,kind,id);
++  return row?{label:String(row.title??row.name),href:`/app/${kind==='opportunity'?'opportunities':kind==='company'?'companies':'contacts'}/${encodeURIComponent(id)}`}:{label:`${kind==='opportunity'?'Deal':label(kind)} no longer available`};
++ }
++ async function value(field:string,input:unknown):Promise<string>{
++  if(input==null||input==='')return 'Empty';
++  if(field==='owner_id')return person(String(input));
++  if(field==='stage_id')return await db.prepare('SELECT name FROM pipeline_stages WHERE id=?').bind(input).first<string>('name')??'Former stage';
++  if(typeof input==='boolean')return input?'Yes':'No';
++  if(typeof input==='object'||typeof input==='string'&&/^[\[{]/.test(input))return 'Structured value (see technical details)';
++  return readable(String(input));
++ }
++ async function writeItem(result:Row):Promise<Item>{
++  const stored=result.writeId?await db.prepare('SELECT record_type,record_id,field,before_json,after_json FROM workflow_record_writes WHERE id=?').bind(result.writeId).first<Row>():null;
++  const kind=stored?.record_type??result.recordType??run.record_type,id=stored?.record_id??result.recordId??run.record_id;
++  const ref=await reference(kind,id),field=stored?.field??result.field;
++  let text=result.skipped?'Skipped change':result.archived?'Archived created deal':result.undone?'Restored change':field==='create_record'?'Created record':'Updated record';
++  let detail=result.reason?readable(String(result.reason)):undefined;
++  if(field&&field!=='create_record'){
++   const before=stored?parse(stored.before_json):result.before,after=stored?parse(stored.after_json):result.after;
++   text=`${result.undone?'Restored':result.skipped?'Skipped':'Changed'} ${label(field)}`;
++   if(!result.skipped)detail=`${await value(field,result.undone?after:before)} → ${await value(field,result.undone?before:after)}`;
++  }
++  return {text,...ref,detail};
++ }
++ async function effectItem(result:Row):Promise<Item>{
++  if(result.taskId){const task=await db.prepare('SELECT title FROM sales_tasks WHERE id=?').bind(result.taskId).first<{title:string}>();return task?{text:result.kind==='remind_task'?'Created task with reminder':'Created task',label:task.title,href:`/app/tasks/${encodeURIComponent(result.taskId)}`}:{text:'Created task',detail:'Task no longer available'};}
++  if(result.kind==='notify')return {text:'Notified team',detail:(await Promise.all((result.recipients??[]).map(person))).join(', ')};
++  if(result.kind==='assign_owner')return {text:'Assigned owner',detail:await person(result.ownerId)};
++  if(result.kind==='webhook')return {text:result.submitted?'Webhook accepted':'Webhook not submitted',detail:result.status?`HTTP ${result.status}`:undefined};
++  return writeItem(result);
++ }
++ const plans=parse(run.plan_json) as PlannedAction[];
++ const actions=await Promise.all(plans.map(async(plan,index)=>{
++  const step=steps.find(s=>s.ordinal===index),raw=step?parse(step.result_json):[],results=Array.isArray(raw)?raw:[];
++  const items=await Promise.all(results.map(effectItem));
++  // Approved writes can have no step result, but their durable write receipts still exist.
++  if(!items.length){const writes=(await db.prepare("SELECT record_type AS recordType,record_id AS recordId,field,before_json,after_json FROM workflow_record_writes WHERE run_id=? AND id IN(SELECT value FROM json_each(?))").bind(run.id,JSON.stringify(plan.writes.map(w=>w.id))).all<Row>()).results;
++   for(const w of writes)items.push(await writeItem({...w,before:parse(w.before_json),after:parse(w.after_json)}));
++  }
++  return {label:label(plan.action.kind),status:step?.status??(run.status==='needs_approval'?'needs_approval':'not_started'),attempts:step?.attempts??0,items,error:plan.error?readable(plan.error):undefined};
++ }));
++ const allowed=event&&await sourceAvailable(db,event,actor);
++ const entry=allowed&&event.kind==='activity_logged'?await db.prepare('SELECT id,kind,payload_json FROM timeline_entries WHERE id=?').bind(event.id.split(':')[0]).first<Row>():null;
++ const target=await reference(run.record_type,run.record_id);
++ const activity=entry?parse(entry.payload_json):null;
++ const trigger={label:entry?`${label(entry.kind.split('.').at(-1))} logged`:event?label(event.kind):'Trigger unavailable',text:allowed?(activity?.text?readable(String(activity.text)):readable(event!.evidence)):'Source evidence is no longer available',href:allowed&&target.href?target.href+(entry?`#entry-${encodeURIComponent(entry.id)}`:''):undefined,at:event?.occurred_at};
++ const undo=run.status==='undone'?await Promise.all((parse(run.outcome_json) as Row[]).map(writeItem)):undefined;
++ return {ownerName:await person(run.owner_id),createdAt:run.created_at,updatedAt:run.updated_at,trigger,actions,undo,reason:run.reason?readable(run.reason):null};
++}
+diff --git a/src/core/features/zoom/connection.ts b/src/core/features/zoom/connection.ts
+new file mode 100644
+index 0000000..bd0c4d5
+--- /dev/null
++++ b/src/core/features/zoom/connection.ts
+@@ -0,0 +1,31 @@
++import {audit} from '../records/shared';
++import {ZoomError,zoomSource,type ZoomConfig,type ZoomCredentials} from './contracts';
++import {zoomToken} from './provider';
++interface SourceRow {type:string;enabled:number;secret_ciphertext:string|null;last_error:string|null;last_accepted_at:string|null;cursor:string|null}
++export const sourceRow=(db:D1Database)=>db.prepare('SELECT type,enabled,secret_ciphertext,last_error,last_accepted_at,cursor FROM signal_sources WHERE id=?').bind(zoomSource).first<SourceRow>();
++export async function connection(db:D1Database){
++ const row=await sourceRow(db),held=Boolean(row?.type==='mail_provider'&&row.secret_ciphertext),reason=!row?'Connect the owner’s Zoom Server-to-Server OAuth app.':!held?'Zoom is paused. Connect credentials in this installation; secrets never travel in an archive.':!row.enabled?(row.last_error??'Zoom is paused. Reconnect in Settings.'):null;
++ return {state:reason?'unresolved-setup' as const:'connected' as const,reason,held,lastEventAt:row?.last_accepted_at??null};
++}
++export async function connect(db:D1Database,config:ZoomConfig,credentials:ZoomCredentials,actor:string){
++ if(!config.security)throw new ZoomError(503,'Zoom needs the installation encryption key.');
++ const row=await sourceRow(db);if(row&&row.type!=='mail_provider')throw new ZoomError(409,'A different signal source already uses the Zoom identity.');
++ let auth;try{auth=await zoomToken(config,credentials);}catch(error){
++  if(error instanceof ZoomError&&error.status===403)await db.batch([db.prepare('UPDATE signal_sources SET enabled=0,last_error=? WHERE id=?').bind(error.message,zoomSource),audit(db,actor,'zoom.connection-refused','zoom',zoomSource)]);
++  throw error;
++ }
++ const at=(config.now?.()??new Date()).toISOString();
++ await db.batch([db.prepare("INSERT INTO signal_sources(id,name,type,enabled,created_at,updated_at,secret_ciphertext,cursor) VALUES(?,'Zoom','mail_provider',1,?,?,?,?) ON CONFLICT(id) DO UPDATE SET enabled=1,removed_at=NULL,secret_ciphertext=excluded.secret_ciphertext,cursor=excluded.cursor,last_error=NULL,updated_at=excluded.updated_at WHERE signal_sources.type='mail_provider'").bind(zoomSource,at,at,await config.security.seal(JSON.stringify(credentials)),JSON.stringify({checkedAt:at,scopes:auth.scopes})),audit(db,actor,'zoom.connected','zoom',zoomSource)]);
++}
++export async function openConnection(db:D1Database,config:ZoomConfig){
++ const row=await sourceRow(db);if(row?.type!=='mail_provider'||!row.enabled||!row.secret_ciphertext||!config.security)throw new ZoomError(409,'Zoom is unresolved setup. Connect it in Settings.');
++ let credentials:ZoomCredentials;try{credentials=JSON.parse(await config.security.open(row.secret_ciphertext)) as ZoomCredentials;}catch{throw new ZoomError(409,'The saved Zoom credentials cannot be opened. Connect Zoom again.');}
++ return {credentials,ciphertext:row.secret_ciphertext};
++}
++export async function authorized(db:D1Database,config:ZoomConfig){
++ const saved=await openConnection(db,config);
++ try{return {...saved,...await zoomToken(config,saved.credentials)};}catch(error){if(error instanceof ZoomError&&error.status===403)await refused(db,error.message);throw error;}
++}
++export function refused(db:D1Database,reason:string){return db.prepare('UPDATE signal_sources SET enabled=0,last_error=? WHERE id=?').bind(reason,zoomSource).run();}
++export function connectionFence(db:D1Database,ciphertext:string){return db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'zoom_authority_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM signal_sources WHERE id=? AND type='mail_provider' AND enabled=1 AND removed_at IS NULL AND secret_ciphertext=?)").bind(zoomSource,ciphertext);}
++export async function disconnect(db:D1Database,actor:string){await db.batch([db.prepare("UPDATE signal_sources SET enabled=0,secret_ciphertext=NULL,last_error='Disconnected in Settings.' WHERE id=?").bind(zoomSource),audit(db,actor,'zoom.disconnected','zoom',zoomSource)]);}
+diff --git a/src/core/features/zoom/contracts.ts b/src/core/features/zoom/contracts.ts
+new file mode 100644
+index 0000000..d4a1164
+--- /dev/null
++++ b/src/core/features/zoom/contracts.ts
+@@ -0,0 +1,9 @@
++import type {SourceSecurity} from '../../platform/source-security';
++import type {ProviderFetch} from '../capture/providers/config';
++export const zoomSource='zoom';
++export const ownership='Zoom runs the meeting. Orbit keeps its reviewed deal activity, preparation and follow-up.';
++export interface ZoomConfig {security?:SourceSecurity;fetcher?:ProviderFetch;origin?:string;now?:()=>Date}
++export interface ZoomCredentials {accountId:string;clientId:string;clientSecret:string;webhookSecret:string}
++export interface ZoomMeeting {id:string;uuid:string;topic:string;start:string;end:string;duration:number;hostId:string;joinUrl:string;participants:string[];recording:'disabled'|'permission-not-granted'|'permission-held-unused'}
++export interface ZoomRow {signal_id:string;meeting_id:string;meeting_uuid:string;opportunity_id:string;join_url:string;host_id:string;duration:number;state:'scheduled'|'completed'|'cancelled';recording:string;attendance_json:string;attendance_state:string;completed_at:string|null;completion_entry_id:string|null;completion_digest:string|null;completion_timestamp:string|null;cancelled_at:string|null;last_event_at:number}
++export class ZoomError extends Error {constructor(readonly status:400|401|403|404|409|413|502|503,message:string){super(message);}}
+diff --git a/src/core/features/zoom/plan.ts b/src/core/features/zoom/plan.ts
+new file mode 100644
+index 0000000..cac2f68
+--- /dev/null
++++ b/src/core/features/zoom/plan.ts
+@@ -0,0 +1,20 @@
++import {entryHref,planHref} from '../today/links';
++import type {RecordRef} from '../today/types';
++import {contactEmailKey} from '../records/identity';
++import {meetingRow,participantMatches} from './repository';
++/** This is a recap of recorded facts, not a transcript summary or invented conversation. */
++export async function zoomPlan(db:D1Database,signalId:string,note:{href:string}|null,allowed?:(ref:RecordRef)=>boolean){
++ const row=await meetingRow(db,signalId);if(!row)return null;
++ const recorded=JSON.parse(row.attendance_json) as {email:string;joinedAt:string|null;leftAt:string|null}[];
++ const matches=await participantMatches(db,recorded.map(person=>person.email));
++ // Unknown and ambiguous addresses confer no selected-contact authority, including in nested match fields.
++ const attendance=recorded.map(person=>({...person,match:matches.find(match=>match.email===contactEmailKey(person.email))??{email:'',contactId:null,state:'not-supplied' as const}}))
++  .filter(person=>!allowed||Boolean(person.match.contactId&&allowed({type:'contact',id:person.match.contactId})));
++ const recording=row.recording==='disabled'?'Recording disabled in Zoom.':row.recording==='permission-not-granted'?'Recording permission not granted.':'Recording permission held, unused by Orbit.';
++ const opportunity={type:'opportunity' as const,id:row.opportunity_id},href=!allowed||allowed(opportunity)?entryHref(opportunity,row.completion_entry_id):planHref(signalId);
++ // A Zoom host id has no verified contact mapping, so it cannot be disclosed under a selected-record grant.
++ return {meetingId:row.meeting_id,hostId:allowed?null:row.host_id,joinUrl:row.join_url,duration:row.duration,state:row.state,recording,transcript:'Transcript permission not requested. Transcript missing: Orbit has fetched no recording or transcript content.',
++  attendanceState:row.attendance_state,attendance,
++  completionDigest:row.completion_digest,completionTimestamp:row.completion_timestamp,completedAt:row.completed_at,cancelledAt:row.cancelled_at,
++  recap:row.state==='completed'&&row.completed_at?{summary:`Zoom reports this meeting ended at ${row.completed_at}. ${row.attendance_state==='available'?`${attendance.length} attendance records were read from Zoom.`:'Attendance is unresolved; no attendance is inferred.'} No discussion, decisions or transcript are inferred.`,citations:[{kind:'plan',label:note?'Saved meeting plan':'Meeting preparation',href:note?.href??planHref(signalId)},{kind:'attendance',label:'Recorded Zoom attendance',href:planHref(signalId)+'#zoom-attendance'},{kind:'completion',label:'Signed Zoom completion',href}],evidenceId:signalId}:null};
++}
+diff --git a/src/core/features/zoom/privacy.ts b/src/core/features/zoom/privacy.ts
+new file mode 100644
+index 0000000..60f96dd
+--- /dev/null
++++ b/src/core/features/zoom/privacy.ts
+@@ -0,0 +1,13 @@
++import {identityMatch,identityPatterns} from '../records/erasure-identity';
++/** Attendance that was ambiguous at completion must still be found when that address is later erased. */
++export function zoomContactErasure(db:D1Database,contactId:string,identities:string[]){
++ return identities.map(email=>db.prepare(`INSERT OR IGNORE INTO record_erasure_signals SELECT ?,signal_id FROM zoom_meetings WHERE ${identityMatch('attendance_json')}`).bind(contactId,...identityPatterns(email)));
++}
++
++/** Retain only anonymous capture matching keys, including meetings erased before their scheduled start. */
++export function zoomEvidenceErasure(db:D1Database,contactId:string){
++ return db.prepare(`INSERT INTO audit_entries(id,actor_id,action,entity_type,entity_id,details_json,occurred_at)
++ SELECT lower(hex(randomblob(16))),NULL,'capture.erased_item','capture_privacy',p.value,'{}',strftime('%Y-%m-%dT%H:%M:%fZ','now')
++ FROM signals s JOIN zoom_meetings z ON z.signal_id=s.id,json_each(s.payload_json,'$.data.capturePrivacyKeys') p
++ WHERE s.id IN(SELECT signal_id FROM record_erasure_signals WHERE contact_id=?) GROUP BY p.value`).bind(contactId);
++}
+diff --git a/src/core/features/zoom/provider.ts b/src/core/features/zoom/provider.ts
+new file mode 100644
+index 0000000..82899c6
+--- /dev/null
++++ b/src/core/features/zoom/provider.ts
+@@ -0,0 +1,41 @@
++import {z} from 'zod';
++import {ZoomError,type ZoomConfig,type ZoomCredentials,type ZoomMeeting} from './contracts';
++const tokenSchema=z.object({access_token:z.string().min(1),token_type:z.string().refine(value=>value.toLowerCase()==='bearer'),scope:z.string().default('')});
++async function response(config:ZoomConfig,url:string,init:RequestInit){
++ let result:Response;try{result=await(config.fetcher??fetch)(url,{...init,redirect:'manual',signal:AbortSignal.timeout(15000)});}catch{throw new ZoomError(502,'Zoom is unavailable. No meeting was changed. Try again after checking the connection.');}
++ if([401,403].includes(result.status))throw new ZoomError(403,'Zoom refused access. Check the app credentials and granted meeting permissions in Settings.');
++ if(result.status===404)throw new ZoomError(404,'Zoom could not read that meeting. Check its exact ID and this app’s access.');
++ if(!result.ok)throw new ZoomError(502,'Zoom could not complete the read. No meeting was changed.');
++ try{return await result.json();}catch{throw new ZoomError(502,'Zoom returned an unreadable response. No meeting was changed.');}
++}
++/** Account credentials go only to Zoom's documented token endpoint; no token is persisted or returned to a browser. */
++export async function zoomToken(config:ZoomConfig,credentials:ZoomCredentials){
++ const value=tokenSchema.safeParse(await response(config,'https://zoom.us/oauth/token',{method:'POST',headers:{Authorization:'Basic '+btoa(credentials.clientId+':'+credentials.clientSecret),'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'account_credentials',account_id:credentials.accountId}).toString()}));
++ if(!value.success)throw new ZoomError(502,'Zoom returned no usable access token.');
++ return {token:value.data.access_token,scopes:value.data.scope.split(/\s+/).filter(Boolean)};
++}
++export function zoomRead(config:ZoomConfig,token:string,path:string){return response(config,'https://api.zoom.us/v2'+path,{method:'GET',headers:{Authorization:'Bearer '+token}});}
++const meetingSchema=z.object({id:z.union([z.number().int().positive(),z.string().regex(/^\d{9,11}$/)]),uuid:z.string().min(1).max(200),type:z.number(),topic:z.string().min(1).max(2000),start_time:z.iso.datetime(),duration:z.number().int().min(1).max(1440),host_id:z.string().min(1).max(200),join_url:z.url(),settings:z.object({auto_recording:z.enum(['none','local','cloud']).optional(),meeting_invitees:z.array(z.object({email:z.email()})).max(1000).optional()}).optional()});
++export async function readMeeting(config:ZoomConfig,auth:{token:string;scopes:string[]},id:string):Promise<ZoomMeeting>{
++ const parsed=meetingSchema.safeParse(await zoomRead(config,auth.token,'/meetings/'+encodeURIComponent(id)));
++ if(!parsed.success)throw new ZoomError(502,'Zoom did not return complete scheduled meeting details.');
++ const meeting=parsed.data,url=new URL(meeting.join_url);
++ if(String(meeting.id)!==id)throw new ZoomError(409,'Zoom returned a different meeting ID. Nothing was attached.');
++ if(meeting.type!==2)throw new ZoomError(409,'Choose a scheduled, non-recurring Zoom meeting so the reviewed occurrence is exact.');
++ if(url.protocol!=='https:'||url.username||url.password||!/(^|\.)zoom\.(us|com)$/.test(url.hostname))throw new ZoomError(502,'Zoom returned an unsupported meeting link.');
++ const recording=meeting.settings?.auto_recording==='none'?'disabled':auth.scopes.some(scope=>scope.startsWith('cloud_recording:')||scope==='recording:read:admin')?'permission-held-unused':'permission-not-granted';
++ return {id,uuid:meeting.uuid,topic:meeting.topic,start:meeting.start_time,end:new Date(Date.parse(meeting.start_time)+meeting.duration*60000).toISOString(),duration:meeting.duration,hostId:meeting.host_id,joinUrl:meeting.join_url,participants:[...new Set((meeting.settings?.meeting_invitees??[]).map(person=>person.email.trim().toLowerCase()))],recording};
++}
++const participantsSchema=z.object({participants:z.array(z.object({user_email:z.string().default(''),join_time:z.iso.datetime().optional(),leave_time:z.iso.datetime().optional()})).max(300),next_page_token:z.string().optional()});
++/** Only attendance metadata, never recording files or transcript content. Zoom requires double encoding for slash-bearing UUIDs. */
++export async function pastParticipants(config:ZoomConfig,token:string,uuid:string){
++ const encoded=uuid.startsWith('/')||uuid.includes('//')?encodeURIComponent(encodeURIComponent(uuid)):encodeURIComponent(uuid),people:{email:string;joinedAt:string|null;leftAt:string|null}[]=[];
++ let next='';
++ for(let page=0;page<10;page++){
++  const parsed=participantsSchema.safeParse(await zoomRead(config,token,`/past_meetings/${encoded}/participants?page_size=300${next?'&next_page_token='+encodeURIComponent(next):''}`));
++  if(!parsed.success)throw new ZoomError(502,'Zoom returned unreadable attendance. Attendance remains unresolved.');
++  for(const person of parsed.data.participants){const email=z.email().safeParse(person.user_email.trim().toLowerCase());people.push({email:email.success?email.data:'',joinedAt:person.join_time??null,leftAt:person.leave_time??null});}
++  next=parsed.data.next_page_token??'';if(!next)return people;
++ }
++ throw new ZoomError(502,'Zoom attendance exceeds this read. Attendance remains unresolved.');
++}
+diff --git a/src/core/features/zoom/repository.ts b/src/core/features/zoom/repository.ts
+new file mode 100644
+index 0000000..6013792
+--- /dev/null
++++ b/src/core/features/zoom/repository.ts
+@@ -0,0 +1,48 @@
++import {createId} from '../../shared/ids';
++import {payloadHash} from '../../platform/source-security';
++import {capturePrivacy} from '../capture/privacy';
++import {contactEmailKey} from '../records/identity';
++import {audit,requireRecord} from '../records/shared';
++import {ZoomError,zoomSource,type ZoomConfig,type ZoomMeeting,type ZoomRow} from './contracts';
++import {authorized,connectionFence,refused} from './connection';
++import {readMeeting} from './provider';
++export const meetingRow=(db:D1Database,signalId:string)=>db.prepare('SELECT * FROM zoom_meetings WHERE signal_id=?').bind(signalId).first<ZoomRow>();
++/** Exact normalized mailbox or retained alias; multiple candidates are explicitly unresolved. Names never match. */
++export async function participantMatches(db:D1Database,emails:string[]){
++ const result:{email:string;contactId:string|null;state:'matched'|'ambiguous'|'unknown'|'operator'|'not-supplied'}[]=[];
++ for(const email of [...new Set(emails)]){
++  const key=contactEmailKey(email);
++  if(!key){result.push({email:'',contactId:null,state:'not-supplied'});continue;}
++  const operator=Boolean(await db.prepare('SELECT 1 FROM operators WHERE lower(trim(email))=?').bind(key).first());
++  const matches=(await db.prepare("SELECT id FROM contacts WHERE email_key=? UNION SELECT c.id FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key=?").bind(key,key).all<{id:string}>()).results;
++  result.push({email:key,contactId:!operator&&matches.length===1?matches[0]!.id:null,state:operator?(matches.length?'ambiguous':'operator'):matches.length===1?'matched':matches.length?'ambiguous':'unknown'});
++ }
++ return result;
++}
++export async function meetingPrivacy(db:D1Database,meeting:{uuid:string;topic:string;start:string;end:string;participants:string[]}){
++ return capturePrivacy(db,{kind:'event',uid:meeting.uuid,eventId:'zoom:'+meeting.uuid,hash:'',recurrenceId:null,originalAt:meeting.start,sequence:0,phase:'booked',occurredAt:meeting.start,subject:meeting.topic,start:meeting.start,end:meeting.end,participants:meeting.participants.map(email=>({email,name:'',role:'attendee'})),headers:'',body:JSON.stringify(meeting),quote:[]});
++}
++export async function preview(db:D1Database,config:ZoomConfig,actor:string,meetingId:string,opportunityId:string){
++ const deal=await requireRecord(db,'opportunity',opportunityId),auth=await authorized(db,config);
++ let meeting:ZoomMeeting;try{meeting=await readMeeting(config,auth,meetingId);}catch(error){if(error instanceof ZoomError&&error.status===403)await refused(db,error.message);throw error;}
++ const privacy=await meetingPrivacy(db,meeting);if(await privacy.blocked())throw new ZoomError(409,'This meeting contains evidence removed by erasure. It cannot be imported again.');
++ const selected={id:opportunityId,title:String(deal.title)},digest=await payloadHash(JSON.stringify({actor,selected,meeting}));
++ return {meeting,deal:selected,digest,participants:await participantMatches(db,meeting.participants),ownership:'Zoom runs the meeting; attaching it sends no invitation and changes no outreach state.',auth,privacy};
++}
++export async function attach(db:D1Database,config:ZoomConfig,actor:string,input:{meetingId:string;opportunityId:string;previewDigest:string}){
++ const reviewed=await preview(db,config,actor,input.meetingId,input.opportunityId);
++ if(reviewed.digest!==input.previewDigest)throw new ZoomError(409,'The meeting or chosen deal changed. Review its exact details again.');
++ const existing=await db.prepare('SELECT signal_id,opportunity_id FROM zoom_meetings WHERE meeting_uuid=?').bind(reviewed.meeting.uuid).first<{signal_id:string;opportunity_id:string}>();
++ if(existing){if(existing.opportunity_id!==input.opportunityId)throw new ZoomError(409,'This exact Zoom occurrence is already attached to another deal.');return {signalId:existing.signal_id,planHref:'/app/meetings/'+existing.signal_id,replayed:true};}
++ const id=createId(),entryId=id,at=(config.now?.()??new Date()).toISOString(),{meeting,participants}=reviewed;
++ const payload=JSON.stringify({eventId:'zoom:'+meeting.uuid,type:'meeting.booked',subject:meeting.topic,occurredAt:meeting.start,data:{capturePrivacyKeys:reviewed.privacy.keys,start:meeting.start,end:meeting.end,participants:meeting.participants,meetingId:meeting.id,meetingUuid:meeting.uuid,joinUrl:meeting.joinUrl,hostId:meeting.hostId,duration:meeting.duration}});
++ const links=[{type:'opportunity',id:input.opportunityId},...participants.flatMap(person=>person.contactId?[{type:'contact',id:person.contactId}]:[])];
++ const statements=[connectionFence(db,reviewed.auth.ciphertext),...reviewed.privacy.fences(),
++  db.prepare('INSERT INTO signals(id,source_id,source_event_id,type,subject,occurred_at,received_at,payload_hash,confidence,linking_basis,created_at,payload_json) VALUES(?,?,?,\'meeting.booked\',?,?,?,?,\'observed\',\'Reviewed exact Zoom meeting and deal\',?,?)').bind(id,zoomSource,'zoom:'+meeting.uuid,meeting.topic,meeting.start,at,await payloadHash(payload),at,payload),
++  db.prepare("INSERT INTO timeline_entries(id,kind,occurred_at,recorded_at,actor_type,actor_id,source,payload_json) VALUES(?,'signal.recorded',?,?,'operator',?,'zoom',?)").bind(entryId,meeting.start,at,actor,JSON.stringify({signalId:id,type:'meeting.booked',subject:meeting.topic,text:'Zoom meeting scheduled',meetingId:meeting.id,joinUrl:meeting.joinUrl,start:meeting.start,end:meeting.end,duration:meeting.duration,hostId:meeting.hostId,planHref:'/app/meetings/'+id})),
++  ...links.flatMap(ref=>[db.prepare('INSERT INTO signal_links VALUES(?,?,?,?,?)').bind(id,ref.type,ref.id,ref.type==='opportunity'?'Explicit reviewed choice':'Exact email',at),db.prepare('INSERT INTO timeline_entry_records VALUES(?,?,?)').bind(entryId,ref.type,ref.id)]),
++  db.prepare("INSERT INTO zoom_meetings(signal_id,meeting_id,meeting_uuid,opportunity_id,join_url,host_id,duration,state,recording) VALUES(?,?,?,?,?,?,?,'scheduled',?)").bind(id,meeting.id,meeting.uuid,input.opportunityId,meeting.joinUrl,meeting.hostId,meeting.duration,meeting.recording),
++  audit(db,actor,'zoom.meeting-attached','signal',id,{meetingId:meeting.id,opportunityId:input.opportunityId})];
++ await db.batch(statements);
++ return {signalId:id,planHref:'/app/meetings/'+id,replayed:false};
++}
+diff --git a/src/core/features/zoom/routes.ts b/src/core/features/zoom/routes.ts
+new file mode 100644
+index 0000000..a906c6b
+--- /dev/null
++++ b/src/core/features/zoom/routes.ts
+@@ -0,0 +1,28 @@
++import {Hono} from 'hono';
++import {z} from 'zod';
++import type {AuthenticatedOperator} from '../identity';
++import {isFullOperator} from '../access/identity-class';
++import {RecordError} from '../records/shared';
++import {ZoomError,ownership,type ZoomConfig} from './contracts';
++import {connect,connection,disconnect} from './connection';
++import {attach,preview} from './repository';
++type Env={Variables:{operator:AuthenticatedOperator}};
++const owner=(db:D1Database,id:string)=>db.prepare("SELECT 1 FROM operators WHERE id=? AND status='active' AND setup_owner=1").bind(id).first();
++const credentials=z.object({accountId:z.string().trim().min(1).max(200).regex(/^[A-Za-z0-9_-]+$/),clientId:z.string().trim().min(1).max(200).regex(/^[A-Za-z0-9_-]+$/),clientSecret:z.string().trim().min(1).max(300).regex(/^[\x21-\x7e]+$/),webhookSecret:z.string().trim().min(1).max(300)}).strict();
++const selection=z.object({meetingId:z.string().regex(/^\d{9,11}$/),opportunityId:z.string().regex(/^[0-9A-Z]{26}$/)}).strict();
++function errors(app:Hono<Env>){app.onError((error,c)=>error instanceof ZoomError||error instanceof RecordError?c.json({error:error.message},error.status):c.json({error:'The Zoom request could not be completed. No meeting was confirmed.'},503));}
++export function zoomSettingsRoutes(db:D1Database,config:ZoomConfig){
++ const app=new Hono<Env>();errors(app);
++ app.get('/',async c=>c.json({...await connection(db),owner:Boolean(await owner(db,c.get('operator').operatorId)),ownership,webhookPath:'/api/v1/signals/zoom',recording:'Recording and transcript content is never fetched.'}));
++ app.use('*',async(c,next)=>{if(!await owner(db,c.get('operator').operatorId))throw new ZoomError(403,'Only the installation owner connects or disconnects Zoom.');await next();});
++ app.post('/connect',async c=>{const input=credentials.safeParse(await c.req.json());if(!input.success)throw new ZoomError(400,'Enter the Zoom account ID, client ID, client secret and webhook secret token.');await connect(db,config,input.data,c.get('operator').operatorId);return c.json({connected:true});});
++ app.post('/disconnect',async c=>{await disconnect(db,c.get('operator').operatorId);return c.json({disconnected:true});});
++ return app;
++}
++export function zoomMeetingRoutes(db:D1Database,config:ZoomConfig){
++ const app=new Hono<Env>();errors(app);
++ app.use('*',async(c,next)=>{if(!await isFullOperator(db,c.get('operator').operatorId))throw new ZoomError(403,'Only full operators review and attach Zoom meetings.');await next();});
++ app.post('/preview',async c=>{const input=selection.safeParse(await c.req.json());if(!input.success)throw new ZoomError(400,'Choose a deal and the exact numeric Zoom meeting ID.');const {auth:_,privacy:__,...result}=await preview(db,config,c.get('operator').operatorId,input.data.meetingId,input.data.opportunityId);return c.json(result);});
++ app.post('/attach',async c=>{const input=selection.extend({previewDigest:z.string().regex(/^[a-f0-9]{64}$/),confirmed:z.literal(true)}).strict().safeParse(await c.req.json());if(!input.success)throw new ZoomError(400,'Review the exact meeting and chosen deal, then confirm attachment.');return c.json(await attach(db,config,c.get('operator').operatorId,input.data),201);});
++ return app;
++}
+diff --git a/src/core/features/zoom/webhook.ts b/src/core/features/zoom/webhook.ts
+new file mode 100644
+index 0000000..b8f134f
+--- /dev/null
++++ b/src/core/features/zoom/webhook.ts
+@@ -0,0 +1,74 @@
++import {Hono} from 'hono';
++import {z} from 'zod';
++import {boundedRequestBody,RequestBodyTooLarge} from '../../platform/bounded-request-body';
++import {payloadHash} from '../../platform/source-security';
++import {audit} from '../records/shared';
++import {ZoomError,zoomSource,type ZoomConfig,type ZoomRow} from './contracts';
++import {authorized,connectionFence,openConnection} from './connection';
++import {meetingPrivacy,participantMatches} from './repository';
++import {pastParticipants} from './provider';
++export async function zoomHmac(secret:string,value:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return [...new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(value)))].map(byte=>byte.toString(16).padStart(2,'0')).join('');}
++async function signed(secret:string,raw:string,timestamp:string,signature:string,now:Date){
++ if(!/^\d{10}$/.test(timestamp)||Math.abs(now.getTime()-Number(timestamp)*1000)>300000||!/^v0=[a-f0-9]{64}$/i.test(signature))return false;
++ const expected='v0='+await zoomHmac(secret,`v0:${timestamp}:${raw}`);let difference=0;for(let i=0;i<expected.length;i++)difference|=expected.charCodeAt(i)^signature.toLowerCase().charCodeAt(i);return difference===0;
++}
++const envelope=z.object({event:z.enum(['endpoint.url_validation','meeting.ended','meeting.deleted']),event_ts:z.number().int().positive(),payload:z.object({plainToken:z.string().min(1).max(1000).optional(),object:z.object({id:z.union([z.number().int().positive(),z.string().regex(/^\d{9,11}$/)]),uuid:z.string().min(1).max(200),end_time:z.iso.datetime().optional()}).passthrough().optional()}).passthrough()});
++export function zoomWebhookRoutes(db:D1Database,config:ZoomConfig){
++ const app=new Hono();
++ app.onError((error,c)=>error instanceof ZoomError?c.json({error:error.message},error.status):c.json({error:'Zoom delivery could not be applied. No completion was confirmed.'},503));
++ app.post('/',async c=>{
++  let raw:string;try{raw=new TextDecoder('utf-8',{fatal:true}).decode(await boundedRequestBody(c.req.raw,262144));}catch(error){throw new ZoomError(error instanceof RequestBodyTooLarge?413:400,'Zoom delivery is unreadable or too large.');}
++  const saved=await openConnection(db,config),now=config.now?.()??new Date(),timestamp=c.req.header('x-zm-request-timestamp')??'';
++  if(!await signed(saved.credentials.webhookSecret,raw,timestamp,c.req.header('x-zm-signature')??'',now))throw new ZoomError(401,'Zoom signature is invalid or stale.');
++  const digest=await payloadHash(raw);
++  if(await db.prepare('SELECT 1 FROM zoom_deliveries WHERE digest=?').bind(digest).first())throw new ZoomError(409,'This Zoom delivery was already received.');
++  let json:unknown;try{json=JSON.parse(raw);}catch{throw new ZoomError(400,'Zoom delivery must be valid JSON.');}
++  const parsed=envelope.safeParse(json);if(!parsed.success)throw new ZoomError(400,'Zoom delivery does not name a supported event and exact occurrence.');
++  const event=parsed.data,receipt=db.prepare('INSERT INTO zoom_deliveries VALUES(?,?)').bind(digest,now.toISOString());
++  if(event.event==='endpoint.url_validation'){
++   if(!event.payload.plainToken)throw new ZoomError(400,'Zoom validation needs its plain token.');
++   await db.batch([connectionFence(db,saved.ciphertext),receipt]);
++   return c.json({plainToken:event.payload.plainToken,encryptedToken:await zoomHmac(saved.credentials.webhookSecret,event.payload.plainToken)});
++  }
++  const object=event.payload.object;if(!object)throw new ZoomError(400,'Zoom delivery needs a meeting occurrence.');
++  const row=await db.prepare('SELECT * FROM zoom_meetings WHERE meeting_uuid=? AND meeting_id=?').bind(object.uuid,String(object.id)).first<ZoomRow>();
++  // Do not import from an unsolicited callback, nor recreate an erased meeting.
++  if(!row||row.state==='cancelled'||event.event_ts<=row.last_event_at||(event.event==='meeting.ended'&&row.state==='completed')){
++   await db.batch([connectionFence(db,saved.ciphertext),receipt]);return c.json({ignored:true});
++  }
++  const fence=db.prepare("INSERT INTO runtime_controls(name,value) SELECT 'zoom_meeting_fence',NULL WHERE NOT EXISTS(SELECT 1 FROM zoom_meetings WHERE signal_id=? AND state=? AND last_event_at=?)").bind(row.signal_id,row.state,row.last_event_at);
++  if(event.event==='meeting.deleted'){
++   await db.batch([connectionFence(db,saved.ciphertext),fence,receipt,
++    db.prepare("UPDATE zoom_meetings SET state='cancelled',cancelled_at=?,last_event_at=? WHERE signal_id=?").bind(now.toISOString(),event.event_ts,row.signal_id),
++    db.prepare("UPDATE signals SET type='meeting.cancelled' WHERE id=?").bind(row.signal_id),
++    db.prepare("UPDATE timeline_entries SET payload_json=json_set(payload_json,'$.type','meeting.cancelled','$.text','Zoom meeting cancelled') WHERE source='zoom' AND json_extract(payload_json,'$.signalId')=?").bind(row.signal_id),
++    db.prepare("UPDATE handoff_tasks SET status='cancelled',revision=lower(hex(randomblob(16))),updated_at=? WHERE status='open' AND id IN(SELECT handoff_id FROM zoom_plan_actions WHERE signal_id=?)").bind(now.toISOString(),row.signal_id),
++    audit(db,null,'zoom.meeting-cancelled','signal',row.signal_id),db.prepare('UPDATE signal_sources SET last_accepted_at=? WHERE id=?').bind(now.toISOString(),zoomSource)]);
++   return c.json({cancelled:true,signalId:row.signal_id});
++  }
++  if(!object.end_time)throw new ZoomError(400,'Zoom completion needs its recorded end time.');
++  const signal=await db.prepare('SELECT subject,payload_json FROM signals WHERE id=?').bind(row.signal_id).first<{subject:string;payload_json:string}>();
++  if(!signal)throw new ZoomError(409,'This meeting was erased.');
++  let people:Awaited<ReturnType<typeof pastParticipants>>=[],attendanceState='available';
++  try{const auth=await authorized(db,config);if(auth.ciphertext!==saved.ciphertext)throw new ZoomError(409,'Zoom connection changed during delivery.');people=await pastParticipants(config,auth.token,row.meeting_uuid);}catch(error){
++   if(!(error instanceof ZoomError))throw error;
++   if(error.status===409)throw error;
++   attendanceState=error.status===403?'permission-denied':'unavailable';
++   // A denied metadata read stays visible. The authenticated ended event still proves completion.
++  }
++  const original=JSON.parse(signal.payload_json) as {data:{start:string;end:string;participants:string[]}},participants=await participantMatches(db,people.map(person=>person.email));
++  const privacy=await meetingPrivacy(db,{uuid:row.meeting_uuid,topic:signal.subject,start:original.data.start,end:original.data.end,participants:[...original.data.participants,...people.map(person=>person.email).filter(Boolean)]});
++  if(await privacy.blocked())throw new ZoomError(409,'Completion contains evidence removed by erasure.');
++  const activity=await db.prepare("SELECT id FROM timeline_entries WHERE source='zoom' AND json_extract(payload_json,'$.signalId')=?").bind(row.signal_id).first<{id:string}>();
++  if(!activity)throw new ZoomError(409,'The attached meeting activity is no longer available.');
++  // Preserve the immutable attach payload. Current phase and attendance belong to this same attached activity.
++  await db.batch([connectionFence(db,saved.ciphertext),fence,...privacy.fences(),receipt,
++   db.prepare("UPDATE zoom_meetings SET state='completed',attendance_json=?,attendance_state=?,completed_at=?,completion_entry_id=?,completion_digest=?,completion_timestamp=?,last_event_at=? WHERE signal_id=?").bind(JSON.stringify(people),attendanceState,object.end_time,activity.id,digest,timestamp,event.event_ts,row.signal_id),
++   db.prepare("UPDATE signals SET type='meeting.completed' WHERE id=?").bind(row.signal_id),
++   db.prepare("UPDATE timeline_entries SET payload_json=json_set(payload_json,'$.type','meeting.completed','$.text','Zoom meeting completed','$.completedAt',?) WHERE id=?").bind(object.end_time,activity.id),
++   ...participants.flatMap(person=>person.contactId?[db.prepare("INSERT OR IGNORE INTO signal_links VALUES(?,'contact',?,'Exact attendance email',?)").bind(row.signal_id,person.contactId,now.toISOString()),db.prepare("INSERT OR IGNORE INTO timeline_entry_records VALUES(?,'contact',?)").bind(activity.id,person.contactId)]:[]),
++   audit(db,null,'zoom.meeting-completed','signal',row.signal_id),db.prepare('UPDATE signal_sources SET last_accepted_at=? WHERE id=?').bind(now.toISOString(),zoomSource)]);
++  return c.json({completed:true,signalId:row.signal_id,attendanceState});
++ });
++ return app;
++}
