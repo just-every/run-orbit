@@ -1,0 +1,38 @@
+2026-11-01T23:49:20.3456450Z Verification (fold-domain-1): pnpm exec tsx --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=verification/fold-domain-1-results.jsonl newtests/t096/browser-journeys.test.ts newtests/t096/report-time-boundaries.test.ts
+2026-11-01T23:49:21.4998711Z (node:2588) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+2026-11-01T23:49:21.4999894Z (Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-01T23:49:44.1075599Z (node:2588) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+2026-11-01T23:50:23.1692250Z ✖ CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (60297.383853ms)
+2026-11-01T23:51:52.8046484Z ✔ report periods compare instants across ISO precision and timezone equality boundaries (87856.458976ms)
+2026-11-01T23:51:52.8523658Z ℹ tests 2
+2026-11-01T23:51:52.8525733Z ℹ suites 0
+2026-11-01T23:51:52.8525989Z ℹ pass 1
+2026-11-01T23:51:52.8526194Z ℹ fail 1
+2026-11-01T23:51:52.8526408Z ℹ cancelled 0
+2026-11-01T23:51:52.8531193Z ℹ skipped 0
+2026-11-01T23:51:52.8549882Z ℹ todo 0
+2026-11-01T23:51:52.8550086Z ℹ duration_ms 152257.637777
+2026-11-01T23:51:52.8550223Z 
+2026-11-01T23:51:52.8550299Z ✖ failing tests:
+2026-11-01T23:51:52.8550381Z 
+2026-11-01T23:51:52.8550733Z test at newtests/t096/browser-journeys.test.ts:1:1323
+2026-11-01T23:51:52.8551967Z ✖ CAPTURE-010 workspace rules, OUT-017 OUT-023 record mail, FORM-001 mapped, picklist, hidden and framed capture, RECORD-016 reviewed ownership and FORECAST-001 USD weighted value, override, quotas and recurring schedules preserve prior snapshots (60297.383853ms)
+2026-11-01T23:51:52.8552586Z   Error: expect(locator).toBeVisible() failed
+2026-11-01T23:51:52.8552795Z   
+2026-11-01T23:51:52.8553003Z   Locator: getByText(/^Saved result · measured /)
+2026-11-01T23:51:52.8553184Z   Expected: visible
+2026-11-01T23:51:52.8553320Z   Timeout: 5000ms
+2026-11-01T23:51:52.8553454Z   Error: element(s) not found
+2026-11-01T23:51:52.8553598Z   
+2026-11-01T23:51:52.8553708Z   Call log:
+2026-11-01T23:51:52.8554435Z     - Expect "toBeVisible" getByText(/^Saved result · measured /) with timeout 5000ms
+2026-11-01T23:51:52.8554820Z     - waiting for getByText(/^Saved result · measured /)
+2026-11-01T23:51:52.8555073Z   
+2026-11-01T23:51:52.8555456Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-01T23:51:52.8556201Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-01T23:51:52.8556793Z       at Object.toBeVisible (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-01T23:51:52.8557412Z       at authorReport (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-report-authoring.ts:6:2241)
+2026-11-01T23:51:52.8557908Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-journeys.test.ts:27:1583) {
+2026-11-01T23:51:52.8562125Z     matcherResult: { message: 'expect(locator).toBeVisible() failed\n\nLocator: getByText(/^Saved result · measured /)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect "toBeVisible" getByText(/^Saved result · measured /) with timeout 5000ms\n  - waiting for getByText(/^Saved result · measured /)\n', pass: false, actual: undefined, name: 'toBeVisible', expected: 'visible', log: [ '  - Expect "toBeVisible" getByText(/^Saved result · measured /) with timeout 5000ms', '  - waiting for getByText(/^Saved result · measured /)' ], timeout: 5000, ariaSnapshot: `- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit\n  - button "Menu"\n- main:\n  - paragraph:\n    - link "Reports":\n      - /url: /app/reports\n  - heading "Open value 390" [level=1]\n  - 'button "Period: 31 Oct – 2 Nov 2026"': 31 Oct – 2 Nov 2026\n  - button "Save result"\n  - alert: Report inputs changed after preview. Review a fresh preview before saving.\n  - button "Report options"\n  - article:\n    - term: Open value 390\n    - definition: USD 32.00\n    - paragraph: 31 Oct 2026, 11:50 pm to 2 Nov 2026, 11:50 pm\n    - group: How this report is calculated\n  - paragraph: Basis · Computed 11:50 pm · Not saved` }
+2026-11-01T23:51:52.8564494Z   }
+2026-11-01T23:51:53.0081204Z ##[error]Process completed with exit code 1.

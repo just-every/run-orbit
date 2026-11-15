@@ -1,0 +1,7 @@
+{
+  "status": "no-change",
+  "sha": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "summary": "Already fixed on current main: c5fef74276b106cc2660384644a851ed9100d831 binds report saving to its reviewed preview; exact-SHA main Verify 43705866695 and focused local report-save proof pass.",
+  "tests": "Node 22.20.0 / pnpm 10.12.4: pnpm run typecheck PASS; cloud_run npx -y @runeditrun/rer build PASS; cloud_run pnpm exec tsx /tmp/gr-mt-orbit-ci-4/report-smoke.mts PASS using retained authorReport at 1440; main Verify 43705866695 completed/success on exact HEAD; prior full Verify 43701118360 also success with all 20 product batches.",
+  "security": true
+}

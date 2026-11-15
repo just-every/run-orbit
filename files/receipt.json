@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "author": "Run Edit Run fleet",
+  "recorded_at": "2026-11-15T11:20:47.972061+00:00",
+  "tag": "gr-mt-orbit-ci-4",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-ci-4",
+  "product_head": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "origin_main": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "product_changes": 0,
+  "product_commits": 0,
+  "product_push": false,
+  "pr": null,
+  "reported_run": 41363734349,
+  "reported_failed_job": 125019951726,
+  "reported_failed_test": "newtests/t096/browser-journeys.test.ts -> authorReport, Saved result visibility at 390",
+  "existing_fix": "c5fef74276b106cc2660384644a851ed9100d831",
+  "existing_fix_is_main_ancestor": true,
+  "latest_main_verify": {
+    "conclusion": "success",
+    "event": "push",
+    "head_branch": "main",
+    "head_sha": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43705866695",
+    "id": 43705866695,
+    "name": "Verify",
+    "run_started_at": "2026-11-15T10:48:40Z",
+    "status": "completed",
+    "updated_at": "2026-11-15T11:13:59Z"
+  },
+  "additional_full_exact_sha_verify": {
+    "conclusion": "success",
+    "event": "push",
+    "head_branch": "cloud/sd-orbit-release-0-4-10",
+    "head_sha": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43701118360",
+    "id": 43701118360,
+    "name": "Verify",
+    "run_started_at": "2026-11-15T09:49:52Z",
+    "status": "completed",
+    "updated_at": "2026-11-15T10:21:27Z"
+  },
+  "local_checks": [
+    {
+      "command": "pnpm run typecheck",
+      "exit_code": 0,
+      "node": "22.20.0",
+      "pnpm": "10.12.4"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit_code": 0,
+      "node": "22.20.0"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx /tmp/gr-mt-orbit-ci-4/report-smoke.mts",
+      "exit_code": 0,
+      "width": 1440,
+      "chromium": "/usr/bin/chromium",
+      "owned_worker_pid": 2139,
+      "owned_worker_exited": true,
+      "assertions": "Retained authorReport: disabled Save during held preview; save succeeds; exported period equals reviewed period; value 3200 cents; native drilldown."
+    }
+  ],
+  "counts": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200,
+      "clauses": 204,
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200,
+      "clauses": 204,
+      "done": 42,
+      "partial": 130,
+      "missing": 32
+    }
+  },
+  "clause_status_changes": [],
+  "github_read_invocations": 6,
+  "publication": {
+    "product_scan": "not applicable: no product commit or push",
+    "evidence_ref": "refs/heads/evidence/gr-mt-orbit-ci-4",
+    "scope": "explicitly selected non-secret report files only"
+  },
+  "blockers": []
+}
