@@ -125,16 +125,31 @@
         "run_attempt": 1,
         "status": "in_progress"
       }
+    },
+    {
+      "call": 10,
+      "time_utc": "2026-11-15T11:07:37.007520+00:00",
+      "command": "gh api repos/just-every/run-orbit/actions/runs/43703752288 --jq {id,status,conclusion,head_sha,html_url,name,run_attempt}",
+      "exit_code": 0,
+      "result": {
+        "conclusion": "failure",
+        "head_sha": "84b5f81da192fc4b0b2efb7ce948a13d3205e258",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/43703752288",
+        "id": 43703752288,
+        "name": "Verify",
+        "run_attempt": 1,
+        "status": "completed"
+      }
     }
   ],
   "latest": {
-    "conclusion": null,
+    "conclusion": "failure",
     "head_sha": "84b5f81da192fc4b0b2efb7ce948a13d3205e258",
     "html_url": "https://github.com/just-every/run-orbit/actions/runs/43703752288",
     "id": 43703752288,
     "name": "Verify",
     "run_attempt": 1,
-    "status": "in_progress"
+    "status": "completed"
   },
-  "github_calls_total": 9
+  "github_calls_total": 10
 }

@@ -58,3 +58,15 @@ The actual diagnostic source is retained as hydration-probe.ts, with its SHA-256
 ## Evidence preservation while CI continues
 
 At 10:52:36 UTC, exact-SHA Verify 43703752288 remained in_progress with no conclusion. Nine GitHub calls have been used. The final permitted status request is reserved for the forty-five-minute limit. This packet is being preserved on its separate report-only evidence ref now; this publication does not signal READY, acceptance or landing. The final receipt and report will be updated when the permitted final observation is available.
+
+## Terminal exact-SHA verdict and blocker
+
+At 2026-11-15 11:07:37 UTC, the final permitted REST request returned completed/failure for Verify run 43703752288, attempt 1, on the exact pushed head 84b5f81da192fc4b0b2efb7ce948a13d3205e258. The run URL is https://github.com/just-every/run-orbit/actions/runs/43703752288.
+
+The ten-call GitHub budget is exhausted: one prior-run job-list request, one prior failed-job archive command, one exact-SHA discovery and seven exact-SHA status requests. The last request was at the forty-five-minute observation limit. Failed job IDs and step names for the new run have not been retrieved, and no new-run log archive has been read. No claim is made about whether this is the earlier shard, an unrelated failure or a generated-view exception. No rerun or workflow dispatch was requested for this candidate. The polling allocation left no calls for diagnosis; this is a limitation of this continuation's execution, not evidence that the product fixes pass the full wall.
+
+BLOCKED: the exact-SHA Verify is red and its failing job/assertion remains undiagnosed within the exhausted call allowance. READY is not claimed. The product branch remains pushed at the named head. A fleet follow-up must read this completed run's failed-job metadata, read each failed assertion's job archive once, fix forward if needed and obtain a successful exact-SHA Verify. Do not rewrite either published commit, force push or push main.
+
+The six original trip fixes remain byte-identical to the preserved starting head. The actual inherited six-trip observations, fourteen original screenshots, all original receipts and report are retained with their original provenance. The new controlled hydration probe and retained records-layout journey passed locally, typecheck and source-lock check passed, the inventory remains 200, and no contract status changed. These local and inherited results do not waive the red candidate workflow.
+
+The complete selected non-secret packet is being updated on refs/heads/evidence/main-orbit-stranger32-trips-1-pc1. Evidence publication is separate from product acceptance and landing. The product checkout has no uncommitted work. The clone will be removed only after the terminal packet is published and independently fetched and hash-verified; the packet itself remains outside the clone.

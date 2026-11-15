@@ -5,11 +5,11 @@
   "branch": "cloud/main-orbit-stranger32-trips-1-pc1",
   "head": "84b5f81da192fc4b0b2efb7ce948a13d3205e258",
   "product_custody": "PUSHED",
-  "readiness": "awaiting exact-SHA Verify",
+  "readiness": "BLOCKED: exact-SHA Verify completed with failure; failed-job diagnosis unavailable within exhausted ten-call GitHub budget",
   "ci_run_id": 43703752288,
-  "ci_status": "in_progress",
-  "ci_conclusion": null,
-  "github_calls": 9,
+  "ci_status": "completed",
+  "ci_conclusion": "failure",
+  "github_calls": 10,
   "trip_count_before": 6,
   "trip_count_after": 0,
   "test_count_before": 200,
@@ -20,5 +20,10 @@
     "tests/delegation-browser/typed-fields-journey.mjs",
     "sources.lock.json"
   ],
-  "evidence_publication": "separate report-only ref; never an acceptance or landing signal"
+  "evidence_publication": "separate report-only ref; never an acceptance or landing signal",
+  "failed_job_ids": null,
+  "failed_steps": null,
+  "failed_job_logs_read_for_candidate": 0,
+  "rerun_requested_for_candidate": false,
+  "ready": false
 }
