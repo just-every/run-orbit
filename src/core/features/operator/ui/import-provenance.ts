@@ -14,13 +14,14 @@ export function importProvenance(name:string,value:unknown,operators:readonly {i
  // identity, which means nothing to them; a real ID from the old system is shown.
  const {vendor,account,sourceId,owner,stage,description}=source;
  const assigned=operators.find(person=>person.id===source.ownerId)?.display_name;
- // Only human-readable provenance belongs in ordinary record details. Older imports
- // may contain internal owner IDs or future metadata; never spread that storage shape.
+ // Retain customer fields separately from importer metadata. Older imports may
+ // contain internal owner IDs or future metadata; never spread that storage shape.
+ const additional=source.additional&&typeof source.additional==='object'&&!Array.isArray(source.additional)?source.additional:null;
  return {imported_from:importLabel(account,String(vendor)),
   .../^(email:|company-name:)/.test(String(sourceId))?{}:{id_in_old_system:sourceId},
   ...assigned?{assigned_to:assigned}:{},
   ...owner?{owner_in_old_system:owner}:{},...stage?{stage_in_old_system:stage}:{},
   ...description?{description}:{},...typeof source.file==='string'?{file:source.file}:{},
-  ...typeof source.row==='number'?{row:source.row}:{}};
+  ...typeof source.row==='number'?{row:source.row}:{},...additional?{additional}:{}};
 }
 export function customFieldValue(name:string,value:unknown){return importProvenance(name,value)??value;}

@@ -30,7 +30,8 @@ export async function prepareOperatorFixture(page,browser,origin,key,ownerEmail)
  assert.equal((await request(page,'/api/v1/notifications',undefined,'GET')).notifications.filter(row=>row.opportunityId===created.id).length,0,'Creating an opportunity directly never notifies its own actor');
  const opportunity=await request(page,`/api/v1/opportunities/${created.id}`,undefined,'GET');
  const contact=opportunity.opportunity.contacts[0];
- const provenance={vendor:'hubspot',account:'Imported account',sourceId:'customer-1042',owner:'Account manager',stage:'Evaluation',description:'Imported customer context',additional:{region:'Pacific'}};
+ const importOwner=(await request(page,'/api/v1/settings',undefined,'GET')).operators.find(row=>row.email===ownerEmail);
+ const provenance={vendor:'hubspot',account:'Imported account',sourceId:'customer-1042',owner:'Account manager',ownerId:importOwner.id,stage:'Evaluation',description:'Imported customer context',file:'contacts.csv',row:2,additional:{region:'Pacific'}};
  await request(page,`/api/v1/records/contact/${contact.id}/entries`,{kind:'note',text:'Customer asked for a detailed walkthrough.',occurredAt:new Date().toISOString()});
  await request(page,`/api/v1/records/contact/${contact.id}` ,{name:'Operator review contact',email:'review@example.test',custom_fields:{segment:'Studio',approved:true,campaign_json:'Ordinary campaign text',import_source:JSON.stringify(provenance)}},'PUT');
  await request(page,`/api/v1/workbench/opportunities/${created.id}/events`,{type:'form.submitted',subject:'Customer requested a walkthrough',occurredAt:new Date().toISOString(),eventId:crypto.randomUUID(),contactId:contact.id});

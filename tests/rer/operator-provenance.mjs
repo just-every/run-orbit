@@ -4,6 +4,11 @@ import {request} from './operator-fixture.mjs';
 
 export async function expectProvenance(page,provenance){
  for(const value of [`${provenance.account} (${{csv:'spreadsheet',hubspot:'HubSpot export',pipedrive:'Pipedrive export'}[provenance.vendor]})`,provenance.sourceId,provenance.owner,provenance.stage,provenance.description,provenance.additional.region])await expect(page.getByText(value,{exact:true}).first()).toBeVisible();
+ const sources=page.locator('dl.operator-data-fields:has(> [data-field="imported_from"])');
+ await expect(sources.first()).toBeVisible();
+ for(const value of [provenance.file,String(provenance.row)])await expect(sources.getByText(value,{exact:true}).first()).toBeVisible();
+ await expect(sources.getByText(provenance.ownerId,{exact:true})).toHaveCount(0);
+ await expect(sources.getByText('Owner Id',{exact:true})).toHaveCount(0);
  await expect(page.getByText(JSON.stringify(provenance),{exact:true})).toHaveCount(0);
 }
 
