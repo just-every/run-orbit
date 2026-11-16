@@ -11,7 +11,14 @@ export function importProvenance(name:string,value:unknown):Record<string,unknow
  if(!['owner','stage','description'].every(key=>Object.hasOwn(source,key)&&(source[key]===null||typeof source[key]==='string')))return null;
  // Read as the person sees their old system. A contact matched by email carries a hashed
  // identity, which means nothing to them; a real ID from the old system is shown.
- const {vendor,account,sourceId,owner,stage,description,...later}=source;
- return {imported_from:importLabel(account,String(vendor)),...String(sourceId).startsWith('email:')?{}:{id_in_old_system:sourceId},...owner?{owner_in_old_system:owner}:{},...stage?{stage_in_old_system:stage}:{},...description?{description}:{},...later};
+ const {vendor,account,sourceId,owner,stage,description}=source;
+ // Only human-readable provenance belongs in ordinary record details. Older imports
+ // may contain internal owner IDs or future metadata; never spread that storage shape.
+ return {imported_from:importLabel(account,String(vendor)),
+  .../^(email:|company-name:)/.test(String(sourceId))?{}:{id_in_old_system:sourceId},
+  ...typeof source.ownerName==='string'&&source.ownerName?{assigned_to:source.ownerName}:{},
+  ...owner?{owner_in_old_system:owner}:{},...stage?{stage_in_old_system:stage}:{},
+  ...description?{description}:{},...typeof source.file==='string'?{file:source.file}:{},
+  ...typeof source.row==='number'?{row:source.row}:{}};
 }
 export function customFieldValue(name:string,value:unknown){return importProvenance(name,value)??value;}

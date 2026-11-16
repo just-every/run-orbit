@@ -67,7 +67,7 @@ function EditableOpportunityRecordPage(){
    activity={<DealActivity opportunity={opportunity} drafts={drafts} messages={messages} handoffs={handoffs} reload={reload}/>}
    folds={<><ObligationPanel opportunityId={id} presentation={workspace}/><FollowUpResults outcomes={messages?.outcomes} presentation={workspace}/><RecordedDetails opportunity={opportunity} presentation={workspace} reload={reload}/></>}
    details={<DetailsPanel>
-    <DealValues id={id} record={record} settings={settings} scheduled={scheduled} definitions={definitions} context={context}/>
+    <DealValues id={id} record={record} settings={settings} scheduled={scheduled} definitions={definitions} context={context} onChanged={reload}/>
     <DealPeople dealId={id} form={context} titles={titles} closed={closed}/>
     <DealContext form={context}/>
     <RecordFoot kind="opportunity" id={id} name={name} record={detail.record} deleteSentence={`Delete ${name}? Its messages and timeline go with it.`} onChanged={reload}/>

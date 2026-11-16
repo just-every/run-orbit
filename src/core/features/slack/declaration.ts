@@ -8,7 +8,8 @@ export function slackDeclaration(origin:string){
    {name:'channels:read',purpose:'Check public channel membership and safety',when:'always'},
    {name:'groups:read',purpose:'Check private channel membership and safety',when:'private-channels'},
    {name:'users:read',purpose:'Receive user_change deactivation events and check mapped personal recipients',when:'always'},
-   {name:'im:write',purpose:'Open a direct message for an explicitly opted-in personal mention',when:'personal-mentions'}
+   {name:'im:write',purpose:'Open a direct message for an explicitly opted-in personal mention',when:'personal-mentions'},
+   {name:'im:read',purpose:'Verify the direct message still belongs to the mapped personal recipient before delivery',when:'personal-mentions'}
   ],
   prohibitedScopes:['users:read.email'],
   callbacks:{

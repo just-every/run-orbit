@@ -101,6 +101,17 @@ test('CAPTURE provider status keeps revoked access clear, reconnects through the
  const providers=await providersResponse.json();
  expect(providers.available).toBe(true);
 
+ // Following instructions alone is not completion, including a direct bookmark to step 6.
+ await page.setViewportSize({width:1440,height:900});
+ for(const provider of ['google','microsoft']){
+  await page.goto(`/app/settings/capture/connect/${provider}?step=1`);
+  const steps=page.getByRole('navigation',{name:`${provider==='google'?'Google':'Microsoft'} steps`});
+  for(const number of [2,3,4,5,6])await steps.getByRole('link',{name:new RegExp(`^${number}\\.`)}).click();
+  await expect(steps.getByText('Done',{exact:true})).toHaveCount(0);
+  await expect(page.getByRole('form',{name:/Connect/})).toHaveCount(0);
+  await expect(page.locator('.capture-guide__body')).toContainText(/finish step 5/i);
+  await page.reload();await expect(steps.getByText('Done',{exact:true})).toHaveCount(0);
+ }
  const screenshots=process.env.CAPTURE_SCREENSHOT_DIR??join('verification','ui','capture');
  mkdirSync(screenshots,{recursive:true});
  const sources=[

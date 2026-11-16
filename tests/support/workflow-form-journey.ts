@@ -16,6 +16,9 @@ export async function workflowFormJourney({db,operator,cookie}:{db:D1Database;op
  const contactName=`Workflow form target ${createId()}`,workflow=await json('/api/workflows',{name:'Copy reviewed form field',definition:{trigger:{kind:'form_submitted',recordType:'contact'},conditions:[{field:'name',operator:'equals',value:contactName}],actions:[{kind:'copy',field:'job_title',sourceTarget:'form',sourceField:'tracking_code'}],delayMinutes:0,order:0}});
  const preview=await json(`/api/workflows/${workflow.workflow.id}/preview`,{});assert.ok(preview.previewId);assert.ok([...preview.records,...preview.historical].every((row:any)=>!row.errors.length));
  await json(`/api/workflows/${workflow.workflow.id}/activate`,{previewId:preview.previewId});
+ const dealWorkflow=await json('/api/workflows',{name:'Review new clinic enquiries',definition:{trigger:{kind:'form_submitted',recordType:'opportunity'},conditions:[],actions:[{kind:'create_task',title:'Review the new enquiry'}],delayMinutes:0,order:0}});
+ const dealPreview=await json(`/api/workflows/${dealWorkflow.workflow.id}/preview`,{});
+ await json(`/api/workflows/${dealWorkflow.workflow.id}/activate`,{previewId:dealPreview.previewId});
  const idempotencyKey=crypto.randomUUID(),challenge=await publicJson(`/api/public/forms/${slug}/challenge`,{idempotencyKey}),email=[createId().toLowerCase(),'example.invalid'].join('@');
  await new Promise(resolve=>setTimeout(resolve,2100));
  const intake={revision:form.revision,operationId:compiled.operationId,idempotencyKey,values:{name:contactName,email},consent:false,honeypot:'',fillToken:challenge.token};
@@ -26,8 +29,21 @@ export async function workflowFormJourney({db,operator,cookie}:{db:D1Database;op
  assert.equal(await db.prepare('SELECT job_title FROM contacts WHERE id=?').bind(contactId).first('job_title'),'Workflow form provenance');
  const writes=(await db.prepare('SELECT id,workflow_id,version,event_id,field,before_json,after_json FROM workflow_record_writes WHERE workflow_id=?').bind(workflow.workflow.id).all<any>()).results;
  assert.equal(writes.length,1,'replayed submission creates one workflow write');assert.equal(writes[0].version,1);assert.equal(writes[0].field,'job_title');assert.equal(writes[0].event_id,submitted.submissionId);assert.equal(JSON.parse(writes[0].before_json),null);assert.equal(JSON.parse(writes[0].after_json),'Workflow form provenance');
+ const deal=await db.prepare('SELECT o.id,o.title FROM opportunities o JOIN opportunity_contacts l ON l.opportunity_id=o.id WHERE l.contact_id=?').bind(contactId).first<{id:string;title:string}>();assert.ok(deal);
+ assert.equal(deal.title,`Enquiry from ${contactName}`,'the workflow targets the deal created by the submitted form');
+ const runs=(await json('/api/workflows')).runs.filter((run:any)=>run.workflowId===dealWorkflow.workflow.id);
+ assert.equal(runs.length,1);assert.equal(runs[0].recordId,deal.id);assert.equal(runs[0].recordType,'opportunity');assert.equal(runs[0].status,'completed');assert.equal(runs[0].version,1);
+ const tasks=(await json('/api/v1/tasks?view=all&owner=all')).tasks.filter((task:any)=>task.title==='Review the new enquiry');
+ assert.equal(tasks.length,1);assert.equal(tasks[0].recordType,'opportunity');assert.equal(tasks[0].recordId,deal.id);
+ // Another enquiry from the same contact creates no deal and no second deal-workflow run.
+ const againKey=crypto.randomUUID(),againChallenge=await publicJson(`/api/public/forms/${slug}/challenge`,{idempotencyKey:againKey});
+ await new Promise(resolve=>setTimeout(resolve,2100));
+ await publicJson(`/api/public/forms/${slug}`,{...intake,idempotencyKey:againKey,fillToken:againChallenge.token});
+ await json('/api/workflows/process',{});
+ assert.equal((await json('/api/workflows')).runs.filter((run:any)=>run.workflowId===dealWorkflow.workflow.id).length,1);
+ assert.equal((await json('/api/v1/tasks?view=all&owner=all')).tasks.filter((task:any)=>task.title==='Review the new enquiry').length,1);
  assert.equal(Number(await db.prepare('SELECT count(*) n FROM marketing_form_submissions WHERE form_id=? AND idempotency_key=?').bind(form.id,idempotencyKey).first('n')),1);
- const history=await json(`/api/workflows/records/contact/${contactId}/history`);
+ const history=await json(`/api/workflows/records/contact/${contactId}/history`);history.history=history.history.filter((row:any)=>row.eventId===submitted.submissionId);
  assert.equal(history.history.length,1);assert.equal(history.history[0].source,'workflow');assert.equal(history.history[0].workflowId,workflow.workflow.id);assert.equal(history.history[0].version,1);assert.equal(history.history[0].eventId,submitted.submissionId);assert.equal(history.history[0].after,'Workflow form provenance');
  const dryRun=await json(`/api/workflows/${workflow.workflow.id}/preview`,{}),past=dryRun.historical.find((row:any)=>row.eventId===submitted.submissionId);assert.ok(past,'retained form event is evaluated in the historical dry run');assert.deepEqual(past.errors,[]);assert.ok(past.changes.some((change:any)=>change.field==='job_title'&&change.before===null&&change.after==='Workflow form provenance'));assert.equal(dryRun.historyCoverage.complete,false,'pre-installation form events are not invented');
 

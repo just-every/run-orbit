@@ -1,3 +1,4 @@
+import {clinicImportJourney} from './imports-clinic.mjs';
 import {pipedriveBrowserFlow} from './imports-pipedrive.mjs';
 import {hubspotBrowserFlow} from './imports-hubspot.mjs';
 import {hydrationImportFlow} from './imports-hydration.mjs';
@@ -15,6 +16,7 @@ test('RECORD-008 connected HubSpot and Pipedrive, reviewed vendor files and plai
  await page.screenshot({path:join(screenshots,'desktop-upload.png'),fullPage:true});
  for(const width of [1440]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await expect(page.getByLabel('Do not contact list',{exact:true})).toBeAttached();await page.screenshot({path:join(screenshots,`viewport-${width}-upload.png`),fullPage:true});const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa','wcag22aa']).analyze();expect(accessibility.violations).toEqual([]);}
  const settingsResponse=await page.request.get('/api/v1/settings');expect(settingsResponse.ok()).toBe(true);const settings=await settingsResponse.json();
+ await clinicImportJourney(page,settings,screenshots);
  await hydrationImportFlow(page,settings,screenshots);
  for(const width of [1440])for(const vendor of ['hubspot','pipedrive','csv']){
   await page.setViewportSize({width,height:900});

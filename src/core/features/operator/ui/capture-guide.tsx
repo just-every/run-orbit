@@ -7,6 +7,8 @@ export interface GuideStep {
   body: ReactNode;
   /** A step that finishes elsewhere (a form post, a provider round trip) has no Next. */
   next?: string | false;
+  /** Verified by the connection or saved scope, never by visiting another step. */
+  complete?: boolean;
 }
 
 function stepFrom(search: string, count: number) {
@@ -31,7 +33,7 @@ export function CaptureGuide({ label, steps, initial }: { label: string; steps: 
   const href = (step: number) => {
     const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search);
     params.set('step', String(step));
-    for (const key of ['connected', 'error', 'scopeSaved', 'created']) params.delete(key);
+    for (const key of ['error', 'scopeSaved', 'created']) params.delete(key);
     return `?${params.toString()}`;
   };
   function go(step: number, event: MouseEvent<HTMLAnchorElement>) {
@@ -47,11 +49,11 @@ export function CaptureGuide({ label, steps, initial }: { label: string; steps: 
     <nav className="capture-guide__steps" aria-label={`${label} steps`}>
       <ol>
         {steps.map((item, index) => {
-          const number = index + 1, state = number < current ? 'done' : number === current ? 'current' : 'pending';
+          const number = index + 1, state = number === current ? 'current' : item.complete ? 'done' : 'pending';
           return <li key={item.title} className={`capture-guide__step capture-guide__step--${state}`}>
             <a href={href(number)} onClick={(event) => go(number, event)} aria-current={state === 'current' ? 'step' : undefined}>
               <span className="capture-guide__marker" aria-hidden="true">{state === 'done' ? '✓' : number}</span>
-              <span className="capture-guide__text"><span>{number}. {item.title}</span><small>{state === 'done' ? 'Done' : state === 'current' ? 'Current step' : 'Not started'}</small></span>
+              <span className="capture-guide__text"><span>{number}. {item.title}</span><small>{state === 'done' ? 'Done' : state === 'current' ? 'Current step' : 'Not confirmed'}</small></span>
             </a>
           </li>;
         })}

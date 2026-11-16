@@ -60,7 +60,10 @@ function ProviderGuide({ method, search }: { method: 'google' | 'microsoft'; sea
   if (!directory) return <OperatorState>Loading…</OperatorState>;
   if (!directory.available || !provider) return <OperatorState kind="error">This installation is missing ORBIT_ENCRYPTION_KEY, so it cannot keep a sign-in key safely.</OperatorState>;
   const finish = <ChooseScope sourceId={search.get('connected')} />;
-  const steps = method === 'google' ? googleSteps(provider, finish, reconnect) : microsoftSteps(provider, finish, reconnect);
+  const connected = sources.data?.find(item => item.id === (search.get('connected') ?? reconnectId) && item.adapter === method && item.has_credential === 1 && ['connected', 'syncing'].includes(item.state));
+  const hasScope = Boolean(connected && ((connected.scope.mail?.folders.length ?? 0) > 0 || (connected.scope.calendars?.length ?? 0) > 0));
+  const steps = (method === 'google' ? googleSteps(provider, finish, reconnect) : microsoftSteps(provider, finish, reconnect))
+    .map((item, index) => ({...item, complete: index < 5 ? Boolean(connected) : hasScope}));
   const step = Number(search.get('step'));
   return <>
     {search.get('error') ? <OperatorState kind="error">{search.get('error')}</OperatorState> : null}

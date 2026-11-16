@@ -3,10 +3,9 @@ import {parseCsv} from '../../shared/csv';
 
 /** Rejected rows retain only column positions. Read their labels from the private
  * original at review time, so erasure still withdraws the only personal copy. */
-export function contactReviewLabels(plan:ImportPlan){
+export function importReviewRows(plan:ImportPlan){
  const originals=new Map<string,string[][]>();
  return (source:SourceRecord)=>{
-  if(source.kind!=='contact')return undefined;
   const payload=source.payload as {data?:Record<string,string>;reviewColumns?:Record<string,number>};
   let data=payload.data;
   if(!data&&payload.reviewColumns){
@@ -18,7 +17,10 @@ export function contactReviewLabels(plan:ImportPlan){
     data=Object.fromEntries(Object.entries(payload.reviewColumns).map(([field,column])=>[field,values[column]?.trim()??'']));
    }
   }
-  const name=data?.name||[data?.first_name,data?.last_name].filter(Boolean).join(' '),email=data?.email;
-  return [name,email&&email!==name?email:undefined].filter(Boolean).join(' · ')||`Contact — row ${source.location.row}`;
+  const name=data?.title||data?.name||[data?.first_name,data?.last_name].filter(Boolean).join(' '),email=data?.email;
+  const displayName=[name,email&&email!==name?email:undefined].filter(Boolean).join(' · ');
+  const labels:Record<string,string>={company_ids:'Company in file',contact_ids:'Contacts in file',deal_ids:'Deals in file',amount:'Value',close_date:'Expected close',owner:'Owner in file',stage:'Stage in file'};
+  const details=data?Object.fromEntries(Object.entries(data).filter(([field,value])=>field!=='id'&&value).map(([field,value])=>[labels[field]??field,value])):undefined;
+  return {displayName:displayName||undefined,details};
  };
 }

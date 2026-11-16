@@ -16,7 +16,7 @@ export async function validateDefinition(db:D1Database,actor:string,d:Definition
 }
 export async function planActions(db:D1Database,v:Version,e:Event,runId:string,at:string,options:{historical?:boolean}={}):Promise<PlannedAction[]>{
  const d=JSON.parse(v.definition_json) as Definition,plans:PlannedAction[]=[],plannedValues=new Map<string,Record<string,unknown>>(),plannedSources=new Map<string,WorkflowRecordReference[]>();
- const formValues=e.kind==='form_submitted'?JSON.parse(await db.prepare('SELECT values_json FROM marketing_form_submissions WHERE id=?').bind(e.id).first<string>('values_json')??'{}'):undefined;
+ const formValues=e.kind==='form_submitted'?JSON.parse(await db.prepare('SELECT values_json FROM marketing_form_submissions WHERE id=?').bind(e.id.split(':')[0]).first<string>('values_json')??'{}'):undefined;
  const snapshots=(await db.prepare('SELECT record_type,record_id,values_json FROM workflow_event_snapshots WHERE event_id=?').bind(e.id).all<{record_type:string;record_id:string;values_json:string}>()).results;
  const triggerSnapshots=new Map(snapshots.map(s=>[`${s.record_type}:${s.record_id}`,JSON.parse(s.values_json)]));
  const context=(index:number)=>({...workflowContext(db,v,e,runId,at,index),plannedValues,plannedSources,formValues,triggerSnapshots,previewHistorical:options.historical});

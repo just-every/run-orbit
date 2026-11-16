@@ -23,8 +23,8 @@ import { audit, mutationJob, RecordError, requireRecord, tables, timeline, type 
 const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',owner_id:'Owner',value_cents:'Value',expected_close_at:'Expected close date',primary_domain:'Website domain'};
 const bookkeeping=new Set(['updated_at','email_key','primary_domain_key']);
 /** The timeline says which fields an edit changed, so the owner reads who changed what. */
-function changedText(before:Record<string,any>,after:Record<string,any>,definitions:TypedField[]){
- const changed=Object.keys(after).filter(key=>key!=='custom_fields_json'&&!bookkeeping.has(key)&&key in before&&(before[key]??null)!==(after[key]??null));
+function changedText(before:Record<string,any>,after:Record<string,any>,definitions:TypedField[],separateFields:string[]=[]){
+ const changed=Object.keys(after).filter(key=>!separateFields.includes(key)&&key!=='custom_fields_json'&&!bookkeeping.has(key)&&key in before&&(before[key]??null)!==(after[key]??null));
  const lines=changed.map(key=>changeLabels[key]??fieldLabel(key));
  const text=lines.length?[`Changed ${lines.join(', ')}`]:[];
  const oldValues=JSON.parse(before.custom_fields_json),newValues=JSON.parse(after.custom_fields_json);
@@ -117,7 +117,8 @@ export class RecordsRepository extends RecordSeedRepository {
    statements.push(this.db.prepare('DELETE FROM opportunity_contacts WHERE opportunity_id=? AND contact_id NOT IN(SELECT value FROM json_each(?))').bind(id,JSON.stringify(contacts)),this.db.prepare('UPDATE opportunity_contacts SET is_primary=0 WHERE opportunity_id=?').bind(id));
    for(const contact of contacts)statements.push(this.db.prepare('INSERT INTO opportunity_contacts VALUES(?,?,?,?) ON CONFLICT(opportunity_id,contact_id) DO UPDATE SET is_primary=excluded.is_primary').bind(id,contact,contact===primary?1:0,now));
    statements.push(...evaluationStatements(this.db,id,actor,'Opportunity fields or associations changed'),this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Opportunity fields or associations changed',updated_at=? WHERE opportunity_id=?").bind(now,id));
-   for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?{...stageMovement,...(options.undoOf?{undoOf:options.undoOf}:{})}:{previous:before[field],current:data[field]}));
+   const ownerNames=before&&before.owner_id!==data.owner_id?new Map((await this.db.prepare('SELECT id,display_name FROM operators WHERE id IN(SELECT value FROM json_each(?))').bind(JSON.stringify([before.owner_id,data.owner_id].filter(Boolean))).all<{id:string;display_name:string}>()).results.map(person=>[person.id,person.display_name])):new Map<string,string>();
+   for(const field of ['stage_id','owner_id'])if(before&&before[field]!==data[field])statements.push(...timeline(this.db,actor,kind,id,field==='stage_id'?'stage.changed':'owner.changed',field==='stage_id'?{...stageMovement,...(options.undoOf?{undoOf:options.undoOf}:{})}:{previous:before[field],current:data[field],previousOwnerName:ownerNames.get(before[field])??null,currentOwnerName:ownerNames.get(data[field])??null}));
    if(before&&before.stage_id!==data.stage_id&&!options.undoOf)statements.push(...advanceObligationsStatements(this.db,id,data.stage_id,actor,now));
    if(before&&before.stage_id!==data.stage_id&&!options.undoOf)statements.push(this.db.prepare("UPDATE outbound_messages SET state='cancelled',failure=?,updated_at=? WHERE opportunity_id=? AND state='scheduled'").bind(stageChangedReason,now,id));
   }
@@ -126,7 +127,10 @@ export class RecordsRepository extends RecordSeedRepository {
   if(kind==='contact')statements.push(this.db.prepare("UPDATE drafts SET is_stale=1,stale_reason='Contact changed',updated_at=? WHERE recipient_contact_id=?").bind(now,id));
   if(explicitClear)statements.push(audit(this.db,actor,'contactability.cleared','contact',id));
   if(associationsChanged)statements.push(...workflowAssociationEvent(this.db,id,now));
-  const history=associationsChanged?{text:[changes&&'text' in changes?changes.text:null,'Changed Associated contacts'].filter(Boolean).join('\n')}:changes;
+  // Stage/owner mutations already have their own attributed entries. Keep the
+  // ordinary entry for the other changed fields and associations only.
+  const fieldHistory=before&&kind==='opportunity'?changedText(before,data,typedSave.fields,['owner_id','stage_id']):changes;
+  const history=associationsChanged?{text:[fieldHistory&&'text' in fieldHistory?fieldHistory.text:null,'Changed Associated contacts'].filter(Boolean).join('\n')}:fieldHistory;
   if(history)statements.push(...timeline(this.db,actor,kind,id,before?'record.updated':'record.created',{...history,...(options.workflowContactIds?.length?{contactIds:options.workflowContactIds}:{})}));
   statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));
   return {id,statements,key,keyColumn,kind,changed:true};
