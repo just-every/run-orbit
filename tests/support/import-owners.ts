@@ -58,11 +58,21 @@ export async function importOwnerFlow(f:any){
  const viewer=await emailLinkSignIn(f.db,'synthetic-orbit-729@ownership.test'),collaborator={id:viewer.operator.operatorId},collaboratorCookie={Cookie:viewer.cookie};
  await json(await app.request('https://orbit.test/api/v2/access/invitations/accept',{method:'POST',headers:{...headers,...collaboratorCookie},body:JSON.stringify({token:invitation.token})}));
  assert.equal((await f.request('imports/owners','GET',undefined,collaboratorCookie)).status,403);assert.equal((await f.request('imports/dry-run','POST',source,collaboratorCookie)).status,403);assert.equal((await f.request('imports/dry-run','POST',{...source,owners:{'Former rep':collaborator.id}})).status,409);
+ // Readable mapped-owner labels must follow the same erasure as their source identity.
+ const retainedLabels={vendor:'hubspot',account:'Synthetic retained owner labels',owners:{'Former rep':owner.id},stages:{Qualified:f.stage},files:[
+  {kind:'contact',name:'contacts.csv',csv:'id,name,email,owner\n731,Retained label contact,synthetic-orbit-731@ownership.test,Former rep',mapping:{id:'id',name:'name',email:'email',owner:'owner'}},
+  {kind:'company',name:'companies.csv',csv:'id,name,domain,owner\n732,Retained label company,synthetic-owner-label.example,Former rep',mapping:{id:'id',name:'name',domain:'domain',owner:'owner'}},
+  {kind:'deal',name:'deals.csv',csv:'id,title,owner,company_ids,contact_ids,stage,amount\n733,Retained label deal,Former rep,732,731,Qualified,1000',mapping:{id:'id',title:'title',owner:'owner',company_ids:'company_ids',contact_ids:'contact_ids',stage:'stage',amount:'amount'}}
+ ]};
+ const retainedReview=await json(await f.request('imports/dry-run','POST',retainedLabels));await finish(f,retainedReview);
+ const retainedRecords=[['contact','731'],['company','732'],['deal','733']].map(([kind,id])=>({kind:kind==='deal'?'opportunity':kind,id:nativeId('orbit:hubspot:Synthetic retained owner labels',kind,id)}));
+ for(const item of retainedRecords){const detail=await json(await f.request(`records/${item.kind}/${item.id}`));assert.equal(item.kind==='opportunity'?detail.record.owner_id:detail.ownership.ownerId,owner.id);assert.ok(!detail.record.custom_fields_json.includes('Import receiving rep'),'native provenance keeps the identity, without copying a directory display name');}
  const inactiveSource={...mapped,account:'Synthetic inactive owner',files:[{...source.files[0],csv:contactHeaders.join(',')+'\r\n728,Inactive owner contact,synthetic-orbit-728@ownership.test,Former rep'}]},inactiveReview=await json(await f.request('imports/dry-run','POST',inactiveSource));
  await f.db.prepare("UPDATE operators SET status='removed' WHERE id=?").bind(owner.id).run();
  assert.equal((await f.request(`imports/${inactiveReview.id}/apply`,'POST',{confirmed:true,fingerprint:inactiveReview.fingerprint})).status,409);await finish(f,inactiveReview,'undo');assert.equal((await f.request('imports/dry-run','POST',mapped)).status,409);
  // Use the fresh session already obtained for this protected action; the full import flow can outlive its initial email proof.
  await json(await f.request(`settings/operators/${owner.id}/erase`,'POST',{confirmed:true},headers));
+ for(const item of retainedRecords){const detail=await json(await f.request(`records/${item.kind}/${item.id}`)),stored=JSON.parse(detail.record.custom_fields_json).import_source,provenance=typeof stored==='string'?JSON.parse(stored):stored;assert.notEqual(provenance.ownerName,'Import receiving rep');assert.ok(!JSON.stringify(detail).includes('Import receiving rep'));}
  assert.equal((await json(await f.request(`imports/${guarded.id}`))).sourceWithdrawn,true);
  const copies=JSON.stringify((await f.db.prepare('SELECT original_json FROM crm_import_targets').all()).results);assert.ok(!copies.includes('Import receiving rep'));assert.ok(!copies.includes('synthetic-orbit-716@ownership.test'));
  assert.ok(!(await f.db.prepare("SELECT id FROM notifications WHERE message LIKE '%Import receiving rep%'").first()));

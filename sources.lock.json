@@ -6431,7 +6431,7 @@
       "executable": false
     },
     "src/core/features/imports/planner.ts": {
-      "sha256": "2394dbee7cbc3933ebca50fb19ee152a17a2eae841ec1c2303e786a21ec85ed9",
+      "sha256": "8b72c97ea3bc35f2f68baf5f8ee117f70a16ccf06b320ed8cf471fa04fbd57b5",
       "executable": false
     },
     "src/core/features/imports/repository.ts": {
@@ -6903,7 +6903,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/import-provenance.ts": {
-      "sha256": "2be07835f08b3a3258f36091e78337c100b6a9f8a2d995d44be283e5ffc77134",
+      "sha256": "bfe6544c6c6559d3987485339ed931e55404bf7558fbe1f76d0357758594f494",
       "executable": false
     },
     "src/core/features/operator/ui/imports-hubspot.tsx": {
@@ -7131,7 +7131,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/custom-values.tsx": {
-      "sha256": "b50ce8a2c54a4842d12eebe0a29ace26a8f4cc1d261a8cbea710ae8937424a69",
+      "sha256": "933ea01a17c90b3dff185cc2295eafa04948284e72628b65582f2d4466adfc07",
       "executable": false
     },
     "src/core/features/operator/ui/record/customer-record.tsx": {
@@ -11651,7 +11651,7 @@
       "executable": false
     },
     "tests/support/import-owners.ts": {
-      "sha256": "e028c530c76e9558bd90f673de02d52d21a4ed5901e5f72db96e7d9700435140",
+      "sha256": "617746d935e57f5e34c26bedd3111439ea90ecc30bf1e2d09f9d34bf4426c72e",
       "executable": false
     },
     "tests/support/integrations-api-guide.mjs": {
