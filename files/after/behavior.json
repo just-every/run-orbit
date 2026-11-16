@@ -1,0 +1,71 @@
+{
+  "capture": {
+    "google": "1\n1. Create a Google Cloud project\nNot confirmed\n2\n2. Turn on Gmail and Calendar access\nNot confirmed\n3\n3. Set up the consent screen\nNot confirmed\n4\n4. Create your sign-in key\nNot confirmed\n5\n5. Paste the key and connect\nNot confirmed\n6\n6. Choose labels and calendars\nCurrent step",
+    "microsoft": "1\n1. Open App registrations\nNot confirmed\n2\n2. Register Orbit\nNot confirmed\n3\n3. Allow reading mail and calendars\nNot confirmed\n4\n4. Create your sign-in key\nNot confirmed\n5\n5. Paste the key and connect\nNot confirmed\n6\n6. Choose folders and calendars\nCurrent step"
+  },
+  "workflow": {
+    "workflowId": "01M7H7EDVXEXA12WFN639HRB8K",
+    "version": 1,
+    "submissionId": "01M7H7EG1RJ02TNDTVJ7Z4DWJE",
+    "replayed": true,
+    "runs": [
+      {
+        "id": "01M7H7EG4B08016W8GQANPNDGE",
+        "workflowId": "01M7H7EDVXEXA12WFN639HRB8K",
+        "workflowName": "Review new clinic enquiries final",
+        "version": 1,
+        "recordId": "01M7H7EG1VRJPNM6RCNBFAAP14",
+        "recordType": "opportunity",
+        "recordLabel": "Enquiry from Omar Reyes final",
+        "recordHref": "/app/opportunities/01M7H7EG1VRJPNM6RCNBFAAP14",
+        "occurredAt": "2026-11-16T03:47:08.466Z",
+        "activatedAt": "2026-11-16T03:47:06.305Z",
+        "status": "completed",
+        "reason": "Completed",
+        "dueAt": "2026-11-16T03:47:08.466Z",
+        "attempts": 1,
+        "outcome": [
+          {
+            "action": 0,
+            "results": [
+              {
+                "kind": "create_task",
+                "taskId": "01M7H7EG4D0WFKQK1C6C1W0W6R"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "id": "01M7H7EG4D0WFKQK1C6C1W0W6R",
+        "seriesId": "01M7H7EG4DQ820E6FMH5HS3867",
+        "occurrence": 0,
+        "recordType": "opportunity",
+        "recordId": "01M7H7EG1VRJPNM6RCNBFAAP14",
+        "title": "Review final clinic enquiry",
+        "ownerId": "01M7H71ZN9PR5Z8XTKCYDKRKXD",
+        "dueAt": "2026-11-16T03:47:08.544Z",
+        "priority": "normal",
+        "type": "follow_up",
+        "notes": "Workflow Review new clinic enquiries final, version 1",
+        "recurrence": "none",
+        "timezone": "UTC",
+        "reminderMinutes": null,
+        "status": "open",
+        "revision": "01M7H7EG5CTMA8DS7MH6AZ1CKS",
+        "assignmentRevision": "01M7H7EG5CTMA8DS7MH6AZ1CKS",
+        "reminderRevision": "01M7H7EG5CTMA8DS7MH6AZ1CKS",
+        "recurrenceTime": "03:47:08.544",
+        "recordLabel": "Enquiry from Omar Reyes final",
+        "ownerName": "Alex Morgan",
+        "createdAt": "2026-11-16T03:47:08.544Z",
+        "updatedAt": "2026-11-16T03:47:08.544Z",
+        "updatedByName": "Alex Morgan",
+        "seriesCancelledAt": null
+      }
+    ]
+  },
+  "slack": "Skip to content\nOrbit\nMenu\n\nSettings\n\nIntegrations\nAPI access\n\nLet a reporting tool read selected deals and fields with a named, expiring credential. It cannot send customer messages, and you can revoke it at any time.\n\nCreate and use a read credential\n\nThe installation owner follows the browser-console steps and saves the secret once.\n\nNot connected\nSlack\n\nTeam notifications · Needs attention: connection setup\n\nConnect\nSlack sales notices\n\nSend stage moves, wins, due work, internal handoffs and dashboard-ready notices. Dashboard-ready notices contain only the event kind and an authenticated Orbit link; no dashboard name, figure, count or attachment. Restricted details and person names are withheld; channels get a generic notice and authenticated link. Notes, calls, handoff text, contact details and amounts stay in Orbit.\n\nBefore connecting Slack\n\nBot permissions: chat:write — Post allowed-field notices and delete the bot’s messages. channels:read — Check public channel membership and safety. groups:read for private channels only — Check private channel membership and safety. users:read — Receive user_change deactivation events and check mapped personal recipients. im:write for optional personal mentions — Open a direct message for an explicitly opted-in personal mention. im:read for optional personal mentions — Verify the direct message still belongs to the mapped personal recipient before delivery. Never request users:read.email; profile email is not read.\n\nAllowed channel fields: Event kind, Authenticated Orbit link, Deal or company display name, Previous stage, New stage, Owner display name, Due date, Task type, Task priority. Person names and restricted details are withheld; private records get only event kind and the authenticated link.\n\nBot token and app signing secret stay installation-local, encrypted using AES-GCM with the installation encryption key; neither is read back or exported.\n\nSet the Interactivity Request URL to http://127.0.0.1:8788/api/v1/slack/actions and the Events Request URL to http://127.0.0.1:8788/api/v1/slack/events. Both require Slack timestamp and HMAC-SHA256 signature. Subscribe to user_change with users:read to revoke deactivated user mappings.\n\nMembership can change between checks. A newly linked organization may see channel history. Membership is checked before each post; signed safety events suspend routing until the owner confirms it again. Disconnect pauses routing and removes credentials; reconnect sends no old notice and permits no old action.\n\nSlack account and plan requirements remain with Slack; Orbit does not buy a plan or authorize spending.\n\nUnresolved setup · notices paused\n\nThe installation owner manages Slack channels and their audiences. Explicit Slack user IDs map to active Orbit operators; email never determines identity. Mappings bind the Slack team, enterprise, app and user, and need fresh confirmation after restore or access changes. Slack actions acknowledge a notice or create an internal task. Customer mail always needs its separate Orbit review.\n\nHow to set this up\n\nThe installation owner connects a Slack app for this workspace. Use your hosted Orbit’s public HTTPS address for callbacks; Slack cannot reach localhost.\n\nOpen Your Apps in Slack\n(opens in a new tab)\n, choose Create New App › From scratch, name it Orbit, select your workspace and choose Create App. Ask a workspace administrator to approve installation if required.\nOpen OAuth & Permissions › Bot Token Scopes › Add an OAuth Scope. Add chat:write to post and delete bot notices, channels:read to check public channels, and groups:read if using private channels. Add users:read for user-change safety events and mapped personal recipient checks. For opted-in personal mentions, also add im:write to open the direct message and im:read to verify its recipient before delivery.\nOn that page choose Install to Workspace (or Install to Team) and Allow. Copy the Bot User OAuth Token into Orbit’s Bot token field. Under Basic Information › App Credentials, reveal Signing Secret and paste it into Slack app signing secret. Choose Verify and connect Slack here before enabling Events, so Orbit can answer Slack’s URL check.\nIn Slack’s Interactivity & Shortcuts, turn Interactivity on, set Request URL to the address below, and save. In Event Subscriptions, turn Enable Events on and use the second address as Request URL.\nhttp://127.0.0.1:8788/api/v1/slack/actions\nCopy\nhttp://127.0.0.1:8788/api/v1/slack/events\nCopy\nUnder Subscribe to bot events, add user_change, channel_shared, channel_unshared, channel_archive, group_archive, channel_left, member_left_channel, app_uninstalled and tokens_revoked. Save changes and reinstall the app if Slack requests updated permissions.\nIn Slack, invite the app to each internal channel with /invite @Orbit (use your app’s name). Back here choose Load member channels or Load private member channels, choose a channel and its event types. Shared and external channels are refused. After a permitted notice is accepted, use Map Slack identities for notice buttons.\n\nSlack app and credential guide\n(opens in a new tab)\n · Channel permissions\n(opens in a new tab)\n\nConnect workspace\nBot token\nSlack app signing secret\n\nSlack auth.test verifies the bot token. After import, enter both credentials again. Slack needs a public HTTPS origin for callbacks; a local loopback address cannot receive them.\n\nVerify and connect Slack\nVerify workspace\nDisconnect Slack\nMap Slack identities\n\nThe app identity is bound by the first accepted bot notice. Mappings are audited. Acknowledgment and task buttons are single use, and current access is checked again.\n\nSlack user ID\nOrbit operator\nChoose an operator\nAlex Morgan\nIdentity mapping status\nChannel status\n\nSlack membership can change between checks. A newly linked workspace may see channel history. Orbit checks before each post and suspends on safety events; reconnect never replays old notices or actions.\n\nNotice status\n\nOne event produces one message per channel. Rate limits wait for Retry-After. Failed requests stay visible. Uncertain submissions are held for an administrator to inspect in Slack and are never automatically resent.\n\nCheck due work and process eligible notices\n\nNo Slack notices yet.\n\nProvider deletion requests\n\nErasure redacts local notice content and requests deletion of named bot messages. Copies already held outside Slack cannot be recalled. Restored requests need administrator confirmation.\n\nCalendly\n\nBooking · Awaiting first booking\n\nSet up\nCal.com\n\nBooking · Awaiting first booking\n\nSet up\nMailchimp\n\nMarketing audiences · Needs attention: connection setup\n\nConnect\nZoom\n\nMeetings · Needs attention: connection setup\n\nConnect\nTwilio\n\nCalls · Not connected\n\nConnect\nYour Slack mentions\n\nChoose direct messages for new mentions in notes, tasks and handoffs. Messages contain a private notice and a secure link, without entry text or customer details. Slack acknowledgment confirms submission, not receipt.\n\nAsk the installation owner to connect Slack and explicitly map your identity. Reconnecting or changing a mapping requires a fresh opt-in.\n\nSend my mentions as Slack direct messages\nSave personal mention preference\n\nEmail, mobile push, task reminders and daily digests are not available yet. The Slack bot needs users:read, im:write, im:read and chat:write for personal delivery.\n\nYour mention deliveries\n\nNo personal Slack deliveries yet."
+}

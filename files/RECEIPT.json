@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-16",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stranger34-trips-1",
+  "head": "1833f212cd6a7b89e4011a5953da28edd3103983",
+  "baseline": "bca89d44de7c8357544fc54375a030f9d1d4611f",
+  "commits": [
+    "17b7e784c664fb773a5b41f98fba9ae5b3bc2d1d",
+    "f54f67122741605e3c8d48c48f6c2863e14c8234",
+    "1833f212cd6a7b89e4011a5953da28edd3103983"
+  ],
+  "product_pushed": true,
+  "push_attempts": [
+    1,
+    1,
+    1
+  ],
+  "identity_check": "All candidate authors and committers are fleet; all messages have no trailers. Clone-local forwarding hooks remained active.",
+  "test_inventory": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    }
+  },
+  "trips": {
+    "fixed": [
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9
+    ],
+    "not_reproduced": [
+      1,
+      5
+    ],
+    "gaps": []
+  },
+  "contract_status_changes": [],
+  "local_checks": [
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/capture-review.test.ts tests/core/crm-import.test.ts",
+      "result": "Four import cases passed; initial workflow fixture failed, corrected and rerun separately",
+      "log": "logs/initial-core-and-imports.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-reporter=tap tests/core/capture-review.test.ts",
+      "result": "passed; original history assertions preserved",
+      "cases": 1,
+      "log": "logs/workflow-preserved.log"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/records-search.test.ts",
+      "result": "passed",
+      "cases": 1,
+      "log": "logs/records-pipelines.log"
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/capture.spec.mjs tests/e2e/imports.spec.mjs",
+      "result": "Both Capture cases passed; initial import helper run interrupted, then import rerun passed",
+      "log": "logs/capture-browser.log"
+    },
+    {
+      "command": "pnpm exec playwright test tests/e2e/imports.spec.mjs",
+      "result": "passed",
+      "cases": 1,
+      "log": "logs/imports-browser.log"
+    },
+    {
+      "command": "pnpm exec tsx --test tests/rer/operator-actions.test.mjs",
+      "result": "passed",
+      "cases": 1,
+      "log": "logs/operator-actions.log"
+    },
+    {
+      "command": "pnpm typecheck",
+      "result": "passed",
+      "log": "logs/typecheck.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock; node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "passed; generated source lock committed last",
+      "source_lock_sha256": "f97b5f6e15f5f0d3cbcb583f0596e50d4fc860ad0b485554730a48bf0599b1f1",
+      "receipt": "checks/source-check.json"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "result": "passed, 200/200",
+      "receipt": "inventory-after.json"
+    },
+    {
+      "command": "git diff --cached --check",
+      "result": "passed"
+    },
+    {
+      "command": "pnpm exec tsx /tmp/orbit-owner-labels.mts (existing importOwnerFlow)",
+      "result": "passed: mapped native owners, no display-name copy in provenance, retained contact/company/deal reads and private import copies after erasure",
+      "runner": "checks/import-owner-journey.mts",
+      "log": "logs/import-owner-erasure.log"
+    }
+  ],
+  "browser_proof": {
+    "widths": [
+      1440,
+      390
+    ],
+    "overlay_matches_product_files": true,
+    "receipt": "after/behavior.json"
+  },
+  "publication_scan": "Fleet Mac lander owns full scan; not run in cloud",
+  "ci": {
+    "repository": "just-every/run-orbit",
+    "id": 43803452801,
+    "head": "1833f212cd6a7b89e4011a5953da28edd3103983",
+    "conclusion": null,
+    "head_sha": "1833f212cd6a7b89e4011a5953da28edd3103983",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43803452801",
+    "status": "in_progress",
+    "calls": 8
+  },
+  "superseded_ci_runs": [
+    43800536957,
+    43801205293
+  ],
+  "remote_product_head_verified": "1833f212cd6a7b89e4011a5953da28edd3103983"
+}

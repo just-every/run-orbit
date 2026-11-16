@@ -1,0 +1,12 @@
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+PUSH attempt=1/5 command=git push --porcelain origin HEAD:refs/heads/cloud/main-orbit-stranger34-trips-1
+[private transport metadata omitted]
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+To https://github.com/just-every/run-orbit
+ 	HEAD:refs/heads/cloud/main-orbit-stranger34-trips-1	f54f671..1833f21
+Done
+remote: 
+remote: GitHub found 18 vulnerabilities on just-every/run-orbit's default branch (2 high, 14 moderate, 2 low). To find out more, visit:        
+remote:      https://github.com/just-every/run-orbit/security/dependabot        
+remote: 
+PUSH_OK branch=cloud/main-orbit-stranger34-trips-1
