@@ -1,0 +1,11 @@
+{
+  "command": "gh api repos/just-every/run-orbit/actions/artifacts/13381650326/zip",
+  "exit_code": 1,
+  "http_status": 403,
+  "error": "Get \"https://productionresultssa10.blob.core.windows.net/actions-results/3b67c41b-bdca-8488-bfbd-8474415161d3/workflow-job-run-94371196-37e7-5ce7-b0c5-a56895ff61b7/artifacts/e46f859837400d98dd836dea0c39ca7da122a981643606ff7ebdadf7d2a4d9d7.zip\": Forbidden\n",
+  "retried": false,
+  "log_archive_command": "gh run view 41950914939 --repo just-every/run-orbit --job 126995186614 --log-failed",
+  "log_archive_exit_code": 0,
+  "log_archive_stdout_bytes": 0,
+  "log_archive_diagnostic": "The command downloaded the run ZIP to gh-cli-cache but printed no failed-step output. The failed job text was recovered locally from that existing ZIP; no repeat log request."
+}

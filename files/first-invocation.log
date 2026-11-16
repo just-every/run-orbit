@@ -1,0 +1,63 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✔ collaborator relationship edits require current access to the actual native related rows (39033.289514ms)
+(node:2197) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ REPORT-002 REPORT-003 REPORT-004 an owner’s tile board links viewer-fenced saved definitions at their versions and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (0.686404ms)
+✖ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (0.09356ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 47401.556321
+
+✖ failing tests:
+
+test at newtests/t096/report-disclosure.test.ts:1:3138
+✖ REPORT-002 REPORT-003 REPORT-004 an owner’s tile board links viewer-fenced saved definitions at their versions and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (0.686404ms)
+  AssertionError [ERR_ASSERTION]: Browser evidence directory is required
+      at TestContext.<anonymous> (/home/agent/rer-consolidation/work/maint/gr-mt-orbit-ci-6/repo/newtests/t096/report-disclosure.test.ts:28:9)
+      at TestHook.runInAsyncScope (node:async_hooks:214:14)
+      at TestHook.run (node:internal/test_runner/test:1047:25)
+      at TestHook.run (node:internal/test_runner/test:1354:18)
+      at TestHook.run (node:internal/util:564:20)
+      at Test.createHook (node:internal/test_runner/test:872:33)
+      at node:internal/test_runner/harness:335:12
+      at <anonymous> (/home/agent/rer-consolidation/work/maint/gr-mt-orbit-ci-6/repo/newtests/t096/report-disclosure.test.ts:27:1)
+      at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at newtests/t096/report-disclosure.test.ts:1:9443
+✖ Sum and Mean identify money or the measured field, and record group names obey current field authority through the report API (0.09356ms)
+  AssertionError [ERR_ASSERTION]: Browser evidence directory is required
+      at TestContext.<anonymous> (/home/agent/rer-consolidation/work/maint/gr-mt-orbit-ci-6/repo/newtests/t096/report-disclosure.test.ts:28:9)
+      at TestHook.runInAsyncScope (node:async_hooks:214:14)
+      at TestHook.run (node:internal/test_runner/test:1047:25)
+      at TestHook.run (node:internal/test_runner/test:1354:18)
+      at TestHook.run (node:internal/util:564:20)
+      at Test.createHook (node:internal/test_runner/test:872:33)
+      at node:internal/test_runner/harness:335:12
+      at <anonymous> (/home/agent/rer-consolidation/work/maint/gr-mt-orbit-ci-6/repo/newtests/t096/report-disclosure.test.ts:27:1)
+      at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+      at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,23 @@
+2026-11-05T01:54:38.9674070Z test at newtests/t096/report-disclosure.test.ts:1:3138
+2026-11-05T01:54:38.9677623Z ✖ REPORT-002 REPORT-003 REPORT-004 a manager’s Tile board composes viewer-fenced reports and exports; REPORT-001 a US monthly two-pipeline report reconciles won/lost/open deals, reasons and rep activities by drill-through, discloses its basis, and leaks nothing after revocation or late evidence (203050.36559ms)
+2026-11-05T01:54:38.9680515Z   Error: expect(locator).toHaveCount(expected) failed
+2026-11-05T01:54:38.9681153Z   
+2026-11-05T01:54:38.9681857Z   Locator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+2026-11-05T01:54:38.9682671Z   Expected: 1
+2026-11-05T01:54:38.9683075Z   Received: 0
+2026-11-05T01:54:38.9683480Z   Timeout:  5000ms
+2026-11-05T01:54:38.9683886Z   
+2026-11-05T01:54:38.9684254Z   Call log:
+2026-11-05T01:54:38.9685251Z     - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms
+2026-11-05T01:54:38.9686660Z     - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')
+2026-11-05T01:54:38.9687336Z       14 × locator resolved to 0 elements
+2026-11-05T01:54:38.9687691Z          - unexpected value "0"
+2026-11-05T01:54:38.9687970Z   
+2026-11-05T01:54:38.9688908Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-05T01:54:38.9691076Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-05T01:54:38.9692757Z       at Object.toHaveCount (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-05T01:54:38.9694444Z       at salesReportJourney (/home/runner/work/run-orbit/run-orbit/newtests/t096/browser-sales-report.ts:101:186)
+2026-11-05T01:54:38.9696207Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/report-disclosure.test.ts:98:2) {
+2026-11-05T01:54:38.9703508Z     matcherResult: { actual: 0, expected: 1, message: `expect(locator).toHaveCount(expected) failed\n\nLocator:  getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\nExpected: 1\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms\n  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')\n    14 × locator resolved to 0 elements\n       - unexpected value "0"\n`, name: 'toHaveCount', pass: false, log: [ `  - Expect "toHaveCount" getByRole('region', { name: 'Saved sales results' }).locator('ol > li') with timeout 5000ms`, "  - waiting for getByRole('region', { name: 'Saved sales results' }).locator('ol > li')", '    14 × locator resolved to 0 elements', '       - unexpected value "0"' ], timeout: 5000, ariaSnapshot: undefined }
+2026-11-05T01:54:38.9706834Z   }
+2026-11-05T01:54:39.0655291Z ##[error]Process completed with exit code 1.
