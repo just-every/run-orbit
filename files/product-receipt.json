@@ -1,0 +1,79 @@
+{
+  "author": "sd (Run Edit Run fleet)",
+  "timestamp": "2026-11-16T12:17:33.264678+00:00",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-release-0-4-11",
+  "head": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "base": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+  "previous_tag": "v0.4.10",
+  "previous_tag_commit": "22ca38c0e0bb5784440df021e8a5eb5b41a81de8",
+  "product_push": "success",
+  "push_attempts": 1,
+  "files": [
+    "CHANGELOG.md",
+    "RELEASE.json",
+    "RELEASE.md",
+    "package.json",
+    "seed.json",
+    "sources.lock.json"
+  ],
+  "changes": "CHANGELOG.md      | 14 ++++++++++++++\n RELEASE.json      | 21 ++++++---------------\n RELEASE.md        | 27 +++++++++++++++++++++++++++\n package.json      |  2 +-\n seed.json         |  2 +-\n sources.lock.json | 12 ++++++++----\n 6 files changed, 57 insertions(+), 21 deletions(-)",
+  "rer_package": "0.2.113",
+  "rer_lock": "0.2.113",
+  "migration_inventory": [],
+  "clause_status_changes": [],
+  "before": {
+    "Core": {
+      "done": 42,
+      "partial": 112,
+      "missing": 24,
+      "total": 178
+    },
+    "Agent": {
+      "done": 0,
+      "partial": 18,
+      "missing": 8,
+      "total": 26
+    },
+    "Total": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "after": {
+    "Core": {
+      "done": 42,
+      "partial": 112,
+      "missing": 24,
+      "total": 178
+    },
+    "Agent": {
+      "done": 0,
+      "partial": 18,
+      "missing": 8,
+      "total": 26
+    },
+    "Total": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "tests_added": 0,
+  "tests_removed": 0,
+  "pr_url": null,
+  "tag_pushed": false,
+  "release_published": false,
+  "publication_scan": "Deferred to Mac lander per cloud assignment; unavailable here",
+  "tree_clean": true,
+  "ci_run": 43865054949,
+  "ci_status": "completed",
+  "ci_conclusion": "success",
+  "ci_head": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "ci_url": "https://github.com/just-every/run-orbit/actions/runs/43865054949",
+  "github_calls_used": 7,
+  "ready": true
+}

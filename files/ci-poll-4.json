@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-11-16T12:36:40.097074+00:00",
+  "command": [
+    "gh",
+    "api",
+    "repos/just-every/run-orbit/actions/runs/43865054949",
+    "--jq",
+    "{status,conclusion,head_sha,html_url}"
+  ],
+  "run": {
+    "conclusion": null,
+    "head_sha": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43865054949",
+    "status": "in_progress"
+  },
+  "api_call": 6,
+  "command_duration_seconds": 1.337648630142212,
+  "seconds_between_response_timestamps": 302.339022
+}

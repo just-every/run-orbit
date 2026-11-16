@@ -1,0 +1,78 @@
+{
+  "author": "sd (Run Edit Run fleet)",
+  "timestamp": "2026-11-16T12:15:51.058108+00:00",
+  "node": "v22.20.0",
+  "pnpm": "10.12.4",
+  "checks": [
+    {
+      "command": [
+        "node",
+        "tools/seed-schema/validate.mjs",
+        "RELEASE.json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "tools/seed-schema/validate.mjs",
+        "--schema",
+        "SEED",
+        "seed.json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/@runeditrun/rer/edition-authoring/cli.mjs",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "rer_pin": "0.2.113",
+  "rer_lock": "0.2.113",
+  "migration_inventory": [],
+  "contract_changes": {},
+  "notes_match": true
+}

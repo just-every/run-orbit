@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-11-16T12:18:29.214963+00:00",
+  "command": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/cloud/sd-orbit-release-0-4-11",
+    "refs/tags/v0.4.11"
+  ],
+  "exit_code": 0,
+  "stdout": "a4fcbfcd72fa4253826f43d0b0de02275094f86d\trefs/heads/cloud/sd-orbit-release-0-4-11\n",
+  "stderr": "",
+  "version_tag_present": false,
+  "release_preflight": {
+    "api_call": 1,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-orbit/releases?per_page=30",
+      "--jq",
+      "[.[] | {tag_name,name,published_at,draft,html_url}]"
+    ],
+    "observed_release_tags": [
+      "v0.4.10",
+      "v0.4.9",
+      "v0.4.8",
+      "v0.4.7",
+      "v0.4.6",
+      "v0.4.5",
+      "v0.4.4",
+      "v0.4.3",
+      "v0.4.2",
+      "v0.4.1",
+      "v0.4.0",
+      "v0.3.0",
+      "v0.2.0"
+    ],
+    "version_release_present": false,
+    "latest": {
+      "tag": "v0.4.10",
+      "published_at": "2026-11-15T13:47:13Z",
+      "url": "https://github.com/just-every/run-orbit/releases/tag/v0.4.10"
+    }
+  }
+}

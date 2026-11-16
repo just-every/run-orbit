@@ -1,0 +1,159 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 6edc5a2..4f56eb4 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,19 @@
+ # Changelog
+ 
++## 0.4.11 — 2026-11-16
++
++Orbit 0.4.11 makes capture setup, import review and everyday sales workflows clearer and fixes several fresh-install paths. It retains rer 0.2.113.
++
++- **See what capture setup has actually confirmed.** Connection guides mark steps complete from the saved connection and scope, rather than from visiting a later step. Capture Settings and file-import results link to unlinked evidence waiting for review. Slack setup now includes the direct-message read permission needed to verify a personal notification's recipient.
++- **Review imported customer records with more context.** Import previews show names and source values for companies, contacts and deals. Saved import details retain the source file and row, use the currently mapped operator's display name, and keep customer fields without exposing internal operator identifiers or other importer metadata.
++- **Read useful evidence and field labels.** NOW citations and saved draft lists show subjects with current merge values, or explain when values or evidence are unavailable. Dashboard custom-field filters use readable labels. Deal history names owner and stage changes without a second generic entry for those same changes.
++- **Move a deal between pipelines.** Choose the destination pipeline and stage in deal details, with a warning when scheduled follow-ups will be cancelled. The record refreshes after the move, and history names both pipelines.
++- **Use forms and workflows more reliably.** A public form path accepts an optional leading slash. A new deal created by a form triggers its deal workflow once, with the submitted values available to its actions. The editor explains when a submission creates no new deal and therefore does not trigger a deal workflow. Workflow times follow the workspace display settings.
++
++Account proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. Earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.
++
++Update from 0.4.10 in place after stopping writes and taking a private backup. This release adds no database migrations and requires no new provider setting for existing features. Preserve the migration ledger and all already-applied migrations. For optional Slack personal mentions, add im:read alongside im:write and reinstall or reauthorize the Slack app as required. Older installations must first account for their earlier pending migrations and release instructions.
++
+ ## 0.4.10 — 2026-11-15
+ 
+ Orbit 0.4.10 adds reviewed Zoom meeting preparation and attendance, clearer workflow activity, and more visible email permission during archive restore. It uses the existing rer 0.2.113 pin.
+diff --git a/RELEASE.json b/RELEASE.json
+index fcd6869..f85ce2c 100644
+--- a/RELEASE.json
++++ b/RELEASE.json
+@@ -1,21 +1,12 @@
+ {
+-  "version": "0.4.10",
+-  "previousVersion": "0.4.9",
+-  "date": "2026-11-15",
+-  "publicReleaseNotes": "Orbit 0.4.10 adds reviewed Zoom meeting preparation and attendance, clearer workflow activity, and more visible email permission during archive restore. It uses the existing rer 0.2.113 pin.\n\n- **Prepare a Zoom meeting from its real details.** The installation owner can connect a Zoom Server-to-Server OAuth app in Settings, with guidance for its meeting read scopes and webhook endpoint. A full operator reviews an exact scheduled, non-recurring meeting and chosen deal before attaching it. Its plan shows the Zoom link, attendees, saved agenda and preparation. A signed completion updates that meeting's activity and reads attendance metadata; the recap cites recorded facts. An internal follow-up still requires explicit review. Cancellation stops that meeting's preparation and open plan follow-ups. Zoom continues to own meeting creation and rescheduling. Orbit fetches no recording or transcript content, makes no transcript-based summary, and leaves unavailable attendance unresolved. Connection credentials stay out of exports; reconnect after restore. Live Zoom developer-account qualification and the complete cross-product buyer walk remain unproved.\n- **Read what a workflow did.** Workflow activity names the triggering record, owner, task, notified teammates and field changes, with links to available records and readable before-and-after values. Undo shows the retained outcome. Exact diagnostics remain in technical details; this does not expand what Undo can reverse.\n- **Review email permission before restoring an archive.** The restore preview names contacts returning as Do not contact and distinguishes archived holds from additional email stops retained by this installation or the archive. Restored contacts otherwise keep their archived permission, including an explicitly cleared hold. When an independent retained stop wins, contact history and audit explain its source, including a stop on another address of that contact. A new contact created from a captured meeting starts as Do not contact.\n- **Receive one notice for a form enquiry.** The intended recipient gets the submission notice without a second NOW notice for that same intake. The notice names the contact; unrelated recipients and ordinary NOW events keep their notices.\n- **Keep the maintained runtime current.** This release includes the already-landed rer 0.2.113 source refresh and Vite, Zod and Undici dependency fixes. The operations guide points to the current local run instructions.\n\nAccount proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. Earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.\n\nUpdate from 0.4.9 in place after stopping writes and taking a private backup. Apply the two pending migrations once, in order, before the new Worker serves: 0091 adds installation-local Zoom meeting, delivery and reviewed follow-up records; 0092 prevents a duplicate NOW notice for the form submission's intended recipient. Preserve the migration ledger and every already-applied migration; installations using intermediate migration names need their ledger and schema reconciled first. No new provider setting is required to retain existing features. Optional Zoom use needs the owner's Zoom app credentials, meeting read scopes and signed webhook setup. Older installations must first account for earlier pending migrations and release instructions.",
++  "version": "0.4.11",
++  "previousVersion": "0.4.10",
++  "date": "2026-11-16",
++  "publicReleaseNotes": "Orbit 0.4.11 makes capture setup, import review and everyday sales workflows clearer and fixes several fresh-install paths. It retains rer 0.2.113.\n\n- **See what capture setup has actually confirmed.** Connection guides mark steps complete from the saved connection and scope, rather than from visiting a later step. Capture Settings and file-import results link to unlinked evidence waiting for review. Slack setup now includes the direct-message read permission needed to verify a personal notification's recipient.\n- **Review imported customer records with more context.** Import previews show names and source values for companies, contacts and deals. Saved import details retain the source file and row, use the currently mapped operator's display name, and keep customer fields without exposing internal operator identifiers or other importer metadata.\n- **Read useful evidence and field labels.** NOW citations and saved draft lists show subjects with current merge values, or explain when values or evidence are unavailable. Dashboard custom-field filters use readable labels. Deal history names owner and stage changes without a second generic entry for those same changes.\n- **Move a deal between pipelines.** Choose the destination pipeline and stage in deal details, with a warning when scheduled follow-ups will be cancelled. The record refreshes after the move, and history names both pipelines.\n- **Use forms and workflows more reliably.** A public form path accepts an optional leading slash. A new deal created by a form triggers its deal workflow once, with the submitted values available to its actions. The editor explains when a submission creates no new deal and therefore does not trigger a deal workflow. Workflow times follow the workspace display settings.\n\nAccount proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. Earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.\n\nUpdate from 0.4.10 in place after stopping writes and taking a private backup. This release adds no database migrations and requires no new provider setting for existing features. Preserve the migration ledger and all already-applied migrations. For optional Slack personal mentions, add im:read alongside im:write and reinstall or reauthorize the Slack app as required. Older installations must first account for their earlier pending migrations and release instructions.",
+   "contractChanges": {},
+   "proseChanges": [],
+   "extensionPointChanges": [],
+-  "migrations": [
+-    {
+-      "id": "0091_zoom_meetings.sql",
+-      "buyerSteps": "Apply once after 0090 and before the new Worker serves. Adds reviewed Zoom meetings, signed delivery receipts and links to explicitly reviewed internal follow-ups. Existing records and integrations retain their authority. Optional Zoom use requires the installation owner to connect a Zoom Server-to-Server OAuth app with meeting read scopes and a signed webhook endpoint; credentials are excluded from archives and must be connected again after restore. Preserve all previously applied migrations and their ledger entries."
+-    },
+-    {
+-      "id": "0092_form_submission_notification.sql",
+-      "buyerSteps": "Apply once after 0091 and before the new Worker serves. Prevents the form submission notice recipient from also receiving a redundant NOW notice for that same atomic intake; other recipients and ordinary NOW notifications retain their existing behavior. No new provider setting or data conversion is required. Preserve all previously applied migrations and their ledger entries."
+-    }
+-  ],
++  "migrations": [],
+   "breaking": false,
+-  "agentUpdateInstructions": "Update from 0.4.9 in place; never reset or replace the installation. Stop local dev and hosted writes and take a private backup outside the checkout, using rer export locally or Records → Export archive when hosted. Check out v0.4.10 and run rer install with pinned Node 22.20.0, pnpm 10.12.4 and rer 0.2.113. Use rer setup locally or rer deploy --env-file .dev.vars.deploy when hosted. Preserve the migration ledger: apply only pending migrations 0091_zoom_meetings.sql and 0092_form_submission_notification.sql, once in order and before the new Worker serves or writes resume. Keep every already-applied migration and owner customization; migrations through 0090 belong to earlier releases and must not be replayed. Installations that applied intermediate candidates under earlier migration names need their ledger and schema reconciled before treating this as a routine upgrade; no automatic remapping is claimed. Older installations must first account for their earlier pending migrations and release-history instructions. No new provider setting is required to retain existing features. Optional Zoom use requires the installation owner’s Server-to-Server OAuth app, meeting read scopes and signed webhook setup; review the exact scheduled non-recurring meeting and deal before attachment. Orbit reads attendance metadata only, not recordings or transcripts, and Zoom remains responsible for meeting creation and rescheduling. Zoom credentials do not travel in archives; reconnect after restore. Preserve current email stops and explicit clear receipts. Review the restore preview and resulting contact Email permission before sending. Keep the prior mailbox-send and Pipedrive consent/reconnection requirements, Mailchimp webhook checks and owner confirmation for held deletion requests after reconnection or restore. Before resuming writes, check existing records, saved views, capture evidence and proposals, meeting plans and reviewed follow-ups, draft and scheduled mail, forms and notifications, workflow activity and integration settings. Retain the release-note limitations on graph maintenance, agent coverage, workflow undo, erasure and supported import scope."
++  "agentUpdateInstructions": "Update from 0.4.10 in place; never reset or replace the installation. Stop local dev and hosted writes and take a private backup outside the checkout, using rer export locally or Records → Export archive when hosted. Adopt v0.4.11 and run rer install with pinned Node 22.20.0, pnpm 10.12.4 and unchanged rer 0.2.113. Use rer setup locally or rer deploy --env-file .dev.vars.deploy when hosted. This release introduces no database migrations; preserve the migration ledger, all already-applied migrations and owner customizations. Do not replay migrations through 0092. Older installations must first account for their earlier pending migrations and release-history instructions. No new provider setting is required for existing features. Optional Slack personal mentions require im:read as well as im:write; update the Slack app scopes and reinstall or reauthorize it as required before using that option. Preserve current email stops, explicit clear receipts, mailbox-send and Pipedrive consent/reconnection requirements, Mailchimp webhook checks and owner confirmation for held deletion requests after reconnection or restore. Zoom credentials remain installation-local and must be reconnected after restore. Before resuming writes, check existing records and import provenance, saved views, capture setup and unlinked evidence review, draft and scheduled mail, pipeline moves, forms, notifications and workflow activity. Retain the release-note limitations on graph maintenance, agent coverage, workflow undo, erasure and supported import scope."
+ }
+diff --git a/RELEASE.md b/RELEASE.md
+new file mode 100644
+index 0000000..a7d6687
+--- /dev/null
++++ b/RELEASE.md
+@@ -0,0 +1,27 @@
++# Orbit 0.4.11
++
++Date: 2026-11-16
++
++Previous version: 0.4.10
++
++Orbit 0.4.11 makes capture setup, import review and everyday sales workflows clearer and fixes several fresh-install paths. It retains rer 0.2.113.
++
++- **See what capture setup has actually confirmed.** Connection guides mark steps complete from the saved connection and scope, rather than from visiting a later step. Capture Settings and file-import results link to unlinked evidence waiting for review. Slack setup now includes the direct-message read permission needed to verify a personal notification's recipient.
++- **Review imported customer records with more context.** Import previews show names and source values for companies, contacts and deals. Saved import details retain the source file and row, use the currently mapped operator's display name, and keep customer fields without exposing internal operator identifiers or other importer metadata.
++- **Read useful evidence and field labels.** NOW citations and saved draft lists show subjects with current merge values, or explain when values or evidence are unavailable. Dashboard custom-field filters use readable labels. Deal history names owner and stage changes without a second generic entry for those same changes.
++- **Move a deal between pipelines.** Choose the destination pipeline and stage in deal details, with a warning when scheduled follow-ups will be cancelled. The record refreshes after the move, and history names both pipelines.
++- **Use forms and workflows more reliably.** A public form path accepts an optional leading slash. A new deal created by a form triggers its deal workflow once, with the submitted values available to its actions. The editor explains when a submission creates no new deal and therefore does not trigger a deal workflow. Workflow times follow the workspace display settings.
++
++Account proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. Earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.
++
++Update from 0.4.10 in place after stopping writes and taking a private backup. This release adds no database migrations and requires no new provider setting for existing features. Preserve the migration ledger and all already-applied migrations. For optional Slack personal mentions, add im:read alongside im:write and reinstall or reauthorize the Slack app as required. Older installations must first account for their earlier pending migrations and release instructions.
++
++## Migrations
++
++None added since v0.4.10. Preserve every applied migration and its ledger entry; do not replay migrations through 0092.
++
++## Update instructions
++
++Update from 0.4.10 in place; never reset or replace the installation. Stop local dev and hosted writes and take a private backup outside the checkout, using rer export locally or Records → Export archive when hosted. Adopt v0.4.11 and run rer install with pinned Node 22.20.0, pnpm 10.12.4 and unchanged rer 0.2.113. Use rer setup locally or rer deploy --env-file .dev.vars.deploy when hosted. This release introduces no database migrations; preserve the migration ledger, all already-applied migrations and owner customizations. Do not replay migrations through 0092. Older installations must first account for their earlier pending migrations and release-history instructions. No new provider setting is required for existing features. Optional Slack personal mentions require im:read as well as im:write; update the Slack app scopes and reinstall or reauthorize it as required before using that option. Preserve current email stops, explicit clear receipts, mailbox-send and Pipedrive consent/reconnection requirements, Mailchimp webhook checks and owner confirmation for held deletion requests after reconnection or restore. Zoom credentials remain installation-local and must be reconnected after restore. Before resuming writes, check existing records and import provenance, saved views, capture setup and unlinked evidence review, draft and scheduled mail, pipeline moves, forms, notifications and workflow activity. Retain the release-note limitations on graph maintenance, agent coverage, workflow undo, erasure and supported import scope.
++
++Release metadata prepared by sd, 2026-11-16.
+diff --git a/package.json b/package.json
+index 49b710b..a6159d9 100644
+--- a/package.json
++++ b/package.json
+@@ -1,7 +1,7 @@
+ {
+   "name": "orbit",
+   "private": true,
+-  "version": "0.4.10",
++  "version": "0.4.11",
+   "type": "module",
+   "packageManager": "pnpm@10.12.4",
+   "engines": {
+diff --git a/seed.json b/seed.json
+index 8cbf89d..8dab5e0 100644
+--- a/seed.json
++++ b/seed.json
+@@ -1,7 +1,7 @@
+ {
+   "id": "orbit",
+   "name": "Orbit",
+-  "version": "0.4.10",
++  "version": "0.4.11",
+   "maturity": "complete-workflow-implementation; acceptance requires pinned runtime and native receipts",
+   "capabilities": [
+     {
+diff --git a/sources.lock.json b/sources.lock.json
+index 5f79b7e..60c8431 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -679,7 +679,7 @@
+       "executable": false
+     },
+     "CHANGELOG.md": {
+-      "sha256": "42ad9096d7bbff7d367324025da168a865910b2c43f6087212278ab8f7df3b55",
++      "sha256": "1fe91b3aa1a606e3b0711c263094f022ebe48ac1f24af92a17ac9f49a31ff216",
+       "executable": false
+     },
+     "CLAUDE.md": {
+@@ -3823,7 +3823,7 @@
+       "executable": false
+     },
+     "package.json": {
+-      "sha256": "b3cde35e574531f0d7f54dc4b0db396f7c05b95ae50cd682d5dbde720ff4710c",
++      "sha256": "17e6f59ba39ed7f777af9ddcc3717ca977ac32f1e3f552c3371cb6351b9ff792",
+       "executable": false
+     },
+     "patches/miniflare-5.20260907.0-alpha.patch": {
+@@ -3943,7 +3943,11 @@
+       "executable": false
+     },
+     "RELEASE.json": {
+-      "sha256": "335c4bc2399b877a81ab924bd9eaa74c74962f5eeb7bd5289521085c3fb75c78",
++      "sha256": "2053b863017bac4b2643775f550e729a519c08f405bb9485491de7ebdc7160ab",
++      "executable": false
++    },
++    "RELEASE.md": {
++      "sha256": "e931a64e1b12b4d8ee17e601873f96f7d9ad23b2f98f58ad5a35a72cf203d0f1",
+       "executable": false
+     },
+     "rer-project.json": {
+@@ -4303,7 +4307,7 @@
+       "executable": false
+     },
+     "seed.json": {
+-      "sha256": "d7a7135bef74a09a15319d316b51a98a61c3d65b39b7277251a6a6e9531dd67e",
++      "sha256": "d0ec85580f2b4ddf3b0d9b42286050e85485de8d6db78d7f30292845a99464dd",
+       "executable": false
+     },
+     "SIGNALS-AND-OUTREACH.md": {
