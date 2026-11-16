@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { parseCsv } from '../../../shared/csv';
 import { customFieldKinds,fields,type ImportFile,type ImportInput,type ImportKind } from '../../imports/contracts';
 const fieldLabels:Record<string,string>={
@@ -20,6 +21,8 @@ export function defaultCustomFields(vendor:ImportInput['vendor'],kind:ImportKind
 
 export function ImportMappingFields({files,setFiles,stages,setStages,nativeStages}:{files:ImportInput['files'];setFiles:(files:ImportInput['files'])=>void;stages:Record<string,string>;setStages:(stages:Record<string,string>)=>void;nativeStages:any[]}){
  const deals=files.find(f=>f.kind==='deal'),dealRows=deals?parseCsv(deals.csv.replace(/^﻿/,'')):[],stageColumn=deals?.mapping.stage?dealRows[0]?.indexOf(deals.mapping.stage):-1,sourceStages=stageColumn!==undefined&&stageColumn>=0?[...new Set(dealRows.slice(1).map(row=>row[stageColumn]))]:[];
+ // A source stage named exactly like an Orbit stage starts on it; any other stays for the person to choose.
+ useEffect(()=>{const matched:Record<string,string>={};for(const stage of sourceStages){if(!stage||stages[stage])continue;const same=nativeStages.find(native=>String(native.name).trim().toLowerCase()===stage.trim().toLowerCase());if(same)matched[stage]=same.id;}if(Object.keys(matched).length)setStages({...stages,...matched});},[sourceStages.join('\u0000'),nativeStages]);
  const update=(file:ImportFile,next:Partial<ImportFile>)=>setFiles(files.map(f=>f===file?{...f,...next}:f));
  function map(file:ImportFile,field:string,header:string){
   const mapping=Object.fromEntries(Object.entries({...file.mapping,[field]:header}).filter(([,v])=>v));

@@ -14,7 +14,7 @@ import { CaptureScope } from './capture-scope';
 import type { CaptureProviderDirectory, CaptureSource } from './capture-types';
 
 const titles: Record<string, { title: string; lead: string }> = {
-  address: { title: 'Send mail to Orbit', lead: 'The quickest way to start: no setup in Google or Microsoft.' },
+  address: { title: 'Send mail to Orbit', lead: 'A private address that files customer mail for you, with no setup in Google or Microsoft. On this computer it only serves the saved-email test; your hosted Orbit gets its own address that receives real mail.' },
   calendar: { title: 'Add your calendar', lead: 'Paste the private link your calendar already offers. No setup in Google or Microsoft.' },
   google: { title: 'Connect your Google account', lead: 'Google asks every app that reads Gmail to have its own sign-in key. You make one in Google Cloud once. It takes about 10 minutes and costs nothing.' },
   microsoft: { title: 'Connect your Microsoft account', lead: 'Microsoft asks every app that reads Outlook to be registered. You register Orbit once in Microsoft Entra. It takes about 10 minutes and costs nothing.' },

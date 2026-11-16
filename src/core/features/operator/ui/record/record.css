@@ -38,6 +38,8 @@
 .r-next .r-next-deal { margin: 0 0 4px; color: var(--ob-body); font-size: 15.5px; }
 .r-next-deal a { color: var(--ob-ink); font-weight: 650; text-decoration: underline 1.5px; text-underline-offset: 4px; }
 .r-next-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 8px; }
+.r-next-note { display: grid; gap: 8px; margin-top: 8px; }
+.r-next-note textarea { width: 100%; box-sizing: border-box; }
 .r-quiet-actions { display: inline-flex; flex-wrap: wrap; gap: 4px 20px; margin-left: 10px; }
 .r-next [role="alert"] { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; background: var(--ob-tangerine-soft); color: #7a2a07; }
 .r-next [role="alert"] p { margin: 0; }
@@ -96,6 +98,9 @@
 .r-group > h3 { margin: 0 0 6px; color: var(--ob-ink); font-size: 15.5px; font-weight: 700; }
 .r-side .r-quiet label { grid-template-columns: 104px minmax(0, 1fr); align-items: center; gap: 10px; min-height: 46px; }
 .r-side .r-quiet .r-label { display: grid; gap: 0; }
+/* Long values (an email, a time zone, a next step) take the full row under their label instead of being clipped. */
+.r-side .r-quiet label:has(> :is(input[type="email"], textarea, select[aria-labelledby$="-timezone"])) { grid-template-columns: minmax(0, 1fr); gap: 0; padding-bottom: 6px; }
+.ob-app .r-side .r-quiet select { padding-right: 32px; text-overflow: ellipsis; }
 .r-side .r-quiet .r-saved { margin-left: 0; }
 .r-side .r-quiet .r-fail, .r-side .r-quiet + .r-confirm, .r-side .r-quiet .r-confirm { margin-left: 114px; }
 .ob-app .r-side .r-quiet :is(input, select) { padding-right: 6px; font-size: 15.5px; }

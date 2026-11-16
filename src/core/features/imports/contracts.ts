@@ -7,6 +7,7 @@ export const importInput = z.object({
  owners:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/).nullable()).optional(),
  stages:z.record(z.string().max(200),z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)).default({}),
  contactability:z.enum(['mapped_permission','confirmed_contactable']).default('mapped_permission'),
+ timezone:z.string().max(100).refine(zone=>{try{new Intl.DateTimeFormat('en-US',{timeZone:zone});return true;}catch{return false;}},'Choose a valid time zone.').optional(),
 }).strict();
 export type ImportInput=z.infer<typeof importInput>;
 export type ImportFile=ImportInput['files'][number];

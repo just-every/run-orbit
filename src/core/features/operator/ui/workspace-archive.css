@@ -11,7 +11,6 @@
 .workspace-archive__metrics{display:flex;flex-wrap:wrap;gap:28px;margin:0;padding:18px 0;border-block:1px solid var(--ob-line)}
 .workspace-archive__metrics dt{text-transform:none;font-size:13px;letter-spacing:0;color:var(--ob-muted)}
 .workspace-archive__metrics dd{font-size:16px;margin:8px 0 0;font-variant-numeric:tabular-nums}
-.workspace-archive__state{text-transform:capitalize}
 .workspace-archive__download{display:block;padding:16px;border:1px solid var(--ob-line);border-radius:7px;color:inherit;text-decoration:underline;text-underline-offset:3px}
 .workspace-archive__panel .workspace-archive__confirmation{display:flex;align-items:flex-start;gap:10px;line-height:1.5}
 .workspace-archive__confirmation input{margin-top:5px;flex:none}

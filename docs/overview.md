@@ -60,7 +60,7 @@ curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 
 Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. If the installer prints a line that puts `rer` on your PATH, run that line too.
 
-To start it again later, run the same line from the same folder, or `cd run-orbit && rer dev`.
+To start it again later, run the same line from the same folder, or `cd run-orbit && ~/.local/bin/rer dev`. A new terminal finds `rer` by that full path until the PATH line above is in your shell.
 
 `rer` brings Orbit's pinned Node 22.20.0 and pnpm 10.12.4 into its own cache, so you install neither yourself. The line clones `main`; `dev` installs dependencies, prepares the local trial owner (`owner@run-orbit.test`) on the first launch and starts Orbit. Open the private `RER_OPEN` link it prints on this computer: you are already signed in. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings › Mail › Sender, it goes to the customer's inbox even from your computer. Your first sign-in asks for your business name, time zone, currency and pipeline stages, and then you are in. Change the trial email in Settings › Team › Owner email, or use your real owner mailbox from the start: run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 

@@ -7,7 +7,10 @@ export async function editOpportunityHistory(page){
  // OR3: the next action's Mark done records the outcome; Add a note ends in Add note; an entry's text saves in place.
  const activity=page.getByTestId('record-activity'),feed=activity.locator('.r-feed');
  await page.getByTestId('next-action').getByRole('button',{name:'Mark done',exact:true}).click();
+ await page.getByTestId('next-action').getByLabel('Note (optional)').fill('Spoke to the buyer');
+ await page.getByTestId('next-action').locator('form').getByRole('button',{name:'Mark done',exact:true}).click();
  await expect(feed).toContainText('Marked the next action done');
+ await expect(feed).toContainText('Spoke to the buyer');
  await page.getByRole('button',{name:'Add a note',exact:true}).click();
  const add=activity.locator('form.manual-entry');
  for(const text of ['First meeting note','Second meeting note']){
