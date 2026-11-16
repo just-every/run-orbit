@@ -35,6 +35,10 @@ export async function workflowFormJourney({db,operator,cookie}:{db:D1Database;op
  assert.equal(runs.length,1);assert.equal(runs[0].recordId,deal.id);assert.equal(runs[0].recordType,'opportunity');assert.equal(runs[0].status,'completed');assert.equal(runs[0].version,1);
  const tasks=(await json('/api/v1/tasks?view=all&owner=all')).tasks.filter((task:any)=>task.title==='Review the new enquiry');
  assert.equal(tasks.length,1);assert.equal(tasks[0].recordType,'opportunity');assert.equal(tasks[0].recordId,deal.id);
+ assert.equal(Number(await db.prepare('SELECT count(*) n FROM marketing_form_submissions WHERE form_id=? AND idempotency_key=?').bind(form.id,idempotencyKey).first('n')),1);
+ const history=await json(`/api/workflows/records/contact/${contactId}/history`);
+ assert.equal(history.history.length,1);assert.equal(history.history[0].source,'workflow');assert.equal(history.history[0].workflowId,workflow.workflow.id);assert.equal(history.history[0].version,1);assert.equal(history.history[0].eventId,submitted.submissionId);assert.equal(history.history[0].after,'Workflow form provenance');
+ const dryRun=await json(`/api/workflows/${workflow.workflow.id}/preview`,{}),past=dryRun.historical.find((row:any)=>row.eventId===submitted.submissionId);assert.ok(past,'retained form event is evaluated in the historical dry run');assert.deepEqual(past.errors,[]);assert.ok(past.changes.some((change:any)=>change.field==='job_title'&&change.before===null&&change.after==='Workflow form provenance'));assert.equal(dryRun.historyCoverage.complete,false,'pre-installation form events are not invented');
  // Another enquiry from the same contact creates no deal and no second deal-workflow run.
  const againKey=crypto.randomUUID(),againChallenge=await publicJson(`/api/public/forms/${slug}/challenge`,{idempotencyKey:againKey});
  await new Promise(resolve=>setTimeout(resolve,2100));
@@ -42,9 +46,5 @@ export async function workflowFormJourney({db,operator,cookie}:{db:D1Database;op
  await json('/api/workflows/process',{});
  assert.equal((await json('/api/workflows')).runs.filter((run:any)=>run.workflowId===dealWorkflow.workflow.id).length,1);
  assert.equal((await json('/api/v1/tasks?view=all&owner=all')).tasks.filter((task:any)=>task.title==='Review the new enquiry').length,1);
- assert.equal(Number(await db.prepare('SELECT count(*) n FROM marketing_form_submissions WHERE form_id=? AND idempotency_key=?').bind(form.id,idempotencyKey).first('n')),1);
- const history=await json(`/api/workflows/records/contact/${contactId}/history`);history.history=history.history.filter((row:any)=>row.eventId===submitted.submissionId);
- assert.equal(history.history.length,1);assert.equal(history.history[0].source,'workflow');assert.equal(history.history[0].workflowId,workflow.workflow.id);assert.equal(history.history[0].version,1);assert.equal(history.history[0].eventId,submitted.submissionId);assert.equal(history.history[0].after,'Workflow form provenance');
- const dryRun=await json(`/api/workflows/${workflow.workflow.id}/preview`,{}),past=dryRun.historical.find((row:any)=>row.eventId===submitted.submissionId);assert.ok(past,'retained form event is evaluated in the historical dry run');assert.deepEqual(past.errors,[]);assert.ok(past.changes.some((change:any)=>change.field==='job_title'&&change.before===null&&change.after==='Workflow form provenance'));assert.equal(dryRun.historyCoverage.complete,false,'pre-installation form events are not invented');
 
 }
