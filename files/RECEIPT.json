@@ -1,0 +1,58 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-16",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stranger34-trips-1-pc1",
+  "head": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+  "preservedStartingHead": "1833f212cd6a7b89e4011a5953da28edd3103983",
+  "productPush": "success; attempt 1",
+  "pr": null,
+  "checks": {
+    "typecheck": "passed",
+    "sourceLockRegenerate": "passed",
+    "sourceLockCheck": "passed",
+    "diffCheck": "passed",
+    "provenancePublicDoors": "passed at 1440 and 390: contact, request preview and shared contact",
+    "retainedWorkflowTest": "passed 1/1; includes workflowFormJourney: active deal workflow runs once and creates one task despite a replay and a later enquiry with no new deal",
+    "operatorJourneys": "passed 2/2: complete native desktop and phone journeys on exact candidate source; 519.6s / 410.3s",
+    "workflowExplanation": "passed; explicit no-new-deal explanation at 1440; browser screenshots at 1440 and 390",
+    "visualScreens": "20 screenshots captured; inspected touched provenance, setup, move/history, Slack and workflow explanation at 1440 and 390; title/forecast checks also captured"
+  },
+  "testCountsBefore": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "testCountsAfter": {
+    "registrations": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "clauseCountsBefore": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clauseCountsAfter": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32
+  },
+  "clauseStatusChanges": [],
+  "githubCallsUsed": 6,
+  "githubCallLimit": 10,
+  "verify": {
+    "conclusion": null,
+    "head_sha": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43812018788",
+    "status": "in_progress",
+    "apiCall": 6,
+    "observedAt": "2026-11-16T05:53:40.601040+00:00",
+    "runId": 43812018788
+  },
+  "tripCounts": {
+    "fixed": 7,
+    "notReproduced": 2,
+    "gaps": 0
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "title": [
+    {
+      "width": 1440,
+      "clientHeight": 138,
+      "scrollHeight": 138,
+      "value": "Clinic analytics rollout",
+      "clipped": false
+    },
+    {
+      "width": 390,
+      "clientHeight": 87,
+      "scrollHeight": 87,
+      "value": "Clinic analytics rollout",
+      "clipped": false
+    }
+  ],
+  "forecast": [
+    {
+      "width": 1440,
+      "totalCents": 1500000,
+      "dealCount": 2,
+      "repCount": 1,
+      "weightedRowsCents": 1500000
+    },
+    {
+      "width": 390,
+      "totalCents": 1500000,
+      "dealCount": 2,
+      "repCount": 1,
+      "weightedRowsCents": 1500000
+    }
+  ]
+}

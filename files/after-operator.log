@@ -1,0 +1,115 @@
+Record recovery passed: contact: primary 404, relationships 404, primary first
+Record recovery passed: contact: primary 404, relationships 404, relationships first
+Record recovery passed: contact: primary 404, relationships 503, primary first
+Record recovery passed: contact: primary 404, relationships 503, relationships first
+Record recovery passed: contact: primary 503, relationships 404, primary first
+Record recovery passed: contact: primary 503, relationships 404, relationships first
+Record recovery passed: contact: primary 401, relationships 403, primary first
+Record recovery passed: contact: primary 401, relationships 403, relationships first
+Record recovery passed: contact: primary 403, relationships 401, primary first
+Record recovery passed: contact: primary 403, relationships 401, relationships first
+Record recovery passed: contact: primary 409, relationships 500, primary first
+Record recovery passed: contact: primary 409, relationships 500, relationships first
+Record recovery passed: contact: primary 500, relationships 409, primary first
+Record recovery passed: contact: primary 500, relationships 409, relationships first
+Record recovery passed: contact: primary 404, relationships 200, primary first
+Record recovery passed: contact: primary 404, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 404, primary first
+Record recovery passed: contact: primary 200, relationships 404, relationships first
+Record recovery passed: contact: primary 403, relationships 200, primary first
+Record recovery passed: contact: primary 403, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 403, primary first
+Record recovery passed: contact: primary 200, relationships 403, relationships first
+Record recovery passed: contact: primary 500, relationships 200, primary first
+Record recovery passed: contact: primary 500, relationships 200, relationships first
+Record recovery passed: contact: primary 200, relationships 500, primary first
+Record recovery passed: contact: primary 200, relationships 500, relationships first
+Record recovery passed: opportunity: primary 404, relationships 404, primary first
+Record recovery passed: opportunity: primary 404, relationships 404, relationships first
+Record recovery passed: opportunity: primary 404, relationships 503, primary first
+Record recovery passed: opportunity: primary 404, relationships 503, relationships first
+Record recovery passed: opportunity: primary 503, relationships 404, primary first
+Record recovery passed: opportunity: primary 503, relationships 404, relationships first
+Record recovery passed: opportunity: primary 401, relationships 403, primary first
+Record recovery passed: opportunity: primary 401, relationships 403, relationships first
+Record recovery passed: opportunity: primary 403, relationships 401, primary first
+Record recovery passed: opportunity: primary 403, relationships 401, relationships first
+Record recovery passed: opportunity: primary 409, relationships 500, primary first
+Record recovery passed: opportunity: primary 409, relationships 500, relationships first
+Record recovery passed: opportunity: primary 500, relationships 409, primary first
+Record recovery passed: opportunity: primary 500, relationships 409, relationships first
+Record recovery passed: opportunity: primary 404, relationships 200, primary first
+Record recovery passed: opportunity: primary 404, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 404, primary first
+Record recovery passed: opportunity: primary 200, relationships 404, relationships first
+Record recovery passed: opportunity: primary 403, relationships 200, primary first
+Record recovery passed: opportunity: primary 403, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 403, primary first
+Record recovery passed: opportunity: primary 200, relationships 403, relationships first
+Record recovery passed: opportunity: primary 500, relationships 200, primary first
+Record recovery passed: opportunity: primary 500, relationships 200, relationships first
+Record recovery passed: opportunity: primary 200, relationships 500, primary first
+Record recovery passed: opportunity: primary 200, relationships 500, relationships first
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (324207.949369ms)
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (171570.405057ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 497083.730994
+
+✖ failing tests:
+
+test at tests/rer/operator-desktop.test.mjs:8:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (324207.949369ms)
+  Error: expect(locator).toHaveCount(expected) failed
+  
+  Locator:  getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true })
+  Expected: 0
+  Received: 1
+  Timeout:  5000ms
+  
+  Call log:
+    - Expect "toHaveCount" getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true }) with timeout 5000ms
+    - waiting for getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true })
+      14 × locator resolved to 1 element
+         - unexpected value "1"
+  
+      at captureRawStack (/workspace/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+      at callMatcherAsStep (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+      at Object.toHaveCount (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+      at expectProvenance (/workspace/run-orbit/tests/rer/operator-provenance.mjs:7:64)
+      at async Object.ready (/workspace/run-orbit/tests/rer/operator-routes.mjs:81:232)
+      at async operatorRouteJourney (/workspace/run-orbit/tests/rer/operator-route-journey.mjs:11:63)
+      at async file:///workspace/run-orbit/tests/rer/operator-desktop.test.mjs:8:238
+      at async withOperatorWorkspace (/workspace/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+    matcherResult: { actual: 1, expected: 0, message: `expect(locator).toHaveCount(expected) failed\n\nLocator:  getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true })\nExpected: 0\nReceived: 1\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveCount" getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true }) with timeout 5000ms\n  - waiting for getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true })\n    14 × locator resolved to 1 element\n       - unexpected value "1"\n`, name: 'toHaveCount', pass: false, log: [ `  - Expect "toHaveCount" getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true }) with timeout 5000ms`, "  - waiting for getByText('01M7HDC0TZZ8F6MP4TZZQ8BCJD', { exact: true })", '    14 × locator resolved to 1 element', '       - unexpected value "1"' ], timeout: 5000, ariaSnapshot: undefined }
+  }
+
+test at tests/rer/operator-phone.test.mjs:7:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (171570.405057ms)
+  Error: expect(locator).toBeVisible() failed
+  
+  Locator:  getByText('2', { exact: true }).first()
+  Expected: visible
+  Received: hidden
+  Timeout:  5000ms
+  
+  Call log:
+    - Expect "toBeVisible" getByText('2', { exact: true }).first() with timeout 5000ms
+    - waiting for getByText('2', { exact: true }).first()
+      13 × locator resolved to <span aria-hidden="true" class="operator-nav__count">2</span>
+         - unexpected value "hidden"
+  
+      at captureRawStack (/workspace/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+      at callMatcherAsStep (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+      at Object.toBeVisible (/workspace/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+      at expectProvenance (/workspace/run-orbit/tests/rer/operator-provenance.mjs:6:347)
+      at async Object.ready (/workspace/run-orbit/tests/rer/operator-routes.mjs:68:124)
+      at async operatorRouteJourney (/workspace/run-orbit/tests/rer/operator-route-journey.mjs:11:63)
+      at async withOperatorWorkspace (/workspace/run-orbit/tests/rer/operator-workspace.mjs:29:3) {
+    matcherResult: { message: `expect(locator).toBeVisible() failed\n\nLocator:  getByText('2', { exact: true }).first()\nExpected: visible\nReceived: hidden\nTimeout:  5000ms\n\nCall log:\n  - Expect "toBeVisible" getByText('2', { exact: true }).first() with timeout 5000ms\n  - waiting for getByText('2', { exact: true }).first()\n    13 × locator resolved to <span aria-hidden="true" class="operator-nav__count">2</span>\n       - unexpected value "hidden"\n`, pass: false, actual: 'hidden', name: 'toBeVisible', expected: 'visible', log: [ `  - Expect "toBeVisible" getByText('2', { exact: true }).first() with timeout 5000ms`, "  - waiting for getByText('2', { exact: true }).first()", '    13 × locator resolved to <span aria-hidden="true" class="operator-nav__count">2</span>', '       - unexpected value "hidden"' ], timeout: 5000, ariaSnapshot: '- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit Dev\n  - button "Menu"\n- main:\n  - link "Operator review company":\n    - /url: /app/companies/01M7HDQ0JASXRG4MSV5VAN79V2\n  - heading "Operator review contact" [level=1]:\n    - textbox "Contact name": Operator review contact\n  - region "Next action":\n    - heading "Next action" [level=2]\n    - paragraph:\n      - link "Operator review opportunity":\n        - /url: /app/opportunities/01M7HDQ0JACG7XY1Y50HEWRE9R\n      - text: · New · USD 4,500\n    - text: Why NOW Form submitted\n    - paragraph: Operator inquiry\n    - paragraph: 11/16/2026, 5:36 AM\n    - button "Write follow-up"\n  - region "Activity":\n    - heading "Activity" [level=2]\n    - button "Log a call"\n    - button "Plan a meeting"\n    - button "Add a note"\n    - list:\n      - listitem:\n        - text: Form\n        - paragraph: Operator inquiry\n        - paragraph: From Published contact form\n        - group: Recorded details\n        - text: 11/16/2026, 5:36 AM\n      - listitem:\n        - text: Form Assignment\n        - paragraph: From Published contact form\n        - group: Recorded details\n        - text: 11/16/2026, 5:36 AM\n      - listitem:\n        - text: Changed\n        - paragraph: "Changed Segment: Empty → Studio"\n        - paragraph: "Changed Approved: Empty → true Changed Campaign json: Empty → Ordinary campaign text Changed Import source: Empty → Imported from: Imported account (HubSpot export); ID in old system: customer-1042; Owner in old system: Account manager; Stage in old system: Evaluation; Description: Imported customer context; File: contacts.csv; Row: 2; Additional: Region: Pacific By Opal Operator"\n        - group: Recorded details\n        - text: 11/16/2026, 5:36 AM\n      - listitem:\n        - text: Note\n        - paragraph: Customer asked for a detailed walkthrough.\n        - group: Recorded details\n        - button "Make entry private"\n        - group: Edit entry\n        - button "Delete entry"\n        - text: 11/16/2026, 5:36 AM\n  - complementary "Details":\n    - heading "Details" [level=2]\n    - region "Contact":\n      - text: Email\n      - textbox "Email":\n        - /placeholder: Add an email\n        - text: review@example.test\n      - text: Phone\n      - textbox "Phone":\n        - /placeholder: Add a phone\n      - text: Job title\n      - textbox "Job title":\n        - /placeholder: Add a job title\n      - text: Time zone\n      - combobox "Time zone":\n        - option "Workspace (UTC)" [selected]\n        - option "Africa/Abidjan"\n        - option "Africa/Accra"\n        - option "Africa/Addis_Ababa"\n        - option "Africa/Algiers"\n        - option "Africa/Asmera"\n        - option "Africa/Bamako"\n        - option "Africa/Bangui"\n        - option "Africa/Banjul"\n        - option "Africa/Bissau"\n        - option "Africa/Blantyre"\n        - option "Africa/Brazzaville"\n        - option "Africa/Bujumbura"\n        - option "Africa/Cairo"\n        - option "Africa/Casablanca"\n        - option "Africa/Ceuta"\n        - option "Africa/Conakry"\n        - option "Africa/Dakar"\n        - option "Africa/Dar_es_Salaam"\n        - option "Africa/Djibouti"\n        - option "Africa/Douala"\n        - option "Africa/El_Aaiun"\n        - option "Africa/Freetown"\n        - option "Africa/Gaborone"\n        - option "Africa/Harare"\n        - option "Africa/Johannesburg"\n        - option "Africa/Juba"\n        - option "Africa/Kampala"\n        - option "Africa/Khartoum"\n        - option "Africa/Kigali"\n        - option "Africa/Kinshasa"\n        - option "Africa/Lagos"\n        - option "Africa/Libreville"\n        - option "Africa/Lome"\n        - option "Africa/Luanda"\n        - option "Africa/Lubumbashi"\n        - option "Africa/Lusaka"\n        - option "Africa/Malabo"\n        - option "Africa/Maputo"\n        - option "Africa/Maseru"\n        - option "Africa/Mbabane"\n        - option "Africa/Mogadishu"\n        - option "Africa/Monrovia"\n        - option "Africa/Nairobi"\n        - option "Africa/Ndjamena"\n        - option "Africa/Niamey"\n        - option "Africa/Nouakchott"\n        - option "Africa/Ouagadougou"\n        - option "Africa/Porto-Novo"\n        - option "Africa/Sao_Tome"\n        - option "Africa/Tripoli"\n        - option "Africa/Tunis"\n        - option "Africa/Windhoek"\n        - option "America/Adak"\n        - option "America/Anchorage"\n        - option "America/Anguilla"\n        - option "America/Antigua"\n        - option "America/Araguaina"\n        - option "America/Argentina/La_Rioja"\n        - option "America/Argentina/Rio_Gallegos"\n        - option "America/Argentina/Salta"\n        - option "America/Argentina/San_Juan"\n        - option "America/Argentina/San_Luis"\n        - option "America/Argentina/Tucuman"\n        - option "America/Argentina/Ushuaia"\n        - option "America/Aruba"\n        - option "America/Asuncion"\n        - option "America/Bahia"\n        - option "America/Bahia_Banderas"\n        - option "America/Barbados"\n        - option "America/Belem"\n        - option "America/Belize"\n        - option "America/Blanc-Sablon"\n        - option "America/Boa_Vista"\n        - option "America/Bogota"\n        - option "America/Boise"\n        - option "America/Buenos_Aires"\n        - option "America/Cambridge_Bay"\n        - option "America/Campo_Grande"\n        - option "America/Cancun"\n        - option "America/Caracas"\n        - option "America/Catamarca"\n        - option "America/Cayenne"\n        - option "America/Cayman"\n        - option "America/Chicago"\n        - option "America/Chihuahua"\n        - option "America/Ciudad_Juarez"\n        - option "America/Coral_Harbour"\n        - option "America/Cordoba"\n        - option "America/Costa_Rica"\n        - option "America/Coyhaique"\n        - option "America/Creston"\n        - option "America/Cuiaba"\n        - option "America/Curacao"\n        - option "America/Danmarkshavn"\n        - option "America/Dawson"\n        - option "America/Dawson_Creek"\n        - option "America/Denver"\n        - option "America/Detroit"\n        - option "America/Dominica"\n        - option "America/Edmonton"\n        - option "America/Eirunepe"\n        - option "America/El_Salvador"\n        - option "America/Fort_Nelson"\n        - option "America/Fortaleza"\n        - option "America/Glace_Bay"\n        - option "America/Godthab"\n        - option "America/Goose_Bay"\n        - option "America/Grand_Turk"\n        - option "America/Grenada"\n        - option "America/Guadeloupe"\n        - option "America/Guatemala"\n        - option "America/Guayaquil"\n        - option "America/Guyana"\n        - option "America/Halifax"\n        - option "America/Havana"\n        - option "America/Hermosillo"\n        - option "America/Indiana/Knox"\n        - option "America/Indiana/Marengo"\n        - option "America/Indiana/Petersburg"\n        - option "America/Indiana/Tell_City"\n        - option "America/Indiana/Vevay"\n        - option "America/Indiana/Vincennes"\n        - option "America/Indiana/Winamac"\n        - option "America/Indianapolis"\n        - option "America/Inuvik"\n        - option "America/Iqaluit"\n        - option "America/Jamaica"\n        - option "America/Jujuy"\n        - option "America/Juneau"\n        - option "America/Kentucky/Monticello"\n        - option "America/Kralendijk"\n        - option "America/La_Paz"\n        - option "America/Lima"\n        - option "America/Los_Angeles"\n        - option "America/Louisville"\n        - option "America/Lower_Princes"\n        - option "America/Maceio"\n        - option "America/Managua"\n        - option "America/Manaus"\n        - option "America/Marigot"\n        - option "America/Martinique"\n        - option "America/Matamoros"\n        - option "America/Mazatlan"\n        - option "America/Mendoza"\n        - option "America/Menominee"\n        - option "America/Merida"\n        - option "America/Metlakatla"\n        - option "America/Mexico_City"\n        - option "America/Miquelon"\n        - option "America/Moncton"\n        - option "America/Monterrey"\n        - option "America/Montevideo"\n        - option "America/Montserrat"\n        - option "America/Nassau"\n        - option "America/New_York"\n        - option "America/Nome"\n        - option "America/Noronha"\n        - option "America/North_Dakota/Beulah"\n        - option "America/North_Dakota/Center"\n        - option "America/North_Dakota/New_Salem"\n        - option "America/Ojinaga"\n        - option "America/Panama"\n        - option "America/Paramaribo"\n        - option "America/Phoenix"\n        - option "America/Port-au-Prince"\n        - option "America/Port_of_Spain"\n        - option "America/Porto_Velho"\n        - option "America/Puerto_Rico"\n        - option "America/Punta_Arenas"\n        - option "America/Rankin_Inlet"\n        - option "America/Recife"\n        - option "America/Regina"\n        - option "America/Resolute"\n        - option "America/Rio_Branco"\n        - option "America/Santarem"\n        - option "America/Santiago"\n        - option "America/Santo_Domingo"\n        - option "America/Sao_Paulo"\n        - option "America/Scoresbysund"\n        - option "America/Sitka"\n        - option "America/St_Barthelemy"\n        - option "America/St_Johns"\n        - option "America/St_Kitts"\n        - option "America/St_Lucia"\n        - option "America/St_Thomas"\n        - option "America/St_Vincent"\n        - option "America/Swift_Current"\n        - option "America/Tegucigalpa"\n        - option "America/Thule"\n        - option "America/Tijuana"\n        - option "America/Toronto"\n        - option "America/Tortola"\n        - option "America/Vancouver"\n        - option "America/Whitehorse"\n        - option "America/Winnipeg"\n        - option "America/Yakutat"\n        - option "Antarctica/Casey"\n        - option "Antarctica/Davis"\n        - option "Antarctica/DumontDUrville"\n        - option "Antarctica/Macquarie"\n        - option "Antarctica/Mawson"\n        - option "Antarctica/McMurdo"\n        - option "Antarctica/'... 9140 more characters }
+  }

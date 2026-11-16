@@ -1,0 +1,36 @@
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (352180.070602ms)
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (353509.778828ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 355340.331914
+
+✖ failing tests:
+
+test at tests/rer/operator-desktop.test.mjs:8:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 1440px (352180.070602ms)
+  locator.click: Timeout 60000ms exceeded.
+  Call log:
+  [2m  - waiting for getByRole('button', { name: 'Save result', exact: true })[22m
+  
+      at prepareOperatorFixture (/workspace/run-orbit/tests/rer/operator-fixture.mjs:60:180)
+      at async withOperatorWorkspace (/workspace/run-orbit/tests/rer/operator-workspace.mjs:27:11) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for getByRole('button', { name: 'Save result', exact: true })" ]
+  }
+
+test at tests/rer/operator-phone.test.mjs:7:1
+✖ BASE-PUBLIC-003 T099 native operator routes and expanded data views at 390px (353509.778828ms)
+  page.waitForURL: Timeout 60000ms exceeded.
+  =========================== logs ===========================
+  waiting for navigation to "http://127.0.0.1:39409/app" until "load"
+    navigated to "chrome-error://chromewebdata/"
+  ============================================================
+      at withOperatorWorkspace (/workspace/run-orbit/tests/rer/operator-workspace.mjs:26:86) {
+    name: 'TimeoutError',
+    log: []
+  }
