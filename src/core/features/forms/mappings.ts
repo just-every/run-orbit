@@ -15,7 +15,7 @@ export function mappedValue(mapping:FormMapping,input:string):string|number|bool
   if(mapping.valueType==='boolean'){if(!['true','false'].includes(value))throw new RecordError(400,'Enter true or false for this custom property.');return value==='true';}
   if(value.length>4000)throw new RecordError(400,'Custom text exceeds 4000 characters.');return value;
  }
- if(mapping.field==='value_cents'){const n=Number(value);if(!/^\d+$/.test(value)||!Number.isSafeInteger(n)||n>100000000000)throw new RecordError(400,'Enter a non-negative amount in cents.');return n;}
+ if(mapping.field==='value_cents'){const cents=/^\d+(?:\.\d{1,2})?$/.test(value)?Math.round(Number(value)*100):NaN;if(!Number.isSafeInteger(cents)||cents>100000000000)throw new RecordError(400,'Enter a non-negative deal value such as 12500 or 12500.50.');return cents;}
  if(mapping.field==='expected_close_at'){if(!z.iso.datetime().safeParse(value).success)throw new RecordError(400,'Enter an ISO close date and time.');return value;}
  if(value.length>500)throw new RecordError(400,'This value exceeds 500 characters.');
  if(mapping.field==='email'){if(value.length>254||!z.email().safeParse(value).success)throw new RecordError(400,'Enter a valid email address.');return value.toLowerCase();}

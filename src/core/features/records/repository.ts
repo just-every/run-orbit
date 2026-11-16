@@ -18,6 +18,7 @@ import { contactEmailKey, companyDomainKey } from './identity';
 import { RecordSeedRepository } from './seed-repository';
 import { evaluationStatements } from '../workbench/evaluation-repository';
 import { createId } from '../../shared/ids';
+import { importTimelineActor } from '../imports/timeline-actor';
 import { schemas } from './schema';
 import { audit, mutationJob, RecordError, requireRecord, tables, timeline, type RecordKind } from './shared';
 const changeLabels:Record<string,string>={company_id:'Company',stage_id:'Stage',owner_id:'Owner',value_cents:'Value',expected_close_at:'Expected close date',primary_domain:'Website domain'};
@@ -150,7 +151,8 @@ export class RecordsRepository extends RecordSeedRepository {
  const opportunities=kind==='company'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE company_id=?').bind(id).all():kind==='contact'?await this.db.prepare('SELECT o.*,s.name AS stage_name,p.display_name AS owner_name FROM opportunities o JOIN opportunity_contacts oc ON oc.opportunity_id=o.id JOIN pipeline_stages s ON s.id=o.stage_id LEFT JOIN operators p ON p.id=o.owner_id WHERE oc.contact_id=?').bind(id).all():{results:[]};
  const company=record.company_id?await this.db.prepare('SELECT * FROM companies WHERE id=?').bind(record.company_id).first():null;
  const ownership=kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db)?(await reconcileLegacyOwnership(this.db),await readOwnership(this.db,kind,id)):undefined;
- return {record,company,...(ownership?{ownership}:{}),timeline:entries.results,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
+ const timelineRows=entries.results.map((row:any)=>{const importer=importTimelineActor({id:row.id,kind:row.kind,actorType:row.actor_type,actorId:row.actor_id,source:row.source,payloadJson:row.payload_json});return importer?{...row,actor_name:importer}:row;});
+ return {record,company,...(ownership?{ownership}:{}),timeline:timelineRows,movementHistory:kind==='opportunity'?movementHistory(entries.results):[],contacts:contacts.results,opportunities:opportunities.results,openValueCents:opportunities.results.reduce((sum:number,o:any)=>sum+(o.lifecycle==='open'?o.value_cents:0),0)};}
  async search(kind:RecordKind,query:string,filters:Record<string,string>={},options:{ownership?:boolean;sort?:ViewSort}={}){
   if(kind!=='opportunity'&&options.ownership!==false&&!legacyActorContext(this.db))await reconcileLegacyOwnership(this.db);
   const clauses=['1=1'],values:string[]=[];if(query.trim()){

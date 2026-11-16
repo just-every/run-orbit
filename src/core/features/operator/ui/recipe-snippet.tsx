@@ -20,5 +20,5 @@ export function isHostedWebhook(url:string){
  return parsed.protocol==='https:'&&!/^(localhost|127\.|\[::1\]$)/.test(host)&&!host.endsWith('.localhost')&&!host.endsWith('.local');
 }
 export function WebhookWarning({endpoint}:{endpoint:string}){
- return isHostedWebhook(endpoint)?null:<p role="note"><strong>Your tools cannot reach this Orbit address.</strong> This copy runs on your computer. Zapier, Make, Calendly and Cal.com need your hosted Orbit’s public HTTPS address. Deploy Orbit, open Sources in that hosted installation and connect the source there; copy its URL and secret there. You can use Send test event below to check this local installation, but that does not test a provider connection.</p>;
+ return isHostedWebhook(endpoint)?null:<p role="note"><strong>Your tools cannot reach this Orbit address.</strong> This copy runs on your computer. Zapier, Make, Calendly and Cal.com need your hosted Orbit’s public HTTPS address. Deploy Orbit, open Settings › Capture › Website and app events in that hosted installation and connect the source there; copy its URL and secret there. You can use Send test event below to check this local installation, but that does not test a provider connection.</p>;
 }

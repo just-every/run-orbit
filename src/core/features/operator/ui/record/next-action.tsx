@@ -27,8 +27,8 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
  const newest=[...contributions].sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0],signal=newest?signals.get(newest.signalId):undefined;
  const line=rec?.explanation??(signal?signal.subject||`${signalKind(signal.type)} · from ${sourceLabel(signal.source)}`:opportunity.queueReason??'Review the customer evidence and choose your next step.');
  const when=!rec?.explanation&&signal?[formatDateTime(signal.occurredAt,presentation),contacts.get(signal.id)].filter(Boolean).join(' · '):null;
- const [error,setError]=useState(''),[busy,setBusy]=useState(false);
- async function finish(outcome:'completed'|'skipped'){if(!rec)return;setBusy(true);setError('');try{await workbenchRequest(`/recommendations/${rec.id}/complete`,{outcome,note:''});reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ const [error,setError]=useState(''),[busy,setBusy]=useState(false),[pending,setPending]=useState<'completed'|'skipped'|null>(null),[note,setNote]=useState('');
+ async function finish(outcome:'completed'|'skipped'){if(!rec)return;setBusy(true);setError('');try{await workbenchRequest(`/recommendations/${rec.id}/complete`,{outcome,note:note.trim()});setPending(null);setNote('');reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="operator-surface r-next" aria-labelledby={`next-${opportunity.id}`} data-testid="next-action">
   <h2 id={`next-${opportunity.id}`} className="sr-only">Next action</h2>
   {opportunity.evaluation?.failureAt?<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p>{!readOnly&&<RecommendationRefresh opportunityId={opportunity.id} reload={reload}/>}</div>:null}
@@ -39,8 +39,9 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
   {!readOnly&&<div className="r-next-actions">
    <button type="button" className="orbit-button orbit-button--primary" aria-expanded={composing} onClick={onCompose}>Write follow-up</button>
    {aiConfigured?<Link className="orbit-button orbit-button--secondary" to="/app/assistance/$id" params={{id:opportunity.id}}>Draft with AI</Link>:null}
-   {rec?<span className="r-quiet-actions"><button type="button" className="operator-text-button" disabled={busy} onClick={()=>void finish('completed')}>Mark done</button><button type="button" className="operator-text-button" disabled={busy} onClick={()=>void finish('skipped')}>Skip</button></span>:null}
+   {rec?<span className="r-quiet-actions"><button type="button" className="operator-text-button" disabled={busy} aria-expanded={pending==='completed'} onClick={()=>setPending('completed')}>Mark done</button><button type="button" className="operator-text-button" disabled={busy} aria-expanded={pending==='skipped'} onClick={()=>setPending('skipped')}>Skip</button></span>:null}
   </div>}
+  {!readOnly&&rec&&pending?<form className="r-next-note" onSubmit={event=>{event.preventDefault();void finish(pending);}}><label>Note (optional)<textarea value={note} maxLength={5000} rows={2} autoFocus onChange={event=>setNote(event.target.value)}/></label><div className="r-next-actions"><button type="submit" className="orbit-button orbit-button--primary" disabled={busy}>{pending==='completed'?'Mark done':'Skip this action'}</button><button type="button" className="operator-text-button" disabled={busy} onClick={()=>{setPending(null);setNote('');}}>Cancel</button></div></form>:null}
   {error?<p className="r-fail" role="alert">{error}</p>:null}
   <WhyFirst opportunity={opportunity} presentation={presentation} contacts={contacts} readOnly={readOnly}/>
  </section>;

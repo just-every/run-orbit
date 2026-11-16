@@ -26,6 +26,22 @@ function canonical(raw:string){
 }
 const limit=(text:string,size:number)=>text.length>size?text.slice(0,size):text;
 
+/** The first three things the sender wrote. A hard-wrapped line that stops mid-sentence continues onto the next one, and a
+ * quote that must be shortened ends at a sentence, or at a word with an ellipsis, never mid-word. */
+export function quoteLines(lines:string[]){
+ const out:string[]=[];let index=0;
+ while(out.length<3&&index<lines.length){
+  let text=lines[index++]!.trim();
+  while(index<lines.length&&text.length>=50&&text.length<300&&!/[.!?:;)"”]$/.test(text))text+=` ${lines[index++]!.trim()}`;
+  if(text.length>300){
+   const cut=text.slice(0,300),sentence=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('? '),cut.lastIndexOf('! '));
+   text=sentence>=100?cut.slice(0,sentence+1):`${cut.slice(0,Math.max(cut.lastIndexOf(' '),1)).trimEnd()}…`;
+  }
+  out.push(text);
+ }
+ return out;
+}
+
 /** All sender-written lines, before quoted/forwarded history or a signature. */
 export function freshLines(text:string){
  const lines:string[]=[],source=text.split('\n');
@@ -80,7 +96,7 @@ export async function readMessage(raw:string,now=Date.now()):Promise<Read>{
  const phoneLine=fresh.find(line=>/^(tel|phone|mobile|cell|direct)\s*[:.]\s*\+?\d[\d ().-]{6,}\d$/i.test(line.trim()));
  const headers=limit(message.headers.map(([name,value])=>`${name}: ${value}`).join('\n'),32768);
  return {fact:{kind:'message',eventId:await hashed('message',messageId),hash:await payloadHash(canonical(raw)),occurredAt:new Date(date).toISOString(),subject,participants,headers,body:limit(text,100000),
-  quote:fresh.slice(0,3).map(line=>limit(line.trim(),300)),messageId,sender,references:[...message.headerAll('in-reply-to'),...message.headerAll('references')].join(' '),autoReply,bounce,forwarded,
+  quote:quoteLines(fresh),messageId,sender,references:[...message.headerAll('in-reply-to'),...message.headerAll('references')].join(' '),autoReply,bounce,forwarded,
   unsubscribe,phone:phoneLine?{value:phoneLine.replace(/^[^:.]+[:.]\s*/,'').replace(/\s+/g,' ').trim(),line:phoneLine}:null,senderLine:limit(`From: ${message.header('from')??''}`,500)}};
 }
 

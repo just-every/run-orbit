@@ -11,6 +11,14 @@ import type { ImportInput } from './contracts';
 import {plannedOwner,importOwnerSnapshots} from './owner-targets';
 import {mapImportOwners,importOwners} from './owners';
 import {namedCompanies} from './named-companies';
+import {workspaceInstant} from '../operator/ui/formatters';
+
+/** A date or date-time without its own zone is read on the clock of the zone chosen for the import; with none chosen, as UTC. */
+function sourceInstant(value:string,zone?:string){
+ const text=value.trim(),match=/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?)?$/.exec(text);
+ if(!zone||!match)return new Date(text);
+ return new Date(workspaceInstant(`${match[1]}-${match[2]}-${match[3]}T${match[4]??'00'}:${match[5]??'00'}`,zone));
+}
 
 /** A custom field keeps a whole number or decimal as a number, and everything else as text. */
 function customValues(values:Record<string,string>){return Object.fromEntries(Object.entries(values).map(([name,value])=>[name,/^-?(0|[1-9]\d{0,14})(\.\d+)?$/.test(value)?Number(value):value]));}
@@ -94,24 +102,24 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
    const companies=linked(row,'company','company_ids'),contacts=linked(row,'contact','contact_ids');if(companies.length>1)throw new Error('Choose one company ID for the deal.');
    const stage=input.stages[data.stage];if(!stage||!stages.has(stage))throw new Error('Map this row’s source stage to a current Orbit stage.');
    const amount=data.amount?Number(data.amount):0;if(!Number.isFinite(amount)||amount<0||Math.round(amount*100)>100000000000)throw new Error('Amount must be a non-negative decimal in the workspace currency.');
-   if(!data.title)throw new Error('Deal title is required.');const close=data.close_date?new Date(data.close_date):null;if(close&&!Number.isFinite(+close))throw new Error('Close date is invalid.');
+   if(!data.title)throw new Error('Deal title is required.');const close=data.close_date?sourceInstant(data.close_date,input.timezone):null;if(close&&!Number.isFinite(+close))throw new Error('Close date is invalid.');
    if(data.status&&!['open','won','lost'].includes(data.status))throw new Error('Unsupported source deal status. Export this deal with its current status.');
    Object.assign(native,{title:data.title,lifecycle:data.status||'open',stage_id:stage,owner_id:ownerMapping?.ownerId??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
    for(const [i,contact] of [...new Set(contacts)].entries())links.push({opportunity_id:id,contact_id:contact,is_primary:i===0?1:0,created_at:at});
   }
   if(['note','call','meeting'].includes(row.kind)){
-   if(!data.text)throw new Error('Note text is required.');if(!data.occurred_at||!Number.isFinite(Date.parse(data.occurred_at))||Date.parse(data.occurred_at)>Date.now())throw new Error('Map a valid note occurrence time no later than now.');
+   if(!data.text)throw new Error('Note text is required.');if(!data.occurred_at||!Number.isFinite(+sourceInstant(data.occurred_at,input.timezone))||+sourceInstant(data.occurred_at,input.timezone)>Date.now())throw new Error('Map a valid note occurrence time no later than now.');
    for(const kind of ['contact','company','deal'])for(const recordId of linked(row,kind,`${kind}_ids`))links.push({timeline_entry_id:id,record_type:kind==='deal'?'opportunity':kind,record_id:recordId});
    if(!links.length)throw new Error('A note requires at least one explicit record association.');
    for(const field of ['created_at','updated_at'])delete native[field];const activity=row.kind!=='note';if(activity&&(!Number.isInteger(Number(data.duration))||Number(data.duration)<0))throw new Error('Call and meeting duration must be whole non-negative minutes.');
-   Object.assign(native,{kind:activity?`manual.${row.kind}`:'import.note',occurred_at:new Date(data.occurred_at).toISOString(),recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({...manualEntryPayload({text:data.text,durationMinutes:row.kind==='note'?undefined:Number(data.duration),contactIds:linked(row,'contact','contact_ids')}),importSource:provenance})});
+   Object.assign(native,{kind:activity?`manual.${row.kind}`:'import.note',occurred_at:sourceInstant(data.occurred_at,input.timezone).toISOString(),recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({...manualEntryPayload({text:data.text,durationMinutes:row.kind==='note'?undefined:Number(data.duration),contactIds:linked(row,'contact','contact_ids')}),importSource:provenance})});
   }
   if(row.kind==='task'){
    const associations=['deal','contact','company'].flatMap(kind=>linked(row,kind,`${kind}_ids`).map(recordId=>({kind:kind==='deal'?'opportunity':kind,recordId}))),primary=associations[0];
    if(!primary)throw new Error('A task requires at least one explicit record association.');
    if((data.text?.length??0)>20000)throw new Error('Task notes exceed 20,000 characters. Export a shorter note explicitly.');
-   if(!data.title||data.title.length>300||!Number.isFinite(Date.parse(data.due_at)))throw new Error('Task needs a title and a valid due time.');
-   const task=newTask({title:data.title,recordType:primary.kind as any,recordId:primary.recordId,ownerId:ownerMapping?.ownerId??null,dueAt:data.due_at,priority:data.priority==='HIGH'?'high':data.priority==='LOW'?'low':'normal',type:data.task_type==='CALL'?'call':data.task_type==='EMAIL'?'email':'other',notes:data.text??'',recurrence:'none',timezone:'UTC',reminderMinutes:null},context.authorization.principalId,at);
+   if(!data.title||data.title.length>300||!Number.isFinite(+sourceInstant(data.due_at,input.timezone)))throw new Error('Task needs a title and a valid due time.');
+   const task=newTask({title:data.title,recordType:primary.kind as any,recordId:primary.recordId,ownerId:ownerMapping?.ownerId??null,dueAt:sourceInstant(data.due_at,input.timezone).toISOString(),priority:data.priority==='HIGH'?'high':data.priority==='LOW'?'low':'normal',type:data.task_type==='CALL'?'call':data.task_type==='EMAIL'?'email':'other',notes:data.text??'',recurrence:'none',timezone:'UTC',reminderMinutes:null},context.authorization.principalId,at);
    Object.assign(native,task,{id,series_id:nativeId(namespace,'task-series',row.id),status:data.status==='COMPLETED'?'completed':'open'});
    const seriesId=native.series_id,entryId=nativeId(namespace,'task-entry',row.id),series={row:{id:seriesId,cancelled_at:null,cancelled_by:null,created_at:at},links:[]};
    const entry={row:{id:entryId,kind:'task.created',occurred_at:at,recorded_at:at,actor_type:'import',actor_id:namespace,source:input.vendor,payload_json:JSON.stringify({taskId:id,title:data.title,ownerId:task.owner_id,dueAt:task.due_at,status:native.status,importSource:provenance})},links:associations.map(record=>({timeline_entry_id:entryId,record_type:record.kind,record_id:record.recordId})).sort((a,b)=>`${a.record_type}:${a.record_id}`.localeCompare(`${b.record_type}:${b.record_id}`)),taskId:id};

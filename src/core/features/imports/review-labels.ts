@@ -17,7 +17,8 @@ export function importReviewRows(plan:ImportPlan){
     data=Object.fromEntries(Object.entries(payload.reviewColumns).map(([field,column])=>[field,values[column]?.trim()??'']));
    }
   }
-  const name=data?.title||data?.name||[data?.first_name,data?.last_name].filter(Boolean).join(' '),email=data?.email;
+  const excerpt=data?.text?.replace(/\s+/g,' ').trim(),note=excerpt?`“${excerpt.length>60?`${excerpt.slice(0,57).trimEnd()}…`:excerpt}”`:'';
+  const name=data?.title||data?.name||[data?.first_name,data?.last_name].filter(Boolean).join(' ')||note,email=data?.email;
   const displayName=[name,email&&email!==name?email:undefined].filter(Boolean).join(' · ');
   const labels:Record<string,string>={company_ids:'Company in file',contact_ids:'Contacts in file',deal_ids:'Deals in file',amount:'Value',close_date:'Expected close',owner:'Owner in file',stage:'Stage in file'};
   const details=data?Object.fromEntries(Object.entries(data).filter(([field,value])=>field!=='id'&&value).map(([field,value])=>[labels[field]??field,value])):undefined;
