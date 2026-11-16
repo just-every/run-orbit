@@ -1,0 +1,87 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-16",
+  "tag": "gr-mt-orbit-ci-7",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-ci-7",
+  "head": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "remote_main_verified_by_ls_remote": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pull_request": null,
+  "working_tree_clean": true,
+  "github_invocations": 6,
+  "budget": 10,
+  "historical_run": {
+    "id": 42075756774,
+    "head": "51030c71165c06b2853bc162cf6a63cf643ccde9",
+    "failed_job": 127416774587,
+    "name": "shards (batch-13)",
+    "failed_step": "Verify routine product shard",
+    "aggregate_job": 127426669211,
+    "assertion_diagnostics": "Unavailable: gh run view returned exit 0 and zero bytes; artifact download returned Forbidden. No root-cause claim made."
+  },
+  "current_run": {
+    "id": 43878914207,
+    "head_sha": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+    "status": "completed",
+    "conclusion": "success",
+    "source_and_shared_build": "success",
+    "shard_batches_passed": 20,
+    "aggregate": "success",
+    "jobs_receipt": "current-main-jobs.json",
+    "run_receipt": "current-main-runs.json"
+  },
+  "before_after": {
+    "historical_failed_shard_batches": 1,
+    "current_failed_shard_batches": 0,
+    "historical_passed_shard_batches": 19,
+    "current_passed_shard_batches": 20,
+    "modified_product_files_before": 0,
+    "modified_product_files_after": 0,
+    "added_tests": 0,
+    "deleted_tests": 0,
+    "weakened_tests": 0,
+    "clause_status_changes": 0
+  },
+  "local_command_results": [
+    {
+      "command": "git ls-remote origin refs/heads/main",
+      "exit": 0,
+      "main": "a4fcbfcd72fa4253826f43d0b0de02275094f86d"
+    },
+    {
+      "command": "git status --porcelain=v1",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 1,
+      "diagnostic": "ERR_MODULE_NOT_FOUND: Cannot find package 'typescript'"
+    },
+    {
+      "command": ". /tmp/rer-cloud-toolchain.sh",
+      "exit": 0,
+      "node": "v24.19.0",
+      "pnpm": "10.12.4",
+      "repository_node_pin": "22.20.0",
+      "note": "Provided shim keeps an existing newer Node; no local tests executed."
+    }
+  ],
+  "publication": {
+    "product_scan": "Not applicable: no changed product tree and no product push.",
+    "evidence_scope": "Explicit non-secret reports and receipts only; separate refs/heads/evidence/gr-mt-orbit-ci-7.",
+    "custody": "No READY or PUSHED claim; no product branch was published."
+  },
+  "blockers": [],
+  "limitations": [
+    "Historical assertion-level failure could not be recovered; no root cause was inferred.",
+    "No local reproduction claimed. Current full exact-SHA CI establishes the expressly permitted no-change outcome."
+  ]
+}

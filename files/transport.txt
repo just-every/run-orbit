@@ -1,0 +1,11 @@
+Run Edit Run fleet, 2026-11-16
+Historical log command (one invocation):
+gh run view 42075756774 --repo just-every/run-orbit --job 127416774587 --log-failed
+Exit: 0. stdout: 0 bytes. stderr: 0 bytes. failed-job.log retains that actual empty output.
+
+Historical artifact command (one invocation):
+gh api repos/just-every/run-orbit/actions/artifacts/13438361880/zip
+Exit: 1. Sanitized observed diagnostic (signed query removed):
+Get "https://productionresultssa2.blob.core.windows.net/actions-results/5d6e3328-99ce-8c1d-bacb-159af4e0c56c/workflow-job-run-d0405a89-9b55-5ba8-a16f-2ee758711c38/artifacts/777bca3a48afa983969639434213d5497726238afed92154c20efbbee67138e0.zip": Forbidden
+Observed HTTP response text: Forbidden. No numeric HTTP status supplied in stderr.
+No blocked blob download retries were made.
