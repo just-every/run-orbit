@@ -1,0 +1,7 @@
+{
+  "status": "no-change",
+  "sha": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+  "summary": "Current default branch already passes full Verify run 43840731071 on exact SHA ca63c4ad3230d54e03535767a7bdfb564dfa5e4f; source/build, all 20 shard jobs and the aggregate succeeded.",
+  "tests": "GitHub REST exact-SHA Verify and jobs: completed/success; node src/base/contract-docs.mjs check: passed; git diff --exit-code: passed; git ls-remote main: matches HEAD. No product changes, no local product tests or typecheck needed. Historical gh --log-failed returned exit 0 with no text.",
+  "security": true
+}

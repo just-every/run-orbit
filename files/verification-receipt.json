@@ -1,0 +1,101 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-16",
+  "repository": "just-every/run-orbit",
+  "tag": "gr-mt-orbit-ci-5",
+  "product": {
+    "branch": "cloud/gr-mt-orbit-ci-5",
+    "head": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+    "origin_main": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+    "working_tree_clean": true,
+    "new_commits": 0,
+    "product_push": false,
+    "pr": null
+  },
+  "reported_failure": {
+    "run_id": 41537835216,
+    "head_sha": "39db00b6c81efc68152c72ee15d71c8f2dfedebd",
+    "status": "completed",
+    "conclusion": "failure",
+    "failed_job_id": 125595331479,
+    "failed_job": "shards (batch-13)",
+    "failed_step": "Verify routine product shard",
+    "assertion": "Unavailable: requested failed log returned no content",
+    "log_command": "gh run view 41537835216 --repo just-every/run-orbit --job 125595331479 --log-failed",
+    "log_exit": 0,
+    "log_stdout_bytes": 0,
+    "log_stderr_bytes": 0
+  },
+  "current_verify": {
+    "id": 43840731071,
+    "name": "Verify",
+    "head_sha": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/43840731071",
+    "event": "push",
+    "updated_at": "2026-11-16T10:05:17Z"
+  },
+  "current_jobs": {
+    "source_and_shared_build": "success",
+    "shards_succeeded": 20,
+    "aggregate": "success",
+    "light": "skipped"
+  },
+  "local_checks": [
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0,
+      "output": "Contract documents are current."
+    },
+    {
+      "command": "git diff --exit-code",
+      "exit": 0
+    },
+    {
+      "command": "git ls-remote --refs origin refs/heads/main",
+      "exit": 0,
+      "head": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f"
+    },
+    {
+      "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+      "exit": 0,
+      "candidate_commits": 0
+    }
+  ],
+  "counts": {
+    "product_files_changed_before": 0,
+    "product_files_changed_after": 0,
+    "tests_added": 0,
+    "tests_removed": 0,
+    "clause_status_changes": 0,
+    "contract_done_before": 42,
+    "contract_done_after": 42,
+    "contract_partial_before": 130,
+    "contract_partial_after": 130,
+    "contract_missing_before": 32,
+    "contract_missing_after": 32
+  },
+  "github_budget": {
+    "limit": 10,
+    "calls_used": 5,
+    "commands": [
+      "gh api repos/just-every/run-orbit/actions/runs/41537835216",
+      "gh api repos/just-every/run-orbit/actions/runs/41537835216/jobs?per_page=100",
+      "gh api repos/just-every/run-orbit/actions/runs?head_sha=ca63c4ad3230d54e03535767a7bdfb564dfa5e4f&per_page=100",
+      "gh run view 41537835216 --repo just-every/run-orbit --job 125595331479 --log-failed",
+      "gh api repos/just-every/run-orbit/actions/runs/43840731071/jobs?per_page=100"
+    ]
+  },
+  "publication": {
+    "product_scan": "Not run: no product commit or product push.",
+    "evidence": "Only explicitly selected public report/receipt files.",
+    "secrets_included": false
+  },
+  "outcome": "no-change",
+  "blockers": [],
+  "limitations": [
+    "Historical failed assertion unavailable from the one allowed log retrieval. No historical cause or repair commit attributed.",
+    "No local full suite or typecheck: no changed product files; existing exact-SHA full CI is the verification."
+  ]
+}
