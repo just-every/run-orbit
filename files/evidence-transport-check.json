@@ -1,0 +1,10 @@
+{
+  "repository": "just-every/run-orbit",
+  "evidenceHead": "8fa775f33c1c5419977d05fec4cd6f25b2b55c00",
+  "ref": "refs/heads/evidence/main-orbit-stranger34-trips-1-pc1",
+  "productHead": "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f",
+  "filesVerified": 41,
+  "manifestSha256": "b970a40f0cdb1ad18392327bdb464420658aec1dd8f025005fc1a23d4a220be7",
+  "status": "verified",
+  "phase": "first publication; final CI verdict is published in the terminal packet update"
+}

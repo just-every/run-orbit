@@ -69,3 +69,16 @@ The claim is a builder report, not a Status/Gap/Evidence edit or a landing decis
 - pnpm run typecheck passed. Source lock regeneration and check passed. git diff --check passed. Test inventory: 198 + 2 = 200.
 - Browser-only proof files retain actual public-door values and 20 screenshots. The workflow editor explanation was also checked at 1440 and captured at both widths.
 - Exact-SHA Verify 43812018788 remained in progress at 2026-11-16T05:53:40Z, API call six. Product is pushed; readiness remains pending the final exact-SHA verdict.
+
+The title probe was repeated with the exact Harborlight Health company context from the clinic import, rather than the initially unassociated synthetic deal. It still fits: 138/138 pixels at 1440, 87/87 at 390. Updated title screenshots and actual measurements are retained in two-trip-proof.json; title-company-proof.log records the successful probe.
+
+The first evidence publication was fetched through Git and all 41 manifest file lengths, hashes and blob identities verified. evidence-transport-check.json records this phase separately from the final product/CI verdict.
+
+## Terminal result
+Exact-SHA Verify 43812018788 completed/success for ca63c4ad3230d54e03535767a7bdfb564dfa5e4f, observed through REST at 2026-11-16T06:23:40Z. Nine of the ten permitted GitHub calls were used; no retries of the blocked archive reads, workflow dispatches or CI reruns were needed. Prior failed Verify 43803452801 remains historical diagnosis only.
+
+The remote product branch was re-read through Git and matches the clean local head. All published starting commits are preserved. The candidate has no skip marker. No PR was required or created. No blockers remain for this task's cut. Seven original trips are fixed; title and forecast were not reproduced on the matching fixtures and remain unchanged. No clause Status, Gap or Evidence was edited, and no DONE claim is made.
+
+Product custody is READY for the fleet's independent publication/landing gates. This evidence transfer is separate from product readiness, acceptance and landing. The complete report/receipt packet remains outside the disposable product checkout. Task-owned browsers and servers have been stopped. The clone is deleted after successful final evidence publication, as instructed.
+
+Signed: Run Edit Run fleet · 2026-11-16.
