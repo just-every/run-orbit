@@ -16,7 +16,7 @@ export function BookingRecipe({endpoint,sourceId,secret,onRefresh,initialVendor=
   }catch(error){setError(error instanceof Error?error.message:'Calendly setup was not confirmed.');}
   finally{setSaving(false);}
  }
- return <><label>Booking provider<select aria-label="Booking provider" value={vendor} disabled={saving} onChange={event=>{setVendor(event.target.value);setStatus('');setError('');}}><option value="calcom">Cal.com</option><option value="calendly">Calendly</option></select></label><WebhookWarning endpoint={url} settingsHref={settingsHref}/><RecipeValue label="Webhook URL" value={url}/>
+ return <><label>Booking provider<select aria-label="Booking provider" value={vendor} disabled={saving} onChange={event=>{setVendor(event.target.value);setStatus('');setError('');}}><option value="calcom">Cal.com</option><option value="calendly">Calendly</option></select></label><WebhookWarning endpoint={url} settingsHref={settingsHref}/><RecipeValue label="Webhook URL" value={url} readable/>
  {vendor==='calcom'?<><h3>Connect Cal.com</h3><ol className="capture-plain-steps">
  <li>Open <a href="https://app.cal.com/settings/developer/webhooks">Cal.com → Settings → Developer → Webhooks</a> and click <strong>New webhook</strong>. Choose an account webhook for all your event types, or open an event type’s Advanced settings to connect only that event type.</li>
  <li>Paste the webhook URL above into <strong>Subscriber URL</strong>. Select <strong>Booking Created</strong> and <strong>Booking Cancelled</strong>. Leave the payload template at its default.</li>
