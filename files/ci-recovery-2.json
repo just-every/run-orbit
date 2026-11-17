@@ -1,0 +1,10 @@
+{
+  "githubCalls": 7,
+  "recoveryAttempt": 2,
+  "runId": 44054506986,
+  "observedAt": 1794908832.430356,
+  "exit": 1,
+  "command": "gh api repos/just-every/run-orbit/actions/runs/44054506986 --jq {status,conclusion,head_sha,html_url}",
+  "diagnostic": "{\n  \"message\": \"Bad credentials\",\n  \"documentation_url\": \"https://docs.github.com/rest\",\n  \"status\": \"401\"\n}gh: Bad credentials (HTTP 401)\n",
+  "HTTP": "401"
+}

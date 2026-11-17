@@ -1,0 +1,6 @@
+{
+  "command": "cloud_run npx -y @runeditrun/rer build",
+  "exit": 0,
+  "head": "caaf2e290864630d038f11f9d635eda06f635cba",
+  "result": "passed"
+}

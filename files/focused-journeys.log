@@ -1,0 +1,3 @@
+PASS retained pipeline creation journey: visible action and Enter, persisted first stage
+PASS retained automation journey: copied payload, credential guards, test isolation, replay, disable, real event, Make copy
+PASS retained booking journey: integration deep links, selected provider/source, source controls, Review, signed provider-native deliveries

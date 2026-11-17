@@ -1,0 +1,27 @@
+ROLE_CONTROLS [ 'Sign out' ]
+BRIEF_LINES [
+  {
+    kind: 'meeting',
+    title: 'Harbor Supply review',
+    evidence: { type: 'signal', id: '01M7MC9P54861YQEW8MNMD38CD' }
+  }
+]
+PLAN {"attendees":[{"email":"elena@harbor-supply.example","contact":{"id":"01M7MC9KDNVX8WMCAY2YB9BGFQ","name":"Elena Brooks","jobTitle":"Operations lead","contactability":"contactable","href":"/app/contacts/01M7MC9KDNVX8WMCAY2YB9BGFQ"},"company":{"id":"01M7MC9K9TGN2FPTJKKFZKWY4D","name":"Harbor Supply","href":"/app/companies/01M7MC9K9TGN2FPTJKKFZKWY4D"},"opportunities":[{"id":"01M7MC9KPHG2V2DS3G1PVJH2MZ","title":"Harbor Supply","href":"/app/opportunities/01M7MC9KPHG2V2DS3G1PVJH2MZ"}]},{"email":"jordan@harbor-supply.example","contact":{"id":"01M7MC9KGG10DK7K84MWHSRRRZ","name":"Jordan Patel","jobTitle":"Decision maker","contactability":"contactable","href":"/app/contacts/01M7MC9KGG10DK7K84MWHSRRRZ"},"company":{"id":"01M7MC9K9TGN2FPTJKKFZKWY4D","name":"Harbor Supply","href":"/app/companies/01M7MC9K9TGN2FPTJKKFZKWY4D"},"opportunities":[{"id":"01M7MC9KPHG2V2DS3G1PVJH2MZ","title":"Harbor Supply","href":"/app/opportunities/01M7MC9KPHG2V2DS3G1PVJH2MZ"}]}],"unresolved":[{"email":"unknown@unmatched.example","company":null}]}
+NEW_PIPELINE New pipeline
+Cancel
+Name
+First stage
+BOOKING Calendly { testActions: 0, rotateActions: 0, badReferences: true }
+BOOKING Cal.com { testActions: 0, rotateActions: 0, badReferences: true }
+RAW_RECIPE {
+  json: '{\n' +
+    '  "eventId": "213c63cf-b6e4-4688-a68b-04b4cb969fb7",\n' +
+    '  "type": "form.submitted",\n' +
+    '  "subject": "Automation connection test",\n' +
+    '  "occurredAt": "2026-11-17T09:09:45.153Z",\n' +
+    '  "data": {\n' +
+    '    "test": true\n' +
+    '  }\n' +
+    '}',
+  rawUrl: 2
+}

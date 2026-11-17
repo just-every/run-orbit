@@ -1,0 +1,8 @@
+{
+  "command": "pnpm run typecheck",
+  "exit": 0,
+  "result": "passed",
+  "shellNode": "v24.19.0",
+  "packageScript": "tsc --noEmit",
+  "note": "Provided cloud toolchain script retains a newer system Node; native rer commands use the repository Node 22.20.0 pin."
+}

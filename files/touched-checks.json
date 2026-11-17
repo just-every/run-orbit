@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "journeys": [
+    "pipelineCreationJourney",
+    "exerciseAutomationRecipe",
+    "exerciseBookingRecipes"
+  ],
+  "assertionWidth": 1440,
+  "browserProofWidths": [
+    1440,
+    390
+  ],
+  "accessibility": "no serious or critical axe violations and no horizontal overflow on changed surfaces"
+}
