@@ -13,7 +13,15 @@ async function copiedURL(page){
 export async function exerciseAutomationRecipe(page,secret,opportunityId,sourceId){
  await page.getByLabel('Recipe',{exact:true}).selectOption('automation');
  await page.getByLabel('Source secret',{exact:true}).fill(secret);
- const url=await copiedURL(page),testBody=await page.locator('[data-recipe="automation-test"]').innerText();
+ const url=await copiedURL(page);
+ await page.getByRole('button',{name:'Copy connection test',exact:true}).click();
+ const testBody=await page.evaluate(()=>navigator.clipboard.readText());
+ if(page.viewportSize().width===1440){
+  assert.equal(await page.getByRole('textbox',{name:'Webhook URL',exact:true}).inputValue(),url);
+  assert.doesNotMatch(await page.locator('main').innerText(),/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|SELECT_TRIGGER_|\b(?:eventId|occurredAt|form\.submitted)\b|"test"\s*:/i);
+ }
+ await page.getByRole('button',{name:'Copy submission template',exact:true}).click();
+ const template=await page.evaluate(()=>navigator.clipboard.readText());
  await page.getByRole('button',{name:'Copy authorization header',exact:true}).click();
  assert.ok(await page.evaluate(()=>navigator.clipboard.readText())===`Authorization: Bearer ${secret}`,'Copy preserves the authorization header');
  const headers={Authorization:`Bearer ${secret}`,'Content-Type':'application/json'};
@@ -23,8 +31,8 @@ export async function exerciseAutomationRecipe(page,secret,opportunityId,sourceI
  assert.equal((await post(page,url,headers,JSON.stringify({type:'form.submitted'}))).status,400);
  const read=async()=>(await browserAPI(page,`/api/v1/opportunities/${opportunityId}`)).opportunity;
  const before=await read();assert.equal((await post(page,url,headers,testBody)).status,201);
- assert.deepEqual(await read(),before,'The displayed native connection test adds no customer evidence');
- const body=JSON.stringify({...JSON.parse(await page.locator('[data-recipe="automation-body"]').innerText()),eventId:crypto.randomUUID(),occurredAt:new Date().toISOString(),email:'maya@harbour.example'});
+ assert.deepEqual(await read(),before,'The copied native connection test adds no customer evidence');
+ const body=JSON.stringify({...JSON.parse(template),eventId:crypto.randomUUID(),occurredAt:new Date().toISOString(),email:'maya@harbour.example'});
  const first=await post(page,url,headers,body);assert.equal(first.status,201);
  const replay=await post(page,url,headers,body);assert.equal(replay.status,201);assert.deepEqual(replay.body,{id:first.body.id,replayed:true});
  assert.equal((await post(page,url,headers,JSON.stringify({...JSON.parse(body),subject:'Changed original content'}))).status,409);
@@ -37,6 +45,27 @@ export async function exerciseAutomationRecipe(page,secret,opportunityId,sourceI
  return body;
 }
 export async function exerciseBookingRecipes(page,secret,opportunityId){
+ if(page.viewportSize().width===1440){
+  for(const [product,vendor] of [['Cal.com','calcom'],['Calendly','calendly']]){
+   await page.goto(new URL('/app/settings/integrations',page.url()).href);
+   await page.getByRole('button',{name:`Set up ${product}`,exact:true}).click();
+   const panel=page.locator('.integration-panel');
+   await expect(panel.getByRole('textbox',{name:'Webhook URL',exact:true})).toBeVisible();
+   const url=await panel.getByRole('textbox',{name:'Webhook URL',exact:true}).inputValue();
+   assert.doesNotMatch(await panel.innerText(),/[0-9a-f]{8}-[0-9a-f-]{27,}/i);
+   await panel.getByRole('link',{name:'this source’s recipe in Settings › Capture',exact:true}).click();
+   await expect(page.getByLabel('Recipe',{exact:true})).toHaveValue('booking');
+   await expect(page.getByLabel('Booking provider',{exact:true})).toHaveValue(vendor);
+   await expect(page.getByRole('textbox',{name:'Webhook URL',exact:true})).toHaveValue(url);
+   await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeEnabled();
+   await page.locator('summary').filter({hasText:/^Advanced$/}).click();
+   await expect(page.getByRole('button',{name:'Rotate signing secret',exact:true})).toBeVisible();
+   await page.getByRole('link',{name:'Review › Unlinked signals',exact:true}).click();
+   await expect(page).toHaveURL(/\/app\/review$/);
+  }
+  await page.goto(new URL('/app/settings/capture',page.url()).href);
+  await page.getByRole('button',{name:'Open recipes',exact:true}).click();
+ }
  await page.getByLabel('Recipe',{exact:true}).selectOption('booking');
  const read=async()=>(await browserAPI(page,`/api/v1/opportunities/${opportunityId}`)).opportunity.signals;
  for(const vendor of ['calcom','calendly']){

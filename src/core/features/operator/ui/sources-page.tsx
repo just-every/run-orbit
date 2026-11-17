@@ -8,7 +8,7 @@ async function api<T>(path:string,init?:RequestInit):Promise<T>{const response=a
 /** Settings › Capture › Website and app events: the sources that send customer events, and how to connect one. */
 export function SourcesSettings(){
  const load=useCallback(async()=>{const [sources,context]=await Promise.all([api<{sources:Source[];configured:boolean}>(''),api<RecipeContext>('/recipe-context')]);return {...sources,context};},[]);
- const [reveal,setReveal]=useState<{id:string;secret:string}|null>(null),[selected,setSelected]=useState(''),[contact,setContact]=useState(''),[status,setStatus]=useState(''),[removing,setRemoving]=useState('');
+ const [reveal,setReveal]=useState<{id:string;secret:string}|null>(null),[selected,setSelected]=useState(()=>typeof window==='undefined'?'':new URLSearchParams(window.location.search).get('source')??''),[contact,setContact]=useState(''),[status,setStatus]=useState(''),[removing,setRemoving]=useState('');
  const resource=useOperatorResource('sources',load),[error,setError]=useState(''),[saving,setSaving]=useState(false);
  async function save(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,values=new FormData(form);setSaving(true);setError('');try{const id=crypto.randomUUID();const result=await api<{secret:string}>(`/${id}`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:values.get('name'),enabled:true})});setReveal({id,secret:result.secret});setSelected(id);form.reset();resource.reload();}catch(error){setError((error as Error).message);}finally{setSaving(false);}}
  async function toggle(source:Source){setSaving(true);setError('');try{await api(`/${source.id}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({enabled:!source.enabled})});resource.reload();}catch(error){setError((error as Error).message);}finally{setSaving(false);}}
@@ -28,7 +28,7 @@ export function SourcesSettings(){
     <details><summary>Advanced</summary>
      {Boolean(source.has_signing_secret)&&<><button type="button" disabled={saving||!resource.data?.configured} onClick={()=>void toggle(source)}>{source.enabled?'Disable source':'Enable source'}</button><p>Rotate this source's signing secret if it has been exposed. Copy the new secret into your connected tools; old signatures stop working immediately. Other sources keep their own secrets.</p><button type="button" disabled={saving||!resource.data?.configured} onClick={()=>void renewSecret(source)}>Rotate signing secret</button></>}
      <p>Last accepted: {source.last_accepted_at?formatDate(source.last_accepted_at):'No events yet'} · Rejected: {source.rejected_count}</p>{source.last_error&&<p>{source.last_error}</p>}
-     <p>Receiving address: <code>{`${window.location.origin}/api/v1/signals/${source.id}`}</code></p>
+     <p>Receiving address: <input aria-label="Receiving address" readOnly value={`${window.location.origin}/api/v1/signals/${source.id}`} onFocus={event=>event.currentTarget.select()}/></p>
      <div className="source-removal">{removing===source.id?<><p>Remove {source.name}? This address will stop accepting events. Its past evidence stays available.</p><button type="button" disabled={saving} onClick={()=>void remove(source)}>Confirm remove</button><button type="button" disabled={saving} onClick={()=>setRemoving('')}>Cancel</button></>:<button type="button" disabled={saving} onClick={()=>setRemoving(source.id)}>Remove</button>}</div>
     </details>
    </article>)}

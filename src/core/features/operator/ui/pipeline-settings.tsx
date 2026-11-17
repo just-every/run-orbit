@@ -100,15 +100,16 @@ function StageRow({form,stageKey,index,count,order,workspaceDays,choices,setting
  </li>;
 }
 
-/** New pipeline: its name and first stage; it is created once both are given. */
+/** New pipeline: create its name and first stage together, by button or Enter. */
 function NewPipeline({onCreated,onCancel}:{onCreated:()=>Promise<void>;onCancel:()=>void}){
  const [name,setName]=useState(''),[stage,setStage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  async function create(){if(!name.trim()||!stage.trim()||busy)return;setBusy(true);setError('');try{await saveRequest('settings/pipelines','POST',{name:name.trim(),stages:[{name:stage.trim(),probability:0,requiredFields:[],staleIntervalDays:null}]});await onCreated();}catch(e){setError(`Not saved: ${(e as Error).message}`);}finally{setBusy(false);}}
- return <section className="operator-surface settings-card" aria-labelledby="pipeline-new"><div className="settings-card__head"><h2 id="pipeline-new">New pipeline</h2><button type="button" className="operator-text-button" onClick={onCancel}>Cancel</button></div>
+ return <section className="operator-surface settings-card" aria-labelledby="pipeline-new"><form onSubmit={event=>{event.preventDefault();void create();}}><div className="settings-card__head"><h2 id="pipeline-new">New pipeline</h2><button type="button" className="operator-text-button" disabled={busy} onClick={onCancel}>Cancel</button></div>
   <div className="settings-fields settings-fields--two">
-   <label className="r-field"><span className="r-label">Name</span><input autoFocus maxLength={100} value={name} onChange={event=>setName(event.target.value)} onBlur={()=>void create()} onKeyDown={event=>{if(event.key==='Enter')void create();}}/></label>
-   <label className="r-field"><span className="r-label">First stage</span><input maxLength={100} value={stage} onChange={event=>setStage(event.target.value)} onBlur={()=>void create()} onKeyDown={event=>{if(event.key==='Enter')void create();}}/></label>
+   <label className="r-field"><span className="r-label">Name</span><input autoFocus maxLength={100} value={name} onChange={event=>setName(event.target.value)}/></label>
+   <label className="r-field"><span className="r-label">First stage</span><input maxLength={100} value={stage} onChange={event=>setStage(event.target.value)}/></label>
   </div>
+  <button type="submit" className="orbit-button orbit-button--primary" disabled={busy||!name.trim()||!stage.trim()}>{busy?'Creating…':'Create pipeline'}</button>
   {error?<p className="r-fail" role="alert">{error}</p>:null}
- </section>;
+ </form></section>;
 }
