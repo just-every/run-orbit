@@ -10,7 +10,7 @@ export function AutomationRecipe({endpoint,secret,onRefresh}:{endpoint:string;se
  const url=`${endpoint}/automation`,host=new URL(endpoint).hostname,settingsHref=`/app/settings/capture?${new URLSearchParams({source:endpoint.split("/").at(-1)!,recipe:"automation"})}#capture-website-events`;
  return <><WebhookWarning endpoint={url} settingsHref={settingsHref}/><p>Send directly from your automation to Orbit. You need an event from your form tool with its submission ID, submission time and customer email. Zapier requires a paid plan for API by Zapier; Make uses its built-in HTTP module.</p>
  <label>Automation platform<select aria-label="Automation platform" value={platform} onChange={event=>setPlatform(event.target.value)}><option value="zapier">Zapier</option><option value="make">Make</option></select></label>
- <RecipeValue label="Webhook URL" value={url}/><RecipeCredential secret={secret} authorization settingsHref={settingsHref}/>
+ <RecipeValue label="Webhook URL" value={url} readable/><RecipeCredential secret={secret} authorization settingsHref={settingsHref}/>
  {platform==='zapier'?<><h3>Set up Zapier</h3><ol className="capture-plain-steps">
  <li>Open <a href="https://zapier.com/app/zaps">your Zaps</a>, create a Zap and choose your form app’s new submission trigger. Connect that app and test its trigger to load a real submission.</li>
  <li>Open <a href="https://zapier.com/app/connections">Zapier’s app connections</a> → Add connection → <strong>API by Zapier</strong>. Choose <strong>Static Headers (API key)</strong>. Paste <strong>Copy authorization header</strong> from above into Headers. Set Domain filter to the exact host below. Leave Test URL empty; this endpoint receives POST requests. Save the connection.</li>

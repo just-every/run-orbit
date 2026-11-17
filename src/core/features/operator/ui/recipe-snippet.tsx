@@ -7,8 +7,10 @@ export function CopyText({text,label='Copy'}:{text:string;label?:string}){
 }
 export function Snippet({text,name}:{text:string;name:string}){return <><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}} data-recipe={name}><code>{text}</code></pre><CopyText text={text} label="Copy code"/></>;}
 
-export function RecipeValue({label,value}:{label:string;value:string}){
- return <div><label>{label}<input readOnly value={value} onFocus={event=>event.currentTarget.select()}/></label><CopyText text={value} label={`Copy ${label.toLowerCase()}`}/></div>;
+/** An address that embeds a source identifier reads as "this source" on the page; Copy keeps the full address. */
+export const addressForReading=(url:string)=>url.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,'this-source');
+export function RecipeValue({label,value,readable=false}:{label:string;value:string;readable?:boolean}){
+ return <div>{readable?<p>{label}: <code style={{overflowWrap:'anywhere'}}>{addressForReading(value)}</code></p>:<label>{label}<input readOnly value={value} onFocus={event=>event.currentTarget.select()}/></label>}<CopyText text={value} label={`Copy ${label.toLowerCase()}`}/></div>;
 }
 export function RecipeCredential({secret,authorization=false,settingsHref="/app/settings/capture#capture-website-events"}:{secret?:string;authorization?:boolean;settingsHref?:string}){
  const[value,setValue]=useState(secret??'');

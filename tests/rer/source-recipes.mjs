@@ -17,7 +17,7 @@ export async function exerciseAutomationRecipe(page,secret,opportunityId,sourceI
  await page.getByRole('button',{name:'Copy connection test',exact:true}).click();
  const testBody=await page.evaluate(()=>navigator.clipboard.readText());
  if(page.viewportSize().width===1440){
-  assert.equal(await page.getByRole('textbox',{name:'Webhook URL',exact:true}).inputValue(),url);
+  assert.match(await page.locator('main').innerText(),/Webhook URL: .*this-source/);
   assert.doesNotMatch(await page.locator('main').innerText(),/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|SELECT_TRIGGER_|\b(?:eventId|occurredAt|form\.submitted)\b|"test"\s*:/i);
  }
  await page.getByRole('button',{name:'Copy submission template',exact:true}).click();
@@ -50,13 +50,14 @@ export async function exerciseBookingRecipes(page,secret,opportunityId){
    await page.goto(new URL('/app/settings/integrations',page.url()).href);
    await page.getByRole('button',{name:`Set up ${product}`,exact:true}).click();
    const panel=page.locator('.integration-panel');
-   await expect(panel.getByRole('textbox',{name:'Webhook URL',exact:true})).toBeVisible();
-   const url=await panel.getByRole('textbox',{name:'Webhook URL',exact:true}).inputValue();
+   await expect(panel.getByRole('button',{name:'Copy webhook url',exact:true})).toBeVisible();
+   await panel.getByRole('button',{name:'Copy webhook url',exact:true}).click();
+   const url=await page.evaluate(()=>navigator.clipboard.readText());
    assert.doesNotMatch(await panel.innerText(),/[0-9a-f]{8}-[0-9a-f-]{27,}/i);
    await panel.getByRole('link',{name:'this source’s recipe in Settings › Capture',exact:true}).click();
    await expect(page.getByLabel('Recipe',{exact:true})).toHaveValue('booking');
    await expect(page.getByLabel('Booking provider',{exact:true})).toHaveValue(vendor);
-   await expect(page.getByRole('textbox',{name:'Webhook URL',exact:true})).toHaveValue(url);
+   assert.equal(await copiedURL(page),url);
    await expect(page.getByRole('button',{name:'Send test event',exact:true})).toBeEnabled();
    await page.locator('summary').filter({hasText:/^Advanced$/}).click();
    await expect(page.getByRole('button',{name:'Rotate signing secret',exact:true})).toBeVisible();

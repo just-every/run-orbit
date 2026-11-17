@@ -5955,7 +5955,7 @@
       "executable": false
     },
     "src/core/features/dashboards/tile-bodies.tsx": {
-      "sha256": "c3f493ef6d4c242fcacf54be3a01717e0364e46fc362de9d1c25cbfe9da8a814",
+      "sha256": "4529baa54251a483b11e6558f297682f6615cdd63bd52a1c40cb341f67b72050",
       "executable": false
     },
     "src/core/features/dashboards/tiles.tsx": {
@@ -6183,7 +6183,7 @@
       "executable": false
     },
     "src/core/features/forms/builder.tsx": {
-      "sha256": "819660cfd764df2cb508cbcd0719894dc89551012606fb8b837588bd0c3ed095",
+      "sha256": "7f40f4e3d3e43bd2bcb67fedb5ea6649cd0b0c6d39bb07cdf4f14c9722ca326d",
       "executable": false
     },
     "src/core/features/forms/company-intake.ts": {
@@ -6191,7 +6191,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "1626a23e1a92487f2bef8fe7bba6deb93698b31f4ee53bd1507633567aaa0f84",
+      "sha256": "b48ba91d5d5790414cb14628a0dcc22b5162adfad13cb173d6da4389a50dbfac",
       "executable": false
     },
     "src/core/features/forms/contact-basis.ts": {
@@ -6255,7 +6255,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "477dba7bd5c51ec0c4c597ca2d811c1c8edfaf64ce5ba21303207586d9a1352f",
+      "sha256": "7e9e3428c5f9423dc260dee441d37e527c8abac1ff6b435fcd0eb6f3301bffc2",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
@@ -6683,7 +6683,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/automation-recipe.tsx": {
-      "sha256": "9cdee779d3db02dd3986353fee3cb066f3959b765fbd90829cddadb7a6e5fd8c",
+      "sha256": "9162646559b85f22e8a74c2c409881eeb234080f60b01358056c7490c5554889",
       "executable": false
     },
     "src/core/features/operator/ui/autosave/autosave.css": {
@@ -6723,7 +6723,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/booking-recipe.tsx": {
-      "sha256": "093ed975981a28661cb72232b2b681a167e0f362432c03de7e32df9b14170e4a",
+      "sha256": "37885274a9d800cce3c7e639f4e3b25eadd5f4fb4a14f867a87de0850343bbac",
       "executable": false
     },
     "src/core/features/operator/ui/brief-page.tsx": {
@@ -7083,7 +7083,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/recipe-snippet.tsx": {
-      "sha256": "103ff3c3b9b83a6ebe4ff3567d90cce6989e3f488e331b67e2a1b0f99d2c5fd7",
+      "sha256": "a2846e0cb5d9587b61938d15ebfabfcdf654c18b57e8f54a9631d4ad4647fb5c",
       "executable": false
     },
     "src/core/features/operator/ui/record-create.tsx": {
@@ -11387,7 +11387,7 @@
       "executable": false
     },
     "tests/rer/source-recipes.mjs": {
-      "sha256": "abc40dcbfcb0db9352a095107a3cc08c1fea33ee8d48349ef0deff10b200dffd",
+      "sha256": "6de4241824f8b41afdc2a2c695cdc88c28e0a92aa4b572a14eb5773505ba8cd1",
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
