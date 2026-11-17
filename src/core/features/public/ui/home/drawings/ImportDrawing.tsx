@@ -1,8 +1,8 @@
-const LABEL = "Drawing of Orbit's contact import: the CSV's Email and Full name columns mapped to email and name, then Import mapped rows, with the report: 212 created, 9 updated, 0 failed.";
+const LABEL = "Drawing of Orbit's contact import: the CSV's Email and Full name columns mapped to contact email and contact name, then Import mapped rows, with the report: 212 created, 9 updated, 0 failed.";
 
-const mapping = [["email", "Email"], ["name", "Full name"]];
+const mapping = [["Contact email", "Email"], ["Contact name", "Full name"]];
 
-/** The contact import (Settings › Data › Move in) after a run, with its report's own keys. */
+/** The contact import (Settings › Data › Move in) after a run, with its report counts. */
 export function ImportDrawing() {
   return (
     <figure className="ob-figure ob-figure--import" role="img" aria-label={LABEL}>
@@ -14,7 +14,7 @@ export function ImportDrawing() {
           {mapping.map(([field, column]) => <li key={field}><span>{field}</span><span aria-hidden="true">←</span><span className="ob-chip">{column}</span></li>)}
         </ul>
         <span className="ob-fake-button">Import mapped rows</span>
-        <p className="ob-import-report"><span>"created": <b>212</b></span><span>"updated": <b>9</b></span><span>"failed": <b>0</b></span></p>
+        <p className="ob-import-report"><span>Created <b>212</b></span><span>Updated <b>9</b></span><span>Failed <b>0</b></span></p>
       </div>
     </figure>
   );

@@ -6,7 +6,7 @@ import {localTime} from '../outreach/time';
 import type {Dashboards} from './repository';
 export const scheduleInput=z.object({version:z.number().int().min(0),frequency:z.enum(['daily','weekly','monthly']),hour:z.number().int().min(0).max(23),minute:z.number().int().min(0).max(59),weekday:z.number().int().min(0).max(6),day:z.number().int().min(1).max(28),recipientIds:z.array(z.string().min(1).max(120)).max(200),channelId:z.string().max(40).nullable(),pdf:z.boolean(),csv:z.boolean()}).strict().refine(s=>s.recipientIds.length>0||Boolean(s.channelId),{message:'Choose an email recipient or a Slack channel.'});
 export type DashboardSchedule=z.infer<typeof scheduleInput>;
-export const deliveryGap='Email is paused: no notification sender yet.';
+export const deliveryGap='Email is paused: Orbit does not send dashboard email yet, and setting up a mail sender does not change that.';
 /** The existing task clock resolver handles repeated minutes and spring gaps. No real wait. */
 export function nextDashboardSend(input:DashboardSchedule,timezone:string,now:Date){
  const start=localTime(now,timezone).day;

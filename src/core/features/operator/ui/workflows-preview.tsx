@@ -1,4 +1,4 @@
-import {WorkflowAction,WorkflowMetadata,WorkflowPreview,WorkflowPreviewRecord,WorkflowHistoryCoverage,workflowLabel,workflowTime,workflowValue,WorkflowActivityRule} from './workflows-types';
+import {WorkflowAction,WorkflowMetadata,WorkflowPreview,WorkflowPreviewRecord,WorkflowHistoryCoverage,workflowFieldLabel,workflowLabel,workflowTime,workflowValue,WorkflowActivityRule} from './workflows-types';
 
 function EffectPreview({value,metadata}:{value:unknown;metadata:WorkflowMetadata}) {
  if(!value||typeof value!=='object'||!('kind' in value))return <pre>{workflowValue(value)}</pre>;
@@ -18,7 +18,7 @@ function EffectGroups({effects,metadata}:{effects:unknown[];metadata:WorkflowMet
 }
 
 function RecordPreviewBody({record,metadata,historical=false}:{record:WorkflowPreviewRecord;metadata:WorkflowMetadata;historical?:boolean}) {
- return <>{record.errors?.map((message,index)=><p className="operator-state operator-state--error" role="alert" key={index}>{message}</p>)}{record.changes.map((item,index)=><div className="workflows-change" key={index}><strong>{item.field}{item.needsApproval?' · Needs approval':''}</strong>{item.recordId&&item.recordId!==record.recordId&&<p className="workflows-meta">Target record: {item.recordId}</p>}<div><span>{historical?'Previous value':'Current'}</span><pre>{workflowValue(item.before)}</pre></div><div><span>{historical?'Dry-run result':'Proposed'}</span><pre>{workflowValue(item.after)}</pre></div></div>)}<EffectGroups effects={record.effects} metadata={metadata}/></>;
+ return <>{record.errors?.map((message,index)=><p className="operator-state operator-state--error" role="alert" key={index}>{message}</p>)}{record.changes.map((item,index)=><div className="workflows-change" key={index}><strong>{workflowFieldLabel(item.field)}{item.needsApproval?' · Needs approval':''}</strong>{item.recordId&&item.recordId!==record.recordId&&<p className="workflows-meta">Applies to a related record, not the matched one</p>}<div><span>{historical?'Previous value':'Current'}</span><pre>{workflowValue(item.before)}</pre></div><div><span>{historical?'Dry-run result':'Proposed'}</span><pre>{workflowValue(item.after)}</pre></div></div>)}<EffectGroups effects={record.effects} metadata={metadata}/></>;
 }
 
 function HistoryCoverage({coverage}:{coverage?:WorkflowHistoryCoverage}) {

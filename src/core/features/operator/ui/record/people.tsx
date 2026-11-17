@@ -34,6 +34,6 @@ export function DealPeople({dealId,form,titles,closed=false}:{dealId:string;form
   </li>;})}</ul>:<p className="r-note">No one on this deal yet.</p>}
   <SaveFailure status={status} onRetry={()=>form.retry('stakeholders')} onDiscard={()=>form.discard('stakeholders')} onUseMine={()=>form.useMine('stakeholders')} describe={value=>((value??[]) as Stakeholder[]).map(person=>person.name??person.email).join(', ')||'no one'}/>
   <RecordSearchField kind="contact" label="Add a person" placeholder="Add a person" exclude={people.map(person=>person.contactId)} onChoose={contact=>save([...people,{contactId:contact.id,name:contact.name??null,email:contact.email??null,contactability:contact.contactability??'',isPrimary:!people.length,roles:[],verified:false,verifiedBy:null,verifiedAt:null}])}/>
-  {!closed?<DealRisks dealId={dealId}/>:null}
+  {!closed?<DealRisks dealId={dealId} savedCount={form.savedCount}/>:null}
  </DetailsGroup>;
 }

@@ -1,6 +1,6 @@
 export type RecordType='contact'|'company'|'opportunity';
 export interface RecordRef {type:RecordType;id:string}
-export type EvidenceType='signal'|'timeline'|'draft'|'handoff'|'opportunity'|'unlinked-reply';
+export type EvidenceType='signal'|'timeline'|'draft'|'handoff'|'task'|'opportunity'|'unlinked-reply';
 export type LineKind='reply'|'meeting'|'signal'|'handoff-due'|'next-action-due'|'reply-unanswered'|'meeting-no-next-step'|'draft-unsent'|'handoff-proposed'|'unlinked-signal'|'unlinked-reply'|'held-capture';
 export type LineGroup='new'|'promise'|'proposal'|'unresolved'|'held';
 

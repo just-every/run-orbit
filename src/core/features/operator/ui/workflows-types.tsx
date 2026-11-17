@@ -5,7 +5,7 @@ export type WorkflowAction = {kind:'set'|'copy'|'stamp'|'clear'|'add'|'subtract'
 export type WorkflowDefinition = {trigger:{kind:'record_created'|'record_changed'|'activity_logged'|'form_submitted'|'schedule'|'enrichment';recordType:'opportunity'|'contact'|'company';activityKind?:'note'|'call'|'meeting';staleDays?:number};conditions:WorkflowCondition[];actions:WorkflowAction[];delayMinutes?:number;order?:number;writeLimitPerHour?:number};
 export type Workflow = {id:string;name:string;version:number;status:string;definition:WorkflowDefinition;activatedAt?:string|null;activeVersion?:number|null;needsReactivation?:boolean};
 export type WorkflowRun = {id:string;workflowId:string;workflowName:string;version:number;recordId:string;recordType:string;recordLabel?:string|null;recordHref?:string|null;occurredAt?:string|null;activatedAt?:string|null;status:string;reason?:string|null;dueAt?:string|null;attempts:unknown;outcome?:unknown;[key:string]:unknown};
-export type WorkflowApproval = {id:string;recordId:string;field:string;before:unknown;after:unknown;evidence:unknown;status:string};
+export type WorkflowApproval = {id:string;recordId:string;recordLabel?:string;recordHref?:string|null;field:string;before:unknown;after:unknown;evidence:unknown;status:string};
 export type WorkflowData = {workflows:Workflow[];runs:WorkflowRun[];approvals:WorkflowApproval[]};
 export type WorkflowPreviewRecord = {recordId:string;label:string;changes:{recordId?:string;field:string;before:unknown;after:unknown;needsApproval:boolean}[];effects:unknown[];errors?:string[]};
 export type WorkflowHistoricalPreview = WorkflowPreviewRecord&{eventId:string;occurredAt:string;counts?:Record<string,unknown>};
@@ -31,8 +31,11 @@ export function WorkflowValueInput({value,onChange,label='Value'}:{value:unknown
 }
 
 export function WorkflowField({value,onChange,label='Field'}:{value?:string;onChange:(field:string)=>void;label?:string}) {
- return <label>{label}<input required list="workflow-field-options" value={value??''} placeholder="Choose a field or enter custom:field_key" onChange={event=>onChange(event.target.value)}/></label>;
+ return <label>{label}<input required list="workflow-field-options" value={value??''} placeholder="Choose a field or enter custom:field_key" onChange={event=>onChange(event.target.value)}/>{value&&workflowFieldNames.some(([key])=>key===value)?<span className="workflows-meta">{workflowFieldLabel(value)}</span>:null}</label>;
 }
-export function WorkflowFields(){return <datalist id="workflow-field-options">{[['title','Deal title'],['name','Name'],['email','Email'],['phone','Phone'],['job_title','Job title'],['timezone','Time zone'],['primary_domain','Company domain'],['owner_id','Owner'],['stage_id','Deal stage'],['lifecycle','Deal open / won / lost'],['value_cents','Deal amount in cents'],['expected_close_at','Deal close date'],['contactability','Contact permission'],['custom:','Custom field key']].map(([value,label])=><option value={value} label={label} key={value}/>)}</datalist>;}
+const workflowFieldNames:[string,string][]=[['title','Deal title'],['name','Name'],['email','Email'],['phone','Phone'],['job_title','Job title'],['timezone','Time zone'],['primary_domain','Company domain'],['owner_id','Owner'],['stage_id','Deal stage'],['lifecycle','Deal open / won / lost'],['value_cents','Deal amount in cents'],['expected_close_at','Deal close date'],['contactability','Contact permission'],['custom:','Custom field key']];
+/** A field in a customer's words; a custom field keeps its own key. */
+export function workflowFieldLabel(field:string){return field.startsWith('custom:')&&field.length>7?field.slice(7).replaceAll('_',' '):workflowFieldNames.find(([key])=>key===field)?.[1]??field.replaceAll('_',' ').replace(/^./,letter=>letter.toUpperCase());}
+export function WorkflowFields(){return <datalist id="workflow-field-options">{workflowFieldNames.map(([value,label])=><option value={value} label={label} key={value}/>)}</datalist>;}
 
 export function WorkflowActivityRule(){return <p className="workflows-note">Activities start runs only when their occurrence time is at or after this version’s activation time. Logging an earlier activity records a skipped outcome in Execution history; it does not replay old activities.</p>;}

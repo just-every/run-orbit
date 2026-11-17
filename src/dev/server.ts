@@ -4,6 +4,7 @@
 import worker, { runtimeBindings } from '../core/app/worker';
 import { cliSession } from './cli-session';
 import {localSignIn} from './sign-in';
+import {acceptPendingInvitations} from './pending-invitation';
 import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
 import { decorateLabel } from '@runeditrun/rer/modules/demo/label';
@@ -81,6 +82,7 @@ async function enter(request: Request, env: PlatformBindings, gate: NonNullable<
   const person = await store.person('lower(o.email)=?', chosen.email);
   if (!person) return text(409, 'The owner that rer setup claimed is not in this database. Run rer setup.');
   if (person.status !== 'active') return text(403, `${as} is not an active operator in this workspace.`);
+  if (!declared && as !== 'owner') await acceptPendingInvitations(env.DB, person.id);
   const existing = await store.read(request, now);
   if (existing?.kind !== 'dev' || existing.operatorId !== person.id) {
     const issued = await store.issue({ person, kind: 'dev', now, freshProof: true });

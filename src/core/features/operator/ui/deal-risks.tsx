@@ -1,6 +1,6 @@
 import {DealRiskAgentResult} from './deal-risk-agent-result';
 import type {RiskAgentRun} from '../../risks/embedded-agent';
-import {useCallback,useState,type FormEvent} from 'react';
+import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import {useOperatorResource} from './use-operator-resource';
 import {RiskFindingItem,riskRequest,type RiskEvidence,type RiskFinding} from './deal-risk-finding';
 
@@ -14,9 +14,11 @@ const lower=(text:string)=>text?text[0]!.toLowerCase()+text.slice(1).replace(/\.
 /** AGENT-002: cited risks on this deal, folded under People. Its line names what to check in the findings' own words,
  * in deep tangerine; with nothing to check it is a quiet fold that still holds the conflict check and the role rules.
  * Findings and checks never change the deal; a person approves each task. */
-export function DealRisks({dealId}:{dealId:string}){
+export function DealRisks({dealId,savedCount=0}:{dealId:string;savedCount?:number}){
  const load=useCallback(()=>riskRequest<Risks>(`${dealId}/findings`),[dealId]);
- const resource=useOperatorResource(`risks:${dealId}`,load),data=resource.data;
+ const resource=useOperatorResource(`risks:${dealId}`,load),data=resource.data,seen=useRef(savedCount);
+ // Findings are read from saved relationships: a saved change to the deal's people reads them again.
+ useEffect(()=>{if(seen.current!==savedCount){seen.current=savedCount;resource.reload();}},[savedCount,resource]);
  const [agentRun,setAgentRun]=useState<RiskAgentRun|null>(null);
  const [preview,setPreview]=useState<Preview|null>(null),[checked,setChecked]=useState<RiskFinding[]|null>(null),[error,setError]=useState(''),[pending,setPending]=useState(false);
  async function run<T>(work:()=>Promise<T>){setPending(true);setError('');try{return await work();}catch(e){setError((e as Error).message);return null;}finally{setPending(false);}}

@@ -53,7 +53,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
  const parsers=useRef(new Map<string,Parse>()),invalid=useRef(new Map<string,string>());
  const [drafts,setDrafts]=useState<Record<string,unknown>>({}),draftsRef=useRef(drafts);
  const [statuses,setStatuses]=useState<Record<string,FieldStatus>>({});
- const [saved,setSaved]=useState<string|null>(null),savedTimer=useRef<ReturnType<typeof setTimeout>>(undefined);
+ const [saved,setSaved]=useState<string|null>(null),[savedCount,setSavedCount]=useState(0),savedTimer=useRef<ReturnType<typeof setTimeout>>(undefined);
  const [,render]=useState(0);
  const status=(field:string,next:FieldStatus)=>setStatuses(current=>({...current,[field]:next}));
  const draft=(field:string,value:unknown)=>{const next={...draftsRef.current};if(value===undefined)delete next[field];else next[field]=value;draftsRef.current=next;setDrafts(next);};
@@ -73,7 +73,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
   }
  }
 
- function showSaved(field:string){clearTimeout(savedTimer.current);setSaved(field);savedTimer.current=setTimeout(()=>setSaved(null),2000);}
+ function showSaved(field:string){clearTimeout(savedTimer.current);setSaved(field);setSavedCount(count=>count+1);savedTimer.current=setTimeout(()=>setSaved(null),2000);}
  useEffect(()=>()=>clearTimeout(savedTimer.current),[]);
 
  function flush(init:{keepalive?:boolean}={}){
@@ -170,6 +170,8 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
   key,copy:copy.current,value,edit,commit,retry,discard,useMine,describe,
   status:(field:string):FieldStatus=>statuses[field]??{state:'idle'},
   saved:(field:string)=>saved===field,
+  /** Rises with every saved answer, so a view derived from saved records can read again. */
+  savedCount,
   busy:Boolean(inflight.current)||queue.current.size>0,
   typing:(field:string)=>Object.hasOwn(drafts,field),
  };

@@ -1,9 +1,9 @@
-const LABEL = "Drawing of Orbit's deal page for Northwind renewal, scored 86, High. Signals used by the current score: email.replied added 40, meeting.booked added 36 and form.submitted added 10.";
+const LABEL = "Drawing of Orbit's deal page for Northwind renewal, scored 86, High. Signals used by the current score: Customer reply added 40, Meeting booked added 36 and Form submitted added 10.";
 
 const signals = [
-  { type: "email.replied", added: 40 },
-  { type: "meeting.booked", added: 36 },
-  { type: "form.submitted", added: 10 }
+  { type: "Customer reply", added: 40 },
+  { type: "Meeting booked", added: 36 },
+  { type: "Form submitted", added: 10 }
 ];
 
 /** The opportunity page's evidence section (opportunity-page.tsx): the score and the signed contribution of each signal.

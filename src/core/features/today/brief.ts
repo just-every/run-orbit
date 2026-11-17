@@ -3,6 +3,7 @@ import type {Brief,BriefAccount,BriefLine,RecordRef} from './types';
 import {accountFor,delegationTarget,entryHref,existing,indexRecords,recordHref,recordName,signalEvidenceHref,type RecordIndex} from './links';
 import {newSignalLines,type RawLine} from './signal-lines';
 import {promiseLines} from './promises';
+import {taskPromises} from './task-promises';
 import {heldDetail,heldLines,proposalLines,unresolvedLines} from './unresolved';
 import {briefPolicy,briefWindow} from './window';
 
@@ -35,8 +36,8 @@ function resolve(raw:RawLine,index:RecordIndex,visible?:Visibility):BriefLine|nu
 /** Today's brief for one operator, computed from records only; no AI provider is involved. */
 export async function buildBrief(db:D1Database,input:{operatorId:string;now?:Date;visible?:Visibility}):Promise<Brief>{
  const now=input.now??new Date(),policy=await briefPolicy(db),window=await briefWindow(db,input.operatorId,now,policy);
- const [fresh,promises,proposals,unresolvedRaw,heldRaw,mailPromises]=await Promise.all([newSignalLines(db,window.since,LIMIT),promiseLines(db,now,policy,LIMIT),proposalLines(db,LIMIT),unresolvedLines(db,LIMIT),heldLines(db,LIMIT),recordMailPromises(db,input.operatorId,now,LIMIT)]);
- const raw=[...fresh.lines,...promises,...mailPromises,...proposals,...unresolvedRaw,...heldRaw],index=await indexRecords(db,raw.flatMap(line=>line.records));
+ const [fresh,promises,taskDue,proposals,unresolvedRaw,heldRaw,mailPromises]=await Promise.all([newSignalLines(db,window.since,LIMIT),promiseLines(db,now,policy,LIMIT),taskPromises(db,now,LIMIT),proposalLines(db,LIMIT),unresolvedLines(db,LIMIT),heldLines(db,LIMIT),recordMailPromises(db,input.operatorId,now,LIMIT)]);
+ const raw=[...fresh.lines,...promises,...taskDue,...mailPromises,...proposals,...unresolvedRaw,...heldRaw],index=await indexRecords(db,raw.flatMap(line=>line.records));
  const lines=raw.map(line=>resolve(line,index,input.visible)).filter((line):line is BriefLine=>Boolean(line));
  const accounts=new Map<string,BriefAccount>(),unresolved:BriefLine[]=[],held:BriefLine[]=[],selectedSignals:BriefLine[]=[];
  for(const line of lines){
