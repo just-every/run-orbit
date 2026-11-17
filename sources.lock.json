@@ -7255,7 +7255,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/records-filters.tsx": {
-      "sha256": "8af2efbad96598cdae398ec38cdba50df0f75b9375046b85669049a46a23ac8a",
+      "sha256": "ffa2ba91fe9d84b92c7e70a4f81b61de8b6da6a499300c8718ee841220a112db",
       "executable": false
     },
     "src/core/features/operator/ui/records-list.tsx": {
@@ -10667,7 +10667,11 @@
       "executable": false
     },
     "tests/delegation-browser/records-layout.test.ts": {
-      "sha256": "63cccd8f98a58eb0bad6a660813e9ff5085b921ea5183a622175853c76061032",
+      "sha256": "446d8d7e9e4047a2cb9801dd4355d15c502d1302cd356e856b4e3eb8c4b282c1",
+      "executable": false
+    },
+    "tests/delegation-browser/records-search-hydration-journey.mjs": {
+      "sha256": "428638b8ccc8804531d9537617008532b74ec5644fc4d1f66f6a917891da689d",
       "executable": false
     },
     "tests/delegation-browser/related-records.test.ts": {
