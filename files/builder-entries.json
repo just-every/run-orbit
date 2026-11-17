@@ -1,0 +1,58 @@
+[
+  {
+    "rank": 1,
+    "role": "BUILDER",
+    "repository": "just-every/run-orbit",
+    "title": "Make stale and awaiting-response queue deadlines provable across US working days",
+    "clauses": ["OPP-007"],
+    "acceptance": "Build the remaining stale/awaiting-clock portion of OPP-007 acceptance 1: an open deal crosses the configured stale boundary once; a provider-accepted message enters NEXT until five Monday-Friday working days in the workspace timezone; crossing that real computed deadline enters NOW once with an attributed reason. Exercise New York spring and fall DST, Friday sends, a stage-specific stale interval, repeated ticks and closed deals. Preserve the existing close/form/reply/booking/failure legs; do not claim the whole event matrix DONE.",
+    "files": ["src/core/features/outreach/timing-repository.ts", "src/core/features/outreach/settlement.ts", "src/core/features/outreach/time.ts", "tests/support/opportunity-clock-proof.ts (new)", "tests/core/opportunity-clocks.test.ts (new)", "tests/e2e/opportunity-clocks.spec.mjs (new)"],
+    "tests_and_proof": "Drive native create/approve/accept and the real scheduler through isolated persisted state at a controlled clock; never prefill next_due_at to simulate its construction. Read native Records, NOW and timeline before, at and after each boundary; repeat/restart and count one transition. Verify no provider re-submission. Capture emitted UI NEXT/deadline and NOW/reason before and after reload at 1440x900 and 390x844, plus current axe serious/critical checks. Run focused core/browser tests and rer verify without live providers or paid calls.",
+    "must_not_touch": "No close-deadline rewrite (sd f111), no changes to Today promise semantics, scoring weights, lifecycle writer, recommendation replacement, mailbox quotas, sequence/batch runtime, schema/history, provider configuration, contract Status/Gap/Evidence, generated contract views, claims, PR or deployment. Keep any fix within timing/accepted settlement/time; if it requires a schema or new provider surface, return that dependency rather than expand scope.",
+    "gate": "required",
+    "gate_reason": "Data: persisted queue/deadline transitions and accepted-message scheduling.",
+    "independence": "Owns timing/accepted-settlement helpers; other entries own lifecycle repository, recommendation fences or manual-entry editor. New tests have distinct files. Existing close-deadline work is explicitly excluded."
+  },
+  {
+    "rank": 2,
+    "role": "BUILDER",
+    "repository": "just-every/run-orbit",
+    "title": "Qualify won, lost and explicit reopen without losing sales history",
+    "clauses": ["OPP-001"],
+    "acceptance": "Complete OPP-001 acceptance 1 through native controls: close won and lost with nonempty reasons; record closing actor/time; read queue removal; ingest later weighted evidence while each stays closed; explicitly reopen and wait for the existing mutation evaluation; preserve stage/owner and every lifecycle transition/history.",
+    "files": ["src/core/features/records/repository.ts (lifecycle method only, if a demonstrated failure needs repair)", "tests/support/opportunity-lifecycle-proof.ts (new)", "tests/core/opportunity-lifecycle.test.ts (new)", "tests/e2e/opportunity-lifecycle.spec.mjs (new)"],
+    "tests_and_proof": "Authenticated native Records writes and reads, signed late evidence, current queue reads and full timeline/effect inventory. Test empty-reason refusal with zero writes, both close paths, repeat late delivery and explicit reopen; no direct lifecycle fixture UPDATE as proof. Browser close reason/history/closed queue and reopened state at 1440x900 and 390x844 after reload, with serious/critical axe checks. Run focused core/browser tests and rer verify. Existing lifecycle code is credited; implement only a reproduced behavior gap.",
+    "must_not_touch": "No ownership defaults or TEAM-001/TEAM-005 access widening, no scoring/queue-clock implementation changes, no recommendation algorithm change, no sequences, provider setup, schema/migration or contract Status/Gap/Evidence/generated claims. Keep source changes confined to lifecycle method; return any cross-subsystem dependency.",
+    "gate": "required",
+    "gate_reason": "Data: deal closure, historical attribution and reopen state.",
+    "independence": "Uses current main timing/evaluation interfaces, does not change them; isolated lifecycle fixture and new tests avoid other entries' files."
+  },
+  {
+    "rank": 3,
+    "role": "BUILDER",
+    "repository": "just-every/run-orbit",
+    "title": "Fence every obsolete recommendation entrance after evidence or operator edits",
+    "clauses": ["ACTION-002"],
+    "acceptance": "Complete the remaining ACTION-002 acceptance 1: supersede separately by contributing evidence and a permitted operator change; retain the old recommendation and superseded history; reject generating from its saved AI preview, approving/sending its already saved draft and completing the obsolete identity. Prove the current replacement remains usable. Preserve the existing obsolete-completion assertion rather than duplicate it alone.",
+    "files": ["src/core/features/assistance/routes.ts (saved-preview fence only, if needed)", "src/core/features/outreach/approval-repository.ts (current-recommendation fence only, if needed)", "src/core/features/workbench/action-repository.ts (obsolete completion fence only, if needed)", "tests/support/recommendation-replacement-proof.ts (new)", "tests/core/recommendation-replacement.test.ts (new)", "tests/e2e/recommendation-replacement.spec.mjs (new)"],
+    "tests_and_proof": "Create the current recommendation via native evidence, save real draft/AI preview, mutate through native record control or signed source, then replay all old entrances. Assert 409/no new provider or model call, unchanged domain/effect inventories on refusals, distinct current identity and historical superseded timeline. Verify no stale saved content becomes approved and no automatic customer mail. Exercise historical action and current replacement UI at 1440x900 and 390x844 with reload and serious/critical axe checks. Run focused tests and rer verify using network-edge fixtures only.",
+    "must_not_touch": "No manual-draft normalization (sd f153/f154), no saved-message MCP implementation (sd f158), no evaluation algorithm, OPP-001 lifecycle writer, queue deadlines, provider adapters, recipient model, schema/migration, auth expansion or contract Status/Gap/Evidence. If evaluation replacement itself needs redesign, return it as a dependency instead of modifying shared evaluator.",
+    "gate": "required",
+    "gate_reason": "Data: stale recommendation/draft authority and prevention of obsolete customer sends.",
+    "independence": "Owns only obsolete-identity entrance fences and new tests; no changes to the evaluator, lifecycle, timing or manual-entry modules used by the other entries."
+  },
+  {
+    "rank": 4,
+    "role": "BUILDER",
+    "repository": "just-every/run-orbit",
+    "title": "Edit logged call and meeting duration and attendees from the record timeline",
+    "clauses": ["RECORD-010"],
+    "acceptance": "Build the unimplemented editing-control portion of RECORD-010 acceptance 1: native note/call/meeting log-edit-delete on contact, company and deal; call/meeting duration and attending contacts can actually be edited and read after reload alongside text/time. Preserve original entry author/recorded time and attributed edit/delete history, with no score or external message changes. Attachments remain RECORD-018 and no whole-clause attachment completion is claimed.",
+    "files": ["src/core/features/operator/ui/record/entry-editor.tsx", "src/core/features/operator/ui/record/timeline-entries.tsx (pass permitted contact choices only if required)", "tests/support/manual-entry-edit-proof.ts (new)", "tests/core/manual-entry-edit.test.ts (new)", "tests/e2e/manual-entry-edit.spec.mjs (new)"],
+    "tests_and_proof": "Native forms edit a call and a meeting from nonzero duration/multiple attendees to different values, remove/add an attendee and reload; exercise all three record kinds and note controls. Native route validation refuses foreign/nonexistent attendee and invalid duration without writes. Assert unchanged scores/outbound inventories and original author/time plus attributed edits/deletion. Prove provider-originated Twilio/calendar receipts remain uneditable. Capture editing, saved readback and deletion history at 1440x900 and 390x844 with keyboard and serious/critical axe checks. Run focused tests and rer verify.",
+    "must_not_touch": "No rewrite of sd f98 manual-meeting text/time proof; no provider activity editing, file/attachment subsystem, TEAM-005 changes, ownership/defaults, scoring, outreach/recommendations, database/schema/migrations, contract Status/Gap/Evidence or generated claims. The existing manual endpoint already supports duration/contactIds; do not change its storage contract.",
+    "gate": "required",
+    "gate_reason": "Data: persisted customer activity edits and attendee validation.",
+    "independence": "UI-only production ownership plus distinct tests; relies on unchanged manual-entry API, and does not touch lifecycle/evaluation/timing/outreach source."
+  }
+]

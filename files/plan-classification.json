@@ -1,0 +1,650 @@
+{
+  "TEAM-001": {
+    "classification": "HELD-EXTERNAL",
+    "remaining": "equality across all workspace jobs conflicts with owner-only forecast/library/sign-in administration and private audiences. Need ct's authoritative access-boundary reconciliation; do not widen access. CRM peer/collaborator proof already exists in newtests/t096/collaborator-lifecycle.test.ts."
+  },
+  "TEAM-003": {
+    "classification": "CHEAP",
+    "remaining": "qualify persisted US timezone/USD, working hours, stale intervals and cross-record reload. Settings storage exists; sd f57 already carries the persistence proof; exclude duplicate builder."
+  },
+  "TEAM-004": {
+    "classification": "CHEAP",
+    "remaining": "qualify all removal sets, delegated unassignment, scheduled cancellation, recorded choices and attributed owner change. settings/removal-handover.ts and tasks/handover.ts exist; sd f68 covers this proof; exclude."
+  },
+  "RECORD-001": {
+    "classification": "CHEAP",
+    "remaining": "qualify native create/edit/reload of company/contact/USD deal, custom values and associations. records/routes.ts and repository.ts implement it; sd f61 already carries scalar/association persistence; exclude."
+  },
+  "RECORD-003": {
+    "classification": "CHEAP",
+    "remaining": "qualify email create/edit case/whitespace collision with 409 existing ID/no writes, free-mail exclusion and normal keyless create/edit with no auto-link. Company domain proof exists in tests/support/company-identity.ts; sd f90 covers the remaining native identity outcomes; exclude."
+  },
+  "RECORD-005": {
+    "classification": "CHEAP",
+    "remaining": "combined mail/meeting/note/stage/owner/merge timeline with occurred/recorded time, source and actor, including late events. Note ordering/reload is already in tests/e2e/operator.spec.mjs; sd f72 carries combined proof; exclude."
+  },
+  "RECORD-007": {
+    "classification": "HELD-EXTERNAL",
+    "remaining": "assign/reassign/unassign, reload, attributed history and unchanged score. Ownership implementation and tests/support/record-ownership.ts exist; sd f1/strategy-trial-1 overlap. Creation-default contradiction requires ct, not a builder status edit."
+  },
+  "RECORD-009": {
+    "classification": "CHEAP",
+    "remaining": "keyless same-name candidates remain review-only until chosen merge. records-merge-review.test.ts covers review and merge; sd f14/strategy-trial-10 cover keyless cases; exclude."
+  },
+  "RECORD-010": {
+    "classification": "CHEAP",
+    "remaining": "edit call duration/attendees as well as text/time, and qualify note/call/meeting on contact/company/deal with no score/mail effect. records/manual.ts accepts those values; operator/ui/record/entry-editor.tsx exposes only text/time. tests/support/manual-meeting.ts deliberately retains duration/attendees unchanged; a real UI gap remains. Attachments stay RECORD-018."
+  },
+  "RECORD-013": {
+    "classification": "CHEAP",
+    "remaining": "confirmation on each delete, company detaches contacts/deals without deleting them. records-complete.test.ts already proves deal sent-history/contact erasure; deletion helpers exist. Check existing sd delete continuations before dispatch; do not redo contact erasure."
+  },
+  "SIGNAL-003": {
+    "classification": "CHEAP",
+    "remaining": "persisted-store/process restart replay retains one identity/effect and changed-payload conflict. Concurrent live replay exists in signals-outreach.test.ts; sd f24 owns restart proof; exclude."
+  },
+  "SIGNAL-004": {
+    "classification": "CHEAP",
+    "remaining": "ambiguous identity held and exactly one evaluation after manual link. signals-outreach.test.ts has signed rollback/replay/link tests; sd f35 owns the qualification; exclude."
+  },
+  "SIGNAL-005": {
+    "classification": "CHEAP",
+    "remaining": "late event orders around newer history, triggers fresh evaluation and preserves later-written fields. ingestion/evaluation exist; sd f42 owns full late-event proof; exclude."
+  },
+  "SIGNAL-007": {
+    "classification": "CHEAP",
+    "remaining": "identity-free chat held, no unsupported customer history, no public tracking assets/network/cookies. Existing ingestion holds page views; sd f58 owns public-network proof; exclude."
+  },
+  "CAPTURE-003": {
+    "classification": "CHEAP",
+    "remaining": "booked meeting cancels scheduled work, drafts stale atomically, automatic reply does not stop work. capture-boundaries.test.ts covers genuine reply; sd f43 owns remaining atomic-stop matrix; exclude."
+  },
+  "CAPTURE-005": {
+    "classification": "CHEAP",
+    "remaining": "delegated credential refused, address-only intake permitted, proposed contact remains blocked. capture-review/boundaries tests exist; sd f34 owns application intake refusal; exclude."
+  },
+  "CAPTURE-006": {
+    "classification": "CHEAP",
+    "remaining": "Google/Microsoft selected-folder/calendar reads and resume/revoke/reconnect. capture-providers.test.ts and capture-provider-network.ts cover both adapters and authority; sd f60 owns remaining proof. Real tenant qualification is separate R-1/R-2."
+  },
+  "CAPTURE-008": {
+    "classification": "CHEAP",
+    "remaining": "oversized mail counted without retaining content. Private tag/rotation/envelope capture already tested in capture-no-console.test.ts; sd f27 owns size handling/proof; exclude."
+  },
+  "CAPTURE-009": {
+    "classification": "CHEAP",
+    "remaining": "validate link, clock refresh, changed/cancelled event deduplication and original occurred time. capture-no-console.test.ts exists; sd f63 owns lifecycle repair/proof; exclude."
+  },
+  "OPP-001": {
+    "classification": "CHEAP",
+    "remaining": "complete won/lost reasons, actor/time, late evidence staying closed, explicit reopen queue, unchanged stage/owner and each lifecycle transition. records/repository.ts lifecycle() already writes state/history and queues reopen evaluation; complete native/browser proof absent. Candidate 2."
+  },
+  "OPP-002": {
+    "classification": "CHEAP",
+    "remaining": "stage/owner edits preserve independent lifecycle/queue/score/band. UI visibility is in operator.spec.mjs; sd f25 owns mutation independence proof; exclude."
+  },
+  "OPP-003": {
+    "classification": "CHEAP",
+    "remaining": "band/contribution/policy-version/decay and closed-deal exclusion after weighted signals and edits. Evaluation storage exists; sd f62 owns native computation proof; exclude."
+  },
+  "OPP-004": {
+    "classification": "CHEAP",
+    "remaining": "follow every contribution to original evidence/current reason. Current operator.spec.mjs still resolves IDs through API inside the test; sd f45 supplies the missing product link/source-evidence door and authorization proof; exclude."
+  },
+  "OPP-006": {
+    "classification": "CHEAP",
+    "remaining": "tied/untied deterministic NOW order, rep/stage/band filtering and reload. Queue query/UI exist; sd f47 owns tie/filter qualification; exclude."
+  },
+  "OPP-007": {
+    "classification": "HARD",
+    "remaining": "stale and true five-working-day response clocks in workspace timezone, complete form/reply/booking/failure NOW/NEXT/removal matrix with one explained transition/event. Close-deadline and failed-send slices already exist; sd f111 owns close only. Timing, accepted settlement and ingestion interact. Candidate 1 is only stale/awaiting clock remainder, not a whole-clause completion."
+  },
+  "OPP-008": {
+    "classification": "CHEAP",
+    "remaining": "skip preserves historical action and sends no mail; only genuinely new evidence yields a new recommendation. signals-outreach.test.ts already covers completion; sd f26 owns skip/no-send proof; exclude."
+  },
+  "ACTION-001": {
+    "classification": "CHEAP",
+    "remaining": "evidence/version readback and named action without invented explanation when AI is off. Recommendations exist; sd f52 owns the disabled-AI proof; exclude."
+  },
+  "ACTION-002": {
+    "classification": "CHEAP",
+    "remaining": "evidence and operator mutations supersede; historical action cannot draft, send or complete. evaluation-repository.ts writes superseded history and stales drafts; assistance/routes.ts rejects changed preview; approval-repository.ts fences current recommendation. signals-outreach.test.ts:161 proves only evidence supersession plus obsolete completion refusal. Candidate 3 covers remaining entrances."
+  },
+  "ACTION-003": {
+    "classification": "CHEAP",
+    "remaining": "actual draft facts cite current fields/signals and configured instructions; no send. assistance.test.ts covers preview/citation failure; sd f36 owns factual adapter proof; exclude."
+  },
+  "ACTION-005": {
+    "classification": "CHEAP",
+    "remaining": "customer/deal changes stale drafts, sending refused, differences reviewed. stale-review.spec.mjs/capture-boundaries.test.ts exist; sd f46 owns native edit matrix; exclude."
+  },
+  "OUT-001": {
+    "classification": "HARD",
+    "remaining": "real owning MCP customer-message call under held policy, exact saved revision and one effect. Native session approval/source refusal already tested. sd f158 and saved-message fixture repair own this surface; exclude."
+  },
+  "OUT-002": {
+    "classification": "CHEAP",
+    "remaining": "persisted provider-accepted/delivered/bounced/failed/uncertain labels distinct in buyer UI. Existing provider event test covers delivery; sd f44 owns state/label repair; exclude."
+  },
+  "OUT-003": {
+    "classification": "CHEAP",
+    "remaining": "concurrent approvals yield one durable intent, persisted restart replay and at most one provider submission. Approval commit fence exists; sd f48 owns proof; exclude."
+  },
+  "OUT-005": {
+    "classification": "CHEAP",
+    "remaining": "one sent activity, completed recommendation/NEXT, one notice and replayed receipt with no second effect. source-onboarding.test.ts carries NEXT assertion outside stale evidence; sd f51 owns settlement/proof; exclude."
+  },
+  "OUT-006": {
+    "classification": "CHEAP",
+    "remaining": "ambiguity distinct, permanent bounce stops contact, retained provider reason. outreach-limits.test.ts covers bounded retry; sd f59 owns remaining delivery-failure proof; exclude."
+  },
+  "OUT-007": {
+    "classification": "CHEAP",
+    "remaining": "booking/unsubscribe/bounce/manual stop cancel schedules exactly once and stale drafts. signals-outreach.test.ts includes stop/late dispatch coverage; sd f49 owns replay qualification; exclude."
+  },
+  "OUT-009": {
+    "classification": "CHEAP",
+    "remaining": "schedule/cancel and dispatch recheck evidence, permission, recipient and exact authorized bytes. signals-outreach.test.ts has dispatch rechecks; sd f50 owns remaining scheduled-proof matrix; exclude."
+  },
+  "OUT-010": {
+    "classification": "CHEAP",
+    "remaining": "immediate and scheduled submission limits, visible reason/next window, no silent retry. outreach-limits.test.ts exists; sd f29 owns scheduled-limit proof; exclude."
+  },
+  "OUT-011": {
+    "classification": "CHEAP",
+    "remaining": "lost acceptance transaction, durable-intent reconciliation after restart, unresolved remains visible, no resubmit. Existing test covers lost provider response; sd f53 owns crash/reconciliation proof; exclude."
+  },
+  "AI-002": {
+    "classification": "CHEAP",
+    "remaining": "invalid schema/transport failure visible, no fabricated repair, bounded retries. assistance.test.ts covers foreign citation; sd f55 owns transport/schema matrix; exclude."
+  },
+  "AI-003": {
+    "classification": "CHEAP",
+    "remaining": "configured outage preserves manual CRM, capture/linking, scoring/queue/search, named recommendation/evidence and rendered failure. Unconfigured/manual-send continuity already exists; live model use unnecessary for software proof. Preserve current outage continuation work."
+  },
+  "AI-004": {
+    "classification": "CHEAP",
+    "remaining": "failed/successful call provider/model/tokens/duration/cost and daily/feature Settings totals. assistance.test.ts has usage assertions; sd f76/f79 own failed-preview accounting; exclude."
+  },
+  "NOTIFY-001": {
+    "classification": "CHEAP",
+    "remaining": "assigned owner overrides latest actor; unassigned fallback and replay once. assistance.test.ts:215 plus notification-responsibility.ts already assert assigned responsibility; stale gap. sd f23 owns proof; exclude."
+  },
+  "NOTIFY-002": {
+    "classification": "CHEAP",
+    "remaining": "recipient read survives fresh native sign-in, independent other recipient and no duplicate notice. assistance.test.ts:211 plus notification-session.ts already assert it; zz-notifications.spec.mjs covers browser read persistence. sd f22/f23 overlap; exclude."
+  },
+  "PUBLIC-001": {
+    "classification": "CHEAP",
+    "remaining": "installed Lobby and separate site branding/sign-in links, no private HTML/network data. baseline.spec.mjs/worker-smoke.spec.mjs exist; sd f123 owns populated privacy proof; exclude."
+  },
+  "PUBLIC-004": {
+    "classification": "CHEAP",
+    "remaining": "expired one-use link refusal and linked provider cannot admit unknown operator. identity.test.ts:31 and provider-redirects.test.ts cover expiry/admission; current main 14a3aae preserves explicit invited acceptance. sd f32 overlaps; exclude."
+  },
+  "DATA-002": {
+    "classification": "HARD",
+    "remaining": "erase captured/imported evidence, aliases/drafts/transfers/AI/mail/Slack, anonymous audit, tracked visible provider deletion, five-minute bound and no resurrection. capture-erasure/contact-erasure/Slack archive helpers contain substantial proof; full cross-provider and capacity qualification remains. Do not mistake historical release receipt for current candidate proof."
+  },
+  "DELEGATE-001": {
+    "classification": "HARD",
+    "remaining": "all selected-record kinds/scopes, native consent+PKCE, revocation/restore, Slack grants no authority and acknowledgment cannot accept proposed handoff. delegation/authority-regressions and brief-handoff tests plus Slack proof exist; sd f31 and Zoom privacy continuations overlap; exclude these slices."
+  },
+  "TEAM-005": {
+    "classification": "HARD",
+    "remaining": "native manager/two reps, restricted owned/shared record+field access through URLs/search/API/reports/export/AI, revocation/sign-out/restore. Current collaborator privacy is narrower. Native role/team rollout touches every door; sd f3/f8 own attempted role foundation. No fresh parallel role rollout."
+  },
+  "TEAM-006": {
+    "classification": "HARD",
+    "remaining": "team report/drill scope and hidden totals, team quotas/forecast overrides, team dashboard filter/sharing/defaults/user override and every export/email audience. Requires TEAM-005 across reports/forecast/dashboard."
+  },
+  "TEAM-007": {
+    "classification": "HARD",
+    "remaining": "actual team library access/merge authority, team mention fanout/current access and private-entry audience across Shared/Mentions/notices. Current author privacy exists; real teams remain TEAM-005."
+  },
+  "TEAM-008": {
+    "classification": "HARD",
+    "remaining": "mappings never confer access, next-request role revocation/fresh mapping, restricted audiences/channels, actual admin/team Slack routes and dashboard notices, attributed per-team budget changes. Requires TEAM-005 plus transport/notification enforcement."
+  },
+  "RECORD-014": {
+    "classification": "HARD",
+    "remaining": "Territory custom object/relationships/layouts, lead conversion preserving evidence/consent, denied-item reviewed bulk edits and per-value source history. Typed fields, immutable definition history and saved sorted views already exist in typed-fields-proof.ts/saved-views-proof.ts and records-complete.test.ts; sd f167 owns saved views. Do not rebuild them."
+  },
+  "RECORD-015": {
+    "classification": "CHEAP",
+    "remaining": "champion/evaluator/verified decision-maker, second company, primary move preserving history/current authorization. relationships implementation and buying-context.ts exist; sd f54 owns access/association proof; exclude."
+  },
+  "RECORD-016": {
+    "classification": "HARD",
+    "remaining": "all owner kinds including future leads/custom objects, per-item denial, attributed changes and guarded undo. Contact/company controls and bulk 19/20 slice exist in record-ownership.ts; do not repeat sd f1. Later kinds depend RECORD-014/TEAM-005."
+  },
+  "RECORD-019": {
+    "classification": "HARD",
+    "remaining": "explicit imported Contact/Company/custom-object/People/Organization/Lead/Account owner mapping, unmatched counts, queues/unassigned and undo. import-owners.ts, imports/owners.ts and current HubSpot/Pipedrive mappings exist; 1833f212/ca63c4ad preserve labels without metadata leakage. Salesforce sd f183 and absent lead/custom-object foundation prevent full completion."
+  },
+  "RECORD-020": {
+    "classification": "HARD",
+    "remaining": "reviewed company-to-unowned-contact rule, first nonbulk human send to unowned lead, always-sync primary ownership, automated/bulk exclusion and rule-attributed history. Owner-rule orchestration spans RECORD-014/capture/mail/workflows; broad prior owner foundation excluded."
+  },
+  "RECORD-021": {
+    "classification": "HARD",
+    "remaining": "opt-in mapped current-access personal assignment DM per batch, no replay/undo/self notice, no authority granted, all kinds/deal notices. Native grouped contact/company assignment exists; tasks reassignment already tested. Personal channels and future kinds depend NOTIFY-003/TEAM-005."
+  },
+  "RECORD-022": {
+    "classification": "HARD",
+    "remaining": "My/Unassigned across Contacts/Leads/Companies, every owner filter/group/report/dashboard, restricted next-read reassignment and removal handover. Contact/company search supports owner filters; future kinds and restricted-role totals/removal are not complete."
+  },
+  "RECORD-024": {
+    "classification": "HARD",
+    "remaining": "text-free current-access Slack mentions and nonaccepting acknowledgment plus recipient-preferred email/push/Slack delivery. Slack slice exists in personal-slack-proof.ts; sd f31 covers acknowledgment. Email/push remain NOTIFY-003, so cannot call whole clause cheap."
+  },
+  "RECORD-018": {
+    "classification": "HARD",
+    "remaining": "actual PDF/activity upload, metadata/versions/Files list and executable/150MB refusal. No file storage/upload subsystem; capture/mime.ts drops attachments. Requires byte storage, schema, access and retention design."
+  },
+  "RECORD-025": {
+    "classification": "HARD",
+    "remaining": "restricted direct-download/current field grants, attributed file/version/activity deletion within bound, short-lived links and sandbox previews. Depends RECORD-018 and TEAM-005; not a UI-only slice."
+  },
+  "RECORD-026": {
+    "classification": "HARD",
+    "remaining": "capture genuine PDF excluding inline logo on contact/company/deal, permitted exact-version attachment review/send and oversized/forbidden refusal. Requires RECORD-018 plus MIME/provider/approval/transport bytes."
+  },
+  "RECORD-027": {
+    "classification": "HARD",
+    "remaining": "migration byte/count reconciliation, SHA-256 archive restore, selective attachment erasure and public file API/webhooks/exact AI preview. Depends file storage and cross-subsystem migration/API custody."
+  },
+  "MIGRATE-001": {
+    "classification": "HARD",
+    "remaining": "full activities/associations/owners/files/workflow mapping, interrupt/resume/replay/undo plus authorized real export. Current HubSpot connected import exists (imports/hubspot and hubspot-api-proof.ts); stale CSV-only gap. sd f174 overlaps; files/extra entities and real export remain."
+  },
+  "MIGRATE-002": {
+    "classification": "HARD",
+    "remaining": "connected two pipelines/cross-linked activities/files, rate-limit resume, total reconciliation/undo plus real export. imports/pipedrive and pipedrive-api-proof.ts already implement connected custody; stale CSV-only gap. Full files/products/activity/real-export qualification remains."
+  },
+  "MIGRATE-003": {
+    "classification": "HARD",
+    "remaining": "Salesforce sandbox converted leads/types/custom objects/activities/Files, reviewed map/resume/replay/undo and real export. No Salesforce code on inspected main; sd f183-renumber-2-land-r1 carries Account/Contact foundation only; exclude it, do not claim complete target."
+  },
+  "CAPTURE-010": {
+    "classification": "HARD",
+    "remaining": "unknown correspondent proposals, captured PDF, complete historical window and both-provider tenant qualification. Read scopes/leases/rules/corrections/revoke are implemented in capture-mail-rules/capture-providers tests; explicit calendar-window sd f114 exists. Depends files/prospect custody, not just OAuth."
+  },
+  "CAPTURE-011": {
+    "classification": "HARD",
+    "remaining": "edit provider-originated meetings, concurrent provider edits, recurring occurrence controls and live both-provider journey. calendar-writeback.ts already tests separate write consent and single Orbit-created meeting writes. Recurrence/provider revision synchronization remains."
+  },
+  "CAPTURE-012": {
+    "classification": "HARD",
+    "remaining": "both-provider unknown mail/meeting proposal metadata without customer/score, exclude all named automated/internal types, sealed evidence expires at 30 days. Requires new proposal custody and privacy integration; field legal qualification separate."
+  },
+  "CAPTURE-013": {
+    "classification": "HARD",
+    "remaining": "explicit-basis acceptance, one-time full thread backfill/same-thread reply, decline suppression, manual and every named import/migration/form door, Microsoft repeat and collision/denial/concurrent-stop fences. Cross-door backfill depends CAPTURE-012."
+  },
+  "CAPTURE-014": {
+    "classification": "HARD",
+    "remaining": "recorded reviewer/source/owner/basis distinct from marketing consent, unknown lawful basis blocked, channel authority separate, suppression wins, decline/erase/restore no source resurrection or expired evidence. Requires CAPTURE-012/013 and privacy/legal policy."
+  },
+  "FORM-001": {
+    "classification": "HARD",
+    "remaining": "hosted/framed/direct HTTPS, exact reviewed required/text/picklist/hidden/custom mapping already in forms-mapped-journey and browser-form-mapping. Future lead/custom-object/team/channel inheritances still depend RECORD-014/TEAM-005/NOTIFY-003. Do not invent another form mapper."
+  },
+  "FORM-004": {
+    "classification": "HARD",
+    "remaining": "round robin skips inactive, durable choice/notice, preserve existing/fixed/unassigned owner, NOW and export/erase. forms-mapped-journey proves unassigned/replay; 9940c015/f54f6712 retain notice/history assertions. Teams/deal-less leads depend their owning clauses."
+  },
+  "OUT-013": {
+    "classification": "HARD",
+    "remaining": "Gmail bound send consent, review, Sent/timeout/revoke in outreach/mailbox and mailbox-send-proof.ts, capture-providers.test.ts:66 and browser journeys. Microsoft send, attachments and real recipient threading/tenant proof remain. Do not duplicate existing Gmail foundation."
+  },
+  "OUT-014": {
+    "classification": "CHEAP",
+    "remaining": "remaining second-operator use, signature/opt-out exact bytes and library/rendered review at 1440/390. Core library snapshot/refusal proof exists; sd f67 owns completion; exclude."
+  },
+  "OUT-015": {
+    "classification": "CHEAP",
+    "remaining": "prove no pixel/redirect/token collection; preserve accepted/delivered/inferred/open/human distinction, no automatic/foreign stop. launch-reply-authority.test.ts and existing transport proof cover much; sd f41 owns honest no-tracking slice; exclude."
+  },
+  "OUT-016": {
+    "classification": "HARD",
+    "remaining": "disclosed Gmail one-to-one and Microsoft sequence tracking, exact redirect, untracked status and opaque least-authority tokens. No collection subsystem; depends mailbox/sequence and legal qualification, not a cheap pixel."
+  },
+  "OUT-021": {
+    "classification": "HARD",
+    "remaining": "proxy/scanner/preaccept classification with reasons, first/last/count/link/source, one eligible event notice and no cookie/fingerprint/raw network metadata. Depends OUT-016/NOTIFY-003 and privacy rules."
+  },
+  "OUT-022": {
+    "classification": "HARD",
+    "remaining": "do-not-track/suppression/erase/disable/expiry cease collection but redirect correctly, multi-recipient whole-message exclusion and inferred engagement never counts as business outcomes. Depends tracking plus recipient model and reporting."
+  },
+  "OUT-017": {
+    "classification": "HARD",
+    "remaining": "connected-provider lead/no-deal/won-only/company composition with exact rules and real replies, no implicit deal/reopen. Native record mail already exists in record-mail.ts/signals-outreach.test.ts; future leads, Microsoft and attachments remain."
+  },
+  "OUT-023": {
+    "classification": "HARD",
+    "remaining": "all external recipients/BCC histories, headerless reply hold, working-day deal-less obligation and exact closing events/notices, ten deal-less sequence enrollments. Single-recipient record-mail helpers exist; sd f177 owns meeting-follow-up continuation. Recipient/sequence dependencies remain."
+  },
+  "OUT-018": {
+    "classification": "HARD",
+    "remaining": "separate per-user sequence budget/pace, provider-submitted count once across recipients, lowered SDR budget isolates only that SDR while one-to-one remains. outreach-limits.test.ts covers one-to-one independence; sequence/batch dispatcher still absent."
+  },
+  "OUT-024": {
+    "classification": "HARD",
+    "remaining": "per-Gmail/Microsoft mailbox quotas including lower trial/consumer limits, defer only that mailbox with visible next window, no identity/transport switch. Partial Gmail transport exists; complete mailbox quota scheduler does not."
+  },
+  "OUT-025": {
+    "classification": "HARD",
+    "remaining": "12 mixed-transport users, 40 one-to-ones each within 60s, two 100x4 batches drained/interleaved in business day, 75% sequence share, reserved one-to-one, round robin/enrollment order under all limits. Requires real batch scheduler plus measured capacity."
+  },
+  "OUT-026": {
+    "classification": "HARD",
+    "remaining": "25-user measured submission latency, all four refusal reasons/value/window and mailbox/own/admin usage plus mixed morning. Current one-to-one/shared usage exists; mailbox/sequence capacity architecture prerequisite."
+  },
+  "OUT-019": {
+    "classification": "HARD",
+    "remaining": "editable exact To/CC/BCC including internal/one-off recipients, review/address/permission checks, no unintended contact or consent creation. Draft/message schema remains single recipient; requires approval/dispatch/history migration with OUT-027/028/030/031."
+  },
+  "OUT-027": {
+    "classification": "HARD",
+    "remaining": "provider-thread Reply/Reply all with external/internal recipients, selected-contact authority and exact reviewed recipient changes. Depends new recipient model and both mailbox providers."
+  },
+  "OUT-028": {
+    "classification": "HARD",
+    "remaining": "per-recipient delivery/bounce/uncertainty and truthful BCC disclosure on permitted records. Requires normalized recipient receipts/history and replay semantics."
+  },
+  "OUT-020": {
+    "classification": "HARD",
+    "remaining": "new-vs-upgrade defaults/pre-setting approvals and exact Gmail/sequence relationship opt-out state. outbound-boundaries/prior-opt-out-continuity tests cover upgrade and relay exact bytes; sd f146/f148 overlap. Sequence/Microsoft obligations still unbuilt."
+  },
+  "OUT-029": {
+    "classification": "CHEAP",
+    "remaining": "record-mail capability archive roundtrip and review/settings/confirmation/suppressed/invalid screens at both widths. opt-out-archive.ts proves private capability persistence for existing paths and original links without expiry; do not redo completed deal-bound proof. Check existing capability continuations first."
+  },
+  "OUT-030": {
+    "classification": "HARD",
+    "remaining": "three-recipient message omits one-click, shared page names/stops only submitting recipient with basis/citation; preserves others/schedules; nonrecipient refusal leaks nothing; one-off stop without contact. Depends OUT-019 model."
+  },
+  "OUT-031": {
+    "classification": "HARD",
+    "remaining": "one unattributed stop request pauses all external schedules/enrollments without guessing suppression; notify sender/distinct owners once; named resolution/resume or cannot-determine stop-all with actor/time. Depends multi-recipient/sequence durable coordination."
+  },
+  "OUT-032": {
+    "classification": "HARD",
+    "remaining": "connected mailbox/sequence/batch/workflow retain exact reviewed opt-out across upgrades/transports and refuse unsupported state. Existing established-installation retention and SendGrid/relay proof is credited; inherited recipient/sequence paths remain prerequisites."
+  },
+  "TASK-001": {
+    "classification": "CHEAP",
+    "remaining": "actual process/store restart around recurrence, rendered daily completion and unavailable personal-channel truth. sales-tasks.ts already asserts high due call, assignment/reassignment, concurrent weekly completion, single next occurrence and DST, but its restart merely creates another app against the same db. Do not rebuild recurrence or duplicate sd f85 receiver notice."
+  },
+  "NOTIFY-003": {
+    "classification": "HARD",
+    "remaining": "due/overdue/digest with timezone/hours, missed-run recovery/escalation, personal assignment/form/report email and push/DM deletion. Existing opted-in text-free Slack mention is built; mail system sender/attachments and Apple/Google device delivery are separate prerequisites."
+  },
+  "SEQUENCE-001": {
+    "classification": "HARD",
+    "remaining": "rep-shared versioned multi-step library with email/task/manual actions, exact thread/signature/opt-out snapshots and safe enrollment semantics. sd f164/f171/f172 own immutable authoring foundation absent on main; exclude it. Runtime/enrollment not delivered by authoring."
+  },
+  "SEQUENCE-004": {
+    "classification": "HARD",
+    "remaining": "deal-less enrollment, working-day scheduled steps, manual execution/threading and stop/pause/reassignment/disconnect invariants. Single scheduled mail is not a multi-step enrollment; depends sequence foundation/mailbox."
+  },
+  "SEQUENCE-005": {
+    "classification": "HARD",
+    "remaining": "sequence/enrollment outcomes by step/rep, separate delivery/reply/meeting/deal outcomes and no tracking inference as conversion. Depends durable sequence runtime and report joins."
+  },
+  "SEQUENCE-002": {
+    "classification": "HARD",
+    "remaining": "external CC-colleague exit and full due-step event races with actual persisted process restart. Single scheduled cancellation/reply/booking/stage/replay behavior exists in signals-outreach.test.ts; multi-recipient/enrollment runtime absent; sd f110 owns human single-message stop."
+  },
+  "SEQUENCE-003": {
+    "classification": "HARD",
+    "remaining": "one reviewed 50 eligible plus 3 excluded selection, ten deal-less, five steps/four emails, exact per-item renders/edit/removal and one batch approval. Requires saved-list eligibility, sequence runtime and durable exact-content batch custody."
+  },
+  "SEQUENCE-006": {
+    "classification": "HARD",
+    "remaining": "per-item hash/version-bound scheduled one-effect dispatch, 40/day visible deferral, isolate changed recipient, exits/pace/priority/quiet hours/snapshots/opt-out. Requires batch ledger and fair budget scheduler; cannot be inferred from single-message approval."
+  },
+  "SEQUENCE-007": {
+    "classification": "HARD",
+    "remaining": "workflow contacts grouped by owner/sequence/day into approval queue, no preapproval send, durable approver/hashes/holds history/audit. Depends AUTO and batch enrollment, never automatic approval."
+  },
+  "AUTO-001": {
+    "classification": "HARD",
+    "remaining": "actual sales-admin/team/lead/custom-object/enrichment/call triggers, sequence approval queue, large/pre-journal previews/history pagination and scoped provider qualification. Native versioned internal workflows already exist; sd f4/f9/f10 own foundation/repairs; exclude repeat."
+  },
+  "AUTO-002": {
+    "classification": "HARD",
+    "remaining": "real role/field grants, future object targets and product/quote/forecast writes, owner rules, full per-action previews/atomic-failure/intervening-edit qualification and source in reports/API/migrations. Existing typed set/copy/stamp/clear/arithmetic/stage/create-deal guards/undo remain credited."
+  },
+  "AUTO-003": {
+    "classification": "HARD",
+    "remaining": "complete pre-journal 30-day/per-action previews, old-version stop, workflow/version/trigger/old-new attribution in field history/reports/webhooks and migration action mapping. API/migration sources and history reconstruction are cross-subsystem."
+  },
+  "AUTO-004": {
+    "classification": "HARD",
+    "remaining": "needs-approval editor/counts, protected contactability/consent/delete/merge refusals, quote/forecast actions. Current guarded approval/decline/7-day closure exists. Quote foundation sd f165 excluded; future target wiring still required."
+  },
+  "AUTO-005": {
+    "classification": "HARD",
+    "remaining": "protected field activation/current grant refusal, who/time intervening edits, atomic validation failures with earlier undoable/later stopped actions, full loop-depth/order/rate/restart proof. Existing version authority/CAS/typed guards/rate queue/resume credited."
+  },
+  "AUTO-006": {
+    "classification": "CHEAP",
+    "remaining": "no implementation gap recorded; created-record archival conditional undo/skips, stage reversal, attribution/no task/message deletion/no send need independent gate. workflow-undo-journey.ts and strategy-trial-5 cover it; exclude a builder or status edit."
+  },
+  "CALL-001": {
+    "classification": "HARD",
+    "remaining": "Aircall and actual authorized Twilio call/callback/disposition journey and complete buyer walk. Stale definite-refusal/disposition gaps are already built: calls/routes.ts/repository.ts plus twilio-calls.ts test failed codes 21210-21217 and no-answer/busy/canceled/failed; calling-journey.mjs screens at 1440/390. Live account is field qualification, not justification to rebuild fixtures."
+  },
+  "CALL-002": {
+    "classification": "HARD",
+    "remaining": "consented recording, cited transcript/speaker review/stale proposals/risk evidence, access playback, retention/local derivatives/provider deletion. No recording/transcript store; requires CALL-001, file custody and legal policy."
+  },
+  "CALL-003": {
+    "classification": "HARD",
+    "remaining": "per-participant consent, withdrawal/multistate legal enforcement, recording/transcript derivatives and confirmed provider erasure visible on failure. Requires CALL-002 and provider/legal qualification."
+  },
+  "REPORT-002": {
+    "classification": "HARD",
+    "remaining": "true team filters/scopes/defaults and weekly recipient-specific delivery. Nine tiles, filters, current-access drill/export/versioning and Slack routing already built; TEAM-005 and system email/attachment transport remain prerequisites. sd f162/f178/f181 own saved-source link fixes."
+  },
+  "REPORT-003": {
+    "classification": "HARD",
+    "remaining": "team sharing/default/user overrides and restricted audiences on every tile/export/email copy. Named/workspace sharing and current access already built; depends TEAM-005 and NOTIFY-003."
+  },
+  "REPORT-004": {
+    "classification": "HARD",
+    "remaining": "daily/weekly/monthly recipient-specific attached PDF/CSV email, next-send revocation, visible attempts/retry/uncertainty/no resend. Slack generic-link schedule exists; current relay cannot carry attachments and no system sender exists. Transport capability is a precise dependency, not permission to fake email."
+  },
+  "QUOTE-001": {
+    "classification": "HARD",
+    "remaining": "products/line items/discount/tax/USD versioned exact quote, customer review/accept/signature, stale-version refusal, permission and export/history. Main lacks quotes; sd f165 owns native versioned nonbinding quote foundation only. Complete signing/provider/commitment remains."
+  },
+  "INTEGRATE-001": {
+    "classification": "HARD",
+    "remaining": "native Dial and full Calendly reschedule/cancel/completion shared-identity lifecycle/buyer walk. Signed Calendly ingestion exists; sd f163 owns lifecycle continuation, exclude. Receiving Dial API/authorized account qualification still needed."
+  },
+  "INTEGRATE-002": {
+    "classification": "HARD",
+    "remaining": "zoom/*, zoom-meeting-proof.ts and today-brief.test.ts:294 cover connected meeting plans and browser. Delegated attendee privacy has sd continuation. Complete provider/retention/recording and buyer-walk proof remains; do not recreate Zoom connector."
+  },
+  "INTEGRATE-003": {
+    "classification": "HARD",
+    "remaining": "actual Nectar/Stripe customer billing events with exact USD/counterparty/source, deduplication, access/erase/custody and receiving-state links/buyer walk. Main lacks billing; sd f166/fix1 owns Stripe test-context foundation; Nectar/real account remain."
+  },
+  "INTEGRATE-004": {
+    "classification": "HARD",
+    "remaining": "HappyToHelp/Help Scout/Zendesk exact account/ticket context, current permission/link/event identity/replay/erasure and full buyer walk. sd f170/fix1 owns Zendesk foundation absent on main; other adapters/receivers remain."
+  },
+  "INTEGRATE-009": {
+    "classification": "CHEAP",
+    "remaining": "foreign app/enterprise/user-team, access loss, spent action with changed timestamp, no mail edits/approval/proposed-handoff acceptance, no mapped authority. slack-actions-proof.ts already covers atomic rollback/single-use and sd f31/f64/f69 acknowledgment/rollback; exclude duplicate."
+  },
+  "INTEGRATE-011": {
+    "classification": "CHEAP",
+    "remaining": "restored pending deletion requires fresh confirmation, allowed call/meeting link fields and Settings/status/unresolved screens at 1440/390. slack-archive-proof.ts contains portable redacted history/paused credentials/deletion outcomes; sd f17/f104/f156/f160 overlap; exclude."
+  },
+  "INTEGRATE-006": {
+    "classification": "HARD",
+    "remaining": "authorize QBO/Xero, explicit reviewed won-deal accounting handoff and exact mapping, one accepted provider identity/replay, permission/erase/paused restore and buyer walk. No complete connector; money/accounting schema and provider consent required."
+  },
+  "INTEGRATE-007": {
+    "classification": "HARD",
+    "remaining": "complete hosted authorized Mailchimp receipt/webhook verification, full buyer walk/provider qualification. mailchimp-ledger-proof.ts and launch-suppression.test.ts already assert ledger custody, consent and merge/suppression; stale missing-ledger/merge gaps. Check supported signing/registration and 100-request continuation limits, not fabricated universal success."
+  },
+  "INTEGRATE-008": {
+    "classification": "HARD",
+    "remaining": "exact reviewed won USD deal/customer/commitments handoff to Buoy once, follow accepted receiving identity, auth/role/erasure/restore and buyer walk. No Buoy adapter/receiving API proof; needs cross-seed contract, not Slack substitute."
+  },
+  "ENRICH-001": {
+    "classification": "HARD",
+    "remaining": "licensed provider waterfall, preview/price/USD cap, exact identity/cited proposed changes and scheduled news/job signals with retention/erase. Capture proposals alone do not enrich. Adapter/budget/custody buildable with fixtures; real entitlement required separately."
+  },
+  "API-001": {
+    "classification": "HARD",
+    "remaining": "full versioned contact/company/deal/activity/task/file resources, field-aware scopes, CRUD/errors/pagination/revision behavior and complete API journey. API-004 scoped live deal reads already DONE; integrations API/delegation must not be broadened incidentally."
+  },
+  "API-002": {
+    "classification": "CHEAP",
+    "remaining": "named scoped credential create/rotate/revoke/expiry/audit/custody qualification. api-credentials-proof.ts, onboarding-archive and archive-transfer tests already cover local-only authority and restore/erase fences; strategy-trial-14 overlaps. Preserve scopes; do not rebuild token storage."
+  },
+  "API-003": {
+    "classification": "HARD",
+    "remaining": "outbound subscriptions validate safe destinations/secrets/scopes, signed identity/order/retry/deadletter/manual replay, revocation/erase/restore. Requires durable delivery queue and API event sourcing; inbound signed source is not an outgoing webhook."
+  },
+  "MOBILE-001": {
+    "classification": "HARD",
+    "remaining": "native iOS/Android, real offline conflict reconciliation/push and phone multi-recipient compose; responsive web already exists. Offline/storage/native auth/queue architecture plus store/device qualification; no responsive-only completion."
+  },
+  "OPS-001": {
+    "classification": "HARD",
+    "remaining": "owned fresh install/deploy/update/restore/removal, explicit connector failures and actual Workspace/Entra policy journey. OIDC required-domain policy/refusals already in sign-in-domains/provider-redirects tests; native installed tests are not real tenant/release proof."
+  },
+  "BOUNDARY-001": {
+    "classification": "HARD",
+    "remaining": "complete named-product USD buyer walk with product-state/owned-job truth and 1440/390 proof, no scope loss or substitute connector. source-onboarding and Integrations state proof exists; completion belongs to last-shipping receiver, not this planner."
+  },
+  "AGENT-001": {
+    "classification": "HARD",
+    "remaining": "call/enrichment/stakeholder graph maintenance with evidence, current access, review and hostile-content safeguards. agent-door-graph-proof.ts already verifies captured graph proposals under both policies; sd f161 owns expanded correction/erasure proof; exclude."
+  },
+  "AGENT-003": {
+    "classification": "HARD",
+    "remaining": "durable quote-to-close cross-step outcome supervision. obligations, agent-follow-up-proof.ts and today-journey already cover meeting follow-up lifecycle; sd f177 owns continuation. Do not repeat meeting obligation foundation."
+  },
+  "AGENT-004": {
+    "classification": "HARD",
+    "remaining": "configurable selected-account research with exact egress/MCP allowlist, cited schema-valid proposals, hostile evidence/revocation/custody and provider retention/legal policy. Requires adapter capability, policy and budget orchestration; not arbitrary tool execution."
+  },
+  "AGENT-005": {
+    "classification": "HARD",
+    "remaining": "authenticated licensed Clay/Brave/enrichment adapters, entitlement, exact data preview, enforceable USD reservation/actual caps and truthful failure/retention. Requires AGENT-004/ENRICH-001 and licensed account qualification."
+  },
+  "SURFACE-001": {
+    "classification": "HARD",
+    "remaining": "complete jobs/Core split IDs/non-tool reasons and full own-fixture conformance. Current agent-surface registry has more than stale 23-tool inventory; discovery/non-tool parity in agent-discovery-proof.ts. sd f149/f152 own guide parity; missing sequence/quote/file/provider jobs remain."
+  },
+  "SURFACE-002": {
+    "classification": "HARD",
+    "remaining": "standard deal move/task/draft/owner-neutral/Undo with returned item counts, forged class ignored. Existing record/draft/handoff/forecast/report tools and native parity are credited; sd f127/f130 count reads, f140 internal-task audit. Remaining true jobs not declared by all their owners."
+  },
+  "SURFACE-003": {
+    "classification": "HARD",
+    "remaining": "external internal/known/new/public counterparties and exact recipients across mail/forms/export/AI/deletion. agent-door-ai-input-proof.ts already covers AI egress; sd f158 owns customer mail; forms/files/provider-deletion full surface remains."
+  },
+  "SURFACE-004": {
+    "classification": "HARD",
+    "remaining": "money amount/currency/counterparty for paid enrichment/finance and commitment version/value/counterparty for binding quote/signature. agent-door-forecast-proof.ts already proves nonbinding estimate standard; paid/binding owning jobs absent."
+  },
+  "SURFACE-005": {
+    "classification": "HARD",
+    "remaining": "provider-person send/accounting consent and newly required person steps, supported company API route under real classes/policy. Capture source handoff sd f157 covers one slice; mailbox/accounting jobs incomplete."
+  },
+  "SURFACE-006": {
+    "classification": "HARD",
+    "remaining": "access widening/people and security setting/provider for full grants/secrets/adapter enablement, no self escalation. Private-address rotation in agent-door-capture-security-proof.ts is built; native team/research/provider lifecycle registry remains."
+  },
+  "SURFACE-007": {
+    "classification": "HARD",
+    "remaining": "destructive exact counts for every irreversible deletion/provider copy; actual regulated-kind/count sensitive vs ordinary contact data, reversible Undo standard. agent-report-deletion-proof.ts already covers saved-report deletion; files/recordings/other owning jobs absent."
+  },
+  "SURFACE-008": {
+    "classification": "HARD",
+    "remaining": "live installation/workflow/Slack route facts; draft-only changes standard. agent-workflow-proof.ts already qualifies workflow draft distinction; full activated/provider-route class surface remains."
+  },
+  "SURFACE-009": {
+    "classification": "HARD",
+    "remaining": "held policy exact saved content/recipients/attachments/tracking/opt-out/commercial version, changed merge requires revision, autonomous same permitted jobs without wait and truthful actor. sd f158 owns saved single-message tool; recipient/files/quote jobs remain."
+  },
+  "SURFACE-010": {
+    "classification": "HARD",
+    "remaining": "every declared customer/deal/message/sequence/workflow/quote/file resource and event links, booking/reply/stage/quote/Buoy identity across supported channels. Current resources/events exist, but absent owning features prevent complete surface."
+  },
+  "SURFACE-011": {
+    "classification": "HARD",
+    "remaining": "seeded week reconcile messages/quotes/finance/internal calls by class+decision and reserved/actual provider cost, explicit caps/no-cap and real handoffs. Current /agents seller-day audit and internal-task reconciliation exist; paid/commitment surface missing."
+  },
+  "SURFACE-012": {
+    "classification": "HARD",
+    "remaining": "embedded/outside AGENT-001..005 equal state/outcomes/policy under both policies, hostile transcript/mail/tools change no facts/scope/policy. embedded-risk-agent-proof.ts already proves deal-risk parity; full graph/follow-up/research jobs remain."
+  },
+  "SURFACE-013": {
+    "classification": "HARD",
+    "remaining": "full autonomous/held seeded week including arrivals/graph/stalled promise/permitted send/won Buoy, exact attribution/events/spend/overview cross-run. Stalled-deal and meeting-follow-up helpers already exist; sd f158/f161/f177 cover slices. Buoy/complete jobs and published-client receipts remain."
+  },
+  "BASE-AGENT-001": {
+    "classification": "CHEAP",
+    "remaining": "remaining discover/version/order/cache/Origin/HeaderMismatch/413 protocol matrix through Base conformance. agent-door-body-limit.ts already has raw oversize no-effect proof; sd f113/f117 own it. Run pinned Base gate rather than duplicate Base runtime."
+  },
+  "BASE-AGENT-002": {
+    "classification": "HARD",
+    "remaining": "complete Core jobs/non-tool reasons, all outputSchema fixtures and embedded same-tool effects. agent-door-draft-parity-proof.ts already qualifies manual draft UI/MCP; sd f153/f154 own normalization; absent owning jobs remain."
+  },
+  "BASE-AGENT-003": {
+    "classification": "HARD",
+    "remaining": "all primary resource templates, full two-role UI parity, every write link and out-of-scope/missing parity, file budget and untrusted customer text. Current selected-company slice and report links are credited; sd f103/f132/f135 overlap; files/roles remain."
+  },
+  "BASE-AGENT-004": {
+    "classification": "CHEAP",
+    "remaining": "token lifetime and consent-revocation deadline qualification after audience/unmapped/sponsor-change refusals. Business-bound implementation exists; use pinned Base conformance and seed native tokens, no invented second auth layer."
+  },
+  "BASE-AGENT-005": {
+    "classification": "HARD",
+    "remaining": "current record-role narrowing and grant self-escalation refusal across seed jobs. agent-door-collaborator-proof.ts covers selected collaborator slice; sd f139/f143 overlap. Actual restricted roles remain TEAM-005."
+  },
+  "BASE-AGENT-006": {
+    "classification": "HARD",
+    "remaining": "remaining classes external/money/commitment/destructive/access/security/live/gated with actual seed facts, forged arguments/text ignored. Stored-company hostile-text test exists; sd f136/f144 overlap. Complete SURFACE owning jobs still needed."
+  },
+  "BASE-AGENT-007": {
+    "classification": "HARD",
+    "remaining": "policy-held sales action approval/execution through single chokepoint with no early effect; both all-autonomous and held/single-class policies. managed-owner.test.ts preserves rejected-write witnesses; saved-message sd f158 overlaps."
+  },
+  "BASE-AGENT-008": {
+    "classification": "HARD",
+    "remaining": "provider person-step and approver attribution, never agent impersonating person. Existing native agent timeline attribution is credited; sd f128/f131 and f157 own person-step slices; exclude duplicates."
+  },
+  "BASE-AGENT-009": {
+    "classification": "HARD",
+    "remaining": "audit exact resource/outcome/idempotency plus every class/decision and overview reconciliation. Core audit exists and relay pulls have proof; sd f120/f125/f140 overlap. Absent classes depend their owning jobs."
+  },
+  "BASE-AGENT-010": {
+    "classification": "HARD",
+    "remaining": "follow changes through required subscriptions and signed outbound deliveries with same identity/current access. orbit.events.list alone is insufficient; depends Base transport and API-003 durable event delivery."
+  },
+  "BASE-AGENT-011": {
+    "classification": "HARD",
+    "remaining": "capacity and spend-cap refusal/no-effect plus Pause, explicit limits. agent-door-capacity-proof.ts already probes raw discovered capacity under both policies; real paid-provider spend paths depend missing owning jobs. Do not duplicate capacity fixture rounds."
+  },
+  "BASE-AGENT-012": {
+    "classification": "CHEAP",
+    "remaining": "dropped-stream same-key replay, 24-hour retention, changed-argument conflict, stale current-revision detail and cross-person job isolation/concurrency. Existing replay/revision/Pause fences credited; retained-contract qualification needed, no new native authorizer."
+  },
+  "BASE-AGENT-013": {
+    "classification": "HARD",
+    "remaining": "docs exactly live names/classes/tests/scopes/resources, full harness failure matrix under both policies and stranger complete journey. agent-discovery-proof.ts and native journey exist; sd f149/f152 owns guide parity. Full owning job coverage/held week remains."
+  }
+}

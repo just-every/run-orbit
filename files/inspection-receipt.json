@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "tag": "ct-open-points-plan-orbit-1",
+  "repository": "just-every/run-orbit",
+  "inspected_at": "2026-11-17T11:07:41.170588+00:00",
+  "product_head": "14a3aae44a2e327978f7ce92f099448190362d3d",
+  "product_branch": "main",
+  "product_worktree_status": "",
+  "product_diff": "",
+  "index_diff": "",
+  "published_product_commits": 0,
+  "product_mutations": false,
+  "runtime_tests": "NOT RUN; dependencies absent; no Orbit setup or keys used",
+  "screenshots": "NOT CAPTURED; requested as future builder proof",
+  "check": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "stdout": "Contract documents are current.\n"
+  },
+  "cloud_refs_enumerated": 696,
+  "nonancestor_cloud_tips": 374,
+  "class_counts": {
+    "HELD-EXTERNAL": 2,
+    "CHEAP": 54,
+    "HARD": 106
+  },
+  "counts": {
+    "partial": 130,
+    "done": 42,
+    "missing": 32
+  },
+  "source_documents": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6149,
+      "sha256": "6fdc131f06aa5b33bf78f0888474dfdeb77ba6d2369556ff71db452694bafcd9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 17225,
+      "sha256": "20ef6d3a4cdc967de48720ecb9b20e7801981fde88dc92b5129b3e38ca763f99"
+    },
+    {
+      "path": "HANDOVER.md",
+      "bytes": 31465,
+      "sha256": "63a2671adf6551834f7d68e5a17e537d033303a6a01d34a9b3bcd4b88d416e41"
+    },
+    {
+      "path": "BASELINE.md",
+      "bytes": 40271,
+      "sha256": "7edf11ce7f54181e40afcf424209b9527bd1e0f7cf6fee7bf84d7811f082042f"
+    },
+    {
+      "path": "DIVERGENCE.md",
+      "bytes": 8112,
+      "sha256": "a28fe793bc2d4aebc95a81493df41aaca5f026aae55a17976004107d2ec6e3e1"
+    },
+    {
+      "path": "seed.json",
+      "bytes": 19649,
+      "sha256": "d0ec85580f2b4ddf3b0d9b42286050e85485de8d6db78d7f30292845a99464dd"
+    },
+    {
+      "path": "CONTRACT.md",
+      "bytes": 502392,
+      "sha256": "2c7cce58a1437e4b0104046706ee4c79ad96965c233d8a36149a3573f1fe2872"
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "bytes": 452278,
+      "sha256": "78eaad7d00b7ca39f9da68dfa9967182b3430ac36d666b4725b833d7f584dfff"
+    },
+    {
+      "path": "docs/CLAIMS.md",
+      "bytes": 1706,
+      "sha256": "e6b7ffb846f90f0d2b87781b3663f1a3f37b600a496ca28003390257b866f90d"
+    },
+    {
+      "path": "agent-surface.json",
+      "bytes": 44951,
+      "sha256": "152858d46a837c72eb1d0d1976d2906516184f78a1ae19464f3bab8d0c320635"
+    }
+  ],
+  "recent_main": [
+    "14a3aae44a2e327978f7ce92f099448190362d3d 2026-11-17T17:50:12+10:00 Preserve explicit invitation acceptance during local sign-in",
+    "7394333887480a6856a61bef6e2232afd81fa6f9 2026-11-17T16:47:09+10:00 Resolve the 2026-11-07 stranger journey trips still present on main",
+    "a4fcbfcd72fa4253826f43d0b0de02275094f86d 2026-11-16T12:16:16Z Prepare Orbit 0.4.11 release metadata",
+    "ca63c4ad3230d54e03535767a7bdfb564dfa5e4f 2026-11-16T05:42:45Z Retain customer import fields without exposing operator metadata",
+    "1833f212cd6a7b89e4011a5953da28edd3103983 2026-11-16T04:19:50Z Resolve imported owner labels from current operator identity",
+    "f54f67122741605e3c8d48c48f6c2863e14c8234 2026-11-16T03:57:49Z Preserve original form workflow history assertions",
+    "17b7e784c664fb773a5b41f98fba9ae5b3bc2d1d 2026-11-16T03:50:32Z Fix fresh-install import, setup and sales workflow trips",
+    "bca89d44de7c8357544fc54375a030f9d1d4611f 2026-11-15T20:52:03+10:00 Fix six Orbit settings and evidence display trips",
+    "22ca38c0e0bb5784440df021e8a5eb5b41a81de8 2026-11-15T09:49:48Z docs: keep local run guidance valid in rendered operations",
+    "05488c682f04f419f3be4910b805e6c7f45f91de 2026-11-15T09:43:30Z release: prepare Orbit 0.4.10 metadata",
+    "3b6296cbd5e6b0c10f93a9c84277c9b88373e906 2026-11-14T20:44:57Z Name contacts in restore preview and attribute retained email stops",
+    "9940c015edce444ed02c8f23fee20aac6a947761 2026-11-14T17:28:14Z Preserve one form enquiry notice for each intended recipient",
+    "f81354dbd80552d9841f7e48fdb8f7a6541b8ade 2026-11-14T16:05:36Z Preserve reviewed contact permission across meeting capture and restore",
+    "de7eb11ff23eb8db6529f6424639a094fc66460c 2026-11-14T14:19:36Z Keep workflow Undo proof on its retained outcome",
+    "7ad63db63c46c6a2a59157a5c128bd35f6c20173 2026-11-14T12:04:15Z Upgrade Zod to 4.6.6",
+    "bfc52fadd56ae3fa38cb48de9484de61810e7cbd 2026-11-14T10:00:02Z Upgrade Miniflare transitive Undici to 7.30.1",
+    "7e577833179cbd0fb8db8500b61a8bd0a1d2e56b 2026-11-14T06:41:05Z Scope workflow Undo proof to its visible outcome",
+    "97bec7a7809848abf1aafe4fe5e4423e99b13922 2026-11-14T05:01:58Z Make workflow run outcomes readable and guide Zoom setup",
+    "a35d331920a4bace2548bbd0efaf9344ffcd32a6 2026-11-13T23:15:56Z Upgrade Vite to 8.2.4 for launch-editor security fixes",
+    "31ee78c0d348ba5c0d9e5ad530d8d23dbde5f47d 2026-11-13T19:01:44Z Adopt rer 0.2.113 and refresh recorded Base source",
+    "dc6b9d24887cb26799a01d3f324aff79f5fbdf4e 2026-11-13T17:45:27Z Restrict delegated Zoom plans to selected contacts and deals",
+    "1318a110883962527d82acde88bc0e7daf42763f 2026-11-14T01:52:10+10:00 Merge current main into Zoom integration candidate",
+    "a5f471626aea1bfcb2c79f5dbee2250fdb38fd49 2026-11-14T00:49:00+10:00 Prepare Orbit 0.4.9 release metadata",
+    "13e5e6211c9ec5080f5e9943b3ef376e512da1d6 2026-11-13T23:48:04+10:00 Merge current main into Zoom integration candidate",
+    "43128431dc0a04ce63e03bc45b2f11c0fdd105a3 2026-11-13T23:38:26+10:00 Link agent policy prerequisites and capture counts to next steps",
+    "f04ffb3c5d01eef2c8163abe98b4c32d9f1e6ae7 2026-11-13T22:14:32+10:00 Merge current main into Pipedrive import candidate",
+    "088a5263487a37ae465e7e42d1bb1b64167686b0 2026-11-13T10:55:54Z Fix mailbox send proof response body reuse",
+    "8f4e14a5ef9fd82fcc91e40e540aa2ac22e17a74 2026-11-13T19:30:29+10:00 Make record not-found recovery independent of read order",
+    "eea4bb3e9d7e56c2037bdbd2153d029d28970ac5 2026-11-13T17:41:51+10:00 Merge remote-tracking branch 'origin/main' into cloud/sd-orbit-c-f175-fix2-land-r5",
+    "b1038458504f4ddfa104fdc2cd62de466656f9e7 2026-11-13T17:38:59+10:00 Explain stale drafts without inventing a cancelled follow-up"
+  ]
+}
