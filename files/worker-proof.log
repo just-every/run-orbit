@@ -1,0 +1,7 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+Emitted Worker SSR, session transports, browser navigation, assets, host and client-boundary proof passed.
+WORKER_PROOF_IMPORT_COMPLETE 0
+WORKER_PROOF_BEFORE_EXIT 0
+WORKER_PROOF_EXIT 0

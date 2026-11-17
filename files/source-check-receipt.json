@@ -1,0 +1,11 @@
+{
+  "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+  "exit_code": 0,
+  "ok": true,
+  "edition": "just-every/orbit",
+  "source_lock_sha256": "64892e3d44954cfa4f7f08d6afd68694a83933c1567e324e1b533af1977c6d89",
+  "changed_hash_records": [
+    "package.json",
+    "pnpm-lock.yaml"
+  ]
+}

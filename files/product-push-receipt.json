@@ -1,0 +1,20 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-5",
+  "head": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "guard_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/gr-mt-orbit-dep-5",
+  "attempts": 1,
+  "exit_code": 0,
+  "product_pushed": true,
+  "publication_scan": "COMPLETE/PASS, zero findings",
+  "candidate_messages_and_identity_checked": true,
+  "pr_created": false,
+  "ci_run_id": 44108560566,
+  "ci_status": "in_progress",
+  "ci_head_sha": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "ci_url": "https://github.com/just-every/run-orbit/actions/runs/44108560566",
+  "ci_conclusion": null,
+  "ci_last_observed": "2026-11-17T15:06:25.972534+00:00",
+  "terminal_custody": "PUSHED",
+  "blockers": []
+}

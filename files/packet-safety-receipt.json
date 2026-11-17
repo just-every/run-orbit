@@ -1,0 +1,115 @@
+{
+  "selected_files": [
+    {
+      "path": "PLAN.md",
+      "bytes": 1764
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 7432
+    },
+    {
+      "path": "base-scanner-discovery.json",
+      "bytes": 7182
+    },
+    {
+      "path": "build.log",
+      "bytes": 3243
+    },
+    {
+      "path": "bundle-receipt.json",
+      "bytes": 440
+    },
+    {
+      "path": "candidate-identity.txt",
+      "bytes": 85
+    },
+    {
+      "path": "ci-discovery.json",
+      "bytes": 411
+    },
+    {
+      "path": "dependency-receipt.json",
+      "bytes": 1330
+    },
+    {
+      "path": "focused-tests-first.log",
+      "bytes": 3057
+    },
+    {
+      "path": "install.log",
+      "bytes": 104
+    },
+    {
+      "path": "platform-tests.log",
+      "bytes": 1607
+    },
+    {
+      "path": "pr-11.json",
+      "bytes": 1309
+    },
+    {
+      "path": "product-push.log",
+      "bytes": 908
+    },
+    {
+      "path": "product-push-receipt.json",
+      "bytes": 630
+    },
+    {
+      "path": "publication-receipt.json",
+      "bytes": 681
+    },
+    {
+      "path": "publication-scan-first.json",
+      "bytes": 1487
+    },
+    {
+      "path": "publication-scan-destination-args.json",
+      "bytes": 853559
+    },
+    {
+      "path": "publication-scan.json",
+      "bytes": 853255
+    },
+    {
+      "path": "scanner-toolchain-receipt.json",
+      "bytes": 555
+    },
+    {
+      "path": "setup.log",
+      "bytes": 2128
+    },
+    {
+      "path": "source-check-receipt.json",
+      "bytes": 316
+    },
+    {
+      "path": "test-inventory.json",
+      "bytes": 8524
+    },
+    {
+      "path": "typecheck.log",
+      "bytes": 106
+    },
+    {
+      "path": "validation-receipt.json",
+      "bytes": 2962
+    },
+    {
+      "path": "worker-proof-first.log",
+      "bytes": 202
+    },
+    {
+      "path": "worker-proof.json",
+      "bytes": 4542
+    },
+    {
+      "path": "worker-proof.log",
+      "bytes": 280
+    }
+  ],
+  "regular_files_only": true,
+  "credential_match_count": 0,
+  "scope": "Known injected credential values and credential/private-key formats; no environment dump or secret material selected."
+}

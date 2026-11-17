@@ -1,0 +1,84 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-5",
+  "head": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "commands": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit_code": 0,
+      "result": "Pinned patched dependency graph installed."
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit_code": 0,
+      "result": "84 migrations applied; owner claimed; temporary setup server exited."
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit_code": 0,
+      "result": "App and site build passed; existing future native-config extension warnings."
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit_code": 0
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/identity.test.ts tests/core/local-owner.test.ts tests/core/platform-boundaries.test.ts",
+      "exit_code": 1,
+      "result": "Five cases passed; platform file refused launch because ORBIT_TEST_STATE was missing. Corrected below."
+    },
+    {
+      "command": "ORBIT_TEST_STATE=<isolated temp> pnpm exec tsx tests/support/prepare-state.ts",
+      "exit_code": 0
+    },
+    {
+      "command": "ORBIT_TEST_STATE=<isolated temp> pnpm exec tsx --test --test-concurrency=1 tests/core/platform-boundaries.test.ts",
+      "exit_code": 0,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "ORBIT_TEST_STATE=<isolated temp> node --import tsx /tmp/orbit-worker-proof.mjs",
+      "exit_code": 1,
+      "result": "All emitted-Worker assertions reached the success message; initial loader invocation exited 1. Retried with the repository tsx CLI below."
+    },
+    {
+      "command": "ORBIT_TEST_STATE=<isolated temp> pnpm exec tsx /tmp/orbit-worker-proof.mjs",
+      "exit_code": 0,
+      "result": "Existing scripts/verify-worker.ts assertions passed with Chromium /usr/bin/chromium and --no-sandbox, using only an external browser-launch adapter."
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit_code": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit_code": 0,
+      "result": "Passed before and after commit."
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit_code": 0,
+      "registered_cases": 198,
+      "qualification_flows": 2,
+      "total": 200
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit_code": 0
+    }
+  ],
+  "final_focused_result": {
+    "registered_cases_passed": 10,
+    "qualification_flows_passed": 1,
+    "failures_remaining": 0
+  },
+  "notes": [
+    "No product/test assertions modified, weakened, skipped or added.",
+    "Full Verify is reserved for branch CI.",
+    "No UI changes; no new UI screenshot requirement."
+  ]
+}

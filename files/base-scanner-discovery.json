@@ -1,0 +1,182 @@
+{
+  "base_sha": "513669ac81ac15506740ca9d2089a1c753e03455",
+  "truncated": false,
+  "paths": [
+    {
+      "path": "authoring/publication.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d17ee2b8473b2e81e6844f30f8a154ec0b80f49",
+      "size": 1501,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/9d17ee2b8473b2e81e6844f30f8a154ec0b80f49"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/modules/import-kit/src/d1/native-staging-publication.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6087d96b210ae7017d76478faec8867830bc62e",
+      "size": 2516,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/a6087d96b210ae7017d76478faec8867830bc62e"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/modules/import-kit/src/d1/publication-fence.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9433a053fc46c73127736a8c323be5f6fc62bd37",
+      "size": 2271,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/9433a053fc46c73127736a8c323be5f6fc62bd37"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/modules/import-kit/src/d1/publication-receipt-schema.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d3b0d85056ef68d6822191b192a41684d6c8d87",
+      "size": 2122,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/8d3b0d85056ef68d6822191b192a41684d6c8d87"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/modules/import-kit/src/d1/staging-publication.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9087ed0458e29bf4efbb1bfec623f6a767ef4956",
+      "size": 12690,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/9087ed0458e29bf4efbb1bfec623f6a767ef4956"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/modules/release/publication-scan.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0e9fb80356e8af8f2c8e2d8a43375ccc303d851",
+      "size": 4018,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/c0e9fb80356e8af8f2c8e2d8a43375ccc303d851"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/scripts/publish-check/hygiene_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24a61c3ace2bce87b755ca85e1d975c258299f47",
+      "size": 3064,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/24a61c3ace2bce87b755ca85e1d975c258299f47"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/scripts/publish-check/hygiene_text.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77752de7f62e2ad366fdb3903abe83bfe94492c7",
+      "size": 424,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/77752de7f62e2ad366fdb3903abe83bfe94492c7"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/scripts/publish-check/public_hygiene.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b947018e4f2c942214f5c87685a018062afedcc",
+      "size": 11199,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/4b947018e4f2c942214f5c87685a018062afedcc"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/scripts/publish-check/publication-config.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db162ba6547348c688a4e42f4f991ff1efbdb484",
+      "size": 6880,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/db162ba6547348c688a4e42f4f991ff1efbdb484"
+    },
+    {
+      "path": "default-seed/scripts/base-cli/scripts/publish-check/publication_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d7f32d2eb975ec6a06a671809c1e8567e2b69ad",
+      "size": 1517,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/8d7f32d2eb975ec6a06a671809c1e8567e2b69ad"
+    },
+    {
+      "path": "modules/import-kit/src/d1/native-staging-publication.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6087d96b210ae7017d76478faec8867830bc62e",
+      "size": 2516,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/a6087d96b210ae7017d76478faec8867830bc62e"
+    },
+    {
+      "path": "modules/import-kit/src/d1/publication-fence.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9433a053fc46c73127736a8c323be5f6fc62bd37",
+      "size": 2271,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/9433a053fc46c73127736a8c323be5f6fc62bd37"
+    },
+    {
+      "path": "modules/import-kit/src/d1/publication-receipt-schema.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d3b0d85056ef68d6822191b192a41684d6c8d87",
+      "size": 2122,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/8d3b0d85056ef68d6822191b192a41684d6c8d87"
+    },
+    {
+      "path": "modules/import-kit/src/d1/staging-publication.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9087ed0458e29bf4efbb1bfec623f6a767ef4956",
+      "size": 12690,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/9087ed0458e29bf4efbb1bfec623f6a767ef4956"
+    },
+    {
+      "path": "modules/release/public-hygiene.test.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9450f25e796be4e664aab8fd55853613c302b93",
+      "size": 3525,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/b9450f25e796be4e664aab8fd55853613c302b93"
+    },
+    {
+      "path": "modules/release/publication-scan.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0e9fb80356e8af8f2c8e2d8a43375ccc303d851",
+      "size": 4018,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/c0e9fb80356e8af8f2c8e2d8a43375ccc303d851"
+    },
+    {
+      "path": "scripts/publish-check/hygiene_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24a61c3ace2bce87b755ca85e1d975c258299f47",
+      "size": 3064,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/24a61c3ace2bce87b755ca85e1d975c258299f47"
+    },
+    {
+      "path": "scripts/publish-check/hygiene_text.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "77752de7f62e2ad366fdb3903abe83bfe94492c7",
+      "size": 424,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/77752de7f62e2ad366fdb3903abe83bfe94492c7"
+    },
+    {
+      "path": "scripts/publish-check/public_hygiene.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b947018e4f2c942214f5c87685a018062afedcc",
+      "size": 11199,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/4b947018e4f2c942214f5c87685a018062afedcc"
+    },
+    {
+      "path": "scripts/publish-check/publication-config.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db162ba6547348c688a4e42f4f991ff1efbdb484",
+      "size": 6880,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/db162ba6547348c688a4e42f4f991ff1efbdb484"
+    },
+    {
+      "path": "scripts/publish-check/publication_config.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8d7f32d2eb975ec6a06a671809c1e8567e2b69ad",
+      "size": 1517,
+      "url": "https://api.github.com/repos/runeditrun/base/git/blobs/8d7f32d2eb975ec6a06a671809c1e8567e2b69ad"
+    }
+  ]
+}

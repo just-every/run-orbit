@@ -1,0 +1,41 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: BASE-ACCESS-003 public limits share durable counters and expire without retaining clear visitor IPs
+ok 1 - BASE-ACCESS-003 public limits share durable counters and expire without retaining clear visitor IPs
+  ---
+  duration_ms: 3641.736611
+  type: 'test'
+  ...
+# Subtest: BASE-SECRET-002 explicit provider configuration rejects partial inputs by variable name
+ok 2 - BASE-SECRET-002 explicit provider configuration rejects partial inputs by variable name
+  ---
+  duration_ms: 0.74208
+  type: 'test'
+  ...
+# Subtest: BASE-ACCESS-004 BASE-INPUT-001 malformed authenticated JSON and cross-origin mutations fail before writing
+ok 3 - BASE-ACCESS-004 BASE-INPUT-001 malformed authenticated JSON and cross-origin mutations fail before writing
+  ---
+  duration_ms: 127.279431
+  type: 'test'
+  ...
+# Subtest: PUBLIC-003 BASE-SECRET-002 an installed origin reports unconfigured sign-in while partial mail credentials fail by name
+ok 4 - PUBLIC-003 BASE-SECRET-002 an installed origin reports unconfigured sign-in while partial mail credentials fail by name
+  ---
+  duration_ms: 28.483879
+  type: 'test'
+  ...
+# Subtest: BASE-INPUT-001 SIGNAL-004 malformed held-reply and signal review identities return400 before persistence
+ok 5 - BASE-INPUT-001 SIGNAL-004 malformed held-reply and signal review identities return400 before persistence
+  ---
+  duration_ms: 128.851981
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7124.555815

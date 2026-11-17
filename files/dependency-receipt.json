@@ -1,0 +1,64 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-5",
+  "head": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "base": "163bd9267dad8c5f74c0758632491c81f1c69011",
+  "dependencies": {
+    "vite": {
+      "direct_before": "8.2.4",
+      "direct_after": "8.2.4",
+      "locked_before": [
+        "8.2.4"
+      ],
+      "locked_after": [
+        "8.2.4"
+      ]
+    },
+    "hono": {
+      "direct_before": "4.13.5",
+      "direct_after": "4.13.11",
+      "locked_before": [
+        "4.13.5"
+      ],
+      "locked_after": [
+        "4.13.11"
+      ]
+    }
+  },
+  "listed_vulnerable_package_versions_before": 1,
+  "listed_vulnerable_package_versions_after": 0,
+  "tanstack": {
+    "start_before": "1.168.60",
+    "start_after": "1.168.60",
+    "router_before": "1.170.41",
+    "router_after": "1.170.41"
+  },
+  "files_changed": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "sources.lock.json"
+  ],
+  "clause_status_changes": [],
+  "clauses_before": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "clauses_after": {
+    "done": 42,
+    "partial": 130,
+    "missing": 32,
+    "total": 204
+  },
+  "tests_before": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  },
+  "tests_after": {
+    "registered": 198,
+    "qualifications": 2,
+    "total": 200
+  }
+}

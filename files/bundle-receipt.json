@@ -1,0 +1,9 @@
+{
+  "branch": "cloud/gr-mt-orbit-dep-5",
+  "head": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "bundle": "/home/agent/rer-consolidation/work/push-rescue/cloud_gr-mt-orbit-dep-5-20261117T144745Z-f64dfdc13868.bundle",
+  "bytes": 334045975,
+  "sha256": "a29e774abf815a1d75d873be370dcd7768dd5a040886705605f396082d9f8c1e",
+  "verified": true,
+  "purpose": "Recovery backup only; this is not proof of product publication, Verify or landing."
+}

@@ -1,0 +1,7 @@
+{
+  "status": "done",
+  "sha": "f64dfdc13868f7f15530a513246b199e13a68324",
+  "summary": "Upgraded Hono 4.13.5 to patched 4.13.11; Vite already resolves to patched 8.2.4 and TanStack pins are preserved. Product branch published; exact-SHA Verify remains in progress at the API-budget handoff.",
+  "tests": "Node 22.20.0 / pnpm 10.12.4: frozen install, non-interactive rer setup (84 migrations), rer build, typecheck, 10 focused identity/HTTP cases, emitted Worker SSR/session/browser/assets proof, source lock generation/check and diff check passed. Base publication scan COMPLETE/PASS with zero findings. Verify 44108560566 still in_progress on this SHA at 2026-11-17T15:06:25.972534+00:00.",
+  "security": true
+}
