@@ -93,8 +93,18 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   await visitor.getByLabel('Local access link').fill(openLink(ready));await visitor.getByRole('button',{name:'Choose a persona',exact:true}).click();
   await visitor.getByRole('link',{name:'Sign in as invited@persona.example',exact:true}).click();
   await visitor.getByRole('status').filter({hasText:'Invitation accepted'}).waitFor();
+  await shot(visitor, 'invitation-accepted');
   await visitor.goto(origin+'/app/shared-records');await visitor.getByText('No records match your current access.').waitFor();
   assert.equal((await visitor.context().request.get(origin+'/api/v1/opportunities/now')).status(),403,'a Guest gains no workspace read access');
+
+  // The generic chooser still admits a pending Guest without an invitation link.
+  await browserAPI(page,'/api/v2/access/workspaces/workspace/invitations','POST',{email:'pending@persona.example',role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
+  await visitor.goto(`${origin}/signin?returnTo=${encodeURIComponent('/app/shared-records')}`);
+  await visitor.getByRole('link',{name:'Sign in as pending@persona.example',exact:true}).click();
+  await visitor.getByText('No records match your current access.').waitFor();
+  assert.equal((await browserAPI(visitor,'/api/v2/access/workspaces')).length,1,'the pending Guest has accepted workspace membership');
+  assert.equal((await visitor.context().request.get(origin+'/api/v1/opportunities/now')).status(),403,'generic local admission preserves Guest restrictions');
+  await shot(visitor, 'pending-guest-shared');
   await visitor.context().close();
   // The Analyst's people are the owners of the deals it reads: never the accepted Guest's email, the dev seller or itself.
   await enter(page,origin,'collaborator');

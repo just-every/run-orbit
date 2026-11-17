@@ -82,14 +82,17 @@ async function enter(request: Request, env: PlatformBindings, gate: NonNullable<
   const person = await store.person('lower(o.email)=?', chosen.email);
   if (!person) return text(409, 'The owner that rer setup claimed is not in this database. Run rer setup.');
   if (person.status !== 'active') return text(403, `${as} is not an active operator in this workspace.`);
-  if (!declared && as !== 'owner') await acceptPendingInvitations(env.DB, person.id);
+  const returnTo = safeReturnTo(url.searchParams.get('returnTo')), destination = new URL(returnTo, url.origin);
+  // An explicit invitation link is accepted by its landing page after sign-in.
+  const invitationLanding = destination.pathname === '/app/access' && destination.searchParams.has('invitation');
+  if (!declared && as !== 'owner' && !invitationLanding) await acceptPendingInvitations(env.DB, person.id);
   const existing = await store.read(request, now);
   if (existing?.kind !== 'dev' || existing.operatorId !== person.id) {
     const issued = await store.issue({ person, kind: 'dev', now, freshProof: true });
     if (!issued) return text(409, 'The operator changed while signing in. Try again.');
     reply.append('set-cookie', issued.cookie);
   }
-  reply.set('location', safeReturnTo(url.searchParams.get('returnTo')));
+  reply.set('location', returnTo);
   return new Response(null, { status: 303, headers: reply });
 }
 
