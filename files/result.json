@@ -1,0 +1,7 @@
+{
+  "status": "no-change",
+  "sha": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "summary": "Current main already includes 3286d217, fixing the late-list response that cleared the unavailable-record alert; the retained collaborator lifecycle tests pass locally and exact-SHA main Verify 43875960631 is successful.",
+  "tests": "Pinned Node 22.20.0 / pnpm 10.12.4: frozen install, emitted Worker build and typecheck passed; collaborator-lifecycle.test.ts passed 2/2, 0 failed or skipped, including delayed-list refusal at 1440 and 390; inventory unchanged at 198 registrations + 2 qualification flows = 200.",
+  "security": true
+}

@@ -1,0 +1,70 @@
+commit 3286d217ddfa4de3a8599bd1fec6f8452416f3f4
+Author: Run Edit Run fleet <fleet@runeditrun.com>
+Date:   Tue Nov 10 20:18:38 2026 +1000
+
+    fix: an unavailable shared record's refusal survives a late list load
+    
+    SharedRecords held one error for both the list read and the open-record read,
+    so a successful list load cleared the 'Record is unavailable' alert set by a
+    403 on opening a record. The list error and the open-record error are now
+    separate state; a list load clears only its own error, and the open error
+    clears when another record is opened, the detail closes, the type or search
+    changes, or the open succeeds. A browser regression holds the list response
+    until the 403 has landed and asserts the alert stays.
+    
+    Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+diff --git a/newtests/t096/team-operator-browser.ts b/newtests/t096/team-operator-browser.ts
+index 9f2351c7..faae7bc3 100644
+--- a/newtests/t096/team-operator-browser.ts
++++ b/newtests/t096/team-operator-browser.ts
+@@ -83,6 +83,7 @@ export async function equalOperatorBrowser(){
+      await accessible(shared,`team-shared-${record.kind}-${width}`,directory);
+      const blocked=unshared.find(item=>item.kind===record.kind)!;
+      guestErrors.allowDeniedResource(`${sharedPath}/${record.kind}/${blocked.id}`,403);
++     await unavailableSurvivesLateList(shared,record,blocked.id);
+      await shared.goto(`/app/shared-records?kind=${record.kind}&id=${blocked.id}`);
+      await expect(shared.getByRole('alert')).toContainText('Record is unavailable');
+      await expect(shared.getByRole('region',{name:'Shared record details',exact:true})).toHaveCount(0);
+@@ -130,3 +131,19 @@ async function createAndDelete(page:Page,kind:TeamRecord['kind'],name:string){
+  await page.getByRole('button',{name:`Delete ${kind}`,exact:true}).click();await page.getByRole('button',{name:'Delete',exact:true}).click();await expect(page).toHaveURL(new RegExp(`/app/${plural[kind]}$`));
+  await expect(page.getByRole('link',{name,exact:true})).toHaveCount(0);
+ }
++/** The list read lands after the open read's 403: the refusal must still be on screen once the list has rendered. */
++async function unavailableSurvivesLateList(page:Page,record:TeamRecord,blockedId:string){
++ let release!:()=>void;const held=new Promise<void>(resolve=>{release=resolve;});
++ const isList=(url:URL)=>url.pathname===sharedPath&&url.searchParams.get('kind')===record.kind;
++ await page.route(isList,async route=>{await held;await route.continue();});
++ try{
++  const refused=page.waitForResponse(response=>new URL(response.url()).pathname===`${sharedPath}/${record.kind}/${blockedId}`&&response.status()===403);
++  await page.goto(`/app/shared-records?kind=${record.kind}&id=${blockedId}`);await refused;
++  await expect(page.getByRole('alert')).toContainText('Record is unavailable');
++  const listed=page.waitForResponse(response=>isList(new URL(response.url())));
++  release();await listed;
++  await expect(page.getByRole('button',{name:record.name,exact:true})).toBeVisible();
++  await expect(page.getByRole('alert')).toContainText('Record is unavailable');
++  await expect(page.getByRole('region',{name:'Shared record details',exact:true})).toHaveCount(0);
++ }finally{release();await page.unroute(isList);}
++}
+diff --git a/src/core/features/access/shared-records.tsx b/src/core/features/access/shared-records.tsx
+index a051d1f0..1689a787 100644
+--- a/src/core/features/access/shared-records.tsx
++++ b/src/core/features/access/shared-records.tsx
+@@ -6,13 +6,13 @@ import {SharedEntries} from './shared-entries';
+ /** A saved value in words: a custom field arrives as {name: value}. */
+ const shown=(value:unknown):string=>value===null||value===''?'empty':typeof value==='object'?Object.values(value as object).map(shown).join(', '):typeof value==='boolean'?(value?'Yes':'No'):`“${String(value)}”`;
+ export function SharedRecords({workspaceId}:{workspaceId:string}){
+- const base=`/api/v2/workspaces/${encodeURIComponent(workspaceId)}/records`,[kind,setKind]=useState(()=>{const value=typeof window==='undefined'?null:new URLSearchParams(window.location.search).get('kind');return value&&['contact','company','opportunity'].includes(value)?value:'contact';}),[query,setQuery]=useState(''),[items,setItems]=useState<RecordProjection[]|null>(null),[cursor,setCursor]=useState<string|null>(null),[record,setRecord]=useState<SharedRecord|null>(null),[error,setError]=useState(''),[status,setStatus]=useState(''),feedback=useRef<HTMLParagraphElement>(null);
+- async function load(next?:string){try{const result=await api<{items:RecordProjection[];nextCursor:string|null}>(`${base}?${new URLSearchParams({kind,q:query,...(next?{cursor:next}:{})})}`);setItems(old=>next?[...(old??[]),...result.items]:result.items);setCursor(result.nextCursor);setError('');}catch(e){setItems([]);setCursor(null);setError(e instanceof Error?e.message:'Records could not be read.');}}
+- useEffect(()=>{setRecord(null);void load();},[base,kind,query]);
++ const base=`/api/v2/workspaces/${encodeURIComponent(workspaceId)}/records`,[kind,setKind]=useState(()=>{const value=typeof window==='undefined'?null:new URLSearchParams(window.location.search).get('kind');return value&&['contact','company','opportunity'].includes(value)?value:'contact';}),[query,setQuery]=useState(''),[items,setItems]=useState<RecordProjection[]|null>(null),[cursor,setCursor]=useState<string|null>(null),[record,setRecord]=useState<SharedRecord|null>(null),[error,setError]=useState(''),[listError,setListError]=useState(''),[status,setStatus]=useState(''),feedback=useRef<HTMLParagraphElement>(null);
++ async function load(next?:string){try{const result=await api<{items:RecordProjection[];nextCursor:string|null}>(`${base}?${new URLSearchParams({kind,q:query,...(next?{cursor:next}:{})})}`);setItems(old=>next?[...(old??[]),...result.items]:result.items);setCursor(result.nextCursor);setListError('');}catch(e){setItems([]);setCursor(null);setListError(e instanceof Error?e.message:'Records could not be read.');}}
++ useEffect(()=>{setRecord(null);setError('');void load();},[base,kind,query]);
+  useEffect(()=>{const params=new URLSearchParams(window.location.search),id=params.get('id');if(id&&params.get('kind')===kind)void open(id);},[base,kind]);
+  async function open(id:string){try{setRecord(await api<SharedRecord>(`${base}/${kind}/${encodeURIComponent(id)}`));setError('');}catch(e){setRecord(null);setError(e instanceof Error?e.message:'Record is no longer available.');}}
+  async function save(field:string,value:unknown,label:string){if(!record)return false;let saved=false;try{await api(`${base}/${kind}/${record.ref.id}`,{[field]:value},'PUT');await open(record.ref.id);await load();setError('');setStatus(field==='company_id'?'Field saved: Company changed.':field==='contactability'?'Field saved: marked Do not contact.':`Field saved: ${label} is now ${shown(value)}.`);saved=true;}catch(e){setStatus('');setError(e instanceof Error?e.message:'This field cannot be edited.');}setTimeout(()=>feedback.current?.focus(),0);return saved;}
+- const message=<p ref={feedback} tabIndex={-1} role={error?'alert':'status'}>{error||status}</p>;
++ const failure=error||listError,message=<p ref={feedback} tabIndex={-1} role={failure?'alert':'status'}>{failure||status}</p>;
+  return <section className="fold-panel"><h2>Records currently shared with you</h2><p>Each read and edit checks your current record and field permissions.</p>{record?null:message}<div className="fold-grid"><label>Record type<select value={kind} onChange={event=>setKind(event.target.value)}><option value="contact">Contacts</option><option value="company">Companies</option><option value="opportunity">Opportunities</option></select></label><label>Search permitted fields<input type="search" value={query} onChange={event=>setQuery(event.target.value)}/></label></div>{items===null?<p>Loading shared records…</p>:items.length?<ul>{items.map(item=><li key={item.ref.id}><button onClick={()=>void open(item.ref.id)}>{String(item.fields.name??item.fields.title??item.fields.email??'Shared record')}</button></li>)}</ul>:<p>No records match your current access.</p>}{cursor&&<button onClick={()=>void load(cursor)}>Read more records</button>}
+  {record&&<><SharedRecordDetail base={base} record={record} save={save} feedback={message}/><SharedEntries base={base} kind={kind} id={record.ref.id}/></>}</section>;
+ }

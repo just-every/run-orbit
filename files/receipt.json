@@ -1,0 +1,71 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "repository": "just-every/run-orbit",
+  "tag": "gr-mt-orbit-ci-8",
+  "github_calls_so_far": 6,
+  "calls": [
+    {
+      "number": 1,
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42647988746",
+      "result": "completed/failure, exact original SHA"
+    },
+    {
+      "number": 2,
+      "command": "gh api repos/just-every/run-orbit/actions/runs/42647988746/jobs",
+      "result": "batch-7 and aggregate failed; source and other 19 batches passed"
+    },
+    {
+      "number": 3,
+      "command": "gh run view 42647988746 --repo just-every/run-orbit --job 129268274694 --log-failed",
+      "result": "exit 0, empty stdout/stderr; downloaded full archive into gh CLI cache; exact assertion recovered locally without another request"
+    },
+    {
+      "number": 4,
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=a4fcbfcd&per_page=100",
+      "result": "empty result; short SHA not accepted as exact filter; no success inferred"
+    },
+    {
+      "number": 5,
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=a4fcbfcd72fa4253826f43d0b0de02275094f86d&per_page=100",
+      "result": "completed/success Verify 43875960631 on main, Verify 43878914207 on v0.4.11, and Run site 43875960451 on main; called over 300 seconds after previous discovery"
+    },
+    {
+      "number": 6,
+      "command": "gh api repos/just-every/run-orbit/actions/runs/43875960631/jobs?per_page=100",
+      "result": "source and shared build plus all 20 shard batches and aggregate verify succeeded; light skipped; called at least 300 seconds after exact-SHA discovery"
+    }
+  ],
+  "historical": {
+    "run": 42647988746,
+    "head": "2f798f68d71ff16264d3780d5e9230497a26de96",
+    "job": 129268274694,
+    "file": "newtests/t096/team-operator-browser.ts:87",
+    "assertion": "getByRole(alert) contains Record is unavailable",
+    "observed": "alert not found after a list load; batch 5 passed / 1 failed"
+  },
+  "publication": {
+    "product_commits": 0,
+    "product_pushes": 0,
+    "evidence_ref": "refs/heads/evidence/gr-mt-orbit-ci-8"
+  },
+  "limitations": [
+    "No rerun of the historical commit. Existing repaired default branch is the local verification target.",
+    "No artifact-download calls or raw job-environment dumps included in evidence."
+  ],
+  "github_calls_total": 6,
+  "current": {
+    "head": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+    "main_verify": 43875960631,
+    "main_verify_status": "completed/success",
+    "source_job": 133329137033,
+    "batch7_job": 133330706380,
+    "aggregate_job": 133347335355,
+    "passed_batches": 20,
+    "failed_batches": 0,
+    "main_run_site": 43875960451,
+    "run_site_status": "completed/success"
+  },
+  "outcome": "no-change",
+  "blockers": []
+}

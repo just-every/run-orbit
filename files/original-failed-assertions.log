@@ -1,0 +1,21 @@
+2026-11-09T16:04:07.2767043Z test at newtests/t096/collaborator-lifecycle.test.ts:1:780
+2026-11-09T16:04:07.2768201Z ✖ TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences (284498.417185ms)
+2026-11-09T16:04:07.2769019Z   Error: expect(locator).toContainText(expected) failed
+2026-11-09T16:04:07.2769811Z   
+2026-11-09T16:04:07.2770202Z   Locator: getByRole('alert')
+2026-11-09T16:04:07.2770680Z   Expected substring: "Record is unavailable"
+2026-11-09T16:04:07.2771133Z   Timeout: 5000ms
+2026-11-09T16:04:07.2771500Z   Error: element(s) not found
+2026-11-09T16:04:07.2771889Z   
+2026-11-09T16:04:07.2772282Z   Call log:
+2026-11-09T16:04:07.2772731Z     - Expect "toContainText" getByRole('alert') with timeout 5000ms
+2026-11-09T16:04:07.2773284Z     - waiting for getByRole('alert')
+2026-11-09T16:04:07.2773670Z   
+2026-11-09T16:04:07.2774472Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-09T16:04:07.2776004Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-09T16:04:07.2777114Z       at Object.toContainText (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-09T16:04:07.2778148Z       at equalOperatorBrowser (/home/runner/work/run-orbit/run-orbit/newtests/t096/team-operator-browser.ts:87:46)
+2026-11-09T16:04:07.2779387Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/newtests/t096/collaborator-lifecycle.test.ts:32:2) {
+2026-11-09T16:04:07.2786095Z     matcherResult: { name: 'toContainText', expected: 'Record is unavailable', message: `expect(locator).toContainText(expected) failed\n\nLocator: getByRole('alert')\nExpected substring: "Record is unavailable"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect "toContainText" getByRole('alert') with timeout 5000ms\n  - waiting for getByRole('alert')\n`, pass: false, actual: undefined, log: [ `  - Expect "toContainText" getByRole('alert') with timeout 5000ms`, "  - waiting for getByRole('alert')" ], timeout: 5000, ariaSnapshot: '- link "Skip to content":\n  - /url: "#operator-main"\n- banner:\n  - link "Orbit home":\n    - /url: /app\n    - text: Orbit\n  - navigation "Main menu":\n    - link "Shared records":\n      - /url: /app/shared-records\n    - link "Notifications":\n      - /url: /app/notifications\n  - link "Settings":\n    - /url: /app/access\n  - button "Sign out"\n- main:\n  - heading "Shared records" [level=1]\n  - heading "Records currently shared with you" [level=2]\n  - paragraph: Each read and edit checks your current record and field permissions.\n  - status\n  - text: Record type\n  - combobox "Record type":\n    - option "Contacts"\n    - option "Companies" [selected]\n    - option "Opportunities"\n  - text: Search permitted fields\n  - searchbox "Search permitted fields"\n  - list:\n    - listitem:\n      - button "Harbour Studio"' }
+2026-11-09T16:04:07.2793083Z   }
+2026-11-09T16:04:07.4990619Z ##[error]Process completed with exit code 1.

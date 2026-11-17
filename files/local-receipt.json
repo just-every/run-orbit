@@ -1,0 +1,58 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "sha": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "commands": [
+    {
+      "command": "cloud_run pnpm install --frozen-lockfile",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec rer build",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "ORBIT_FOLD_BROWSER_EVIDENCE=<private-output> cloud_run pnpm exec tsx --import /tmp/gr-mt-orbit-system-browser.mjs --test --no-test-only --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=./scripts/core-results.mjs --test-reporter-destination=<packet>/focused-results.jsonl newtests/t096/collaborator-lifecycle.test.ts",
+      "exit": 0,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 325953.232447
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "before": {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      },
+      "after": {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      }
+    }
+  ],
+  "browser": {
+    "executable": "/usr/bin/chromium",
+    "extra_argument": "--no-sandbox",
+    "widths": [
+      1440,
+      390
+    ],
+    "launch_override": "External import only configures Chromium executable and sandbox; test source and assertions unchanged.",
+    "home": "real HOME",
+    "axe_receipts": 24,
+    "serious_critical_findings": 0,
+    "proof": "team-denied-company screenshots show Record is unavailable alongside the completed permitted-record list."
+  },
+  "cleanup": "Existing test teardown closed browser contexts, Chromium, the emitted Worker and D1 fixtures; subreaper completed with exit 0."
+}

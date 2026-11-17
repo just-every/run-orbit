@@ -1,0 +1,3 @@
+{"kind":"test","runner":"node:test","name":"TEAM-001 signed-in peers use native and shared record actions while collaborators obey fields, grants and lifecycle fences","file":"newtests/t096/collaborator-lifecycle.test.ts","type":"test","nesting":0,"status":"passed","durationMs":293951.570156}
+{"kind":"test","runner":"node:test","name":"selected original nested-private and assembled-read assertions run against an accepted collaborator and native positive","file":"newtests/t096/collaborator-lifecycle.test.ts","type":"test","nesting":0,"status":"passed","durationMs":28464.344664}
+{"kind":"summary","runner":"node:test","success":true,"counts":{"tests":2,"failed":0,"passed":2,"cancelled":0,"skipped":0,"todo":0,"topLevel":2,"suites":0}}
