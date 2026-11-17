@@ -8,6 +8,7 @@ import {request} from './operator-fixture.mjs';
 /** Configure and inspect the real owner workflow surface using the native installation. */
 export async function workflowBrowserJourney({page,fixture,origin,directory},width){
  await page.setViewportSize({width,height:900});await page.goto(origin+'/app/settings/pipeline');
+ await pipelineCreationJourney(page);
  const settings=page.locator('.workflows-settings');await expect(settings.getByRole('heading',{name:'Workflows',exact:true})).toBeVisible();
  await settings.getByRole('button',{name:'New workflow',exact:true}).click();
  await settings.getByLabel('Workflow name',{exact:true}).fill('Prepare account review');
@@ -99,4 +100,23 @@ export async function workflowBrowserJourney({page,fixture,origin,directory},wid
  await workflowOutcomesBrowserJourney({page,fixture,origin,directory},width);
  await workflowValuesBrowserJourney({page,fixture,origin,directory},width);
  assert.deepEqual(presentation.small,[]);assert.deepEqual(presentation.icons,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'workflow view fits viewport');
+}
+
+/** Pipeline settings keep both visible creation and keyboard submission available. */
+export async function pipelineCreationJourney(page){
+ // Create pipelines by their visible action and by Enter, then read their persisted stages.
+ for(const [name,enter] of [[`Synthetic visible pipeline ${Date.now()}`,false],[`Synthetic keyboard pipeline ${Date.now()}`,true]]){
+  await page.getByRole('button',{name:'New pipeline',exact:true}).click();
+  const card=page.getByRole('region',{name:'New pipeline',exact:true});
+  await card.getByLabel('Name',{exact:true}).fill(name);
+  await card.getByLabel('First stage',{exact:true}).fill('Discovery');
+  const created=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/v1/settings/pipelines'&&r.request().method()==='POST');
+  if(enter)await card.getByLabel('First stage',{exact:true}).press('Enter');
+  else await card.getByRole('button',{name:'Create pipeline',exact:true}).click();
+  expect((await created).status()).toBe(201);
+  await expect(page.getByRole('heading',{name,exact:true})).toBeVisible();
+  const saved=await request(page,'/api/v1/settings',undefined,'GET');
+  const pipeline=saved.pipelines.find(p=>p.name===name);assert.ok(pipeline);
+  assert.deepEqual(saved.stages.filter(stage=>stage.pipeline_id===pipeline.id).map(stage=>stage.name),['Discovery']);
+ }
 }

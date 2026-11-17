@@ -6683,7 +6683,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/automation-recipe.tsx": {
-      "sha256": "89e7408bd5fc8df2e00d18c3253d584bda319d2d8a80931243221434b6afd518",
+      "sha256": "9cdee779d3db02dd3986353fee3cb066f3959b765fbd90829cddadb7a6e5fd8c",
       "executable": false
     },
     "src/core/features/operator/ui/autosave/autosave.css": {
@@ -6723,7 +6723,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/booking-recipe.tsx": {
-      "sha256": "0184ab01b947410793c0b4beb22fa972bd0cd38d9d184c65063b83bb9106b560",
+      "sha256": "093ed975981a28661cb72232b2b681a167e0f362432c03de7e32df9b14170e4a",
       "executable": false
     },
     "src/core/features/operator/ui/brief-page.tsx": {
@@ -7071,7 +7071,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-settings.tsx": {
-      "sha256": "034ecdb6b7ab758456747d1333f7788b82cae949e1d7e7e4c5180ddfe1ffc264",
+      "sha256": "117bc6664075311211dd32c673b6b15bb3aff676fae6706682bec484e335522d",
       "executable": false
     },
     "src/core/features/operator/ui/provider-footer.tsx": {
@@ -7083,7 +7083,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/recipe-snippet.tsx": {
-      "sha256": "f884c82df53b534e9dcd9d14ace3bd8dfcadf01da336c00a0baa3dc6b03213ab",
+      "sha256": "103ff3c3b9b83a6ebe4ff3567d90cce6989e3f488e331b67e2a1b0f99d2c5fd7",
       "executable": false
     },
     "src/core/features/operator/ui/record-create.tsx": {
@@ -7383,11 +7383,11 @@
       "executable": false
     },
     "src/core/features/operator/ui/source-recipes.tsx": {
-      "sha256": "1fbb207cde3e195e6d7a3b9027492dfb9772bf99ea952abf89b35cdecdfb91f6",
+      "sha256": "aad3654505692ae70d05590d0bae34e7a96c1f3bf729bb71b16072125a3769f3",
       "executable": false
     },
     "src/core/features/operator/ui/sources-page.tsx": {
-      "sha256": "e9e5531296a2b397da4d4024c3c81eba0e75295d9fd948914e67ce023d8cfc0b",
+      "sha256": "2e8bd5cff1c2024ee0da2c0325d7c3c9ea9ffcc646794909919fec587031d52c",
       "executable": false
     },
     "src/core/features/operator/ui/sources.css": {
@@ -11383,11 +11383,11 @@
       "executable": false
     },
     "tests/rer/source-recipes.mjs": {
-      "sha256": "0765abeddc0e97b959d6ce6b76eb3f1962d2406d3d10f2a8936caa52d61d5fc5",
+      "sha256": "abc40dcbfcb0db9352a095107a3cc08c1fea33ee8d48349ef0deff10b200dffd",
       "executable": false
     },
     "tests/rer/workflow-journey.mjs": {
-      "sha256": "4f0efe41cda3ffc0bdce73ae6a03e061b55917ce8efcb450b1cd101df4d735c2",
+      "sha256": "25397fa9fd6d73c85a639ab423eb8b4520897b133938a4b6fe5387e1b656c6a1",
       "executable": false
     },
     "tests/rer/workflow-outcomes-journey.mjs": {
