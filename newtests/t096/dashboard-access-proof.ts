@@ -36,9 +36,13 @@ export async function dashboardAccessProof({worker,ownerCookie,seller,seed,id,di
    const result=page.locator('.sales-result');await expect(result).toHaveAttribute('aria-busy','false');
    await result.locator('.reports-basis>summary').click();await expect(result.locator('.sales-result__name')).toHaveText(`${opened.name} · version ${report.definitionVersion}`);
    const disclosure=result.getByLabel('Report basis',{exact:true});
-   for(const text of [opened.period.from,opened.period.through,opened.timezone,opened.currency,opened.freshness,...opened.missing])await expect(disclosure).toContainText(text);
+   const date=(at:string)=>new Intl.DateTimeFormat('en-US',{timeZone:opened.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',minute:'2-digit',numberingSystem:'latn'}).format(new Date(at));
+   for(const text of [date(opened.period.from),date(opened.period.through),opened.timezone,opened.currency,opened.freshness,...opened.missing])await expect(disclosure).toContainText(text);
+   await expect(disclosure).not.toContainText(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:/);
    await expect(disclosure).toContainText('Missing data');
-   for(const section of report.sections){await expect(result).toContainText(section.definition);await expect(result).toContainText('Source fields: '+section.sources.join(', ')+'.');}
+   for(const section of report.sections)assert.deepEqual(opened.sections.find(item=>item.measure===section.measure)?.sources,section.sources);
+   const sourceLines=result.locator('.sales-sources');await expect(sourceLines).toHaveCount(opened.sections.length);
+   for(const section of report.sections){await expect(result).toContainText(section.definition);for(const source of section.sources)await expect(result).not.toContainText(source);}
    if(!view.canEdit){await expect(disclosure).toContainText('Limited to your access');await expect(result).not.toContainText(/Atlas expansion|Birch rollout|Cedar renewal|Hazel expansion|Riley Chen/);}
    if(tile.report.saved){assert.equal(opened.definitionVersion,savedTile.report!.definitionVersion);await shot(page,`definition-${label}-${width}`);}
    await page.goto(document);await expect(page.locator('.dash-grid')).toHaveAttribute('aria-busy','false');

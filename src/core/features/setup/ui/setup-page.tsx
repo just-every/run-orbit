@@ -15,8 +15,10 @@ export interface SetupView {
  * rather than showing the stored stand-in, and an untouched default time zone becomes the browser's own once scripts run.
  */
 export function SetupPage({ view }: { view: SetupView }) {
-  const timezone = useRef<HTMLInputElement>(null);
+  const timezone = useRef<HTMLSelectElement>(null);
   const storedZone = view.workspace?.timezone ?? workspaceDefaults.timezone;
+  const usZones = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles', 'America/Anchorage', 'Pacific/Honolulu'];
+  const otherZones = [...new Set(['UTC', storedZone, ...Intl.supportedValuesOf('timeZone')])].filter(zone => !usZones.includes(zone));
   useEffect(() => {
     const field = timezone.current;
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -38,13 +40,16 @@ export function SetupPage({ view }: { view: SetupView }) {
         <input id="setup-name" name="name" required maxLength={200} autoComplete="organization" defaultValue={name} aria-describedby="setup-name-help" />
         <p id="setup-name-help" className="ob-auth-help">Customers see it as the sender name on the mail you approve.</p>
         <label htmlFor="setup-timezone">Time zone</label>
-        <input id="setup-timezone" ref={timezone} name="timezone" required maxLength={100} defaultValue={storedZone} aria-describedby="setup-timezone-help" />
-        <p id="setup-timezone-help" className="ob-auth-help">An IANA time zone, for example Australia/Brisbane.</p>
+        <select id="setup-timezone" ref={timezone} name="timezone" required defaultValue={storedZone} aria-describedby="setup-timezone-help">
+          <optgroup label="United States">{usZones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_', ' ')}</option>)}</optgroup>
+          <optgroup label="Other time zones">{otherZones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_', ' ')}</option>)}</optgroup>
+        </select>
+        <p id="setup-timezone-help" className="ob-auth-help">Choose the time zone for your working hours and reports.</p>
         <label htmlFor="setup-currency">Currency</label>
         <input id="setup-currency" name="currency" required minLength={3} maxLength={3} pattern="[A-Za-z]{3}" defaultValue={view.workspace?.currency ?? workspaceDefaults.currency} />
         <label htmlFor="setup-stages">Pipeline stages</label>
         <textarea id="setup-stages" name="stages" required rows={4} defaultValue={view.stages.join('\n')} aria-describedby="setup-stages-help" />
-        <p id="setup-stages-help" className="ob-auth-help">One stage per line, in pipeline order.</p>
+        <p id="setup-stages-help" className="ob-auth-help">One stage per line, in pipeline order. Win chances start at 10% and increase to 90%; adjust them later in Settings.</p>
         <button className="ob-pill">Finish setup</button>
       </form>
     </> : <p className="ob-auth-lead">The workspace owner is finishing first-run setup. Try again once they have finished.</p>}

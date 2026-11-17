@@ -42,17 +42,27 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-The same one line as [run-orbit.com/run](https://run-orbit.com/run) gets Orbit and starts it:
+Follow the two steps on [run-orbit.com/run](https://run-orbit.com/run). Git is required; rer brings Node and pnpm.
+
+1. Install rer:
 
 ```sh
-curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
+curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
+If the installer prints a PATH command, run that line in this terminal so it can find `rer`. You can also use the full path to `rer` printed by the installer in place of `rer` below.
+
+2. Get Orbit and start it:
+
+```sh
+rer dev just-every/run-orbit
+```
+
+**Alternative for people who already have Node 22 or later:** `npx -y @runeditrun/rer dev just-every/run-orbit`. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
 
 To start it again later: `cd run-orbit && rer dev`.
 
-Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; `rer` brings both into its own cache and installs the frozen dependencies, so you install neither yourself. `rer dev just-every/run-orbit` clones the current `main`. `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@run-orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings › Team › Owner email. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `npx -y @runeditrun/rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
+Orbit pins Node **22.20.0** and pnpm **10.12.4** for project commands; `rer` brings both into its own cache and installs the frozen dependencies, so you install neither yourself. `rer dev just-every/run-orbit` clones the current `main`. `dev` installs dependencies, prepares local settings and starts Orbit. On the first launch it prepares the local trial owner (`owner@run-orbit.test`); it keeps that owner, your data and settings on later launches. You can change the owner email in Settings › Team › Owner email. A later deploy uses that current owner unless you explicitly supply `OWNER_EMAIL`. To use your real mailbox from the start, run `rer install just-every/run-orbit`, then `rer setup --owner-email EMAIL` from the checkout, before `rer dev`.
 
 Once `/health` answers, `dev` prints `RER_READY`, `RER_SIGNED_IN` and `RER_OPEN`. Open the `RER_OPEN` link on this computer: Orbit opens signed in as you. Its fragment carries this checkout's private dev key, so never share it. The product name reads Orbit Dev. Use `rer dev --as seller` or `--as collaborator` to choose a persona. Local sign-in needs no email: `RER_OPEN` signs you in. Customer mail you approve is real: once you add your own SendGrid settings in Settings › Mail › Sender, it goes to the customer's inbox even from your computer. Stop it with `rer dev --stop`, including when the launch command has returned to your prompt.
 

@@ -2,19 +2,24 @@ import {useEffect,useId,useRef,useState} from 'react';
 import {ActionTooltip} from './action-tooltip';
 import {recordsRequest,type CustomerRecord} from './records-api';
 
-export function useRecordMatches(kind:'company'|'contact',query:string) {
- const [matches,setMatches]=useState<CustomerRecord[]>([]),[loading,setLoading]=useState(false),[error,setError]=useState('');
+export function useRecordMatches(kind:'company'|'contact',query:string,defaultCompanyId?:string|null) {
+ const lookupKey=JSON.stringify([kind,query.trim(),query.trim()?null:defaultCompanyId??null]);
+ const [result,setResult]=useState<{key:string;records:CustomerRecord[]}>({key:'',records:[]}),[loading,setLoading]=useState(false),[error,setError]=useState('');
  useEffect(()=>{
   let current=true;
-  setMatches([]);setError('');
-  if(!query.trim()){setLoading(false);return;}
+  setResult({key:lookupKey,records:[]});setError('');
+  const companyId=kind==='contact'&&!query.trim()?defaultCompanyId:null;
+  if(!query.trim()&&!companyId){setLoading(false);return;}
   setLoading(true);
   const timer=setTimeout(()=>{
-   void recordsRequest<{records:CustomerRecord[]}>(`records/${kind}?q=${encodeURIComponent(query.trim())}`).then(result=>{if(current)setMatches(result.records);}).catch(reason=>{if(current)setError((reason as Error).message);}).finally(()=>{if(current)setLoading(false);});
+   const request=companyId
+    ?recordsRequest<{contacts:CustomerRecord[]}>(`records/company/${encodeURIComponent(companyId)}`).then(result=>result.contacts)
+    :recordsRequest<{records:CustomerRecord[]}>(`records/${kind}?q=${encodeURIComponent(query.trim())}`).then(result=>result.records);
+   void request.then(records=>{if(current)setResult({key:lookupKey,records});}).catch(reason=>{if(current)setError((reason as Error).message);}).finally(()=>{if(current)setLoading(false);});
   },180);
   return()=>{current=false;clearTimeout(timer);};
- },[kind,query]);
- return {matches,loading,error};
+ },[kind,query,defaultCompanyId]);
+ return {matches:result.key===lookupKey?result.records:[],loading,error};
 }
 
 function MatchStatus({query,loading,error,empty}:{query:string;loading:boolean;error:string;empty:boolean}) {

@@ -22,7 +22,7 @@ export const presets:Record<string,Partial<Record<ImportKind,Record<string,strin
 const csvHeaderAliases:Record<string,string[]>={
  id:['record id','source id'],
  first_name:['first name'],last_name:['last name'],email:['email address'],phone:['phone number'],
- job_title:['job title'],company_name:['company name'],company_ids:['company ids','associated company ids'],
+ job_title:['job title'],company_name:['company name'],company_ids:['company id','company ids','associated company ids'],
  contact_ids:['contact ids','associated contact ids'],deal_ids:['deal ids','associated deal ids'],
  dnc:['do not contact'],bounce:['hard bounce','email hard bounce reason'],permission:['marketing status'],
  title:['deal title','deal name','opportunity title'],amount:['value','deal value'],
@@ -32,6 +32,14 @@ const csvHeaderAliases:Record<string,string[]>={
 // Prefer the occurrence time when present; creation time is the fallback for notes exports without it.
 const hubspotNoteAliases:Record<string,string[]>={id:['Note ID','hs_object_id'],text:['hs_note_body'],occurred_at:['hs_timestamp','Create date'],owner:['hubspot_owner_id']};
 const normalizedHeader=(header:string)=>header.trim().toLowerCase().replace(/[\s_-]+/g,' ');
+
+/** Required identity columns are checked beside their mapping and at the import door. */
+export function missingIdentityMapping(vendor:ImportInput['vendor'],file:ImportFile){
+ if(file.kind==='suppression')return file.mapping.email?null:{field:'email',message:'Map an email for the suppression file.'};
+ if(file.mapping.id)return null;
+ if(vendor==='csv'&&file.kind==='contact')return file.mapping.email?null:{field:'id',message:'Map an email or a stable source ID for generic CSV contacts.'};
+ return {field:'id',message:`Map a stable source ID for ${file.kind}.`};
+}
 
 /** An exporter's own column name wins; otherwise suggest only an unambiguous common label, for any source. */
 export function defaultMapping(vendor:ImportInput['vendor'],kind:ImportKind,headers:string[]){

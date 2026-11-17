@@ -37,7 +37,8 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
  }}
  // A missing permission holds only people new to Orbit: a contact already here keeps the contactability its operators set.
  for(const address of consentHolds)if(!known.has(contactEmailKey(address)))stopEmails.add(address);
- rows.push(...namedCompanies(rows));
+ const named=namedCompanies(rows,input.vendor==='csv');
+ rows.push(...named.companies);
  // Resolve only explicit source IDs or unambiguous native identity keys. Existing records are linked, never overwritten.
  const emails=[...stopEmails].sort(),stopId=nativeId(namespace,'suppression',sha256(canonicalJson(emails)));
  const existing=new Set<Row>(),duplicates=new Set<string>();
@@ -66,7 +67,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
  // A linked native contact keeps its company and fields. Do not create an unused company for it.
  for(let index=rows.length-1;index>=0;index--){const row=rows[index];if(row.derivedContacts?.every(contact=>existing.has(contact)||contact.error||duplicates.has(`${contact.kind}:${contact.id}`)))rows.splice(index,1);}
  const ownerSnapshots=await importOwnerSnapshots(db,rows.filter(row=>['contact','company'].includes(row.kind)).map(row=>({kind:row.kind,id:references.get(`${row.kind}:${row.id}`)!})));
- const companyFor=new Map(rows.filter(row=>row.derivedContacts).flatMap(row=>row.derivedContacts!.map(contact=>[contact,row] as const)));
+ const companyFor=named.contactCompanies;
  function permission(row:Row){return row.data.permission?.toLowerCase()==='subscribed'||(!row.data.permission&&input.contactability==='confirmed_contactable');}
  function linked(row:Row,kind:string,field:string){const values=ids(row.data[field],row.separator);return values.map(value=>{const key=`${kind}:${value}`,match=references.get(key);if(!match||duplicates.has(key)||rows.some(other=>other.kind===kind&&other.id===value&&other.error))throw new Error(`This row names a ${kind==='deal'?'deal':kind} ID that is not in the ${kind==='deal'?'deals':kind==='company'?'companies':'contacts'} file. Add that file, or check the ID.`);return match;});}
  for(const row of rows.sort((a,b)=>['suppression','company','contact','deal','note','call','meeting','task'].indexOf(a.kind)-['suppression','company','contact','deal','note','call','meeting','task'].indexOf(b.kind))){try{
@@ -86,7 +87,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
    Object.assign(native,{name:data.name,primary_domain:domain,primary_domain_key:companyDomainKey(domain,JSON.parse(settings?.free_mail_domains_json??'[]'))});
   }
   if(row.kind==='contact'){
-   const named=companyFor.get(row),companies=named?[references.get(`company:${named.id}`)!]:linked(row,'company','company_ids');if(named?.error)throw new Error('The company supplied by Company Name was rejected.');if(companies.length>1)throw new Error('Orbit has one primary company per contact. Choose one source company ID.');
+   const named=companyFor.get(row),companies=named?[references.get(`company:${named.id}`)!]:linked(row,'company','company_ids');if(named&&(named.error||duplicates.has(`company:${named.id}`)))throw new Error('The company supplied by Company Name was rejected. Check its row in the companies file.');if(companies.length>1)throw new Error('Orbit has one primary company per contact. Choose one source company ID.');
    const name=data.name||[data.first_name,data.last_name].filter(Boolean).join(' ')||null,address=data.email?email(data.email):null;if(!name&&!address)throw new Error('Contact needs a name or email.');
    Object.assign(native,{name,email:address,email_key:contactEmailKey(address),phone:data.phone||null,job_title:data.job_title||null,company_id:companies[0]??null,contactability:address&&!stopEmails.has(address)&&permission(row)?'contactable':'do_not_contact',contactability_revision:0});
   }

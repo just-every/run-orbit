@@ -31,7 +31,7 @@ try{
  api=async(path,method='GET',body)=>{const result=await page.evaluate(async({path,method,body})=>{const response=await fetch('/api/v1/'+path,{method,...(body===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})});return{status:response.status,data:await response.json()};},{path,method,body});assert.ok(result.status<400,`Orbit ${path}: HTTP ${result.status}`);return result.data;};
  // Complete the real first-run setup through its public route when required.
  if(new URL(page.url()).pathname==='/setup'){
-  const form=page.locator('form[action="/api/v1/setup"]');await page.getByLabel('Your name').fill('Harbour Sales Owner');await page.getByLabel('Business name').fill('Harbour Sales');await page.getByLabel('Time zone').fill('Australia/Brisbane');await page.getByLabel('Currency').fill('USD');await form.getByRole('button').last().click();await page.waitForURL(url=>url.pathname.startsWith('/app'),{timeout:60000});
+  const form=page.locator('form[action="/api/v1/setup"]');await page.getByLabel('Your name').fill('Harbour Sales Owner');await page.getByLabel('Business name').fill('Harbour Sales');await page.getByLabel('Time zone').selectOption('Australia/Brisbane');await page.getByLabel('Currency').fill('USD');await form.getByRole('button').last().click();await page.waitForURL(url=>url.pathname.startsWith('/app'),{timeout:60000});
  }
  await page.goto(origin+'/app/settings/integrations');await page.getByRole('button',{name:/^(Open|Connect) Slack$/}).click();await page.getByRole('heading',{name:'Slack sales notices',exact:true}).waitFor();
  await page.getByLabel('Bot token',{exact:true}).fill(token);await page.getByLabel('Slack app signing secret',{exact:true}).fill(randomBytes(32).toString('hex'));

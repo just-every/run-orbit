@@ -13,10 +13,10 @@
 .ob-auth-form { display: grid; gap: 8px; margin-top: 26px; }
 .ob-auth-form label { margin-top: 10px; font-size: 15px; font-weight: 650; }
 .ob-auth-form label:first-of-type { margin-top: 0; }
-.ob-auth-form :is(input, textarea) { width: 100%; min-height: 48px; padding: 11px 14px; border: 1.5px solid var(--ob-line-strong); border-radius: 12px; background: var(--ob-card); color: var(--ob-ink); font: inherit; font-size: 16.5px; font-weight: 600; transition: border-color 0.18s, box-shadow 0.18s; }
+.ob-auth-form :is(input, textarea, select) { width: 100%; min-height: 48px; padding: 11px 14px; border: 1.5px solid var(--ob-line-strong); border-radius: 12px; background: var(--ob-card); color: var(--ob-ink); font: inherit; font-size: 16.5px; font-weight: 600; transition: border-color 0.18s, box-shadow 0.18s; }
 .ob-auth-form textarea { min-height: 112px; line-height: 1.5; resize: vertical; }
-.ob-auth-form :is(input, textarea):hover { border-color: #bdb3a3; }
-.ob-auth-form :is(input, textarea):focus { border-color: var(--ob-ink); outline: none; box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
+.ob-auth-form :is(input, textarea, select):hover { border-color: #bdb3a3; }
+.ob-auth-form :is(input, textarea, select):focus { border-color: var(--ob-ink); outline: none; box-shadow: 0 0 0 3px rgba(22, 23, 29, 0.12); }
 .ob-auth-help { color: var(--ob-muted); font-size: 14px; line-height: 1.45; }
 .ob-auth-form .ob-pill { width: 100%; margin-top: 18px; border: 0; cursor: pointer; font: inherit; font-size: 17px; font-weight: 600; }
 .ob-auth-form .ob-pill:disabled { cursor: wait; opacity: 0.7; }

@@ -3,6 +3,7 @@ import type {MetricSnapshot} from '../../shared/expansion-contracts';
 import {api} from '../fold-ui/workspace';
 import type {SalesView} from '../analytics/sales-view';
 import {ReportDetails,reportValue} from '../analytics/report-details';
+import {reportSourceLabel} from '../analytics/report-field-labels';
 import {DashboardModal} from '../dashboards/modal';
 import {formatDate,formatDay} from '../operator/ui/formatters';
 import {definitionBody,type Definition} from './catalog';
@@ -29,7 +30,7 @@ export function SalesSavedResults({base,id,version,shown,onReopen,onRecompute}:{
   {items&&items.length>0&&<ol>{items.map(item=><li key={item.id}>
    <p><strong>{monthName(item.period.fromMonth)}{item.period.fromMonth!==item.period.throughMonth?` to ${monthName(item.period.throughMonth)}`:''}</strong> · {item.timezone} · {item.currency}. {item.freshness}</p>
    <p>{item.period.bucket}. {item.period.boundaries} {item.access.note}</p>
-   <details><summary>Definitions and source fields</summary><ul>{item.definitions.map(entry=><li key={entry.measure}><strong>{entry.title}:</strong> {entry.definition} Source fields: {entry.sources.join(', ')}.</li>)}</ul></details>
+   <details><summary>Definitions and source fields</summary><ul>{item.definitions.map(entry=><li key={entry.measure}><strong>{entry.title}:</strong> {entry.definition} Source fields: {entry.sources.map(reportSourceLabel).join(', ')}.</li>)}</ul></details>
    {item.missing.length>0&&<details><summary>Missing data</summary><ul>{item.missing.map(text=><li key={text}>{text}</li>)}</ul></details>}
    <div className="sales-actions"><button type="button" onClick={()=>onReopen(item.id)}>Reopen sales result</button><a href={`${base}/snapshots/${encodeURIComponent(item.id)}/export`}>Export sales result</a>{shown?.saved&&shown.id===item.id&&<button type="button" onClick={onRecompute}>Recompute as a separate result</button>}</div>
   </li>)}</ol>}

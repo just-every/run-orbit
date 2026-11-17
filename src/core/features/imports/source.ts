@@ -1,6 +1,6 @@
 import { parseCsv } from '../../shared/csv';
 import { canonicalJson,sha256,type SourceBundle,type SourceRecord } from '../../../modules/import-kit/d1/index';
-import { customFieldKinds,fields,type ImportInput } from './contracts';
+import { customFieldKinds,fields,missingIdentityMapping,type ImportInput } from './contracts';
 export interface Row {ownerMapping?:{value:string;ownerId:string|null;ownerName:string|null;explicit:boolean};kind:string;id:string;data:Record<string,string>;custom:Record<string,string>;source:SourceRecord;separator:string;unmapped:string[];reviewColumns?:Record<string,number>;error?:string;derivedContacts?:Row[]}
 export interface ConnectedSource {artifacts:SourceBundle['artifacts'];diagnostics:SourceBundle['diagnostics'];errors:Record<string,string>;values?:Record<string,Record<string,string>>}
 export function readImport(input:ImportInput,connected?:ConnectedSource){
@@ -15,9 +15,7 @@ export function readImport(input:ImportInput,connected?:ConnectedSource){
   if(customFields.length&&!customFieldKinds.has(file.kind))throw new Error(`A ${file.kind} file has no custom fields.`);
   if(customFields.some(header=>!headers.includes(header)||Object.values(file.mapping).includes(header))||new Set(customFields).size!==customFields.length)throw new Error('Each custom field must be a different column that is not already mapped.');
   const emailIdentity=input.vendor==='csv'&&file.kind==='contact'&&!file.mapping.id;
-  if(emailIdentity&&!file.mapping.email)throw new Error('Map an email or a stable source ID for generic CSV contacts.');
-  if(!emailIdentity&&!file.mapping.id&&file.kind!=='suppression')throw new Error(`Map a stable source ID for ${file.kind}.`);
-  if(file.kind==='suppression'&&!file.mapping.email)throw new Error('Map an email for the suppression file.');
+  const missing=missingIdentityMapping(input.vendor,file);if(missing)throw new Error(`${file.name}: ${missing.message}`);
   if(Buffer.byteLength(file.csv)>2_000_000)throw new Error('Each CSV supports up to 2 MB of UTF-8 data.');
   const hash=sha256(file.csv),name=`${file.kind}/${file.name}`;
   source.artifacts.push({name,sha256:hash,size:Buffer.byteLength(file.csv),original:{status:'available',base64:Buffer.from(file.csv).toString('base64')}});

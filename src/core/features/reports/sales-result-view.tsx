@@ -3,7 +3,8 @@ import type {Cell,Group,Section} from '../analytics/sales-measures';
 import type {RowView,SalesView} from '../analytics/sales-view';
 import {CellButton,DrillList,LateEvidence,type Drill} from '../analytics/sales-result';
 import {DashboardModal} from '../dashboards/modal';
-import {formatTime} from '../operator/ui/formatters';
+import {formatDateTime,formatTime} from '../operator/ui/formatters';
+import {reportSourceLabel} from '../analytics/report-field-labels';
 
 /** A sales result on its report page: each measure's figures lead unboxed (one key figure in tangerine), the breakdowns read
  * in ruled columns, the basis folds into one quiet line, and the records behind a figure open in the dashboard's drawer. */
@@ -47,7 +48,7 @@ function Basis({view,busy,period}:{view:SalesView;busy:boolean;period:string}){
  return <details className="reports-basis"><summary>{summary}</summary>
   <p className="sales-result__name">{view.name} · version {view.definitionVersion}</p>
   <dl className="sales-basis" aria-label="Report basis">
-   <div><dt>Period</dt><dd>{first?.label}{first!==last?` to ${last?.label}`:''} ({view.period.from} to {view.period.through})</dd></div>
+   <div><dt>Period</dt><dd>{first?.label}{first!==last?` to ${last?.label}`:''} ({formatDateTime(view.period.from,view.timezone)} to {formatDateTime(view.period.through,view.timezone)})</dd></div>
    <div><dt>Timezone</dt><dd>{view.timezone}. {view.period.bucket}. {view.period.boundaries}</dd></div>
    <div><dt>Currency</dt><dd>{view.currency}, from each deal amount; no exchange rates or attribution.</dd></div>
    <div><dt>Filters and grouping</dt><dd>{view.filters.pipelines.length?`Pipelines: ${view.filters.pipelines.map(pipeline=>pipeline.name).join(', ')}.`:'All pipelines.'} {view.filters.reps===null?(view.definition.repIds.length?`${view.definition.repIds.length} chosen reps (names need workspace settings access).`:'All reps.'):view.filters.reps.length?`Reps: ${view.filters.reps.map(rep=>rep.name).join(', ')}.`:'All reps.'} Won, lost, revenue, win rate and sales cycle grouped by {view.filters.groupBy}.</dd></div>
@@ -55,7 +56,7 @@ function Basis({view,busy,period}:{view:SalesView;busy:boolean;period:string}){
    <div><dt>Freshness</dt><dd>{view.freshness}</dd></div>
    {view.missing.length>0&&<div><dt>Missing data</dt><dd><ul>{view.missing.map(text=><li key={text}>{text}</li>)}</ul></dd></div>}
   </dl>
-  {view.sections.map(section=><p className="sales-sources" key={section.measure}>{multi?`${section.title}. `:''}Source fields: {section.sources.join(', ')}.</p>)}
+  {view.sections.map(section=><p className="sales-sources" key={section.measure}>{multi?`${section.title}. `:''}Source fields: {section.sources.map(reportSourceLabel).join(', ')}.</p>)}
  </details>;
 }
 
