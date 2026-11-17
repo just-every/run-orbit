@@ -1,0 +1,7 @@
+{
+  "status": "no-change",
+  "sha": "163bd9267dad8c5f74c0758632491c81f1c69011",
+  "summary": "Live main already pins Vite 8.2.4 in package.json and every Vite resolution in pnpm-lock.yaml; ancestor a35d331920a4bace2548bbd0efaf9344ffcd32a6 applied the patch.",
+  "tests": "PASS: read-only manifest/lockfile resolution and live-main/ancestry verification; exact-SHA main Verify 44084487308 completed/success. No local install, build, typecheck or product tests rerun because no product changes were required.",
+  "security": true
+}
