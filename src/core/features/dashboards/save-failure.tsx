@@ -1,6 +1,8 @@
 import {useLayoutEffect,useRef} from 'react';
 /** A write that did not land, said plainly: the dialog keeps every edit, and Retry tries again. */
-export const plainFailure=(error:unknown)=>error instanceof TypeError||error instanceof SyntaxError?'Couldn’t reach Orbit.':error instanceof Error?error.message:String(error);
+/** A refused definition arrives as a list of rule messages; say those sentences, not the list. */
+const sentences=(message:string)=>{if(!message.startsWith('['))return message;try{const issues=JSON.parse(message) as unknown;const said=Array.isArray(issues)?[...new Set(issues.map(issue=>(issue as {message?:unknown})?.message).filter((text):text is string=>typeof text==='string'&&text.length>0))]:[];return said.length?said.join(' '):'This dashboard could not be saved. Check each tile’s source and display.';}catch{return message;}};
+export const plainFailure=(error:unknown)=>error instanceof TypeError||error instanceof SyntaxError?'Couldn’t reach Orbit.':error instanceof Error?sentences(error.message):String(error);
 /** Re-applies only the fields this person changed onto the server's current version. */
 export const rebase=<T extends object>(loaded:T,mine:T,fresh:T,keys:(keyof T)[]):T=>({...fresh,...Object.fromEntries(keys.filter(key=>JSON.stringify(mine[key])!==JSON.stringify(loaded[key])).map(key=>[key,mine[key]]))});
 export function SaveFailure({message,onRetry}:{message:string;onRetry?:()=>void}){

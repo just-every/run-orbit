@@ -3,7 +3,8 @@ import {Link,useNavigate} from '@tanstack/react-router';
 import type {MetricSnapshot} from '../../shared/expansion-contracts';
 import {api} from '../fold-ui/workspace';
 import {DataValue} from '../operator/ui/data-value';
-import {formatDate,formatDateTime,formatTime,label} from '../operator/ui/formatters';
+import {SourceRecordList} from './source-records';
+import {formatDate,formatDateTime,formatTime} from '../operator/ui/formatters';
 import {ReportDetails,reportValue} from '../analytics/report-details';
 import {ReportSharing} from '../analytics/report-sharing';
 import {ReportDefinitionEditor,type CustomDefinition} from '../analytics/definition-editor';
@@ -28,8 +29,8 @@ function plainIncompleteReason(reason:string){
  return reason;
 }
 
-function CustomResult({report,name,builtIn,busy}:{report:Result;name:string;builtIn:boolean;busy:boolean}){
- const [sourcePage,setSourcePage]=useState(0),text=reportValue(report),value=report.values.value;
+function CustomResult({report,name,builtIn,busy,workspace}:{report:Result;name:string;builtIn:boolean;busy:boolean;workspace:string}){
+ const [sourcePage,setSourcePage]=useState(0),[auditOpen,setAuditOpen]=useState(false),text=reportValue(report),value=report.values.value;
  const figure=typeof value==='number'&&!report.measurement?.currency?String(value):text,unit=figure===text?'':text.slice(figure.length+1);
  const extra=Object.entries(report.values).filter(([key])=>!['value','formattedValue','unit','groups'].includes(key));
  return <article className="analytics-console__result reports-custom" aria-busy={busy}>
@@ -42,7 +43,7 @@ function CustomResult({report,name,builtIn,busy}:{report:Result;name:string;buil
    <p>{report.inputs.length} source records.{report.fxSnapshots.length>0&&<> {report.fxSnapshots.length} exchange rates were used.</>}</p>
    {extra.length>0&&<dl>{extra.map(([key,item])=><div key={key}><dt>{detailValueLabel(key)}</dt><dd>{item===null?'Not available':<DataValue value={item}/>}</dd></div>)}</dl>}
    <p>{report.watermark==='native-transaction-fenced'?'Native records were checked against the current data and access revisions.':report.watermark==='unknown'?'The source has not confirmed that all updates are complete through this period.':`Source updates are confirmed through ${formatDate(report.watermark)}.`}</p>
-   <p>{report.inputs.length} source records. Opening a record checks current access.</p><details><summary>Audit details: source records</summary><ol>{report.inputs.slice(sourcePage*50,sourcePage*50+50).map(ref=><li key={`${ref.type}:${ref.id}`}><a href={`/app/shared-records?${new URLSearchParams({kind:ref.type,id:ref.id})}`}>Open {label(ref.type)}</a></li>)}</ol><button type="button" disabled={sourcePage===0} onClick={()=>setSourcePage(page=>page-1)}>Previous source records</button><button type="button" disabled={(sourcePage+1)*50>=report.inputs.length} onClick={()=>setSourcePage(page=>page+1)}>Next source records</button></details>
+   <p>{report.inputs.length} source records. Opening a record checks current access.</p><details onToggle={event=>setAuditOpen(event.currentTarget.open)}><summary>Audit details: source records</summary>{auditOpen&&<SourceRecordList workspace={workspace} refs={report.inputs.slice(sourcePage*50,sourcePage*50+50)}/>}<button type="button" disabled={sourcePage===0} onClick={()=>setSourcePage(page=>page-1)}>Previous source records</button><button type="button" disabled={(sourcePage+1)*50>=report.inputs.length} onClick={()=>setSourcePage(page=>page+1)}>Next source records</button></details>
   </details>
  </article>;
 }
@@ -94,7 +95,7 @@ export function CustomReportPage({workspace,catalog,id,search,builtIn}:{workspac
    period={builtIn?undefined:<PeriodControl kind={customPeriod} text={custom||search.result?windowLabel(shownFrom,shownThrough,catalog.suite.timezone):'Last 30 days'} from={local(shownFrom)} through={local(shownThrough)} onApply={apply}/>}
    actions={<>{live&&<div className="reports-save"><button type="button" className="reports-pill" disabled={saving||busy} onClick={()=>void save()}>Save result</button>{refused&&<p className="reports-refusal" role="alert">{refused}</p>}</div>}<button ref={optionsButton} type="button" className="reports-outline" onClick={()=>setOptions(true)}>Report options</button></>}/>
   {error?<ReadFailure error={error} retry={()=>setAttempt(value=>value+1)}>{search.result&&<> <Link to="/app/reports/$id" params={{id}} activeOptions={{exact:true}} search={address({...search,result:undefined})} replace>Show the live report</Link></>}</ReadFailure>
-   :report?<><CustomResult report={report} name={name} builtIn={builtIn} busy={busy}/><p className="reports-basis-line">{busy?'Computing…':['Basis',...live?[`Computed ${formatTime(report.asOf)}`,'Not saved']:['Saved result']].join(' · ')}</p></>
+   :report?<><CustomResult report={report} name={name} builtIn={builtIn} busy={busy} workspace={workspace}/><p className="reports-basis-line">{busy?'Computing…':['Basis',...live?[`Computed ${formatTime(report.asOf)}`,'Not saved']:['Saved result']].join(' · ')}</p></>
    :<p className="reports-status" role="status">Computing {name}…</p>}
   {options&&<OptionsDrawer title="Report options" returnFocus={optionsButton.current} onClose={()=>setOptions(false)}>
    {open!==null&&<CustomSavedResults base={base} id={id} version={open} onReopen={result=>{setOptions(false);go({version:search.version,result});}}/>}

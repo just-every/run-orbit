@@ -5867,7 +5867,7 @@
       "executable": false
     },
     "src/core/features/dashboards/editor-tile.tsx": {
-      "sha256": "9ba64845a9170c2a90c4cca0e9854c165c7e195971222e3e0e4ac4c3a655f016",
+      "sha256": "2ee21496122d3cc5a8c27f4dfd1744bb3e4208652151bfedb8d1c97e2883d6b8",
       "executable": false
     },
     "src/core/features/dashboards/editor.tsx": {
@@ -5923,7 +5923,7 @@
       "executable": false
     },
     "src/core/features/dashboards/save-failure.tsx": {
-      "sha256": "52b8b502985071389402f40b147331305dd5c773a4c0509fd913a894c2587aec",
+      "sha256": "ef30cb9658359781be04975ec66b82e5cb4e78e229ac8a2bc2e27c0a1e0bf4d0",
       "executable": false
     },
     "src/core/features/dashboards/schedule-dialog.tsx": {
@@ -7075,7 +7075,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/recipe-snippet.tsx": {
-      "sha256": "f884c82df53b534e9dcd9d14ace3bd8dfcadf01da336c00a0baa3dc6b03213ab",
+      "sha256": "98b04c2e5b62281e1614f0add1b5257c6ae9d2d1a78d0d2c8e36527ae65be68b",
       "executable": false
     },
     "src/core/features/operator/ui/record-create.tsx": {
@@ -8347,7 +8347,7 @@
       "executable": false
     },
     "src/core/features/reports/custom-report-page.tsx": {
-      "sha256": "40a25985d7ea99ac0d978ff0868551d9f5dd41819b2df0ddac74216bbca81bfe",
+      "sha256": "3582a32302c81ef3fb1902e6ac5375ead6069ff82cf3ff58d6bdce4089d98c3b",
       "executable": false
     },
     "src/core/features/reports/forecast-figures.tsx": {
@@ -8639,7 +8639,7 @@
       "executable": false
     },
     "src/core/features/today/meeting-plan.ts": {
-      "sha256": "34c42087630588da5d776c02ede679fba86ef10f22f5b673e4515315dd0ff85f",
+      "sha256": "b297a8ae234631e460d3628faaf0007aafe5e3f37763d39771c72a00a281c102",
       "executable": false
     },
     "src/core/features/today/plan-actions.ts": {

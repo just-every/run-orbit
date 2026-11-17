@@ -32,7 +32,7 @@ export async function meetingContext(db:D1Database,signalId:string){
 
 async function attendees(db:D1Database,participants:string[],linked:RecordRef[],exactOnly=false){
  const operators=new Set((await db.prepare('SELECT lower(trim(email)) AS email FROM operators').all<{email:string}>()).results.map(row=>row.email));
- const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)&&(exactOnly||!operators.has(key!))))];
+ const keys=[...new Set(participants.map(email=>contactEmailKey(email)).filter((key):key is string=>Boolean(key)))];
  const matched=(await db.prepare(`SELECT c.id,c.email_key AS key FROM contacts c WHERE c.email_key IN (SELECT value FROM json_each(?1))
   UNION SELECT c.id,a.identity_key AS key FROM record_aliases a JOIN contacts c ON c.id=a.survivor_id WHERE a.record_type='contact' AND a.identity_key IN (SELECT value FROM json_each(?1))`).bind(JSON.stringify(keys)).all<{id:string;key:string}>()).results;
  const candidates=new Map(keys.map(key=>[key,[...new Set(matched.filter(row=>row.key===key).map(row=>row.id))]] as const));
@@ -48,7 +48,7 @@ async function attendees(db:D1Database,participants:string[],linked:RecordRef[],
  for(const key of keys.filter(key=>!byKey.has(key)&&(!operators.has(key)||(candidates.get(key)?.length??0)>0))){
   const domain=companyDomainKey(key.split('@')[1],free),company=domain?await db.prepare('SELECT id,name FROM companies WHERE primary_domain_key=?').bind(domain).first<{id:string;name:string}>():null;
   const ambiguous=(candidates.get(key)?.length??0)>1||(operators.has(key)&&(candidates.get(key)?.length??0)>0);
-  unresolved.push({email:key,company:ambiguous?null:company??null,...(ambiguous?{reason:'Ambiguous exact email: more than one identity matches. Review the records; Orbit has chosen nobody.'}:{})});
+  unresolved.push({email:key,company:ambiguous?null:company??null,...(ambiguous?{reason:operators.has(key)?'This address belongs to both a signed-in user and a contact record. Orbit has chosen nobody; open the contact to review it.':'Ambiguous exact email: more than one identity matches. Review the records; Orbit has chosen nobody.'}:{})});
  }
  return {resolved,unresolved};
 }
