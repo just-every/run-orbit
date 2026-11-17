@@ -204,6 +204,11 @@ After import, run setup to establish the owner and local configuration. Auth,
 legacy local mail state, private settings and transient runtime state are excluded. Orbit supports hosted Records transfers through `--target remote`; see
 [Operations](OPERATIONS.md) for that separate format and its session requirements.
 
+Published contact forms are withdrawn after local restore: their capture
+authorization does not travel. Open Settings › Forms, choose **Reopen latest
+publication**, review a new contact limit and expiry, then **Approve reviewed
+page** and **Publish approved page** before sharing the public path again.
+
 Real deployment uses the owner-account procedure and its private credentials.
 `rer deploy --dry-run` validates and builds locally without a
 provider request. The default environment is `production`; select another with

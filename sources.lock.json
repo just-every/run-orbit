@@ -2482,8 +2482,12 @@
       "sha256": "60c7c1a2bc932926ca8243b29f999d8db2a8d865d077818ed43ceb293f029b6c",
       "executable": false
     },
+    "newtests/t096/forms-local-restore.ts": {
+      "sha256": "d48435f1cbd9079dabd171f5900fae9839314d1355fbe8bbc20595d517b7724b",
+      "executable": false
+    },
     "newtests/t096/forms-mapped-custody.ts": {
-      "sha256": "44ace416d88870ec08ad4b8e687dad7d52cfb45e618c42ce4b0992c86edd15eb",
+      "sha256": "8fc0101f10fc7b2bc5294cb304cdffb8849dab1b0a31daa2ac42b68fb9e40596",
       "executable": false
     },
     "newtests/t096/forms-mapped-journey.ts": {
@@ -3815,7 +3819,7 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "88e6049a3b566e323bfd5c15f68def59498620ef9f7145f750a9526cdff50d7e",
+      "sha256": "8283151d69fe379905e05802ed5c1985ef5fffcab924113996f9826005907a75",
       "executable": false
     },
     "OWNER-STEPS.md": {
@@ -3907,7 +3911,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "20ef6d3a4cdc967de48720ecb9b20e7801981fde88dc92b5129b3e38ca763f99",
+      "sha256": "9200cb498e730bd09d046c318629d25196ffd43c721ce59fcd0d8c5aa7ee1df9",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -3963,7 +3967,7 @@
       "executable": false
     },
     "RUN-LOCALLY.md": {
-      "sha256": "059a574c7022d2e6f20b92d5ea8f37fb81eaae4c33e5d40e807462384b664a30",
+      "sha256": "6102e46e1ac37d216d2b22e3ce307c53e2fb0f464b0c534f8bec1cd9338c676d",
       "executable": false
     },
     "schema/fold/0016_collaborator_access.sql": {
@@ -4179,7 +4183,7 @@
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
-      "sha256": "79f5651f9b5d349810e05ed267abe4ec4de1c572dc21125c68ec74189043d15f",
+      "sha256": "5d21109184ba0237a9b17286bf29102e6a35f3ea840fac3118e6d8f4571065d4",
       "executable": false
     },
     "scripts/installer/portability.mjs": {
@@ -6187,7 +6191,7 @@
       "executable": false
     },
     "src/core/features/forms/console.tsx": {
-      "sha256": "fa9c426d4d539e208a3b022ac98735ab1708b72b9d8c8bc96bba9443c209a3a0",
+      "sha256": "1626a23e1a92487f2bef8fe7bba6deb93698b31f4ee53bd1507633567aaa0f84",
       "executable": false
     },
     "src/core/features/forms/contact-basis.ts": {
@@ -6251,7 +6255,7 @@
       "executable": false
     },
     "src/core/features/forms/service.ts": {
-      "sha256": "bc3c26a09072be83dbcc902f166c6b11342fb308cfffcbdc70a7cbc6be485040",
+      "sha256": "477dba7bd5c51ec0c4c597ca2d811c1c8edfaf64ce5ba21303207586d9a1352f",
       "executable": false
     },
     "src/core/features/forms/spam-panel.tsx": {
