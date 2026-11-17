@@ -1,0 +1,71 @@
+{
+  "phase": "first publication independently fetched before final receipt publication",
+  "command": [
+    "python3",
+    "/home/agent/rer-consolidation/.tools/cloud_evidence.py",
+    "fetch",
+    "--repository",
+    "just-every/run-orbit",
+    "--tag",
+    "ct-open-points-plan-orbit-1",
+    "--root",
+    "/home/agent/rer-consolidation/work/ct-open-points-plan-orbit-1/readback",
+    "--head",
+    "a15151b08fd10615ecc4a1d5da6277d7998808ea"
+  ],
+  "exit": 0,
+  "receipt": {
+    "destination": "/home/agent/rer-consolidation/work/ct-open-points-plan-orbit-1/readback/work/ct-open-points-plan-orbit-1/reports/just-every/run-orbit",
+    "files": [
+      {
+        "blob": "b8c0592dcb38493e1aa7e4e0ee1fc2bcc0a2b51f",
+        "bytes": 267117,
+        "path": "REPORT.md",
+        "sha256": "753493d7c257d53611260da51f1e89ce809212558ef776a4bebd02c58dbbfb62"
+      },
+      {
+        "blob": "8fd8233188cce6cbd71a32a7268af2c2c698a0d1",
+        "bytes": 682260,
+        "path": "branch-scan.json",
+        "sha256": "3e1d8e4c04ad14d12c9a9b006b8072bfdde9698db6cb5f67d8865e0b8982d72f"
+      },
+      {
+        "blob": "27a56f746e4929c11a3d1d1b645189d393cbe263",
+        "bytes": 9273,
+        "path": "builder-entries.json",
+        "sha256": "3bf0ee1e27ee59c2386eebec6fd686f6720e3b4e77118f1f4a25fc4e0e2f18aa"
+      },
+      {
+        "blob": "741f737909db194ed397ff70fc7cdb105f27a7d8",
+        "bytes": 473740,
+        "path": "contract-inventory.json",
+        "sha256": "08c83f249ab2d16453dcb5dd6dc171d4a2296f459f895e10858949818a88da51"
+      },
+      {
+        "blob": "495291722c4f9bf9ba16988a5f149440f38341bb",
+        "bytes": 6179,
+        "path": "inspection-receipt.json",
+        "sha256": "0ba7907c9faa32fcf03f82c249c3fcb1d526c37f66a59f6a0b6a1405c37d7e40"
+      },
+      {
+        "blob": "721b1a414c6b6265a968ea658316121d15d5296e",
+        "bytes": 51195,
+        "path": "plan-classification.json",
+        "sha256": "1b939acc94a9a1e1a92ec75c3e1a60bacd516b6d6058bc3a33cc8dbd6d2f6412"
+      },
+      {
+        "blob": "8f265fc24a66f04766b338147c0e67f2534a5aa1",
+        "bytes": 503741,
+        "path": "source-index.json",
+        "sha256": "9e3edc7ed5cc7b562936214c19fb6705b3827abbdc7aad8792b1fcc1a0ce67ac"
+      }
+    ],
+    "head": "a15151b08fd10615ecc4a1d5da6277d7998808ea",
+    "manifest_sha256": "53f3becb1326bcdd3dfa3e4a861257a51595879d658e9bfcc40b132225fe6cd7",
+    "product_branch": "main",
+    "product_head": "14a3aae44a2e327978f7ce92f099448190362d3d",
+    "ref": "refs/heads/evidence/ct-open-points-plan-orbit-1",
+    "repository": "just-every/run-orbit",
+    "status": "restored"
+  }
+}

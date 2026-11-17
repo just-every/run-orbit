@@ -1,0 +1,7 @@
+command: git log origin/main..HEAD --format="%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)"
+Run Edit Run fleet <fleet@runeditrun.com>
+Run Edit Run fleet <fleet@runeditrun.com>
+
+
+validated candidates including side parents: 1
+report candidate=a15151b08fd10615ecc4a1d5da6277d7998808ea main=14a3aae44a2e327978f7ce92f099448190362d3d result=PASS

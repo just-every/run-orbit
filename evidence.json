@@ -37,10 +37,22 @@
       "sha256": "1b939acc94a9a1e1a92ec75c3e1a60bacd516b6d6058bc3a33cc8dbd6d2f6412"
     },
     {
+      "blob": "2aeb5e34d47b63e4cdfb419f48254cb19360fcc9",
+      "bytes": 341,
+      "path": "push-identity-audit.txt",
+      "sha256": "4015d361511e72d794d68704a8537fbc70c31ab92739724c83335e52dee415ba"
+    },
+    {
       "blob": "8f265fc24a66f04766b338147c0e67f2534a5aa1",
       "bytes": 503741,
       "path": "source-index.json",
       "sha256": "9e3edc7ed5cc7b562936214c19fb6705b3827abbdc7aad8792b1fcc1a0ce67ac"
+    },
+    {
+      "blob": "f1d1d81d4fdb470cfacd6c6d55eabe45752f7259",
+      "bytes": 2606,
+      "path": "transfer-receipt.json",
+      "sha256": "8db16b8c9921495b0cf804476da23481c3b373514fa425471f3fcc5a2c348242"
     }
   ],
   "product_branch": "main",
