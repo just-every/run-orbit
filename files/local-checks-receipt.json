@@ -1,0 +1,102 @@
+{
+  "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+  "base": "14a3aae44a2e327978f7ce92f099448190362d3d",
+  "product_branch": "cloud/main-orbit-stranger37-trips-1-c1",
+  "product_commits": 1,
+  "classification": "Pre-fix local checks passed, but CI reproduced a hydration defect; see final-receipt.json for terminal custody",
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer install",
+      "result": "exit 0"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "result": "exit 0; 84 migrations and owner setup complete; private installer output excluded"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "result": "exit 0",
+      "log": "build.log"
+    },
+    {
+      "command": "cloud_run pnpm run test:records-layout",
+      "result": "3 consecutive exit 0 runs; each 1 pass, 0 fail, 0 skipped",
+      "receipt": "records-repetition-receipt.json"
+    },
+    {
+      "command": "cloud_run node --import /tmp/orbit-system-chromium.mjs --test tests/rer/onboarding.test.mjs",
+      "result": "exit 0; 2 pass, 0 fail, 0 skipped",
+      "log": "onboarding.log"
+    },
+    {
+      "command": "cloud_run node --import /tmp/orbit-system-chromium.mjs /tmp/orbit-pipeline-proof.mjs",
+      "result": "exit 0; visible and Enter pipeline creation; changed-screen proof at 1440 and 390",
+      "log": "pipeline-proof.log"
+    },
+    {
+      "command": "cloud_run pnpm run typecheck",
+      "result": "exit 0",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "result": "exit 0; Contract documents are current.",
+      "log": "contract-check.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "result": "exit 0; no tracked changes after rebase",
+      "log": "source-lock.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "exit 0; ok true",
+      "log": "source-check.json"
+    }
+  ],
+  "test_budget": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "cap": 200,
+    "added": 0,
+    "removed": 0
+  },
+  "contract_status_changes": [],
+  "contract_source_and_views": "unchanged",
+  "main_search_and_sign_in_code_and_assertions": "unchanged",
+  "product_push": {
+    "result": "success attempt 1",
+    "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+    "log": "product-push.log",
+    "remote_ref_readback": "matched"
+  },
+  "pr": null,
+  "working_tree": "clean",
+  "browser_screens": [
+    "screens/automation-1440.png",
+    "screens/automation-390.png",
+    "screens/calcom-panel-1440.png",
+    "screens/calcom-panel-390.png",
+    "screens/calcom-recipe-1440.png",
+    "screens/calcom-recipe-390.png",
+    "screens/calendly-panel-1440.png",
+    "screens/calendly-panel-390.png",
+    "screens/calendly-recipe-1440.png",
+    "screens/calendly-recipe-390.png",
+    "screens/pipeline-1440.png",
+    "screens/pipeline-390.png",
+    "screens/saved-filtered-view-1440.png",
+    "screens/saved-filtered-view-390.png"
+  ],
+  "tooling": "Node 22.20.0 and pinned pnpm 10.12.4; system Chromium /usr/bin/chromium --no-sandbox. Only a runtime launch override was supplied to the unchanged onboarding harness.",
+  "publication_scan": "Fleet Mac lander required; not claimed locally under cloud override",
+  "stage": "historical pre-fix checks"
+}

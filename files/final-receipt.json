@@ -1,0 +1,122 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/main-orbit-stranger37-trips-1-c1",
+  "head": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+  "base": "14a3aae44a2e327978f7ce92f099448190362d3d",
+  "terminal_custody": "PUSHED",
+  "classification": "Interaction: SSR search input accepted typing before hydration and React reset it; existing hydration guard applied",
+  "product_commits": 2,
+  "working_tree": "clean",
+  "pr": null,
+  "checks": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "result": "exit 0",
+      "log": "build-fixed.log"
+    },
+    {
+      "command": "cloud_run pnpm run typecheck",
+      "result": "exit 0",
+      "log": "typecheck-fixed.log"
+    },
+    {
+      "command": "cloud_run pnpm exec tsx /tmp/orbit-search-fixed.mts",
+      "result": "exit 0; held-module readiness, query save and fresh-page reopen passed",
+      "log": "search-repro-fixed.log"
+    },
+    {
+      "command": "cloud_run pnpm run test:records-layout",
+      "result": "exit 0; 1 pass, 0 fail, 0 skipped; existing assertions retained plus slow-module journey",
+      "head": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+      "port": 8734,
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium --no-sandbox",
+      "duration_ms": 186937.330363,
+      "log": "records-layout-final.log"
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "result": "exit 0",
+      "log": "contract-check-fixed.log"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "result": "exit 0; regenerated last after staging the new helper",
+      "log": "source-lock-fixed.json"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "result": "exit 0; ok true",
+      "log": "source-check-fixed.json"
+    },
+    {
+      "command": "cloud_run node --import /tmp/orbit-system-chromium.mjs /tmp/orbit-pipeline-proof.mjs",
+      "head": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+      "result": "exit 0; visible and Enter pipeline creation and changed-screen proof at 1440/390",
+      "log": "pipeline-proof-final.log"
+    }
+  ],
+  "test_budget": {
+    "before": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "after": {
+      "cases": 198,
+      "qualifications": 2,
+      "total": 200
+    },
+    "cap": 200,
+    "registrations_added": 0,
+    "registrations_removed": 0,
+    "assertions_weakened": 0
+  },
+  "clauses": {
+    "before": {
+      "partial": 130,
+      "done": 42,
+      "missing": 32
+    },
+    "after": {
+      "partial": 130,
+      "done": 42,
+      "missing": 32
+    },
+    "changed_cells": 0
+  },
+  "product_push": {
+    "result": "success attempt 1",
+    "log": "product-push-fixed.log",
+    "remote_readback": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+    "history": "ordinary descendant of published d7378a484447ed01c598b53cdfa33ec2b0ed4391"
+  },
+  "ci": {
+    "old_head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+    "run_id": 44077219595,
+    "conclusion": "failure",
+    "product_failed_job": 134020317640,
+    "aggregate_failed_job": 134032227916,
+    "calls_used": 10,
+    "budget": 10,
+    "final_candidate_verify": "unobserved; budget exhausted; no READY claim",
+    "logs": [
+      "ci-batch-18-failed.log",
+      "ci-verify-failed.log"
+    ]
+  },
+  "identity_and_secrets": "candidate authors/committers fleet; no trailers or skip marker; injected bundle value checks passed",
+  "publication_scan": "Fleet Mac lander required under cloud override; no local COMPLETE result claimed",
+  "superseded_local_harness_run": {
+    "log": "records-layout-fixed.log",
+    "reason": "earlier probe route release caused an unhandled route.continue rejection; synchronized in final helper; final full journey passes"
+  },
+  "raw_evidence_hashes": {
+    "records-layout-final.log": "fff355ec171eb9981b38ad7e45fd3ade4e46ab3e3d3cee9634159ed4fe00454f",
+    "search-repro-before.log": "299d4b37648b579eb36618f6ccb1e36b40b41df1be20bb4979883641a2e6ad3b",
+    "search-repro-fixed.log": "28c13b42d4dfeb5f198ec5ce2401804fb527577eb30660ca1185e9dd5224cb73",
+    "ci-batch-18-failed.log": "be2d3994f0a31f16a781ea1f7f52aee94edfb41e8fb103dbc60740ccba5d6841",
+    "ci-verify-failed.log": "0970ff966277ddf900533b09ac1b9238dc558f7fbeb05829820049de86f15a02"
+  },
+  "screenshots": "screenshots-receipt.json"
+}

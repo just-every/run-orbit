@@ -1,0 +1,47 @@
+{
+  "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+  "classification": "Historical pre-fix passes; superseded by exact-SHA CI failure and deterministic hydration reproduction",
+  "assertions": "unchanged",
+  "results": [
+    {
+      "run": 1,
+      "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+      "command": "pnpm run test:records-layout",
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 185120.726942,
+      "log": "records-layout-1.log",
+      "sha256": "ab329b2890f15be4181e8e89cfb5e9ec5a1f9c64f9d6dac2df8724c0420d1778"
+    },
+    {
+      "run": 2,
+      "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+      "command": "pnpm run test:records-layout",
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 215613.802158,
+      "log": "records-layout-2.log",
+      "sha256": "13a1017f6ace82d9502fe17aebb10a59d1f37ee1dcab4b405debc25ca256bd1c"
+    },
+    {
+      "run": 3,
+      "head": "d7378a484447ed01c598b53cdfa33ec2b0ed4391",
+      "command": "pnpm run test:records-layout",
+      "node": "22.20.0",
+      "chromium": "/usr/bin/chromium",
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 221683.735871,
+      "log": "records-layout-3.log",
+      "sha256": "d96eb9a6f422fd33d71f8717a0d52cb042bdb882a1561cdc108c93f14094ccf5"
+    }
+  ],
+  "stage": "pre-fix d7378a484447ed01c598b53cdfa33ec2b0ed4391; not final-candidate qualification"
+}

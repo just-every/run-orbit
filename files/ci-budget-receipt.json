@@ -1,0 +1,58 @@
+{
+  "calls_used": 10,
+  "budget": 10,
+  "calls": [
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs?head_sha=d7378a484447ed01c598b53cdfa33ec2b0ed4391&per_page=100",
+      "exit": 0,
+      "utc": "2026-11-17T11:48:10.615063+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T11:53:10.556517+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T11:58:10.494057+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T12:03:10.546840+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T12:08:10.519497+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T12:13:10.550783+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595 --jq {status,conclusion,head_sha,html_url}",
+      "exit": 0,
+      "utc": "2026-11-17T12:18:10.525268+00:00"
+    },
+    {
+      "command": "gh api repos/just-every/run-orbit/actions/runs/44077219595/jobs?per_page=100",
+      "exit": 0,
+      "receipt": "ci-jobs.json"
+    },
+    {
+      "command": "gh run view 44077219595 --repo just-every/run-orbit --job 134020317640 --log-failed",
+      "exit": 0,
+      "receipt": "ci-batch-18-failed.log"
+    },
+    {
+      "command": "gh run view 44077219595 --repo just-every/run-orbit --job 134032227916 --log-failed",
+      "exit": 0,
+      "receipt": "ci-verify-failed.log"
+    }
+  ],
+  "final_head": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+  "final_verify": "unobserved; budget exhausted"
+}

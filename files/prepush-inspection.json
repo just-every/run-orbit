@@ -1,0 +1,12 @@
+{
+  "head": "0d80d4da6d7c1173c243f2fd9cdc8813cde00629",
+  "candidate_commits": 2,
+  "identities": "pass",
+  "trailers": "absent",
+  "skip_ci_marker": false,
+  "diff_secret_check": "pass",
+  "contract_cells": "unchanged",
+  "main_sign_in_sources_and_assertions": "unchanged",
+  "search_fix": "readiness guard; previous search assertions retained; slow-module public-door regression extends one existing registration",
+  "publication_scan": "Fleet Mac lander required; not claimed locally under cloud override"
+}

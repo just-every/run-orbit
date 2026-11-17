@@ -1,0 +1,64 @@
+verify	Require a successful plan and all required work	﻿2026-11-17T12:14:35.8623995Z ##[group]Run test "$PLAN" = success
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8625271Z [36;1mtest "$PLAN" = success[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8626186Z [36;1mcase "$COVERAGE" in[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8627848Z [36;1m  reuse) test "$SKIP" = true && test "$SOURCE" = skipped && test "$SHARDS" = skipped && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8630400Z [36;1m  light) test "$SKIP" = false && test "$LIGHT" = success && test "$SOURCE" = skipped && test "$SHARDS" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8632424Z [36;1m  full) test "$SOURCE" = success && test "$SHARDS" = success && test "$LIGHT" = skipped ;;[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8634005Z [36;1m  *) exit 1 ;;[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8634829Z [36;1mesac[0m
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8656900Z shell: /usr/bin/bash -e {0}
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8658004Z env:
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8658718Z   ORBIT_BROWSER_PORT: 15600
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8659576Z   ORBIT_ARCHIVE_PORT: 15601
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8660450Z   ORBIT_DELEGATION_PORT: 15602
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8661336Z   ORBIT_VIEWPORT_PORT: 15603
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8662290Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8663464Z   ORBIT_RELATED_RECORD_PORT: 15605
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8664376Z   PROOF_PORT: 15606
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8665150Z   ORBIT_LIFECYCLE_PORT: 15608
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8666007Z   ORBIT_INSPECTOR_PORT: 0
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8666853Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8667783Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8668753Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8669723Z   WRANGLER_SEND_METRICS: false
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8670589Z   ORBIT_VERIFY_PREBUILT: 1
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8671387Z   PLAN: success
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8672407Z   SKIP: false
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8673341Z   COVERAGE: full
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8674094Z   LIGHT: skipped
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8674801Z   SOURCE: success
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8675518Z   SHARDS: failure
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8676238Z ##[endgroup]
+verify	Require a successful plan and all required work	2026-11-17T12:14:35.8787631Z ##[error]Process completed with exit code 1.
+verify	Retain combined routine verdicts (capacity pending)	﻿2026-11-17T12:14:35.9148767Z ##[group]Run actions/upload-artifact@v4
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9149775Z with:
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9150507Z   name: orbit-routine-verification
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9151675Z   path: verification/core-results.jsonl
+verify	Retain combined routine verdicts (capacity pending)	verification/ci-summary.json
+verify	Retain combined routine verdicts (capacity pending)	
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9153048Z   if-no-files-found: error
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9153866Z   compression-level: 6
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9154622Z   overwrite: false
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9155373Z   include-hidden-files: false
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9156184Z env:
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9156862Z   ORBIT_BROWSER_PORT: 15600
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9157683Z   ORBIT_ARCHIVE_PORT: 15601
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9158517Z   ORBIT_DELEGATION_PORT: 15602
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9159401Z   ORBIT_VIEWPORT_PORT: 15603
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9160242Z   ORBIT_RECORD_LAYOUT_PORT: 15604
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9161125Z   ORBIT_RELATED_RECORD_PORT: 15605
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9161978Z   PROOF_PORT: 15606
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9162731Z   ORBIT_LIFECYCLE_PORT: 15608
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9163707Z   ORBIT_INSPECTOR_PORT: 0
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9164590Z   ORBIT_VIEWPORT_INSPECTOR_PORT: 0
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9165497Z   ORBIT_RECORD_LAYOUT_INSPECTOR_PORT: 0
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9166447Z   ORBIT_RELATED_RECORD_INSPECTOR_PORT: 0
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9167381Z   WRANGLER_SEND_METRICS: false
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9168226Z   ORBIT_VERIFY_PREBUILT: 1
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:35.9169000Z ##[endgroup]
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:36.2331000Z (node:2025) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:36.2332111Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:36.2367412Z Multiple search paths detected. Calculating the least common ancestor of all paths
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:36.2369656Z The least common ancestor is /home/runner/work/run-orbit/run-orbit/verification. This will be the root directory of the artifact
+verify	Retain combined routine verdicts (capacity pending)	2026-11-17T12:14:36.2380274Z ##[error]No files were found with the provided path: verification/core-results.jsonl
+verify	Retain combined routine verdicts (capacity pending)	verification/ci-summary.json. No artifacts will be uploaded.
