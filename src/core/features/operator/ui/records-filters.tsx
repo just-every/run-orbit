@@ -1,10 +1,11 @@
 import {FilterButton,FilterChips,FilterPanel,useFilterPanel,type FilterField} from './filter-panel';
 import {recordStateLabel} from './record-presentation';
+import {useHydrated} from './use-hydrated';
 
 type Filters=Record<string,string>;
 const names:Record<string,string>={pipeline_id:'Pipeline',lifecycle:'Status',band:'Priority',queue_state:'Queue',stage_id:'Stage',owner_id:'Owner'};
 export function RecordsFilters({query,onQuery,filters,onFilters,settings,opportunities}:{query:string;onQuery:(query:string)=>void;filters:Filters;onFilters:(filters:Filters)=>void;settings:any;opportunities:boolean}){
- const panel=useFilterPanel();
+ const panel=useFilterPanel(),hydrated=useHydrated();
  const options:Record<string,{id:string;name:string}[]>={
   pipeline_id:settings?.pipelines??[],
   lifecycle:['open','won','lost'].map(value=>({id:value,name:recordStateLabel(value)})),
@@ -17,7 +18,7 @@ export function RecordsFilters({query,onQuery,filters,onFilters,settings,opportu
  function change(field:string,value:string){onFilters({...filters,[field]:value,...(field==='pipeline_id'?{stage_id:''}:{})});}
  const applied=Object.values(filters).filter(Boolean).length;
  return <section className="records-search" aria-label="Search and filters">
-  <div className="records-search__bar"><label>Search records and timeline<input value={query} onChange={event=>onQuery(event.target.value)} type="search"/></label>
+  <div className="records-search__bar"><label>Search records and timeline<input readOnly={!hydrated} value={query} onChange={event=>onQuery(event.target.value)} type="search"/></label>
    {settings?<FilterButton panel={panel} applied={applied}/>:null}
    {settings?<FilterChips fields={fields} values={filters} onChange={change} valueName={recordStateLabel}/>:null}
   </div>

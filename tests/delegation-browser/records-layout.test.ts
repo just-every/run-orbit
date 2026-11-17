@@ -21,6 +21,7 @@ import { sampleData } from '../fixtures/sample-data';
 import { sessionCookieName } from '../support/test-auth';
 import { nativeLongRecordLayoutJourney } from './records-layout-journey.mjs';
 import { identityVars } from '../support/worker-identity.mjs';
+import {recordsSearchHydrationJourney} from './records-search-hydration-journey.mjs';
 
 test('OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390', async () => {
   const fixture = await isolatedDatabase();
@@ -58,6 +59,7 @@ test('OUT-013 send consent and bound review, emitted Worker Mailchimp setup and 
     await privateEntriesJourney(await context.newPage(),await collaboratorContext.newPage(),privateData);
     await collaboratorContext.close();
     await nativeLongRecordLayoutJourney(await context.newPage());
+    await recordsSearchHydrationJourney(await context.newPage());
     await typedFieldsJourney(await context.newPage(),calendarData.contact);
   } finally {
     await browser?.close();
