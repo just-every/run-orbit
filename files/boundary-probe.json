@@ -1,0 +1,22 @@
+{
+  "probe": "GHSA-hxh3-vqpv-xpqv boundary string escaping",
+  "cases": 4,
+  "results": [
+    {
+      "name": "Suspense plain string child",
+      "status": "passed"
+    },
+    {
+      "name": "ErrorBoundary plain string child",
+      "status": "passed"
+    },
+    {
+      "name": "ErrorBoundary plain string fallback",
+      "status": "passed"
+    },
+    {
+      "name": "Suspense plain string fallback",
+      "status": "passed"
+    }
+  ]
+}

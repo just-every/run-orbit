@@ -1,0 +1,16 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Suspense plain string child escapes the markup
+    at check (file:///home/agent/rer-consolidation/work/gr-mt-orbit-dep-2/packet/boundary-probe.mjs:12:10)
+    at async file:///home/agent/rer-consolidation/work/gr-mt-orbit-dep-2/packet/boundary-probe.mjs:16:1 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.20.0

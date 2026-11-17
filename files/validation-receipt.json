@@ -1,0 +1,182 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-2",
+  "head": "c367dedb2a7ed7aa040ef150d8e7481874d12691",
+  "main_at_refresh": "14a3aae44a2e327978f7ce92f099448190362d3d",
+  "toolchain": {
+    "node": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "changed_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "sources.lock.json"
+  ],
+  "dependency": {
+    "name": "hono",
+    "before": "4.13.5",
+    "after": "4.13.7",
+    "advisory": "GHSA-hxh3-vqpv-xpqv",
+    "only_dependency_changed": true,
+    "vulnerable_lockfile_resolutions_before": 1,
+    "vulnerable_lockfile_resolutions_after": 0
+  },
+  "tests_before": {
+    "registered": 198,
+    "qualification_flows": 2,
+    "total": 200
+  },
+  "tests_after": {
+    "registered": 198,
+    "qualification_flows": 2,
+    "total": 200
+  },
+  "contract": {
+    "clauses_changed": [],
+    "status_changes": [],
+    "generated_views_committed": false,
+    "progress_before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "progress_after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  },
+  "checks": [
+    {
+      "command": "pnpm add hono@4.13.7 --save-exact",
+      "exit": 0,
+      "result": "Only Hono importer, package integrity and snapshot changed in the generated lockfile"
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "result": "84 migrations applied; first owner claimed; setup process exited"
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "result": "Updated only the package.json and pnpm-lock.yaml hashes"
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git rebase origin/main",
+      "exit": 0,
+      "result": "Candidate already up to date; no commits rewritten"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "result": "Production application build completed"
+    },
+    {
+      "command": "pnpm exec tsx --test --test-concurrency=1 tests/core/local-owner.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node <packet>/boundary-probe.mjs <repository>",
+      "exit": 0,
+      "passed": 4,
+      "failed": 0,
+      "result": "Suspense and ErrorBoundary plain-string children and fallbacks escape injected markup"
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "result": "198 registered + 2 qualification flows = 200, unchanged"
+    },
+    {
+      "command": "pnpm list hono --depth Infinity --json",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "node <packet>/boundary-probe.mjs /tmp/orbit-hono-baseline",
+      "exit": 1,
+      "expected_failure": true,
+      "result": "The same behavioral probe fails on unmodified Hono 4.13.5: Suspense emits unescaped plain string markup. It passes all four paths with the candidate dependency."
+    }
+  ],
+  "notes": [
+    "No UI changes; no browser screenshots required by this maintenance scope.",
+    "No new committed tests or weakened existing assertions.",
+    "The first attempted rebase before committing refused dirty files; the clean committed candidate was then successfully rebased with no changes.",
+    "The complete local suite was not run, per brief; exact-SHA Verify is the full gate."
+  ],
+  "publication": {
+    "status": "FAIL",
+    "scanner": "Base publication scanner shipped with @runeditrun/rer@0.2.113",
+    "gitleaks": "8.30.1",
+    "tree": "exact committed files in detached worktree, with full shared repository history",
+    "working_tree_clean": true,
+    "command": "node node_modules/@runeditrun/rer/scripts/publish-check.mjs --repo <publication-tree> --ref c367dedb2a7ed7aa040ef150d8e7481874d12691 --env-file <private injected bundle> --timeout-seconds 7200",
+    "initial_timeout_seconds": 600,
+    "initial_result": "INCOMPLETE: scan.deadline-exceeded; no product push attempted",
+    "timeout_seconds": 7200,
+    "environment_checked": true,
+    "complete": true,
+    "findings": 1361,
+    "release_or_working_tree_findings": 0,
+    "candidate_changed_file_findings": 0,
+    "candidate_ancestry_findings": 5,
+    "history_commits": 2238,
+    "history_trees": 2176,
+    "history_blobs": 18517,
+    "seconds": 959.121091,
+    "scanner_implementation": {
+      "version": "0.2.113",
+      "sha256": "c5f2d788f2f08764cd018e049b507c26f5ac01f651e2e8696398d89a5a886ffb",
+      "python": "3.12.14"
+    },
+    "rules": {
+      "license.missing": 1,
+      "hygiene.email": 285,
+      "hygiene.local-path": 475,
+      "SEC-3": 5,
+      "secret.assignment": 298,
+      "hygiene.github-private": 291,
+      "hygiene.github-missing": 6
+    },
+    "blocker": "The required zero-finding publication gate fails on existing history. Repair would involve published history outside this dependency update; published history was not rewritten."
+  },
+  "custody": {
+    "product_pushed": false,
+    "pr": null,
+    "ci_runs": [],
+    "verify": "NOT RUN: publication gate prohibited product push",
+    "status": "BLOCKED",
+    "clone": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-2/repo",
+    "bundle": {
+      "bundle": "/home/agent/rer-consolidation/work/gr-mt-orbit-dep-2/product-c367dedb2a7ed7aa040ef150d8e7481874d12691.bundle",
+      "head": "c367dedb2a7ed7aa040ef150d8e7481874d12691",
+      "sha256": "56361e8071f030836ec677b7824460da5d0f07a19dbc545f9bd5681aa05062a5",
+      "verified": true,
+      "purpose": "preserve completed product work independently of publication outcome"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "orbit",
+    "version": "0.4.11",
+    "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-2/repo",
+    "private": true,
+    "dependencies": {
+      "hono": {
+        "from": "hono",
+        "version": "4.13.7",
+        "resolved": "https://registry.npmjs.org/hono/-/hono-4.13.7.tgz",
+        "path": "/home/agent/rer-consolidation/work/maint/gr-mt-orbit-dep-2/repo/node_modules/.pnpm/hono@4.13.7/node_modules/hono"
+      }
+    }
+  }
+]
