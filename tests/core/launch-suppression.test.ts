@@ -1,4 +1,5 @@
 import {erasedCreationConsent} from '../support/erased-creation-consent';
+import {partialSaveRace} from '../support/partial-save-race';
 import {mailchimpLedgerEdge,proveMailchimpLedger} from '../support/mailchimp-ledger-proof';
 import {reviewedMerge} from '../support/reviewed-merge';
 import assert from 'node:assert/strict';
@@ -56,6 +57,7 @@ test('RECORD-012 DATA-002 manual contacts start contactable; suppression survive
 
 test('RECORD-012 concurrent stop dominates stale edit; merge preserves both recipients and clear never resurrects a schedule',async()=>{
  const f=await launchFixture();try{
+  await partialSaveRace(f);
   const a=await f.customer(),b=await f.customer(),scheduled=await f.message(a.contactId,a.opportunityId);
   let intervened=false;const raced=new Proxy(f.db,{get(target,key){if(key==='batch')return async(statements:D1PreparedStatement[])=>{if(!intervened){intervened=true;await target.prepare("UPDATE contacts SET contactability='do_not_contact' WHERE id=?").bind(a.contactId).run();}return target.batch(statements);};const value=(target as any)[key];return typeof value==='function'?value.bind(target):value;}});
   await new RecordsRepository(raced).save('contact',{name:'Stale name',contactability:'contactable'},f.actor,a.contactId,{ordinaryEdit:true});

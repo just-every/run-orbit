@@ -41,7 +41,7 @@ function changedText(before:Record<string,any>,after:Record<string,any>,definiti
 }
 export class RecordsRepository extends RecordSeedRepository {
  constructor(readonly db:D1Database){super(db);}
- async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[];undoOf?:string}={}){
+ async prepareSave(kind:RecordKind,input:unknown,actor:string,id?:string, options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[];undoOf?:string;expectedRecord?:Record<string,any>}={}){
   const before=id?await requireRecord(this.db,kind,id):null;
   const links=kind==='opportunity'&&before?(await this.db.prepare('SELECT contact_id,is_primary FROM opportunity_contacts WHERE opportunity_id=?').bind(id).all<{contact_id:string;is_primary:number}>()).results:[];
   let source=input;
@@ -93,6 +93,13 @@ export class RecordsRepository extends RecordSeedRepository {
   const associationsChanged=kind==='opportunity'&&before&&(links.length!==contacts.length||links.some(link=>!contacts.includes(link.contact_id)||Boolean(link.is_primary)!==(link.contact_id===primary)));
   const columns=Object.keys(data),values=columns.map(k=>data[k]??null);
   const statements:D1PreparedStatement[]=policies.length?stagePolicyFence(this.db,policies,before?{id,stage_id:before.stage_id,updated_at:before.updated_at}:undefined):[];
+  // PATCH merged its changed fields into this exact row. Refuse atomically if
+  // another control saved meanwhile; autosave rereads and retries disjoint edits.
+  // Compare the values too: two writes can share the same millisecond timestamp.
+  if(options.expectedRecord){
+   const expected=Object.entries(options.expectedRecord);
+   statements.unshift(this.db.prepare(`INSERT INTO runtime_controls(name,value) SELECT 'record_partial_save',NULL WHERE NOT EXISTS(SELECT 1 FROM ${tables[kind]} WHERE ${expected.map(([column])=>`"${column.replaceAll('"','""')}" IS ?`).join(' AND ')})`).bind(...expected.map(([,value])=>value??null)));
+  }
   const emailTokens=kind==='contact'?await suppressionHashes(this.db,data.email):[];
   statements.push(...typedSave.statements);
   statements.push(...suppressionContextFence(this.db,emailTokens));
@@ -135,9 +142,9 @@ export class RecordsRepository extends RecordSeedRepository {
   statements.push(audit(this.db,actor,before?'record.updated':'record.created',kind,id));
   return {id,statements,key,keyColumn,kind,changed:true};
  }
- async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[]}={}){
+ async save(kind:RecordKind,input:unknown,actor:string,id?:string,options:{ordinaryEdit?:boolean;createId?:string;workflowContactIds?:string[];expectedRecord?:Record<string,any>}={}){
   const prepared=await this.prepareSave(kind,input,actor,id,options);id=prepared.id;const {statements,key,keyColumn}=prepared;
-  try{await this.db.batch(statements);}catch(error){if(/identity_guards|CHECK constraint failed: value\s*=\s*1/.test(String(error))){const current=await requireRecord(this.db,kind,id).catch(()=>null);await typedFieldFences(this.db,kind,id,(input as any)?.custom_fields??{},JSON.parse(current?.custom_fields_json??'{}'));throw new RecordError(409,'Custom fields changed concurrently. Review their definitions and values before saving.');}if(/runtime_controls.value/.test(String(error)))throw new RecordError(409,'The opportunity or pipeline rules changed. Reload before saving.');if(String(error).includes('UNIQUE')||String(error).includes('RECORD_IDENTITY_CONFLICT')){const duplicate=key&&keyColumn?await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>():null;throw new RecordError(409,'Identity or association changed concurrently; reload records.',duplicate?.id);}throw error;}
+  try{await this.db.batch(statements);}catch(error){if(/identity_guards|CHECK constraint failed: value\s*=\s*1/.test(String(error))){const current=await requireRecord(this.db,kind,id).catch(()=>null);await typedFieldFences(this.db,kind,id,(input as any)?.custom_fields??{},JSON.parse(current?.custom_fields_json??'{}'));throw new RecordError(409,'Custom fields changed concurrently. Review their definitions and values before saving.');}if(/runtime_controls.value/.test(String(error)))throw new RecordError(409,options.expectedRecord?'This record changed while you were editing. Reload before saving.':'The opportunity or pipeline rules changed. Reload before saving.');if(String(error).includes('UNIQUE')||String(error).includes('RECORD_IDENTITY_CONFLICT')){const duplicate=key&&keyColumn?await this.db.prepare(`SELECT id FROM ${tables[kind]} WHERE ${keyColumn}=? AND id<>? UNION SELECT survivor_id AS id FROM record_aliases WHERE record_type=? AND identity_key=? AND survivor_id<>?`).bind(key,id,kind,key,id).first<{id:string}>():null;throw new RecordError(409,'Identity or association changed concurrently; reload records.',duplicate?.id);}throw error;}
   return {id,changed:prepared.changed};
  }
  // Scoped record reads omit native ownership enrichment, as the collaborator route does.
