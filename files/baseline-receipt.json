@@ -1,0 +1,25 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "baseline_sha": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "original_run": 43598471020,
+  "original_failed_job": 132458856416,
+  "original_failure": "typedFieldsJourney saved-view reopen expected search 'Synthetic Calendar Contact', received empty string",
+  "baseline_targeted_journey": {
+    "exit": 0,
+    "cases": 1,
+    "pass": 1,
+    "fail": 0,
+    "duration_ms": 174357.354246
+  },
+  "typecheck": {
+    "exit": 0,
+    "command": "pnpm run typecheck",
+    "node": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "registered_cases": 198,
+  "qualification_flows": 2,
+  "total": 200,
+  "note": "A single local pass does not disprove the recorded CI race. Before/after browser CPU-throttle probe retained separately."
+}

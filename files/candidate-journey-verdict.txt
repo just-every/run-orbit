@@ -1,0 +1,15 @@
+# Subtest: OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390
+ok 1 - OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390
+  ---
+  duration_ms: 193106.604133
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 197262.617896

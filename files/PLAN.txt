@@ -1,0 +1,8 @@
+Run Edit Run fleet, 2026-11-17
+1. Read launcher and Orbit instructions, inspect the supplied completed Verify failure before edits.
+2. Reproduce the failing saved-view browser journey on current main using pinned Node/pnpm and emitted Worker, Chromium /usr/bin/chromium.
+3. Fix the hydration or search persistence race without weakening retained save/reopen assertions or changing UI, contract judgments or unrelated product behavior.
+4. Run only the touched journey, typecheck, inventory and documented source lock/check. Regenerate source lock last.
+5. Fetch main, resolve source first if needed, inspect every candidate commit identity and trailers, require COMPLETE/PASS zero-findings exact-tree Base publication scan.
+6. Push only cloud/gr-mt-orbit-ci-11 through cloud-push.py; discover and poll exact-SHA Verify within ten-call budget and 300-second spacing.
+7. Retain result.json, complete non-secret reports and actual receipts outside product, publish explicit packet files to evidence/gr-mt-orbit-ci-11, relay lane POST and custody line.

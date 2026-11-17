@@ -1,0 +1,34 @@
+2026-11-14T13:26:47.4540858Z ✖ OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390 (167719.847477ms)
+2026-11-14T13:26:47.7378762Z ℹ tests 1
+2026-11-14T13:26:47.7379438Z ℹ suites 0
+2026-11-14T13:26:47.7379923Z ℹ pass 0
+2026-11-14T13:26:47.7380421Z ℹ fail 1
+2026-11-14T13:26:47.7380916Z ℹ cancelled 0
+2026-11-14T13:26:47.7381493Z ℹ skipped 0
+2026-11-14T13:26:47.7381907Z ℹ todo 0
+2026-11-14T13:26:47.7382617Z ℹ duration_ms 171903.066866
+2026-11-14T13:26:47.7409160Z 
+2026-11-14T13:26:47.7409463Z ✖ failing tests:
+2026-11-14T13:26:47.7409783Z 
+2026-11-14T13:26:47.7410116Z test at tests/delegation-browser/records-layout.test.ts:1:1358
+2026-11-14T13:26:47.7411780Z ✖ OUT-013 send consent and bound review, emitted Worker Mailchimp setup and scheduled erasure preserve stops alongside full long record names, sorted saved views and collaborator revocation at 1440 and 390 (167719.847477ms)
+2026-11-14T13:26:47.7413136Z   Error: expect(locator).toHaveValue(expected) failed
+2026-11-14T13:26:47.7413627Z   
+2026-11-14T13:26:47.7414015Z   Locator:  getByRole('searchbox', { name: 'Search records and timeline' })
+2026-11-14T13:26:47.7414620Z   Expected: "Synthetic Calendar Contact"
+2026-11-14T13:26:47.7415161Z   Received: ""
+2026-11-14T13:26:47.7415543Z   Timeout:  5000ms
+2026-11-14T13:26:47.7416299Z   
+2026-11-14T13:26:47.7416627Z   Call log:
+2026-11-14T13:26:47.7417491Z     - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms
+2026-11-14T13:26:47.7418852Z     - waiting for getByRole('searchbox', { name: 'Search records and timeline' })
+2026-11-14T13:26:47.7419874Z       14 × locator resolved to <input value="" type="search"/>
+2026-11-14T13:26:47.7420277Z          - unexpected value ""
+2026-11-14T13:26:47.7420700Z   
+2026-11-14T13:26:47.7421608Z       at captureRawStack (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright-core@1.64.1/node_modules/playwright-core/lib/coreBundle.js:9282:17)
+2026-11-14T13:26:47.7423355Z       at callMatcherAsStep (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13316:57)
+2026-11-14T13:26:47.7425100Z       at Object.toHaveValue (/home/runner/work/run-orbit/run-orbit/node_modules/.pnpm/playwright@1.64.1/node_modules/playwright/lib/matchers/expect.js:13308:23)
+2026-11-14T13:26:47.7426621Z       at typedFieldsJourney (/home/runner/work/run-orbit/run-orbit/tests/delegation-browser/typed-fields-journey.mjs:46:81)
+2026-11-14T13:26:47.7428047Z       at async TestContext.<anonymous> (/home/runner/work/run-orbit/run-orbit/tests/delegation-browser/records-layout.test.ts:61:5) {
+2026-11-14T13:26:47.7433246Z     matcherResult: { name: 'toHaveValue', expected: 'Synthetic Calendar Contact', message: `expect(locator).toHaveValue(expected) failed\n\nLocator:  getByRole('searchbox', { name: 'Search records and timeline' })\nExpected: "Synthetic Calendar Contact"\nReceived: ""\nTimeout:  5000ms\n\nCall log:\n  - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms\n  - waiting for getByRole('searchbox', { name: 'Search records and timeline' })\n    14 × locator resolved to <input value="" type="search"/>\n       - unexpected value ""\n`, pass: false, actual: '', log: [ `  - Expect "toHaveValue" getByRole('searchbox', { name: 'Search records and timeline' }) with timeout 5000ms`, "  - waiting for getByRole('searchbox', { name: 'Search records and timeline' })", '    14 × locator resolved to <input value="" type="search"/>', '       - unexpected value ""' ], timeout: 5000, ariaSnapshot: '- searchbox "Search records and timeline"' }
+2026-11-14T13:26:47.7437389Z   }

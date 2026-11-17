@@ -1,0 +1,70 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-ci-11",
+  "head": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+  "run_id": 44055814355,
+  "command": "gh api repos/just-every/run-orbit/actions/runs/44055814355 --jq {status,conclusion,head_sha,html_url}",
+  "final": {
+    "conclusion": null,
+    "head_sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/44055814355",
+    "status": "in_progress"
+  },
+  "custody": "PUSHED",
+  "reason": "Exact-SHA Verify remains in progress after the final budgeted read; no READY or landing claim.",
+  "explicit_github_invocations": 9,
+  "required_publication_scan_invocations": 1,
+  "polling": "One watcher; every repeated run read at least 300 seconds apart; no workflow rerun or dispatch",
+  "history": [
+    {
+      "file": "candidate-ci-discovery.json",
+      "observed_at": "2026-11-17T09:28:25.299396+00:00",
+      "response": {
+        "workflow_runs": [
+          {
+            "conclusion": null,
+            "event": "push",
+            "head_branch": "cloud/gr-mt-orbit-ci-11",
+            "head_sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+            "html_url": "https://github.com/just-every/run-orbit/actions/runs/44055814355",
+            "id": 44055814355,
+            "name": "Verify",
+            "status": "in_progress"
+          }
+        ]
+      }
+    },
+    {
+      "file": "candidate-ci-poll-1.json",
+      "observed_at": "2026-11-17T09:33:26.820973+00:00",
+      "response": {
+        "conclusion": null,
+        "head_sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/44055814355",
+        "status": "in_progress"
+      }
+    },
+    {
+      "file": "candidate-ci-poll-2.json",
+      "observed_at": "2026-11-17T09:43:32.716403+00:00",
+      "response": {
+        "conclusion": null,
+        "head_sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/44055814355",
+        "status": "in_progress"
+      }
+    },
+    {
+      "file": "candidate-ci-poll-3.json",
+      "observed_at": "2026-11-17T09:48:42.370765+00:00",
+      "response": {
+        "conclusion": null,
+        "head_sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+        "html_url": "https://github.com/just-every/run-orbit/actions/runs/44055814355",
+        "status": "in_progress"
+      }
+    }
+  ]
+}

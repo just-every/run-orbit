@@ -1,0 +1,7 @@
+{
+  "status": "done",
+  "sha": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+  "summary": "Fix saved-view browser hydration and debounced-search synchronization while retaining all assertions. Exact-SHA Verify remains in progress after the final budgeted read; no READY or landing claim.",
+  "tests": "Node 22.20.0/pnpm 10.12.4 install and build PASS; retained records-layout journey 1/1 PASS; typecheck, source lock check and contract-view check PASS; inventory unchanged at 198 cases plus 2 qualification flows; exact-tree publication scan COMPLETE/PASS, zero findings. Verify run 44055814355: in_progress/None.",
+  "security": false
+}

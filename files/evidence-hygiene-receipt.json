@@ -1,0 +1,10 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "scanner": "gitleaks",
+  "version": "8.30.1",
+  "command": "gitleaks dir packet --redact --no-banner --report-format json",
+  "exit": 0,
+  "findings": 0,
+  "selection": "Explicit regular report, receipt and synthetic screenshot files only; no credentials, environment dumps, private gate material or symlinks"
+}

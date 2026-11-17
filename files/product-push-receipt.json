@@ -1,0 +1,20 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "branch": "cloud/gr-mt-orbit-ci-11",
+  "head": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+  "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/gr-mt-orbit-ci-11",
+  "push_exit": 0,
+  "push_attempts": 1,
+  "remote": "https://github.com/just-every/run-orbit.git",
+  "publication_scan": {
+    "status": "PASS",
+    "complete": true,
+    "findings": 0,
+    "history_scanned": true
+  },
+  "new_product_commits": 1,
+  "trailer_count": 0,
+  "identity_check": "git log origin/main..HEAD includes all side parents; both author and committer are Run Edit Run fleet <fleet@runeditrun.com>",
+  "pr": "not created; branch Verify and fleet landing contract apply"
+}

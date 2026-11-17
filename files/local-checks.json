@@ -1,0 +1,77 @@
+{
+  "author": "Run Edit Run fleet",
+  "date": "2026-11-17",
+  "head": "029751dd8e767f06d57ff0d74e2e7f796884f8c7",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "chromium_executable": "/usr/bin/chromium",
+  "build": {
+    "command": "cloud_run npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "targeted_journey": {
+    "command": "cloud_run env ORBIT_CHROMIUM_EXECUTABLE=/usr/bin/chromium WRANGLER_SEND_METRICS=false ORBIT_RECORD_LAYOUT_PORT=15604 ORBIT_RECORD_LAYOUT_INSPECTOR_PORT=0 pnpm exec tsx --test --test-concurrency=1 tests/delegation-browser/records-layout.test.ts",
+    "exit": 0,
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "duration_ms": 197262.617896,
+    "verdict_file": "candidate-journey-verdict.txt"
+  },
+  "typecheck": {
+    "command": "cloud_run pnpm run typecheck",
+    "exit": 0
+  },
+  "contract_views": {
+    "command": "node src/base/contract-docs.mjs check",
+    "exit": 0,
+    "output": "Contract documents are current."
+  },
+  "source_lock": {
+    "write_command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+    "write_exit": 0,
+    "check_command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+    "check_exit": 0
+  },
+  "inventory": {
+    "command": "node scripts/verification-inventory.mjs",
+    "cases_before": 198,
+    "cases_after": 198,
+    "qualifications_before": 2,
+    "qualifications_after": 2,
+    "total_before": 200,
+    "total_after": 200
+  },
+  "clauses": {
+    "status_changes": [],
+    "done_before": 42,
+    "done_after": 42,
+    "partial_before": 130,
+    "partial_after": 130,
+    "missing_before": 32,
+    "missing_after": 32
+  },
+  "screenshots": [
+    {
+      "file": "saved-filtered-view-1440.png",
+      "width": 1440,
+      "sha256": "74f70a325216289369f7d6fb7de1dc7243443ae3cb1c5c0b25ca782853da3327"
+    },
+    {
+      "file": "saved-filtered-view-390.png",
+      "width": 390,
+      "sha256": "9998f40fc89c207db45a0d6c6b85200f2335699ae79a83d93e43849b19e5ecf3"
+    }
+  ],
+  "full_local_suite": "not run; full wall delegated to exact-SHA branch Verify",
+  "temporary_cpu_probe": {
+    "committed": false,
+    "rate": 6,
+    "exit": 0,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "duration_ms": 191970.026121
+  }
+}
