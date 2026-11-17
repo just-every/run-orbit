@@ -39,15 +39,17 @@ function outcomeText(outcome: TryOutcome) {
 /** Mail from the internet cannot reach Orbit on this computer; a saved message takes the same receiving path. */
 function TryLocally({ onCaptured }: { onCaptured: () => void }) {
   const [result, setResult] = useState('');
+  const [proposals, setProposals] = useState(0);
   const [busy, setBusy] = useState(false);
   async function send(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    setBusy(true); setResult('');
+    setBusy(true); setResult(''); setProposals(0);
     try {
       const response = await fetch('/api/v1/capture/forward/try', { method: 'POST', credentials: 'same-origin', body: new FormData(form) });
       const body = await response.json().catch(() => ({})) as TryOutcome & { error?: string };
       setResult(response.ok ? outcomeText(body) : body.error ?? 'Orbit did not accept that message.');
+      if (response.ok && body.result === 'captured') setProposals(body.summary?.proposals ?? 0);
       form.reset(); onCaptured();
     } finally { setBusy(false); }
   }
@@ -57,7 +59,7 @@ function TryLocally({ onCaptured }: { onCaptured: () => void }) {
       <label>Saved email (.eml)<input type="file" name="message" accept=".eml,message/rfc822" required /></label>
       <button className="orbit-button orbit-button--quiet" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Send to my Orbit address'}</button>
     </form>
-    {result ? <p role="status">{result}</p> : null}
+    {result ? <p role="status">{result}{proposals > 0 ? <> <a href="/app/review">Review {proposals} proposed {proposals === 1 ? 'change' : 'changes'}</a></> : null}</p> : null}
   </div>;
 }
 

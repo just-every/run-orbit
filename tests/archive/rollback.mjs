@@ -13,7 +13,7 @@ export async function exerciseRollback(page,file,otherSession){
  await page.getByLabel('Archive file',{exact:true}).setInputFiles(file);await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Start restore',exact:true}).click();
  expect((await refusal).status()).toBe(409);
  await expect(page.getByRole('alert')).toContainText('HTTP 409');
- await expect(page.getByLabel('Restore transfer ID')).toBeHidden();await page.getByText('Restore support details',{exact:true}).click();const refusedId=await page.getByLabel('Restore transfer ID').inputValue();await page.getByText('Restore support details',{exact:true}).click();
+ await expect(page.getByLabel('Restore transfer ID')).toHaveCount(0);const refusedId=(await api(base)).jobs.find(job=>job.state==='uploading').id;
  expect((await api(`${base}/${refusedId}`)).state).toBe('uploading');expect(await api(`/api/v1/records/company/${unrelated.id}`)).toEqual(before);
  const aborts=[];const recordAbort=request=>{if(request.method()==='POST'&&new URL(request.url()).pathname.endsWith('/abort'))aborts.push(request.url());};page.on('request',recordAbort);
  try{

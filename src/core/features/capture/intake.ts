@@ -86,6 +86,8 @@ export async function intake(db:D1Database,source:CaptureSource,fact:Fact,option
   if(existing.payload_hash===fact.hash){if(fact.kind==='event'&&fact.providerKeys)await rememberProviderKeys(db,source,existing.id,fact.providerKeys);return {result:'replayed'};}
   await ingestion.reject(source.id,fact.eventId,'Captured item identity already carries different content',captureFences(db,source));return {result:'conflict'};
  }
+ // One Message-ID is one customer message: the same bytes arriving through another capture door are a replay, not a second reply.
+ if(fact.kind==='message'&&await db.prepare('SELECT 1 FROM signals s JOIN capture_sources c ON c.id=s.source_id WHERE s.source_event_id=? AND s.source_id<>?').bind(fact.eventId,source.id).first())return {result:'replayed'};
  // Orbit's own inbound reply route may already have attached this exact message.
  // Only that route's receipt counts: a signal alone under its source ID is not proof.
  if(fact.kind==='message'&&await db.prepare("SELECT 1 FROM signals s JOIN unlinked_replies u ON u.provider_event_id=s.source_event_id AND u.opportunity_id IS NOT NULL WHERE s.source_id='sendgrid-replies' AND s.type='email.replied' AND s.source_event_id=?").bind(fact.messageId).first())return {result:'replayed'};

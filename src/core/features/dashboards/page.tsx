@@ -38,7 +38,7 @@ export function DashboardPage({workspace,id}:{workspace:string;id:string}){
  };
  const chosen=filters??view?.filters;
  const exportFilters=chosen?`?filters=${encodeURIComponent(JSON.stringify(chosen))}`:'';
- if(!view)return <section className="dashboard"><p className="operator-eyebrow"><a href="/app/reports">Reports</a> / Dashboards</p>{error?<div className="operator-state operator-state--error" role="alert">{error} <button type="button" className="dash-text-button" onClick={reload}>Try again</button></div>:<p role="status">Computing under your access…</p>}</section>;
+ if(!view)return <section className="dashboard"><p className="operator-eyebrow"><a href="/app/reports?dashboards=all">Reports</a> / Dashboards</p>{error?<div className="operator-state operator-state--error" role="alert">{error} <button type="button" className="dash-text-button" onClick={reload}>Try again</button></div>:<p role="status">Computing under your access…</p>}</section>;
  return <section className="dashboard">
   <DashboardTitle view={view} pdfUrl={`${base}/pdf${exportFilters}`} onShare={()=>setDialog('share')} onSchedule={()=>setDialog('schedule')} onEdit={()=>setDialog('edit')} onDefault={async enabled=>{await api(`${base}/default`,{enabled},'PUT');reload();}}/>
   {error&&<p role="alert" className="operator-state operator-state--error">{error}</p>}

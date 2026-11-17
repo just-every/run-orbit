@@ -1,5 +1,4 @@
 import type {ReactNode} from 'react';
-import {Link} from '@tanstack/react-router';
 // The shared stylesheets load in the dashboard page's order (sales before the dashboard's own), so the records drawer and
 // every other shared piece resolve exactly as they do on the dashboard; Reports' own rules come last.
 import '../analytics/sales.css';
@@ -12,7 +11,7 @@ import './reports.css';
 export function ReportsTitle({title,back=true,period,actions,line}:{title:string;back?:boolean;period?:ReactNode;actions?:ReactNode;line?:ReactNode}){
  return <header className="operator-titlebar reports-title">
   <div className="reports-title__head">
-   {back&&<p className="operator-eyebrow reports-back"><Link to="/app/reports" activeOptions={{exact:true}}><span aria-hidden="true">←</span>Reports</Link></p>}
+   {back&&<p className="operator-eyebrow reports-back"><a href="/app/reports?dashboards=all"><span aria-hidden="true">←</span>Reports</a></p>}
    <div className="reports-title__name"><h1>{title}</h1>{period}</div>
   </div>
   {actions&&<div className="reports-title__actions">{actions}</div>}

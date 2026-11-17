@@ -1,4 +1,4 @@
-import {useLayoutEffect,useRef,useState} from 'react';
+import {useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {useElementScrollRestoration} from '@tanstack/react-router';
 // Before the directory: the title block loads the shared stylesheets in the dashboard page's order.
 import {ReadFailure,ReportsTitle} from './title';
@@ -28,12 +28,15 @@ function ForecastHash({eligible}:{eligible:boolean}){useHashMap(hash=>hash==='fo
 export function ReportsIndexPage({workspace}:{workspace:string}){
  const catalog=useCatalog(workspace),directory=useDashboardDirectory(workspace),[dialog,setDialog]=useState<CreateChoice|null>(null);
  const ready=catalog.state==='ready'&&Boolean(directory.data||directory.error);
+ // Opening Reports opens the viewer's chosen default dashboard; the "Reports" crumb on a dashboard or report asks for the full list with ?dashboards=all.
+ const defaultId=directory.data?.items.find(item=>item.isDefault)?.id,[leaving,setLeaving]=useState(false),loaded=useRef(false);
+ useEffect(()=>{if(!directory.data||loaded.current)return;loaded.current=true;if(!defaultId||new URLSearchParams(window.location.search).get('dashboards')==='all')return;setLeaving(true);window.location.replace(`/app/dashboards/${encodeURIComponent(defaultId)}`);},[directory.data]);
  // Back to this list: the router restores its scroll before the reads answer, so the rows' first render takes it back.
  const scroll=useElementScrollRestoration({getElement:()=>window}),restored=useRef(false);
  useLayoutEffect(()=>{if(!ready||restored.current)return;restored.current=true;if(scroll)window.scrollTo({top:scroll.scrollY,left:scroll.scrollX});},[ready]);
  return <div className="reports-page reports-index">
   <ReportsTitle title="Reports" back={false} actions={catalog.state==='ready'&&catalog.suite.canDefine?<CreateMenu onChoose={setDialog}/>:null}/>
-  {catalog.state==='error'?<ReadFailure error={catalog.error} retry={catalog.retry}/>:catalog.state==='ready'&&ready?<>
+  {catalog.state==='error'?<ReadFailure error={catalog.error} retry={catalog.retry}/>:catalog.state==='ready'&&ready&&!leaving?<>
    <DashboardDirectory directory={directory} onCreate={()=>setDialog('dashboard')}/>
    <ReportList catalog={catalog}/>
    <ForecastHash eligible={catalog.forecast}/>

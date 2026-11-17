@@ -23,13 +23,9 @@ test('native archive preparation, streamed download, confirmed restore and renew
  await expect(page.getByRole('link',{name:'Download completed archive'})).toBeVisible({timeout:90_000});
  const exportSummary=page.getByRole('region',{name:'Export transfer',exact:true});
  const href=await page.getByRole('link',{name:'Download completed archive'}).getAttribute('href'),preparedId=href.split('/').at(-2);
- await expect(page.getByLabel('Export transfer ID')).toBeHidden();
+ await expect(page.getByLabel('Export transfer ID')).toHaveCount(0);
  const summary=await exportSummary.innerText();expect(summary).not.toContain(preparedId);expect(summary).not.toMatch(/\d{4}-\d{2}-\d{2}T/);expect(summary).toMatch(/\d+ rows/);
- await context.grantPermissions(['clipboard-read','clipboard-write']);
- await exportSummary.getByRole('button',{name:'Copy export details',exact:true}).click();
- const copied=JSON.parse(await page.evaluate(()=>navigator.clipboard.readText()));expect(copied.id).toBe(preparedId);expect(copied.rows).toBeGreaterThan(0);expect(Number.isFinite(Date.parse(copied.startedAt))).toBe(true);
- await exportSummary.getByText('Export support details',{exact:true}).click();await expect(page.getByLabel('Export transfer ID')).toHaveValue(preparedId);await exportSummary.getByText('Export support details',{exact:true}).click();
- await page.reload();await expect(page.getByLabel('Export transfer ID')).toBeHidden();await expect(exportSummary).toContainText(summary.split('\n')[0]);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
+ await page.reload();await expect(page.getByLabel('Export transfer ID')).toHaveCount(0);await expect(exportSummary).toContainText(summary.split('\n')[0]);await page.getByRole('button',{name:'Resume export',exact:true}).click();await expect(page.getByRole('link',{name:'Download completed archive'})).toHaveAttribute('href',new RegExp(preparedId+'/download$'));
  const downloadPromise=page.waitForEvent('download');await page.getByRole('link',{name:'Download completed archive'}).click();const download=await downloadPromise;const file=await download.path();expect(file).toBeTruthy();
  // Assert browser used a real streamed server response, not a generated object URL.
  expect(download.url()).toContain('/api/v1/records/archive/exports/');

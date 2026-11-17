@@ -54,6 +54,9 @@ export class DataRepository {
    const aliases=(await db.prepare("SELECT identity_key FROM record_aliases WHERE record_type='contact' AND survivor_id=?").bind(id).all<{identity_key:string}>()).results.map(row=>row.identity_key);
    const identities=[...new Set([record.email,...aliases].filter((value):value is string=>typeof value==='string'&&value.length>0))];
    contactEmails=identities;
+   // A deal titled from the person's name or address when a form made it keeps no personal identity.
+   const generated=[...new Set([record.name,...identities].filter((value):value is string=>typeof value==='string'&&value.trim().length>0).map(value=>`Enquiry from ${value}`))];
+   if(generated.length)statements.push(db.prepare(`UPDATE opportunities SET title='Enquiry from an erased contact' WHERE title IN(${generated.map(()=>'?').join(',')}) AND id IN(SELECT opportunity_id FROM opportunity_contacts WHERE contact_id=?)`).bind(...generated,id));
    // What the agent door recorded about this contact (held calls, approvals, outcomes, audit, events) goes in the same batch.
    const retiredIds=(await db.prepare("SELECT retired_id FROM record_merge_claims WHERE record_type='contact' AND survivor_id=?").bind(id).all<{retired_id:string}>()).results.map(row=>row.retired_id);
    statements.push(...await contactAgentErasureStatements(db,this.agentErasureSecret,id,[...identities,...retiredIds]));

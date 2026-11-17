@@ -13,7 +13,7 @@ import './imports.css';
 import { formatDate, label } from './formatters';
 import { importLabel } from './import-provenance';
 import {DataValue} from './data-value';
-const states:Record<string,string>={queued:'Ready to import',applying:'Importing',completed:'Imported',failed:'Stopped — review the error before continuing',undoing:'Undoing',undone:'Import undone',rolling_back:'Undoing partial import',rolled_back:'Partial import undone'};
+const states:Record<string,string>={queued:'Ready to import',applying:'Started, not finished',completed:'Imported',failed:'Stopped — review the error before continuing',undoing:'Undoing',undone:'Import undone',rolling_back:'Undoing partial import',rolled_back:'Partial import undone'};
 const rowStates:Record<string,string>={ready:'ready to import',rejected:'will not import',linked:'already in Orbit'};
 const vendors:Record<string,string>={csv:'spreadsheet',hubspot:'HubSpot export',pipedrive:'Pipedrive export'};
 /** An import is named by what the person typed and where the file came from, never its internal key. */

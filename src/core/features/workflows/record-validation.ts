@@ -16,7 +16,7 @@ export async function assertWorkflowActor(db:D1Database,actorId:string){
 export async function workflowField(db:D1Database,kind:RecordKind,raw:string){
  const field=canonicalField(raw),key=customKey(field);
  if(key===null){
-  if(!(nativeFields[kind] as string[]).includes(field))throw new RecordError(400,`Unsupported workflow field: ${field}.`);
+  if(!(nativeFields[kind] as string[]).includes(field))throw new RecordError(400,`${field} is not a field workflows can change on a ${kind==='opportunity'?'deal':kind}. Choose one of: ${(nativeFields[kind] as string[]).map(key=>key.replaceAll('_',' ')).join(', ')}, or a custom field.`);
   return {field,type:field==='value_cents'?'number':field==='expected_close_at'?'datetime':field==='owner_id'?'user':'text',definition:null};
  }
  const definition=await db.prepare('SELECT * FROM record_custom_fields WHERE kind=? AND field_key=?').bind(kind,key).first<TypedField>();

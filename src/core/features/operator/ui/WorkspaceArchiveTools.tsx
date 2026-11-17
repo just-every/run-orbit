@@ -21,7 +21,9 @@ export function WorkspaceArchiveTools(){
  const updateImport=(status:ArchiveStatus)=>{if(status.state==='complete')setReturnMessage('Restore complete. Sign in again before continuing.');setImportState(status);setUnfinished(items=>items.map(item=>item.id===status.id?status:item));setImportId(status.state==='aborted'?'':status.id);if(finished(status.state))forget('import');else remember('import',status.id);};
  /** A failure is shown beside the button that caused it. */
  const setError=(text:string)=>setFailure({kind:'',text});
- const failure=(kinds:string[])=>error.text&&kinds.includes(error.kind)?<p role="alert">{error.text}</p>:null;
+ // A pre-restore check that failed to read operators says the restore has not started; once a restore is under way or finished that is untrue, so it is not shown.
+ const started=importState?.state==='restoring'||importState?.state==='complete';
+ const failure=(kinds:string[])=>error.text&&kinds.includes(error.kind)&&!(started&&error.text.endsWith('Restore has not started.'))?<p role="alert">{error.text}</p>:null;
  async function run(kind:'export'|'import'|'cancel',work:()=>Promise<unknown>,panel:'export'|'import'=kind==='export'?'export':'import'){setBusy(kind);setFailure({kind:'',text:''});setPaused(false);stop.current=false;try{await work();}catch(reason){setFailure({kind:panel,text:reason instanceof Error?reason.message:'Archive transfer failed.'});}finally{setBusy(null);}}
  useEffect(()=>{
   let active=true;stop.current=false;
@@ -49,7 +51,7 @@ export function WorkspaceArchiveTools(){
   <section className="workspace-archive__panel" aria-labelledby="archive-export-title"><h3 id="archive-export-title">Export archive</h3><p>Prepare an immutable snapshot, then download its streamed JSON archive. If you leave, progress is saved and preparation resumes when you return to this panel.</p>
    <button disabled={!!busy} onClick={()=>void run('export',async()=>setUnfinishedExports(await unfinishedTransfers('exports')))}>Find unfinished exports</button>
    {unfinishedExports.map(status=><p key={status.id}><button disabled={!!busy} onClick={()=>updateExport(status)}>Use export {transferLabel(status)}</button> — {status.state==='ready'?'Finished — ready to download':status.state}</p>)}
-   <ArchiveTransferSummary kind="Export" id={exportId} status={exportState} busy={!!busy} onId={id=>{setExportId(id);setExportState(undefined);}}/>
+   <ArchiveTransferSummary kind="Export" status={exportState}/>
    <ArchiveProgress status={exportState}/>
    <div className="workspace-archive__actions"><button disabled={!!busy} onClick={()=>void run('export',()=>prepareArchive(exportId,updateExport,()=>stop.current))}>{exportId?'Resume export':'Prepare export'}</button>
    {busy==='export'&&<button onClick={()=>{stop.current=true;setPaused(true);}}>Pause after current part</button>}
@@ -67,7 +69,7 @@ export function WorkspaceArchiveTools(){
    {preview&&<section aria-label="Email permission after restore"><h4>Email permission after restore</h4><p><strong>{preview.emailPermission.count.toLocaleString()} {preview.emailPermission.count===1?'contact will':'contacts will'} return as Do not contact.</strong></p>
     {preview.emailPermission.count>0&&<ul aria-label="Contacts returning as Do not contact">{preview.emailPermission.names.map(contact=><li key={contact.id}>{contact.name}</li>)}{preview.emailPermission.count>preview.emailPermission.names.length&&<li>and {(preview.emailPermission.count-preview.emailPermission.names.length).toLocaleString()} more</li>}</ul>}
     <p>{preview.emailPermission.archivedCount.toLocaleString()} already marked Do not contact in the archive; {preview.emailPermission.additionalCount.toLocaleString()} additional {preview.emailPermission.additionalCount===1?'contact has':'contacts have'} an email stop in this installation or the archive. A stop may be on another address of the same contact; their history records where it came from. Contacts otherwise keep their archived email permission, including a hold you explicitly cleared. Review their Email permission before sending.</p></section>}
-   <ArchiveTransferSummary kind="Restore" id={importId} status={importState} busy={!!busy} onId={id=>{setImportId(id);setImportState(undefined);}}/>
+   <ArchiveTransferSummary kind="Restore" status={importState}/>
    <label className="workspace-archive__confirmation"><input type="checkbox" checked={confirmed} disabled={!!busy||!preview||checking} onChange={event=>setConfirmed(event.target.checked)}/>I confirm this target has no customer data and want to restore the selected archive.</label>
    {importId&&!confirmed&&importState?.state!=='restoring'&&!finished(importState?.state??'')&&<p>To resume, select the same archive and tick the confirmation above again.</p>}
    <ArchiveProgress status={importState} validated={validated}/>
