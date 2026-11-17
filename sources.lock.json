@@ -8243,11 +8243,11 @@
       "executable": false
     },
     "src/core/features/records/partial-save.ts": {
-      "sha256": "4dbf5d23fed8862b0c788120379aa410ef4504c1744947321396425ee379627e",
+      "sha256": "f5791b669f9716086b8362ae0f223b86aa14d0a2bccf99218ef84276a2f27eb8",
       "executable": false
     },
     "src/core/features/records/repository.ts": {
-      "sha256": "a801715a4e5e23cd1d09e7586a8247d73aef7e9d0931b7c6f8e6256a3ca3c0ef",
+      "sha256": "ab7f67f2788dde1a8fdd722567b1274c4355b987f88b428894518999ce59cc82",
       "executable": false
     },
     "src/core/features/records/routes.ts": {
@@ -10555,7 +10555,7 @@
       "executable": false
     },
     "tests/core/launch-suppression.test.ts": {
-      "sha256": "4853505c876dd06dcc3627c3dc929bb2065e478dc994faef61d0d57192e10277",
+      "sha256": "c558ccbb1973f7683daf8826449b9cf80c55406f5566b4f8ba3f65ca1aa8ff53",
       "executable": false
     },
     "tests/core/local-owner.test.ts": {
@@ -11756,6 +11756,10 @@
     },
     "tests/support/outreach-retry-accounting.ts": {
       "sha256": "ca433a442217d180865e8dcd4cb0e2ea130597ed55663f66ba4ca3c7a7a767c4",
+      "executable": false
+    },
+    "tests/support/partial-save-race.ts": {
+      "sha256": "f7145fb640dc1a88a2ccebed211b6bc23b6ed3361bf09f6430d06fabe41fef7d",
       "executable": false
     },
     "tests/support/personal-slack-proof.ts": {

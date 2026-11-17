@@ -45,7 +45,7 @@ export async function partialSave(repo: RecordsRepository, kind: RecordKind, id:
   else input[field] = changes[field];
  }
  input.custom_fields = customFields;
- const saved = await repo.save(kind, input, actor, id, {ordinaryEdit: true});
+ const saved = await repo.save(kind, input, actor, id, {ordinaryEdit: true, expectedRecord: row});
  return {conflict: false, id, changed: saved.changed, record: await requireRecord(repo.db, kind, id)};
 }
 
