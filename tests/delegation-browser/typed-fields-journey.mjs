@@ -36,11 +36,15 @@ export async function typedFieldsJourney(page,contact){const evidence=resolve('.
  for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:900});await proof('archived-definition-history',width,fields,'[aria-labelledby="typed-fields"]');}
  // Saved lists reopen their real filters, chosen archived columns and sort in a fresh page.
  await page.setViewportSize({width:1440,height:900});await page.goto('/app/contacts');
- await page.getByRole('searchbox',{name:'Search records and timeline'}).fill('Synthetic Calendar Contact');
  const savedViews=page.getByRole('region',{name:'Saved record views',exact:true});await savedViews.locator('summary').click();
+ // The native column catalog arrives after the server-rendered controls hydrate.
+ // Wait for its read before typing, then let the debounced search reach the URL.
+ await expect(savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true})).toBeVisible();
+ await page.getByRole('searchbox',{name:'Search records and timeline'}).fill('Synthetic Calendar Contact');
+ await page.waitForURL(url=>url.searchParams.get('q')==='Synthetic Calendar Contact');
  await savedViews.getByLabel('View name',{exact:true}).fill('Synthetic contact view');await savedViews.getByLabel('View visibility',{exact:true}).selectOption('workspace');
  await savedViews.getByLabel('Sort column',{exact:true}).selectOption('name');await savedViews.getByLabel('Sort direction',{exact:true}).selectOption('desc');
- await savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true}).check();await savedViews.getByRole('checkbox',{name:'Email',exact:true}).uncheck();await savedViews.getByRole('button',{name:'Save new view',exact:true}).click();await expect(savedViews.getByRole('status')).toHaveText('View saved.');
+ await savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true}).check();await savedViews.getByRole('checkbox',{name:'Email',exact:true}).uncheck();await expect(savedViews.getByLabel('View name',{exact:true})).toHaveValue('Synthetic contact view');await savedViews.getByRole('button',{name:'Save new view',exact:true}).click();await expect(savedViews.getByRole('status')).toHaveText('View saved.');
  const viewId=await savedViews.getByLabel('Saved view',{exact:true}).inputValue();expect(viewId).toBeTruthy();
  await page.goto('/app/opportunities');await page.goto('/app/contacts');await savedViews.getByLabel('Saved view',{exact:true}).selectOption(viewId);await savedViews.locator('summary').click();
  await expect(page.getByRole('searchbox',{name:'Search records and timeline'})).toHaveValue('Synthetic Calendar Contact');await expect(savedViews.getByLabel('Sort direction',{exact:true})).toHaveValue('desc');await expect(savedViews.getByLabel('View visibility',{exact:true})).toHaveValue('workspace');await expect(savedViews.getByRole('checkbox',{name:'Synthetic renamed field (archived, read-only)',exact:true})).toBeChecked();
