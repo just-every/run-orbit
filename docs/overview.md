@@ -58,7 +58,7 @@ You install nothing first. The same one line as [run-orbit.com/run](https://run-
 curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. If the installer prints a line that puts `rer` on your PATH, run that line too.
+Git is required; rer brings Node and pnpm. Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-orbit` does the same. A new terminal that answers `rer: command not found` needs `export PATH="$HOME/.local/bin:$PATH"` once (add it to `~/.zshrc` or `~/.bashrc` to keep it).
 
 To start it again later, run the same line from the same folder, or `cd run-orbit && rer dev`.
 

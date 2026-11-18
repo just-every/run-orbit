@@ -1,6 +1,7 @@
 import {SetupHelp,SetupLink as ConsoleLink} from './setup-help';
 import {CopyField} from './capture-copy-field';
 import {EnvironmentField,useDeployEnvironment} from './deploy-environment';
+import {RerPathHint} from './rer-path-hint';
 
 export function AISetupHelp(){
  const {environment,setEnvironment,name}=useDeployEnvironment();
@@ -15,6 +16,7 @@ export function AISetupHelp(){
     Keep the other settings, save the file and keep it private.</li>
    <li>For this computer, stop its <code>rer dev</code> process, then run <code>rer dev</code> again. For an existing hosted Orbit, use the deployment environment below and run the command in the Orbit folder you deployed from. Editing the file alone does not update the server.</li>
   </ol>
+  <RerPathHint/>
   <EnvironmentField id="ai-hosting-environment" environment={environment} setEnvironment={setEnvironment}/>
   <CopyField label="Apply hosted AI settings" block value={deploy}/>
   <p>The full deployment applies these settings together. Return to <strong>Settings › Workspace › AI</strong>: it should show summaries and drafts on. Preview an AI request from a deal, review it, then generate. A refused request stays visibly failed.</p>

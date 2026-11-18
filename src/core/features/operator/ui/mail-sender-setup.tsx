@@ -3,6 +3,7 @@ import {useEffect,useState} from 'react';
 import {CopyField} from './capture-copy-field';
 import {EnvironmentField,useDeployEnvironment} from './deploy-environment';
 import {formatDate} from './formatters';
+import {RerPathHint} from './rer-path-hint';
 import {workbenchRequest} from './workbench-api';
 import './capture-providers.css';
 
@@ -40,6 +41,7 @@ export function MailSenderSetup({local,configured,provider}:{local?:boolean;conf
   <label>Reply address<input type="email" value={reply} onChange={e=>setReply(e.target.value)}/></label>
   <label>Unsubscribe Group ID<input inputMode="numeric" value={group} onChange={e=>setGroup(e.target.value)}/></label>
   <h3>Apply your four values</h3>
+  <RerPathHint/>
   {local?<ol className="capture-plain-steps"><li>In the Terminal window for your Orbit folder, run <code>rer dev --stop</code>.</li><li>Open the file named <code>.dev.vars</code> in that folder with a plain text editor (on a Mac, run <code>open -e .dev.vars</code>). Replace any existing lines with these four names, or add them at the end. Save the file. Keep the other settings.</li><li>Run <code>rer dev</code> and open its private RER_OPEN link again. Return here and choose <strong>Check sender configuration</strong>.</li></ol>:<><EnvironmentField id="mail-environment-hint" environment={environment} setEnvironment={setEnvironment}/><ol className="capture-plain-steps">
    <li>In the Orbit folder you deployed from, open the private <code>.dev.vars.deploy</code> file you made for your first deployment (the README’s “Deploy to your Cloudflare account”) with a plain text editor; on a Mac, run <code>open -e .dev.vars.deploy</code>. Replace its <code>MAIL_FROM</code> and <code>SENDGRID_API_KEY</code> lines with the four lines below; each name appears once. Keep the other lines and save.</li>
    <li>If <code>rer dev</code> is running in that folder, stop it with <code>rer dev --stop</code>.</li>
