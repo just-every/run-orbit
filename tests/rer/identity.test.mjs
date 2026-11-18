@@ -89,7 +89,8 @@ test('AUTH-5 rer dev opens signed in, personas switch role and field access', { 
   await enter(page,origin,'owner');
   const invitation=await browserAPI(page,'/api/v2/access/workspaces/workspace/invitations','POST',{email:'invited@persona.example',role:'guest',expiresAt:new Date(Date.now()+86400000).toISOString()});
   const visitor=await (await browser.newContext()).newPage();
-  await visitor.goto(`${origin}/app/access?invitation=${invitation.token}`);await visitor.getByRole('link',{name:'Sign in as invited@persona.example',exact:true}).click();
+  await visitor.goto(`${origin}/app/access?invitation=${invitation.token}`);
+  await visitor.getByRole('main').getByRole('link').click();
   await visitor.getByLabel('Local access link').fill(openLink(ready));await visitor.getByRole('button',{name:'Choose a persona',exact:true}).click();
   await visitor.getByRole('link',{name:'Sign in as invited@persona.example',exact:true}).click();
   await visitor.getByRole('status').filter({hasText:'Invitation accepted'}).waitFor();
