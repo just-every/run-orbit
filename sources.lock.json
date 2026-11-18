@@ -5211,7 +5211,11 @@
       "executable": false
     },
     "src/core/app/mounts/fold.ts": {
-      "sha256": "ab07149dc7a7412d2f48993a9338da714027c83ed1266eb374f1c0cf9a92b2dd",
+      "sha256": "9cd1698b2e31964bd34a23508af2e2e6930f0c549c172d8bc7fecca8a54f7c82",
+      "executable": false
+    },
+    "src/core/app/mounts/plain-issues.ts": {
+      "sha256": "901b61c9dfcbcdd9fcab75f5b1533814f4d1e3d2b5cdcfc5435b7957c9daa003",
       "executable": false
     },
     "src/core/app/mounts/public-config.server.ts": {
@@ -5875,7 +5879,7 @@
       "executable": false
     },
     "src/core/features/dashboards/editor.tsx": {
-      "sha256": "7c3b2eb063dc594e6a3e6282876ce4f2958ab42d6ab9b8eb27d9f9b7e30e89c9",
+      "sha256": "7d0a21e83a39c8097a0b91400b6ab5842cc6ede8db14c5f43ceaa10833a33c8c",
       "executable": false
     },
     "src/core/features/dashboards/export.ts": {
@@ -6147,7 +6151,7 @@
       "executable": false
     },
     "src/core/features/forecast/review-forms.tsx": {
-      "sha256": "7ee01eecd24fa94d5158a762c1ce750afaf55f70b3934cb08dc4f29a4aea8d9f",
+      "sha256": "9e4189cafd829e40347536284b99d7b1ff90c1768da1bd5155083f777aa759ce",
       "executable": false
     },
     "src/core/features/forecast/routes.ts": {
@@ -6703,7 +6707,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/autosave/leave-guard.ts": {
-      "sha256": "20bf1681f2a4f9d0b05c188ed4ce0de4139c92b1e4792a8cb659abb2292d69d9",
+      "sha256": "854b5262ac7478ec955c6f2b6c835c464ab84d484fb8bff12de92242dfe579d3",
       "executable": false
     },
     "src/core/features/operator/ui/autosave/leave-note.tsx": {
@@ -6719,7 +6723,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/autosave/use-autosave.ts": {
-      "sha256": "f8594ad81b046a9a26ad981a0bf5be3609de3a63630571ab35efcc23f04da232",
+      "sha256": "afa56bba130bbcf388462cff8a12f83c89e570d041f2f86b33308dad7349ebb1",
       "executable": false
     },
     "src/core/features/operator/ui/booking-recipe.tsx": {
@@ -6971,7 +6975,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/manual-entry.tsx": {
-      "sha256": "8002ad271955597310e20adb069fec2da5cf37b07cd28bfffaca8b5e01d1d807",
+      "sha256": "f7ff8c18b3f6f18cac80a1169ba5255a5b70b0d28a61aedaedf3c8ec8d28b9f2",
       "executable": false
     },
     "src/core/features/operator/ui/meeting-plan-page.tsx": {
@@ -7071,7 +7075,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/pipeline-settings.tsx": {
-      "sha256": "117bc6664075311211dd32c673b6b15bb3aff676fae6706682bec484e335522d",
+      "sha256": "05be4f91c659c31662f519f9a07eedd1d07b8b50e04ba9bbe338cabbf571697a",
       "executable": false
     },
     "src/core/features/operator/ui/provider-footer.tsx": {
@@ -8195,7 +8199,7 @@
       "executable": false
     },
     "src/core/features/records/data.ts": {
-      "sha256": "616d8530574b3cb1c8030a41d3a840a931dddd510a322891dd1513ef4cd9a02b",
+      "sha256": "85cd826336af849611c73c1e31b5955a495a49959a27df10c08330e85229a3d9",
       "executable": false
     },
     "src/core/features/records/entry-privacy.ts": {
@@ -8555,7 +8559,7 @@
       "executable": false
     },
     "src/core/features/tasks/contracts.ts": {
-      "sha256": "d719d08d5606bd27cab5a718e907e73cb58bc0403368644dc253e394f39eb57c",
+      "sha256": "cfdbd10b1f40f990a971d50e1451db5542eed57f2256a1c0053a2477a6f93630",
       "executable": false
     },
     "src/core/features/tasks/effects.ts": {
@@ -8583,7 +8587,7 @@
       "executable": false
     },
     "src/core/features/tasks/repository.ts": {
-      "sha256": "8a2cef73ab3359a9f101e705fde366b0e3f03e7c37157a4200d5b3ef687c5d1e",
+      "sha256": "e87f9ec3349cc142c8d1ba86ed6ca8e5a76f967e9cda04627ed720cfcfc27e27",
       "executable": false
     },
     "src/core/features/tasks/routes.ts": {
@@ -8602,6 +8606,10 @@
       "sha256": "e202c396340d4885c14797dbf686a98e413d7cb2284af6cdb930f2108df80c0b",
       "executable": false
     },
+    "src/core/features/tasks/ui/handoff-rows.tsx": {
+      "sha256": "cc3e50dcc8c2cb995a044453ad29208fe0326ac8f33f1464cd5b8ee355c3068c",
+      "executable": false
+    },
     "src/core/features/tasks/ui/task-card.tsx": {
       "sha256": "3e7b43b7b333671cebfd0854dc653dc0b4e2c13b4a5e0bce55eae1cd00121dea",
       "executable": false
@@ -8615,7 +8623,7 @@
       "executable": false
     },
     "src/core/features/tasks/ui/tasks-page.tsx": {
-      "sha256": "83c36954c8b3928300dfe1afb4a0916f8576c8dfff0cec6992f8cbae3d2f1394",
+      "sha256": "214313b1a47a9aa4201aa58aedbb2ea94443cff1a60eebb5b2e763d7d57b697a",
       "executable": false
     },
     "src/core/features/timeline/index.ts": {
