@@ -1,7 +1,7 @@
 import {importTimelineActor} from '../imports/timeline-actor';
 import {operatorListingPredicate} from '../identity/operator-listing';
 import { localTime } from '../outreach/time';
-import { TaskError, type SalesTask, type TaskHistory, type TaskList, type TaskRow } from './contracts';
+import { TaskError, type SalesTask, type TaskHistory, type ListedHandoff, type TaskList, type TaskRow } from './contracts';
 import { taskDayWindow } from './time';
 export const taskSelect = `SELECT t.*,s.cancelled_at AS series_cancelled_at,p.display_name AS owner_name,a.display_name AS updated_by_name,
  COALESCE(c.name,c.email,co.name,o.title) AS record_label FROM sales_tasks t
@@ -49,7 +49,8 @@ export async function listTasks(db: D1Database, actorId: string, query: TaskQuer
  if (date) {clauses.push('t.due_at>=? AND t.due_at<?'); args.push(...taskDayWindow(date, timezone));}
  const rows = (await db.prepare(`${taskSelect} ${clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''}
  ORDER BY t.due_at,CASE t.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'normal' THEN 2 ELSE 3 END,t.id LIMIT 101 OFFSET ?`).bind(...args, query.offset).all<JoinedTask>()).results;
- return {tasks: rows.slice(0, 100).map(presentTask), operators: operators.results, timezone, today, actorId, view: query.view, date, offset: query.offset, more: rows.length > 100};
+ const handoffs = query.offset ? [] : await listHandoffs(db, query, owner, now, date ? taskDayWindow(date, timezone) : null);
+ return {tasks: rows.slice(0, 100).map(presentTask), handoffs, operators: operators.results, timezone, today, actorId, view: query.view, date, offset: query.offset, more: rows.length > 100};
 }
 export async function rawTask(db: D1Database, id: string) {
  const row = await db.prepare('SELECT * FROM sales_tasks WHERE id=?').bind(id).first<TaskRow>();
@@ -59,4 +60,17 @@ export async function rawTask(db: D1Database, id: string) {
 export function insertTask(db: D1Database, task: TaskRow) {
  const fields: (keyof TaskRow)[] = ['id','series_id','occurrence','record_type','contact_id','company_id','opportunity_id','title','owner_id','due_at','priority','task_type','notes','recurrence','timezone','recurrence_time','reminder_minutes','status','revision','assignment_revision','reminder_revision','created_by','updated_by','created_at','updated_at'];
  return db.prepare(`INSERT INTO sales_tasks(${fields.join(',')}) VALUES(${fields.map(() => '?').join(',')})`).bind(...fields.map(field => task[field]));
+}
+
+/** Hand-off tasks follow the same owner, view and day filters as sales tasks; one without a due time shows only under All tasks. */
+async function listHandoffs(db: D1Database, query: TaskQuery, owner: string, now: string, window: [string, string] | null): Promise<ListedHandoff[]> {
+ const clauses: string[] = [], args: string[] = [];
+ if (owner === 'unassigned') clauses.push('h.assignee_id IS NULL');
+ else if (owner !== 'all') {clauses.push('h.assignee_id=?'); args.push(owner);}
+ if (query.view !== 'all') clauses.push("h.status='open'");
+ if (query.view === 'overdue') {clauses.push('h.due_at<?'); args.push(now);}
+ if (window) {clauses.push('h.due_at>=? AND h.due_at<?'); args.push(...window);}
+ const rows = (await db.prepare(`SELECT h.id,h.title,h.due_at,h.status,h.opportunity_id,o.title AS opportunity_title FROM handoff_tasks h JOIN opportunities o ON o.id=h.opportunity_id
+  ${clauses.length ? `WHERE ${clauses.join(' AND ')}` : ''} ORDER BY h.due_at IS NULL,h.due_at,h.id LIMIT 100`).bind(...args).all<{id: string; title: string; due_at: string | null; status: ListedHandoff['status']; opportunity_id: string; opportunity_title: string}>()).results;
+ return rows.map(row => ({id: row.id, title: row.title, dueAt: row.due_at, status: row.status, opportunityId: row.opportunity_id, opportunityTitle: row.opportunity_title}));
 }
