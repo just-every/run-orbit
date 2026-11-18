@@ -32,8 +32,8 @@ importers:
         specifier: 0.45.2
         version: 0.45.2(@cloudflare/workers-types@5.20260908.1)
       hono:
-        specifier: 4.13.11
-        version: 4.13.11
+        specifier: 4.13.16
+        version: 4.13.16
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -1358,8 +1358,8 @@ packages:
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
 
-  hono@4.13.11:
-    resolution: {integrity: sha512-/SMX/RQNJn7oNmFwH6DtwDqcrzZU2otm1FD6OJe2cWF6cfy/F8hq0XVBv7xW3FTJshRQwuBnXHDq2kNsdZnshg==}
+  hono@4.13.16:
+    resolution: {integrity: sha512-AOLOEhvrV+iH92xXCnFr/5+3KjPKcI3xP63XJtX5spAnkznPdHijlIsUTpi7/9EhWqrTCekw5c5zh1K+YsVw7A==}
     engines: {node: '>=16.9.0'}
 
   inline-style-parser@0.1.1:
@@ -3010,7 +3010,7 @@ snapshots:
 
   highlight.js@10.7.3: {}
 
-  hono@4.13.11: {}
+  hono@4.13.16: {}
 
   inline-style-parser@0.1.1: {}
 
