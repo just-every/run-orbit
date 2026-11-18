@@ -811,7 +811,7 @@
       "executable": false
     },
     "docs/getting-started.md": {
-      "sha256": "cdb9418cb5cf8d3531a9f2ddfabe38c75fc027f8bc8f251f763381a6d6594055",
+      "sha256": "412707ce10b14f492cef2f9eba1e1a2d50c64daf06a0746af65816c563877045",
       "executable": false
     },
     "docs/imports/MOVING.md": {
@@ -819,7 +819,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "063fc6e0dcfcf6d49197441ead4de4dfc6678df9de6c0824a2a23767cfcdded1",
+      "sha256": "185b7849f38e0e4cd8b0964b8af9868767d18f80b09e8357e1ebe003bbbe6c15",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -3915,7 +3915,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "beafa798492da77a3a57b9d2b2134c02a0c6b4699ab94a52d293db38071b1f64",
+      "sha256": "beee159bb889ecfb328437878f8284c514c071ecbbe4758c8b610457a33a7aa1",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -5295,7 +5295,7 @@
       "executable": false
     },
     "src/core/features/access/invitation-landing.ts": {
-      "sha256": "05e7c510bfab9b04e1953322619ff3bf99cb685855e267ed23e8ab1a418d7123",
+      "sha256": "56a85f3ee339b9e43ded34bc0d2a72e2df6b36b5a7454356ee6668c86165fd82",
       "executable": false
     },
     "src/core/features/access/legacy-database.ts": {
@@ -6647,7 +6647,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/ai-setup-help.tsx": {
-      "sha256": "6989a5dddd4e591d5757d0227ac67d4f2d6922f35d1a9890f4e1f7de6d61aaf0",
+      "sha256": "5228fa436e6b7052c865da2242d6b5ceda11a9dfdd1b182214a9a7ba03801517",
       "executable": false
     },
     "src/core/features/operator/ui/ai-usage.tsx": {
@@ -6955,7 +6955,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mail-sender-setup.tsx": {
-      "sha256": "48f331a5bb2f6766c69a999c02a45b03ef2c9968ccab4c0f234fa2454c02be51",
+      "sha256": "63bcdab67b175f568c6f883b2d8239cc2c180387fbc3228e62cf13606c80d398",
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-preview.tsx": {
@@ -7191,7 +7191,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
-      "sha256": "6a975e7b478cc776f6a9da50c7d878cd6a5ac2df3743ffd6f72b6b672d4ff726",
+      "sha256": "26106cc2b588b7ef865bdfc087ec3253b0322473729260086649cf5b492859ce",
       "executable": false
     },
     "src/core/features/operator/ui/record/obligation-panel.tsx": {
@@ -7276,6 +7276,10 @@
     },
     "src/core/features/operator/ui/records.css": {
       "sha256": "139f63cf3612678835d6cee855158dde96d37be7baacda3756932d7e4160e8c5",
+      "executable": false
+    },
+    "src/core/features/operator/ui/rer-path-hint.tsx": {
+      "sha256": "5242fe4636270da6b7dddec6953eff7f0ddd49d337b9bda3493c5a2b0a92168a",
       "executable": false
     },
     "src/core/features/operator/ui/review-line.tsx": {
