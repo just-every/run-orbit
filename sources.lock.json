@@ -3827,11 +3827,15 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "d40193b5d2381a6ca8dc7217ae94f7d6589d1bb238afece3e8edf11216a4e3c3",
+      "sha256": "e0f68af25d1ff357886405a25cc2030bd1e7187019c6e4e4008d58ebe85e6659",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
       "sha256": "29a9a6841df220087fcf4e9b3100673e7d01827c6e8132e8a101b03842e23c9b",
+      "executable": false
+    },
+    "patches/picomatch@4.0.7.patch": {
+      "sha256": "a8e94ec9b7f23d0fee3d9be4188fad52d2534919b53dcb66d8fa6bb8fb8cccf8",
       "executable": false
     },
     "patches/wrangler-4.129.1.patch": {
@@ -3843,7 +3847,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "831801204b295b46ef17ee673199d76c61ea150c77dd51c70259f6d71b48d1a9",
+      "sha256": "1799e36914b847b73bef84e04124e75ae437ba9283d640549b4777b715182245",
       "executable": false
     },
     "pnpm-workspace.yaml": {
