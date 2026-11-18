@@ -85,7 +85,7 @@ export async function sourceConflictFlow(f:any,source:ImportInput){
   if(!response.ok){conflict=response;break;}
   assert.notEqual((await json(response)).job.state,'completed','A changed source identity cannot complete silently');
  }
- assert.ok(conflict);assert.equal(conflict.status,409);assert.match((await conflict.json() as any).error,/SOURCE_ID_CONTENT_CONFLICT/);
+ assert.ok(conflict);assert.equal(conflict.status,409);assert.match((await conflict.json() as any).error,/same source ID as an earlier import but different content/);
  assert.deepEqual(await importRecords(f),native,'Source conflict preserves native fields, associations and notes');
  const retained=await json(await f.request(`imports/${review.id}`));assert.notEqual(retained.job.state,'completed');
  await finish(f,review,'undo');assert.deepEqual(await importRecords(f),native,'Undo of the refused import cannot steal the original effects');

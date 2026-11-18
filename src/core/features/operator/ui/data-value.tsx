@@ -20,12 +20,23 @@ export function DataValue({value,emptyLabel='No value'}:{value:unknown;emptyLabe
 }
 
 const internalKey=/(^id$|_id$|Id$|Ids$|_ids$|_key$|Key$|Keys$|_hash$|[Hh]ash$|revision$|^feature$|^source_event_id$)/;
-/** A request or evidence record in a person's terms: internal identifiers, checksums, codes and stored JSON text
- * are not shown; a stored JSON text is opened into its own fields so nothing readable is lost. */
-export function readableRecord(value:unknown):unknown{
- if(Array.isArray(value))return value.map(readableRecord);
- if(typeof value==='string'&&/^\s*[{[]/.test(value)){try{return readableRecord(JSON.parse(value));}catch{return value;}}
+/** A request or evidence record in a person's terms: internal identifiers, checksums and codes are not shown, and a record's
+ * stored JSON column is opened into its own fields. Text a person wrote is never reinterpreted: once a stored column is open,
+ * its strings (even JSON-looking ones) and key names stay exactly as written. */
+export function readableRecord(value:unknown,inside=false):unknown{
+ if(Array.isArray(value))return value.map(item=>readableRecord(item,inside));
  if(!value||typeof value!=='object')return value;
- const entries=Object.entries(value).filter(([key])=>!internalKey.test(key)).map(([key,item])=>[key.replace(/_json$/,''),readableRecord(item)] as const).filter(([,item])=>!(item&&typeof item==='object'&&!Object.keys(item).length&&!Array.isArray(item)));
+ const entries:[string,unknown][]=[];
+ for(const [key,item] of Object.entries(value)){
+  if(internalKey.test(key))continue;
+  let name=key,child=item,nested=inside;
+  if(!inside&&key.endsWith('_json')){
+   if(typeof item==='string'){try{child=key==='custom_fields_json'?storedValue(key,item):JSON.parse(item);}catch{child=item;}}
+   if(child&&typeof child==='object'){name=key.replace(/_json$/,'');nested=true;}
+  }
+  const shown=readableRecord(child,nested);
+  if(shown&&typeof shown==='object'&&!Array.isArray(shown)&&!Object.keys(shown).length)continue;
+  entries.push([name,shown]);
+ }
  return Object.fromEntries(entries);
 }

@@ -2375,7 +2375,7 @@
       "executable": false
     },
     "newtests/t096/browser-record-mail.ts": {
-      "sha256": "d11c16ed19c1942ce0fa1c67a7d2417ade5d6534b3db4b0f9a7bcb5562b09e65",
+      "sha256": "248f10dec9e7966e10486c5e3d9b53df6e3960ec20f3aca64543d32447d3f76d",
       "executable": false
     },
     "newtests/t096/browser-report-authoring.ts": {
@@ -2407,7 +2407,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-access-proof.ts": {
-      "sha256": "528f346c74f5009c6528ed1a2e2a37f31e38343a3a64b41986b287eeb79cb6bb",
+      "sha256": "f934ba989232c1c37f87c8ed0c99faef347fef1ae1ff6d087446574703547d75",
       "executable": false
     },
     "newtests/t096/dashboard-archive.ts": {
@@ -6823,7 +6823,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/data-value.tsx": {
-      "sha256": "7a8fa241dcacad42e065eff11937f8d45cd412f62fbc57725e1fe58064660ee8",
+      "sha256": "a0e5f8cb67cdddadcc4ac7f52d58b20e65f79bc28386e4a0808da8aa49f891ad",
       "executable": false
     },
     "src/core/features/operator/ui/deal-risk-agent-result.tsx": {
@@ -10743,7 +10743,7 @@
       "executable": false
     },
     "tests/e2e/assistance.spec.mjs": {
-      "sha256": "9d28cac7a1f2652029b14d600434fedf9a1aa827d6a2b2d37e30a203d097d28a",
+      "sha256": "b59d02aa3618666063e5d3346c9de259bbbb6b2526c6253953624e4dffa952d3",
       "executable": false
     },
     "tests/e2e/baseline.spec.mjs": {
@@ -11595,7 +11595,7 @@
       "executable": false
     },
     "tests/support/crm-import-flow.ts": {
-      "sha256": "a1c448771be6d82e09eb90a85bccdd45e95fbb82fa677feb3ed38d06ced9ecb6",
+      "sha256": "a6e6ed4248b7addc5ee1e61ec5a7af113713fef9856261af2c11419de69a1fdb",
       "executable": false
     },
     "tests/support/crm-import-privacy.ts": {
