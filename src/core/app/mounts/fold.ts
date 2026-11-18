@@ -1,6 +1,7 @@
 import {systemClock,type Clock} from '../../platform/clock';
 import {Hono} from 'hono';
 import {z,ZodError} from 'zod';
+import {plainIssues} from './plain-issues';
 import {restrictedEdit} from '../../features/access/native-boundary';
 import {AccessService} from '../../features/access/service';
 import {recordEditableFields} from '../../features/access/record-editability';
@@ -20,7 +21,7 @@ import {sharedEntries} from '../../features/records/shared-entries';
 import {createDashboardRoutes} from '../../features/dashboards/routes';
 import {createForecastRoutes} from '../../features/forecast/routes';
 export function createFoldRoutes(db:D1Database,clock:Clock=systemClock){const app=new Hono<AppEnvironment>(),access=new AccessService(db),metrics=new AnalyticsMetrics(new OperationsStore(db,access,domainEventStatements),new NativeAnalyticsSources(access)),graph=new GraphRecords(db,access,domainEventStatements);
- app.onError((error,c)=>{if(!(error instanceof AccessError||error instanceof ZodError))logUnexpected('access',error);return c.json({error:error instanceof AccessError||error instanceof ZodError?error.message:'The operation was not confirmed.'},error instanceof AccessError?error.status:error instanceof ZodError?400:503);});
+ app.onError((error,c)=>{if(!(error instanceof AccessError||error instanceof ZodError))logUnexpected('access',error);return c.json({error:error instanceof AccessError?error.message:error instanceof ZodError?plainIssues(error):'The operation was not confirmed.'},error instanceof AccessError?error.status:error instanceof ZodError?400:503);});
  app.route('/access',createAccessRoutes(db));
  app.use('/workspaces/:workspace/*',async(c,next)=>{c.set('actor',await access.resolveOperatorContext(c.get('operator'),c.req.param('workspace')!,crypto.randomUUID()));await next();});
  app.route('/workspaces/:workspace/operations',createAnalyticsReportRoutes(metrics,{searchRecords:(context,input)=>graph.scanRecords(context,{...input,limit:1000})}));
