@@ -25,11 +25,11 @@ export async function signalLinks(db:D1Database,signalIds:string[]){
 
 /** Customer signals linked to a record since the window opened: replies, meetings, then observed and inferred activity. */
 export async function newSignalLines(db:D1Database,since:string,limit:number):Promise<{lines:RawLine[];truncated:boolean}>{
- const rows=(await db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,ss.name AS sourceName FROM signals s JOIN signal_sources ss ON ss.id=s.source_id WHERE s.type<>'email.sent' AND ${customerSignalSql()} AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id AND l.linked_at>=?) ORDER BY s.occurred_at DESC,s.id LIMIT ?`).bind(since,limit+1).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';sourceName:string}>()).results;
+ const rows=(await db.prepare(`SELECT s.id,s.type,s.subject,s.occurred_at AS occurredAt,s.confidence,ss.name AS sourceName,json_extract(s.payload_json,'$.data.start') AS startsAt FROM signals s JOIN signal_sources ss ON ss.id=s.source_id WHERE s.type<>'email.sent' AND ${customerSignalSql()} AND EXISTS(SELECT 1 FROM signal_links l WHERE l.signal_id=s.id AND l.linked_at>=?) ORDER BY s.occurred_at DESC,s.id LIMIT ?`).bind(since,limit+1).all<{id:string;type:string;subject:string|null;occurredAt:string;confidence:'observed'|'inferred';sourceName:string;startsAt:string|null}>()).results;
  const kept=rows.slice(0,limit),ids=kept.map(row=>row.id),[links,entries]=await Promise.all([signalLinks(db,ids),signalEntries(db,ids)]);
  return {truncated:rows.length>limit,lines:kept.map(row=>({
   id:`signal:${row.id}`,kind:row.type==='email.replied'?'reply':meetingTypes.has(row.type)?'meeting':'signal',group:'new',signalType:row.type,confidence:row.confidence,
-  title:row.subject||label(row.type),detail:`From ${row.sourceName.replace(/\s*\([^)]*\)$/,'')}`,occurredAt:row.occurredAt,dueAt:null,
+  title:row.subject||label(row.type),detail:`From ${row.sourceName.replace(/\s*\([^)]*\)$/,'')}`,occurredAt:row.occurredAt,dueAt:null,...(meetingTypes.has(row.type)&&row.startsAt?{startsAt:row.startsAt}:{}),
   evidence:{type:'signal',id:row.id},records:links.get(row.id)??[],planHref:row.type==='meeting.booked'?planHref(row.id):null,
   link:{entries:entries.get(row.id)??[]}}))};
 }

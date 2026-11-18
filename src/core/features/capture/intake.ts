@@ -30,7 +30,8 @@ function signalEvent(fact:Fact,type:string,itemId:string,sender:string|undefined
 }
 export function evidenceSummary(fact:Fact,sourceName:string){
  const sender=fact.kind==='message'?fact.sender?.email??null:fact.participants.find(p=>p.role==='organizer')?.email??null;
- return {source:sourceName,sender,date:fact.occurredAt,subject:fact.subject,quote:fact.quote};
+ const attendees=fact.kind==='event'?fact.participants.filter(person=>person.role==='attendee').slice(0,5).map(person=>person.name||person.email):[];
+ return {source:sourceName,sender,date:fact.occurredAt,subject:fact.subject,quote:fact.quote,...(attendees.length?{attendees}:{})};
 }
 
 async function resolve(db:D1Database,participants:Participant[]):Promise<Known[]>{

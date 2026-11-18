@@ -7,7 +7,7 @@ import {formatDate} from './formatters';
 /** Calendar quotes store exact instants ("Starts 2026-10-20T00:00:00.000Z"); show them as dates. */
 const quoteLine=(line:string)=>line.replace(/^(Starts|Ends) (\d{4}-\d{2}-\d{2}T[\d:.]+Z)$/,(_,word:string,at:string)=>`${word} ${formatDate(at)}`);
 
-interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[];signalId?:string;itemId?:string;capturedAt?:string}
+interface Evidence {source:string;sender:string|null;date:string;subject:string;quote:string[];attendees?:string[];signalId?:string;itemId?:string;capturedAt?:string}
 export interface CaptureProposal {
  id:string;kind:'link_signal'|'create_contact'|'set_field'|'next_action'|'do_not_contact'|'question';record_type:string;record_id:string;field:string|null;
  current_value:string|null;proposed_value:string|null;revision?:string;signal_type:string;occurred_at:string;source_name:string|null;source_state:string|null;
@@ -20,6 +20,8 @@ async function post(path:string,body:unknown){
 const queue=(value:string|null)=>{if(!value)return 'Not set';const parsed=JSON.parse(value) as {state:string;reason:string|null;dueAt?:string|null};return `${parsed.state==='none'?'Not in NOW or NEXT':parsed.state.toUpperCase()}${parsed.reason?` · ${parsed.reason}`:''}${parsed.dueAt?` · until ${formatDate(parsed.dueAt)}`:''}`;};
 const kinds:Record<string,string>={'email.replied':'reply','email.sent':'sent message','email.bounced':'delivery report','meeting.booked':'booked meeting','meeting.completed':'completed meeting','meeting.cancelled':'cancelled meeting'};
 const evidenceKind=(type:string)=>type.endsWith(':email.auto_replied')?'automatic reply':type.endsWith(':email.forwarded')?'forwarded message':kinds[type]??'evidence';
+/** A meeting's evidence is dated when the meeting starts; the signal's own date is when it was booked or ended. */
+const meetingStart=(proposal:CaptureProposal)=>proposal.signal_type.startsWith('meeting.')?proposal.details.evidence.quote.map(line=>/^Starts (\d{4}-\d{2}-\d{2}T[\d:.]+Z)$/.exec(line)?.[1]).find(Boolean):undefined;
 const fieldWord=(field:string|null)=>field==='job_title'?'job title':field==='expected_close_at'?'close date':field;
 function title(proposal:CaptureProposal){
  const d=proposal.details;
@@ -61,7 +63,7 @@ export function CaptureProposals({recordType,recordId,source,onChanged,whenWaiti
   {resource.data&&!proposals.length&&<p>No proposed changes are waiting.</p>}
   {proposals.map(proposal=>{const e=proposal.details.evidence,editable=proposal.kind==='set_field'||proposal.kind==='create_contact';return <article id={`proposal-${proposal.id}`} className="capture-proposal" key={proposal.id} aria-label={title(proposal)}>
    <h3>{title(proposal)}</h3>
-   <p>From {e.sender??'unknown sender'} · {formatDate(e.date)} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
+   <p>{meetingStart(proposal)?<>Meeting {formatDate(meetingStart(proposal)!)}{e.attendees?.length?` with ${e.attendees.join(', ')}`:''}{e.sender?` · organised by ${e.sender}`:''}</>:<>From {e.sender??'unknown sender'} · {formatDate(e.date)}</>} · {e.subject||'No subject'} · {e.source}{proposal.source_state==='disconnected'?' (disconnected source)':''}</p>
    {e.quote.length>0&&<blockquote className="capture-quote">{e.quote.map((line,index)=><p key={index}>{quoteLine(line)}</p>)}</blockquote>}
    {proposal.details.preparedBy&&<p>Proposed by {proposal.details.preparedBy.label} · {proposal.details.label} · Evidence {e.signalId} · Captured item {e.itemId}</p>}
    {proposal.details.preparedBy&&<p>Occurred <time dateTime={e.date}>{e.date}</time>{e.capturedAt&&<> · Captured <time dateTime={e.capturedAt}>{e.capturedAt}</time></>}</p>}

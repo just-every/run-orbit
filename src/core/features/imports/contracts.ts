@@ -26,6 +26,7 @@ const csvHeaderAliases:Record<string,string[]>={
  contact_ids:['contact ids','associated contact ids'],deal_ids:['deal ids','associated deal ids'],
  dnc:['do not contact'],bounce:['hard bounce','email hard bounce reason'],permission:['marketing status'],
  title:['deal title','deal name','opportunity title'],amount:['value','deal value'],
+ stage:['pipeline stage','deal stage'],
  close_date:['close date','expected close date'],occurred_at:['occurred at'],text:['note text','note body'],
 };
 // Notes exported with display labels and older prepared/API-style files both retain their meaning.

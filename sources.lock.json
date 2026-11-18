@@ -811,7 +811,7 @@
       "executable": false
     },
     "docs/getting-started.md": {
-      "sha256": "cdb9418cb5cf8d3531a9f2ddfabe38c75fc027f8bc8f251f763381a6d6594055",
+      "sha256": "4d70e22b7456b28c373f38c533c8deee8d48ccd02c001cdcaba020fa13523eaf",
       "executable": false
     },
     "docs/imports/MOVING.md": {
@@ -819,7 +819,7 @@
       "executable": false
     },
     "docs/overview.md": {
-      "sha256": "063fc6e0dcfcf6d49197441ead4de4dfc6678df9de6c0824a2a23767cfcdded1",
+      "sha256": "5870f79d19f9a0dba21526778c0c122a3e32125b6be95a58c5386924c0e82332",
       "executable": false
     },
     "docs/retained-verification/browser-results.jsonl": {
@@ -3915,7 +3915,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "beafa798492da77a3a57b9d2b2134c02a0c6b4699ab94a52d293db38071b1f64",
+      "sha256": "e5fc0bf436eeddff2485d546bbe2b1c063500bf3d92523d0a85f644da037bae4",
       "executable": false
     },
     "RECORD-POLICIES.md": {
@@ -5271,7 +5271,7 @@
       "executable": false
     },
     "src/core/features/access/collaborator-invite.tsx": {
-      "sha256": "fb7519558e2a86b995e67b1690ad84aa3a02e7ca073e896487cbd6b1624deaaa",
+      "sha256": "2ee89051e6a41768066e8ba9c408bdb5fd71dd5fa1c9421b638d99a3ee0bef89",
       "executable": false
     },
     "src/core/features/access/errors.ts": {
@@ -5295,7 +5295,7 @@
       "executable": false
     },
     "src/core/features/access/invitation-landing.ts": {
-      "sha256": "05e7c510bfab9b04e1953322619ff3bf99cb685855e267ed23e8ab1a418d7123",
+      "sha256": "aa2aa03504602b83b4aa5f5ba585d92c0cfa6539373160d27ef3c7bcb46f8d3f",
       "executable": false
     },
     "src/core/features/access/legacy-database.ts": {
@@ -5727,7 +5727,7 @@
       "executable": false
     },
     "src/core/features/capture/intake.ts": {
-      "sha256": "0e9f828fdeb5fafbbc5ff15d9fe21ea2b4c330e88c64af1dc1f70082f8d7fe1c",
+      "sha256": "aba85494a67d72b152c00e9894a43c65e25e144ae828659466de0ef1c0c16a1f",
       "executable": false
     },
     "src/core/features/capture/mail-association.ts": {
@@ -6355,7 +6355,7 @@
       "executable": false
     },
     "src/core/features/imports/contracts.ts": {
-      "sha256": "ea8f260a5873227017c0492de036e4e5ea5fc3cebd93c4ec050178daa9146f5f",
+      "sha256": "ddd6a4e8e227bd3398c3d066ab39de4158f82dc856d7d724c7abdf6bdcbc3bfc",
       "executable": false
     },
     "src/core/features/imports/erasure.ts": {
@@ -6791,7 +6791,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/capture-proposals.tsx": {
-      "sha256": "53e5a422dfa8962da46a90062810448b2ae507cfa3c5db9dc3a5dcada42a0984",
+      "sha256": "85bd015d25875bd8e59b33e62d9b084f529e4a3f1d1ac318d1ba1f8e3818466c",
       "executable": false
     },
     "src/core/features/operator/ui/capture-provider-form.tsx": {
@@ -6955,7 +6955,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/mail-sender-setup.tsx": {
-      "sha256": "48f331a5bb2f6766c69a999c02a45b03ef2c9968ccab4c0f234fa2454c02be51",
+      "sha256": "5edde59c26884002c5b0574bdd30affd505fa5add79f34653cf2955a606f66a6",
       "executable": false
     },
     "src/core/features/operator/ui/mailchimp-preview.tsx": {
@@ -7191,7 +7191,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/next-action.tsx": {
-      "sha256": "6a975e7b478cc776f6a9da50c7d878cd6a5ac2df3743ffd6f72b6b672d4ff726",
+      "sha256": "90ff4aafcde3ecf91c5e70f47ef7fd85145d72426f9275389d1f8fd6fad7eb0b",
       "executable": false
     },
     "src/core/features/operator/ui/record/obligation-panel.tsx": {
@@ -7239,7 +7239,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/record/record.css": {
-      "sha256": "da6f9fd931b2834d56ee4be233663a159302760110d1ed977cfaaed93f971a6b",
+      "sha256": "19485d67134dd4ff4699ecd68d2cdc35cfb3613898575147de1751f63e400e93",
       "executable": false
     },
     "src/core/features/operator/ui/record/recorded-details.tsx": {
@@ -7403,7 +7403,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/today-brief.tsx": {
-      "sha256": "7d96d83f2272e1b3ae4a9322cd414c3323ab23fcaf977bf04ac8d080d8b608ba",
+      "sha256": "57cca9cc33460d7aedf49ab414dcc52f5a8c37a360aec2a478c1a256bf39a3f7",
       "executable": false
     },
     "src/core/features/operator/ui/today-summary.tsx": {
@@ -8675,7 +8675,7 @@
       "executable": false
     },
     "src/core/features/today/signal-lines.ts": {
-      "sha256": "9ea30ba0def1fab0925ba13db1f23bfe1709bef9ceb732e55e9a8c43d011b395",
+      "sha256": "6d9447c0560ed762146f727b400d1d5d43cb1b3c44789c63b88efe053168d311",
       "executable": false
     },
     "src/core/features/today/summary.ts": {
@@ -8687,11 +8687,11 @@
       "executable": false
     },
     "src/core/features/today/types.ts": {
-      "sha256": "80deeb7e8130232f02f4115c8e1df138effd25e334365b9b69de4c910cab2e5a",
+      "sha256": "5349b2aebc2c1d9ddbdb392470c89ad8d442fd54cd0892d103bc4663eb77d267",
       "executable": false
     },
     "src/core/features/today/unresolved.ts": {
-      "sha256": "af63a10a66cc70d61065087fde2fb43ef70a0b816b86f359d1cc750a0e774830",
+      "sha256": "404ba24acb49d36cec0e1661c8eb0149e9f2d4bedd48d1a875d96bf0f2e9c89c",
       "executable": false
     },
     "src/core/features/today/window.ts": {
@@ -9035,7 +9035,7 @@
       "executable": false
     },
     "src/dev/sign-in.ts": {
-      "sha256": "4d6f54cb8289ec398be416cd69bc6307ed08f3714681d27b870f4c6be1535ec3",
+      "sha256": "119a4353fc08005bae484d4ac22f72c91d595d3843fd6d5505d380d6087f516b",
       "executable": false
     },
     "src/editor/leaf.tsx": {

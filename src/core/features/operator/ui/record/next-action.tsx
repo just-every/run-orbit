@@ -25,7 +25,9 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
  const rec=opportunity.recommendation,contributions=opportunity.evaluation?.contributions??[],contacts=signalContacts(opportunity);
  const signals=new Map(opportunity.signals.map(signal=>[signal.id,signal]));
  const newest=[...contributions].sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0],signal=newest?signals.get(newest.signalId):undefined;
- const line=rec?.explanation??(signal?signal.subject||`${signalKind(signal.type)} · from ${sourceLabel(signal.source)}`:opportunity.queueReason??'Review the customer evidence and choose your next step.');
+ const reasonChip=opportunity.lifecycle==='open'&&opportunity.queueState==='now'&&opportunity.queueReason?opportunity.queueReason:null;
+ // The Why NOW chip already says the queue reason, so the line never repeats it.
+ const line=rec?.explanation??(signal?signal.subject||`${signalKind(signal.type)} · from ${sourceLabel(signal.source)}`:(reasonChip?null:opportunity.queueReason)??'Review the customer evidence and choose your next step.');
  const when=!rec?.explanation&&signal?[formatDateTime(signal.occurredAt,presentation),contacts.get(signal.id)].filter(Boolean).join(' · '):null;
  const [error,setError]=useState(''),[busy,setBusy]=useState(false);
  async function finish(outcome:'completed'|'skipped'){if(!rec)return;setBusy(true);setError('');try{await workbenchRequest(`/recommendations/${rec.id}/complete`,{outcome,note:''});reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
@@ -33,7 +35,7 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
   <h2 id={`next-${opportunity.id}`} className="sr-only">Next action</h2>
   {opportunity.evaluation?.failureAt?<div role="alert" data-testid="evaluation-failure"><p>Priorities could not be refreshed at {formatDateTime(opportunity.evaluation.failureAt,presentation)}. The score and evidence shown are from the last successful evaluation and may be out of date.</p>{!readOnly&&<RecommendationRefresh opportunityId={opportunity.id} reload={reload}/>}</div>:null}
   {deal}
-  {opportunity.lifecycle==='open'&&opportunity.queueState==='now'&&opportunity.queueReason?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{opportunity.queueReason}</span></div>:null}
+  {reasonChip?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{reasonChip}</span></div>:null}
   <p className="r-next-line">{line}</p>
   {when?<p className="r-next-when">{when}</p>:null}
   {!readOnly&&<div className="r-next-actions">

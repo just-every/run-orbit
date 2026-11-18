@@ -1,7 +1,7 @@
 import {useAppAccess} from '../../access/app-access';
 import {useCallback,useState} from 'react';
 import './today.css';
-import {formatDateTime,formatDay} from './formatters';
+import {formatDateTime} from './formatters';
 import {operatorApi,type WorkspacePresentation} from './operator-api';
 import {OperatorState} from './operator-shell';
 import {useOperatorResource} from './use-operator-resource';
@@ -21,7 +21,7 @@ function Line({line,presentation}:{line:BriefLine;presentation:WorkspacePresenta
  const prefix=linePrefix(line),repeated=prefix.trim().toLowerCase()===line.title.trim().toLowerCase();
  return <li className="today-line" data-line={line.id}>
   <div className="today-line__what"><a href={line.href}>{repeated?<span className="today-line__prefix">{line.title}</span>:<><span className="today-line__prefix">{prefix}:</span> {line.title}</>}</a>{line.detail&&<span className="today-line__detail">{line.detail}</span>}</div>
-  <div className="today-line__when"><time dateTime={line.occurredAt}>{formatDateTime(line.occurredAt,presentation)}</time>{line.dueAt&&line.group!=='proposal'&&<span>Due {formatDateTime(line.dueAt,presentation)}</span>}{full&&line.planHref&&<a href={line.planHref}>Plan this meeting</a>}</div>
+  <div className="today-line__when"><time dateTime={line.startsAt??line.occurredAt}>{formatDateTime(line.startsAt??line.occurredAt,presentation)}</time>{line.dueAt&&line.group!=='proposal'&&<span>Due {formatDateTime(line.dueAt,presentation)}</span>}{full&&line.planHref&&<a href={line.planHref}>Plan this meeting</a>}</div>
  </li>;
 }
 
@@ -29,7 +29,8 @@ function Line({line,presentation}:{line:BriefLine;presentation:WorkspacePresenta
 function sinceLine(brief:Brief,presentation:WorkspacePresentation){
  const c=brief.counts,forms=brief.accounts.flatMap(account=>account.lines).filter(line=>line.kind==='signal'&&line.signalType==='form.submitted').length;
  const counts=([[c.replies,'reply','replies'],[c.meetings,'meeting','meetings'],[forms,'form submission','form submissions'],[c.promises,'overdue promise','overdue promises'],[c.unresolved,'unresolved identity','unresolved identities']] as const).filter(([n])=>n>0).map(([n,one,many])=>`${n} ${n===1?one:many}`);
- const since=brief.sinceBasis==='seen'?`Since you last looked, ${formatDateTime(brief.since,presentation)}`:`Since ${formatDay(brief.since,presentation.timezone)}`;
+ // Before anyone marks the brief seen it covers a fixed look-back, whatever the install's age.
+ const since=brief.sinceBasis==='seen'?`Since you last looked, ${formatDateTime(brief.since,presentation)}`:`Last ${Math.floor((Date.parse(brief.generatedAt)-Date.parse(brief.since))/86400000)} days`;
  return [since,...counts].join(' · ');
 }
 
