@@ -10,7 +10,7 @@ export const acceptLink=(origin:string,token:string)=>`${origin}/app/access?${ne
 function LocalInvitation({invitation}:{invitation:CreatedInvitation}){
  return <div className="fold-row" aria-label="Invitation ready"><h3>Invitation ready for {invitation.email}</h3>
   <p>This Orbit runs on your computer, where email sign-in is off and the link below opens only on this computer. Orbit sends no email here, and {invitation.email} cannot use this link from elsewhere.</p>
-  <p>To work with {invitation.email}, invite them from your hosted Orbit: it emails them a sign-in link.</p>
+  <p>To open it as {invitation.email} on this computer: open the link in a private window, choose <strong>Sign in as {invitation.email}</strong>, paste the local access link that <code>rer dev</code> printed (the line that starts <code>RER_OPEN</code>) and choose {invitation.email}. To work with them from another computer, invite them from your hosted Orbit: it emails them a sign-in link.</p>
   <CopyField label="Invitation link" value={acceptLink(window.location.origin,invitation.token)}/>
   <p>The link works once, only for {invitation.email}, until {formatDate(invitation.expiresAt)}.</p>
  </div>;

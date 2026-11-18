@@ -50,7 +50,7 @@ Follow the two steps on [run-orbit.com/run](https://run-orbit.com/run). Git is r
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-If the installer prints a PATH command, run that line in this terminal so it can find `rer`. You can also use the full path to `rer` printed by the installer in place of `rer` below.
+The installer prints the full path to `rer` (normally `~/.local/bin/rer`). If this or a later terminal says `rer: command not found`, run `~/.local/bin/rer cli path` and then the one line it prints; it puts `rer` on your PATH and changes no shell file itself. Until you do, type `~/.local/bin/rer` wherever a command here starts with `rer`.
 
 2. Get Orbit and start it:
 

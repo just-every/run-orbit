@@ -7,7 +7,7 @@ export type LineGroup='new'|'promise'|'proposal'|'unresolved'|'held';
 /** One brief line. It exists only with the evidence it rests on and a link to that record or timeline entry. */
 export interface BriefLine {
  id:string;kind:LineKind;group:LineGroup;signalType:string|null;confidence:'observed'|'inferred'|null;
- title:string;detail:string|null;occurredAt:string;dueAt:string|null;
+ title:string;detail:string|null;occurredAt:string;dueAt:string|null;startsAt?:string|null;
  evidence:{type:EvidenceType;id:string};records:RecordRef[];href:string;planHref:string|null;
 }
 export interface BriefAccount {key:string;type:RecordType;id:string;name:string;href:string;lines:BriefLine[]}
