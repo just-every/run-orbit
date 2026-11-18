@@ -8431,7 +8431,7 @@
       "executable": false
     },
     "src/core/features/settings/connected-products.ts": {
-      "sha256": "7e85b4b6689fdfc2adf4679b601de80bd01cc709fcf760413c444fdf40bec35f",
+      "sha256": "a0c04e711fb7779573158c0a77a769c5386c49bb80db1adeeb9bd9472b282234",
       "executable": false
     },
     "src/core/features/settings/erasure-redaction.ts": {
