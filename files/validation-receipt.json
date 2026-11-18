@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/gr-mt-orbit-dep-12",
+  "base": "a050bfb87cb804a5eb2a278bb627a47cc1874537",
+  "head": "2288bfae201961fdb966552dc86655a76b2e0247",
+  "tree": "392187aa90b286fbb10cfbe3e06e6e9426bca2bf",
+  "advisories": [
+    "GHSA-46wx-v44x-9hh2",
+    "GHSA-4h7h-rv7c-7m2v",
+    "GHSA-4m76-xfj5-7975",
+    "GHSA-h7mg-cq63-vhpq",
+    "GHSA-3gg2-335m-rxc6"
+  ],
+  "direct_runtime_resolution": {
+    "before": "4.13.11",
+    "after": "4.13.16",
+    "before_copies": 1,
+    "after_copies": 1,
+    "known_vulnerable_copies_before": 1,
+    "known_vulnerable_copies_after": 0,
+    "registry_release_time": "2026-11-01T03:04:37.067Z",
+    "pnpm_lock_sha256_before": "1799e36914b847b73bef84e04124e75ae437ba9283d640549b4777b715182245",
+    "pnpm_lock_sha256_after": "7a4c49fc8be22e1fce41256cff438380cb503eb6cae234380857e22343df8067",
+    "pnpm_lock_matches_head": true
+  },
+  "toolchain": {
+    "node": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "checks": [
+    {
+      "command": "pnpm add --save-exact --lockfile-only hono@4.13.16",
+      "exit": 0
+    },
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec rer install",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email [fleet mailbox] --non-interactive",
+      "exit": 0,
+      "migrations_applied": 84
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm run typecheck",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=2 tests/core/platform-boundaries.test.ts tests/core/identity.test.ts tests/core/public-demo.test.ts",
+      "exit": 1,
+      "reason": "Platform boundary file required prepared isolated ORBIT_TEST_STATE. Identity and public-demo cases passed.",
+      "totals": {
+        "tests": 6,
+        "pass": 5,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "command": "cloud_run pnpm exec tsx tests/support/prepare-state.ts",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run pnpm exec tsx --test --test-concurrency=2 tests/core/platform-boundaries.test.ts",
+      "exit": 0,
+      "totals": {
+        "tests": 5,
+        "pass": 5,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "command": "node src/base/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs lock",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/@runeditrun/rer/edition-authoring/cli.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verification-inventory.mjs",
+      "exit": 0,
+      "registered_cases": 198,
+      "qualification_flows": 2,
+      "total": 200,
+      "files": 100
+    },
+    {
+      "command": "git diff --check origin/main..HEAD",
+      "exit": 0
+    }
+  ],
+  "contract_counts": {
+    "before": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    },
+    "after": {
+      "done": 42,
+      "partial": 130,
+      "missing": 32,
+      "total": 204
+    }
+  }
+}

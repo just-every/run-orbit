@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "blob": "148083b64a223e32c63602553e40e9d8949d948b",
+      "bytes": 3123,
+      "path": "REPORT.md",
+      "sha256": "85114236c4c3488d849f1af5903386a52ac19f2126c5af8ac39a6d4684a4d975"
+    },
+    {
+      "blob": "9298ece227ac60cd03009480b510458f929a4ada",
+      "bytes": 2064,
+      "path": "ci-receipt.json",
+      "sha256": "72a09e5575cfb9c2beb528a3d79b4fc65bcf1a50405f0a3cf4190178fdf0576c"
+    },
+    {
+      "blob": "0b47e9616892befe514f7aa8070a84553a54c495",
+      "bytes": 1143,
+      "path": "publication-receipt.json",
+      "sha256": "6f60861d9d9a6e2718180187e33b333da1e9f4b7bd8d7502b2f1be993554cb01"
+    },
+    {
+      "blob": "884999e492821829233b22563406cbef77957f7a",
+      "bytes": 501,
+      "path": "result.json",
+      "sha256": "0d064398798d81b3c7a0e70b8ee5dcd981363ed6ec8333aeae2171c69cf160cd"
+    },
+    {
+      "blob": "b5eacbaa19f096e0aadab18043643997cef4f7b1",
+      "bytes": 3282,
+      "path": "validation-receipt.json",
+      "sha256": "cbfb1a0412c11cd8ee76de78929119c04d1773d7dbb527549912c2e6d29b5fb5"
+    }
+  ],
+  "product_branch": "cloud/gr-mt-orbit-dep-12",
+  "product_head": "2288bfae201961fdb966552dc86655a76b2e0247",
+  "ref": "refs/heads/evidence/gr-mt-orbit-dep-12",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "gr-mt-orbit-dep-12"
+}

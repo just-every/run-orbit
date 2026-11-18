@@ -1,0 +1,50 @@
+{
+  "schema": "rer.publish-check/v3",
+  "source": {
+    "commit": "2288bfae201961fdb966552dc86655a76b2e0247",
+    "tree": "392187aa90b286fbb10cfbe3e06e6e9426bca2bf"
+  },
+  "status": "PASS",
+  "complete": true,
+  "scanner": {
+    "name": "gitleaks",
+    "version": "8.30.1"
+  },
+  "implementation": {
+    "version": "0.2.113",
+    "sha256": "c5f2d788f2f08764cd018e049b507c26f5ac01f651e2e8696398d89a5a886ffb",
+    "python": "3.12.14"
+  },
+  "publicBase": {
+    "ref": "https://github.com/just-every/run-orbit.git#main",
+    "commit": "a050bfb87cb804a5eb2a278bb627a47cc1874537"
+  },
+  "history": {
+    "commits": 924,
+    "trees": 920,
+    "blobs": 9148,
+    "hydration": {
+      "missingBefore": 0,
+      "missingAfter": 0,
+      "fetches": 0,
+      "seconds": 0.044729
+    }
+  },
+  "finding_count": 0,
+  "warning_count": 0,
+  "pre_existing_count": 5,
+  "pre_existing_rules": [
+    {
+      "rule": "SEC-3",
+      "count": 4
+    },
+    {
+      "rule": "hygiene.email",
+      "count": 1
+    }
+  ],
+  "product_ref": "refs/heads/cloud/gr-mt-orbit-dep-12",
+  "product_ref_advertised": true,
+  "audited_candidate_commits": 1,
+  "commit_trailers": 0
+}
