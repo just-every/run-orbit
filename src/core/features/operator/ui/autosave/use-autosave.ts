@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {dropEdit,keepEdit,keptEdits} from './kept-edits';
-import {registerForm,type GuardedForm} from './leave-guard';
+import {clearResolvedLeave,registerForm,type GuardedForm} from './leave-guard';
 
 export type Values=Record<string,any>;
 /** What one save answered: the server's copy after it, and whether it changed anything. */
@@ -55,7 +55,7 @@ export function useAutosave<D extends Values>(options:AutosaveOptions<D>){
  const [statuses,setStatuses]=useState<Record<string,FieldStatus>>({});
  const [saved,setSaved]=useState<string|null>(null),[savedCount,setSavedCount]=useState(0),savedTimer=useRef<ReturnType<typeof setTimeout>>(undefined);
  const [,render]=useState(0);
- const status=(field:string,next:FieldStatus)=>setStatuses(current=>({...current,[field]:next}));
+ const status=(field:string,next:FieldStatus)=>{setStatuses(current=>({...current,[field]:next}));if(next.state!=='failed'&&next.state!=='saving')queueMicrotask(clearResolvedLeave);};
  const draft=(field:string,value:unknown)=>{const next={...draftsRef.current};if(value===undefined)delete next[field];else next[field]=value;draftsRef.current=next;setDrafts(next);};
  const newer=(next:D)=>{const version=settings.current.version,current=copy.current;if(!current||!version)return true;return (version(next)??'')>=(version(current)??'');};
 

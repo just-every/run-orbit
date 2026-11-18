@@ -26,6 +26,8 @@ function setBlocked(next:BlockedLeave|null){blocked=next;for(const listener of l
 const subscribe=(listener:()=>void)=>{listeners.add(listener);return()=>{listeners.delete(listener);};};
 export const useBlockedLeave=()=>useSyncExternalStore(subscribe,()=>blocked,()=>null);
 export const dismissBlockedLeave=()=>setBlocked(null);
+/** A warning about a value that has since saved (or been put back) goes away on its own. */
+export function clearResolvedLeave(){if(blocked&&![...forms].some(form=>form.unsaved()))setBlocked(null);}
 
 /** The destination's own name for the note's way out: its menu entry, else "the next page". */
 function destinationName(pathname:string){
