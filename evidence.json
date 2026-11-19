@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "blob": "a37e3c9b21519b06ca8dd637e80bcb9a6ad3c699",
+      "bytes": 22569,
+      "path": "LOCAL-CHECKS.json",
+      "sha256": "13dca3b8c313d7224ed10e1fc8acf9b205dc5887b7a611ca8165136d1fbb5996"
+    },
+    {
+      "blob": "bab0d4c9da4e5c73143c7ff40eb8438d9ace541b",
+      "bytes": 3750,
+      "path": "REPORT.md",
+      "sha256": "ee4f0c81608c94b90edd8ac99a7d6dccf743d96c4dfecd11677adb2ea9298146"
+    },
+    {
+      "blob": "ac7b4490576c75e0d048c8e273f83a5a935c66e3",
+      "bytes": 7200,
+      "path": "VERIFY.json",
+      "sha256": "de9a64c029b14135e92680139dc6231efbe6d39a9fab9103881af1169b17f331"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-fix-today-brief-1",
+  "product_head": "bfbe479f949fe859556f15849ac49f098208a6bd",
+  "ref": "refs/heads/evidence/sd-orbit-fix-today-brief-1",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-fix-today-brief-1"
+}

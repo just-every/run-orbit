@@ -1,0 +1,633 @@
+{
+  "baseline": [
+    {
+      "commit": "2288bfae201961fdb966552dc86655a76b2e0247",
+      "counts": {
+        "failed": 2,
+        "passed": 15
+      },
+      "executions": [
+        {
+          "durationMs": 101892.879231,
+          "file": "tests/core/archive-transfer.test.ts",
+          "name": "BASE-DATA-001 abort preserves the original administrator, session and exact metadata and a concurrent export part cannot revive private transfer data",
+          "status": "passed"
+        },
+        {
+          "durationMs": 78054.021597,
+          "file": "tests/core/archive-transfer.test.ts",
+          "name": "API-002 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery",
+          "status": "passed"
+        },
+        {
+          "durationMs": 83409.327712,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs",
+          "status": "passed"
+        },
+        {
+          "durationMs": 41627.986984,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible",
+          "status": "passed"
+        },
+        {
+          "durationMs": 36326.212895,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay",
+          "status": "passed"
+        },
+        {
+          "durationMs": 28636.914949,
+          "file": "tests/core/identity.test.ts",
+          "name": "PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, expiry and removed-operator refusal",
+          "status": "passed"
+        },
+        {
+          "durationMs": 38.480493,
+          "file": "tests/core/identity.test.ts",
+          "name": "PUBLIC-004 sign-out by a form before hydration revokes the session; foreign origins are refused",
+          "status": "passed"
+        },
+        {
+          "durationMs": 3936.377819,
+          "file": "tests/core/identity.test.ts",
+          "name": "AUTH-5 step-up guards export, delete and minting delegation credentials with a fresh email proof in the asking session",
+          "status": "passed"
+        },
+        {
+          "durationMs": 4485.678009,
+          "file": "tests/core/identity.test.ts",
+          "name": "AUTH-5 dev sessions and the credentials they mint count only behind the checkout key",
+          "status": "passed"
+        },
+        {
+          "durationMs": 30029.963398,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once",
+          "status": "passed"
+        },
+        {
+          "durationMs": 44111.37832,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit",
+          "status": "passed"
+        },
+        {
+          "durationMs": 29172.128203,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once",
+          "status": "passed"
+        },
+        {
+          "durationMs": 14855.990134,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence",
+          "status": "failed"
+        },
+        {
+          "durationMs": 3896.41105,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks",
+          "status": "failed"
+        },
+        {
+          "durationMs": 276445.828189,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody",
+          "status": "passed"
+        },
+        {
+          "durationMs": 21306.736717,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts",
+          "status": "passed"
+        },
+        {
+          "durationMs": 46232.599628,
+          "file": "tests/delegation/d1.test.ts",
+          "name": "delegation and handoff native routes against isolated real D1",
+          "status": "passed"
+        }
+      ],
+      "finishedAt": "2026-11-19T13:51:56.661Z",
+      "shard": "core-8",
+      "stages": [
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "tests/support/prepare-state.ts"
+          ],
+          "durationMs": 32000,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "--test",
+            "--no-test-only",
+            "--test-concurrency=1",
+            "--test-reporter=spec",
+            "--test-reporter-destination=stdout",
+            "--test-reporter=./scripts/core-results.mjs",
+            "--test-reporter-destination=verification/core-8-results.jsonl",
+            "tests/core/archive-transfer.test.ts",
+            "tests/core/capture-erasure.test.ts",
+            "tests/core/identity.test.ts",
+            "tests/core/outreach-limits.test.ts",
+            "tests/core/today-brief.test.ts",
+            "tests/delegation/d1.test.ts"
+          ],
+          "durationMs": 896171,
+          "eventError": "Missing, failed or unexpected test completions.",
+          "exitCode": 1,
+          "status": "failed"
+        }
+      ],
+      "startedAt": "2026-11-19T13:36:28.469Z",
+      "status": "failed"
+    },
+    {
+      "commit": "2288bfae201961fdb966552dc86655a76b2e0247",
+      "counts": {
+        "passed": 1
+      },
+      "executions": [
+        {
+          "durationMs": 329143.547243,
+          "file": "tests/rer/operator-small-phone.test.mjs",
+          "name": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 320px",
+          "status": "passed"
+        }
+      ],
+      "finishedAt": "2026-11-19T13:58:10.213Z",
+      "shard": "rer-operator-small-phone",
+      "stages": [
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "tests/support/prepare-state.ts"
+          ],
+          "durationMs": 41920,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "scripts/verification-build.mjs",
+            "check"
+          ],
+          "durationMs": 388,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "--test",
+            "--no-test-only",
+            "--test-concurrency=1",
+            "--test-reporter=spec",
+            "--test-reporter-destination=stdout",
+            "--test-reporter=./scripts/core-results.mjs",
+            "--test-reporter-destination=verification/rer-operator-small-phone-results.jsonl",
+            "tests/rer/operator-small-phone.test.mjs"
+          ],
+          "durationMs": 330148,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        }
+      ],
+      "startedAt": "2026-11-19T13:51:57.747Z",
+      "status": "passed"
+    }
+  ],
+  "baseline_diagnostics": [
+    "IMPORT_ATOMIC_GUARD",
+    "500: Record operation failed; no success was confirmed.",
+    "401: Operator session required."
+  ],
+  "candidate": [
+    {
+      "commit": "bfbe479f949fe859556f15849ac49f098208a6bd",
+      "counts": {},
+      "executions": [],
+      "finishedAt": "2026-11-19T13:55:42.977Z",
+      "shard": "source",
+      "stages": [
+        {
+          "args": [
+            "exec",
+            "node",
+            "src/base/contract-docs.mjs",
+            "check"
+          ],
+          "durationMs": 580,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "run",
+            "source:check"
+          ],
+          "durationMs": 1570,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "node_modules/@runeditrun/rer/bin/rer.mjs",
+            "check",
+            "--profile",
+            "first-party"
+          ],
+          "durationMs": 1724,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "run",
+            "check:boundaries"
+          ],
+          "durationMs": 717,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "run",
+            "check:manifest"
+          ],
+          "durationMs": 544,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "run",
+            "agent:surface"
+          ],
+          "durationMs": 2981,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "rer",
+            "build"
+          ],
+          "durationMs": 16091,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+            ".",
+            "deploy.json"
+          ],
+          "durationMs": 123822,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "scripts/publish-deployment-spec.mjs",
+            "--check"
+          ],
+          "durationMs": 403,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "run",
+            "typecheck"
+          ],
+          "durationMs": 31674,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        }
+      ],
+      "startedAt": "2026-11-19T13:52:42.830Z",
+      "status": "passed"
+    },
+    {
+      "commit": "bfbe479f949fe859556f15849ac49f098208a6bd",
+      "counts": {
+        "passed": 17
+      },
+      "executions": [
+        {
+          "durationMs": 107571.904591,
+          "file": "tests/core/archive-transfer.test.ts",
+          "name": "BASE-DATA-001 abort preserves the original administrator, session and exact metadata and a concurrent export part cannot revive private transfer data",
+          "status": "passed"
+        },
+        {
+          "durationMs": 78339.114635,
+          "file": "tests/core/archive-transfer.test.ts",
+          "name": "API-002 credential custody and DATA-002 contact erasure invalidate exports, downloads and restore copies and fences a snapshot created during discovery",
+          "status": "passed"
+        },
+        {
+          "durationMs": 90125.037776,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 BASE-DATA-003 erasing a contact erases their captured originals and proposals; the audit trail keeps counts and anonymous replay proofs",
+          "status": "passed"
+        },
+        {
+          "durationMs": 38185.887743,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 erased provider originals stay erased after expired history, crashes and reconnect while new evidence remains eligible",
+          "status": "passed"
+        },
+        {
+          "durationMs": 34517.057813,
+          "file": "tests/core/capture-erasure.test.ts",
+          "name": "CAPTURE-007 DATA-002 erasure fences an already-resolved capture commit and its later replay",
+          "status": "passed"
+        },
+        {
+          "durationMs": 29114.502041,
+          "file": "tests/core/identity.test.ts",
+          "name": "PUBLIC-004 email link: one answer for every address, inert preview, one-use POST confirmation, expiry and removed-operator refusal",
+          "status": "passed"
+        },
+        {
+          "durationMs": 48.665513,
+          "file": "tests/core/identity.test.ts",
+          "name": "PUBLIC-004 sign-out by a form before hydration revokes the session; foreign origins are refused",
+          "status": "passed"
+        },
+        {
+          "durationMs": 4221.295925,
+          "file": "tests/core/identity.test.ts",
+          "name": "AUTH-5 step-up guards export, delete and minting delegation credentials with a fresh email proof in the asking session",
+          "status": "passed"
+        },
+        {
+          "durationMs": 4699.795826,
+          "file": "tests/core/identity.test.ts",
+          "name": "AUTH-5 dev sessions and the credentials they mint count only behind the checkout key",
+          "status": "passed"
+        },
+        {
+          "durationMs": 28455.653634,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-006 BASE-OPS-004 transient rate limits stop after five attempts within one hour and notify once",
+          "status": "passed"
+        },
+        {
+          "durationMs": 41246.897946,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-010 OUT-018 one user's volume never consumes another's budget and every deferral names its limit",
+          "status": "passed"
+        },
+        {
+          "durationMs": 28733.202228,
+          "file": "tests/core/outreach-limits.test.ts",
+          "name": "OUT-007 OUT-009 OUT-012 a signed provider unsubscribe stops the recipient and schedule within sixty seconds and returns the opportunity to NOW once",
+          "status": "passed"
+        },
+        {
+          "durationMs": 32999.702031,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence",
+          "status": "passed"
+        },
+        {
+          "durationMs": 7929.332434,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks",
+          "status": "passed"
+        },
+        {
+          "durationMs": 225955.135507,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody",
+          "status": "passed"
+        },
+        {
+          "durationMs": 15631.579993,
+          "file": "tests/core/today-brief.test.ts",
+          "name": "CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts",
+          "status": "passed"
+        },
+        {
+          "durationMs": 32205.453026,
+          "file": "tests/delegation/d1.test.ts",
+          "name": "delegation and handoff native routes against isolated real D1",
+          "status": "passed"
+        }
+      ],
+      "finishedAt": "2026-11-19T14:13:05.964Z",
+      "shard": "core-8",
+      "stages": [
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "tests/support/prepare-state.ts"
+          ],
+          "durationMs": 34435,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "--test",
+            "--no-test-only",
+            "--test-concurrency=1",
+            "--test-reporter=spec",
+            "--test-reporter-destination=stdout",
+            "--test-reporter=./scripts/core-results.mjs",
+            "--test-reporter-destination=verification/core-8-results.jsonl",
+            "tests/core/archive-transfer.test.ts",
+            "tests/core/capture-erasure.test.ts",
+            "tests/core/identity.test.ts",
+            "tests/core/outreach-limits.test.ts",
+            "tests/core/today-brief.test.ts",
+            "tests/delegation/d1.test.ts"
+          ],
+          "durationMs": 853651,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        }
+      ],
+      "startedAt": "2026-11-19T13:58:17.861Z",
+      "status": "passed"
+    },
+    {
+      "commit": "bfbe479f949fe859556f15849ac49f098208a6bd",
+      "counts": {
+        "passed": 1
+      },
+      "executions": [
+        {
+          "durationMs": 224926.102415,
+          "file": "tests/rer/operator-small-phone.test.mjs",
+          "name": "BASE-PUBLIC-003 T099 native operator routes and expanded data views at 320px",
+          "status": "passed"
+        }
+      ],
+      "finishedAt": "2026-11-19T14:17:24.822Z",
+      "shard": "rer-operator-small-phone",
+      "stages": [
+        {
+          "args": [
+            "exec",
+            "tsx",
+            "tests/support/prepare-state.ts"
+          ],
+          "durationMs": 32509,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "scripts/verification-build.mjs",
+            "check"
+          ],
+          "durationMs": 406,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "args": [
+            "exec",
+            "node",
+            "--test",
+            "--no-test-only",
+            "--test-concurrency=1",
+            "--test-reporter=spec",
+            "--test-reporter-destination=stdout",
+            "--test-reporter=./scripts/core-results.mjs",
+            "--test-reporter-destination=verification/rer-operator-small-phone-results.jsonl",
+            "tests/rer/operator-small-phone.test.mjs"
+          ],
+          "durationMs": 225700,
+          "eventError": null,
+          "exitCode": 0,
+          "status": "passed"
+        }
+      ],
+      "startedAt": "2026-11-19T14:13:06.201Z",
+      "status": "passed"
+    }
+  ],
+  "candidate_head": "bfbe479f949fe859556f15849ac49f098208a6bd",
+  "candidate_tree": "4cda9f1444f4a72b20c8068f3a61373f0936e07d",
+  "focused_checks": {
+    "counts": {
+      "passed": 6
+    },
+    "executions": [
+      {
+        "durationMs": 514822.974629,
+        "file": "tests/core/capture-data.test.ts",
+        "name": "DATA-003 current sales capabilities round-trip without authority and erase across public reads",
+        "status": "passed"
+      },
+      {
+        "durationMs": 82527.416769,
+        "file": "tests/core/outbound-boundaries.test.ts",
+        "name": "OUT-020 OUT-029 OUT-032 managed opt-out is approval-bound, suppresses only its recipient and stops replayed dispatch",
+        "status": "passed"
+      },
+      {
+        "durationMs": 52773.918037,
+        "file": "tests/core/today-brief.test.ts",
+        "name": "TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence",
+        "status": "passed"
+      },
+      {
+        "durationMs": 11722.831596,
+        "file": "tests/core/today-brief.test.ts",
+        "name": "BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks",
+        "status": "passed"
+      },
+      {
+        "durationMs": 323348.016346,
+        "file": "tests/core/today-brief.test.ts",
+        "name": "INTEGRATE-002 BRIEF-004 RECORD-010 RECORD-017 RECORD-023 OUT-001 cited meeting plans, mention authority and Zoom lifecycle custody",
+        "status": "passed"
+      },
+      {
+        "durationMs": 23818.807246,
+        "file": "tests/core/today-brief.test.ts",
+        "name": "CALL-001 owner-managed Twilio dialing reviews exact numbers, submits once, orders signed receipts and preserves privacy and report counts",
+        "status": "passed"
+      }
+    ]
+  },
+  "inventory_after": {
+    "cases": 198,
+    "files": 100,
+    "qualifications": 2,
+    "total": 200
+  },
+  "inventory_before": {
+    "cases": 198,
+    "files": 100,
+    "qualifications": 2,
+    "total": 200
+  },
+  "runner": {
+    "baseline_note": "The batch stops after the red core shard. The phone shard ran separately using the sealed baseline build and the same runShard entry point.",
+    "chromium": "/usr/bin/chromium",
+    "focused_note": "The focused test run started after staging and recorded the staged tree. It matches the candidate tree.",
+    "focused_test_files": [
+      "tests/core/capture-data.test.ts",
+      "tests/core/outbound-boundaries.test.ts",
+      "tests/core/today-brief.test.ts"
+    ],
+    "local_batch": "node scripts/verification-batch.mjs '[\"core-8\",\"rer-operator-small-phone\"]'",
+    "node": "22.20.0",
+    "pnpm": "10.12.4",
+    "shared_build": [
+      "node scripts/verification-build.mjs seal",
+      "node scripts/verification-build.mjs check"
+    ],
+    "source": "node scripts/verification-shard.mjs source"
+  },
+  "utc": "2026-11-19T14:58:54Z"
+}
