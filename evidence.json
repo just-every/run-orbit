@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "blob": "d822efd4f772416ad01c7dfda814953e546b0506",
+      "bytes": 3899,
+      "path": "REPORT.md",
+      "sha256": "697dafa670f4a5b5a99170817b33fa240b592c2e809b903e503aa69c5f72b3fd"
+    },
+    {
+      "blob": "b7f652d3e3c8b534c5ae554419d92aea113b0fd7",
+      "bytes": 14781,
+      "path": "release-receipt.json",
+      "sha256": "15353af00dba1a238bba4206d35aff739066d4ea5eb8a7cdd7a2826ffd0c7760"
+    },
+    {
+      "blob": "ee20016231014a0f6d530d6196cdbf77d49e98e0",
+      "bytes": 304,
+      "path": "verify-receipt.json",
+      "sha256": "6b5eee2f0f1215ad09bde42226e8d292b934dd16cec9762bf242408879f986cc"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-release-0-4-12",
+  "product_head": "0e97e8b4d5f543afe2e8c144217403e89652f0a5",
+  "ref": "refs/heads/evidence/sd-orbit-release-0-4-12",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-release-0-4-12"
+}

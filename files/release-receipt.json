@@ -1,0 +1,487 @@
+{
+  "branch": "cloud/sd-orbit-release-0-4-12",
+  "product_head": "0e97e8b4d5f543afe2e8c144217403e89652f0a5",
+  "base_main": "2288bfae201961fdb966552dc86655a76b2e0247",
+  "previous_tag": "v0.4.11",
+  "previous_tag_commit": "a4fcbfcd72fa4253826f43d0b0de02275094f86d",
+  "product_commits_since_previous_tag_before_metadata": 17,
+  "metadata_version": "0.4.12",
+  "rer": "0.2.113",
+  "declared_file_hashes": [
+    {
+      "key": "setup.sha256",
+      "path": "rer-setup.json",
+      "declared": "b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013",
+      "actual": "b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013"
+    }
+  ],
+  "changed_paths": [
+    "CHANGELOG.md",
+    "RELEASE.json",
+    "RELEASE.md",
+    "package.json",
+    "seed.json",
+    "sources.lock.json"
+  ],
+  "counts_before_after": {
+    "core_migration_files": [
+      84,
+      84
+    ],
+    "clauses_done_partial_missing_total": [
+      [
+        42,
+        130,
+        32,
+        204
+      ],
+      [
+        42,
+        130,
+        32,
+        204
+      ]
+    ],
+    "test_path_changes": 0,
+    "test_inventory": [
+      {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      },
+      {
+        "cases": 198,
+        "qualifications": 2,
+        "total": 200
+      }
+    ]
+  },
+  "added_migrations": [],
+  "core_migrations_git_tree": [
+    {
+      "path": "migrations/core/0001_orbit_sample_spine.sql",
+      "mode": "100644",
+      "git_blob": "9b448bf7b9255046a329d84048b2221fffbfc044"
+    },
+    {
+      "path": "migrations/core/0002_magic_links.sql",
+      "mode": "100644",
+      "git_blob": "4c135651165593473423c1e501b5043d96dbc835"
+    },
+    {
+      "path": "migrations/core/0003_outreach.sql",
+      "mode": "100644",
+      "git_blob": "91382486de3a4b28ce453230344e89f146220a09"
+    },
+    {
+      "path": "migrations/core/0004_owner_bootstrap.sql",
+      "mode": "100644",
+      "git_blob": "9c808030b85ec1dba35574a29f48228d8be9d6b7"
+    },
+    {
+      "path": "migrations/core/0005_records.sql",
+      "mode": "100644",
+      "git_blob": "8af75597e2c3861ebd56fdf425cd843ef0b43e2f"
+    },
+    {
+      "path": "migrations/core/0006_signals_outreach.sql",
+      "mode": "100644",
+      "git_blob": "1d279d4758553e17cc95ec67e353bb2c9d61977a"
+    },
+    {
+      "path": "migrations/core/0007_assistance.sql",
+      "mode": "100644",
+      "git_blob": "ff85a6ee7ac80b7714211ccbc18d6dcd021d2eeb"
+    },
+    {
+      "path": "migrations/core/0008_stopped_schedule_queue.sql",
+      "mode": "100644",
+      "git_blob": "b4f66816675cdd00d7188661f57cd0e48f320c3e"
+    },
+    {
+      "path": "migrations/core/0009_archives.sql",
+      "mode": "100644",
+      "git_blob": "544f5134dacca257eab4f08aa06dbe1e42ec3d90"
+    },
+    {
+      "path": "migrations/core/0010_notification_record_scope.sql",
+      "mode": "100644",
+      "git_blob": "6a5535af59e5b9b79d7b923b7f2c1408f6d77624"
+    },
+    {
+      "path": "migrations/core/0011_provider_event_actor.sql",
+      "mode": "100644",
+      "git_blob": "94296281e1e05324df08633d2f8d88bb4868603f"
+    },
+    {
+      "path": "migrations/core/0012_reviewed_signal_actor.sql",
+      "mode": "100644",
+      "git_blob": "ddc97473001d1911b763572d887654b3a5dfc6e1"
+    },
+    {
+      "path": "migrations/core/0013_delegation_handoffs.sql",
+      "mode": "100644",
+      "git_blob": "82d91ae6f4a9bfd1f67590868c506e217d152788"
+    },
+    {
+      "path": "migrations/core/0014_contact_suppression.sql",
+      "mode": "100644",
+      "git_blob": "5eaad5185ae7340188a822e5f84844bd7567f7e0"
+    },
+    {
+      "path": "migrations/core/0015_provider_conflicts.sql",
+      "mode": "100644",
+      "git_blob": "4667da8de58f739e147f8a17ae07bc83d9ed350f"
+    },
+    {
+      "path": "migrations/core/0016_collaborator_access.sql",
+      "mode": "100644",
+      "git_blob": "b131dcc72eecc8c4915d3694964805d0b8d512d9"
+    },
+    {
+      "path": "migrations/core/0017_native_graph.sql",
+      "mode": "100644",
+      "git_blob": "957cffdb4b59fc7aad9ff748e56e1b440ccfd35c"
+    },
+    {
+      "path": "migrations/core/0018_analytics_events.sql",
+      "mode": "100644",
+      "git_blob": "445111a8f511d37be93aef02f657ef97fbd6b85a"
+    },
+    {
+      "path": "migrations/core/0019_fixed_publication.sql",
+      "mode": "100644",
+      "git_blob": "332819262dbf4fcd57441e8eff5581fd7ace2f54"
+    },
+    {
+      "path": "migrations/core/0020_archive_generation.sql",
+      "mode": "100644",
+      "git_blob": "27188f1c2713975ce1f2dec4674a42e23ae26d84"
+    },
+    {
+      "path": "migrations/core/0021_development_outbox.sql",
+      "mode": "100644",
+      "git_blob": "67ba68ea90061f11d6462d638e2d684a514e13df"
+    },
+    {
+      "path": "migrations/core/0022_first_run_setup.sql",
+      "mode": "100644",
+      "git_blob": "05c648b6f2d8f3fe5d85f58ff9cf32514c4aba5b"
+    },
+    {
+      "path": "migrations/core/0023_portability.sql",
+      "mode": "100644",
+      "git_blob": "53227b90c9733d81b869c0c51bfd1e58c2fd2c79"
+    },
+    {
+      "path": "migrations/core/0024_form_embedding.sql",
+      "mode": "100644",
+      "git_blob": "e4414690ac8fc1fed4ec9bd4f890e740877d804a"
+    },
+    {
+      "path": "migrations/core/0030_crm_import_kit.sql",
+      "mode": "100644",
+      "git_blob": "f2de2c41c17f84ed8069862691185893d5be1bf2"
+    },
+    {
+      "path": "migrations/core/0031_crm_move_in.sql",
+      "mode": "100644",
+      "git_blob": "d01df4a6de0b707fdeb3772c9351a85e45c05a12"
+    },
+    {
+      "path": "migrations/core/0032_base_identity.sql",
+      "mode": "100644",
+      "git_blob": "b7fd9ca3b649c1b9cef420b8c730dea10dff36c2"
+    },
+    {
+      "path": "migrations/core/0033_identity_providers.sql",
+      "mode": "100644",
+      "git_blob": "1ee0bdc632e8688a34dcf5b80c9bdcf1613ae00d"
+    },
+    {
+      "path": "migrations/core/0034_dependency_links.sql",
+      "mode": "100644",
+      "git_blob": "d01da4c4eb80e1d3892cee90bd6641e49a1ca9cc"
+    },
+    {
+      "path": "migrations/core/0035_capture.sql",
+      "mode": "100644",
+      "git_blob": "d93e38567c8794eafe7f0cacfa52258a6fdbe5a1"
+    },
+    {
+      "path": "migrations/core/0036_capture_providers.sql",
+      "mode": "100644",
+      "git_blob": "24ca09bd8b93b3cef89c016dddfdc5328d669339"
+    },
+    {
+      "path": "migrations/core/0037_owner_signin.sql",
+      "mode": "100644",
+      "git_blob": "ffdfc6475c800ee9bc6958afff0a8bc1da043667"
+    },
+    {
+      "path": "migrations/core/0038_import_kit_v22.sql",
+      "mode": "100644",
+      "git_blob": "370c044aa871f6cfb656790bdab38a67b0d0b192"
+    },
+    {
+      "path": "migrations/core/0039_sales_pipelines.sql",
+      "mode": "100644",
+      "git_blob": "db16be7f721761027ca4b45853cd06b3b5598cf6"
+    },
+    {
+      "path": "migrations/core/0040_sales_tasks.sql",
+      "mode": "100644",
+      "git_blob": "7b1cbe0bfc3f1883ff4161ecb57f3154a0229a2f"
+    },
+    {
+      "path": "migrations/core/0041_buying_context.sql",
+      "mode": "100644",
+      "git_blob": "86cac23a3dd38d60dd666c96187c91cf03315743"
+    },
+    {
+      "path": "migrations/core/0042_record_ownership.sql",
+      "mode": "100644",
+      "git_blob": "b2434122226276e6049c0c3d3cdfa716962828cc"
+    },
+    {
+      "path": "migrations/core/0044_archive_content_identity.sql",
+      "mode": "100644",
+      "git_blob": "de467682f900cdef7b141a57b0fb716d2be007d9"
+    },
+    {
+      "path": "migrations/core/0045_form_abuse.sql",
+      "mode": "100644",
+      "git_blob": "5732fc81e9c47847eadfa95c0ac79709a10d1bcd"
+    },
+    {
+      "path": "migrations/core/0046_sending_capacity.sql",
+      "mode": "100644",
+      "git_blob": "76d56ed4f961dafb0f3fd8724b9ccb88c9cde670"
+    },
+    {
+      "path": "migrations/core/0047_opt_out_settings.sql",
+      "mode": "100644",
+      "git_blob": "7094709c7f614a4032f309101d5dfc6bce5729af"
+    },
+    {
+      "path": "migrations/core/0048_forecasts.sql",
+      "mode": "100644",
+      "git_blob": "116e545cd7bf6ceb42a4caa55aba182a27a12b89"
+    },
+    {
+      "path": "migrations/core/0049_opt_out_capabilities.sql",
+      "mode": "100644",
+      "git_blob": "e46b65f1d7ce393b1f6c78e388a1c093f08f16fe"
+    },
+    {
+      "path": "migrations/core/0050_message_library.sql",
+      "mode": "100644",
+      "git_blob": "0da7d07764686cbd03ac694e628a048f1a9965d8"
+    },
+    {
+      "path": "migrations/core/0051_slack_notices.sql",
+      "mode": "100644",
+      "git_blob": "72eced1fcd4a70b19c6326d39753e38e4bd90ef5"
+    },
+    {
+      "path": "migrations/core/0052_report_shares.sql",
+      "mode": "100644",
+      "git_blob": "6f50203f2e385c512c8205172857872983e30981"
+    },
+    {
+      "path": "migrations/core/0053_dashboards.sql",
+      "mode": "100644",
+      "git_blob": "257369e892896382b361f9f78a5eade1a7bdcf6a"
+    },
+    {
+      "path": "migrations/core/0054_record_ownership.sql",
+      "mode": "100644",
+      "git_blob": "28d0970700edb0598ba221ce75b4593eadd64ba9"
+    },
+    {
+      "path": "migrations/core/0055_form_assignment.sql",
+      "mode": "100644",
+      "git_blob": "50157e82a382ffa7a26fe8ab7ef04345be13ac77"
+    },
+    {
+      "path": "migrations/core/0056_record_mail.sql",
+      "mode": "100644",
+      "git_blob": "7a6eea9486ac9a02ad6a2b7dd7c33a76df0b59d9"
+    },
+    {
+      "path": "migrations/core/0057_capture_mail_rule.sql",
+      "mode": "100644",
+      "git_blob": "50aeb54bd0f2b4fbef52fcb56d94dd820ac4ff40"
+    },
+    {
+      "path": "migrations/core/0058_twilio_calls.sql",
+      "mode": "100644",
+      "git_blob": "86ea385a5d82af4db7020d94bbb25f23cdb60b29"
+    },
+    {
+      "path": "migrations/core/0059_call_erasure.sql",
+      "mode": "100644",
+      "git_blob": "b4c5ebce119b03bc93d6cb5ca2ca789997d628ad"
+    },
+    {
+      "path": "migrations/core/0060_sign_in_domains.sql",
+      "mode": "100644",
+      "git_blob": "434f80b95c3f7d74cf3332c1f760b9a43cd6cf5c"
+    },
+    {
+      "path": "migrations/core/0061_calendar_writeback.sql",
+      "mode": "100644",
+      "git_blob": "1c32adc6723bd0c39e5523e749024d50452e2d93"
+    },
+    {
+      "path": "migrations/core/0062_private_entries.sql",
+      "mode": "100644",
+      "git_blob": "bb8fde22cc4685bbed975a94bcae5aec73b7f304"
+    },
+    {
+      "path": "migrations/core/0063_typed_fields.sql",
+      "mode": "100644",
+      "git_blob": "a8b90052928746c665503d7f9d761b760c5592e7"
+    },
+    {
+      "path": "migrations/core/0064_signal_source_removal.sql",
+      "mode": "100644",
+      "git_blob": "dbd3564b1c359fa368602eb9a4ab56b5df7c4925"
+    },
+    {
+      "path": "migrations/core/0065_api_credentials.sql",
+      "mode": "100644",
+      "git_blob": "48f6d1b773bbde3fbc1a2f11deaef265f1900bd1"
+    },
+    {
+      "path": "migrations/core/0066_record_mail_completion.sql",
+      "mode": "100644",
+      "git_blob": "1a9a40d28340e41c3d26d1633c15a2109a0f3bee"
+    },
+    {
+      "path": "migrations/core/0067_call_failures.sql",
+      "mode": "100644",
+      "git_blob": "76d52741ec70a8f790dc82e62c34ededf27cd965"
+    },
+    {
+      "path": "migrations/core/0068_workflows.sql",
+      "mode": "100644",
+      "git_blob": "75de96f08e575b1be0a85f0a1b4653626584b9d8"
+    },
+    {
+      "path": "migrations/core/0069_typed_workflow_values.sql",
+      "mode": "100644",
+      "git_blob": "b57290eb1a0093b8e9c9f9e597010399fb9efe21"
+    },
+    {
+      "path": "migrations/core/0070_agent_door.sql",
+      "mode": "100644",
+      "git_blob": "47d4cc8153f902cb1cded1c3dc9c48048844207f"
+    },
+    {
+      "path": "migrations/core/0070_personal_slack_mentions.sql",
+      "mode": "100644",
+      "git_blob": "d530c6f742251b61df889e5d6cfd24ee2061722a"
+    },
+    {
+      "path": "migrations/core/0071_business_settings.sql",
+      "mode": "100644",
+      "git_blob": "0bce74d8a768daf00d61c664a699f8b08f0b3747"
+    },
+    {
+      "path": "migrations/core/0072_business_people.sql",
+      "mode": "100644",
+      "git_blob": "b264424bfffa76c29b2c0e11f9212e31cbdf068a"
+    },
+    {
+      "path": "migrations/core/0073_native_agent_attribution.sql",
+      "mode": "100644",
+      "git_blob": "fe463746ef7e9fcc9776fdffd9ea90ee41e7af8c"
+    },
+    {
+      "path": "migrations/core/0074_native_agent_events.sql",
+      "mode": "100644",
+      "git_blob": "0e818b45b770e1eb78280c4cba66b708b6ea0e0c"
+    },
+    {
+      "path": "migrations/core/0075_agent_door_relay.sql",
+      "mode": "100644",
+      "git_blob": "82b139b07eaafcf5a44efd180a7fa14cba5235be"
+    },
+    {
+      "path": "migrations/core/0076_agent_retired_refs.sql",
+      "mode": "100644",
+      "git_blob": "951d05ce8de960290136bd1c1f30078e35efdea0"
+    },
+    {
+      "path": "migrations/core/0077_agent_door_relay_privacy.sql",
+      "mode": "100644",
+      "git_blob": "1fecbb08d6f56b099f6ac1d37ae353ee0d4c7b2d"
+    },
+    {
+      "path": "migrations/core/0078_business_retired.sql",
+      "mode": "100644",
+      "git_blob": "d494fa5f6f56a806e87cfbe315482f62e09c2d3a"
+    },
+    {
+      "path": "migrations/core/0079_direct_notification_actor.sql",
+      "mode": "100644",
+      "git_blob": "b96dc1be9841657e836ffcca5136337117f76de7"
+    },
+    {
+      "path": "migrations/core/0080_notification_context_fence.sql",
+      "mode": "100644",
+      "git_blob": "bf51d5e7c46a652d6a5873d98b86492d3e3a940f"
+    },
+    {
+      "path": "migrations/core/0081_graph_proposals.sql",
+      "mode": "100644",
+      "git_blob": "380fb8250cdd80d62aff3698e44c3dc8a524fa44"
+    },
+    {
+      "path": "migrations/core/0085_meeting_follow_up.sql",
+      "mode": "100644",
+      "git_blob": "f4ca9a875b0c6bbb31a96f75cc0e489d7eabdac2"
+    },
+    {
+      "path": "migrations/core/0086_hubspot_import.sql",
+      "mode": "100644",
+      "git_blob": "ad25c69e9b6ffe5015291b000d7749e32c7c8246"
+    },
+    {
+      "path": "migrations/core/0087_hubspot_explicit_erasure.sql",
+      "mode": "100644",
+      "git_blob": "ba643301eb4c9caa7caef114b25db306cd4c6c63"
+    },
+    {
+      "path": "migrations/core/0088_saved_record_views.sql",
+      "mode": "100644",
+      "git_blob": "aeb7615a04be4baf665a594d530aafc1945b7916"
+    },
+    {
+      "path": "migrations/core/0089_mailbox_send.sql",
+      "mode": "100644",
+      "git_blob": "b06ebe7e8863e3e617d1df17ccb71ecdb15148f7"
+    },
+    {
+      "path": "migrations/core/0090_pipedrive_import.sql",
+      "mode": "100644",
+      "git_blob": "80d5e65b2b9233cac065fa8ec625949f0959a23f"
+    },
+    {
+      "path": "migrations/core/0091_zoom_meetings.sql",
+      "mode": "100644",
+      "git_blob": "ada0ecf14b4ef8d4cc3239e50794709f2e0fccef"
+    },
+    {
+      "path": "migrations/core/0092_form_submission_notification.sql",
+      "mode": "100644",
+      "git_blob": "27fc477affbc3d17042c947ffe1a288842a45f4c"
+    }
+  ],
+  "migration_tree_identical": true,
+  "release_notes_match_changelog": true,
+  "screenshot_path": ".github/assets/release/orbit-now-queue-1600.png",
+  "screenshot_byte_identical_to_previous_tag": true,
+  "pushed_branch_readback": true
+}
