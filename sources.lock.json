@@ -6,7 +6,7 @@
   "toolchain": {
     "id": "runeditrun/edition-authoring",
     "version": "1.1.0",
-    "sha256": "8d25b7528ba7c5301de349b51b7e6ca44d6b87478f27b5685a5c07b567612e13"
+    "sha256": "806b824ffc9f74f567490a874f3481d3b73fbac6f9d65bd30d63e66c4fdce77c"
   },
   "components": [
     {
@@ -671,7 +671,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "ec02c5fb2e05317a9428003db52dedfb5f20e8e01e6d931e9c232824bdf2f3fc",
+      "sha256": "1ecc806484bd38ddfe25368a52f9cb7e87a46361f3a17426cf29eaabb9f3c180",
       "executable": false
     },
     "BASELINE.md": {
@@ -3815,7 +3815,7 @@
       "executable": false
     },
     "OPERATIONS.json": {
-      "sha256": "3960aa79481b7766ef75628d24955fd711af454ff67736e3a75f132809610b3e",
+      "sha256": "cdcf61bacc1f2830248b84164c192547bf513f21bf641588cdc73387295c1536",
       "executable": false
     },
     "OPERATIONS.md": {
@@ -3827,7 +3827,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "1e570d1090f86c71e890072dc2330fb820dc7cb33ce58db6685591d75069143c",
+      "sha256": "87a9ffa415d17b939c3569fa264befc87a1e1fafe8a4cccf638af2b6faee9c4d",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3847,7 +3847,7 @@
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "7a4c49fc8be22e1fce41256cff438380cb503eb6cae234380857e22343df8067",
+      "sha256": "66850bbb2f25650016ab17a611448d05798fb1c1e0126515b5ab9218e941c172",
       "executable": false
     },
     "pnpm-workspace.yaml": {
@@ -4439,7 +4439,7 @@
       "executable": false
     },
     "src/base/modules/agent-door/ADOPTING.md": {
-      "sha256": "d97158c4d9af9a00a83b0f8a0dc52b80272858f5bea6ac509c4d093f67e7fb55",
+      "sha256": "db0b4718bc6578e01cb50cb6bbac46c732ecb7e2ce9ce2743fbaba26b3674c20",
       "executable": false
     },
     "src/base/modules/agent-door/approval-execution.ts": {
@@ -10120,6 +10120,10 @@
     },
     "src/operator-auth/scheduled/runner.mjs": {
       "sha256": "d44cf0c25910197b6881697b450d804c4bcd7dc9de8a8245dfd63795a343c3be",
+      "executable": false
+    },
+    "src/operator-auth/terminal-guidance.mjs": {
+      "sha256": "43f302632eb951fe6dad47d32e5f35b5ba159067f0b1b3445a28960a1fb29487",
       "executable": false
     },
     "src/owner-claim/index.d.mts": {
