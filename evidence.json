@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "blob": "4c5cbaba2a827988b0e88664472f07f492ff5613",
+      "bytes": 5394,
+      "path": "REPORT.md",
+      "sha256": "0bc03b855bbf01ac2d5281566e482ebca450535b9bceb88c57c51cefc47b1d63"
+    },
+    {
+      "blob": "0920ca552251a2cb14e8fd3e3f2c290203c6dd78",
+      "bytes": 2686,
+      "path": "ci-batch-16-receipt.md",
+      "sha256": "12235a676dbcade470fc60ab9327f7c1060a3b572555016ef40787ef6dd0118a"
+    },
+    {
+      "blob": "de92c42c564212b8fb6f7b33a1f27b5784d3ec8b",
+      "bytes": 5754,
+      "path": "main-batch-16-receipt.md",
+      "sha256": "8e39781816051c0971a2b7f7c80409d20785e2ac1318831708b9a0728be7cec0"
+    },
+    {
+      "blob": "00ed8376d49e23068079ba484bf69a6125ca4759",
+      "bytes": 3358,
+      "path": "main-today-brief-receipt.md",
+      "sha256": "284b033992c3f9911dc0e31f3e975df6b0aecf00a20f19184d066270e58f2591"
+    }
+  ],
+  "product_branch": "main",
+  "product_head": "2288bfae201961fdb966552dc86655a76b2e0247",
+  "ref": "refs/heads/evidence/sd-orbit-release-0-4-12-c1",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-release-0-4-12-c1"
+}
