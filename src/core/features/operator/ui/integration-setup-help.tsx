@@ -1,17 +1,22 @@
 import {SetupHelp,SetupLink as ConsoleLink} from './setup-help';
 import {CopyField} from './capture-copy-field';
+import {isHostedWebhook} from './recipe-snippet';
+
+const deploymentGuide='https://github.com/just-every/run-orbit#deploy-to-your-cloudflare-account';
 
 export function SlackSetupHelp(){
- const origin=typeof window==='undefined'?'https://YOUR-ORBIT-HOST':window.location.origin;
+ const origin=typeof window==='undefined'?'https://YOUR-ORBIT-HOST':window.location.origin,hosted=isHostedWebhook(origin);
  return <SetupHelp>
-  <p>The installation owner connects a Slack app for this workspace. Use your hosted Orbit’s public HTTPS address for callbacks; Slack cannot reach localhost.</p>
+  <p>The installation owner connects a Slack app for this workspace. Slack sends its callbacks to your hosted Orbit’s public HTTPS address.</p>
+  {!hosted&&<p><strong>Slack cannot reach this local copy.</strong> Deploy Orbit to a public HTTPS address with the <a href={deploymentGuide} target="_blank" rel="noopener noreferrer">Orbit deployment guide</a>, then open Settings › Integrations › Slack on that hosted installation: it shows the two callback addresses to paste into Slack. Until then, steps 1 to 3 below can be done here, but step 4 needs the hosted installation.</p>}
   <ol>
    <li>Open <ConsoleLink href="https://api.slack.com/apps">Your Apps in Slack</ConsoleLink>, choose <strong>Create New App</strong> › <strong>From scratch</strong>, name it Orbit, select your workspace and choose <strong>Create App</strong>. Ask a workspace administrator to approve installation if required.</li>
    <li>Open <strong>OAuth &amp; Permissions</strong> › <strong>Bot Token Scopes</strong> › <strong>Add an OAuth Scope</strong>. Add <code>chat:write</code> to post and delete bot notices, <code>channels:read</code> to check public channels, and <code>groups:read</code> if using private channels. Add <code>users:read</code> for user-change safety events and mapped personal recipient checks. For opted-in personal mentions, also add <code>im:write</code> to open the direct message and <code>im:read</code> to verify its recipient before delivery.</li>
    <li>On that page choose <strong>Install to Workspace</strong> (or <strong>Install to Team</strong>) and <strong>Allow</strong>. Copy the <strong>Bot User OAuth Token</strong> into Orbit’s <strong>Bot token</strong> field. Under <strong>Basic Information</strong> › <strong>App Credentials</strong>, reveal <strong>Signing Secret</strong> and paste it into <strong>Slack app signing secret</strong>. Choose <strong>Verify and connect Slack</strong> here before enabling Events, so Orbit can answer Slack’s URL check.</li>
-   <li>In Slack’s <strong>Interactivity &amp; Shortcuts</strong>, turn <strong>Interactivity</strong> on, set <strong>Request URL</strong> to the address below, and save. In <strong>Event Subscriptions</strong>, turn <strong>Enable Events</strong> on and use the second address as <strong>Request URL</strong>.
+   <li>{hosted?<>In Slack’s <strong>Interactivity &amp; Shortcuts</strong>, turn <strong>Interactivity</strong> on, set <strong>Request URL</strong> to the address below, and save. In <strong>Event Subscriptions</strong>, turn <strong>Enable Events</strong> on and use the second address as <strong>Request URL</strong>.
     <CopyField label="Slack interactivity URL" value={`${origin}/api/v1/slack/actions`}/>
     <CopyField label="Slack events URL" value={`${origin}/api/v1/slack/events`}/>
+    </>:<>On your hosted Orbit’s Slack setup, open Slack’s <strong>Interactivity &amp; Shortcuts</strong>, turn <strong>Interactivity</strong> on, set <strong>Request URL</strong> to the first address that page shows, and save. In <strong>Event Subscriptions</strong>, turn <strong>Enable Events</strong> on and use the second address as <strong>Request URL</strong>. This local copy shows no callback addresses because Slack cannot use them.</>}
     Under <strong>Subscribe to bot events</strong>, add <code>user_change</code>, <code>channel_shared</code>, <code>channel_unshared</code>, <code>channel_archive</code>, <code>group_archive</code>, <code>channel_left</code>, <code>member_left_channel</code>, <code>app_uninstalled</code> and <code>tokens_revoked</code>. Save changes and reinstall the app if Slack requests updated permissions.</li>
    <li>In Slack, invite the app to each internal channel with <code>/invite @Orbit</code> (use your app’s name). Back here choose <strong>Load member channels</strong> or <strong>Load private member channels</strong>, choose a channel and its event types. Shared and external channels are refused. After a permitted notice is accepted, use <strong>Map Slack identities</strong> for notice buttons.</li>
   </ol>

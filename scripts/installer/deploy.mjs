@@ -10,7 +10,7 @@ import { missing, invalid, refuse } from '@runeditrun/rer/errors';
 
 // Optional features are uploaded only when the owner supplies them; deployed
 // secrets are kept by name on later deploys.
-export const optionalSecrets = ['MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'];
+export const optionalSecrets = ['MAIL_API_KEY', 'SENDGRID_API_KEY', 'MAIL_REPLY_TO', 'CAPTURE_MAIL_ADDRESS', 'SENDGRID_UNSUBSCRIBE_GROUP_ID', 'RER_MAIL_RELAY_SECRET', 'SENDGRID_WEBHOOK_PUBLIC_KEY', 'SENDGRID_PARSE_PUBLIC_KEY', 'ORBIT_ENCRYPTION_KEY', 'OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION', 'ORBIT_FORM_TURNSTILE_SECRET'];
 const required = ['OWNER_EMAIL'];
 // Each optional value and the feature it turns on, for the dry run's plain list.
 const optionalFeatures = [
@@ -19,6 +19,7 @@ const optionalFeatures = [
  [['RER_MAIL_RELAY_SECRET'], 'Delivery outcomes through a Run Edit Run event relay, instead of the key above'],
  [['CAPTURE_MAIL_ADDRESS'], 'The Orbit address for capturing mail', 'Capture → Orbit address'],
  [['SENDGRID_PARSE_PUBLIC_KEY'], 'Automatic reply capture through SendGrid Inbound Parse'],
+ [['ORBIT_FORM_TURNSTILE_SECRET'], 'Cloudflare Turnstile on published forms', 'Settings → Forms'],
  [['OPENAI_API_KEY', 'AI_MODEL', 'AI_INPUT_COST_PER_MILLION', 'AI_OUTPUT_COST_PER_MILLION', 'AI_CACHED_INPUT_COST_PER_MILLION'], 'AI-written drafts'],
 ];
 

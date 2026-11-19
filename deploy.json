@@ -104,6 +104,11 @@
       "verifyStandIn": "1"
     },
     {
+      "binding": "ORBIT_FORM_TURNSTILE_SECRET",
+      "environment": "ORBIT_FORM_TURNSTILE_SECRET",
+      "optional": true
+    },
+    {
       "binding": "SESSION_SECRET",
       "environment": "SESSION_SECRET"
     }

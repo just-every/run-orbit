@@ -15,9 +15,10 @@ The first import of Orbit's Worker entry (`src/core/app/worker.ts`) is Base's
 operator-auth imports use the pinned package's internal paths. Vite passes
 `RER_DEMO`, persists to `RER_STATE_DIR` and installs `demoSockets()` first.
 
-With demo mode on, sign-in and reviewed customer mail are captured in Base's
-D1 development outbox. The slim Demo strip lists captured mail and refused
-network calls. Hosted sign-in mail reports unavailable and its link is revoked:
+With demo mode on, reviewed customer mail is captured in the demo's own D1
+outbox and never leaves it. The sent message screen says so ("Captured in this
+demo's outbox. Nothing was emailed.") and lists the captured messages under
+Demo outbox; the deal timeline says the same. Sign-in mail is suppressed. Hosted sign-in mail reports unavailable and its link is revoked:
 Base only accepts development delivery for local sign-in. The hosted visitor is
 already signed in through the signed owner claim. Gmail and Microsoft provider connections refuse before OAuth;
 file capture remains usable. OpenAI assistance stays unconfigured. Base's guard

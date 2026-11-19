@@ -1,5 +1,6 @@
 /** Provider outcomes describe what Orbit knows about this approved message. */
-export function messageStatus(state: string): string {
+export function messageStatus(state: string, provider?: string): string {
+  if (provider === 'development' && state === 'accepted') return 'Captured in this demo’s outbox. Nothing was emailed.';
   const statuses: Record<string, string> = {
     accepted: 'Accepted by the mail provider.',
     delivered: 'Delivery reported by the mail provider.',

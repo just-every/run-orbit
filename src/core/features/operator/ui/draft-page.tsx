@@ -1,5 +1,6 @@
 import {recordStateLabel} from './record-presentation';
 import {messageStatus} from './message-status';
+import {DemoOutbox} from './demo-outbox';
 import {recordsRequest} from './records-api';
 import {DraftLibraryPicker} from '../../drafts/ui/library-picker';
 import { DraftApproval } from "./draft-approval";
@@ -84,8 +85,8 @@ export function DraftPage() {
     >
       <section className="operator-draft-editor" style={{display:"block"}} data-testid="draft-editor">
         {draft.preparedByLabel&&<p>Prepared by {draft.preparedByLabel}</p>}
-        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
-        {submitted ? <SentMessage sendingMailbox={resource.data.submitted?.sendingMailbox} recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+        {submitted ? <OperatorState>{submitted.state === "scheduled" && submitted.scheduledAt ? <>This message is scheduled for <time dateTime={submitted.scheduledAt}>{formatDateTime(submitted.scheduledAt, presentation)}</time>. To change it, cancel it from the record first.</> : <>{messageStatus(submitted.state,resource.data.mailProvider)} It can no longer be edited. To write to this customer again, start a new follow-up from the record.</>}</OperatorState> : null}
+        {submitted ? <SentMessage demo={resource.data.mailProvider==='development'} sendingMailbox={resource.data.submitted?.sendingMailbox} recipient={resource.data.submitted?.recipientEmail??draft.recipientEmail} subject={resource.data.submitted?.subject??draft.subject} body={resource.data.submitted?.body??draft.body} /> : <form className="operator-surface operator-draft-form" onSubmit={(event) => { event.preventDefault(); void saveDraft(); }}><fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
           <label>Recipient
             <input data-testid="draft-recipient" required onChange={(event) => setDraft({ ...draft, recipientEmail: event.target.value })} type="email" value={draft.recipientEmail} />
           </label>
@@ -129,13 +130,13 @@ export function DraftPage() {
 }
 
 /** A message handed to the mail service is a record, not a form: what was sent, as text. */
-function SentMessage({ recipient, subject, body,sendingMailbox }: { recipient: string; subject: string; body: string;sendingMailbox?:string }) {
-  return <section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
+function SentMessage({ recipient, subject, body,sendingMailbox,demo }: { recipient: string; subject: string; body: string;sendingMailbox?:string;demo?:boolean }) {
+  return <><section className="operator-surface operator-draft-form" aria-label="Message as sent" data-testid="sent-message">
     <dl className="operator-sent-message">
       {sendingMailbox&&<div><dt>Sending mailbox</dt><dd>{sendingMailbox}</dd></div>}
       <div><dt>Recipient</dt><dd>{recipient}</dd></div>
       <div><dt>Subject</dt><dd>{subject}</dd></div>
       <div><dt>Body</dt><dd style={{ whiteSpace: "pre-wrap" }}>{body}</dd></div>
     </dl>
-  </section>;
+  </section>{demo&&<DemoOutbox/>}</>;
 }
