@@ -679,7 +679,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "1fe91b3aa1a606e3b0711c263094f022ebe48ac1f24af92a17ac9f49a31ff216",
+      "sha256": "2e24728695b30b175ae4fc2c67be5c9369723f41b1c73749e37286d3955ebb37",
       "executable": false
     },
     "CLAUDE.md": {
@@ -3827,7 +3827,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "1e570d1090f86c71e890072dc2330fb820dc7cb33ce58db6685591d75069143c",
+      "sha256": "29e4b96d3d502ce41dbab9cc31cbd89bbfbc9eebb85284b7f5f359d8fc4b4711",
       "executable": false
     },
     "patches/miniflare-5.20260907.0-alpha.patch": {
@@ -3951,11 +3951,11 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "2053b863017bac4b2643775f550e729a519c08f405bb9485491de7ebdc7160ab",
+      "sha256": "56ae16a4b98dcf1786500cf8ca73071214022a61d95eec60907a5ec75d87fde9",
       "executable": false
     },
     "RELEASE.md": {
-      "sha256": "e931a64e1b12b4d8ee17e601873f96f7d9ad23b2f98f58ad5a35a72cf203d0f1",
+      "sha256": "9b5c0ab94b186b91d8ac50ec971a35c955b9948f142ec4ae6d67d945c1a995e2",
       "executable": false
     },
     "rer-project.json": {
@@ -4315,7 +4315,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "d0ec85580f2b4ddf3b0d9b42286050e85485de8d6db78d7f30292845a99464dd",
+      "sha256": "8dd55de93d00fe43582c9a80e67a9f3231ff975d730a4750bcf6d22f6b56e551",
       "executable": false
     },
     "SIGNALS-AND-OUTREACH.md": {
