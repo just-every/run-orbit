@@ -1,4 +1,5 @@
 import {SlackSetupHelp} from './integration-setup-help';
+import {isHostedWebhook} from './recipe-snippet';
 import type {SlackDeclaration} from '../../slack/declaration';
 import {formatDateTime,label} from './formatters';
 import {useEffect,useState} from 'react';
@@ -37,7 +38,7 @@ function SlackSetupDeclaration({declaration:d}:{declaration:SlackDeclaration}){
   <p>Bot permissions: {d.scopes.map(scope=><span key={scope.name}><code>{scope.name}</code>{scope.when==='private-channels'?' for private channels only':scope.when==='personal-mentions'?' for optional personal mentions':''} — {scope.purpose}. </span>)}Never request <code>{d.prohibitedScopes.join(', ')}</code>; profile email is not read.</p>
   <p>Allowed channel fields: {d.allowedFields.map(field=>field.label).join(', ')}. Person names and restricted details are withheld; private records get only event kind and the authenticated link.</p>
   <p>Bot token and app signing secret stay {d.custody.location}, encrypted using {d.custody.encryption}; neither is read back or exported.</p>
-  <p>Set the Interactivity Request URL to <code>{d.callbacks.interactivity.url}</code> and the Events Request URL to <code>{d.callbacks.events.url}</code>. Both require {d.callbacks.events.verification}. Subscribe to <code>user_change</code> with <code>users:read</code> to revoke deactivated user mappings.</p>
+  {isHostedWebhook(d.callbacks.events.url)?<p>Set the Interactivity Request URL to <code>{d.callbacks.interactivity.url}</code> and the Events Request URL to <code>{d.callbacks.events.url}</code>. Both require {d.callbacks.events.verification}. Subscribe to <code>user_change</code> with <code>users:read</code> to revoke deactivated user mappings.</p>:<p>Slack callbacks need this Orbit on a public HTTPS address, so they are not offered on this local copy. Both require {d.callbacks.events.verification}. Subscribe to <code>user_change</code> with <code>users:read</code> to revoke deactivated user mappings.</p>}
   <p>Membership can change between checks. A newly linked organization may see channel history. {d.freshness} Disconnect pauses routing and removes credentials; reconnect sends no old notice and permits no old action.</p>
   <p>{d.costs}</p>
  </div>;

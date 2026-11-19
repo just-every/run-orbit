@@ -14,7 +14,8 @@ export interface DealMessages{messages:DealMessage[];mailProvider?:string;outcom
 /** A message's kind in a word: one never sent does not read as Sent. */
 const messageKind=(state:string)=>({scheduled:'Scheduled',cancelled:'Cancelled',draft:'Not sent'} as Record<string,string>)[state]??'Sent';
 /** A sent message's state in words, in its own line; a scheduled one says when, to the exact instant. */
-function messageState(message:DealMessage,tracked:boolean):ReactNode{
+function messageState(message:DealMessage,tracked:boolean,provider?:string):ReactNode{
+ if(message.state==='accepted'&&provider==='development')return 'captured in the demo outbox · not emailed';
  if(message.state==='accepted')return message.deliveredAt?'delivered':tracked?'accepted by the mail provider · delivery not confirmed':'accepted by the mail provider';
  if(message.state==='scheduled'){const at=message.scheduledAt??message.retryAfter;return at?<>will send <time dateTime={at}>{formatDateTime(at)}</time></>:'scheduled';}
  if(message.state==='failed')return `failed · not delivered${message.failure?` · ${message.failure}`:''}`;
@@ -43,7 +44,7 @@ export function DealActivity({opportunity,drafts,messages,handoffs,reload,readOn
  const to=(email:string)=>byEmail.get(email.toLowerCase())??email;
  const entries:ActivityEntry[]=[
   ...drafts.filter(draft=>!sent.has(draft.id)).map(draft=>({key:`draft-${draft.id}`,kind:'Draft',draft:true,title:<Link to="/app/drafts/$id" params={{id:draft.id}}>{draft.subject}</Link>,line:`To ${to(draft.recipientEmail)} · revision ${draft.revision} · not sent${draft.isStale?' · review needed':''}`,at:draft.updatedAt})),
-  ...(messages?.messages??[]).map(message=>({key:`message-${message.id}`,anchor:acceptanceAnchors.get(message.id),kind:messageKind(message.state),title:message.subject,line:<>To {to(message.recipientEmail)} · {messageState(message,messages!.outcomesTracked)}</>,at:message.acceptedAt??message.scheduledAt??message.createdAt,tools:['scheduled','draft'].includes(message.state)?<MessageTools message={message} mailProvider={messages!.mailProvider} reload={reload}/>:null})),
+  ...(messages?.messages??[]).map(message=>({key:`message-${message.id}`,anchor:acceptanceAnchors.get(message.id),kind:messageKind(message.state),title:message.subject,line:<>To {to(message.recipientEmail)} · {messageState(message,messages!.outcomesTracked,messages!.mailProvider)}</>,at:message.acceptedAt??message.scheduledAt??message.createdAt,tools:['scheduled','draft'].includes(message.state)?<MessageTools message={message} mailProvider={messages!.mailProvider} reload={reload}/>:null})),
   ...opportunity.timeline.filter(entry=>!(entry.kind.startsWith('message.')&&messageIds.has(String((entry.payload as any)?.messageId)))).map(entry=>timelineEntry({line:{...entry,signalType:opportunity.signals.find(signal=>signal.id===entry.id)?.type??null,payload:(entry.payload&&typeof entry.payload==='object'?entry.payload:{}) as Record<string,unknown>},kind:'opportunity',recordId:opportunity.id,contactNames:names,reload,onChanged:reload})).filter((entry):entry is ActivityEntry=>Boolean(entry)),
   ...handoffs.map(entry=>({key:`handoff-${entry.task.id}`,anchor:`handoff-${entry.task.id}`,kind:'Task',title:entry.task.title,line:[`Hand-off · ${label(entry.task.status).toLowerCase()}`,entry.task.source_client_id?`proposed by ${entry.task.source_client_id}`:'',entry.task.due_at?`due ${formatDateTime(entry.task.due_at)}`:''].filter(Boolean).join(' · '),at:entry.task.due_at,tools:<Opens summary="Open task" initiallyOpen={hash===`handoff-${entry.task.id}`}>{()=><HandoffTasks opportunityId={opportunity.id} only={entry.task.id} onChange={reload}/>}</Opens>})),
  ];

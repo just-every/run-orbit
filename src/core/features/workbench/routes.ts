@@ -7,6 +7,7 @@ import {manualDraftCreateContent} from '../drafts/input';
 import { followUpOutcomes } from '../outreach/follow-up-outcomes';
 import { draftOptOut, markDraftOptOut } from '../outreach/opt-out';
 import {senderTestRoutes} from './sender-test';
+import {demoOutboxRoutes} from './demo-outbox';
 import {schedulerStatus} from '../outreach/scheduler';
 import {deliveryOutcomesStatus,deliveryOutcomesTracked,type DeliveryOutcomeKeys} from '../outreach/delivery-outcomes';
 import {onboardingState} from './onboarding';
@@ -34,6 +35,7 @@ export function createWorkbenchRoutes(database: D1Database, mail?: OutboundMail,
   app.use('*',async(c,next)=>{const segments=c.req.path.split('/');for(const category of ['opportunities','drafts','recommendations','messages']){const index=segments.indexOf(category);if(index>=0&&segments[index+1]&&!id.safeParse(segments[index+1]).success)return c.json({error:'Invalid record ID.'},400);}await next();});
   app.onError((error,context)=>{if(error instanceof MailboxSendError)return context.json({error:error.message},503);if(error instanceof WorkbenchError)return context.json({error:error.message,recordId:error.recordId},error.status);if(/runtime_controls.value/.test(String(error)))return context.json({error:'The record, recipient or permissions changed. Reload before continuing.'},409);logUnexpected('workbench',error);return context.json({error:'The operation failed; no success was confirmed.'},500);});
   app.route('/sender-test',senderTestRoutes(database,mail));
+  app.route('/demo-outbox',demoOutboxRoutes(database,mail?.provider==='development'));
   app.get('/delivery-outcomes',async c=>c.json(await deliveryOutcomesStatus(database,mailEvents,hosted,origin)));
   app.get('/onboarding',async c=>c.json({...await onboardingState(database,await mailReady(c.get('operator').operatorId),aiConfigured),mailSettings:mailSettings??null}));
   app.get('/',async context=>context.json({...await repository.inventory(),mailConfigured:await mailReady(context.get('operator').operatorId)}));

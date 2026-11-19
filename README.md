@@ -42,23 +42,13 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-Follow the two steps on [run-orbit.com/run](https://run-orbit.com/run). Git is required; rer brings Node and pnpm.
-
-1. Install rer:
+Follow [run-orbit.com/run](https://run-orbit.com/run): one line in your terminal installs rer, gets Orbit and starts it. Git is required; rer brings Node and pnpm.
 
 ```sh
-curl -fsSL https://runeditrun.com/install.sh | sh
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
 ```
 
-The installer prints the full path to `rer` (normally `~/.local/bin/rer`). If this or a later terminal says `rer: command not found`, run `~/.local/bin/rer cli path` and then the one line it prints; it puts `rer` on your PATH and changes no shell file itself. Until you do, type `~/.local/bin/rer` wherever a command here starts with `rer`.
-
-2. Get Orbit and start it:
-
-```sh
-rer dev just-every/run-orbit
-```
-
-**Alternative for people who already have Node 22 or later:** `npx -y @runeditrun/rer dev just-every/run-orbit`. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
+**Other ways to run locally.** To install rer on its own first, run `curl -fsSL https://runeditrun.com/install.sh | sh`, then start Orbit with `~/.local/bin/rer dev just-every/run-orbit`. If a later terminal says `rer: command not found`, run `~/.local/bin/rer cli path` and then the one line it prints; it puts `rer` on your PATH and changes no shell file itself. Until you do, type `~/.local/bin/rer` wherever a command here starts with `rer`. People who already have Node 22 or later can use `npx -y @runeditrun/rer dev just-every/run-orbit` instead. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.
 
 To start it again later: `cd run-orbit && rer dev`.
 

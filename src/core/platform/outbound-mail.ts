@@ -1,6 +1,6 @@
 import { createManagedOutboundMail, ManagedMailError } from './managed-outbound-mail';
 import { validateRerConfig } from '../../base/modules/mail/src/adapters/rer/contract.mjs';
-import { sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
+import { createD1DevelopmentOutbox, sendDevelopment } from '../../base/modules/mail/src/development/index.mjs';
 import { sendSendGrid, SendGridSendError } from '../../base/modules/mail/src/sendgrid-email/index.mjs';
 export interface OutboundMailBinding{id:string;operator_id:string;message_id:string;mailbox_source_id?:string|null;mailbox_connection_id?:string|null;mailbox_address?:string|null}
 export interface OutboundMail {
@@ -34,7 +34,7 @@ export function createOutboundMail(env:OutreachEnvironment):OutboundMail|undefin
   provider:demo?'development':'sendgrid',
   messageIdDomain:senderDomain(env.MAIL_FROM),
   async send(message){
-   if(demo){const result=await sendDevelopment({provider:'development',mode:'development'},{deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body});return {providerMessageId:result.providerMessageId};}
+   if(demo){const captured={deliveryId:message.idempotency_key??message.id,from:env.MAIL_FROM??'Orbit Demo <demo@demo.invalid>',to:[message.recipient_email],subject:message.subject,text:message.body},result=await sendDevelopment({provider:'development',mode:'development'},captured);await createD1DevelopmentOutbox({db:env.DB!}).put(captured);return {providerMessageId:result.providerMessageId};}
    // OUT-020: the unsubscribe group brings SendGrid's List-Unsubscribe headers and its footer links together, or neither; a message approved before OUT-020 keeps the group.
    const groupId=Number(env.SENDGRID_UNSUBSCRIBE_GROUP_ID);
    return sendSendGrid({apiKey:env.SENDGRID_API_KEY!,message:{from:await senderWithName(env.MAIL_FROM!,env.DB),to:[message.recipient_email],subject:message.subject,text:message.body,deliveryId:message.idempotency_key??message.id,replyTo:env.MAIL_REPLY_TO,...(message.opt_out===false?{}:{asmGroupId:groupId}),subscriptionTracking:false,customArgs:{rer_product:'orbit'},headers:{'Message-ID':message.message_id??`<${message.id}@${senderDomain(env.MAIL_FROM)}>`,...(message.reference_ids?{'References':message.reference_ids,'In-Reply-To':message.reference_ids}:{})}}});
