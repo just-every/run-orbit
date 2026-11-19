@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "blob": "aad7643f5c3afe805689539846978eda6faf62bf",
+      "bytes": 8936,
+      "path": "CI-JOBS.json",
+      "sha256": "29181d9f3dd848cb17924e3b20b247e4bf7a1f93f2066b902bcaad307806b497"
+    },
+    {
+      "blob": "023b63e1c5f8156fa72f3b50e589397e004d5538",
+      "bytes": 1284,
+      "path": "CI-RECEIPT.json",
+      "sha256": "46d230e52d132451d708787eda486389e42048ef0d178dd823b43ff4bca6909f"
+    },
+    {
+      "blob": "768c36e977c53642afe2198ba323858efbb88590",
+      "bytes": 2001,
+      "path": "LOCAL-CHECKS.md",
+      "sha256": "92cf69dc34ae5970035b60d67bf98e63d312f62fd3798e27d210b5addc797570"
+    },
+    {
+      "blob": "58af385ffb568cc1e78af98c7df52115466b782e",
+      "bytes": 907,
+      "path": "PUSHED-METADATA.txt",
+      "sha256": "6bf6b3f34f77448f3b19670af9ffcc7b51b4b2bd5bc73c22727e1e35741aae45"
+    },
+    {
+      "blob": "c05906678a0bb570273a77f5f452febb178e47b3",
+      "bytes": 3365,
+      "path": "REPORT.md",
+      "sha256": "14a5c1f8a0183b192927bf76172a4e00a0bc8b9a43ee2877252bfc4cde55ee64"
+    }
+  ],
+  "product_branch": "cloud/sd-orbit-release-0-4-12-2",
+  "product_head": "a9fa1830c1913562154dedaeb5a1322ead7c3e6b",
+  "ref": "refs/heads/evidence/sd-orbit-release-0-4-12-2",
+  "repository": "just-every/run-orbit",
+  "schema": 1,
+  "tag": "sd-orbit-release-0-4-12-2"
+}

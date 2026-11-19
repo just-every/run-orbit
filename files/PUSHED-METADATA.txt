@@ -1,0 +1,13 @@
+2026-11-19T15:45:40Z
+a9fa1830c1913562154dedaeb5a1322ead7c3e6b
+b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013  rer-setup.json
+Release version 0.4.11 -> 0.4.12; rer 0.2.113; schema content, notes, instructions and screenshot reference agree.
+Core migration inventory v0.4.11 -> candidate: 84 -> 84; every path, mode and blob identical.
+tests test/spec files: 80 -> 80
+newtests test/spec files: 20 -> 20
+Before/after | Core | 42 | 112 | 24 | 178 |
+Before/after | Agent surface | 0 | 18 | 8 | 26 |
+Before/after | Later | 0 | 0 | 0 | 0 |
+Before/after | Full target | 42 | 130 | 32 | 204 |
+Exactly one non-merge commit in the metadata lease; generated views, contract, project manifest and dependency lock retained.
+setup.sha256 path=rer-setup.json declared=b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013 actual=b50fa9e6ead13cc81bd7a994833e3afec8c469cf66023a679d550da6b1ea8013

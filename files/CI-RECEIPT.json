@@ -1,0 +1,36 @@
+{
+  "aggregate_verify": {
+    "completed_at": "2026-11-19T16:10:18Z",
+    "conclusion": "success",
+    "failed_steps": [],
+    "head_sha": "a9fa1830c1913562154dedaeb5a1322ead7c3e6b",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/44558431422/job/135697011090",
+    "id": 135697011090,
+    "name": "verify",
+    "started_at": "2026-11-19T16:09:58Z",
+    "status": "completed"
+  },
+  "batch_16": {
+    "completed_at": "2026-11-19T16:06:46Z",
+    "conclusion": "success",
+    "failed_steps": [],
+    "head_sha": "a9fa1830c1913562154dedaeb5a1322ead7c3e6b",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/44558431422/job/135683280484",
+    "id": 135683280484,
+    "name": "shards (batch-16)",
+    "started_at": "2026-11-19T15:49:31Z",
+    "status": "completed"
+  },
+  "conclusion": "success",
+  "created_at": "2026-11-19T15:45:39Z",
+  "event": "push",
+  "head_branch": "cloud/sd-orbit-release-0-4-12-2",
+  "head_sha": "a9fa1830c1913562154dedaeb5a1322ead7c3e6b",
+  "html_url": "https://github.com/just-every/run-orbit/actions/runs/44558431422",
+  "jobs_observed_at": "2026-11-19T16:11:21Z",
+  "required_shards": 20,
+  "run_attempt": 1,
+  "run_id": 44558431422,
+  "status": "completed",
+  "workflow_status_observed_at": "2026-11-19T16:16:22Z"
+}
