@@ -44,7 +44,7 @@ export async function seedOptOutArchive(f:CaptureFixture){
    const saved=(await call(`drafts/${draft.id}`)).draft;
    const review=await call(`workbench/drafts/${draft.id}/review`,{revision:saved.revision,reviewedUpdatedAt:saved.updatedAt,recipientContactId:contact,recipientEmail:saved.recipientEmail,subject:saved.subject,body:saved.body});
    const preview=await call(`workbench/drafts/${draft.id}/approval-preview`);
-   const approved=await call(`workbench/drafts/${draft.id}/approve`,{revision:review.revision,...(future?{scheduledAt:'2030-01-09T10:00:00.000Z'}:{quietHoursConfirmation:preview.localTime})});
+   const approved=await call(`workbench/drafts/${draft.id}/approve`,{revision:review.revision,...(future?{scheduledAt:new Date(Date.now()+2*86400000).toISOString()}:{quietHoursConfirmation:preview.localTime})});
    assert.equal(approved.state,future?'scheduled':'accepted');
    const row=(await optOutRows(f.db)).find(row=>row.message_id===approved.id);
    assert.ok(row);assert.equal(row.contact_id,contact);assert.equal(row.origin,'https://orbit.test');assert.equal(row.created_at,new Date().toISOString());assert.match(row.token,/^[a-f0-9]{64}$/);
@@ -64,7 +64,9 @@ export async function proveOptOutArchive(source:D1Database,restored:D1Database,p
  assert.deepEqual(await optOutRows(restored),proof.rows,'Every private capability field survives restore exactly');
  const sourceBefore=await databaseDigest(source),before=Date.now();
  try{
-  setTime(Date.parse('2040-01-09T10:00:00.000Z'));
+  const tenYearsLater=new Date(before+2*86400000);
+  tenYearsLater.setUTCFullYear(tenYearsLater.getUTCFullYear()+10);
+  setTime(tenYearsLater.getTime());
   await managedMail(restored,async(app,mail,requests)=>{
    const bound=proof.sent.find(row=>row.contact===proof.ana)!,other=proof.sent.find(row=>row.contact===proof.other)!;
    const contact=(id:string)=>restored.prepare('SELECT * FROM contacts WHERE id=?').bind(id).first();

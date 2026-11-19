@@ -13,6 +13,8 @@ import {createId} from '../../src/core/shared/ids';
 import type {Brief,BriefLine} from '../../src/core/features/today/types';
 
 const platform=await isolatedDatabase();after(()=>platform.dispose());const db=platform.db;
+// Both tests read the same brief state, and D1 also checks session expiry against wall time.
+const briefStart=Date.now();
 const lines=(brief:Brief)=>[...brief.accounts.flatMap(account=>account.lines),...brief.unresolved];
 const byKind=(brief:Brief,kind:BriefLine['kind'])=>lines(brief).filter(line=>line.kind===kind);
 const count=async(sql:string)=>(await db.prepare(sql).first<{n:number}>())!.n;
@@ -30,7 +32,7 @@ async function captureUnknown(t:TodayApp,subject:string){
 }
 
 test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulated day from one brief built from records only: replies, meetings, observed and inferred signals, overdue promises and unresolved identity, each line linked to its evidence',async(context)=>{
- context.mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-05T12:00:00Z')});
+ context.mock.timers.enable({apis:['Date'],now:briefStart});
  context.after(()=>context.mock.timers.reset());
  let submissions=0;
  const outboundMail={send:async()=>{submissions++;return{providerMessageId:'synthetic-orbit-1'};}};
@@ -43,7 +45,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
  const form=await t.event(acme,'form.submitted','Pricing request',3),view=await t.event(acme,'page.viewed','Viewed pricing page',2),oldReply=await t.event(acme,'email.replied','Re: contract terms',9);
  const completed=await t.event(bright,'meeting.completed','Pilot kickoff',3);
  const draft=(await t.json<{id:string}>(`/api/v1/workbench/opportunities/${cobalt}/drafts`,{body:{contactId:await contactOf(t,cobalt),subject:'Expansion pricing',body:'Here are the numbers we discussed.'}},201)).id;
- const handoffDueAt='2026-11-04T12:00:00.000Z';
+ const handoffDueAt=new Date(briefStart-86400000).toISOString();
  const handoff=await overdueHandoff(t,cobalt,'Send the security questionnaire',handoffDueAt);
  await captureUnknown(t,'Question about your product');
  const unlinked=(await db.prepare("SELECT signal_id AS id FROM unlinked_signals WHERE resolved_at IS NULL").first<{id:string}>())!.id;
@@ -196,7 +198,7 @@ test('TASK-001 TEAM-004 BRIEF-001 BRIEF-002 AI-003 a seller starts each simulate
 });
 
 test('BRIEF-003 AI-001 AI-002 AI-003 AI-004 an account summary is sent only as previewed, must cite the brief, and fails visibly without disturbing the brief; AGENT-002 absent decision-maker and conflicting recorded commitments yield cited risks, dismissal and reviewed tasks',async(context)=>{
- context.mock.timers.enable({apis:['Date'],now:Date.parse('2026-11-05T12:00:00Z')});
+ context.mock.timers.enable({apis:['Date'],now:briefStart});
  const config={OPENAI_API_KEY:'test-only',AI_MODEL:'test-model',AI_INPUT_COST_PER_MILLION:'1',AI_OUTPUT_COST_PER_MILLION:'2'};
  const operator=createId(),t=await todayApp(db,{provider:createAIProvider(config),operatorId:operator}),off=await todayApp(db,{operatorId:operator});
  const brief=await t.brief(),account=brief.accounts.find(a=>a.name==='Acme Logistics')!,ids=account.lines.map(l=>l.evidence.id);

@@ -10483,7 +10483,7 @@
       "executable": false
     },
     "tests/core/capture-data.test.ts": {
-      "sha256": "3fe2d04b76fd422bb392d0f046b5122b30c664ab30ed80b979d9c8c706c1b780",
+      "sha256": "8d620f605b7e5378c8fc17ed2a4996874807ca09f0d342502a45a4784121dda7",
       "executable": false
     },
     "tests/core/capture-erasure.test.ts": {
@@ -10583,7 +10583,7 @@
       "executable": false
     },
     "tests/core/outbound-boundaries.test.ts": {
-      "sha256": "713a988c477af1b783a87795b25ff2388076efa7190623b69c7dcf037d21bdf6",
+      "sha256": "d8916604c4ca07c3a3766ea1eb1200fa984785627ae42cc79e98f51de0c8859f",
       "executable": false
     },
     "tests/core/outreach-limits.test.ts": {
@@ -10639,7 +10639,7 @@
       "executable": false
     },
     "tests/core/today-brief.test.ts": {
-      "sha256": "b205b7e3619e161f7d158893070d90f0a36c2edced1d3aa5c29e9d90aa901de6",
+      "sha256": "9f9f0c34a6a860a61b55a98cea03ef567dc0eb5d9179f807015cacf7439d59a6",
       "executable": false
     },
     "tests/delegation-browser/calendar-journey.mjs": {
@@ -11755,7 +11755,7 @@
       "executable": false
     },
     "tests/support/opt-out-archive.ts": {
-      "sha256": "e6ec52583eea27ddb88e14a27f916fbcbddabce30bf836c6ea73e07615b07a8f",
+      "sha256": "48ffe67e109dfee6673889f43ca978da699aa13c9ff5272956a4ac4e66e7987f",
       "executable": false
     },
     "tests/support/outreach-retry-accounting.ts": {
@@ -11912,6 +11912,10 @@
     },
     "tests/support/test-auth.ts": {
       "sha256": "a6e48105439b5428618a5ca553c612a14200f05199cb3560fdf9274e167b4d03",
+      "executable": false
+    },
+    "tests/support/test-clock.ts": {
+      "sha256": "4c0eadf93330a7f0ff7378ffd14c1381b64f4ea97f45db45be4dbf1f99b817c5",
       "executable": false
     },
     "tests/support/test-dependencies.ts": {

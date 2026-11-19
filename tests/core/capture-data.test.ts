@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {captureFixture} from '../support/capture-fixture';
 import {launchFixture} from '../support/launch-fixture';
+import {nextWeeklyOccurrence} from '../support/test-clock';
 import {createSourceSecurity} from '../../src/core/platform/source-security';
 import {connectSource} from '../../src/core/features/capture/sources';
 import {currentSalesData} from '../support/current-sales-data';
@@ -9,7 +10,7 @@ import {proveCurrentArchive} from '../support/current-sales-archive';
 import {exported,captured} from '../support/capture-data-archive';
 
 test('DATA-003 current sales capabilities round-trip without authority and erase across public reads', async context => {
-  context.mock.timers.enable({apis:['Date'],now:Date.parse('2030-01-07T10:00:00.000Z')});
+  context.mock.timers.enable({apis:['Date'],now:nextWeeklyOccurrence('2030-01-07T10:00:00Z')});
   const f = await captureFixture(), target = await launchFixture();
   try {
     await captured(f);
