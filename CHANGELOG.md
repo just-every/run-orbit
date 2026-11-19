@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.12 — 2026-11-19
+
+Orbit 0.4.12 makes first-run setup and everyday CRM work more reliable, clarifies when booking tools need setup, and includes security updates. It retains rer 0.2.113.
+
+- **Finish setup and create pipelines.** Choose the workspace time zone from a list and save the initial pipeline stages. In Settings, enter the pipeline name and first stage, then select Create pipeline. Connection guides link directly to the right source in Capture Settings for credentials and delivery status.
+- **Resolve import mapping problems before applying records.** The dry-run screen flags missing identity columns beside their mappings. Generic CSV contacts can match a uniquely named company in the same import. If several rows match, Orbit asks for a Company ID. If a reviewed import can no longer be applied, Orbit explains what to review before retrying.
+- **Resume saved forms and review restored publications.** Open a saved form and compile its revision without saving the text again. After a local archive restore, withdrawn forms appear in Settings, ready to reopen for review and fresh capture authorization.
+- **Keep working while pages load and records save.** Records search becomes editable when it can retain what you type. Overlapping autosaves preserve edits to different record fields. An explicit collaborator invitation stays available for acceptance after local sign-in.
+- **See what is required to receive bookings.** Connected Products shows Calendly and Cal.com as needing setup when Orbit lacks a public HTTPS address or an enabled signed source. Once those prerequisites exist, Orbit can show that it is waiting for the first signed delivery.
+- **Apply dependency security updates.** Orbit uses Hono 4.13.16 and includes a picomatch patch that disables vulnerable repeated extglobs.
+
+### Known limits
+
+Account proposals remain limited to selected written evidence and the existing three proposal types. Scheduled graph maintenance, transcripts, licensed enrichment and broader stakeholder inference remain incomplete. Workflow undo remains partial. Earlier erasure limitations remain: a former sponsor or approver can still appear by name in a colleague's timeline and audit rows, and an approver's name stays in the search index until it is rebuilt. These changes do not establish complete agent coverage, complete migration from another CRM or live-provider acceptance.
+
+### Upgrade
+
+Update from 0.4.11 in place after stopping writes and taking a private backup. This release adds no database migrations. All 84 core migrations are byte-identical to v0.4.11. Existing features require no new provider setting. Preserve the migration ledger and all already-applied migrations. For optional Slack personal mentions, add im:read alongside im:write and reinstall or reauthorize the Slack app as required. Older installations must first account for their earlier pending migrations and release instructions.
+
 ## 0.4.11 — 2026-11-16
 
 Orbit 0.4.11 makes capture setup, import review and everyday sales workflows clearer and fixes several fresh-install paths. It retains rer 0.2.113.
