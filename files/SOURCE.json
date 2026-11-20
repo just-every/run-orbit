@@ -1,0 +1,111 @@
+{
+  "shard": "source",
+  "commit": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+  "startedAt": "2026-11-20T15:55:47.560Z",
+  "finishedAt": "2026-11-20T15:59:48.882Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "exec",
+        "node",
+        "src/base/contract-docs.mjs",
+        "check"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 724
+    },
+    {
+      "args": [
+        "run",
+        "source:check"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 3003
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "node_modules/@runeditrun/rer/bin/rer.mjs",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 2242
+    },
+    {
+      "args": [
+        "run",
+        "check:boundaries"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 876
+    },
+    {
+      "args": [
+        "run",
+        "check:manifest"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 718
+    },
+    {
+      "args": [
+        "run",
+        "agent:surface"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 4319
+    },
+    {
+      "args": [
+        "exec",
+        "rer",
+        "build"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 15353
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "node_modules/@runeditrun/rer/cli/agent-door.mjs",
+        ".",
+        "deploy.json"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 165500
+    },
+    {
+      "args": [
+        "exec",
+        "node",
+        "scripts/publish-deployment-spec.mjs",
+        "--check"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 878
+    },
+    {
+      "args": [
+        "run",
+        "typecheck"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 47623
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "shard": "fold-accepted-main",
+  "commit": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+  "startedAt": "2026-11-20T15:59:49.752Z",
+  "finishedAt": "2026-11-20T16:09:13.032Z",
+  "status": "passed",
+  "stages": [
+    {
+      "args": [
+        "run",
+        "build:app"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 16096
+    },
+    {
+      "args": [
+        "exec",
+        "tsx",
+        "--test",
+        "--no-test-only",
+        "--test-concurrency=1",
+        "--test-reporter=spec",
+        "--test-reporter-destination=stdout",
+        "--test-reporter=./scripts/core-results.mjs",
+        "--test-reporter-destination=verification/fold-accepted-main-results.jsonl",
+        "newtests/t096/archive-lineage-accepted-main.test.ts"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 547129
+    }
+  ],
+  "executions": [
+    {
+      "file": "newtests/t096/archive-lineage-accepted-main.test.ts",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,304 @@
+{
+  "repository": "just-every/run-orbit",
+  "branch": "cloud/sd-orbit-rer-pin-125-1",
+  "runId": 44768033579,
+  "workflow": "Verify",
+  "discovery": {
+    "at": "2026-11-20T15:55:42Z",
+    "conclusion": null,
+    "event": "push",
+    "head_branch": "cloud/sd-orbit-rer-pin-125-1",
+    "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+    "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+    "id": 44768033579,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "polls": [
+    {
+      "at": "2026-11-20T16:00:43Z",
+      "conclusion": null,
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "in_progress"
+    },
+    {
+      "at": "2026-11-20T16:05:42Z",
+      "conclusion": null,
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "in_progress"
+    },
+    {
+      "at": "2026-11-20T16:10:42Z",
+      "conclusion": null,
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "in_progress"
+    },
+    {
+      "at": "2026-11-20T16:15:42Z",
+      "conclusion": null,
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "in_progress"
+    },
+    {
+      "at": "2026-11-20T16:20:42Z",
+      "conclusion": null,
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "in_progress"
+    },
+    {
+      "at": "2026-11-20T16:25:42Z",
+      "conclusion": "failure",
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579",
+      "status": "completed"
+    }
+  ],
+  "jobsObservedAt": "2026-11-20T16:25:53Z",
+  "jobs": [
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136397843399",
+      "id": 136397843399,
+      "name": "plan"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136398110216",
+      "id": 136398110216,
+      "name": "source and shared build"
+    },
+    {
+      "conclusion": "skipped",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136398113763",
+      "id": 136398113763,
+      "name": "light"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399601988",
+      "id": 136399601988,
+      "name": "shards (batch-3)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399601997",
+      "id": 136399601997,
+      "name": "shards (batch-13)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602026",
+      "id": 136399602026,
+      "name": "shards (batch-8)"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Verify routine product shard"
+      ],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602031",
+      "id": 136399602031,
+      "name": "shards (batch-11)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602033",
+      "id": 136399602033,
+      "name": "shards (batch-12)"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Verify routine product shard"
+      ],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602035",
+      "id": 136399602035,
+      "name": "shards (batch-4)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602037",
+      "id": 136399602037,
+      "name": "shards (batch-0)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602039",
+      "id": 136399602039,
+      "name": "shards (batch-2)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602071",
+      "id": 136399602071,
+      "name": "shards (batch-1)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602085",
+      "id": 136399602085,
+      "name": "shards (batch-7)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602128",
+      "id": 136399602128,
+      "name": "shards (batch-17)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602132",
+      "id": 136399602132,
+      "name": "shards (batch-9)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602162",
+      "id": 136399602162,
+      "name": "shards (batch-6)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602171",
+      "id": 136399602171,
+      "name": "shards (batch-10)"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Verify routine product shard"
+      ],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602212",
+      "id": 136399602212,
+      "name": "shards (batch-14)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602276",
+      "id": 136399602276,
+      "name": "shards (batch-19)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602321",
+      "id": 136399602321,
+      "name": "shards (batch-18)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602357",
+      "id": 136399602357,
+      "name": "shards (batch-16)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602396",
+      "id": 136399602396,
+      "name": "shards (batch-5)"
+    },
+    {
+      "conclusion": "success",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136399602711",
+      "id": 136399602711,
+      "name": "shards (batch-15)"
+    },
+    {
+      "conclusion": "failure",
+      "failed_steps": [
+        "Require a successful plan and all required work",
+        "Retain combined routine verdicts (capacity pending)"
+      ],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136414634538",
+      "id": 136414634538,
+      "name": "verify"
+    },
+    {
+      "conclusion": "skipped",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136414710656",
+      "id": 136414710656,
+      "name": "release"
+    },
+    {
+      "conclusion": "skipped",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136414711610",
+      "id": 136414711610,
+      "name": "full-push-proof"
+    },
+    {
+      "conclusion": "skipped",
+      "failed_steps": [],
+      "head_sha": "6e5164471b51f5a9efacf86d27d441df6b9986a1",
+      "html_url": "https://github.com/just-every/run-orbit/actions/runs/44768033579/job/136414712041",
+      "id": 136414712041,
+      "name": "nightly-proof"
+    }
+  ],
+  "githubCalls": 10,
+  "failedLogReads": [
+    {
+      "jobId": 136399602031,
+      "exitCode": 1,
+      "diagnostic": "failed to get run log: zip: not a valid zip file"
+    },
+    {
+      "jobId": 136399602035,
+      "exitCode": 0,
+      "testFile": "newtests/t096/browser-ownership.ts",
+      "line": 37,
+      "diagnostic": "Apply assignment button was absent in the Record ownership region when the enabled check timed out at 5000 ms."
+    }
+  ]
+}
