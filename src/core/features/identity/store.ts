@@ -99,7 +99,7 @@ export function sessionStore(db: D1Database, input: { devAdmitted: (request: Req
         .bind(await sha256(token), iso(now), iso(now - LIFETIME.oidc))
         .first<PersonRow & { session_id: string; kind: SessionKind | null; session_created_at: string; expires_at: string; issuer: string | null; subject: string | null; sid: string | null; token_hash: string }>();
       if (!row) return null;
-      // A dev session counts only on a request that passes the checkout's key gate.
+      // A dev session counts only on a request that passes the checkout’s key gate.
       if (row.kind === 'dev' && !await input.devAdmitted(request)) return null;
       await db.prepare('UPDATE sessions SET last_seen_at=? WHERE id=?').bind(iso(now), row.session_id).run();
       return {
@@ -109,7 +109,7 @@ export function sessionStore(db: D1Database, input: { devAdmitted: (request: Req
       };
     },
     /** Issues a session in one batch with its fences; null when a fence refused. */
-    async issue({ person: p, kind, now, returnTo, statements = [], principal, freshProof = false }: { person: OrbitPerson; kind: SessionKind; now: number; returnTo?: string; statements?: D1PreparedStatement[]; principal?: ProviderPrincipal; freshProof?: boolean }): Promise<CompletedSession<OrbitRole> | null> {
+    async issue({ person: p, kind, now, returnTo, statements = [], afterSession, principal, freshProof = false }: { person: OrbitPerson; kind: SessionKind; now: number; returnTo?: string; statements?: D1PreparedStatement[]; afterSession?: (id: string) => Promise<D1PreparedStatement[]>; principal?: ProviderPrincipal; freshProof?: boolean }): Promise<CompletedSession<OrbitRole> | null> {
       const id = createId(now), token = opaqueToken(), expiresAt = now + LIFETIME[kind];
       try {
         await db.batch([
@@ -119,6 +119,7 @@ export function sessionStore(db: D1Database, input: { devAdmitted: (request: Req
             VALUES (?,?,?,?,?,?,?,?,?,?,?)`).bind(id, kind, p.version,
             principal?.issuer ?? null, principal?.subject ?? null, principal?.sid ?? null, principal?.providerPin?.id ?? null, principal?.providerPin?.linkedAt ?? null,
             principal?.providerGeneration ?? null, freshProof ? now : null, freshProof ? p.version : null),
+          ...(afterSession ? await afterSession(id) : []),
           clearGuards(db),
         ]);
       } catch (cause) {

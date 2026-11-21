@@ -111,6 +111,11 @@ Settings › Data › Export and restore saves progress after each request. Retu
 
 ### Optional form challenge
 
-Forms use SESSION_SECRET for server-issued fill proofs and anonymous network rate buckets. To enable Cloudflare Turnstile for a form, configure its matching private ORBIT_FORM_TURNSTILE_SECRET on the installation, enter the public site key in the form editor, and review and publish that revision. Disabled forms make no Turnstile request. Missing or failed verification refuses the enquiry with a visible reason in Forms → Read spam and refusals. Full operators can release its saved original once or erase it; withdrawn or expired publication authority blocks release.
+Forms use `SESSION_SECRET` for server-issued fill proofs and anonymous network rate buckets. To enable Cloudflare Turnstile for a form, enter the public site key in the form editor and set its matching secret as `ORBIT_FORM_TURNSTILE_SECRET` on the installation before publishing.
+
+- On this computer, add the secret to the private `.dev.vars` file in the Orbit folder, then stop and restart local Orbit with `rer dev --stop` and `rer dev`.
+- On your Cloudflare deployment, add the secret to the private `.dev.vars.deploy` file in the Orbit folder used for deployment. Run `rer deploy --env-file .dev.vars.deploy --set-secret ORBIT_FORM_TURNSTILE_SECRET` there. If you deployed with `--environment`, pass the same environment again.
+
+Review and publish the protected revision. A form with an empty site key makes no Turnstile request. Missing or failed verification refuses the enquiry with a visible reason in Forms → Read spam and refusals. Full operators can release its saved original once or erase it. Withdrawn or expired publication authority blocks release.
 
 Existing form artifacts compiled before abuse protection must be saved, compiled, reviewed and published again to supply the new fill proof. Their exact saved bytes remain unchanged; submissions without that proof are refused and available for review.

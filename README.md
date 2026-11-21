@@ -42,7 +42,13 @@ This repository is the complete source for Orbit. Public source: [just-every/run
 
 ## Run it on your computer
 
-Follow the two steps on [run-orbit.com/run](https://run-orbit.com/run). Git is required; rer brings Node and pnpm.
+Run the same one-line launch shown on [run-orbit.com/run](https://run-orbit.com/run). Git is required; rer brings Node and pnpm.
+
+```sh
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-orbit
+```
+
+To install and launch in two steps:
 
 1. Install rer:
 
@@ -55,7 +61,7 @@ The installer prints the full path to `rer` (normally `~/.local/bin/rer`). If th
 2. Get Orbit and start it:
 
 ```sh
-rer dev just-every/run-orbit
+"$HOME/.local/bin/rer" dev just-every/run-orbit
 ```
 
 **Alternative for people who already have Node 22 or later:** `npx -y @runeditrun/rer dev just-every/run-orbit`. The [getting-started guide](https://run-orbit.com/docs/getting-started) walks through the first launch.

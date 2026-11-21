@@ -27,6 +27,7 @@ export interface NowOpportunityFacets {
 }
 
 export interface OpportunityDetail extends NowOpportunity {
+  nextActionSignalId: string | null;
   stageId: string;
   ownerId: string | null;
   companyId: string | null;

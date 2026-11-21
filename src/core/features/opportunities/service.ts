@@ -38,15 +38,21 @@ export class OpportunitiesService {
     if (!opportunity) return null;
 
     const evaluation = await this.repository.findCurrentEvaluation(id);
-    const [contacts, signals, recommendation, timeline] = await Promise.all([
+    const replyInNow = opportunity.queueState === "now" && opportunity.queueReason === "Customer reply";
+    const [contacts, signals, recommendation, timeline, contributions, queueSignalId] = await Promise.all([
       this.records.listOpportunityContacts(id),
       this.signals.listOpportunitySignals(id),
       this.recommendations.findCurrent(id),
-      this.timeline.listOpportunityEntries(id)
+      this.timeline.listOpportunityEntries(id),
+      evaluation ? this.repository.listEvaluationContributions(evaluation.id) : [],
+      replyInNow ? this.repository.findQueueReplyId(id) : null
     ]);
 
+    const citedSignalId = replyInNow ? queueSignalId
+      : [...contributions].sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))[0]?.signalId;
     return {
       ...opportunity,
+      nextActionSignalId: signals.find(signal => signal.id === citedSignalId)?.id ?? null,
       contacts,
       signals,
       evaluation: evaluation
@@ -58,7 +64,7 @@ export class OpportunitiesService {
             failureAt: evaluation.failureAt,
             policyVersion: evaluation.policyVersion,
             status: evaluation.status,
-            contributions: await this.repository.listEvaluationContributions(evaluation.id)
+            contributions
           }
         : null,
       recommendation,

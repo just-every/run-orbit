@@ -39,9 +39,35 @@ export function choiceProps(form:AutosaveForm,field:string,parse:(value:string)=
  return {'aria-labelledby':labelId(form,field),value:String(form.value(field)??''),onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>form.commit(field,parse(event.target.value))};
 }
 
-/** Grows a text area with its text (no resize handle). */
+/** Grows a text area as its text wraps, including when the record switches to a narrower layout. */
 export function useGrow(value:string){
  const area=useRef<HTMLTextAreaElement>(null);
- useEffect(()=>{const element=area.current;if(!element)return;element.style.height='auto';element.style.height=`${element.scrollHeight+3}px`;},[value]);
+ useEffect(()=>{
+  const element=area.current;
+  if(!element)return;
+  const fit=()=>{
+   element.style.height='auto';
+   element.style.height=`${element.scrollHeight+3}px`;
+  };
+  fit();
+  let width=element.clientWidth,frame=0;
+  const scheduleFit=()=>{
+   cancelAnimationFrame(frame);
+   frame=requestAnimationFrame(fit);
+  };
+  const observer=new ResizeObserver(()=>{
+   const nextWidth=element.clientWidth;
+   if(nextWidth===width)return;
+   width=nextWidth;
+   scheduleFit();
+  });
+  observer.observe(element);
+  document.fonts.addEventListener('loadingdone',scheduleFit);
+  return ()=>{
+   observer.disconnect();
+   cancelAnimationFrame(frame);
+   document.fonts.removeEventListener('loadingdone',scheduleFit);
+  };
+ },[value]);
  return area;
 }

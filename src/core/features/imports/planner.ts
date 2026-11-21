@@ -1,4 +1,5 @@
 import {newTask} from '../tasks/mutations';
+import {taskInstant} from '../tasks/time';
 import {manualEntryPayload} from '../records/manual';
 import { planD1Import,canonicalJson,sha256,type D1ImportContext,type MappingResult,type SourceRecord,type TargetEffect } from '../../../modules/import-kit/d1/index';
 import { contactEmailKey,companyDomainKey } from '../records/identity';
@@ -20,7 +21,7 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
  source.artifacts.push(...originals);
  const ownerMappingTable=mapImportOwners(rows,input,await importOwners(db));
  for(const row of rows)if(['deal','task'].includes(row.kind)&&row.ownerMapping){row.source.payload={...row.source.payload as any,chosenOwner:row.ownerMapping.ownerId};row.source.payloadHash=sha256(canonicalJson(row.source.payload));}
- const settings=await db.prepare('SELECT free_mail_domains_json FROM workspace_settings').first();
+ const settings=await db.prepare('SELECT free_mail_domains_json, timezone FROM workspace_settings').first<{free_mail_domains_json:string;timezone:string}>();
  const stages=new Set((await db.prepare('SELECT id FROM pipeline_stages').all()).results.map(r=>r.id));
  const shapes:Record<string,Record<string,any>>={};
  for(const [kind,table] of Object.entries(tables)){const columns=(await db.prepare(`PRAGMA table_info(${table})`).all()).results;shapes[kind]=Object.fromEntries(columns.map(c=>[c.name,c.dflt_value==null?null:c.dflt_value.startsWith("'")?c.dflt_value.slice(1,-1).replaceAll("''", "'"):Number(c.dflt_value)]));}
@@ -95,9 +96,19 @@ export async function prepareImport(input:ImportInput,context:D1ImportContext,or
    const companies=linked(row,'company','company_ids'),contacts=linked(row,'contact','contact_ids');if(companies.length>1)throw new Error('Choose one company ID for the deal.');
    const stage=input.stages[data.stage];if(!stage||!stages.has(stage))throw new Error('Map this row’s source stage to a current Orbit stage.');
    const amount=data.amount?Number(data.amount):0;if(!Number.isFinite(amount)||amount<0||Math.round(amount*100)>100000000000)throw new Error('Amount must be a non-negative decimal in the workspace currency.');
-   if(!data.title)throw new Error('Deal title is required.');const close=data.close_date?new Date(data.close_date):null;if(close&&!Number.isFinite(+close))throw new Error('Close date is invalid.');
+   if(!data.title)throw new Error('Deal title is required.');
+   // A date without a time is midnight on the workspace clock, as in the deal editor.
+   const close=data.close_date;
+   let expectedCloseAt:string|null=null;
+   if(close){
+    try{
+     expectedCloseAt=/^\d{4}-\d{2}-\d{2}$/.test(close)
+      ?taskInstant(`${close}T00:00`,settings?.timezone??'UTC')
+      :new Date(close).toISOString();
+    }catch{throw new Error('Close date is invalid.');}
+   }
    if(data.status&&!['open','won','lost'].includes(data.status))throw new Error('Unsupported source deal status. Export this deal with its current status.');
-   Object.assign(native,{title:data.title,lifecycle:data.status||'open',stage_id:stage,owner_id:ownerMapping?.ownerId??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:close?.toISOString()??null,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
+   Object.assign(native,{title:data.title,lifecycle:data.status||'open',stage_id:stage,owner_id:ownerMapping?.ownerId??null,company_id:companies[0]??null,value_cents:Math.round(amount*100),expected_close_at:expectedCloseAt,score:0,band:'low',queue_state:'none',queue_reason:'Imported history; no action approved'});
    for(const [i,contact] of [...new Set(contacts)].entries())links.push({opportunity_id:id,contact_id:contact,is_primary:i===0?1:0,created_at:at});
   }
   if(['note','call','meeting'].includes(row.kind)){

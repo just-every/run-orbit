@@ -156,6 +156,22 @@ export class OpportunitiesRepository {
     )[0];
   }
 
+  async findQueueReplyId(opportunityId: string) {
+    // Queue decisions follow the order evidence was linked or accepted, even for backdated mail.
+    return this.binding.prepare(`
+      SELECT signal_id FROM (
+        SELECT s.id AS signal_id, l.linked_at AS applied_at, 0 AS reviewed
+        FROM signal_links l JOIN signals s ON s.id=l.signal_id
+        WHERE l.record_type='opportunity' AND l.record_id=? AND s.type='email.replied' AND ${customerSignalSql()}
+        UNION ALL
+        SELECT p.signal_id, p.decided_at, 1
+        FROM capture_proposals p
+        WHERE p.record_type='opportunity' AND p.record_id=? AND p.kind='next_action' AND p.status='accepted'
+          AND json_extract(p.decided_value,'$.state')='now' AND json_extract(p.decided_value,'$.reason')='Customer reply'
+      ) ORDER BY applied_at DESC, reviewed DESC, signal_id DESC LIMIT 1
+    `).bind(opportunityId, opportunityId).first<string>('signal_id');
+  }
+
   async findCurrentEvaluation(opportunityId: string) {
     return (
       await drizzle(this.binding)

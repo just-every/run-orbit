@@ -26,16 +26,25 @@ export function identityConfig(bindings: PlatformBindings, sender: MailSender | 
   };
 }
 
+// Only the dev entry point installs this adapter. A session-bound local proof may
+// authorize Base's session lookup. The original request goes to every other auth operation.
+let localSessionRequest: ((request: Request) => Promise<Request>) | undefined;
+export function registerLocalSessionRequest(adapter?: typeof localSessionRequest) {
+  localSessionRequest = adapter;
+}
+
 /** Base operator-auth composed over Orbit's native operators, sessions and proofs for one request. */
 export function createOrbitIdentity(bindings: PlatformBindings, options: { waitUntil?: (promise: Promise<unknown>) => void; clock?: () => number; mailSender?: MailSender } = {}) {
   const mail = options.mailSender ?? identityMailSender(bindings), config = identityConfig(bindings, mail);
   if (!config) return null;
   const clock = options.clock ?? Date.now, store = sessionStore(bindings.DB, { devAdmitted });
   const accounts = createNativeAccounts(store, { clock });
-  const auth = createOperatorAuth({
+  const base = createOperatorAuth({
     db: bindings.DB, config, accounts, proofs: createNativeProofs(store), clientIp: clientIp(config.local === true), clock,
     ...(mail ? { mailSender: mail } : {}), ...(options.waitUntil ? { waitUntil: options.waitUntil } : {}),
   });
+  const sessionRequest = localSessionRequest;
+  const auth = sessionRequest ? { ...base, getSession: async (request: Request) => base.getSession(await sessionRequest(request)) } : base;
   return { auth, accounts, store, config, clock };
 }
 export type OrbitIdentity = NonNullable<ReturnType<typeof createOrbitIdentity>>;

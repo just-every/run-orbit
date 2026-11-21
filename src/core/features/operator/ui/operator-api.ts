@@ -17,6 +17,7 @@ const nowOpportunitySchema = z.object({
 });
 
 const opportunityDetailSchema = nowOpportunitySchema.extend({
+  nextActionSignalId: z.string().nullable(),
   companyId: z.string().nullable(),
   valueCents: z.number(),
   expectedCloseAt: z.string().nullable(),

@@ -4,6 +4,9 @@
 import worker, { runtimeBindings } from '../core/app/worker';
 import { cliSession } from './cli-session';
 import {localSignIn} from './sign-in';
+import {registerLocalSessionRequest} from '../core/features/identity/auth';
+import {acceptLocalInvitation} from './invitation';
+import {isScopedSessionLookup, localSessionRequest} from './scoped-session';
 import {acceptPendingInvitations} from './pending-invitation';
 import { devGate, devNotFound, isLoopbackHost, safeReturnTo } from '@runeditrun/rer/modules/operator-auth';
 import { registerDevAdmission, devAdmitted } from '@runeditrun/rer/modules/operator-auth/dev-admission';
@@ -103,11 +106,15 @@ export default {
     if (managedInstallation(env)) {
       // Never admit a dev credential beside a managed installation.
       registerDevAdmission(null);
+      registerLocalSessionRequest();
       if (env.RER_DEV_IDENTITY !== 'off') return text(503, 'Dev identity refuses to run beside RER_INSTALLATION_ID with a non-loopback RER_MANAGEMENT_ORIGIN. Remove those bindings from local settings or use rer dev --login.');
       return path === '/auth/dev/enter' || path === '/__dev/personas' || path === '/auth/local/cli-session' ? devNotFound() : worker.fetch(request, original, execution);
     }
     const gate = devGate({ key: env.RER_DEV_KEY, origin: env.AUTH_ORIGIN ?? '', local: env.AUTH_LOCAL === 'true' });
-    registerDevAdmission(gate ? (r: Request) => gate.admits(r) : null);
+    registerDevAdmission(gate ? (r: Request) => isScopedSessionLookup(r) || gate.admits(r) : null);
+    const localIdentity = gate && env.RER_DEV_IDENTITY !== 'off';
+    registerLocalSessionRequest(localIdentity ? r => localSessionRequest(r, env, gate) : undefined);
+    if (path === '/auth/local/invitation') return localIdentity ? acceptLocalInvitation(request, env, gate) : devNotFound();
     if (path === '/auth/local/cli-session') return gate && env.RER_DEV_IDENTITY !== 'off' ? cliSession(request, env) : devNotFound();
     if (path === '/auth/dev/enter' || path === '/__dev/personas') {
       if (!gate || env.RER_DEV_IDENTITY === 'off' || !await gate.admits(request)) return devNotFound();

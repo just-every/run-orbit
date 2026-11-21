@@ -1,7 +1,7 @@
 import { useCallback, useState, type FormEvent } from 'react';
 import { ConsoleLink } from './capture-guide';
 import { CopyField } from './capture-copy-field';
-import { CaptureHostedSetup } from './capture-hosted-setup';
+import { CaptureHostedSetup, CaptureHostedSetupAction } from './capture-hosted-setup';
 import { OperatorState } from './operator-shell';
 import { useOperatorResource } from './use-operator-resource';
 import {formatDate} from './formatters';
@@ -15,7 +15,8 @@ const keeps = 'Orbit keeps a message only when someone in it is already a contac
 function NotConfigured() {
   return <div className="capture-panel">
     <h2>This Orbit can’t receive mail yet</h2>
-    <p>The installer must connect a receiving domain once. Open the setup steps below; calendar links and file uploads work in the meantime.</p>
+    <p>The installer needs to connect a receiving domain once. Calendar links and file uploads work in the meantime.</p>
+    <CaptureHostedSetupAction />
   </div>;
 }
 
@@ -52,7 +53,9 @@ function TryLocally({ onCaptured }: { onCaptured: () => void }) {
     } finally { setBusy(false); }
   }
   return <div className="capture-local-note">
-    <p><strong>Running on this computer.</strong> Mail from the internet can’t reach this local address. On your hosted Orbit, connect a receiving domain using the setup steps below, then create and use its private address. To see it work now, save a customer email as an .eml file (in Gmail: ⋮ › Download message) and send it to your address:</p>
+    <p><strong>Running on this computer.</strong> Mail from the internet can’t reach this local address. After you connect a receiving domain, create your private address on the hosted Orbit.</p>
+    <CaptureHostedSetupAction />
+    <p>To try capture on this computer, save a customer email as an .eml file (in Gmail, choose ⋮ › Download message) and send it to your address.</p>
     <form className="capture-try-form" onSubmit={send}>
       <label>Saved email (.eml)<input type="file" name="message" accept=".eml,message/rfc822" required /></label>
       <button className="orbit-button orbit-button--quiet" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Send to my Orbit address'}</button>
@@ -127,7 +130,7 @@ export function CaptureAddressSetup({ error }: { error?: string }) {
   }, []);
   const status = useOperatorResource('capture-forward', load);
   return <>
-    <CaptureHostedSetup/>
+    <CaptureHostedSetup local={status.data?.local}/>
     {error ? <OperatorState kind="error">{error}</OperatorState> : null}
     {status.loading ? <OperatorState>Loading your Orbit address…</OperatorState> : null}
     {status.error ? <OperatorState kind="error">{status.error.message}</OperatorState> : null}

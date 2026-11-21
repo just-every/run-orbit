@@ -5,6 +5,7 @@ export const inquiryDisclosure='By submitting this enquiry, you ask us to follow
 export const inquiryDisclosureHtml=`<p id="inquiry-disclosure">${escapeHtml(inquiryDisclosure)}</p>`;
 
 export interface ContactBasis {
+ /** The stored 'marketing' value identifies a custom checkbox, whose scope comes from its wording. */
  kind:'marketing'|'inquiry';
  wording:string;
  accepted:boolean;

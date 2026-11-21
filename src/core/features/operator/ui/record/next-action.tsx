@@ -19,16 +19,26 @@ export function signalContacts(opportunity:OpportunityDetail){
  return result;
 }
 
-/** The first card of a deal: why it is in NOW, the newest contributing signal (or the recommendation's own words),
+/** Both record cards cite the same subject and occurred time, including beside a saved recommendation. */
+export function nextActionCitation(opportunity:OpportunityDetail,presentation:WorkspacePresentation,contacts:Map<string,string>){
+ const signal=opportunity.signals.find(item=>item.id===opportunity.nextActionSignalId);
+ const subject=signal&&(signal.subject||`${signalKind(signal.type)} · from ${sourceLabel(signal.source)}`);
+ const explanation=opportunity.recommendation?.explanation;
+ const citeReply=opportunity.queueState==='now'&&opportunity.queueReason==='Customer reply';
+ const when=signal&&(!explanation||citeReply)
+  ? [explanation?subject:null,formatDateTime(signal.occurredAt,presentation),contacts.get(signal.id)].filter(Boolean).join(' · ')
+  : null;
+ return {line:explanation??subject,when};
+}
+
+/** The first card of a deal: why it is in NOW, the evidence for the next action (or the recommendation's own words),
  * Write follow-up, Draft with AI, Mark done and Skip, and a fold saying why it is first. */
 export function NextAction({opportunity,presentation,aiConfigured,reload,composing,onCompose,deal,readOnly=false}:{opportunity:OpportunityDetail;presentation:WorkspacePresentation;aiConfigured:boolean;reload:()=>void;composing:boolean;onCompose:()=>void;deal?:ReactNode;readOnly?:boolean}){
- const rec=opportunity.recommendation,contributions=opportunity.evaluation?.contributions??[],contacts=signalContacts(opportunity);
- const signals=new Map(opportunity.signals.map(signal=>[signal.id,signal]));
- const newest=[...contributions].sort((a,b)=>b.occurredAt.localeCompare(a.occurredAt))[0],signal=newest?signals.get(newest.signalId):undefined;
+ const rec=opportunity.recommendation,contacts=signalContacts(opportunity);
+ const citation=nextActionCitation(opportunity,presentation,contacts);
  const reasonChip=opportunity.lifecycle==='open'&&opportunity.queueState==='now'&&opportunity.queueReason?opportunity.queueReason:null;
  // The Why NOW chip already says the queue reason, so the line never repeats it.
- const line=rec?.explanation??(signal?signal.subject||`${signalKind(signal.type)} · from ${sourceLabel(signal.source)}`:(reasonChip?null:opportunity.queueReason)??'Review the customer evidence and choose your next step.');
- const when=!rec?.explanation&&signal?[formatDateTime(signal.occurredAt,presentation),contacts.get(signal.id)].filter(Boolean).join(' · '):null;
+ const line=citation.line??(reasonChip?null:opportunity.queueReason)??'Review the customer evidence and choose your next step.';
  const [error,setError]=useState(''),[busy,setBusy]=useState(false);
  async function finish(outcome:'completed'|'skipped'){if(!rec)return;setBusy(true);setError('');try{await workbenchRequest(`/recommendations/${rec.id}/complete`,{outcome,note:''});reload();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <section className="operator-surface r-next" aria-labelledby={`next-${opportunity.id}`} data-testid="next-action">
@@ -37,7 +47,7 @@ export function NextAction({opportunity,presentation,aiConfigured,reload,composi
   {deal}
   {reasonChip?<div className="r-why"><span className="r-why-label">Why NOW</span><span className="r-chip">{reasonChip}</span></div>:null}
   <p className="r-next-line">{line}</p>
-  {when?<p className="r-next-when">{when}</p>:null}
+  {citation.when?<p className="r-next-when">{citation.when}</p>:null}
   {!readOnly&&<div className="r-next-actions">
    <button type="button" className="orbit-button orbit-button--primary" aria-expanded={composing} onClick={onCompose}>Write follow-up</button>
    {aiConfigured?<Link className="orbit-button orbit-button--secondary" to="/app/assistance/$id" params={{id:opportunity.id}}>Draft with AI</Link>:null}

@@ -2,17 +2,30 @@ import {SetupHelp,SetupLink as ConsoleLink} from './setup-help';
 import {CopyField} from './capture-copy-field';
 import {EnvironmentField,useDeployEnvironment} from './deploy-environment';
 
-export function CaptureHostedSetup(){
+const hostedSetupId='capture-hosted-receiving';
+
+export function CaptureHostedSetupAction(){
+ return <button type="button" className="operator-text-button" aria-controls={hostedSetupId} onClick={()=>{
+  const setup=document.getElementById(hostedSetupId);
+  if(!(setup instanceof HTMLDetailsElement))return;
+  setup.open=true;
+  const summary=setup.querySelector('summary');
+  summary?.scrollIntoView({block:'center'});
+  summary?.focus({preventScroll:true});
+ }}>Set up a hosted receiving domain</button>;
+}
+
+export function CaptureHostedSetup({local}:{local?:boolean}){
  const {environment,setEnvironment,name}=useDeployEnvironment();
- const origin=typeof window==='undefined'?'https://YOUR-ORBIT-HOST':window.location.origin;
+ const origin=local||typeof window==='undefined'?'https://YOUR-ORBIT-HOST':window.location.origin;
  const deploy=`rer deploy --env-file .dev.vars.deploy --environment ${name}`;
- return <SetupHelp>
+ return <SetupHelp id={hostedSetupId} summary="Hosted receiving setup">
   <p>Receiving internet mail needs a hosted Orbit and a receiving domain you control, such as <code>capture.example.com</code>. Neither <code>capture.localhost</code> nor <code>workers.dev</code> can receive mail. Choose one route below for that domain; keep its mail routing separate from your normal business inbox.</p>
   <EnvironmentField id="capture-hosting-environment" environment={environment} setEnvironment={setEnvironment}/>
   <h3>Route with SendGrid Inbound Parse</h3>
   <ol>
    <li>In your domain’s DNS console, add an <strong>MX</strong> record for the receiving subdomain (for example <code>capture</code>), priority <strong>10</strong>, destination <code>mx.sendgrid.net</code>. In SendGrid, authenticate your domain under <strong>Settings</strong> › <strong>Sender Authentication</strong> if it is not yet offered in the Domain dropdown.</li>
-   <li>In <ConsoleLink href="https://app.sendgrid.com/settings/parse">SendGrid › Settings › Inbound Parse</ConsoleLink>, choose <strong>Add Host &amp; URL</strong>. Set <strong>Receiving domain</strong> to your subdomain, <strong>Destination URL</strong> to your hosted Orbit address below, select <strong>POST the raw, full MIME message</strong>, then <strong>Add</strong>. On localhost, replace the origin below with your hosted HTTPS origin.
+   <li>In <ConsoleLink href="https://app.sendgrid.com/settings/parse">SendGrid › Settings › Inbound Parse</ConsoleLink>, choose <strong>Add Host &amp; URL</strong>. Set <strong>Receiving domain</strong> to your subdomain, <strong>Destination URL</strong> to your hosted Orbit address below, select <strong>POST the raw, full MIME message</strong>, then <strong>Add</strong>. Replace <code>YOUR-ORBIT-HOST</code> with the hostname of your hosted Orbit if shown.
     <CopyField label="Orbit inbound parse URL" value={`${origin}/api/v1/mail/capture`}/></li>
    <li>Enable request signatures using SendGrid’s <ConsoleLink href="https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks">Parse security policy API</ConsoleLink>. This step uses the API, rather than an undocumented console toggle. In <strong>Settings</strong> › <strong>API Keys</strong> › <strong>Create API Key</strong>, make a private setup key with <strong>Full Access</strong>. In your terminal set <code>SENDGRID_SETUP_KEY</code> to that key, then run:
     <CopyField label="Create signed parse policy" block value={'curl --fail-with-body https://api.sendgrid.com/v3/user/webhooks/security/policies -X POST -H "Authorization: Bearer $SENDGRID_SETUP_KEY" -H "Content-Type: application/json" --data \'{"name":"Orbit capture","signature":{"enabled":true}}\''}/>

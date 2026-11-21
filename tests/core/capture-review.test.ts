@@ -61,7 +61,7 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     assert.equal((await acceptNext(refreshed)).status, 409, 'a reviewed proposal applies only once');
 
     // A later unthreaded reply has the same link-then-next-action path.
-    const reply = eml({ From: 'Ana Ruiz <ana@acme.example>', To: 'seller@orbit.test', Subject: 'New reply', Date: rfc(1), 'Message-ID': '<companion-reply@acme.example>' }, 'Please call me tomorrow.');
+    const reply = eml({ From: 'Ana Ruiz <ana@acme.example>', To: 'seller@orbit.test', Subject: 'New reply', Date: rfc(25), 'Message-ID': '<companion-reply@acme.example>' }, 'Please call me tomorrow.');
     await f.upload([{ name: 'reply.eml', text: reply }]);
     const replyProposals = (await list()).filter(proposal => proposal.details.evidence.subject === 'New reply');
     const replyLink = replyProposals.find(proposal => proposal.kind === 'link_signal')!, replyNext = replyProposals.find(proposal => proposal.kind === 'next_action')!;
@@ -72,8 +72,15 @@ test('CAPTURE-004 CAPTURE-005 captured evidence only proposes changes; a person 
     await f.db.prepare('UPDATE opportunities SET next_due_at=? WHERE id=?').bind(dueAt, f.opportunity).run();
     assert.equal((await acceptNext(reviewedReply)).status, 409);
     assert.equal(await f.db.prepare('SELECT next_due_at FROM opportunities WHERE id=?').bind(f.opportunity).first('next_due_at'), dueAt);
+    // Another reply can be linked more recently than the specific reply the seller then accepts.
+    const budget = of('link_signal').find(proposal => proposal.details.evidence.subject === 'Budget')!;
+    assert.equal((await f.request(`/api/v1/capture/proposals/${budget.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })).status, 200);
     assert.equal((await acceptNext(await freshNext(replyNext.id))).status, 200);
-    assert.equal((await queue()).queueState, JSON.parse(replyNext.proposed_value!).state);
+    const replyQueue = await queue();
+    assert.equal(replyQueue.queueState, JSON.parse(replyNext.proposed_value!).state);
+    const cited = replyQueue.signals.find((signal: { id: string }) => signal.id === replyQueue.nextActionSignalId);
+    assert.deepEqual([cited?.subject, cited?.occurredAt], [replyNext.details.evidence.subject, replyNext.details.evidence.date],
+      'Why NOW cites the accepted reply even when another reply and a booking have later timestamps');
 
     // Edit before accepting; refuse a value that changed since review.
     assert.equal((await f.request(`/api/v1/capture/proposals/${name.id}/accept`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ value: 'Ana Ruiz López' }) })).status, 200);

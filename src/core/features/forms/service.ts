@@ -83,7 +83,21 @@ export class FormService extends ScopedMutations{
  }
  async submissions(c:ActorContext,formId:string){
   await this.owner(c);
-  const rows=await this.read<Record<string,unknown>&{signal_payload:string|null}>(c,'SELECT m.*,s.payload_json AS signal_payload FROM marketing_form_submissions m LEFT JOIN signals s ON s.id=m.signal_id WHERE m.form_id=? ORDER BY m.created_at DESC',[formId]);
-  return rows.results.map(({signal_payload,...submission})=>({...submission,contact_basis:signal_payload?JSON.parse(signal_payload).contactBasis??null:null}));
+  // Older captures kept accepted checkbox wording in consent_events before signals included contactBasis.
+  // An erased submission has no signal link, so its retained consent receipt is never shown.
+  const rows=await this.read<Record<string,unknown>&{signal_payload:string|null;consent_receipt:string|null}>(c,`
+   SELECT m.*,s.payload_json AS signal_payload,
+    CASE WHEN s.id IS NOT NULL AND json_extract(s.payload_json,'$.contactBasis') IS NULL THEN (
+     SELECT json_object('kind','marketing','wording',e.wording,'accepted',json('true'),
+      'formRevision',e.form_revision,'artifactHash',e.artifact_hash,'occurredAt',e.occurred_at)
+     FROM consent_events e WHERE e.submission_id=m.id AND e.contact_id=m.contact_id
+     LIMIT 1
+    ) END AS consent_receipt
+   FROM marketing_form_submissions m LEFT JOIN signals s ON s.id=m.signal_id
+   WHERE m.form_id=? ORDER BY m.created_at DESC`,[formId]);
+  return rows.results.map(({signal_payload,consent_receipt,...submission})=>{
+   const captured=signal_payload?JSON.parse(signal_payload).contactBasis:null;
+   return {...submission,contact_basis:captured??(consent_receipt?JSON.parse(consent_receipt):null)};
+  });
  }
 }
