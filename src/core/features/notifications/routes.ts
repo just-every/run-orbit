@@ -14,10 +14,19 @@ export function createNotificationRoutes(db:D1Database,config:SlackConfig={}) {
  app.route('/slack',personalSlackRoutes(db,config));
  app.get('/',async c=>{
   const actor=c.get('operator').operatorId;
+  // The inbox polls. A validator built from three indexed probes, plus a five-minute bucket that refreshes
+  // titles and links which changed elsewhere, lets an unchanged poll cost a few rows instead of the list.
+  const [newest,read]=await Promise.all([
+   db.prepare('SELECT created_at,id FROM notifications WHERE operator_id=? ORDER BY created_at DESC,id DESC LIMIT 1').bind(actor).first<{created_at:string;id:string}>(),
+   db.prepare('SELECT max(read_at) AS at FROM notifications WHERE operator_id=?').bind(actor).first<{at:string|null}>()
+  ]);
+  const etag=`"${[newest?.created_at,newest?.id,read?.at,Math.floor(Date.now()/300000)].join('|')}"`;
+  if(c.req.header('If-None-Match')===etag)return c.body(null,304,{ETag:etag});
   const [items,count]=await Promise.all([
    db.prepare(`SELECT n.id,COALESCE(CASE WHEN n.event_key LIKE 'import-ownership:%' THEN '/app/contacts' END,(SELECT '/app/contacts/'||c.id FROM contacts c WHERE c.id=${contactId}),(SELECT CASE b.record_type WHEN 'company' THEN '/app/companies' ELSE '/app/contacts' END||CASE WHEN b.item_count=1 THEN '/'||(SELECT record_id FROM ownership_batch_items WHERE batch_id=b.id LIMIT 1) ELSE '' END FROM ownership_batches b WHERE n.kind='record.assigned' AND n.event_key='ownership:'||b.id),(SELECT l.href FROM sales_task_notification_links l WHERE l.notification_id=n.id LIMIT 1),${mentionHrefSql}) AS href,n.opportunity_id AS opportunityId,o.title AS opportunityTitle,COALESCE(CASE WHEN n.kind='form.submitted' THEN (SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId}) END,o.title,(SELECT COALESCE(NULLIF(c.name,''),c.email) FROM contacts c WHERE c.id=${contactId}),(${assignmentTitle})) AS recordTitle,n.kind,n.message,n.created_at AS createdAt,n.read_at AS readAt FROM notifications n LEFT JOIN opportunities o ON o.id=n.opportunity_id WHERE n.operator_id=? ORDER BY n.created_at DESC,n.id DESC LIMIT 100`).bind(actor).all(),
    db.prepare('SELECT count(*) AS count FROM notifications WHERE operator_id=? AND read_at IS NULL').bind(actor).first<{count:number}>()
   ]);
+  c.header('ETag',etag);
   return c.json({notifications:items.results,unread:count?.count??0});
  });
  app.post('/:id/read',async c=>{

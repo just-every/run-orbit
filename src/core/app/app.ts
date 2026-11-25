@@ -124,7 +124,8 @@ export function createApp(input: { agentDoor?:AgentDoor; clock?:Clock; assets: A
   });
   app.use('/api/v1/*',async(context,next)=>{
     await next();
-    if(input.hosted&&context.req.method==='GET'&&context.res.status<400)
+    // The inbox polls this route every half minute; a poll never wakes the timer or takes its lease.
+    if(input.hosted&&context.req.method==='GET'&&context.res.status<400&&context.req.path!=='/api/v1/notifications')
       context.executionCtx.waitUntil(runRequestTimers(input.database,mail));
   });
   app.use("/api/*", async (context,next) => {

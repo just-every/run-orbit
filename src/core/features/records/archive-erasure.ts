@@ -44,19 +44,29 @@ export async function executeArchiveErasure(db: D1Database, personalStatements: 
             if (attempt === 2) throw new RecordError(409, 'Archive transfers changed during erasure. Retry the deletion. No data was changed.');
         }
     }
-    await sweepArchiveTrash(db);
+    await sweepArchiveTrash(db,{force:true});
 }
 
 /** Rows removed per statement: copies are narrow; stored parts hold up to 16 MiB each. */
 const chunkRows = (name: string, columns: string[]) => columns.includes('content_json') ? 8 : columns.includes('content') ? 32 : 20_000;
 
+/** Orphans appear only when a transfer or erasure was interrupted, so the timer looks for them hourly. */
+const sweepEveryMs = 3_600_000;
+
 /**
  * Removes orphaned transfer copies and renamed transfer metadata in bounded
- * batches. Concurrent sweeps (an erasure and the minute timer) may race; a
+ * batches. Concurrent sweeps (an erasure and the timer) may race; a
  * table another sweep already removed is skipped. An interrupted sweep resumes
- * on the next erasure or minute timer.
+ * on the next erasure or the next hourly timer. Listing the schema reads every
+ * table, index and trigger, so the timer claims one hourly slot first and an
+ * erasure, which just created the copies, sweeps at once.
  */
-export async function sweepArchiveTrash(db: D1Database) {
+export async function sweepArchiveTrash(db: D1Database, { force = false }: { force?: boolean } = {}) {
+    if (!force) {
+        const now = Date.now();
+        const slot = await db.prepare("INSERT INTO runtime_controls(name,value) VALUES('archive_sweep',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value WHERE CAST(value AS INTEGER)<=? RETURNING name").bind(String(now), now - sweepEveryMs).first();
+        if (!slot) return;
+    }
     const names = (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'archive_trash_%' OR name LIKE 'archive_stage_%' OR name LIKE 'archive_snapshot_%') ORDER BY name").all<{ name: string }>()).results.map(row => row.name);
     const live = new Set((await db.prepare('SELECT lower(id) AS id FROM archive_jobs').all<{ id: string }>()).results.map(row => row.id));
     const orphans = names.filter(name => { const job = copyName.exec(name)?.[1]; return job !== undefined && !live.has(job); });
