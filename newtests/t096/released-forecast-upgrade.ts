@@ -1,4 +1,4 @@
-import {preCallingCatalog,preDirectNotificationCatalog,preFormSubmissionNotificationCatalog} from '../../src/core/features/records/archive-generations';
+import {preCallingCatalog,preDirectNotificationCatalog,preFormSubmissionNotificationCatalog,preTimerReadBudgetCatalog} from '../../src/core/features/records/archive-generations';
 import {preCaptureMailRuleCatalog} from '../../src/core/features/capture/archive';
 import {preRecordMailCatalog} from '../../src/core/features/outreach/record-mail-archive';
 import {preFormAssignmentCatalog} from '../../src/core/features/forms/archive';
@@ -64,10 +64,14 @@ export async function proveReleasedForecastUpgrade(){
   const preceding=await snapshot(db),precedingCatalog=await releasedCatalog(db),precedingHash=await foldSchemaHash(precedingCatalog);
   await target.upgrade('0091_zoom_meetings.sql');db=target.db;
   const beforeFormNotice=await snapshot(db),beforeFormNoticeCatalog=await foldInstalledCatalog(db),beforeFormNoticeHash=await foldSchemaHash(beforeFormNoticeCatalog);
+  await target.upgrade('0092_form_submission_notification.sql');db=target.db;
+  const beforeTimer=await snapshot(db),beforeTimerCatalog=await foldInstalledCatalog(db),beforeTimerHash=await foldSchemaHash(beforeTimerCatalog);
   await target.upgrade();db=target.db;
   await assertRetained(db,before);await assertRetained(db,preceding);
   const installed=await foldInstalledCatalog(db),preDirect=preDirectNotificationCatalog(installed),currentRows=await snapshot(db);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(installed,currentRows,await foldSchemaHash(installed),now))).inputCatalog,installed);
+  assert.deepEqual(preTimerReadBudgetCatalog(installed),beforeTimerCatalog,'A timer read-budget migration preserves the preceding archive schema exactly, and the derived activity table is never archived');
+  assert.deepEqual((await validateFoldManifest(db,manifestFor(beforeTimerCatalog,beforeTimer,beforeTimerHash,now))).inputCatalog,beforeTimerCatalog);
   assert.deepEqual(preFormSubmissionNotificationCatalog(installed),beforeFormNoticeCatalog,'A notification-only migration preserves the preceding archive schema exactly');
   assert.deepEqual((await validateFoldManifest(db,manifestFor(beforeFormNoticeCatalog,beforeFormNotice,beforeFormNoticeHash,now))).inputCatalog,beforeFormNoticeCatalog);
   assert.deepEqual((await validateFoldManifest(db,manifestFor(preDirect,currentRows,await foldSchemaHash(preDirect),now))).inputCatalog,preDirect,'An archive before direct-person suppression still restores when only its notification trigger inventory differs');

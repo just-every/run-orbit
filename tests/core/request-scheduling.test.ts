@@ -6,6 +6,7 @@ import {createDependencies} from '../support/dependencies';
 import {WorkbenchRepository} from '../../src/core/features/workbench/repository';
 import {runHostedTimers,schedulerStatus} from '../../src/core/features/outreach/scheduler';
 import {createId} from '../../src/core/shared/ids';
+import {proveTimerReadBudget} from '../support/timer-read-budget';
 
 test('a fresh hosted schedule sends once through ordinary requests racing Cron, and due follow-ups return to NOW',async context=>{
  const platform=await isolatedDatabase(),db=platform.db;
@@ -92,5 +93,7 @@ test('a fresh hosted schedule sends once through ordinary requests racing Cron, 
   assert.equal(transitions[0].actor_id,null);assert.equal(transitions[0].actor_name,null);
   assert.equal(transitions[0].occurred_at,new Date().toISOString());
   await Promise.all(background);
+  // The same timers, against thirty days of deals, entries and notifications, read a flat number of rows.
+  await proveTimerReadBudget(db,actor);
  }finally{release();await Promise.allSettled(background);context.mock.timers.reset();await platform.dispose();}
 });
