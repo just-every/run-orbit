@@ -14,6 +14,8 @@ export function identityMailSender(bindings: PlatformBindings): MailSender | und
   }
   // Existing installations supplied SENDGRID_API_KEY before MAIL_PROVIDER was declared.
   const provider = bindings.MAIL_PROVIDER?.trim() || 'sendgrid';
+  // Mail off (MAIL_PROVIDER=none, set only with rer's mail-off deploy): no sign-in mail; the owner signs in with `rer signin`.
+  if (provider === 'none') return undefined;
   if (provider !== 'rer' && provider !== 'sendgrid') throw new Error('Sign-in MAIL_PROVIDER must be rer or sendgrid.');
   const apiKey = provider === 'rer' ? bindings.MAIL_API_KEY : bindings.MAIL_API_KEY?.trim() || bindings.SENDGRID_API_KEY;
   const credentialName = provider === 'rer' || bindings.MAIL_API_KEY?.trim() ? 'MAIL_API_KEY' : 'SENDGRID_API_KEY';

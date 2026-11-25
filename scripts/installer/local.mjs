@@ -39,6 +39,8 @@ export const commandAdapter = createCommandAdapter(lifecycle, {
  publicPages: ['/', '/signin', '/docs', '/docs/run-locally', '/docs/operations', '/docs/moving-in', '/docs/signals-and-mail', '/docs/owner-steps', '/docs/connect-gmail', '/docs/connect-outlook', '/docs/updating', '/docs/record-policies'],
  dev: developmentTarget, preview: previewTarget, verify: ['pnpm', ['run', 'verify:app']],
  deploy: orbitDeploy(lifecycle), portability: orbitPortability(database),
+ // A deploy with MAIL_PROVIDER=none runs with mail off: the owner signs in with this command instead of an emailed link.
+ mailOffSignIn: 'rer signin',
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs',
  product: model.product.name, input: { names: { email: 'OWNER_EMAIL', name: 'displayName' }, defaults: async () => ({ MAIL_PROVIDER: 'development', MAIL_FROM: 'auth@localhost.test' }) },
  // Local-only persona sign-in; vite.config.ts loads the entry for `vite dev` alone.
