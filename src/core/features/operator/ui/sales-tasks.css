@@ -16,6 +16,7 @@
 .task-row-item { border-top: 1.5px solid var(--ob-line); }
 .tasks-page__rows > .task-row-item:first-child { border-top: 0; }
 .task-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; min-height: 76px; padding: 8px 0; }
+.task-row--handoff { grid-template-columns: minmax(0, 1fr) auto; }
 .ob-app .task-row__complete { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 50%; }
 .task-row__complete span, .task-row__state { width: 22px; height: 22px; border: 1.5px solid var(--ob-ink); border-radius: 50%; }
 .task-row__state { justify-self: center; }
@@ -66,6 +67,8 @@
  .tasks-page__list, .tasks-page__linked { padding: 4px 16px; }
  .task-row { grid-template-columns: 44px minmax(0, 1fr); }
  .task-row__when { grid-column: 2; justify-content: flex-start; margin-top: -4px; }
+ .task-row--handoff { grid-template-columns: minmax(0, 1fr); }
+ .task-row--handoff .task-row__when { grid-column: 1; }
  .task-open { padding-left: 0; }
  .ob-app .sales-task-calendar__grid button { min-height: 44px; }
 }

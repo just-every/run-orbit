@@ -37,9 +37,9 @@ export function TasksPage() {
  }, [view, owner, date, offset, refresh]);
  // With no task at all, the New task form opens rather than an empty list (U5).
  useEffect(() => {
-  if (!data || data.tasks.length || offset || view !== 'today' || owner || openId) return;
+  if (!data || data.tasks.length || data.handoffs.length || offset || view !== 'today' || owner || openId) return;
   const controller = new AbortController();
-  void listSalesTasks(new URLSearchParams({view: 'all', owner: 'all', offset: '0'}), controller.signal).then(all => {if (!all.tasks.length) setCreating(true);}).catch(() => {});
+  void listSalesTasks(new URLSearchParams({view: 'all', owner: 'all', offset: '0'}), controller.signal).then(all => {if (!all.tasks.length && !all.handoffs.length) setCreating(true);}).catch(() => {});
   return () => controller.abort();
  }, [data === null]);
  // A task opened from a link that is not in the current view still opens, above the list.

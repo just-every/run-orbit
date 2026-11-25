@@ -7303,7 +7303,7 @@
       "executable": false
     },
     "src/core/features/operator/ui/sales-tasks.css": {
-      "sha256": "88e96330bc2ba8ac86551abe3c7bcc6e5fbb0b9d50abf7619b703475682ea738",
+      "sha256": "8ecccd00b7c0b3250b1df34400ebc485982c461e88fab39047900d9253edafa0",
       "executable": false
     },
     "src/core/features/operator/ui/saved-record-views.tsx": {
@@ -8611,7 +8611,7 @@
       "executable": false
     },
     "src/core/features/tasks/ui/handoff-rows.tsx": {
-      "sha256": "cc3e50dcc8c2cb995a044453ad29208fe0326ac8f33f1464cd5b8ee355c3068c",
+      "sha256": "3ea8d8ec71b50bb2d6f498062ec47b5c5740b1b86b6b33c7b98e64cbddfff5c4",
       "executable": false
     },
     "src/core/features/tasks/ui/task-card.tsx": {
@@ -8627,7 +8627,7 @@
       "executable": false
     },
     "src/core/features/tasks/ui/tasks-page.tsx": {
-      "sha256": "214313b1a47a9aa4201aa58aedbb2ea94443cff1a60eebb5b2e763d7d57b697a",
+      "sha256": "382881350a2f4e18860d513ade489d9839257b432f4b39c42cecd55a3a3a8044",
       "executable": false
     },
     "src/core/features/timeline/index.ts": {
