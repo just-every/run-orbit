@@ -510,6 +510,12 @@
       "name": "0092_form_submission_notification.sql",
       "sha256": "99251271d78e7dd01223974dffbcc222d5fff4a2fe4b9ce0f2eb103d67bd5d37",
       "sql": "-- A native form intake creates its own submission-scoped recipient notice.\n-- Its deal creation or return to NOW must not duplicate that recipient's notice.\n-- The marker is installed and removed inside that intake's atomic D1 batch.\n-- Every other notification kind and every ordinary NOW event stays unchanged.\nCREATE TRIGGER notification_skip_form_now BEFORE INSERT ON notifications\nWHEN NEW.kind='opportunity.now'\n AND EXISTS(SELECT 1 FROM runtime_controls WHERE name='form_submission' AND value=NEW.operator_id)\nBEGIN\n SELECT RAISE(IGNORE);\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0093_owner_signin_rer.sql",
+      "sha256": "f3851c70472dee71be47be0fa0ee71d8d9d5c3733136485bd21278de11a4ede0",
+      "sql": "-- `rer signin` (rer 0.2.105 and later) writes its one-time owner grant into\n-- oa_owner_signins and picks the owner from oa_operators and oa_bootstrap.\n-- Orbit keeps its own operators, so the grant table takes rer's name (every\n-- row and its cascade to operators kept) and two read-only views project\n-- Orbit's active setup owner under the names rer reads. Only the owner is\n-- projected: rer signs in the owner, and Orbit's people stay in operators.\nALTER TABLE identity_owner_signins RENAME TO oa_owner_signins;\n\nDROP VIEW rer_owner_signin_operators;\n\nCREATE VIEW oa_operators AS\n SELECT o.id,o.email,'owner' AS role,o.status,\n  COALESCE(unixepoch(o.updated_at)*1000+CAST(substr(o.updated_at,21,3) AS INTEGER),0) AS version,\n  o.created_at\n FROM operators o WHERE o.setup_owner=1 AND o.status='active';\n\nCREATE VIEW oa_bootstrap AS\n SELECT 1 AS singleton,o.id AS claim_id FROM operators o WHERE o.setup_owner=1 AND o.status='active';\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

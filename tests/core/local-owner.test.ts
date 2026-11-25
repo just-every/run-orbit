@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {registerDevAdmission} from '@runeditrun/rer/modules/operator-auth/dev-admission';
+import {ownerSignin} from '@runeditrun/rer/internal/modules/deploy-kit/owner-signin.mjs';
+import {mkdtemp,realpath,rm,writeFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {identityResponse} from '../../src/core/features/identity';
 import {createId} from '../../src/core/shared/ids';
 import {isolatedDatabase} from '../support/isolated-database';
@@ -8,7 +12,7 @@ import {createApp} from '../support/app';
 import {mailedIdentity} from '../support/email-link';
 import {testAuth} from '../support/test-auth';
 
-test('TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve sign-in authority',async()=>{
+test('TEAM-002 PUBLIC-004 owner mailbox changes, mail-off rer signin and setup-owner removal preserve sign-in authority',async()=>{
  const fixture=await isolatedDatabase(),db=fixture.db,owner=createId(),stage=createId(),now=new Date().toISOString();
  try {
   await db.prepare("INSERT INTO owner_bootstrap VALUES('initial-owner',?,'owner@orbit.test','Owner','Owner settings','UTC','USD',?,?)").bind(owner,JSON.stringify([{id:stage,name:'New'}]),now).run();
@@ -52,6 +56,36 @@ test('TEAM-002 PUBLIC-004 owner mailbox changes and setup-owner removal preserve
   assert.equal((await request(nativeToken,'settings/owner','PUT',{currentEmail:change.email,email:'owner@newbusiness.example.test'})).status,200,'a native owner with fresh email proof can also correct their address');
   assert.equal((await request(nativeToken)).status,200,'the asking native session stays valid');
   assert.equal((await request(local.token)).status,401,'the previous dev session is revoked');
+
+  // Mail off (MAIL_PROVIDER=none): no sign-in mail; rer's own `rer signin` code mints the owner's one-time link
+  // through the Cloudflare D1 API (faked here, at the network edge, onto this database) and Orbit's door admits it once.
+  const mailOff={...mail.bindings,MAIL_PROVIDER:'none',MAIL_FROM:undefined,SENDGRID_API_KEY:undefined};
+  const offAsk=(request:Request)=>identityResponse(request,mailOff,{ownerClaimed:async()=>true});
+  const offPage=await offAsk(new Request(mail.origin+'/signin'));
+  assert.equal(offPage!.status,200);assert.match(await offPage!.text(),/rer signin/);
+  const live={versionId:crypto.randomUUID(),deploymentId:crypto.randomUUID(),etag:'etag-1'},target={accountId:'account',project:'sales-orbit',environment:'production',worker:'sales-orbit-production',origin:mail.origin};
+  const stateDir=await realpath(await mkdtemp(join(tmpdir(),'orbit-signin-'))),statePath=join(stateDir,'production.json');
+  try {
+   await writeFile(statePath,JSON.stringify({version:1,kind:'rer-deploy-owner-state',...target,origin:undefined,owned:{worker:{status:'created'},d1:{DB:{status:'created',id:'orbit-d1'}},r2:{},kv:{},queues:{}},receipt:{provider:live}}));
+   const cloudflare={async request(path:string,init?:{body?:{sql:string}}){
+    if(path.endsWith('/settings'))return{bindings:[]};
+    if(path.endsWith('/deployments'))return{deployments:[{id:live.deploymentId,versions:[{percentage:100,version_id:live.versionId}]}]};
+    if(path.endsWith('/versions/'+live.versionId))return{id:live.versionId,resources:{script:{etag:live.etag}}};
+    if(path==='/d1/database/orbit-d1/query')return[{success:true,results:(await db.prepare(init!.body!.sql).all()).results}];
+    throw Object.assign(new Error('unexpected '+path),{status:404});
+   }};
+   const minted=await ownerSignin({api:cloudflare,target,statePath}),ownerEmail=await db.prepare('SELECT email FROM operators WHERE id=?').bind(owner).first('email');
+   assert.equal(minted.email,ownerEmail,'rer signin names Orbit\'s claimed owner');
+   const link=new URL(minted.link),grantToken=link.searchParams.get('token')!;
+   assert.equal(link.pathname,'/auth/owner-signin');
+   const preview=await offAsk(new Request(link));
+   assert.equal(preview!.status,200);assert.equal(preview!.headers.get('set-cookie'),null,'opening the link signs nobody in');
+   const used=await Promise.all([offAsk(mail.post('/auth/owner-signin',{form:{token:grantToken}})),offAsk(mail.post('/auth/owner-signin',{form:{token:grantToken}}))]);
+   const admitted=used.filter(response=>response!.status===303&&response!.headers.get('set-cookie'));
+   assert.equal(admitted.length,1,'the link signs the owner in once');
+   const offToken=admitted[0]!.headers.get('set-cookie')!.split(';')[0]!.split('=')[1]!;
+   assert.equal(((await(await request(offToken)).json()) as any).owner.email,ownerEmail,'the mail-off session is the owner\'s');
+  } finally {await rm(stateDir,{recursive:true,force:true});}
 
   const remove=(token:string,id:string)=>request(token,`settings/operators/${id}`,'DELETE',{confirmed:true});
   const otherRemovingOwner=await remove(teammate.token,owner);

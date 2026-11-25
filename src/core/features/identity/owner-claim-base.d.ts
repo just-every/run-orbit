@@ -15,3 +15,11 @@ declare module '@runeditrun/rer/internal/modules/operator-auth/http.mjs' {
 declare module '@runeditrun/rer/internal/modules/operator-auth/input.mjs' {
   export function readInput(request: Request): Promise<Record<string, unknown>>;
 }
+declare module '@runeditrun/rer/internal/modules/operator-auth/owner-signin-grant.mjs' {
+  export const OWNER_SIGNIN_SECONDS: number;
+  export function ownerSigninDigest(token: string): Promise<string>;
+}
+declare module '@runeditrun/rer/internal/modules/operator-auth/identity/email-link/confirmation.mjs' {
+  import type {OperatorAuth} from '@runeditrun/rer/modules/operator-auth';
+  export function confirmationResponse(input:{branding:OperatorAuth['presentation'];preview:{kind:'owner';expiresInMinutes:number}|null;token:string|null;method:string;action:string}): Promise<Response>;
+}

@@ -1911,7 +1911,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "c0f9077181103ad5aeb7d3d67fb239a15ac438650eafd0635c9247de373c7373",
+      "sha256": "74c7491f538261927d331c872641742eca9af46fc8e97e0659cc3d35c0436d87",
       "executable": false
     },
     "management/integration/profile.json": {
@@ -2260,6 +2260,10 @@
     },
     "migrations/core/0092_form_submission_notification.sql": {
       "sha256": "99251271d78e7dd01223974dffbcc222d5fff4a2fe4b9ce0f2eb103d67bd5d37",
+      "executable": false
+    },
+    "migrations/core/0093_owner_signin_rer.sql": {
+      "sha256": "f3851c70472dee71be47be0fa0ee71d8d9d5c3733136485bd21278de11a4ede0",
       "executable": false
     },
     "migrations/rewrites.json": {
@@ -4183,7 +4187,7 @@
       "executable": false
     },
     "scripts/installer/local.mjs": {
-      "sha256": "9e36295ec1124babbc27db6bd32016131016032f6538352abda0c8f4f66a2692",
+      "sha256": "be236218474d7f23513cd6688f3ae28ae0247946c42379565ea9a2e652a7cb93",
       "executable": false
     },
     "scripts/installer/portability-policy.mjs": {
@@ -5243,7 +5247,7 @@
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "7cf5dc93e38f1c9911715bd6909d7e38dc9862b7a9a6b9bc7811fee31a5c1024",
+      "sha256": "c52feef8341aeabb04fb39359a2c1658666f01c5363948437d735b8a8c6a72f3",
       "executable": false
     },
     "src/core/features/access/administration.ts": {
@@ -6303,7 +6307,7 @@
       "executable": false
     },
     "src/core/features/identity/auth.ts": {
-      "sha256": "8361beb97dffcc9a2182c44a9e54afcfa661d67a980eec36537f04af183d95a8",
+      "sha256": "d6cf6f932782c81cbc2c4d4228e700c233761bc8e229c5413240a915928e6924",
       "executable": false
     },
     "src/core/features/identity/bootstrap.ts": {
@@ -6327,7 +6331,7 @@
       "executable": false
     },
     "src/core/features/identity/mail.ts": {
-      "sha256": "c801588c3d9a7bb5e7a238a4c30760d00105ed78da320c7872ddb5f54019cf10",
+      "sha256": "2409ae823228410c7fdebf75b2b6d2a584c9d2a63399aea0214452bcb354fa5b",
       "executable": false
     },
     "src/core/features/identity/operator-listing.ts": {
@@ -6335,11 +6339,15 @@
       "executable": false
     },
     "src/core/features/identity/owner-claim-base.d.ts": {
-      "sha256": "fbcf984d94d9a0e03403f8d6e3f04f5fb6bd42199b89c2e6ddded3de51b5678a",
+      "sha256": "43b03b75d7901468b2596f2784ae0b6f80e9b6dae5f33857155af9cfc0490100",
       "executable": false
     },
     "src/core/features/identity/owner-claim.ts": {
       "sha256": "fae0e9405adf4df231a46bed667695a35882c5c1ce83845f4c26b6e2f7f5288f",
+      "executable": false
+    },
+    "src/core/features/identity/owner-signin.ts": {
+      "sha256": "dbd6d75fdfc4c45e94959005201ff9ba09539ceec6c2ae97887c766b74d7ff33",
       "executable": false
     },
     "src/core/features/identity/proofs.ts": {
@@ -8119,7 +8127,7 @@
       "executable": false
     },
     "src/core/features/records/archive-import-progress.ts": {
-      "sha256": "71cf9b7b35cccf4fad66db83bfe184adc009a5a7f0a357ef0e762e57537fc2ef",
+      "sha256": "a2a980640378da602b9f47e7ce9db008f4739a077ec3a69ed10ed66bfc498f0a",
       "executable": false
     },
     "src/core/features/records/archive-import-recovery.ts": {
@@ -8155,7 +8163,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema-objects.ts": {
-      "sha256": "78552e6a4186845eee1e38334734eef2b4a10b1f10a86e9d2a2f6d877e4fb9ba",
+      "sha256": "90e49740c88862b9620e432c4fd60607207de5d9629783b69a01b1f338a53635",
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
@@ -10571,7 +10579,7 @@
       "executable": false
     },
     "tests/core/local-owner.test.ts": {
-      "sha256": "e1744bf3230b95f2e4efd33cea56b2fb4f21d20c7979c597da3d5170ff50033f",
+      "sha256": "42272135bdebb6f1be591da4af0479c6cfd612e844bf2bf3ede698f45e48eca2",
       "executable": false
     },
     "tests/core/managed-owner.test.ts": {

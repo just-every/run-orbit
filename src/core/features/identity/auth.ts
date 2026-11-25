@@ -9,6 +9,7 @@ import { createNativeProofs } from './proofs';
 import { sessionStore } from './store';
 import {OwnerClaimError} from '@runeditrun/rer/modules/owner-claim';
 import {ownerClaimResponse} from './owner-claim';
+import {ownerSigninResponse} from './owner-signin';
 import {demoSignIn} from './demo-signin';
 
 export const clientIp = (local: boolean) => (request: Request) => local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '';
@@ -70,11 +71,14 @@ export async function identityResponse(request: Request, bindings: PlatformBindi
     const { auth, config } = identity;
     if (bindings.RER_DEMO === '1' && (path === '/signin' && request.method === 'GET' || path === '/auth/demo/enter')) return await demoSignIn(request, identity);
     if (path === '/auth/owner-claim') return await ownerClaimResponse(request, bindings, identity);
+    if (path === '/auth/owner-signin') return await ownerSigninResponse(request, identity);
     // PUBLIC-003: without sign-in mail and no linked provider there is no way in, so the page
     // says so and presents no credential field (Base's page always offers the email form).
     if (path === '/signin' && ['GET', 'HEAD'].includes(request.method) && !config.MAIL_FROM && !(await auth.providers?.list() ?? []).some(p => p.visible)) {
       const refusedProvider=['oidc_admission_denied','oidc_provider_required','oidc_sign_in_disabled'].includes(new URL(request.url).searchParams.get('notice')??'');
-      return noWayIn((refusedProvider?'Provider sign-in was refused. ':'')+'Sign-in email is not available right now. Ask the person who runs this app to check its mail settings.', request.method);
+      // Mail off (MAIL_PROVIDER=none): the owner's way in is a one-time link from `rer signin`.
+      const mailOff=bindings.MAIL_PROVIDER?.trim()==='none';
+      return noWayIn((refusedProvider?'Provider sign-in was refused. ':'')+(mailOff?'Sign-in email is off for this app. Its owner signs in with a one-time link from rer signin.':'Sign-in email is not available right now. Ask the person who runs this app to check its mail settings.'), request.method);
     }
     // Links from Orbit's retired sign-in engine cannot be redeemed; offer a new one.
     if (path === '/auth/verify') return new Response(null, { status: 303, headers: { ...securityHeaders(), Location: '/signin' } });
