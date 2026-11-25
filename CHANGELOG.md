@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.13 — 2026-11-25
+
+Orbit 0.4.13 supports hosted setup with mail disabled and lets the setup owner sign in with `rer signin`. It retains rer 0.2.113.
+
+- Deploy with `MAIL_PROVIDER=none` when no mail provider is configured. Use `rer signin` to open the owner sign-in link and confirm it in the browser. The link expires and can be used once.
+- Orbit disables invitations and email delivery while mail is off. Keep the existing provider configuration if the workspace uses email delivery.
+
+### Upgrade
+
+Stop writes and take a private backup before updating from 0.4.12 in place. Apply `migrations/core/0093_owner_signin_rer.sql` through the usual rer upgrade. The migration moves existing owner sign-in grants to the table rer uses. Preserve the migration ledger and all previously applied migrations.
+
 ## 0.4.12 — 2026-11-19
 
 Orbit 0.4.12 makes first-run setup and everyday CRM work more reliable, clarifies when booking tools need setup, and includes security updates. It retains rer 0.2.113.
