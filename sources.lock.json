@@ -2431,7 +2431,7 @@
       "executable": false
     },
     "newtests/t096/dashboard-upgrade.ts": {
-      "sha256": "58e1914aa3909769d53a73c161df065dd7a646346c6158cd002f29ad5cd4a5fe",
+      "sha256": "b3d7a56650cf0cb12477ebd63985fec2bb4a6266c23464d2ef7d1a04b5ee22e7",
       "executable": false
     },
     "newtests/t096/delegation-collaborator.test.ts": {
@@ -2511,7 +2511,7 @@
       "executable": false
     },
     "newtests/t096/forward-upgrade.test.ts": {
-      "sha256": "a1feb49cb10575ee6e20aeeb2aede10b27ee518e229891c66a2e42891b7aa888",
+      "sha256": "82539bd1be50b85c0a457641456ef477dabb9f2665a6a529939eb2370ffc6de1",
       "executable": false
     },
     "newtests/t096/immutable-native-app.ts": {
@@ -3775,7 +3775,11 @@
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "14aa2e8fd0a114f64e5a872b3cf2083c05cd0f73acffc33e2b164f4c98668082",
+      "sha256": "6c310c153c77fb0e4379138363aef608f89b575539ab2919125c6e7e7b42ac3b",
+      "executable": false
+    },
+    "newtests/t096/renamed-tables.ts": {
+      "sha256": "17e41f52db7b08ca2d7c02ae92c73ba75a02d135e74065a48c2f1f214aa355de",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {

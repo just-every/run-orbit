@@ -19,6 +19,7 @@ import type {FoldArchiveTable} from '../../src/core/features/records/archive-fol
 import type {ArchiveColumn} from '../../src/core/features/records/archive-schema';
 import {archiveSchemaObjects} from '../../src/core/features/records/archive-schema-objects';
 import {preCallFailureCatalog} from '../../src/core/features/calls/archive';
+import {currentTable} from './renamed-tables';
 
 const quote=(name:string)=>'"'+name.replaceAll('"','""')+'"';
 
@@ -50,7 +51,7 @@ test('API-002 credential storage and RECORD-016 ownership and accepted main and 
  const catalogBeforeCallFailures=await migrationCatalog(db);
  await target.migrateFold('0067_call_failures.sql');db=target.db;
  assert.deepEqual(preCallFailureCatalog(await migrationCatalog(db)),catalogBeforeCallFailures,'Prior archive catalogs retain their exact owner columns and objects across the additive call migration');
- await target.migrateFold();db=target.db;for(const name of tableNames){const original=before.get(name)!;assert.equal(JSON.stringify((await db.prepare(`SELECT ${original.columns.map(quote).join(',')} FROM ${quote(name)}`).all()).results),original.rows,name);}
+ await target.migrateFold();db=target.db;for(const name of tableNames){const original=before.get(name)!;assert.equal(JSON.stringify((await db.prepare(`SELECT ${original.columns.map(quote).join(',')} FROM ${quote(await currentTable(db,name))}`).all()).results),original.rows,name);}
  assert.deepEqual((await db.prepare('SELECT * FROM call_dial_attempts ORDER BY id').all()).results,oldAttempts.map(attempt=>({...attempt,creation_outcome:null,provider_error_code:null})).sort((a,b)=>a.id.localeCompare(b.id)),'Every historical dial attempt and owner value survives the additive failure migration without an invented provider error');
  assert.equal(await db.prepare("SELECT sql FROM sqlite_master WHERE name='owner_call_attempt_note'").first('sql'),attemptDdl,'An owner index over historical attempts survives the additive migration');
  const callSession=await createDependencies(db).auth.createSession(owner),callApp=createApp({database:db,assets:{fetch:async()=>new Response('')}}),callLog=await callApp.request(`https://orbit.test/api/v1/calls/contacts/${contact}/log`,{headers:{Cookie:`__Host-orbit_session=${callSession.token}`}});

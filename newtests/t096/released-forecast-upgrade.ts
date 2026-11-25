@@ -18,6 +18,7 @@ import {preForecastCatalog} from '../../src/core/features/records/forecast-archi
 import {preOptOutCapabilityCatalog} from '../../src/core/features/records/archive-generations';
 import {preLibraryCatalog} from '../../src/core/features/records/library-archive-compatibility';
 import {validateFoldManifest} from '../../src/core/features/records/archive-fold-validation';
+import {currentTable} from './renamed-tables';
 
 /** Read historical schema without requiring the current generation's later tables. */
 async function releasedCatalog(db:D1Database){
@@ -32,16 +33,14 @@ async function releasedCatalog(db:D1Database){
 
 type TableSnapshot={name:string;columns:string[];rows:string[]};
 const quote=(name:string)=>'"'+name.replaceAll('"','""')+'"';
-// 0093 renamed the owner sign-in grants to the table rer signin writes; their rows are retained there.
-const renamed:Record<string,string>={identity_owner_signins:'oa_owner_signins'};
-async function rows(db:D1Database,table:Pick<TableSnapshot,'name'|'columns'>){return(await db.prepare(`SELECT ${table.columns.map(quote).join(',')} FROM ${quote(renamed[table.name]??table.name)}`).all()).results.map(row=>JSON.stringify(row)).sort();}
+async function rows(db:D1Database,table:Pick<TableSnapshot,'name'|'columns'>){return(await db.prepare(`SELECT ${table.columns.map(quote).join(',')} FROM ${quote(table.name)}`).all()).results.map(row=>JSON.stringify(row)).sort();}
 async function snapshot(db:D1Database){
  const names=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT GLOB 'sqlite_*' AND name NOT GLOB '_cf_*' AND name<>'d1_migrations' ORDER BY name").all<{name:string}>()).results;
  const tables:TableSnapshot[]=[];
  for(const {name} of names){const columns=(await db.prepare(`PRAGMA table_info(${quote(name)})`).all<{name:string}>()).results.map(column=>column.name);tables.push({name,columns,rows:await rows(db,{name,columns})});}
  return tables;
 }
-async function assertRetained(db:D1Database,tables:TableSnapshot[]){for(const table of tables)assert.deepEqual(await rows(db,table),table.rows,`prior rows and every existing field retained in ${table.name}`);}
+async function assertRetained(db:D1Database,tables:TableSnapshot[]){for(const table of tables){const name=await currentTable(db,table.name);assert.deepEqual(await rows(db,{...table,name}),table.rows,`prior rows and every existing field retained in ${name}`);}}
 function manifestFor(catalog:ArchiveTable[],before:TableSnapshot[],schemaHash:string,exportedAt:string){const counts=new Map(before.map(table=>[table.name,table.rows.length]));return{format:'orbit-export',version:3,generation:'orbit-fold-1',schemaHash,exportedAt,tables:catalog.map(table=>({name:table.name,columns:table.columns.map(column=>column.name),rows:counts.get(table.name)!})),rows:catalog.reduce((sum,table)=>sum+counts.get(table.name)!,0),parts:1};}
 
 export async function proveReleasedForecastUpgrade(){
