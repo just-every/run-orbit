@@ -42,8 +42,11 @@ export interface TaskHistory {
  previousOwnerName: string | null;
  payload: { title: string; ownerId: string | null; previousOwnerId?: string | null; dueAt: string; previousDueAt?: string; status: TaskStatus; reason?: string };
 }
+/** A hand-off task (a meeting plan's next action) assigned to an operator; it opens on its deal. */
+export interface ListedHandoff { id: string; title: string; dueAt: string | null; status: TaskStatus; opportunityId: string; opportunityTitle: string }
 export interface TaskList {
  tasks: SalesTask[];
+ handoffs: ListedHandoff[];
  operators: { id: string; displayName: string }[];
  timezone: string;
  today: string;

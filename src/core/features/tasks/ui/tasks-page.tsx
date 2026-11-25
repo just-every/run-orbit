@@ -11,6 +11,7 @@ import {TaskCalendar} from './calendar';
 import {TaskRow} from './task-card';
 import {SalesTaskForm} from './task-form';
 import {TaskOpen} from './task-open';
+import {HandoffRows} from './handoff-rows';
 
 type View = 'today' | 'overdue' | 'all' | 'calendar';
 const views: [View, string][] = [['today', 'Today'], ['overdue', 'Overdue'], ['all', 'All tasks'], ['calendar', 'Calendar']];
@@ -82,7 +83,8 @@ export function TasksPage() {
    <div className={`tasks-page__body${view === 'calendar' ? ' tasks-page__body--calendar' : ''}`}>
     {view === 'calendar' && data && <TaskCalendar date={date || data.today} onDate={value => {setDate(value); setOffset(0);}}/>}
     <div className="operator-surface tasks-page__list" aria-busy={loading}>
-     {data && !error && (data.tasks.length ? <ul className="tasks-page__rows">{data.tasks.map(row)}</ul> : !loading && <div className="tasks-page__empty"><p>{empty[view]}</p>{!creating && <button type="button" onClick={() => setCreating(true)}>New task</button>}</div>)}
+     {data && !error && (data.tasks.length ? <ul className="tasks-page__rows">{data.tasks.map(row)}</ul> : !loading && !data.handoffs.length && <div className="tasks-page__empty"><p>{empty[view]}</p>{!creating && <button type="button" onClick={() => setCreating(true)}>New task</button>}</div>)}
+     {data && !error && data.handoffs.length > 0 && <HandoffRows handoffs={data.handoffs} timeOnly={view === 'today' || view === 'calendar'}/>}
      {!data && loading && <p role="status">Loading tasks…</p>}
     </div>
    </div>
