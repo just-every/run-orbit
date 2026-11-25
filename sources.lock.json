@@ -3775,7 +3775,7 @@
       "executable": false
     },
     "newtests/t096/released-forecast-upgrade.ts": {
-      "sha256": "c7a904ca783631365063942d3de200fdb60ccef214fec3735827f1fb844a1da7",
+      "sha256": "14aa2e8fd0a114f64e5a872b3cf2083c05cd0f73acffc33e2b164f4c98668082",
       "executable": false
     },
     "newtests/t096/report-disclosure.test.ts": {
@@ -8163,7 +8163,7 @@
       "executable": false
     },
     "src/core/features/records/archive-schema-objects.ts": {
-      "sha256": "90e49740c88862b9620e432c4fd60607207de5d9629783b69a01b1f338a53635",
+      "sha256": "0021069ac3ca978e111d3839550e7b00d939fd7ae55c094ab498d13915035faa",
       "executable": false
     },
     "src/core/features/records/archive-schema.ts": {
@@ -10835,7 +10835,7 @@
       "executable": false
     },
     "tests/e2e/worker-smoke.spec.mjs": {
-      "sha256": "eb662e308161d03672fbe45d9d6f4296e257306a10674a4a71d66fdac96cb7ed",
+      "sha256": "c7d459a95d2ca4c5dfb4611e5a4d7e8605f7060b936c12ae85ea1037fb2ecf7a",
       "executable": false
     },
     "tests/e2e/zz-notifications.spec.mjs": {

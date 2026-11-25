@@ -41,8 +41,9 @@ for (const viewport of viewports) {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     const state = await (await page.request.get('/setup/state')).json();
     expect(['unclaimed', 'claimed']).toContain(state.state);
+    // On this computer (loopback) Base's Lobby may fill in the claimed owner's address; a hosted Lobby never names them.
     await expect(page.getByRole('link', { name: state.state === 'claimed' ? 'Sign in' : 'Finish setup', exact: true }))
-      .toHaveAttribute('href', state.state === 'claimed' ? '/signin' : '/setup');
+      .toHaveAttribute('href', state.state === 'claimed' ? /^\/signin(\?login_hint=[^&]+)?$/ : '/setup');
     await expectNoHorizontalOverflow(page);
     expect(failures).toEqual([]);
   });

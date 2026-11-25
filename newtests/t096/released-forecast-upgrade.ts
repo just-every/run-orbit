@@ -32,7 +32,9 @@ async function releasedCatalog(db:D1Database){
 
 type TableSnapshot={name:string;columns:string[];rows:string[]};
 const quote=(name:string)=>'"'+name.replaceAll('"','""')+'"';
-async function rows(db:D1Database,table:Pick<TableSnapshot,'name'|'columns'>){return(await db.prepare(`SELECT ${table.columns.map(quote).join(',')} FROM ${quote(table.name)}`).all()).results.map(row=>JSON.stringify(row)).sort();}
+// 0093 renamed the owner sign-in grants to the table rer signin writes; their rows are retained there.
+const renamed:Record<string,string>={identity_owner_signins:'oa_owner_signins'};
+async function rows(db:D1Database,table:Pick<TableSnapshot,'name'|'columns'>){return(await db.prepare(`SELECT ${table.columns.map(quote).join(',')} FROM ${quote(renamed[table.name]??table.name)}`).all()).results.map(row=>JSON.stringify(row)).sort();}
 async function snapshot(db:D1Database){
  const names=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT GLOB 'sqlite_*' AND name NOT GLOB '_cf_*' AND name<>'d1_migrations' ORDER BY name").all<{name:string}>()).results;
  const tables:TableSnapshot[]=[];
